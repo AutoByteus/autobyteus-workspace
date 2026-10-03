@@ -1,0 +1,128 @@
+{
+  "pairs": [
+    {
+      "id": "agy-tool-5e6dd29f-9e3d-45a4-b285-1b420f0e8e01-2",
+      "tool": "write_to_file",
+      "typedArgs": {
+        "CodeContent": "BEFORE_NATIVE_9382\nsecond line\n",
+        "Description": "Write initial content to marker.txt",
+        "Overwrite": true,
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace/marker.txt",
+        "toolAction": "Writing file",
+        "toolSummary": "Write marker.txt"
+      },
+      "equal": true
+    },
+    {
+      "id": "agy-tool-5e6dd29f-9e3d-45a4-b285-1b420f0e8e01-4",
+      "tool": "view_file",
+      "typedArgs": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing file",
+        "toolSummary": "View marker.txt"
+      },
+      "equal": true
+    },
+    {
+      "id": "agy-tool-5e6dd29f-9e3d-45a4-b285-1b420f0e8e01-6",
+      "tool": "replace_file_content",
+      "typedArgs": {
+        "AllowMultiple": false,
+        "Description": "Replace BEFORE_NATIVE_9382 with MIDDLE_NATIVE_9382",
+        "EndLine": 2,
+        "Instruction": "Update marker prefix to MIDDLE",
+        "ReplacementContent": "MIDDLE_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "BEFORE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace/marker.txt",
+        "toolAction": "Replacing content",
+        "toolSummary": "Update marker.txt"
+      },
+      "equal": true
+    },
+    {
+      "id": "agy-tool-5e6dd29f-9e3d-45a4-b285-1b420f0e8e01-8",
+      "tool": "replace_file_content",
+      "typedArgs": {
+        "AllowMultiple": false,
+        "Description": "Replace MIDDLE_NATIVE_9382 with AFTER_NATIVE_9382",
+        "EndLine": 2,
+        "Instruction": "Update marker prefix to AFTER",
+        "ReplacementContent": "AFTER_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "MIDDLE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace/marker.txt",
+        "toolAction": "Replacing content",
+        "toolSummary": "Update marker.txt"
+      },
+      "equal": true
+    },
+    {
+      "id": "agy-tool-5e6dd29f-9e3d-45a4-b285-1b420f0e8e01-10",
+      "tool": "grep_search",
+      "typedArgs": {
+        "CaseInsensitive": false,
+        "Includes": [
+          "*.txt"
+        ],
+        "MatchPerLine": true,
+        "Query": "AFTER_NATIVE_9382",
+        "SearchPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace",
+        "toolAction": "Searching code",
+        "toolSummary": "Grep search marker"
+      },
+      "equal": true
+    },
+    {
+      "id": "agy-tool-5e6dd29f-9e3d-45a4-b285-1b420f0e8e01-12",
+      "tool": "find_by_name",
+      "typedArgs": {
+        "MaxDepth": 1,
+        "Pattern": "*.txt",
+        "SearchDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace",
+        "Type": "file",
+        "toolAction": "Searching files",
+        "toolSummary": "Find text files"
+      },
+      "equal": true
+    },
+    {
+      "id": "agy-tool-5e6dd29f-9e3d-45a4-b285-1b420f0e8e01-14",
+      "tool": "list_dir",
+      "typedArgs": {
+        "DirectoryPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace",
+        "toolAction": "Listing directory",
+        "toolSummary": "List workspace directory"
+      },
+      "equal": true
+    },
+    {
+      "id": "agy-tool-5e6dd29f-9e3d-45a4-b285-1b420f0e8e01-16",
+      "tool": "run_command",
+      "typedArgs": {
+        "CommandLine": "sleep 3; printf NATIVE_ARGUMENTS_REAL_OK",
+        "Cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace",
+        "IsDaemon": false,
+        "WaitMsBeforeAsync": 10000,
+        "toolAction": "Running command",
+        "toolSummary": "Run sleep and printf"
+      },
+      "equal": true
+    },
+    {
+      "id": "agy-tool-5e6dd29f-9e3d-45a4-b285-1b420f0e8e01-18",
+      "tool": "view_file",
+      "typedArgs": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing file",
+        "toolSummary": "View marker.txt"
+      },
+      "equal": true
+    }
+  ],
+  "note": "Nine persisted actual native inputs exact. Browser probe case-sensitive RUNNING predicate is incorrect; actual DOM source label is Running. Finalized WS comparison pending corrected probe."
+}

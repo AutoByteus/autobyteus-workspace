@@ -1,0 +1,407 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:77397) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-03T15:45:59.800Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Populating agent definition cache for the first time...
+[2026-10-03T15:46:00.321Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+[2026-10-03T15:46:00.327Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+In-memory cache: Added new agent definition with ID agy-input-3d3c4ee4-ae31-470f-88f4-7a91350897dd.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Agent Definition created successfully with ID: agy-input-3d3c4ee4-ae31-470f-88f4-7a91350897dd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence
+Created and registered workspace ID: agent_ws_343aec1b1e91e47307568b2c06c4b4f7354b82dec928a8f6cddfcd52a3ea9afd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence
+Reusing registered workspace ID: agent_ws_343aec1b1e91e47307568b2c06c4b4f7354b82dec928a8f6cddfcd52a3ea9afd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence
+Published antigravity_cli agent run 'agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_d2da66e3381a4e1c98b0eff9d8484574'.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence
+Agent websocket attached for run agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_d2da66e3381a4e1c98b0eff9d8484574
+Created agent session a898c270-7f21-4e22-bfba-4314ed5ef7dd for run agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_d2da66e3381a4e1c98b0eff9d8484574
+Agent WebSocket connected: session=a898c270-7f21-4e22-bfba-4314ed5ef7dd, run=agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_d2da66e3381a4e1c98b0eff9d8484574
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for SUMMARY_ONLY detail
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for SUMMARY_ONLY detail
+Reusing registered workspace ID: agent_ws_343aec1b1e91e47307568b2c06c4b4f7354b82dec928a8f6cddfcd52a3ea9afd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for SUMMARY_ONLY detail
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for SUMMARY_ONLY detail
+Reusing registered workspace ID: agent_ws_343aec1b1e91e47307568b2c06c4b4f7354b82dec928a8f6cddfcd52a3ea9afd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for SUMMARY_ONLY detail
+Published antigravity_cli agent run 'agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_8eb5e4e7082f4845b7caccc4a31d9bc3'.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for SUMMARY_ONLY detail
+Agent websocket attached for run agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_8eb5e4e7082f4845b7caccc4a31d9bc3
+Created agent session f22c1a3e-f599-44f7-981e-20d4ae8f0773 for run agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_8eb5e4e7082f4845b7caccc4a31d9bc3
+Agent WebSocket connected: session=f22c1a3e-f599-44f7-981e-20d4ae8f0773, run=agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_8eb5e4e7082f4845b7caccc4a31d9bc3
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for AMBIGUOUS detail
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for AMBIGUOUS detail
+Reusing registered workspace ID: agent_ws_343aec1b1e91e47307568b2c06c4b4f7354b82dec928a8f6cddfcd52a3ea9afd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for AMBIGUOUS detail
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for AMBIGUOUS detail
+Reusing registered workspace ID: agent_ws_343aec1b1e91e47307568b2c06c4b4f7354b82dec928a8f6cddfcd52a3ea9afd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for AMBIGUOUS detail
+Published antigravity_cli agent run 'agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_4cc5a8a7acf14d98ab1f06e35d8ab8f0'.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-002 retains truthful summary and completion for AMBIGUOUS detail
+Agent websocket attached for run agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_4cc5a8a7acf14d98ab1f06e35d8ab8f0
+Created agent session aa546533-56f2-48d6-9641-3b92a28a627c for run agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_4cc5a8a7acf14d98ab1f06e35d8ab8f0
+Agent WebSocket connected: session=aa546533-56f2-48d6-9641-3b92a28a627c, run=agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_4cc5a8a7acf14d98ab1f06e35d8ab8f0
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged
+Reusing registered workspace ID: agent_ws_343aec1b1e91e47307568b2c06c4b4f7354b82dec928a8f6cddfcd52a3ea9afd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-o84zFg/app-data-Qzfr4w/workspace.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged
+Reusing registered workspace ID: agent_ws_343aec1b1e91e47307568b2c06c4b4f7354b82dec928a8f6cddfcd52a3ea9afd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged
+Published antigravity_cli agent run 'agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_20032806649847bb92002e09fa495f6c'.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged
+Agent websocket attached for run agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_20032806649847bb92002e09fa495f6c
+Created agent session cb7dbb76-1f8a-484c-afbd-de366c564fa4 for run agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_20032806649847bb92002e09fa495f6c
+Agent WebSocket connected: session=cb7dbb76-1f8a-484c-afbd-de366c564fa4, run=agy_input_3d3c4ee4_ae31_470f_88f4_7a91350897dd_20032806649847bb92002e09fa495f6c
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged
+Closed agent session cb7dbb76-1f8a-484c-afbd-de366c564fa4
+Agent WebSocket disconnected: cb7dbb76-1f8a-484c-afbd-de366c564fa4
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Closed agent session aa546533-56f2-48d6-9641-3b92a28a627c
+Agent WebSocket disconnected: aa546533-56f2-48d6-9641-3b92a28a627c
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Closed agent session f22c1a3e-f599-44f7-981e-20d4ae8f0773
+Agent WebSocket disconnected: f22c1a3e-f599-44f7-981e-20d4ae8f0773
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Closed agent session a898c270-7f21-4e22-bfba-4314ed5ef7dd
+Agent WebSocket disconnected: a898c270-7f21-4e22-bfba-4314ed5ef7dd
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+In-memory cache: Removed agent definition with ID agy-input-3d3c4ee4-ae31-470f-88f4-7a91350897dd.
+
+stdout | tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore
+Agent Definition with ID agy-input-3d3c4ee4-ae31-470f-88f4-7a91350897dd deleted successfully.
+
+ ❯ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests | 2 failed) 4851ms
+     × E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence 1346ms
+     ✓ E-002 retains truthful summary and completion for SUMMARY_ONLY detail  889ms
+     ✓ E-002 retains truthful summary and completion for AMBIGUOUS detail  888ms
+     × E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged 978ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ source tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts:120:31
+    118|     const serialized = JSON.stringify(metadata);
+    119|     const ids = serialized.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-…
+    120|     expect(new Set(ids).size).toBe(1);
+       |                               ^
+    121|     const conversationId = ids[0]!;
+    122|     return { conversationId, file: path.join(brainRoot, conversationId…
+ ❯ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts:178:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts > future native input capture across AGY CLI / server / saved history / actual restore > E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ source tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts:120:31
+    118|     const serialized = JSON.stringify(metadata);
+    119|     const ids = serialized.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-…
+    120|     expect(new Set(ids).size).toBe(1);
+       |                               ^
+    121|     const conversationId = ids[0]!;
+    122|     return { conversationId, file: path.join(brainRoot, conversationId…
+ ❯ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts:198:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  17:45:51
+   Duration  12.70s (transform 4.88s, setup 15ms, import 7.32s, tests 4.85s, environment 0ms)
+

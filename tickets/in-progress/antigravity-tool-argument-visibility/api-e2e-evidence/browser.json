@@ -1,0 +1,163 @@
+{
+  "liveJson": {
+    "AllowMultiple": false,
+    "Description": "Replace BEFORE_NATIVE_9382 with MIDDLE_NATIVE_9382",
+    "EndLine": 2,
+    "Instruction": "Replace BEFORE_NATIVE_9382 with MIDDLE_NATIVE_9382",
+    "ReplacementContent": "MIDDLE_NATIVE_9382",
+    "StartLine": 1,
+    "TargetContent": "BEFORE_NATIVE_9382",
+    "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace/marker.txt",
+    "toolAction": "Replacing content",
+    "toolSummary": "Content replacement"
+  },
+  "reopened": [
+    {
+      "invocationId": "agy-tool-c051354e-7e54-4cb9-9aef-426e04d00930-2",
+      "arguments": {
+        "CodeContent": "BEFORE_NATIVE_9382\nsecond line\n",
+        "Description": "Create marker.txt with initial content",
+        "Overwrite": true,
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace/marker.txt",
+        "toolAction": "Writing file",
+        "toolSummary": "File creation"
+      }
+    },
+    {
+      "invocationId": "agy-tool-c051354e-7e54-4cb9-9aef-426e04d00930-4",
+      "arguments": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing file",
+        "toolSummary": "File view"
+      }
+    },
+    {
+      "invocationId": "agy-tool-c051354e-7e54-4cb9-9aef-426e04d00930-6",
+      "arguments": {
+        "AllowMultiple": false,
+        "Description": "Replace BEFORE_NATIVE_9382 with MIDDLE_NATIVE_9382",
+        "EndLine": 2,
+        "Instruction": "Replace BEFORE_NATIVE_9382 with MIDDLE_NATIVE_9382",
+        "ReplacementContent": "MIDDLE_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "BEFORE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace/marker.txt",
+        "toolAction": "Replacing content",
+        "toolSummary": "Content replacement"
+      }
+    },
+    {
+      "invocationId": "agy-tool-c051354e-7e54-4cb9-9aef-426e04d00930-8",
+      "arguments": {
+        "AllowMultiple": false,
+        "Description": "Replace MIDDLE_NATIVE_9382 with AFTER_NATIVE_9382",
+        "EndLine": 2,
+        "Instruction": "Replace MIDDLE_NATIVE_9382 with AFTER_NATIVE_9382",
+        "ReplacementContent": "AFTER_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "MIDDLE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace/marker.txt",
+        "toolAction": "Replacing content",
+        "toolSummary": "Content replacement"
+      }
+    },
+    {
+      "invocationId": "agy-tool-c051354e-7e54-4cb9-9aef-426e04d00930-10",
+      "arguments": {
+        "CaseInsensitive": false,
+        "Includes": [
+          "*.txt"
+        ],
+        "MatchPerLine": true,
+        "Query": "AFTER_NATIVE_9382",
+        "SearchPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace",
+        "toolAction": "Searching code",
+        "toolSummary": "Pattern search"
+      }
+    },
+    {
+      "invocationId": "agy-tool-c051354e-7e54-4cb9-9aef-426e04d00930-12",
+      "arguments": {
+        "MaxDepth": 1,
+        "Pattern": "*.txt",
+        "SearchDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace",
+        "Type": "file",
+        "toolAction": "Searching files",
+        "toolSummary": "File search"
+      }
+    },
+    {
+      "invocationId": "agy-tool-c051354e-7e54-4cb9-9aef-426e04d00930-14",
+      "arguments": {
+        "DirectoryPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace",
+        "toolAction": "Listing directory",
+        "toolSummary": "Directory listing"
+      }
+    },
+    {
+      "invocationId": "agy-tool-c051354e-7e54-4cb9-9aef-426e04d00930-16",
+      "arguments": {
+        "CommandLine": "sleep 3; printf NATIVE_ARGUMENTS_REAL_OK",
+        "Cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace",
+        "IsDaemon": false,
+        "WaitMsBeforeAsync": 10000,
+        "toolAction": "Running command",
+        "toolSummary": "Command execution"
+      }
+    },
+    {
+      "invocationId": "agy-tool-c051354e-7e54-4cb9-9aef-426e04d00930-18",
+      "arguments": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing file",
+        "toolSummary": "File view"
+      }
+    }
+  ],
+  "network": [
+    {
+      "url": "http://127.0.0.1:56162/graphql",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:56162/graphql",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:56162/graphql",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:56162/graphql",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:56162/graphql",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:56162/graphql",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:56162/graphql",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:56162/graphql",
+      "status": 200
+    }
+  ],
+  "browserErrors": [],
+  "browserVersion": "154.0.8037.97",
+  "viewports": [
+    "1100x850",
+    "390x844"
+  ],
+  "collapseReopen": true,
+  "documentOverflow": false
+}
