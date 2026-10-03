@@ -73,6 +73,7 @@ describe('teamRunConfigStore flat Team launch intent', () => {
       teamDefinitionId: 'root-def',
       rootConfig: expect.objectContaining({
         runtimeKind: 'codex_app_server',
+        autoExecuteTools: true,
         llmModelIdentifier: 'gpt-5.6-luna',
         llmConfig: { reasoning_effort: 'medium' },
       }),
@@ -82,6 +83,18 @@ describe('teamRunConfigStore flat Team launch intent', () => {
     expect(store.memberTree?.map((member) => member.address)).toEqual(['/teacher', '/reviewer', '/worker'])
     expect(store.memberTree?.every((member) => member.kind === 'agent')).toBe(true)
     expect(Object.isFrozen(store.config)).toBe(true)
+  })
+
+  it('preserves root opt-out through ordinary model, workspace and permitted runtime edits', () => {
+    const store = useTeamRunConfigStore()
+    store.setTemplate(definition())
+    store.applyConfigEdit({ kind: 'set_root_auto_execute_tools', autoExecuteTools: false })
+    store.applyConfigEdit({ kind: 'set_root_model', llmModelIdentifier: 'gpt-5.4' })
+    store.applyConfigEdit({ kind: 'set_root_workspace', workspace })
+    store.applyConfigEdit({ kind: 'set_root_runtime', runtimeKind: 'claude_agent_sdk' })
+    expect(store.config?.rootConfig.autoExecuteTools).toBe(false)
+    store.applyConfigEdit({ kind: 'set_root_runtime', runtimeKind: 'antigravity_cli' })
+    expect(store.config?.rootConfig.autoExecuteTools).toBe(true)
   })
 
   it('applies root and direct-Agent edits while rejecting every configured Team placement', () => {

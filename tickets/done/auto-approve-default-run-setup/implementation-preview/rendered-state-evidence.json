@@ -1,0 +1,182 @@
+{
+  "surface": "worktree Nuxt dev renderer, real forms/store constructors, deterministic empty model catalogs; no backend launch or payload execution",
+  "states": [
+    {
+      "name": "fresh Agent",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "switches": [
+        {
+          "id": "auto-execute",
+          "checked": "true",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "Agent opt-out",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "switches": [
+        {
+          "id": "auto-execute",
+          "checked": "false",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "Agent allowed runtime edit retains false",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "switches": [
+        {
+          "id": "auto-execute",
+          "checked": "false",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "Agent forced runtime is checked and locked",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "switches": [
+        {
+          "id": "auto-execute",
+          "checked": "true",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "name": "fresh Team",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "switches": [
+        {
+          "id": "team-scope-root-auto-execute",
+          "checked": "true",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "Team opt-out",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "switches": [
+        {
+          "id": "team-scope-root-auto-execute",
+          "checked": "false",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "Team allowed runtime edit retains false",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "switches": [
+        {
+          "id": "team-scope-root-auto-execute",
+          "checked": "false",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "Team forced runtime locked on",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "switches": [
+        {
+          "id": "team-scope-root-auto-execute",
+          "checked": "true",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "name": "fresh Team mobile width",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "switches": [
+        {
+          "id": "team-scope-root-auto-execute",
+          "checked": "true",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "fresh Agent mobile width",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "switches": [
+        {
+          "id": "auto-execute",
+          "checked": "true",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "Agent keyboard opt-out",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "switches": [
+        {
+          "id": "auto-execute",
+          "checked": "false",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "name": "Settled mobile Agent keyboard opt-out after CSS transition",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "switches": [
+        {
+          "id": "auto-execute",
+          "checked": "false",
+          "disabled": false,
+          "backgroundColor": "rgb(204, 204, 204)",
+          "thumbTransform": "matrix(1, 0, 0, 1, 0, 0)"
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "ownedNuxtServer": "stopped",
+    "port15373Listener": "absent",
+    "temporaryPage": "removed"
+  }
+}

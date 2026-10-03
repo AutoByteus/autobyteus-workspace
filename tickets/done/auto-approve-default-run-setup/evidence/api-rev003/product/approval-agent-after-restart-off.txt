@@ -1,0 +1,36 @@
+Chat
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Agent Definition
+Reload Proof Shared
+Runtime
+AutoByteus
+
+Selects the runtime backend used for this run.
+
+LLM Model
+Select a model
+
+Select a model...
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+Run Agent

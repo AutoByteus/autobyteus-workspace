@@ -1,0 +1,287 @@
+web source/test/package diff-check exit=0
+integrated web diff-check exit=0
+fresh-run-auto-approval syntax exit=0
+team-reload-member-freshness syntax exit=0
+existing-run-model-config syntax exit=0
+tickets/in-progress/auto-approve-default-run-setup/agent-first-send-unit-tests.log:66: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-focused.log:82: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-mobile-unit.log:26: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:101: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:102: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:106: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:107: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:111: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:112: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:116: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:117: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:121: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:122: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:126: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:127: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:131: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:132: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:136: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:137: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:141: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:142: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:146: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:147: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:151: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:152: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:156: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:157: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:161: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:162: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:166: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:167: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:171: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:172: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:176: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:177: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:181: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:182: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:186: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:187: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:191: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:192: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:196: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:197: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:201: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:202: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:206: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:207: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:211: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:212: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:216: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:217: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:221: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:222: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:226: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:227: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:231: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:232: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:236: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:237: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:241: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:242: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:246: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:247: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:251: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:252: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:256: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:257: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-e2e-preservation.log:266: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-focused.log:82: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-narrow.log:42: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:101: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:102: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:106: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:107: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:111: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:112: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:116: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:117: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:121: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:122: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:126: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:127: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:131: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:132: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:136: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:137: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:141: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:142: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:146: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:147: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:151: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:152: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:156: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:157: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:161: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:162: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:166: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:167: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:171: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:172: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:176: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:177: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:181: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:182: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:186: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:187: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:191: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:192: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:196: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:197: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:201: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:202: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:206: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:207: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:211: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:212: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:216: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:217: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:221: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:222: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:226: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:227: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:231: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:232: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:236: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:237: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:241: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:242: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:246: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:247: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:251: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:252: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:256: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:257: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/auto-approve-default-run-setup/api-rev002-preservation.log:266: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/code-review-focused-tests.log:82: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/crr-003-focused-tests.log:42: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/ir-002-local-tests.log:42: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/isolated-start.log:256: trailing whitespace.
++ WARN 
+tickets/in-progress/auto-approve-default-run-setup/isolated-start.log:556: trailing whitespace.
++ WARN 
+tickets/in-progress/auto-approve-default-run-setup/local-tests-final.log:82: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/local-tests-rerun.log:82: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/preservation-unit-tests.log:50: new blank line at EOF.
+tickets/in-progress/auto-approve-default-run-setup/saved-reader-probe-api-rev002/nuxt-dev.log:8: trailing whitespace.
++ 
+tickets/in-progress/auto-approve-default-run-setup/saved-reader-probe-api-rev002/nuxt-dev.log:23: trailing whitespace.
++ 
+tickets/in-progress/auto-approve-default-run-setup/saved-reader-probe/nuxt-dev.log:8: trailing whitespace.
++ 
+tickets/in-progress/auto-approve-default-run-setup/saved-reader-probe/nuxt-dev.log:23: trailing whitespace.
++ 
+historical ticket/raw-evidence diff-check exit=2 (raw checkpoint evidence preserved, not rewritten)

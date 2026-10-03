@@ -1,0 +1,15 @@
+{
+  "integratedHEAD": "90a608f5e49a3c780ff47d80920ff2fa650a1270",
+  "manifestEqualsNewestBasePlusApprovalScript": true,
+  "unchangedFromCheckpoint": {
+    "composables/useDefinitionLaunchDefaults.ts": true,
+    "components/mobile/MobileLaunchRunOptionsCard.vue": true,
+    "tests/e2e/fresh-run-auto-approval-probe.mjs": true,
+    "tests/e2e/fixtures/fresh-run-auto-approval.page.vue": true,
+    "tests/e2e/existing-run-model-config-probe.mjs": true
+  },
+  "version": "1.4.93-beta.1",
+  "productProbeSha256": "f8dce9380c1af988134dbfe1ccd335f31389bdd6b9e57b73af9e3af0abcba544",
+  "ownedProductBuildRequired": true,
+  "skipBuild": false
+}

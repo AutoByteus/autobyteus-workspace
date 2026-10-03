@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick, reactive } from 'vue'
 import AgentRunConfigForm from '../AgentRunConfigForm.vue'
+import { buildAgentRunTemplate } from '~/composables/useDefinitionLaunchDefaults'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 
@@ -118,6 +119,21 @@ describe('AgentRunConfigForm', () => {
       ...overrides,
     },
     models,
+  })
+
+  it('shows the real fresh template approved and permits a deliberate opt-out', async () => {
+    const config = reactive(buildAgentRunTemplate(mockAgentDef))
+    const wrapper = mount(AgentRunConfigForm, { props: {
+      config,
+      agentDefinition: mockAgentDef,
+      workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+      workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+    } })
+    expect(wrapper.get('#auto-execute').attributes('aria-checked')).toBe('true')
+    await wrapper.get('#auto-execute').trigger('click')
+    expect(config.autoExecuteTools).toBe(false)
+    expect(wrapper.get('#auto-execute').attributes('aria-checked')).toBe('false')
+    wrapper.unmount()
   })
 
   it('keeps runtime fixed while forwarding stopped selection-pair events', async () => {

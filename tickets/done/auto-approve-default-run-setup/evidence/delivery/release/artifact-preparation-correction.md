@@ -1,0 +1,2 @@
+# Receipt preparation correction
+First Python snapshot/preparation command failed before writing files because shared index relative path was read in ticket cwd. Shell continued; ticket archive/commit/push succeeded. No repository source/release failure. Corrected index resolution using shared cwd; user-verification, post-acceptance receipt and release summary persisted in follow-up docs commit before target finalization/release. Summary was not created before archive; previous report wording corrected. No hands-on testing or prior notes inferred.

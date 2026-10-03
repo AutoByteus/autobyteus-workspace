@@ -1,0 +1,50 @@
+
+> autobyteus@1.4.92 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-default-run-setup/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/chatDraftStore.spec.ts services/chat/__tests__/chatLaunchService.spec.ts utils/__tests__/teamRunLaunchHierarchy.spec.ts stores/__tests__/agentContextsStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-default-run-setup/autobyteus-web
+
+stderr | services/chat/__tests__/chatLaunchService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/chatDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamRunLaunchHierarchy.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/chat/__tests__/chatLaunchService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/chatDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamRunLaunchHierarchy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/teamRunLaunchHierarchy.spec.ts (5 tests) 4ms
+ ✓ stores/__tests__/chatDraftStore.spec.ts (10 tests) 20ms
+ ✓ services/chat/__tests__/chatLaunchService.spec.ts (7 tests) 8ms
+ ✓ stores/__tests__/agentContextsStore.spec.ts (12 tests) 14ms
+
+ Test Files  4 passed (4)
+      Tests  34 passed (34)
+   Start at  10:50:48
+   Duration  6.95s (transform 3.62s, setup 23.74s, collect 543ms, tests 46ms, environment 1.15s, prepare 832ms)
+

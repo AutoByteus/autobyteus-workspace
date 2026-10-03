@@ -78,6 +78,20 @@ existing direct-member override intent. Every exact configured Agent must be
 valid before launch; pending or failed runtime catalogs and invalid model
 configuration block launch with scoped feedback.
 
+Fresh definition-based standalone Team setup starts the root automatic-approval
+setting **on**, on desktop and mobile and after application restart. Members
+without an approval override inherit the root value; an explicit member false
+still wins where its runtime permits it. The root can also be turned off where
+permitted. Ordinary model/workspace edits do not reset a deliberate opt-out.
+Antigravity retains its existing forced-on/locked policy, distinct from this
+fresh-template default. Saved settings and seeds copied from existing runs keep
+explicit root/member approval choices, including false; New Chat retains its
+existing on default. The shared frontend `useDefinitionLaunchDefaults.ts`
+constructor supplies the fresh value, not backend defaults or a migration.
+Agent Org defaults and direct API callers are unchanged. See
+[Agent fresh-run automatic approval](agent_management.md#fresh-run-automatic-approval)
+for the trust boundary.
+
 A standalone Team launches one native Team V2 root. The coordinator becomes the
 initial focused Agent for the familiar Team journey. Browser launch input does
 not supply concrete TeamRun/AgentRun IDs; the server allocates and validates
