@@ -21,7 +21,7 @@ Still-relevant factual supplements (not behavior authorities):
 - Full artifact/raw-evidence inventory: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-package-index.json` and the canonical investigation inventory. Original approvals, frozen requirements, source pins, timing series, caveats, fixtures, profiles, images, cleanup and review evidence remain intact in `/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence`.
 - Requested root governance, carried for eventual delivery: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/AGENTS.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/SOLUTION_DESIGN_BEST_PRACTICES.md`.
 - Behavior-defining Product/UI supplements, triggering code-review/API/E2E/delivery findings: **N/A — not applicable**. Independent architecture-review artifacts above **are applicable**, not omitted.
-- Current rule lookup/selected route: pending lookup; implementation evidence is finalized and persisted. See Routing appendix below.
+- Current rule lookup selected **Code Review → /code_reviewer**; exact rule receipt is in evidence/handoff-rules-ir001.json. See Routing appendix below.
 
 ## Current Implementation Summary
 
@@ -29,13 +29,13 @@ Still-relevant factual supplements (not behavior authorities):
 
 - Cycle: **Initial**; revision: **IR-001**; revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/implementation-revision-record.md`.
 - Related revisions: **SR-006 approved baseline / SR-010 cumulative design; ARCH-REV-001; CRR N/A; API-REV N/A; DR N/A**. Triggering findings: **N/A**.
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance` only. Branch `codex/org-run-config-performance`; base `origin/personal @ 1b976216da0cbd0cc84fef3fe22a2739325b8ad3`. Development commit/provenance recorded below before forwarding. Shared dirty checkout untouched.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance` only. Branch `codex/org-run-config-performance`; base `origin/personal @ 1b976216da0cbd0cc84fef3fe22a2739325b8ad3`. Development commit **b5715ea5ba1e999a544da751141ad2f8ed933089**, including approved upstream governance/package, source/tests and local evidence; routing metadata follows. Shared dirty checkout untouched.
 
 ## Routing Classification
 
 - Task size: **Medium**; architectural risk: **High**; **Confirmed**, unchanged from design classification section.
 - Evidence: three bounded existing-owner slices; shared allocator caller cleanup, GraphQL contract replacement, real asynchronous root/full publication and shared config/collection consumers remain material blast-radius/freshness contracts. No new subsystem, durable state, admission policy or launch behavior.
-- Selected route: awaiting current rule lookup; High requires the returned independent-source-review rule rather than an inferred low-risk bypass.
+- Selected route: **Code Review → /code_reviewer**, first returned rule matches Initial Implementation Complete + High + completed local validation; no other rule applies.
 - Lightweight direct-route self-review: **Not Applicable**. Implementation checks/inspection were completed; independent Code Reviewer remains required.
 - New Design Impact / Requirement Gap: **None**. No unresolved intended-behavior/design contradiction discovered.
 
@@ -98,7 +98,7 @@ Scope Guardrail: **Yes**, stayed within approved REQ-001–007. Validation/admis
 - First server typecheck preceded prerequisites and failed on missing generated/build dependencies; after prerequisite preparation, production typecheck/build pass. Initial MCP/voice/inspection/history assertion failures were fixture or replaced-contract issues, corrected and rerun; all attempts preserved in evidence, not treated as passes.
 - Standalone Vue typecheck attempt unavailable (`vue-tsc` not installed in this workspace). **No standalone web typecheck pass claimed**. Nuxt production build and colocated tests pass; no dependency/lockfile changes or ad-hoc install.
 - Development preview used current built server + Nuxt source on own ports/data/tab, not an installed/pre-change packaged app. No credentials imported, model messages sent or runs created. Exact cleanup receipt: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-cleanup.json`.
-- SDK `dist` outputs are development build prerequisites, excluded from staging. No release/deploy/tag/push/merge authorized or performed.
+- Two untracked SDK `dist` outputs created by prerequisite builds were excluded from staging and removed after checks. Downstream must run server prebuild / required workspace SDK builds again. Ignored normal build products are not deployed. No release/deploy/tag/push/merge authorized or performed.
 
 ## Local Implementation Checks Run
 
@@ -113,9 +113,9 @@ All are **implementation-scoped**, not API/E2E sign-off. Commands/evidence below
 | Server full build | `pnpm -C autobyteus-server-ts build:full` | Pass including sanitized built-module/bootstrap smoke; implementation-server-build-final.log |
 | Web production build | `pnpm -C autobyteus-web build` | **Pass**, 19 routes generated; implementation-web-build-complete.log |
 | GraphQL generation | `BACKEND_GRAPHQL_BASE_URL=http://127.0.0.1:62297/graphql pnpm -C autobyteus-web exec graphql-codegen --config codegen.ts` | Pass against current worktree built backend; implementation-codegen.log |
-| Source hygiene | `git diff --check`; removal scan; effective lines/deltas/hashes | Pass; implementation-checks.json. No deprecated production/actual transport consumers remain. |
+| Source hygiene | `git diff --check`; removal scan; effective lines/deltas/hashes | Pass for production/tests/root governance against base; implementation-checks.json. Raw captured evidence logs retain emitted whitespace/EOF warnings (implementation-package-whitespace.log); not reformatted or claimed whitespace-clean. No deprecated production/actual transport consumers remain. |
 
-Warnings retained: existing Apollo canonizeResults deprecation, KaTeX quirks-mode fixture and stale Browserslist data; final tests report no unhandled errors. Not silently fixed as unrelated scope.
+Warnings retained: existing Apollo canonizeResults deprecation, KaTeX quirks-mode, Vue router/prop fixture warnings and stale Browserslist data; final tests report no unhandled errors. Not silently fixed as unrelated scope.
 
 ## Frontend Rendered-Result Check
 
@@ -138,4 +138,7 @@ Warnings retained: existing Apollo canonizeResults deprecation, KaTeX quirks-mod
 
 ## Routing And Development Provenance
 
-Pending current rule lookup and development commit. The implementation and IR-001 record are persisted before the lookup; receipt is appended only after tool confirmation.
+- Initial source/package development commit: **b5715ea5ba1e999a544da751141ad2f8ed933089** on the isolated branch; no merge/push/tag/release.
+- `get_handoff_rules` called only after implementation, classification, local evidence and IR-001/handoff were persisted. Exact receipt: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/handoff-rules-ir001.json`.
+- First rule matches **Implementation Complete, Medium / High, completed implementation-scoped validation, cumulative package ready for independent source review**. Selected single exact address: **/code_reviewer**. Local Fix/direct Low-risk/Design Impact rules do not match.
+- Send confirmation is pending the actual tool call, not inferred. A successful receipt will be retained; no additional recipient or reviewer polling.

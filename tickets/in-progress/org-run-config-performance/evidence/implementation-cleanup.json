@@ -25,5 +25,10 @@
   "modelMessagesSent": 0,
   "credentialsImported": false,
   "userAppAndDataTouched": false,
-  "scope": "normal implementation preview only; not packaged/API/E2E validation"
+  "scope": "normal implementation preview only; not packaged/API/E2E validation",
+  "ownedUntrackedSdkBuildOutputsRemoved": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-application-backend-sdk/dist",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-application-sdk-contracts/dist"
+  ],
+  "downstreamPrerequisite": "Run server prebuild / workspace SDK build before subsequent typecheck/build/runtime execution."
 }

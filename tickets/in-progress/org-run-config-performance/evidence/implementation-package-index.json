@@ -165,12 +165,14 @@
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/user-uuid-scan-objection.json"
   ],
   "implementationEvidence": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/handoff-rules-ir001.json",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-checks.json",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-cleanup.json",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-codegen.log",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-local-commands.json",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-nuxt-prepare.log",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-package-index.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-package-whitespace.log",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-prerequisites.log",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-preview-server-retry.log",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-preview-server.log",
@@ -203,5 +205,11 @@
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-web-retry.log",
     "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-web-typecheck.log"
   ],
-  "note": "Original approval, factual supplements, source pins, raw profiles/timings/images and cumulative histories remain active context. Original evidence is not current changed-build proof."
+  "note": "Original approval, factual supplements, source pins, raw profiles/timings/images and cumulative histories remain active context. Original evidence is not current changed-build proof.",
+  "canonicalImplementation": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/implementation-handoff.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/implementation-revision-record.md"
+  ],
+  "developmentCommit": "b5715ea5ba1e999a544da751141ad2f8ed933089",
+  "selectedRecipient": "/code_reviewer"
 }

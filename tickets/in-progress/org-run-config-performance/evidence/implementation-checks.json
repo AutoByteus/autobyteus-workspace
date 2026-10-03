@@ -390,7 +390,7 @@
     "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/generated/graphql.ts",
     "reason": "Repository GraphQL Code Generator output; >220 delta and >500 file are machine generated, not hand-edited implementation. Full current schema/docs regeneration also corrects pre-existing generated drift."
   },
-  "whitespaceCheck": "pass",
+  "whitespaceCheck": "pass for production/tests/root governance against base; raw captured ticket logs contain emitted whitespace/EOF warnings, preserved verbatim",
   "localChecks": {
     "serverTests": "11 files / 68 tests pass",
     "webTests": "30 files / 427 tests pass",
@@ -404,5 +404,7 @@
   "packagedValidation": "not executed \u2014 downstream owned",
   "performanceValidation": "not executed \u2014 downstream owned",
   "sourceRemovalScan": "No collision machinery/dead containsRunId/singleton or aggregate capability operation remains in actual source/test/GraphQL/generated/probe consumers",
-  "ownershipCleanup": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-cleanup.json"
+  "ownershipCleanup": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-cleanup.json",
+  "developmentCommit": "b5715ea5ba1e999a544da751141ad2f8ed933089",
+  "rawPackageWhitespaceLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-package-whitespace.log"
 }

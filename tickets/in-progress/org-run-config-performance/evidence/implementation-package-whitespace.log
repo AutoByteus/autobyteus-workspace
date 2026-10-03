@@ -1,0 +1,494 @@
+tickets/in-progress/org-run-config-performance/evidence/implementation-prerequisites.log:24: new blank line at EOF.
+tickets/in-progress/org-run-config-performance/evidence/implementation-preview-web.log:8: trailing whitespace.
++ 
+tickets/in-progress/org-run-config-performance/evidence/implementation-preview-web.log:23: trailing whitespace.
++ 
+tickets/in-progress/org-run-config-performance/evidence/implementation-server-final.log:176: new blank line at EOF.
+tickets/in-progress/org-run-config-performance/evidence/implementation-server-mcp-retry.log:115: new blank line at EOF.
+tickets/in-progress/org-run-config-performance/evidence/implementation-server-tests.log:204: new blank line at EOF.
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-build-complete.log:216: trailing whitespace.
++ WARN 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-build-final.log:216: trailing whitespace.
++ WARN 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-build.log:216: trailing whitespace.
++ WARN 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-collection-retry.log:124: new blank line at EOF.
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:127: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:128: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:148: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:149: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:162: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:163: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:181: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:182: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:204: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:205: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:226: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:227: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:231: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:232: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:236: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:237: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:241: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:242: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log:1097: new blank line at EOF.
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-contexts.log:97: trailing whitespace.
++     73| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-contexts.log:111: trailing whitespace.
++     73| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:579: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:580: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:593: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:594: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:611: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:612: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:622: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:623: trailing whitespace.
++  at <RunConfigPanel ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:640: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:641: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:645: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:646: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:650: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:651: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:655: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:656: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:668: trailing whitespace.
++[Vue warn]: injection "Symbol(route location)" not found. 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:669: trailing whitespace.
++  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-final.log:1079: new blank line at EOF.
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:110: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:111: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:153: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:154: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:156: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:157: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:161: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:162: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:166: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:167: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:209: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:210: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:212: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:213: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:217: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:218: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:245: trailing whitespace.
++[Vue warn]: Unhandled error during execution of unmounted hook 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:250: trailing whitespace.
++} class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:296: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:297: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:339: trailing whitespace.
++[Vue warn]: Unhandled error during execution of unmounted hook 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:344: trailing whitespace.
++} class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:390: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:391: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:417: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:422: trailing whitespace.
++} class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:468: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:469: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:471: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:472: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:476: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:522: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:523: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:527: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:532: trailing whitespace.
++} class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:578: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:579: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:581: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:582: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:593: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:639: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:640: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:654: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:700: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:701: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:705: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:751: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:752: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:774: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:820: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:821: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:832: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:878: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:879: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:903: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:949: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:950: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:973: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:974: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1016: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1017: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1019: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1020: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1032: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1033: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1048: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1094: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1095: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1099: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1100: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1142: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1143: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1145: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1146: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1154: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1200: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1201: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1213: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1218: trailing whitespace.
++} class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1264: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1265: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1267: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1268: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1272: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1273: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1274: trailing whitespace.
++  at <AgentUserInputTextArea target=null > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1275: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1277: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1278: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1287: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1333: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1334: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1345: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1346: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1388: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1389: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1391: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1392: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1396: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1397: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1412: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1413: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1418: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1419: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1429: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1430: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1472: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1473: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1475: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1476: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1480: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1481: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1485: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1486: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1490: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1491: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1533: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1534: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1536: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1537: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1541: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1542: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1546: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1547: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1566: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1567: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1580: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1581: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1623: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1624: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1626: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1627: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1631: trailing whitespace.
++[Vue warn]: Unhandled error during execution of watcher callback 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1632: trailing whitespace.
++  at <VoiceInputButton target=null class="absolute bottom-2 right-14" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1670: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1671: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1673: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1674: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1678: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1724: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1725: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1729: trailing whitespace.
++[Vue warn]: Unhandled error during execution of component update 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1775: trailing whitespace.
++} > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1776: trailing whitespace.
++  at <ActiveComposerTargetHarness ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1783: trailing whitespace.
++Received: 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1829: trailing whitespace.
++Received: 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1850: trailing whitespace.
++Received: 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:1880: trailing whitespace.
++Received: 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2428: trailing whitespace.
++    869| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2442: trailing whitespace.
++    884| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2453: trailing whitespace.
++Received: 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2483: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2612: trailing whitespace.
++Received: 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2642: trailing whitespace.
++Received: 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2671: trailing whitespace.
++    303| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2694: trailing whitespace.
++Received: 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2800: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2805: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2837: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2927: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2932: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2969: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:2974: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3011: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3016: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3035: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3040: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3077: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3082: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3101: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3106: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3233: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3238: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3257: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3262: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3317: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3322: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3359: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3364: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3383: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3388: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3407: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3412: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3431: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3436: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3473: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3478: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3551: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3556: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3611: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3616: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3689: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3694: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3713: trailing whitespace.
++     76| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-history.log:3718: trailing whitespace.
++     80| 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-projection.log:26: new blank line at EOF.
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-publication.log:60: trailing whitespace.
++[Vue warn]: Unhandled error during execution of native event handler 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-publication.log:83: trailing whitespace.
++]  ... > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-publication.log:100: trailing whitespace.
++} workspace-teams= []  ... > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-publication.log:101: trailing whitespace.
++  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+tickets/in-progress/org-run-config-performance/evidence/implementation-web-readiness.log:67: new blank line at EOF.
+tickets/in-progress/org-run-config-performance/evidence/nuxt-dev.log:32: new blank line at EOF.
