@@ -20,8 +20,10 @@ if (arg === "--version") {
   const linkedSkills = process.env.AGY_FAKE_CASE === "linked_skills";
   // Native image DONE uses a UUID conversation; the test owns that conversation's (temporary) AGY brain files.
   const imageDone = process.env.AGY_FAKE_CASE === "image_done";
+  const nativeArguments = process.env.AGY_FAKE_CASE === "native_arguments";
   const conversation_id = linkedSkills ? argValue("--conversation") || randomUUID()
-    : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
+    : nativeArguments ? argValue("--conversation") || randomUUID()
+      : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
   const emit = (value) => process.stdout.write(JSON.stringify(value) + "\n");
   // As the real CLI does: headless AGY reports `always-proceed` only with skip-permissions, else `request-review`.
   const permission_mode = process.argv.includes("--dangerously-skip-permissions") ? "always-proceed" : "request-review";
@@ -72,6 +74,13 @@ if (arg === "--version") {
   };
   readline.createInterface({ input: process.stdin }).on("line", (line) => {
     turns += 1;
+    if (nativeArguments) {
+      import("./agy-native-arguments-turn.mjs").then(({ nativeArgumentsTurn }) =>
+        nativeArgumentsTurn({ line, conversationId: conversation_id, emit })).catch((error) => {
+        emit({ event: "result", result: { conversation_id, status: "ERROR", error: String(error), response: "" } });
+      });
+      return;
+    }
     if (linkedSkills) {
       linkedSkillsTurn(line).catch((error) => emit({ event: "result", result: { conversation_id, status: "ERROR",
         error: String(error?.message ?? error), response: "" } }));
