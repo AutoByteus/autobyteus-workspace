@@ -1,0 +1,248 @@
+Merge made by the 'ort' strategy.
+ TESTING.md                                         |  45 ++
+ .../__tests__/useComposerVoiceTarget.spec.ts       | 113 ++++
+ .../voiceInput/useComposerVoiceTarget.ts           |  28 +-
+ autobyteus-web/docs/electron_packaging.md          |  13 +-
+ autobyteus-web/package.json                        |   1 +
+ .../tests/e2e/composer-voice-lifetime-probe.mjs    | 212 +++++++
+ .../e2e/fixtures/composer-voice-lifetime.page.vue  | 117 ++++
+ .../composer-voice-lifetime.integration.test.ts    | 301 ++++++++++
+ .../analysis-result.md                             |  61 ++
+ .../api-e2e-coverage-investigation.md              | 136 +++++
+ .../api-e2e-execution-coverage-report.md           | 122 ++++
+ .../api-e2e-revision-record.md                     |  25 +
+ .../api-e2e-test-case-ledger.md                    | 116 ++++
+ .../artifact-path-map.md                           |  15 +
+ .../delivery-revision-record.md                    |  34 ++
+ .../design-spec.md                                 | 153 +++++
+ .../docs-sync-report.md                            |  52 ++
+ .../evidence/api001-adjacent.log                   |  80 +++
+ .../evidence/api001-browser-attempt1-command.log   |  61 ++
+ .../api001-browser-attempt1/B-001-failure.png      | Bin 0 -> 68924 bytes
+ .../evidence/api001-browser-attempt1/evidence.json |  98 ++++
+ .../evidence/api001-browser-attempt1/nuxt-dev.log  |  93 +++
+ .../synthetic-microphone.wav                       | Bin 0 -> 960044 bytes
+ .../evidence/api001-browser-attempt2-command.log   |  62 ++
+ .../evidence/api001-browser-attempt2/B-001.png     | Bin 0 -> 102481 bytes
+ .../evidence/api001-browser-attempt2/B-002.png     | Bin 0 -> 95989 bytes
+ .../evidence/api001-browser-attempt2/B-003.png     | Bin 0 -> 101775 bytes
+ .../evidence/api001-browser-attempt2/B-004.png     | Bin 0 -> 71048 bytes
+ .../evidence/api001-browser-attempt2/B-005.png     | Bin 0 -> 102389 bytes
+ .../evidence/api001-browser-attempt2/B-006.png     | Bin 0 -> 86452 bytes
+ .../evidence/api001-browser-attempt2/B-007.png     | Bin 0 -> 70597 bytes
+ .../evidence/api001-browser-attempt2/evidence.json | 513 ++++++++++++++++
+ .../evidence/api001-browser-attempt2/nuxt-dev.log  |  87 +++
+ .../synthetic-microphone.wav                       | Bin 0 -> 960044 bytes
+ .../evidence/api001-browser-final-command.log      |  62 ++
+ .../api001-browser-final/B-001-recording.png       | Bin 0 -> 83921 bytes
+ .../evidence/api001-browser-final/B-001.png        | Bin 0 -> 103332 bytes
+ .../evidence/api001-browser-final/B-002.png        | Bin 0 -> 94402 bytes
+ .../evidence/api001-browser-final/B-003.png        | Bin 0 -> 101875 bytes
+ .../evidence/api001-browser-final/B-004.png        | Bin 0 -> 71042 bytes
+ .../api001-browser-final/B-005-transcribing.png    | Bin 0 -> 91546 bytes
+ .../evidence/api001-browser-final/B-005.png        | Bin 0 -> 101457 bytes
+ .../evidence/api001-browser-final/B-006.png        | Bin 0 -> 86649 bytes
+ .../evidence/api001-browser-final/B-007.png        | Bin 0 -> 70597 bytes
+ .../evidence/api001-browser-final/evidence.json    | 513 ++++++++++++++++
+ .../evidence/api001-browser-final/nuxt-dev.log     |  29 +
+ .../api001-browser-final/synthetic-microphone.wav  | Bin 0 -> 960044 bytes
+ .../api001-browser-original-control-command.log    |  74 +++
+ .../B-001-failure.png                              | Bin 0 -> 73968 bytes
+ .../control-verdict.txt                            |   1 +
+ .../api001-browser-original-control/evidence.json  | 110 ++++
+ .../api001-browser-original-control/nuxt-dev.log   |  27 +
+ .../synthetic-microphone.wav                       | Bin 0 -> 960044 bytes
+ .../evidence/api001-build.log                      | 256 ++++++++
+ .../evidence/api001-cache-quarantine-path.txt      |   1 +
+ .../evidence/api001-clean-prepare.log              |   4 +
+ .../evidence/api001-collision-after.sha            |   1 +
+ .../evidence/api001-collision-before.sha           |   1 +
+ .../evidence/api001-collision-guard.log            |  27 +
+ .../evidence/api001-delivery-dispatch-result.json  |  14 +
+ .../evidence/api001-focused-final.log              |  34 ++
+ .../evidence/api001-focused.log                    |  34 ++
+ .../evidence/api001-handoff-rule-result.json       |   1 +
+ .../evidence/api001-provenance.log                 |  39 ++
+ .../evidence/dr001-artifact-check.log              |   8 +
+ .../dr001-delivery-artifacts/docs-sync-report.md   |  52 ++
+ .../dr001-delivery-artifacts/handoff-summary.md    |  77 +++
+ .../release-deployment-report.md                   | 103 ++++
+ .../evidence/dr001-focused.log                     |  34 ++
+ .../evidence/dr001-handoff-rule-result.json        |   1 +
+ .../evidence/dr001-integration-refresh.log         |  10 +
+ .../evidence/dr001-provenance-doc-check.log        |  21 +
+ .../evidence/dr001-user-verification-request.md    |  16 +
+ .../evidence/dr002-main-preservation-before.json   | 651 +++++++++++++++++++++
+ .../evidence/dr002-post-acceptance-refresh.log     |   8 +
+ .../evidence/dr002-precommit-check.log             |   1 +
+ .../evidence/handoff-rule-result.json              |  20 +
+ .../evidence/ir001-dependency-install.log          |  17 +
+ .../evidence/ir001-final-red-source-provenance.log |   4 +
+ .../evidence/ir001-final-source-provenance.log     |  23 +
+ .../evidence/ir001-green-final-tests.log           |  82 +++
+ .../evidence/ir001-green-focused-tests.log         |  74 +++
+ .../evidence/ir001-handoff-rule-result.json        |  16 +
+ .../evidence/ir001-preview-appended.png            | Bin 0 -> 109457 bytes
+ .../evidence/ir001-preview-dev.log                 |  29 +
+ .../evidence/ir001-preview-idle.png                | Bin 0 -> 105412 bytes
+ .../evidence/ir001-preview-member-switch.png       | Bin 0 -> 102222 bytes
+ .../evidence/ir001-preview-observations.json       |  53 ++
+ .../evidence/ir001-preview-recording-narrow.png    | Bin 0 -> 114731 bytes
+ .../evidence/ir001-preview-recording.png           | Bin 0 -> 115069 bytes
+ .../evidence/ir001-preview-starting.png            | Bin 0 -> 120825 bytes
+ .../evidence/ir001-preview-transcribing.png        | Bin 0 -> 110356 bytes
+ .../evidence/ir001-red-source-provenance.log       |  10 +
+ .../ir001-red-tests-harness-owner-attempt.log      | 273 +++++++++
+ .../evidence/ir001-red-tests-initial.log           | 260 ++++++++
+ .../evidence/ir001-red-tests.log                   | 306 ++++++++++
+ .../evidence/ir001-test-harness-first-attempt.log  | 173 ++++++
+ .../evidence/ir001-voice-preview.page.vue          | 102 ++++
+ .../evidence/ir001-web-build-final.log             | 256 ++++++++
+ .../evidence/ir001-web-build.log                   | 256 ++++++++
+ .../evidence/pre-projects-probe.json               |  33 ++
+ .../evidence/pre-projects-probe.stderr.log         |   0
+ .../evidence/recording-lifecycle-probe.cjs         | 149 +++++
+ .../evidence/recording-lifecycle-probe.json        |  57 ++
+ .../evidence/recording-lifecycle-probe.stderr.log  |   0
+ .../evidence/source-provenance.log                 |  37 ++
+ .../evidence/sr002-handoff-rule-result.json        |  28 +
+ .../evidence/sr003-handoff-rule-result.json        |  20 +
+ .../evidence/stable-release-metadata.json          |   1 +
+ .../evidence/stable-release-source-evidence.log    |  77 +++
+ .../evidence/stable-source-probe.cjs               | 150 +++++
+ .../evidence/stable-v1.4.92-probe.json             |  57 ++
+ .../evidence/stable-v1.4.92-probe.stderr.log       |   0
+ .../handoff-summary.md                             |  60 ++
+ .../implementation-handoff.md                      | 103 ++++
+ .../implementation-revision-record.md              |  24 +
+ .../investigation-notes.md                         | 138 +++++
+ .../release-deployment-report.md                   |  15 +
+ .../release-notes.md                               |  22 +
+ .../requirements-approval.md                       |   9 +
+ .../requirements-doc.md                            |  97 +++
+ .../solution-handoff.md                            |  55 ++
+ .../solution-revision-record.md                    |  54 ++
+ .../stable-release-impact-result.md                |  22 +
+ .../user-verification.md                           |  10 +
+ 125 files changed, 7915 insertions(+), 5 deletions(-)
+ create mode 100644 autobyteus-web/composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+ create mode 100644 autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs
+ create mode 100644 autobyteus-web/tests/e2e/fixtures/composer-voice-lifetime.page.vue
+ create mode 100644 autobyteus-web/tests/integration/composer-voice-lifetime.integration.test.ts
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/analysis-result.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/api-e2e-revision-record.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/artifact-path-map.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/delivery-revision-record.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/design-spec.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/docs-sync-report.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-adjacent.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt1-command.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt1/B-001-failure.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt1/evidence.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt1/nuxt-dev.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt1/synthetic-microphone.wav
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2-command.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/B-001.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/B-002.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/B-003.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/B-004.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/B-005.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/B-006.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/B-007.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/evidence.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/nuxt-dev.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-attempt2/synthetic-microphone.wav
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final-command.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/B-001-recording.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/B-001.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/B-002.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/B-003.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/B-004.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/B-005-transcribing.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/B-005.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/B-006.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/B-007.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/evidence.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/nuxt-dev.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/synthetic-microphone.wav
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-original-control-command.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-original-control/B-001-failure.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-original-control/control-verdict.txt
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-original-control/evidence.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-original-control/nuxt-dev.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-browser-original-control/synthetic-microphone.wav
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-build.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-cache-quarantine-path.txt
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-clean-prepare.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-collision-after.sha
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-collision-before.sha
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-collision-guard.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-delivery-dispatch-result.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-focused-final.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-focused.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-handoff-rule-result.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/api001-provenance.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr001-artifact-check.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr001-delivery-artifacts/docs-sync-report.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr001-delivery-artifacts/handoff-summary.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr001-delivery-artifacts/release-deployment-report.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr001-focused.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr001-handoff-rule-result.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr001-integration-refresh.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr001-provenance-doc-check.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr001-user-verification-request.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr002-main-preservation-before.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr002-post-acceptance-refresh.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr002-precommit-check.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/handoff-rule-result.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-dependency-install.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-final-red-source-provenance.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-final-source-provenance.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-green-final-tests.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-green-focused-tests.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-handoff-rule-result.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-preview-appended.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-preview-dev.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-preview-idle.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-preview-member-switch.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-preview-observations.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-preview-recording-narrow.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-preview-recording.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-preview-starting.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-preview-transcribing.png
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-red-source-provenance.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-red-tests-harness-owner-attempt.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-red-tests-initial.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-red-tests.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-test-harness-first-attempt.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-voice-preview.page.vue
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-web-build-final.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/ir001-web-build.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/pre-projects-probe.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/pre-projects-probe.stderr.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.cjs
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.stderr.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/source-provenance.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/sr002-handoff-rule-result.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/sr003-handoff-rule-result.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/stable-release-metadata.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/stable-release-source-evidence.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/stable-source-probe.cjs
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/stable-v1.4.92-probe.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/stable-v1.4.92-probe.stderr.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/handoff-summary.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/implementation-handoff.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/implementation-revision-record.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/investigation-notes.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/release-deployment-report.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/release-notes.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/requirements-approval.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/requirements-doc.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/solution-handoff.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/solution-revision-record.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/stable-release-impact-result.md
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/user-verification.md
