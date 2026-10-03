@@ -1,0 +1,1 @@
+Pass — sensitivity control: B-001 detects first original-source publication cancels capture; no IPC. Fixed source restored/hash matches HEAD.

@@ -1,0 +1,21 @@
+Delivery candidate integrity / 2026-10-03
+Hash matches API provenance: 93ee593d1cd977897cc4018a25b6eaa1bf49c75354cdc310d60c81894c7965dc autobyteus-web/composables/voiceInput/useComposerVoiceTarget.ts
+Hash matches API provenance: f3aaa435df50121718c7bed408090b6872ca7ff67e4b6915e4f982569a8eebea autobyteus-web/composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+Hash matches API provenance: ca595d865ba8254c393c7f85d2a9a288f9a8b877c1714fb2edf6cf35d0dc5c2e autobyteus-web/tests/integration/composer-voice-lifetime.integration.test.ts
+Hash matches API provenance: 5c3bee453d82b73a210f7e8b1a6a51c100360391cda923616229fec0a5653115 tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.cjs
+Hash matches API provenance: 4233c663713d83a59f3bfb3938a66cbefca85d04cea18f0db220ce1494b5a5bd tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.json
+Hash matches API provenance: e8e737254193c27a6e8a35b22295b00c5783a658e5496da22be1783d5a8380ba tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/pre-projects-probe.json
+Hash matches API provenance: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.stderr.log
+Hash matches API provenance: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/pre-projects-probe.stderr.log
+Hash matches API provenance: 3f4136c641faae3fd8adc9247fb78460fc017113839f628dcc2828dca32b9dfd tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/source-provenance.log
+Hash matches API provenance: ac7f719fcf136c02ad01ab533736bf133bc2a738025211054725ea55f48c2c31 autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs
+Hash matches API provenance: 37c19aa776eace7a1a57eb9f78ec6860dec1e53d4161ab2b66586b294e8e1d7f autobyteus-web/tests/e2e/fixtures/composer-voice-lifetime.page.vue
+Hash matches API provenance: 92872582446e36f16bc8c69995c1afdf7d2b26bf9d4969c5044bc152dfc8a0e1 autobyteus-web/package.json
+API browser case reconciliation: 7 Pass, pageErrors=0, failures=0
+API cleanup receipt: {"browser": {"pid": 37525, "result": "closed"}, "dev": {"exitCode": 0, "groupExited": true, "pid": 37477, "portClosed": true, "result": "terminated", "signal": null}, "page": "removed", "renderer": {"audioContexts": ["closed"], "cancellations": 1, "captureStats": false, "diagnostics": null, "error": null, "focused": "lead", "ipc": 0, "kind": "run", "leadDraft": "existing draft", "level": 0, "outcome": "recording", "pendingIpc": false, "pendingMedia": false, "publications": 0, "recording": false, "reviewerDraft": "", "sends": 0, "starting": false, "stops": 0, "tracks": ["ended"], "transcribing": false, "visible": false, "wavs": [], "wrappersChanged": 0}}
+Temporary installed probe page absent; no delivery-owned server/browser started.
+Document link target exists: TESTING.md -> autobyteus-web/docs/electron_packaging.md
+Document link target exists: autobyteus-web/docs/electron_packaging.md -> TESTING.md
+New documentation anchors and package command resolve; node --check and git diff --check Passed.
+Delivery source/test hashes unchanged. SDK generated dist remains untracked/unstaged.
+No merge/push/tag/release/finalization/cleanup or user verification claimed.

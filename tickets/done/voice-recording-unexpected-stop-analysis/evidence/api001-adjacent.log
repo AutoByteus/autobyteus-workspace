@@ -1,0 +1,80 @@
+
+> autobyteus@1.4.93-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/voiceInputStore.spec.ts composables/projects/__tests__/useProjectTaskDraft.spec.ts components/chat/__tests__/ChatComposer.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/agentInput/__tests__/TeamComposerPublication.spec.ts tests/integration/web-boundary-guard.integration.test.ts tests/integration/voice-input-extension.integration.test.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/voice-input-extension.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/TeamComposerPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/web-boundary-guard.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/voiceInputStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentInput/__tests__/TeamComposerPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/web-boundary-guard.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/voice-input-extension.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/voiceInputStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/projects/__tests__/useProjectTaskDraft.spec.ts (5 tests) 17ms
+ ✓ tests/integration/web-boundary-guard.integration.test.ts (3 tests) 151ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts (19 tests) 127ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (17 tests) 201ms
+ ✓ components/chat/__tests__/ChatComposer.spec.ts (5 tests) 59ms
+ ✓ components/agentInput/__tests__/TeamComposerPublication.spec.ts (4 tests) 115ms
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+ ✓ tests/integration/voice-input-extension.integration.test.ts (2 tests) 3012ms
+   ✓ voice input extension integration > serves the manifest checksum bytes unchanged across repeated downloads  1151ms
+   ✓ voice input extension integration > installs, enables, and inserts transcript text into the draft  1860ms
+
+ Test Files  7 passed (7)
+      Tests  55 passed (55)
+   Start at  15:12:37
+   Duration  9.92s (transform 4.11s, setup 41.78s, collect 1.67s, tests 3.68s, environment 1.62s, prepare 1.46s)
+

@@ -1,0 +1,37 @@
+=== Investigated workspace/ref ===
+/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis
+98d8fb36a632ce0f46136cda20129d1fe1ee0ac8
+2056b04f3b654ffe583aa956c371869f7d06444d
+=== Introducing commit ===
+commit 560a51129b3d49a84868cc7b47f6a055150fe175
+Author:     normy <normy@macbookpro.speedport.ip>
+AuthorDate: Fri Oct 2 18:07:52 2026 +0200
+Commit:     normy <normy@macbookpro.speedport.ip>
+CommitDate: Fri Oct 2 18:09:19 2026 +0200
+
+    feat(projects): implement reviewed task tools and authoring foundations
+=== Integration/release commit ===
+commit 98731a5d522eda1a22d4fa9e2cb3261d467e4432
+Merge: 2056b04f3 f1bbd609d
+Author:     normy <normy@macbookpro.speedport.ip>
+AuthorDate: Fri Oct 2 21:16:03 2026 +0200
+Commit:     normy <normy@macbookpro.speedport.ip>
+CommitDate: Fri Oct 2 21:16:03 2026 +0200
+
+    Merge remote-tracking branch 'origin/codex/project-task-manager-foundations' into personal
+commit 777548b050527ab3ff5904a085c0c95677e50e74
+Author:     normy <normy@macbookpro.speedport.ip>
+AuthorDate: Fri Oct 2 21:16:22 2026 +0200
+Commit:     normy <normy@macbookpro.speedport.ip>
+CommitDate: Fri Oct 2 21:16:22 2026 +0200
+
+    chore(release): bump workspace release version to 1.4.92-beta.11
+=== Earlier source checkout vs investigated source ===
+=== Watchdog/worklet history ===
+7c08c09a1 2026-03-09T09:33:25+01:00 feat(voice-input): improve install telemetry and diagnostics
+99f016398 2026-03-08T10:40:19+01:00 Add voice input extension runtime flow
+=== Probe and source SHA256 ===
+5c3bee453d82b73a210f7e8b1a6a51c100360391cda923616229fec0a5653115  tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.cjs
+518f5cf916a84685e0f0d5ad911a848d5e6178d6dfffd2ca5f943484077e7142  autobyteus-web/composables/voiceInput/useComposerVoiceTarget.ts
+3b33911c3b2ed2c591ca92b17e3b90137f7fe76cfb9b7e17686842616cea10ba  autobyteus-web/components/voiceInput/VoiceInputButton.vue
+d3be42fc169f8e16f5d204205b2b73c78366e4865343ec185cafc955b3a763a7  autobyteus-web/stores/voiceInputStore.ts

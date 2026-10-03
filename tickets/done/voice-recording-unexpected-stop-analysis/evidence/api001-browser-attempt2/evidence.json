@@ -1,0 +1,513 @@
+{
+  "startedAt": "2026-10-03T13:19:16.122Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/fixtures/composer-voice-lifetime.page.vue",
+  "pagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/pages/api-e2e-composer-voice-lifetime.vue",
+  "cases": {
+    "B-001": {
+      "result": "Pass",
+      "description": "Run caller survives repeated publications and Stop appends once/no Send",
+      "observations": {
+        "initial": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": true,
+          "transcribing": false,
+          "captureStats": true,
+          "level": 0.8823794722557068,
+          "pendingMedia": false,
+          "pendingIpc": false,
+          "key": "composer-50vjd2xe2c2",
+          "current": true,
+          "publications": 0,
+          "wrappersChanged": 0,
+          "sends": 0,
+          "stops": 0,
+          "cancellations": 0,
+          "ipc": 0,
+          "tracks": [
+            "live"
+          ],
+          "audioContexts": [
+            "running"
+          ],
+          "wavs": [],
+          "diagnostics": null,
+          "outcome": "recording",
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        },
+        "final": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingIpc": false,
+          "publications": 3,
+          "wrappersChanged": 3,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 0,
+          "ipc": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 18220,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 9088
+            }
+          ],
+          "diagnostics": {
+            "inputSampleRate": 48000,
+            "wavSampleRate": 48000,
+            "durationMs": 189,
+            "rms": 0.6104972327192631,
+            "peak": 1,
+            "sampleCount": 9088
+          },
+          "outcome": "transcript-ready",
+          "error": null,
+          "leadDraft": "existing draft dictated words",
+          "reviewerDraft": ""
+        }
+      }
+    },
+    "B-002": {
+      "result": "Pass",
+      "description": "Chat 390px viewport keyboard Start/Stop retains draft and no Send",
+      "observations": {
+        "kind": "chat",
+        "visible": true,
+        "focused": "lead",
+        "starting": false,
+        "recording": false,
+        "transcribing": false,
+        "captureStats": false,
+        "level": 0,
+        "pendingMedia": false,
+        "pendingIpc": false,
+        "publications": 1,
+        "wrappersChanged": 1,
+        "sends": 0,
+        "stops": 1,
+        "cancellations": 0,
+        "ipc": 1,
+        "tracks": [
+          "ended"
+        ],
+        "audioContexts": [
+          "closed"
+        ],
+        "wavs": [
+          {
+            "byteLength": 11564,
+            "riff": 1380533830,
+            "wave": 1463899717,
+            "rate": 48000,
+            "samples": 5760
+          }
+        ],
+        "diagnostics": {
+          "inputSampleRate": 48000,
+          "wavSampleRate": 48000,
+          "durationMs": 120,
+          "rms": 0.5556215018639493,
+          "peak": 1,
+          "sampleCount": 5760
+        },
+        "outcome": "transcript-ready",
+        "error": null,
+        "leadDraft": "existing draft dictated words",
+        "reviewerDraft": ""
+      }
+    },
+    "B-003": {
+      "result": "Pass",
+      "description": "Publication during deferred native microphone acquisition preserves startup",
+      "observations": {
+        "pending": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": true,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": true,
+          "pendingIpc": false,
+          "key": "composer-yxv1dwj8a4c",
+          "current": true,
+          "publications": 1,
+          "wrappersChanged": 1,
+          "sends": 0,
+          "stops": 0,
+          "cancellations": 0,
+          "ipc": 0,
+          "tracks": [
+            "live"
+          ],
+          "audioContexts": [],
+          "wavs": [],
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        },
+        "final": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingIpc": false,
+          "publications": 1,
+          "wrappersChanged": 1,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 0,
+          "ipc": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 9516,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 4736
+            }
+          ],
+          "diagnostics": {
+            "inputSampleRate": 48000,
+            "wavSampleRate": 48000,
+            "durationMs": 99,
+            "rms": 0.5330825922594844,
+            "peak": 1,
+            "sampleCount": 4736
+          },
+          "outcome": "transcript-ready",
+          "error": null,
+          "leadDraft": "existing draft dictated words",
+          "reviewerDraft": ""
+        }
+      }
+    },
+    "B-004": {
+      "result": "Pass",
+      "description": "Genuine member change during startup disposes late acquired native stream",
+      "observations": {
+        "kind": "run",
+        "visible": true,
+        "focused": "reviewer",
+        "starting": false,
+        "recording": false,
+        "transcribing": false,
+        "captureStats": false,
+        "level": 0,
+        "pendingMedia": false,
+        "pendingIpc": false,
+        "publications": 0,
+        "wrappersChanged": 0,
+        "sends": 0,
+        "stops": 0,
+        "cancellations": 1,
+        "ipc": 0,
+        "tracks": [
+          "ended"
+        ],
+        "audioContexts": [],
+        "wavs": [],
+        "error": null,
+        "leadDraft": "existing draft",
+        "reviewerDraft": ""
+      }
+    },
+    "B-005": {
+      "result": "Pass",
+      "description": "Publication during pending transcription preserves once-only append",
+      "observations": {
+        "pending": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": false,
+          "transcribing": true,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingIpc": true,
+          "key": "composer-25qa7wd1qj5",
+          "current": true,
+          "publications": 1,
+          "wrappersChanged": 1,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 0,
+          "ipc": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 7980,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 3968
+            }
+          ],
+          "diagnostics": null,
+          "outcome": "transcribing",
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        },
+        "final": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingIpc": false,
+          "publications": 1,
+          "wrappersChanged": 1,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 0,
+          "ipc": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 7980,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 3968
+            }
+          ],
+          "diagnostics": {
+            "inputSampleRate": 48000,
+            "wavSampleRate": 48000,
+            "durationMs": 83,
+            "rms": 0.47897137696858183,
+            "peak": 1,
+            "sampleCount": 3968
+          },
+          "outcome": "transcript-ready",
+          "error": null,
+          "leadDraft": "existing draft dictated words",
+          "reviewerDraft": ""
+        }
+      }
+    },
+    "B-006": {
+      "result": "Pass",
+      "description": "Genuine member switch rejects late pending transcription",
+      "observations": {
+        "cancelled": {
+          "kind": "run",
+          "visible": true,
+          "focused": "reviewer",
+          "starting": false,
+          "recording": false,
+          "transcribing": true,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingIpc": true,
+          "publications": 0,
+          "wrappersChanged": 0,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 1,
+          "ipc": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 9516,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 4736
+            }
+          ],
+          "diagnostics": null,
+          "outcome": "transcribing",
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        },
+        "final": {
+          "kind": "run",
+          "visible": true,
+          "focused": "reviewer",
+          "starting": false,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingIpc": false,
+          "publications": 0,
+          "wrappersChanged": 0,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 1,
+          "ipc": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 9516,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 4736
+            }
+          ],
+          "diagnostics": null,
+          "outcome": "transcribing",
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        }
+      }
+    },
+    "B-007": {
+      "result": "Pass",
+      "description": "Composer teardown cancels and disposes actual native capture",
+      "observations": {
+        "kind": "run",
+        "visible": false,
+        "focused": "lead",
+        "starting": false,
+        "recording": false,
+        "transcribing": false,
+        "captureStats": false,
+        "level": 0,
+        "pendingMedia": false,
+        "pendingIpc": false,
+        "publications": 0,
+        "wrappersChanged": 0,
+        "sends": 0,
+        "stops": 0,
+        "cancellations": 1,
+        "ipc": 0,
+        "tracks": [
+          "ended"
+        ],
+        "audioContexts": [
+          "closed"
+        ],
+        "wavs": [],
+        "diagnostics": null,
+        "outcome": "recording",
+        "error": null,
+        "leadDraft": "existing draft",
+        "reviewerDraft": ""
+      }
+    }
+  },
+  "pageErrors": [],
+  "apiRequests": [],
+  "cleanup": {
+    "renderer": {
+      "kind": "run",
+      "visible": false,
+      "focused": "lead",
+      "starting": false,
+      "recording": false,
+      "transcribing": false,
+      "captureStats": false,
+      "level": 0,
+      "pendingMedia": false,
+      "pendingIpc": false,
+      "publications": 0,
+      "wrappersChanged": 0,
+      "sends": 0,
+      "stops": 0,
+      "cancellations": 1,
+      "ipc": 0,
+      "tracks": [
+        "ended"
+      ],
+      "audioContexts": [
+        "closed"
+      ],
+      "wavs": [],
+      "diagnostics": null,
+      "outcome": "recording",
+      "error": null,
+      "leadDraft": "existing draft",
+      "reviewerDraft": ""
+    },
+    "browser": {
+      "result": "closed",
+      "pid": 32717
+    },
+    "dev": {
+      "result": "terminated",
+      "pid": 32054,
+      "exitCode": 0,
+      "signal": null,
+      "groupExited": true,
+      "portClosed": true
+    },
+    "page": "removed"
+  },
+  "failures": [],
+  "port": 64475,
+  "baseUrl": "http://127.0.0.1:64475",
+  "devPid": 32054,
+  "browserPid": 32717,
+  "browserVersion": "154.0.8037.97",
+  "result": "Pass",
+  "finishedAt": "2026-10-03T13:19:35.196Z"
+}

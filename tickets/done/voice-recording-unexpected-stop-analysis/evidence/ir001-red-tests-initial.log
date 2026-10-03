@@ -1,0 +1,260 @@
+
+> autobyteus@1.4.93-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts tests/integration/composer-voice-lifetime.integration.test.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+
+stderr | composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/composer-voice-lifetime.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/composer-voice-lifetime.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts (7 tests | 4 failed) 19ms
+   × mounted composer voice destination lifetime > retains the exact sink/key across presentation, draft, and live-access refreshes 9ms
+     → expected { key: 'composer-pdnmlueagvc', …(2) } to be { key: 'composer-cphpcvamhjb', …(2) } // Object.is equality
+   × mounted composer voice destination lifetime > replaces an exact context even if the runId/key are the same, without revival 2ms
+     → expected true to be false // Object.is equality
+   × mounted composer voice destination lifetime > retires observed null eligibility and never revives that sink 2ms
+     → expected true to be false // Object.is equality
+   × mounted composer voice destination lifetime > retires observed read_only eligibility and never revives that sink 2ms
+     → expected true to be false // Object.is equality
+   ✓ mounted composer voice destination lifetime > retires on actual node rebinding, but not on rebinding the same node 1ms
+   ✓ mounted composer voice destination lifetime > isolates mounted owners and retires only the unmounted owner 1ms
+   ✓ mounted composer voice destination lifetime > starts without a destination and never issues a current sink after teardown 1ms
+ ❯ tests/integration/composer-voice-lifetime.integration.test.ts (11 tests | 5 failed) 185ms
+   × composer voice work across actual unrelated Team publications > keeps capture active across repeated refreshes, then manual Stop appends once without Send 26ms
+     → expected { key: 'composer-6yn5f9bxkr', …(2) } to be { key: 'composer-n04uvu17par', …(2) } // Object.is equality
+   ✓ composer voice work across actual unrelated Team publications > cancels actual member lifetime loss and disposes capture 16ms
+   ✓ composer voice work across actual unrelated Team publications > cancels actual node lifetime loss and disposes capture 6ms
+   ✓ composer voice work across actual unrelated Team publications > cancels actual unmount lifetime loss and disposes capture 4ms
+   × composer voice work across actual unrelated Team publications > handles publication during pending microphone startup (genuine invalidation=false) 56ms
+     → expected { key: 'composer-m67x97q0au', …(2) } to be { key: 'composer-46n2otd08b2', …(2) } // Object.is equality
+   × composer voice work across actual unrelated Team publications > handles publication during pending microphone startup (genuine invalidation=true) 55ms
+     → expected { key: 'composer-c2lpzp0ahok', …(2) } to be { key: 'composer-gkfvw7viunp', …(2) } // Object.is equality
+   × composer voice work across actual unrelated Team publications > preserves unchanged publication during pending flush, rejects a genuinely obsolete result 5ms
+     → expected { key: 'composer-5o2ciguv4sv', …(2) } to be { key: 'composer-d5ix9i3g808', …(2) } // Object.is equality
+   × composer voice work across actual unrelated Team publications > preserves unchanged publication during pending ipc, rejects a genuinely obsolete result 5ms
+     → expected { key: 'composer-cvwcl52c7lo', …(2) } to be { key: 'composer-0lmrb4jh7uf', …(2) } // Object.is equality
+   ✓ composer voice work across actual unrelated Team publications > does not cancel another composer owner for the same context 5ms
+   ✓ composer voice work across actual unrelated Team publications > leaves an independent project-task operation intact on composer refresh/teardown 3ms
+   ✓ composer voice work across actual unrelated Team publications > leaves an independent settings-test operation intact on composer refresh/teardown 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > keeps capture active across repeated refreshes, then manual Stop appends once without Send
+AssertionError: expected { key: 'composer-6yn5f9bxkr', …(2) } to be { key: 'composer-n04uvu17par', …(2) } // Object.is equality
+
+- Expected
++ Received
+
+  {
+    "appendTranscript": [Function appendTranscript],
+    "isCurrent": [Function isCurrent],
+-   "key": "composer-n04uvu17par",
++   "key": "composer-6yn5f9bxkr",
+  }
+
+ ❯ tests/integration/composer-voice-lifetime.integration.test.ts:169:27
+    167|     for (let index = 0; index < 3; index++) {
+    168|       await refresh()
+    169|       expect(voice.value).toBe(first)
+       |                           ^
+    170|       expect(first.isCurrent()).toBe(true)
+    171|       expect(store.isRecording).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > handles publication during pending microphone startup (genuine invalidation=false)
+AssertionError: expected { key: 'composer-m67x97q0au', …(2) } to be { key: 'composer-46n2otd08b2', …(2) } // Object.is equality
+
+- Expected
++ Received
+
+  {
+    "appendTranscript": [Function appendTranscript],
+    "isCurrent": [Function isCurrent],
+-   "key": "composer-46n2otd08b2",
++   "key": "composer-m67x97q0au",
+  }
+
+ ❯ tests/integration/composer-voice-lifetime.integration.test.ts:218:25
+    216|     const first = voice.value!
+    217|     await refresh()
+    218|     expect(voice.value).toBe(first)
+       |                         ^
+    219|     expect(store.isStarting).toBe(true)
+    220|     if (invalidate) { team.view.focusAgent('reviewer'); await nextTick…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > handles publication during pending microphone startup (genuine invalidation=true)
+AssertionError: expected { key: 'composer-c2lpzp0ahok', …(2) } to be { key: 'composer-gkfvw7viunp', …(2) } // Object.is equality
+
+- Expected
++ Received
+
+  {
+    "appendTranscript": [Function appendTranscript],
+    "isCurrent": [Function isCurrent],
+-   "key": "composer-gkfvw7viunp",
++   "key": "composer-c2lpzp0ahok",
+  }
+
+ ❯ tests/integration/composer-voice-lifetime.integration.test.ts:218:25
+    216|     const first = voice.value!
+    217|     await refresh()
+    218|     expect(voice.value).toBe(first)
+       |                         ^
+    219|     expect(store.isStarting).toBe(true)
+    220|     if (invalidate) { team.view.focusAgent('reviewer'); await nextTick…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > preserves unchanged publication during pending flush, rejects a genuinely obsolete result
+AssertionError: expected { key: 'composer-5o2ciguv4sv', …(2) } to be { key: 'composer-d5ix9i3g808', …(2) } // Object.is equality
+
+- Expected
++ Received
+
+  {
+    "appendTranscript": [Function appendTranscript],
+    "isCurrent": [Function isCurrent],
+-   "key": "composer-d5ix9i3g808",
++   "key": "composer-5o2ciguv4sv",
+  }
+
+ ❯ tests/integration/composer-voice-lifetime.integration.test.ts:249:27
+    247|       expect(store.isTranscribing).toBe(true)
+    248|       await refresh()
+    249|       expect(voice.value).toBe(first)
+       |                           ^
+    250|       expect(first.isCurrent()).toBe(true)
+    251|       if (invalidate) { team.view.focusAgent('reviewer'); await nextTi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > preserves unchanged publication during pending ipc, rejects a genuinely obsolete result
+AssertionError: expected { key: 'composer-cvwcl52c7lo', …(2) } to be { key: 'composer-0lmrb4jh7uf', …(2) } // Object.is equality
+
+- Expected
++ Received
+
+  {
+    "appendTranscript": [Function appendTranscript],
+    "isCurrent": [Function isCurrent],
+-   "key": "composer-0lmrb4jh7uf",
++   "key": "composer-cvwcl52c7lo",
+  }
+
+ ❯ tests/integration/composer-voice-lifetime.integration.test.ts:249:27
+    247|       expect(store.isTranscribing).toBe(true)
+    248|       await refresh()
+    249|       expect(voice.value).toBe(first)
+       |                           ^
+    250|       expect(first.isCurrent()).toBe(true)
+    251|       if (invalidate) { team.view.focusAgent('reviewer'); await nextTi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts > mounted composer voice destination lifetime > retains the exact sink/key across presentation, draft, and live-access refreshes
+AssertionError: expected { key: 'composer-pdnmlueagvc', …(2) } to be { key: 'composer-cphpcvamhjb', …(2) } // Object.is equality
+
+- Expected
++ Received
+
+  {
+    "appendTranscript": [Function appendTranscript],
+    "isCurrent": [Function isCurrent],
+-   "key": "composer-cphpcvamhjb",
++   "key": "composer-pdnmlueagvc",
+  }
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts:38:27
+     36|         mentionScope: { rootKind: 'agent', rootRunId: 'root', focusedN…
+     37|       await nextTick()
+     38|       expect(voice.value).toBe(first)
+       |                           ^
+     39|       expect(voice.value!.key).toBe(first.key)
+     40|       expect(first.isCurrent()).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts > mounted composer voice destination lifetime > replaces an exact context even if the runId/key are the same, without revival
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts:61:31
+     59|     await nextTick()
+     60|     expect(voice.value!.key).not.toBe(first.key)
+     61|     expect(first.isCurrent()).toBe(false)
+       |                               ^
+     62|     expect(replacement.isCurrent()).toBe(false)
+     63|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts > mounted composer voice destination lifetime > retires observed null eligibility and never revives that sink
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts:76:31
+     74|     await nextTick()
+     75|     expect(voice.value!.key).not.toBe(first.key)
+     76|     expect(first.isCurrent()).toBe(false)
+       |                               ^
+     77|   })
+     78| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts > mounted composer voice destination lifetime > retires observed read_only eligibility and never revives that sink
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts:70:31
+     68|     const first = voice.value!
+     69|     current.value = kind === 'null' ? null : { ...original, access: 'r…
+     70|     expect(first.isCurrent()).toBe(false)
+       |                               ^
+     71|     await nextTick()
+     72|     expect(voice.value).toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  9 failed | 9 passed (18)
+   Start at  14:49:37
+   Duration  5.00s (transform 2.79s, setup 8.49s, collect 158ms, tests 204ms, environment 278ms, prepare 227ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

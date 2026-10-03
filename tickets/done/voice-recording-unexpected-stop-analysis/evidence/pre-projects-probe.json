@@ -1,0 +1,33 @@
+{
+  "sourceRef": "98731a5d5^",
+  "mode": "Controlled production-source renderer probe, not Electron/microphone/transport E2E",
+  "dependencyVersions": {
+    "vue": "3.5.28",
+    "pinia": "2.3.1"
+  },
+  "cases": [
+    {
+      "scenario": "Ordinary render with unchanged dependencies",
+      "remainsRecording": true,
+      "unchangedVoiceTarget": true
+    },
+    {
+      "scenario": "Context status mutation without publication replacement",
+      "remainsRecording": true,
+      "unchangedVoiceTarget": true
+    },
+    {
+      "scenario": "Valid Team communication between OTHER members while recording before Projects merge",
+      "applied": "applied",
+      "sameContext": true,
+      "sameRunId": true,
+      "regeneratedComposerWrapper": true,
+      "unchangedTargetKey": true,
+      "remainsRecording": true,
+      "tracksStopped": 0,
+      "contextsClosed": 0,
+      "transcriptionCalls": 0,
+      "toasts": 0
+    }
+  ]
+}
