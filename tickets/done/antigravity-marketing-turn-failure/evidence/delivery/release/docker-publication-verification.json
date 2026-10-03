@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-03T15:00:28.684737+00:00",
+  "image": "autobyteus/autobyteus-server",
+  "tags": {
+    "1.4.93": {
+      "digest": "sha256:6bd413de476de077c0af39cf5a0bcaeab224389d1e349e6efc3b6e00fbe448c0",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ]
+    },
+    "latest": {
+      "digest": "sha256:6bd413de476de077c0af39cf5a0bcaeab224389d1e349e6efc3b6e00fbe448c0",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ]
+    },
+    "beta": {
+      "digest": "sha256:6bd413de476de077c0af39cf5a0bcaeab224389d1e349e6efc3b6e00fbe448c0",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ]
+    }
+  },
+  "versionLatestBetaSameDigest": true,
+  "anonymousTokenPersisted": false
+}

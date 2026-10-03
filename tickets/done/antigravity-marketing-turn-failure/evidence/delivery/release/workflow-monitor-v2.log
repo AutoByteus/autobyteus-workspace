@@ -1,0 +1,5 @@
+2026-10-03T14:22:19.350396+00:00 Server Docker Release: in_progress/-; Desktop Release: in_progress/-; Android APK Release: completed/success; iOS App Store Connect Release: in_progress/-
+2026-10-03T14:24:20.466210+00:00 Server Docker Release: in_progress/-; Desktop Release: in_progress/-; Android APK Release: completed/success; iOS App Store Connect Release: completed/success
+2026-10-03T14:26:21.685738+00:00 Server Docker Release: in_progress/-; Desktop Release: in_progress/-; Android APK Release: completed/success; iOS App Store Connect Release: completed/success
+2026-10-03T14:28:22.713597+00:00 Server Docker Release: in_progress/-; Android APK Release: completed/success; iOS App Store Connect Release: completed/success; Desktop Release: completed/failure
+Owning failed workflows: [('Desktop Release', 37128625067, 'failure')]

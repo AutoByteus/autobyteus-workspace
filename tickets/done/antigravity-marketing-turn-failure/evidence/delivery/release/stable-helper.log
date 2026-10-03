@@ -1,0 +1,30 @@
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-error-stable-release
+> bash scripts/desktop-release.sh release 1.4.93 -- --release-notes tickets/done/antigravity-marketing-turn-failure/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.93-beta.2 -> 1.4.93
+Synced curated release notes to .github/release-notes/release-notes.md
+[personal 1b976216d] chore(release): bump workspace release version to 1.4.93
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 8 insertions(+), 23 deletions(-)
+remote: 
+remote: GitHub found 939 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 428 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   ce23d92c3..1b976216d  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.93 -> v1.4.93
+Release complete and pushed: branch 'personal', tag 'v1.4.93'.

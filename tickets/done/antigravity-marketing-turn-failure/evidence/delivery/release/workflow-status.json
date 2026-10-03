@@ -1,0 +1,51 @@
+{
+  "checkedAt": "2026-10-03T14:53:32.542217+00:00",
+  "tag": "v1.4.93",
+  "releaseCommit": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-03T14:09:01Z",
+      "databaseId": 37128625107,
+      "event": "push",
+      "headSha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "name": "Android APK Release",
+      "status": "completed",
+      "updatedAt": "2026-10-03T14:12:46Z",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625107"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-03T14:09:01Z",
+      "databaseId": 37128625039,
+      "event": "push",
+      "headSha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "name": "Server Docker Release",
+      "status": "completed",
+      "updatedAt": "2026-10-03T14:39:31Z",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625039"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-03T14:09:01Z",
+      "databaseId": 37128625065,
+      "event": "push",
+      "headSha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "name": "iOS App Store Connect Release",
+      "status": "completed",
+      "updatedAt": "2026-10-03T14:24:03Z",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625065"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-03T14:09:01Z",
+      "databaseId": 37128625067,
+      "event": "push",
+      "headSha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "name": "Desktop Release",
+      "status": "completed",
+      "updatedAt": "2026-10-03T14:51:46Z",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625067"
+    }
+  ]
+}

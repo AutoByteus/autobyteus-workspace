@@ -1,0 +1,855 @@
+Build macOS Intel x64	Build Electron macOS Intel x64	﻿2026-10-03T14:11:33.5911410Z ##[group]Run sudo launchctl limit maxfiles 65536 200000 || true
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5911890Z [36;1msudo launchctl limit maxfiles 65536 200000 || true[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5912220Z [36;1mulimit -n 65536 || ulimit -n 10240 || true[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5912490Z [36;1mulimit -Sn[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5912690Z [36;1mulimit -Hn[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5912900Z [36;1mmax_attempts=3[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5913110Z [36;1mattempt=1[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5913320Z [36;1mwhile true; do[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5913540Z [36;1m  log_file="$(mktemp)"[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5913790Z [36;1m  set +e[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5914060Z [36;1m  pnpm build:electron:mac -- --x64 2>&1 | tee "$log_file"[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5914390Z [36;1m  status="${PIPESTATUS[0]}"[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5914650Z [36;1m  set -e[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5914850Z [36;1m[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5915050Z [36;1m  if [[ "$status" -eq 0 ]]; then[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5915310Z [36;1m    rm -f "$log_file"[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5915570Z [36;1m    break[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5915780Z [36;1m  fi[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5915950Z [36;1m[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5916610Z [36;1m  if grep -Eq 'Failed to notarize via notarytool|The Internet connection appears to be offline|NSURLErrorDomain Code=-1009|No network route|timed out' "$log_file" && [[ "$attempt" -lt "$max_attempts" ]]; then[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5917530Z [36;1m    echo "Transient Apple notarization/network failure detected on attempt $attempt/$max_attempts. Retrying..."[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5918010Z [36;1m    rm -f "$log_file"[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5918240Z [36;1m    rm -rf electron-dist[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5918500Z [36;1m    sleep $((attempt * 30))[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5918740Z [36;1m    attempt=$((attempt + 1))[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5918980Z [36;1m    continue[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5919200Z [36;1m  fi[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5919370Z [36;1m[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5919560Z [36;1m  rm -f "$log_file"[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5919780Z [36;1m  exit "$status"[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5920000Z [36;1mdone[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5980220Z shell: /bin/bash -e {0}
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5980570Z env:
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5980830Z   PNPM_HOME: /Users/runner/setup-pnpm/node_modules/.bin
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5981160Z   NO_TIMESTAMP: 1
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5981580Z   APPLE_SIGNING_IDENTITY: ***
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5981870Z   APPLE_ID: ***
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5982120Z   APPLE_APP_SPECIFIC_PASSWORD: ***
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5982390Z   APPLE_TEAM_ID: ***
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5982620Z   AUTOBYTEUS_BUILD_FLAVOR: personal
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5982990Z   PRISMA_CLI_BINARY_TARGETS: darwin,debian-openssl-1.1.x,debian-openssl-3.0.x
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.5983350Z ##[endgroup]
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.6751320Z 65536
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.6751790Z 65536
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.9285570Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.9287510Z > autobyteus@1.4.93 build:electron:mac /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.9292410Z > cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --x64
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:33.9294940Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:34.3119600Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:34.3222500Z > autobyteus@1.4.93 guard:web-boundary /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:34.3237230Z > node ./scripts/guard-web-boundary.mjs
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:34.3239500Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:34.8428710Z [guard:web-boundary] Passed.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:35.1010540Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:35.1012640Z > autobyteus@1.4.93 guard:localization-boundary /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:35.1014450Z > node ./scripts/guard-localization-boundary.mjs
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:35.1014970Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:35.2617270Z [guard:localization-boundary] Passed.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:35.5562000Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:35.5564220Z > autobyteus@1.4.93 audit:localization-literals /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:35.5567360Z > node ./scripts/audit-localization-literals.mjs
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:35.5567940Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.1539790Z [audit:localization-literals] Passed with zero unresolved findings.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.1641770Z (node:9867) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.1643170Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.1644120Z To eliminate this warning, add "type": "module" to /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/package.json.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.1644920Z (Use `node --trace-warnings ...` to show where the warning was created)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.4623200Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.4624960Z > autobyteus@1.4.93 prepare-server /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.4626680Z > node ./scripts/prepare-server-dispatch.mjs
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.4627200Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.5091560Z [0;32m=======================================[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.5092240Z [0;32m   Preparing AutoByteus Server Files   [0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.5093050Z [0;32m=======================================[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.5154810Z [0;32m✓[0m Created target directory: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.5156180Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.5156800Z [0;33mBuilding server and dependencies...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:36.7860110Z Scope: all 13 workspace projects
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:37.7120900Z  WARN  Failed to create bin at /Users/runner/work/autobyteus-workspace/autobyteus-workspace/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-application-devkit/dist/cli.js'
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:37.7126150Z  WARN  Failed to create bin at /Users/runner/work/autobyteus-workspace/autobyteus-workspace/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-application-devkit/dist/cli.js'
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:37.9126530Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:37.9350410Z ../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:37.9773000Z ../autobyteus-ts postinstall: [node-pty-fix] ok: /Users/runner/work/autobyteus-workspace/autobyteus-workspace/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:37.9825220Z ../autobyteus-ts postinstall: Done
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1137420Z  WARN  Failed to create bin at /Users/runner/work/autobyteus-workspace/autobyteus-workspace/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/runner/work/autobyteus-workspace/autobyteus-workspace/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1145810Z  WARN  Failed to create bin at /Users/runner/work/autobyteus-workspace/autobyteus-workspace/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/runner/work/autobyteus-workspace/autobyteus-workspace/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1182000Z ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1183500Z │                                                                              │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1184960Z │   Ignored build scripts: @google/genai@2.24.0.                               │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1186600Z │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1188770Z │   to run scripts.                                                            │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1190230Z │                                                                              │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1190850Z ╰──────────────────────────────────────────────────────────────────────────────╯
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:38.1245780Z Done in 1.5s using pnpm v10.28.2
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:39.6990450Z Prisma schema loaded from prisma/schema.prisma
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:40.6089000Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:40.6094570Z ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 237ms
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:40.6099790Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:40.6100360Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:40.6100850Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:40.6101520Z Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:40.6102130Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.1368590Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.1470200Z > autobyteus-server-ts@0.1.1 prebuild /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.1573170Z > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.1652750Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.4415910Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.4418210Z > autobyteus-server-ts@0.1.1 prepare:shared /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.4421070Z > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.4422380Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.6943390Z Scope: 3 of 13 workspace projects
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.7047650Z autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:41.7146730Z autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:43.3203390Z autobyteus-application-sdk-contracts build: Done
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:48.3858830Z autobyteus-ts build: [verify:runtime-deps] OK
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:48.3883040Z autobyteus-ts build: Done
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:48.3889510Z autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:49.0297570Z autobyteus-application-backend-sdk build: Done
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:49.7918110Z Prisma schema loaded from prisma/schema.prisma
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.2809450Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.2811140Z ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 169ms
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.2812450Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.2815050Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.2816300Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.2818020Z Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.2861400Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3094020Z ┌─────────────────────────────────────────────────────────┐
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3094980Z │  Update available 5.22.0 -> 8.0.0-rc.19                 │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3095910Z │                                                         │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3097260Z │  This is a major update - please follow the guide at    │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3098030Z │  https://pris.ly/d/major-version-upgrade                │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3098740Z │                                                         │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3099850Z │  Run the following to update                            │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3100580Z │    npm i --save-dev prisma@latest                       │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3101330Z │    npm i @prisma/client@latest                          │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.3104590Z └─────────────────────────────────────────────────────────┘
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.5047240Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.5083540Z > autobyteus-server-ts@0.1.1 build /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.5106950Z > pnpm run build:full
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.5117320Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.8552330Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.8554630Z > autobyteus-server-ts@0.1.1 build:full /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.8557970Z > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:11:50.8559600Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:11.2959340Z AgentFactory (Singleton) initialized.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:11.4093100Z Built-in agents bootstrap smoke check passed.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:11.4209050Z Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:11.4466530Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:11.4470970Z [0;33mBuilding mobile web assets...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:11.7930180Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:11.7932980Z > autobyteus@1.4.93 build:mobile-web /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:11.7935340Z > node ./scripts/build-mobile-web.mjs
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:11.7936140Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:12.1329270Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:12.1330580Z > autobyteus@1.4.93 generate /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:12.1331300Z > nuxt generate
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:12.1331470Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:12.6648210Z [90m┌[39m  [36mBuilding Nuxt for production...[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:13.0432610Z [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:13.0435260Z [34m●[39m  [32mNuxt [1m3.21.1[22m[39m[90m (with [39m[90mNitro [1m2.13.1[22m[39m[90m, Vite [1m7.3.1[22m[39m[90m and Vue [1m3.5.28[22m[39m[90m)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:13.8480880Z [log] isElectronBuild false
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:13.8896750Z [log] [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:15.2352070Z [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:15.2353610Z [34m●[39m  Nitro preset: [36mstatic[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:16.4542630Z [warn] Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:16.4544450Z   npx update-browserslist-db@latest
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:16.4545680Z   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:16.7855450Z [info] Building client...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:16.7968000Z [info] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:16.8947720Z [info] transforming...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:45.6171280Z [info] [32m✓[39m 3959 modules transformed.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:47.0294810Z [info] rendering chunks...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:49.0009630Z [info] computing gzip size...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:49.9826040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.CTq5MqoE.woff                [39m[1m[2m    4.42 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:49.9938250Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.Dl5lxZxV.woff2               [39m[1m[2m    4.93 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0066740Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.Dy4dx90m.woff2               [39m[1m[2m    5.21 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0070470Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.mCD8mA8B.woff2               [39m[1m[2m    5.47 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0073710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.BF-4gkZK.woff                [39m[1m[2m    5.98 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0076720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.oD1tc_U0.woff                [39m[1m[2m    6.19 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0081970Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.C195tn64.woff                [39m[1m[2m    6.50 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0091270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.Di6jR-x-.woff2         [39m[1m[2m    6.91 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0094950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.Dq_IR9rO.woff2            [39m[1m[2m    6.91 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0108770Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.DgpXs0kz.ttf                 [39m[1m[2m    7.59 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0111740Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.CTRA-rTL.woff          [39m[1m[2m    7.66 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0114710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.BEiXGLvX.woff             [39m[1m[2m    7.72 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0117500Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D3wIWfF6.woff2              [39m[1m[2m    9.64 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0120620Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.DDBCnlJ7.woff2           [39m[1m[2m   10.34 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0123670Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.DWFBv043.ttf                 [39m[1m[2m   10.36 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0126640Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D5yQViql.woff               [39m[1m[2m   10.59 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0129660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CTYiF6lA.woff2             [39m[1m[2m   11.32 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0133100Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.CL6g_b3V.woff2                [39m[1m[2m   11.35 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0136130Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.B7gKUWhC.ttf                 [39m[1m[2m   11.51 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0139100Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.C3H0VqGB.woff2            [39m[1m[2m   12.03 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0144480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.D1sUS0GD.woff2              [39m[1m[2m   12.22 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0147980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.Dbsnue_I.ttf                 [39m[1m[2m   12.23 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0151460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.CS6fqUqJ.woff            [39m[1m[2m   12.32 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0153590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.wX97UBjC.ttf           [39m[1m[2m   12.34 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0154970Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.ATXxdsX0.ttf              [39m[1m[2m   12.37 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0156230Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.Dxdc4cR9.woff              [39m[1m[2m   13.21 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0157480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BsDP51OF.woff                 [39m[1m[2m   13.30 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0158780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.CO6r4hn1.woff2          [39m[1m[2m   13.57 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0159990Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.DN2j7dab.woff             [39m[1m[2m   14.11 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0161360Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.DbIhKOiC.woff               [39m[1m[2m   14.41 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0162480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.C0xS9mPB.woff           [39m[1m[2m   16.03 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0163660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.CZnvNsCZ.woff2             [39m[1m[2m   16.40 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0164820Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.t53AETM-.woff2                 [39m[1m[2m   16.44 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0166460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.C5JkGWo-.ttf                [39m[1m[2m   16.65 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0167600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DxDJ3AOS.woff2             [39m[1m[2m   16.78 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0168770Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.NWA7e6Wa.woff2                 [39m[1m[2m   16.99 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0169970Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.iY-2wyZ7.woff              [39m[1m[2m   18.67 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0171030Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.DA0__PXp.woff                  [39m[1m[2m   18.75 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0172130Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.SpSLRI95.woff              [39m[1m[2m   19.41 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0173320Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.BNo7hRIc.ttf             [39m[1m[2m   19.44 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0174490Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CB_wures.ttf               [39m[1m[2m   19.57 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0175590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BdnERNNW.ttf                  [39m[1m[2m   19.58 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0176700Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.BMLOBm91.woff                  [39m[1m[2m   19.68 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0177800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.YYjJ1zSn.ttf              [39m[1m[2m   22.36 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0179200Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.CFMepnvq.ttf                [39m[1m[2m   24.50 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0180270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Cx986IdX.woff2                   [39m[1m[2m   25.32 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0181360Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.B22Nviop.woff2                [39m[1m[2m   26.27 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0182450Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.D3Ib7_Hf.ttf            [39m[1m[2m   27.56 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0183590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.BQhdFMY1.woff2                 [39m[1m[2m   28.08 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0184650Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Jm3AIy58.woff                    [39m[1m[2m   29.91 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0185750Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.Dr94JaBh.woff                 [39m[1m[2m   30.77 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0186850Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.B3XSjfu4.ttf               [39m[1m[2m   31.20 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0187910Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.flOr_0UB.ttf                   [39m[1m[2m   31.31 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0188960Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DzxPMmG6.ttf               [39m[1m[2m   32.97 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0190040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DMm9YOAa.woff                  [39m[1m[2m   33.52 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0191110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.3WenGoN9.ttf                   [39m[1m[2m   33.58 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0192350Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.waoOVXN0.ttf                     [39m[1m[2m   51.34 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0193710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.ypZvNtVU.ttf                  [39m[1m[2m   53.58 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0195260Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DRggAlZN.ttf                   [39m[1m[2m   63.63 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0196970Z [info] [2m.nuxt/dist/client/[22m[32mmanifest.json                                          [39m[1m[2m   78.73 kB[22m[1m[22m[2m │ gzip:     7.16 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0198490Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mConfirmationModal.DtxxR2Ew.css                   [39m[1m[2m    0.20 kB[22m[1m[22m[2m │ gzip:     0.12 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0200180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mmedia.yjOJmL4q.css                               [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0201900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mDefinitionLaunchPreferencesSection.B4uhkLvJ.css  [39m[1m[2m    0.28 kB[22m[1m[22m[2m │ gzip:     0.15 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0203490Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFullScreenImageModal.aod6xn15.css                [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.17 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0204770Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mindex.DIm5b6ai.css                               [39m[1m[2m    0.63 kB[22m[1m[22m[2m │ gzip:     0.27 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0206050Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFileExplorerTabs.DydjJNvi.css                    [39m[1m[2m    3.20 kB[22m[1m[22m[2m │ gzip:     1.02 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0207560Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mdefault.DKFims86.css                             [39m[1m[2m    4.14 kB[22m[1m[22m[2m │ gzip:     0.98 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0209270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35msettings.CK7L0IRc.css                            [39m[1m[2m    4.29 kB[22m[1m[22m[2m │ gzip:     1.32 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0210770Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mSystemInstructionActivityItem.COSafwjA.css       [39m[1m[2m    4.37 kB[22m[1m[22m[2m │ gzip:     1.43 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0212870Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museWorkspaceFileContentVisible.BS3LbZ7y.css      [39m[1m[2m   10.34 kB[22m[1m[22m[2m │ gzip:     2.60 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0214140Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mskills.CAT_ouGa.css                              [39m[1m[2m   14.02 kB[22m[1m[22m[2m │ gzip:     3.03 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0278020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museWorkspaceFileExplorer.Bc32qPDk.css            [39m[1m[2m   50.71 kB[22m[1m[22m[2m │ gzip:    13.09 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0282520Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mentry.BR7F3qGL.css                               [39m[1m[2m  125.93 kB[22m[1m[22m[2m │ gzip:    19.83 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0286090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBvFqc1HL.js                                      [39m[1m[2m    0.09 kB[22m[1m[22m[2m │ gzip:     0.10 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0288900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mf8e0olAS.js                                      [39m[1m[2m    0.10 kB[22m[1m[22m[2m │ gzip:     0.11 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0295080Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mGi6I4Gst.js                                      [39m[1m[2m    0.15 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0300000Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCkfu734x.js                                      [39m[1m[2m    0.18 kB[22m[1m[22m[2m │ gzip:     0.15 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0304680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDLjBHKKN.js                                      [39m[1m[2m    0.21 kB[22m[1m[22m[2m │ gzip:     0.16 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0308860Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCC8E-ogg.js                                      [39m[1m[2m    0.22 kB[22m[1m[22m[2m │ gzip:     0.20 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0312620Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBPpmNdtr.js                                      [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.20 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0319800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD6s4pYee.js                                      [39m[1m[2m    0.26 kB[22m[1m[22m[2m │ gzip:     0.21 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0325070Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBcrSRYEE.js                                      [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.26 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0329410Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCKtnIIgc.js                                      [39m[1m[2m    0.41 kB[22m[1m[22m[2m │ gzip:     0.28 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0331160Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDP5VqJvL.js                                      [39m[1m[2m    0.45 kB[22m[1m[22m[2m │ gzip:     0.29 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0332900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC2q0RyO5.js                                      [39m[1m[2m    0.46 kB[22m[1m[22m[2m │ gzip:     0.32 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0336570Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBXyTmrBn.js                                      [39m[1m[2m    0.48 kB[22m[1m[22m[2m │ gzip:     0.30 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0344600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCpxcos_-.js                                      [39m[1m[2m    0.48 kB[22m[1m[22m[2m │ gzip:     0.30 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0353490Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB0NnUQeW.js                                      [39m[1m[2m    0.49 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0356020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mKDURlTyy.js                                      [39m[1m[2m    0.51 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0357840Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDJ_Xu8rC.js                                      [39m[1m[2m    0.53 kB[22m[1m[22m[2m │ gzip:     0.34 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0364380Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mRncLn-b3.js                                      [39m[1m[2m    0.54 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0365580Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCtKrmfeJ.js                                      [39m[1m[2m    0.58 kB[22m[1m[22m[2m │ gzip:     0.30 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0366800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDRI4wBy0.js                                      [39m[1m[2m    0.63 kB[22m[1m[22m[2m │ gzip:     0.38 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0367950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mQDgiurbi.js                                      [39m[1m[2m    0.75 kB[22m[1m[22m[2m │ gzip:     0.46 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0369080Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCE1G-McA.js                                      [39m[1m[2m    0.76 kB[22m[1m[22m[2m │ gzip:     0.40 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0370270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m0BZF_QHY.js                                      [39m[1m[2m    0.80 kB[22m[1m[22m[2m │ gzip:     0.41 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0371420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCN-5KoOi.js                                      [39m[1m[2m    0.94 kB[22m[1m[22m[2m │ gzip:     0.45 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0372560Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mFj5WfIzG.js                                      [39m[1m[2m    0.94 kB[22m[1m[22m[2m │ gzip:     0.48 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0374300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36md27X6kIY.js                                      [39m[1m[2m    0.98 kB[22m[1m[22m[2m │ gzip:     0.58 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0375410Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mbSKBvwRQ.js                                      [39m[1m[2m    1.11 kB[22m[1m[22m[2m │ gzip:     0.54 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0376580Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mEbkbBTAP.js                                      [39m[1m[2m    1.15 kB[22m[1m[22m[2m │ gzip:     0.61 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0377650Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCmKTTxBW.js                                      [39m[1m[2m    1.18 kB[22m[1m[22m[2m │ gzip:     0.57 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0379180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCzdS8XKu.js                                      [39m[1m[2m    1.39 kB[22m[1m[22m[2m │ gzip:     0.73 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0383300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDDKDQ7T5.js                                      [39m[1m[2m    1.42 kB[22m[1m[22m[2m │ gzip:     0.63 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0386350Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDL-qu1ba.js                                      [39m[1m[2m    1.49 kB[22m[1m[22m[2m │ gzip:     0.77 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0389400Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB1mrW11U.js                                      [39m[1m[2m    1.82 kB[22m[1m[22m[2m │ gzip:     0.83 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0392370Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBK4_ZGtx.js                                      [39m[1m[2m    1.98 kB[22m[1m[22m[2m │ gzip:     0.98 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0395470Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mJgNd0ZbL.js                                      [39m[1m[2m    2.30 kB[22m[1m[22m[2m │ gzip:     1.06 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0399080Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCshSvwEu.js                                      [39m[1m[2m    2.36 kB[22m[1m[22m[2m │ gzip:     1.19 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0402080Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBv4L8bhO.js                                      [39m[1m[2m    2.39 kB[22m[1m[22m[2m │ gzip:     1.01 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0405110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD18jL5_-.js                                      [39m[1m[2m    2.56 kB[22m[1m[22m[2m │ gzip:     1.27 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0408190Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBOUGKc1i.js                                      [39m[1m[2m    2.80 kB[22m[1m[22m[2m │ gzip:     0.69 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0411320Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDA2LsIxu.js                                      [39m[1m[2m    3.41 kB[22m[1m[22m[2m │ gzip:     1.46 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0414620Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD5F7exeV.js                                      [39m[1m[2m    3.56 kB[22m[1m[22m[2m │ gzip:     1.28 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0417600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCTBxUKAl.js                                      [39m[1m[2m    3.67 kB[22m[1m[22m[2m │ gzip:     1.47 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0420780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mMOPY9K2T.js                                      [39m[1m[2m    3.83 kB[22m[1m[22m[2m │ gzip:     1.50 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0424020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCqfm3DvW.js                                      [39m[1m[2m    4.03 kB[22m[1m[22m[2m │ gzip:     1.72 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0427030Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBEjuxKPI.js                                      [39m[1m[2m    4.12 kB[22m[1m[22m[2m │ gzip:     1.41 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0431270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD7wGyN19.js                                      [39m[1m[2m    4.36 kB[22m[1m[22m[2m │ gzip:     1.88 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0434290Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDX6XiGOO.js                                      [39m[1m[2m    4.69 kB[22m[1m[22m[2m │ gzip:     2.18 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0437240Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mP4IQOq2W.js                                      [39m[1m[2m    4.74 kB[22m[1m[22m[2m │ gzip:     1.88 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0440210Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mQmp_FNOa.js                                      [39m[1m[2m    4.92 kB[22m[1m[22m[2m │ gzip:     2.01 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0443040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBK6SjP51.js                                      [39m[1m[2m    4.97 kB[22m[1m[22m[2m │ gzip:     1.82 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0446280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCYE5XMq2.js                                      [39m[1m[2m    4.98 kB[22m[1m[22m[2m │ gzip:     1.88 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0447770Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBIvGFpZN.js                                      [39m[1m[2m    5.27 kB[22m[1m[22m[2m │ gzip:     2.31 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0449010Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCCHwlyRJ.js                                      [39m[1m[2m    5.63 kB[22m[1m[22m[2m │ gzip:     2.29 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0450090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDZNt0YfJ.js                                      [39m[1m[2m    5.90 kB[22m[1m[22m[2m │ gzip:     1.85 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0451600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBOnIw_dL.js                                      [39m[1m[2m    5.96 kB[22m[1m[22m[2m │ gzip:     2.49 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0461160Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m4gNvG_6M.js                                      [39m[1m[2m    6.38 kB[22m[1m[22m[2m │ gzip:     2.77 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0464220Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDtze7pV1.js                                      [39m[1m[2m    6.81 kB[22m[1m[22m[2m │ gzip:     2.36 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0467090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB6srxH-p.js                                      [39m[1m[2m    7.21 kB[22m[1m[22m[2m │ gzip:     1.70 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0470050Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCFFp3LBC.js                                      [39m[1m[2m    7.41 kB[22m[1m[22m[2m │ gzip:     2.06 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0473050Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBW8vNj-V.js                                      [39m[1m[2m    7.48 kB[22m[1m[22m[2m │ gzip:     2.93 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0476100Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDqEiPT6s.js                                      [39m[1m[2m    7.68 kB[22m[1m[22m[2m │ gzip:     2.61 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0479100Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBus_zjfz.js                                      [39m[1m[2m    8.62 kB[22m[1m[22m[2m │ gzip:     2.81 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0482110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36ml40v1ff9.js                                      [39m[1m[2m    9.24 kB[22m[1m[22m[2m │ gzip:     1.90 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0485090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCE-FUIop.js                                      [39m[1m[2m   10.42 kB[22m[1m[22m[2m │ gzip:     3.62 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0487500Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBaaHnhY9.js                                      [39m[1m[2m   11.07 kB[22m[1m[22m[2m │ gzip:     4.12 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0488670Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC1hm9GJp.js                                      [39m[1m[2m   11.36 kB[22m[1m[22m[2m │ gzip:     3.57 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0490780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDAPL7lJG.js                                      [39m[1m[2m   11.45 kB[22m[1m[22m[2m │ gzip:     4.54 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0491950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCJ2tWB65.js                                      [39m[1m[2m   11.57 kB[22m[1m[22m[2m │ gzip:     2.59 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0493070Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBXm0Uuh-.js                                      [39m[1m[2m   11.78 kB[22m[1m[22m[2m │ gzip:     4.49 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0494280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDlQL1LDC.js                                      [39m[1m[2m   11.88 kB[22m[1m[22m[2m │ gzip:     4.64 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0495730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDTjdxgOq.js                                      [39m[1m[2m   13.19 kB[22m[1m[22m[2m │ gzip:     4.44 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0497130Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCm2a9f7g.js                                      [39m[1m[2m   14.51 kB[22m[1m[22m[2m │ gzip:     4.62 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0498600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBoTELzQH.js                                      [39m[1m[2m   14.64 kB[22m[1m[22m[2m │ gzip:     5.08 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0499710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBUXVTJvd.js                                      [39m[1m[2m   14.76 kB[22m[1m[22m[2m │ gzip:     4.40 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0500910Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD-T_RkPy.js                                      [39m[1m[2m   15.87 kB[22m[1m[22m[2m │ gzip:     5.64 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0502040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mHgSz0WAa.js                                      [39m[1m[2m   16.77 kB[22m[1m[22m[2m │ gzip:     4.58 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0503840Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCqPPeuz-.js                                      [39m[1m[2m   19.79 kB[22m[1m[22m[2m │ gzip:     5.63 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0504980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCK5d8Wim.js                                      [39m[1m[2m   20.11 kB[22m[1m[22m[2m │ gzip:     6.92 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0506420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCSTJh0Y2.js                                      [39m[1m[2m   20.15 kB[22m[1m[22m[2m │ gzip:     5.94 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0507610Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDkk-DIWE.js                                      [39m[1m[2m   20.29 kB[22m[1m[22m[2m │ gzip:     7.20 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0508780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDTO384bx.js                                      [39m[1m[2m   22.21 kB[22m[1m[22m[2m │ gzip:     8.15 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0509890Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCpoboQL5.js                                      [39m[1m[2m   23.61 kB[22m[1m[22m[2m │ gzip:     8.34 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0511070Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDoHAnbY0.js                                      [39m[1m[2m   23.69 kB[22m[1m[22m[2m │ gzip:     8.26 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0512140Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBYIdwK8h.js                                      [39m[1m[2m   23.97 kB[22m[1m[22m[2m │ gzip:     6.92 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0513280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCeACfCdv.js                                      [39m[1m[2m   24.17 kB[22m[1m[22m[2m │ gzip:     7.42 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0514410Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC-5_zXu5.js                                      [39m[1m[2m   24.41 kB[22m[1m[22m[2m │ gzip:     6.83 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0515930Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mVUBWtu91.js                                      [39m[1m[2m   25.31 kB[22m[1m[22m[2m │ gzip:     8.84 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0517040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBo40EEqZ.js                                      [39m[1m[2m   27.35 kB[22m[1m[22m[2m │ gzip:     9.69 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0518090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mClDfV4kd.js                                      [39m[1m[2m   30.16 kB[22m[1m[22m[2m │ gzip:     9.44 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0519200Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDgiPTb6N.js                                      [39m[1m[2m   32.19 kB[22m[1m[22m[2m │ gzip:    10.11 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0520300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBa9w3VAl.js                                      [39m[1m[2m   33.92 kB[22m[1m[22m[2m │ gzip:     9.96 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0521440Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCffNI8Ny.js                                      [39m[1m[2m   36.30 kB[22m[1m[22m[2m │ gzip:    11.79 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0522680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBSZRm2vD.js                                      [39m[1m[2m   38.33 kB[22m[1m[22m[2m │ gzip:     9.53 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0523720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mAWLuGG10.js                                      [39m[1m[2m   40.26 kB[22m[1m[22m[2m │ gzip:    11.37 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0524830Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDWY4uZWe.js                                      [39m[1m[2m   45.25 kB[22m[1m[22m[2m │ gzip:    14.64 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0525980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBbFdJT9C.js                                      [39m[1m[2m   50.61 kB[22m[1m[22m[2m │ gzip:    13.50 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0527480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBYNzNEUY.js                                      [39m[1m[2m   50.75 kB[22m[1m[22m[2m │ gzip:    12.96 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0528670Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mNW-DE6zq.js                                      [39m[1m[2m   54.92 kB[22m[1m[22m[2m │ gzip:    15.53 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0529760Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB7xmNfZU.js                                      [39m[1m[2m   56.70 kB[22m[1m[22m[2m │ gzip:    14.45 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0530930Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC3zGfA1m.js                                      [39m[1m[2m   56.98 kB[22m[1m[22m[2m │ gzip:    12.63 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0532040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBlTY0x50.js                                      [39m[1m[2m   60.50 kB[22m[1m[22m[2m │ gzip:    19.43 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0533180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCX8xIwee.js                                      [39m[1m[2m   68.39 kB[22m[1m[22m[2m │ gzip:    23.17 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0534290Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD5gK-woT.js                                      [39m[1m[2m   70.22 kB[22m[1m[22m[2m │ gzip:    19.70 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0535420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCLlD-ePM.js                                      [39m[1m[2m   71.85 kB[22m[1m[22m[2m │ gzip:    20.51 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0536520Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDKhcoLaU.js                                      [39m[1m[2m   81.79 kB[22m[1m[22m[2m │ gzip:    22.51 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0537680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mVEgiK_qy.js                                      [39m[1m[2m   91.73 kB[22m[1m[22m[2m │ gzip:    20.91 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0538760Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBQYw2HQn.js                                      [39m[1m[2m   97.89 kB[22m[1m[22m[2m │ gzip:    26.87 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0540330Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBwnUcdL4.js                                      [39m[1m[2m   98.02 kB[22m[1m[22m[2m │ gzip:    24.13 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0543720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBpA1ZFOY.js                                      [39m[1m[2m  100.47 kB[22m[1m[22m[2m │ gzip:    27.99 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0547020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBgsawo60.js                                      [39m[1m[2m  108.56 kB[22m[1m[22m[2m │ gzip:    31.88 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0549920Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCSvYUR_t.js                                      [39m[1m[2m  114.18 kB[22m[1m[22m[2m │ gzip:    30.64 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0553030Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mL0U9ODXb.js                                      [39m[1m[2m  148.67 kB[22m[1m[22m[2m │ gzip:    42.03 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0556080Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDeeFOMhG.js                                      [39m[1m[2m  290.86 kB[22m[1m[22m[2m │ gzip:    64.33 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0559100Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m5J0xJHOV.js                                      [39m[1m[2m  441.64 kB[22m[1m[22m[2m │ gzip:   141.47 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0562600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m0k2MYYaK.js                                      [39m[1m[2m  452.84 kB[22m[1m[22m[2m │ gzip:   107.01 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0564420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mKWeyatXr.js                                      [39m[1m[33m  534.04 kB[39m[22m[2m │ gzip:   139.92 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0565880Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDVbLyB47.js                                      [39m[1m[33m  742.44 kB[39m[22m[2m │ gzip:   196.45 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0567420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDF8uSJps.js                                      [39m[1m[33m1,081.45 kB[39m[22m[2m │ gzip:   293.40 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0568550Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBGChww_-.js                                      [39m[1m[33m3,764.42 kB[39m[22m[2m │ gzip: 1,210.26 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0569040Z [warn] [33m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0569480Z (!) Some chunks are larger than 500 kB after minification. Consider:
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0569950Z - Using dynamic import() to code-split the application
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0570710Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0571510Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0572070Z [info] [32m✓ built in 33.19s[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0572380Z [success] Client built in 33200ms
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0572630Z [info] Building server...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0573100Z [info] [36mvite v7.3.1 [32mbuilding ssr environment for production...[36m[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0573460Z [info] transforming...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0573770Z [info] [32m✓[39m 1 modules transformed.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0574030Z [info] rendering chunks...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0574300Z [info] [32m✓ built in 25ms[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0800850Z [success] Server built in 89ms
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:50.0861730Z [info] [nitro] Initializing prerenderer
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3323140Z [info] [nitro] Prerendering 19 initial routes with crawler
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3824730Z [log] [nitro] [90m  ├─ /tools (45ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3835400Z [log] [nitro] [90m  ├─ /nodes (45ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3885820Z [log] [nitro] [90m  ├─ /skills (47ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3887930Z [log] [nitro] [90m  ├─ /agents (45ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3888940Z [log] [nitro] [90m  ├─ /memory (46ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3897770Z [log] [nitro] [90m  ├─ /chat (45ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3905540Z [log] [nitro] [90m  ├─ /media (45ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3918860Z [log] [nitro] [90m  ├─ /workspace (47ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3926620Z [log] [nitro] [90m  ├─ /agent-orgs (47ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3928110Z [log] [nitro] [90m  ├─ /settings (47ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3935890Z [log] [nitro] [90m  ├─ /mobile (46ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3936430Z [log] [nitro] [90m  ├─ / (44ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3940110Z [log] [nitro] [90m  ├─ /agent-teams (6ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3942350Z [log] [nitro] [90m  ├─ /projects (4ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3947850Z [log] [nitro] [90m  ├─ /applications (3ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3948580Z [log] [nitro] [90m  ├─ /200.html (2ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3949020Z [log] [nitro] [90m  ├─ /404.html (3ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3949640Z [log] [nitro] [90m  ├─ /index.html (2ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3950660Z [log] [nitro] [90m  ├─ /projects/new (6ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.3951880Z [info] [nitro] Prerendered 19 routes in 1.24 seconds
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.5484670Z [success] [nitro] Generated public [36mdist/public[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.5690640Z [success] [nitro] You can preview this build using `npx serve dist/public`
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.5692450Z [log] [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.5693830Z [33m▲[39m  HTML content not prerendered because [36mssr: false[39m was set.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.5695430Z [log] [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.5697880Z [34m●[39m  You can read more in [36mhttps://nuxt.com/docs/getting-started/deployment#static-hosting[39m.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.5699990Z [log] [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:51.5701510Z [90m└[39m  ✨ You can now deploy [36mdist/public[39m to any static hosting!
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:52.6735740Z Mobile web assets written to /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/dist-mobile/public
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:52.6937920Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:52.6940020Z [0;33mDeploying server package into Electron resources...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:55.8475030Z  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:55.8945920Z Packages are cloned from the content-addressable store to the virtual store.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:55.8946950Z   Content-addressable store is at: /Users/runner/setup-pnpm/node_modules/.bin/store/v10
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:55.8947590Z   Virtual store is at:             autobyteus-web/resources/server/node_modules/.pnpm
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:55.9488610Z Progress: resolved 1, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:56.9501660Z Progress: resolved 44, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:57.9522970Z Progress: resolved 96, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:12:58.9576500Z Progress: resolved 228, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:00.5698970Z Progress: resolved 404, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:01.5696250Z Progress: resolved 617, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:02.5713320Z Progress: resolved 1108, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:03.5752060Z Progress: resolved 1303, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:04.5796680Z Progress: resolved 1776, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:05.5847340Z Progress: resolved 1852, reused 0, downloaded 0, added 0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.3459640Z  WARN  23 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, @xmldom/xmldom@0.8.11, are-we-there-yet@3.0.1, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, uuid@3.4.0, whatwg-encoding@3.1.1
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.3464180Z Progress: resolved 1852, reused 0, downloaded 0, added 0, done
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.3568260Z  WARN  Issues with peer dependencies found
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.3783110Z autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.3918200Z └─┬ nuxt 3.21.1
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.3919730Z   └─┬ @nuxt/cli 3.33.1
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.4030830Z     ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.4135160Z     └─┬ @bomb.sh/tab 0.0.12
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.4236580Z       └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:08.4890710Z .                                        | +432 ++++++++++++++++++++++++++++++++
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.5998720Z ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.6002700Z │                                                                              │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.6004620Z │   Ignored build scripts: @google/genai@2.24.0,                               │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.6006550Z │   autobyteus-ts@file:autobyteus-ts.                                          │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.6008890Z │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.6010360Z │   to run scripts.                                                            │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.6011370Z │                                                                              │
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.6012690Z ╰──────────────────────────────────────────────────────────────────────────────╯
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.6699210Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.6702400Z [0;33mCleaning workspace symlinks in deployment...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.8924290Z Removed 1 external symlinks from /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.8969680Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:13.8972570Z [0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:14.3283690Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:14.3286430Z [0;33mGenerating Prisma client (ensures engines are bundled)...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:14.3291150Z [0;32m✓[0m Using PRISMA_CLI_BINARY_TARGETS=darwin,debian-openssl-1.1.x,debian-openssl-3.0.x
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:14.9778550Z Environment variables loaded from .env
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:14.9829900Z Prisma schema loaded from resources/server/prisma/schema.prisma
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.4972660Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.4974610Z ✔ Generated Prisma Client (v5.22.0) to ./resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 160ms
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.4975300Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.4975810Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.4976150Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.4976700Z Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.4977140Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.7109040Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.7210610Z [0;33mPruning native prebuilds for host platform...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.8497780Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:15.8498530Z [0;33mRebuilding native modules for Electron...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:16.2510590Z Searching dependency tree
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:16.7001310Z Building modules: node-pty, node-pty
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:26.3451670Z ✔ Rebuild Complete
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:26.3687670Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:26.3688980Z [0;33mNormalizing node-pty spawn-helper execute bits...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:26.7027580Z [0;32m✓[0m Normalized execute bits on 3 node-pty spawn-helper file(s)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:26.7028120Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:26.7031290Z [0;33mRemoving symlinks that point outside the bundle...[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:27.5896240Z Removed 0 external symlinks from /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:27.5928810Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:27.5930370Z [0;32m=======================================[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:27.5931070Z [0;32m   Server files prepared successfully!   [0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:27.5932820Z [0;32m=======================================[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:27.5933740Z Target directory: [0;33m/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server[0m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:27.5934810Z You can now build the Electron app with the server included
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:28.0065580Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:28.0167230Z > autobyteus@1.4.93 generate:electron /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:28.0270450Z > cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:28.0368860Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:28.7415410Z [90m┌[39m  [36mBuilding Nuxt for production...[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:28.8631800Z [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:28.8644680Z [34m●[39m  [32mNuxt [1m3.21.1[22m[39m[90m (with [39m[90mNitro [1m2.13.1[22m[39m[90m, Vite [1m7.3.1[22m[39m[90m and Vue [1m3.5.28[22m[39m[90m)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:29.9944180Z [log] isElectronBuild true
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:30.0792780Z [log] [Electron Module] Initializing electron module
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:30.0795020Z [log] [Electron Module] Applying default Electron configurations
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:30.0796590Z [log] [Electron Module] Configuring for Electron build target
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:30.0797380Z [log] [Electron Module] Configuring production settings
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:30.0798200Z [log] [Electron Module] Electron module initialization completed
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:32.7368440Z [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:32.7370220Z [34m●[39m  Nitro preset: [36mstatic[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:35.0432990Z [warn] Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:35.0434590Z   npx update-browserslist-db@latest
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:35.0435120Z   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:35.4636920Z [log] [Electron Module] Extending Vite config
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:35.4649170Z [info] Building client...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:35.4888750Z [Electron Module] Vite config resolved: { mode: 'production', base: './', buildTarget: 'electron' }
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:35.4924690Z [info] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:13:35.6576320Z [info] transforming...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:02.7861960Z [info] [32m✓[39m 3959 modules transformed.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:04.5526330Z [info] rendering chunks...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:06.1324640Z [info] computing gzip size...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.1482730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.CTq5MqoE.woff                   [39m[1m[2m    4.42 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.1583730Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.Dl5lxZxV.woff2                  [39m[1m[2m    4.93 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.1687010Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.Dy4dx90m.woff2                  [39m[1m[2m    5.21 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.1788240Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.mCD8mA8B.woff2                  [39m[1m[2m    5.47 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.1889670Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.BF-4gkZK.woff                   [39m[1m[2m    5.98 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.1991490Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.oD1tc_U0.woff                   [39m[1m[2m    6.19 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.1996240Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.C195tn64.woff                   [39m[1m[2m    6.50 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2002350Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.Di6jR-x-.woff2            [39m[1m[2m    6.91 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2052880Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.Dq_IR9rO.woff2               [39m[1m[2m    6.91 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2094990Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.DgpXs0kz.ttf                    [39m[1m[2m    7.59 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2108150Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.CTRA-rTL.woff             [39m[1m[2m    7.66 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2123670Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.BEiXGLvX.woff                [39m[1m[2m    7.72 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2125090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D3wIWfF6.woff2                 [39m[1m[2m    9.64 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2126280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.DDBCnlJ7.woff2              [39m[1m[2m   10.34 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2127530Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.DWFBv043.ttf                    [39m[1m[2m   10.36 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2128890Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D5yQViql.woff                  [39m[1m[2m   10.59 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2130080Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CTYiF6lA.woff2                [39m[1m[2m   11.32 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2131510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.CL6g_b3V.woff2                   [39m[1m[2m   11.35 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2132650Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.B7gKUWhC.ttf                    [39m[1m[2m   11.51 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2133790Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.C3H0VqGB.woff2               [39m[1m[2m   12.03 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2134930Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.D1sUS0GD.woff2                 [39m[1m[2m   12.22 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2136030Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.Dbsnue_I.ttf                    [39m[1m[2m   12.23 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2140700Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.CS6fqUqJ.woff               [39m[1m[2m   12.32 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2159310Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.wX97UBjC.ttf              [39m[1m[2m   12.34 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2162280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.ATXxdsX0.ttf                 [39m[1m[2m   12.37 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2165070Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.Dxdc4cR9.woff                 [39m[1m[2m   13.21 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2171310Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BsDP51OF.woff                    [39m[1m[2m   13.30 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2172710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.CO6r4hn1.woff2             [39m[1m[2m   13.57 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2173930Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.DN2j7dab.woff                [39m[1m[2m   14.11 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2175700Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.DbIhKOiC.woff                  [39m[1m[2m   14.41 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2176770Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.C0xS9mPB.woff              [39m[1m[2m   16.03 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2177900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.CZnvNsCZ.woff2                [39m[1m[2m   16.40 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2182330Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.t53AETM-.woff2                    [39m[1m[2m   16.44 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2186030Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.C5JkGWo-.ttf                   [39m[1m[2m   16.65 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2187180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DxDJ3AOS.woff2                [39m[1m[2m   16.78 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2188300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.NWA7e6Wa.woff2                    [39m[1m[2m   16.99 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2189460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.iY-2wyZ7.woff                 [39m[1m[2m   18.67 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2190540Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.DA0__PXp.woff                     [39m[1m[2m   18.75 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2192510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.SpSLRI95.woff                 [39m[1m[2m   19.41 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2193800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.BNo7hRIc.ttf                [39m[1m[2m   19.44 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2194990Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CB_wures.ttf                  [39m[1m[2m   19.57 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2196150Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BdnERNNW.ttf                     [39m[1m[2m   19.58 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2197180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.BMLOBm91.woff                     [39m[1m[2m   19.68 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2198200Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.YYjJ1zSn.ttf                 [39m[1m[2m   22.36 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2199280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.CFMepnvq.ttf                   [39m[1m[2m   24.50 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2200360Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Cx986IdX.woff2                      [39m[1m[2m   25.32 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2201760Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.B22Nviop.woff2                   [39m[1m[2m   26.27 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2202840Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.D3Ib7_Hf.ttf               [39m[1m[2m   27.56 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2203900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.BQhdFMY1.woff2                    [39m[1m[2m   28.08 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2205100Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Jm3AIy58.woff                       [39m[1m[2m   29.91 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2206160Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.Dr94JaBh.woff                    [39m[1m[2m   30.77 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2207170Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.B3XSjfu4.ttf                  [39m[1m[2m   31.20 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2208420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.flOr_0UB.ttf                      [39m[1m[2m   31.31 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2209450Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DzxPMmG6.ttf                  [39m[1m[2m   32.97 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2210570Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DMm9YOAa.woff                     [39m[1m[2m   33.52 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2211600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.3WenGoN9.ttf                      [39m[1m[2m   33.58 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2212650Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.waoOVXN0.ttf                        [39m[1m[2m   51.34 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2213740Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.ypZvNtVU.ttf                     [39m[1m[2m   53.58 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2214870Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DRggAlZN.ttf                      [39m[1m[2m   63.63 kB[22m[1m[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2216120Z [info] [2m.nuxt/dist/client/[22m[32mmanifest.json                                             [39m[1m[2m   93.34 kB[22m[1m[22m[2m │ gzip:     7.92 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2217340Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mConfirmationModal.DtxxR2Ew.css                      [39m[1m[2m    0.20 kB[22m[1m[22m[2m │ gzip:     0.12 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2218540Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mmedia.yjOJmL4q.css                                  [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2219710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mDefinitionLaunchPreferencesSection.B4uhkLvJ.css     [39m[1m[2m    0.28 kB[22m[1m[22m[2m │ gzip:     0.15 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2224250Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFullScreenImageModal.aod6xn15.css                   [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.17 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2225600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mindex.DIm5b6ai.css                                  [39m[1m[2m    0.63 kB[22m[1m[22m[2m │ gzip:     0.27 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2226890Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFileExplorerTabs.DydjJNvi.css                       [39m[1m[2m    3.20 kB[22m[1m[22m[2m │ gzip:     1.02 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2228110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mdefault.DKFims86.css                                [39m[1m[2m    4.14 kB[22m[1m[22m[2m │ gzip:     0.98 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2229340Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35msettings.CK7L0IRc.css                               [39m[1m[2m    4.29 kB[22m[1m[22m[2m │ gzip:     1.32 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2230840Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mSystemInstructionActivityItem.COSafwjA.css          [39m[1m[2m    4.37 kB[22m[1m[22m[2m │ gzip:     1.43 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2232180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museWorkspaceFileContentVisible.BS3LbZ7y.css         [39m[1m[2m   10.34 kB[22m[1m[22m[2m │ gzip:     2.60 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2233370Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mskills.CAT_ouGa.css                                 [39m[1m[2m   14.02 kB[22m[1m[22m[2m │ gzip:     3.03 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2234560Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museWorkspaceFileExplorer.Bc32qPDk.css               [39m[1m[2m   50.71 kB[22m[1m[22m[2m │ gzip:    13.09 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2235740Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mentry.BR7F3qGL.css                                  [39m[1m[2m  125.93 kB[22m[1m[22m[2m │ gzip:    19.83 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2236900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mclone.Cd8TmtdQ.js                                   [39m[1m[2m    0.10 kB[22m[1m[22m[2m │ gzip:     0.11 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2238280Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchannel.CpF9jBvF.js                                 [39m[1m[2m    0.13 kB[22m[1m[22m[2m │ gzip:     0.14 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2239570Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36minit.Gi6I4Gst.js                                    [39m[1m[2m    0.15 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2240710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-QZHKN3VN.B6FEC8Ao.js                          [39m[1m[2m    0.21 kB[22m[1m[22m[2m │ gzip:     0.17 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2241910Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msettings.BPpmNdtr.js                                [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.20 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2243020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-4BX2VUAB.Dx1JN94n.js                          [39m[1m[2m    0.24 kB[22m[1m[22m[2m │ gzip:     0.18 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2244350Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-55IACEB6.qbIbtvcs.js                          [39m[1m[2m    0.25 kB[22m[1m[22m[2m │ gzip:     0.22 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2245530Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtools.SaxU5pFO.js                                   [39m[1m[2m    0.31 kB[22m[1m[22m[2m │ gzip:     0.24 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2246700Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-FMBD7UC4.DuyiA8eT.js                          [39m[1m[2m    0.38 kB[22m[1m[22m[2m │ gzip:     0.28 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2247900Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mfileUploadStore.4-w0ds24.js                         [39m[1m[2m    0.52 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2249090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-QN33PNHL.BElXThOn.js                          [39m[1m[2m    0.52 kB[22m[1m[22m[2m │ gzip:     0.37 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2250320Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mnew.CdWM-4AJ.js                                     [39m[1m[2m    0.56 kB[22m[1m[22m[2m │ gzip:     0.38 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2251450Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mnew.CjX4lhYG.js                                     [39m[1m[2m    0.57 kB[22m[1m[22m[2m │ gzip:     0.37 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2252590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mprojectErrorMessageKey.CtKrmfeJ.js                  [39m[1m[2m    0.58 kB[22m[1m[22m[2m │ gzip:     0.30 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2253830Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mstateDiagram-v2-4FDKWEC3.C7JRhqqT.js                [39m[1m[2m    0.62 kB[22m[1m[22m[2m │ gzip:     0.40 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2255420Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museProjectNotice.DRI4wBy0.js                        [39m[1m[2m    0.63 kB[22m[1m[22m[2m │ gzip:     0.38 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2256550Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36medit.DA4xQCvw.js                                    [39m[1m[2m    0.65 kB[22m[1m[22m[2m │ gzip:     0.40 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2257770Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mclassDiagram-2ON5EDUG.Cp0a6vag.js                   [39m[1m[2m    0.66 kB[22m[1m[22m[2m │ gzip:     0.42 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2259040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mclassDiagram-v2-WZHVMYZB.Cp0a6vag.js                [39m[1m[2m    0.66 kB[22m[1m[22m[2m │ gzip:     0.42 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2260300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36medit.BxoPL9iA.js                                    [39m[1m[2m    0.68 kB[22m[1m[22m[2m │ gzip:     0.44 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2261510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_commonjsHelpers.CE1G-McA.js                        [39m[1m[2m    0.76 kB[22m[1m[22m[2m │ gzip:     0.40 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2262940Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museNativeFolderDialog.0BZF_QHY.js                   [39m[1m[2m    0.80 kB[22m[1m[22m[2m │ gzip:     0.41 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2264300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36minfoDiagram-HS3SLOUP.DPJKnpIJ.js                    [39m[1m[2m    0.92 kB[22m[1m[22m[2m │ gzip:     0.57 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2265520Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mapi.CN-5KoOi.js                                     [39m[1m[2m    0.94 kB[22m[1m[22m[2m │ gzip:     0.45 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2266660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mteamLocalDefinitionId.Fj5WfIzG.js                   [39m[1m[2m    0.94 kB[22m[1m[22m[2m │ gzip:     0.48 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2267920Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mruntimeAvailabilityStore.BJGJco_f.js                [39m[1m[2m    1.13 kB[22m[1m[22m[2m │ gzip:     0.56 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2269170Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mordinal.BYWQX77i.js                                 [39m[1m[2m    1.19 kB[22m[1m[22m[2m │ gzip:     0.57 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2270390Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mindex.C9zXkD_W.js                                   [39m[1m[2m    1.38 kB[22m[1m[22m[2m │ gzip:     0.81 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2271600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museRuntimeCurrentModelDescriptor.D6egMbvz.js        [39m[1m[2m    1.44 kB[22m[1m[22m[2m │ gzip:     0.76 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2272880Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-TZMSLE5B.BjHvd3va.js                          [39m[1m[2m    1.45 kB[22m[1m[22m[2m │ gzip:     0.65 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2274110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magentOrgDefinitionReferences.BV3vAI7_.js            [39m[1m[2m    1.54 kB[22m[1m[22m[2m │ gzip:     0.79 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2275340Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmobile.CKD7QGH9.js                                  [39m[1m[2m    1.55 kB[22m[1m[22m[2m │ gzip:     0.83 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2276500Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mapplicationAssetUrl.B1mrW11U.js                     [39m[1m[2m    1.82 kB[22m[1m[22m[2m │ gzip:     0.83 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2277690Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mVoiceInputButton.vue.Bd5L851Q.js                    [39m[1m[2m    1.99 kB[22m[1m[22m[2m │ gzip:     0.99 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2278880Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mConfirmationModal.JgNd0ZbL.js                       [39m[1m[2m    2.30 kB[22m[1m[22m[2m │ gzip:     1.06 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2280600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mfeaturedCatalogItems.Bv4L8bhO.js                    [39m[1m[2m    2.39 kB[22m[1m[22m[2m │ gzip:     1.01 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2282890Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_basePickBy.DisZj_vK.js                             [39m[1m[2m    2.60 kB[22m[1m[22m[2m │ gzip:     1.30 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2376320Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mskillImprovementCapabilityStore.BOUGKc1i.js         [39m[1m[2m    2.80 kB[22m[1m[22m[2m │ gzip:     0.69 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2378440Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mworkspace.K29xXStw.js                               [39m[1m[2m    2.96 kB[22m[1m[22m[2m │ gzip:     1.48 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2380100Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36marc.BvJywl0B.js                                     [39m[1m[2m    3.43 kB[22m[1m[22m[2m │ gzip:     1.48 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2381830Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmobileWorkStore.D5F7exeV.js                         [39m[1m[2m    3.56 kB[22m[1m[22m[2m │ gzip:     1.28 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2384560Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mapplicationStore.MOPY9K2T.js                        [39m[1m[2m    3.83 kB[22m[1m[22m[2m │ gzip:     1.50 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2386290Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museEventMonitorFilePreview.CzZquzvl.js              [39m[1m[2m    3.94 kB[22m[1m[22m[2m │ gzip:     1.56 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2390120Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mprojectTaskStore.BUb0GiNT.js                        [39m[1m[2m    4.04 kB[22m[1m[22m[2m │ gzip:     1.72 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2393810Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magentOrgDefinitionStore.BEjuxKPI.js                 [39m[1m[2m    4.12 kB[22m[1m[22m[2m │ gzip:     1.41 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2395180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdiagram-S2PKOQOG.D0mWEu9m.js                        [39m[1m[2m    4.54 kB[22m[1m[22m[2m │ gzip:     2.00 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2396510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdefaultLocale.DX6XiGOO.js                           [39m[1m[2m    4.69 kB[22m[1m[22m[2m │ gzip:     2.18 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2397710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mindex.UqGiZy7d.js                                   [39m[1m[2m    4.78 kB[22m[1m[22m[2m │ gzip:     1.90 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2398850Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mFullScreenImageModal.Qmp_FNOa.js                    [39m[1m[2m    4.92 kB[22m[1m[22m[2m │ gzip:     2.01 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2400090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mprojectStore.BK6SjP51.js                            [39m[1m[2m    4.97 kB[22m[1m[22m[2m │ gzip:     1.82 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2401540Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museRightPanel.CYE5XMq2.js                           [39m[1m[2m    4.98 kB[22m[1m[22m[2m │ gzip:     1.88 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2402870Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mpieDiagram-ADFJNKIX.KpkkqVFf.js                     [39m[1m[2m    5.47 kB[22m[1m[22m[2m │ gzip:     2.44 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2404020Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mlinear.BuDOKxz9.js                                  [39m[1m[2m    5.67 kB[22m[1m[22m[2m │ gzip:     2.32 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2405530Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mgraph.Dxmb8Jkm.js                                   [39m[1m[2m    5.93 kB[22m[1m[22m[2m │ gzip:     1.88 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2406800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdiagram-QEK2KX5R.CzdIXlRh.js                        [39m[1m[2m    6.14 kB[22m[1m[22m[2m │ gzip:     2.61 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2408090Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mTaskContextFiles.vue.BNCD44Q8.js                    [39m[1m[2m    6.41 kB[22m[1m[22m[2m │ gzip:     2.77 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2410540Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mindex.C4FbHf5v.js                                   [39m[1m[2m    6.82 kB[22m[1m[22m[2m │ gzip:     2.37 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2413910Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mskillStore.B6srxH-p.js                              [39m[1m[2m    7.21 kB[22m[1m[22m[2m │ gzip:     1.70 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2417000Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mserverSettings.C0tXhjVI.js                          [39m[1m[2m    7.42 kB[22m[1m[22m[2m │ gzip:     2.07 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2420070Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mSearchableSelect.vue.BW8vNj-V.js                    [39m[1m[2m    7.48 kB[22m[1m[22m[2m │ gzip:     2.93 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2422410Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mindex.FyIJ6jOd.js                                   [39m[1m[2m    7.75 kB[22m[1m[22m[2m │ gzip:     2.64 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2423910Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDefinitionLaunchPreferencesSection.vue.BFtARjTy.js  [39m[1m[2m    8.65 kB[22m[1m[22m[2m │ gzip:     2.82 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2425230Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtoolManagementStore.l40v1ff9.js                     [39m[1m[2m    9.24 kB[22m[1m[22m[2m │ gzip:     1.90 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2426470Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mstateDiagram-FKZM4ZOC.CrqAWINv.js                   [39m[1m[2m   10.62 kB[22m[1m[22m[2m │ gzip:     3.76 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2427760Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdagre-6UL2VRFP.dsPFVfuB.js                          [39m[1m[2m   11.23 kB[22m[1m[22m[2m │ gzip:     4.22 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2428920Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mRuntimeModelConfigFields.vue.ClAhIbek.js            [39m[1m[2m   11.47 kB[22m[1m[22m[2m │ gzip:     3.61 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2430290Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museRuntimeScopedModelSelection.C-WKf8Wr.js          [39m[1m[2m   11.49 kB[22m[1m[22m[2m │ gzip:     4.56 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2431500Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magentTeamDefinitionStore.CJ2tWB65.js                [39m[1m[2m   11.57 kB[22m[1m[22m[2m │ gzip:     2.59 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2432720Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museShellPrimaryNavigation.BZ7gfmjt.js               [39m[1m[2m   11.87 kB[22m[1m[22m[2m │ gzip:     4.53 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2434000Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_baseUniq.CBSpnjFM.js                               [39m[1m[2m   11.90 kB[22m[1m[22m[2m │ gzip:     4.66 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2435550Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmedia.DpAncgJ5.js                                   [39m[1m[2m   13.24 kB[22m[1m[22m[2m │ gzip:     4.46 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2436800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mModelConfigSection.vue.DDhLrZij.js                  [39m[1m[2m   14.53 kB[22m[1m[22m[2m │ gzip:     4.63 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2438180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mProjectTaskEditor.vue.BQAyowTJ.js                   [39m[1m[2m   14.72 kB[22m[1m[22m[2m │ gzip:     5.12 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2439450Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mProjectEditor.vue.DvNDWkjP.js                       [39m[1m[2m   14.80 kB[22m[1m[22m[2m │ gzip:     4.43 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2441160Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdiagram-PSM6KHXK.56rMxs8a.js                        [39m[1m[2m   16.10 kB[22m[1m[22m[2m │ gzip:     5.79 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2442550Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mhandoffs.HgSz0WAa.js                                [39m[1m[2m   16.77 kB[22m[1m[22m[2m │ gzip:     4.58 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2444000Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mvoiceInputStore.CqPPeuz-.js                         [39m[1m[2m   19.79 kB[22m[1m[22m[2m │ gzip:     5.63 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2445300Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmindmap-definition-VGOIOE7T.BEIQ1DbY.js             [39m[1m[2m   20.26 kB[22m[1m[22m[2m │ gzip:     7.03 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2446570Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mskills.DvTxufxq.js                                  [39m[1m[2m   20.33 kB[22m[1m[22m[2m │ gzip:     6.04 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2447710Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mkanban-definition-3W4ZIXB7.D2_OS-ij.js              [39m[1m[2m   20.43 kB[22m[1m[22m[2m │ gzip:     7.29 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2449270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msankeyDiagram-TZEHDZUN.DMCiOYdX.js                  [39m[1m[2m   22.35 kB[22m[1m[22m[2m │ gzip:     8.25 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2450780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mjourneyDiagram-XKPGCS4Q.BuCdAu3J.js                 [39m[1m[2m   23.77 kB[22m[1m[22m[2m │ gzip:     8.45 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2452070Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtimeline-definition-IT6M3QCI.DNba4doO.js            [39m[1m[2m   23.82 kB[22m[1m[22m[2m │ gzip:     8.35 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2453440Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mindex.BLzQP2Hh.js                                   [39m[1m[2m   24.04 kB[22m[1m[22m[2m │ gzip:     6.95 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2454860Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mgitGraphDiagram-V2S2FVAM.7t5B2wiK.js                [39m[1m[2m   24.36 kB[22m[1m[22m[2m │ gzip:     7.55 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2456060Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mllmProviderConfig.C-5_zXu5.js                       [39m[1m[2m   24.41 kB[22m[1m[22m[2m │ gzip:     6.83 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2457350Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36merDiagram-Q2GNP2WA.SyY6Nddq.js                      [39m[1m[2m   25.47 kB[22m[1m[22m[2m │ gzip:     8.96 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2458530Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mlayout.Bhl8GDKE.js                                  [39m[1m[2m   27.40 kB[22m[1m[22m[2m │ gzip:     9.73 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2459750Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mrequirementDiagram-UZGBJVZJ.BsT88u6J.js             [39m[1m[2m   30.31 kB[22m[1m[22m[2m │ gzip:     9.55 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2460970Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mFileExplorerTabs.vue.BzlAaq2M.js                    [39m[1m[2m   32.23 kB[22m[1m[22m[2m │ gzip:    10.12 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2462230Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mquadrantDiagram-AYHSOK5B.DlqfVr2U.js                [39m[1m[2m   34.07 kB[22m[1m[22m[2m │ gzip:    10.06 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2463470Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-DI55MBZ5.DA-ARDPW.js                          [39m[1m[2m   36.36 kB[22m[1m[22m[2m │ gzip:    11.84 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2464590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magent-orgs.VqMmu4r1.js                              [39m[1m[2m   38.48 kB[22m[1m[22m[2m │ gzip:     9.58 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2465800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mxychartDiagram-PRI3JC2R.BTZnxEO7.js                 [39m[1m[2m   40.41 kB[22m[1m[22m[2m │ gzip:    11.47 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2467030Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-B4BG7PRW.BCktBVke.js                          [39m[1m[2m   45.32 kB[22m[1m[22m[2m │ gzip:    14.69 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2468270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mToolsManagementWorkspace.vue.CIUPf48x.js            [39m[1m[2m   50.63 kB[22m[1m[22m[2m │ gzip:    13.51 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2470220Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magent-teams.DxAp-Adr.js                             [39m[1m[2m   51.14 kB[22m[1m[22m[2m │ gzip:    13.13 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2471370Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchat.Dosm-7Oy.js                                    [39m[1m[2m   55.52 kB[22m[1m[22m[2m │ gzip:    15.83 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2472480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmemory.C3zGfA1m.js                                  [39m[1m[2m   56.98 kB[22m[1m[22m[2m │ gzip:    12.63 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2473600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magents.BNtpfzsq.js                                  [39m[1m[2m   57.06 kB[22m[1m[22m[2m │ gzip:    14.62 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2474740Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mflowDiagram-NV44I4VS.DTKW0DzK.js                    [39m[1m[2m   60.68 kB[22m[1m[22m[2m │ gzip:    19.55 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2476110Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mganttDiagram-JELNMOA3.Dwx0huAX.js                   [39m[1m[2m   68.54 kB[22m[1m[22m[2m │ gzip:    23.27 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2477310Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mc4Diagram-YG6GDRKO.BpeNYx32.js                      [39m[1m[2m   70.36 kB[22m[1m[22m[2m │ gzip:    19.80 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2478510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mblockDiagram-VD42YOAC.CGVB4p4H.js                   [39m[1m[2m   72.01 kB[22m[1m[22m[2m │ gzip:    20.63 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2479770Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mcose-bilkent-S5V4N54A.BFmwDUyP.js                   [39m[1m[2m   81.93 kB[22m[1m[22m[2m │ gzip:    22.60 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2481050Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_id_.CLPQ_6IX.js                                    [39m[1m[2m   91.99 kB[22m[1m[22m[2m │ gzip:    21.03 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2482340Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msequenceDiagram-WL72ISMW.C_nZbNoo.js                [39m[1m[2m   98.04 kB[22m[1m[22m[2m │ gzip:    26.98 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2483460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdefault.BgqpZ2r4.js                                 [39m[1m[2m   98.24 kB[22m[1m[22m[2m │ gzip:    24.27 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2484550Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mnodes.fcF-d6pr.js                                   [39m[1m[2m  100.49 kB[22m[1m[22m[2m │ gzip:    28.00 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2485750Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mSystemInstructionActivityItem.vue.BQTbFne0.js       [39m[1m[2m  108.92 kB[22m[1m[22m[2m │ gzip:    32.03 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2487010Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mMobileRemoteAccessShell.vue.DlbYoPAz.js             [39m[1m[2m  114.32 kB[22m[1m[22m[2m │ gzip:    30.72 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2488240Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36marchitectureDiagram-VXUJARFQ.UkXFurNM.js            [39m[1m[2m  148.86 kB[22m[1m[22m[2m │ gzip:    42.18 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2489480Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msettings.B5U2NEvj.js                                [39m[1m[2m  291.14 kB[22m[1m[22m[2m │ gzip:    64.47 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2490650Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mcytoscape.esm.5J0xJHOV.js                           [39m[1m[2m  441.64 kB[22m[1m[22m[2m │ gzip:   141.47 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2491850Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtreemap-GDKQZRPO.beuGzRdc.js                        [39m[1m[2m  452.91 kB[22m[1m[22m[2m │ gzip:   107.07 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2493040Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mworkspace.BtwlJi55.js                               [39m[1m[33m  534.12 kB[39m[22m[2m │ gzip:   139.98 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2494460Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museWorkspaceFileContentVisible.Bpv3a5-f.js          [39m[1m[33m  742.91 kB[39m[22m[2m │ gzip:   196.69 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2495660Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mentry.Db321QQ0.js                                   [39m[1m[33m1,082.71 kB[39m[22m[2m │ gzip:   293.98 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2496950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museWorkspaceFileExplorer.DdWgdP_f.js                [39m[1m[33m3,766.06 kB[39m[22m[2m │ gzip: 1,210.92 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2497490Z [warn] [33m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2497970Z (!) Some chunks are larger than 500 kB after minification. Consider:
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2498460Z - Using dynamic import() to code-split the application
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2499210Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2500050Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2501050Z [info] [32m✓ built in 31.67s[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2501330Z [success] Client built in 31697ms
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2501650Z [log] [Electron Module] Extending Vite config
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2501920Z [info] Building server...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2502400Z [Electron Module] Vite config resolved: { mode: 'production', base: '/', buildTarget: 'electron' }
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2503060Z [info] [36mvite v7.3.1 [32mbuilding ssr environment for production...[36m[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2503400Z [info] transforming...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2503690Z [info] [32m✓[39m 1 modules transformed.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2503960Z [info] rendering chunks...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2504230Z [info] [32m✓ built in 30ms[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2504540Z [log] [Electron Module] Processing build manifest
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2746140Z [success] Server built in 101ms
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2748600Z [log] [Electron Module] Build process completed
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2749820Z [log] [Electron Module] Running production build steps
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2750770Z [log] [Electron Module] Building entry: electron/main.ts
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2879810Z [log] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:07.2974290Z [log] transforming...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.1205930Z [log] [32m✓[39m 425 modules transformed.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.4291290Z [log] rendering chunks...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.6910640Z [log] computing gzip size...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.7217070Z [log] [2mdist/electron/[22m[36mmain.js                          [39m[1m[2m  0.06 kB[22m[1m[22m[2m │ gzip:   0.08 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.7319560Z [log] [2mdist/electron/[22m[36mmain-BSZinqeR.js                 [39m[1m[2m 12.35 kB[22m[1m[22m[2m │ gzip:   4.65 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.7424230Z [log] [2mdist/electron/[22m[36melectronApplication-D_A-aYYN.js  [39m[1m[33m811.81 kB[39m[22m[2m │ gzip: 213.21 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.7527380Z [log] [32m✓ built in 3.43s[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.7630240Z [log] [Electron Module] Building entry: electron/preload.ts
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.7730160Z [log] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.7831720Z [log] transforming...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.7930550Z [log] [32m✓[39m 1 modules transformed.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.8039030Z [log] rendering chunks...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.8043060Z [log] computing gzip size...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.8045150Z [log] [2mdist/electron/[22m[36mpreload.js  [39m[1m[2m3.53 kB[22m[1m[22m[2m │ gzip: 0.98 kB[22m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.8048460Z [log] [32m✓ built in 35ms[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.8049080Z [log] [Electron Module] Production build completed successfully
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:10.8583350Z [info] [nitro] Initializing prerenderer
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.3451320Z [info] [nitro] Prerendering 3 initial routes with crawler
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.3709230Z [log] [nitro] [90m  ├─ /404.html (35ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.3711030Z [log] [nitro] [90m  ├─ /index.html (36ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.3712540Z [log] [nitro] [90m  ├─ /200.html (35ms)[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.3713390Z [info] [nitro] Prerendered 3 routes in 1.449 seconds
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.5252480Z [success] [nitro] Generated public [36mdist/renderer[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.5431930Z [success] [nitro] You can preview this build using `npx serve dist/renderer`
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.5436130Z [log] [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.5437440Z [33m▲[39m  HTML content not prerendered because [36mssr: false[39m was set.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.5438160Z [log] [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.5442450Z [34m●[39m  You can read more in [36mhttps://nuxt.com/docs/getting-started/deployment#static-hosting[39m.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.5446570Z [log] [90m│[39m
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:12.5447950Z [90m└[39m  ✨ You can now deploy [36mdist/renderer[39m to any static hosting!
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:13.0878130Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:13.0879460Z > autobyteus@1.4.93 transpile-electron /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:13.0880920Z > tsc -p electron/tsconfig.json
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:13.0881140Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9518770Z Building with environment: production
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9519920Z Using environment file: .env.production
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9520340Z Resolved build flavor: personal
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9520790Z Artifact base name: AutoByteus_personal
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9521160Z Requested architecture: X64
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9521860Z Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9522420Z Generating application icons...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9522760Z Generating 16x16 PNG icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9951800Z Generating 32x32 PNG icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9971090Z Generating 48x48 PNG icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:17.9987860Z Generating 64x64 PNG icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.0002550Z Generating 128x128 PNG icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.0022220Z Generating 256x256 PNG icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.0046020Z Generating 512x512 PNG icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.0092110Z Generating 1024x1024 PNG icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.0227560Z Generating Windows ICO icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.1032310Z Generating macOS ICNS icon...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.1193420Z Icon generation completed successfully
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.1194210Z Starting electron-builder...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.1200310Z   • electron-builder  version=25.1.8 os=23.6.0
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.1292490Z   • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.1295700Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.1297250Z To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.4872610Z   • executing @electron/rebuild  electronVersion=42.4.1 arch=x64 buildFromSource=false appDir=./
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:18.4891390Z   • installing native dependencies  arch=x64
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:19.8741540Z   • completed installing native dependencies
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:19.8781650Z   • packaging       platform=darwin arch=x64 electron=42.4.1 appOutDir=electron-dist/mac
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:20.2625510Z   • downloading     url=https://github.com/electron/electron/releases/download/v42.4.1/electron-v42.4.1-darwin-x64.zip size=122 MB parts=6
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:21.2993260Z   • downloaded      url=https://github.com/electron/electron/releases/download/v42.4.1/electron-v42.4.1-darwin-x64.zip duration=1.399s
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:40.5500980Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:40.5584440Z Normalizing packaged terminal native resources...
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:40.8522710Z   Normalized execute bits on 3 node-pty spawn-helper file(s)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:41.0375820Z   • executing custom sign  file=electron-dist/mac/AutoByteus.app platform=darwin type=distribution identity=37C9698B12C2CE90D9B9E9F882B67C65C9F5B4FA provisioningProfile=none
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:47.1429760Z [macSign] Signing 47 macOS subject(s) with AutoByteus signing policy
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:47.1431290Z   [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/obj.target/pty/src/unix/pty.o
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:47.7096130Z   [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/obj.target/spawn-helper/src/unix/spawn-helper.o
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:47.8294690Z   [none] Contents/Resources/server/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:47.9875270Z   [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/bin/darwin-arm64-146/node-pty.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:48.1456040Z   [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:48.2688890Z   [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:48.3878080Z   [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:48.5048770Z   [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:48.6178650Z   [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/pty.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:48.7320840Z   [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:48.8460440Z   [none] Contents/Resources/server/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk-darwin-arm64@0.3.280/node_modules/@anthropic-ai/claude-agent-sdk-darwin-arm64/claude
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:49.5334430Z   [none] Contents/Resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:49.7039620Z   [none] Contents/Resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin.dylib.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:49.8613630Z   [none] Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:50.0188230Z   [none] Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin.dylib.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:50.1886290Z   [none] Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:50.3450750Z   [none] Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:50.5019870Z   [none] Contents/Resources/server/node_modules/.pnpm/@rollup+rollup-darwin-arm64@4.57.1/node_modules/@rollup/rollup-darwin-arm64/rollup.darwin-arm64.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:50.6559810Z   [none] Contents/Resources/server/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/bin/esbuild
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:50.7938810Z   [none] Contents/Resources/server/node_modules/.pnpm/fsevents@2.3.3/node_modules/fsevents/fsevents.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:51.0237990Z   [none] Contents/Resources/server/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/libquery_engine-darwin-arm64.dylib.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:51.1758980Z   [none] Contents/Resources/server/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/libquery_engine-darwin.dylib.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:51.3384990Z   [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Helpers/chrome_crashpad_handler
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:51.4668530Z   [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libEGL.dylib
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:51.5857960Z   [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libGLESv2.dylib
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:51.7264320Z   [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libffmpeg.dylib
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:51.8485140Z   [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:51.9808760Z   [none] Contents/Frameworks/Squirrel.framework/Versions/A/Resources/ShipIt
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:52.0990700Z   [none] Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/canvas-darwin-arm64/skia.darwin-arm64.node
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:52.2666690Z   [helper-gpu] Contents/Frameworks/AutoByteus Helper (GPU).app/Contents/MacOS/AutoByteus Helper (GPU)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:52.4119280Z   [helper-plugin] Contents/Frameworks/AutoByteus Helper (Plugin).app/Contents/MacOS/AutoByteus Helper (Plugin)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:52.5278270Z   [helper-renderer] Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:52.6451190Z   [helper-generic] Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:52.7653210Z   [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:53.9709830Z   [none] Contents/Frameworks/Mantle.framework/Versions/A/Mantle
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:54.0922720Z   [none] Contents/Frameworks/ReactiveObjC.framework/Versions/A/ReactiveObjC
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:54.2152940Z   [none] Contents/Frameworks/Squirrel.framework/Versions/A/Squirrel
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:14:54.3354890Z   [root-app] Contents/MacOS/AutoByteus
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:02.4172150Z   [none] Contents/Frameworks/Electron Framework.framework
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:03.4335200Z   [none] Contents/Frameworks/Mantle.framework
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:03.5829640Z   [none] Contents/Frameworks/ReactiveObjC.framework
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:03.7283700Z   [none] Contents/Frameworks/Squirrel.framework
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:03.8796390Z   [helper-gpu] Contents/Frameworks/AutoByteus Helper (GPU).app
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:04.0044010Z   [helper-plugin] Contents/Frameworks/AutoByteus Helper (Plugin).app
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:04.1392130Z   [helper-renderer] Contents/Frameworks/AutoByteus Helper (Renderer).app
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:04.2692300Z   [helper-generic] Contents/Frameworks/AutoByteus Helper.app
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:04.3973510Z   [root-app] AutoByteus.app
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:15:22.8307440Z [macSign] AutoByteus macOS signing policy completed
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:21:46.9736170Z   • notarization successful
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:21:46.9840010Z   • building        target=DMG arch=x64 file=electron-dist/AutoByteus_personal_macos-x64-1.4.93.dmg
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:21:46.9943240Z   • building        target=macOS zip arch=x64 file=electron-dist/AutoByteus_personal_macos-x64-1.4.93.zip
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:21:46.9959660Z   • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:35.6918810Z   • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-x64-1.4.93.zip.blockmap
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2779160Z Build process failed: Error: Exit code: 1. Command failed: codesign --sign 37C9698B12C2CE90D9B9E9F882B67C65C9F5B4FA /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_personal_macos-x64-1.4.93.dmg
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2782830Z /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_personal_macos-x64-1.4.93.dmg: The timestamp service is not available.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2803440Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2805450Z /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_personal_macos-x64-1.4.93.dmg: The timestamp service is not available.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2807560Z 
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2808810Z     at /Users/runner/work/autobyteus-workspace/autobyteus-workspace/node_modules/.pnpm/builder-util@25.1.7/node_modules/builder-util/src/util.ts:138:18
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2809870Z     at ChildProcess.exithandler (node:child_process:424:5)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2810410Z     at ChildProcess.emit (node:events:519:28)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2811860Z     at maybeClose (node:internal/child_process:1101:16)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2812500Z     at Socket.<anonymous> (node:internal/child_process:456:11)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2812960Z     at Socket.emit (node:events:519:28)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.2813390Z     at Pipe.<anonymous> (node:net:347:12)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.3494780Z  ELIFECYCLE  Command failed with exit code 1.
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-03T14:26:39.4499830Z ##[error]Process completed with exit code 1.

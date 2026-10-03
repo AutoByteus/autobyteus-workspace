@@ -1,0 +1,9 @@
+version: 1.4.93
+files:
+  - url: AutoByteus_personal_linux-x64-1.4.93.AppImage
+    sha512: JyNM9VmzKAh78FXyckwacV46pyCsNITeomodt7reALlBustRaYUKTEaJWDHJCUpOnGRdDAA5DAZoL9TX1VgxNA==
+    size: 458191061
+    blockMapSize: 479465
+path: AutoByteus_personal_linux-x64-1.4.93.AppImage
+sha512: JyNM9VmzKAh78FXyckwacV46pyCsNITeomodt7reALlBustRaYUKTEaJWDHJCUpOnGRdDAA5DAZoL9TX1VgxNA==
+releaseDate: '2026-10-03T14:13:22.247Z'

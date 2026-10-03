@@ -17,3 +17,19 @@
 - Rationale: persist first integrated delivery baseline without confusing prior automated validation/requirements approval with explicit user verification or repository delivery.
 - Next action: present verification packet and obtain explicit user signal; refresh target again and resume only unfinished gates, preserving this record. Append DR-002 for next completed delivery result rather than rewriting this baseline.
 - Remaining limits: inherited 836 TS6059 broad typecheck failure; live-Claude skipped; external capacity/recovery, installed app/full launch/packaged shell/other platforms/deployment untested. No migration or user-state change. Safe scoped revert remains available after finalization; provider capacity is not an application rollback trigger.
+
+## Revision Index Addendum
+| Revision ID | Trigger | Prior result | Current result | Canonical artifacts |
+| --- | --- | --- | --- | --- |
+| DR-002 | Explicit user verification and new stable request | DR-001 Docs Sync Pass / verification hold | Repository finalized; stable v1.4.93 launched; publication/cleanup pending | docs-sync-report.md; handoff-summary.md; release-deployment-report.md; release-notes.md; delivery-package-inventory.md |
+
+## DR-002 — User-Accepted Repository And Stable Launch
+- Trigger/reference: user “finalize and release a new stable version thanks.”, 2026-10-03, after verification packet; evidence/delivery/user-verification.json. This accepts scoped results, not a manual/live-provider test claim. Prior authoritative result DR-001 hold.
+- Medium/Low and Direct Low-Risk unchanged; independent reviews N/A — not applicable.
+- Protected docs/evidence with checkpoints, merged accepted voice-composer code base and later docs receipt. 171 backend + 82 web + 36 E2E passed/one live-Claude skipped; actual current browser and web guard pass; docs-only resolver 15 pass. No material change to scoped handoff, renewed verification not needed. Exact refresh-result.json/transcripts retained.
+- Archived before final ticket commit **05f72f41c724bd1ce2a552f64cc7e6b1d5969786**; ticket pushed; clean personal base **01859eb53a98e6223bede602a814dd3b7f6c28c0**, --no-ff target merge **ce23d92c336902a27192db501f32e5a4216da57a**, target push completed. Shared dirty files/index untouched.
+- Stable **v1.4.93** selected above v1.4.92 and 1.4.93-beta.2; documented helper consumed archived curated notes, created release commit **1b976216da0cbd0cc84fef3fe22a2739325b8ad3**, matching package version/annotated tag and pushed branch/tag. No fresh-tag manual dispatch.
+- Current result: **Repository finalized, stable publication launched — not Delivery Completed**. All applicable CI/publication/rollout and safe worktree/branch/clone cleanup remain owning gates. No completion inferred from tag push.
+- Canonical latest reports/summary/inventory own exact current facts. Evidence: evidence/delivery/release/repository-release-launch.json and logs. DR-001 report snapshots preserved.
+- Terminal return **Not yet eligible / Not sent**, reference N/A. No code/upstream classification finding. Next action: monitor four tag workflows, verify stable public assets/Latest/updater metadata and Docker channels, iOS workflow upload; complete cleanup and append next completed result.
+- Limits retained: inherited standard typecheck 836 TS6059 failures; live provider recovery/real-Claude skipped; no user-node mutation/full launch/live cross-platform guarantee. Public App Store review external; no migration.

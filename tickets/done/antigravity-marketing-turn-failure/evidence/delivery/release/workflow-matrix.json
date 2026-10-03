@@ -1,0 +1,1943 @@
+{
+  "checkedAt": "2026-10-03T14:53:32.542217+00:00",
+  "tag": "v1.4.93",
+  "releaseCommit": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-03T14:09:01Z",
+      "databaseId": 37128625107,
+      "event": "push",
+      "headSha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "name": "Android APK Release",
+      "status": "completed",
+      "updatedAt": "2026-10-03T14:12:46Z",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625107",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 111219015524,
+          "run_id": 37128625107,
+          "workflow_name": "Android APK Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625107",
+          "run_attempt": 1,
+          "node_id": "CR_kwDORZKejM8AAAAZ5St_ZA",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111219015524",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625107/job/111219015524",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:09:01Z",
+          "started_at": "2026-10-03T14:09:03Z",
+          "completed_at": "2026-10-03T14:09:37Z",
+          "name": "Resolve Android Release Metadata",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:04Z",
+              "completed_at": "2026-10-03T14:09:05Z"
+            },
+            {
+              "name": "Resolve release metadata",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:05Z",
+              "completed_at": "2026-10-03T14:09:05Z"
+            },
+            {
+              "name": "Checkout release ref",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:09:05Z",
+              "completed_at": "2026-10-03T14:09:33Z"
+            },
+            {
+              "name": "Validate workspace package versions match release tag",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:09:33Z",
+              "completed_at": "2026-10-03T14:09:34Z"
+            },
+            {
+              "name": "Resolve release commit SHA",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:09:34Z",
+              "completed_at": "2026-10-03T14:09:34Z"
+            },
+            {
+              "name": "Summarize Android release plan",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:09:34Z",
+              "completed_at": "2026-10-03T14:09:34Z"
+            },
+            {
+              "name": "Post Checkout release ref",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12,
+              "started_at": "2026-10-03T14:09:34Z",
+              "completed_at": "2026-10-03T14:09:34Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13,
+              "started_at": "2026-10-03T14:09:34Z",
+              "completed_at": "2026-10-03T14:09:35Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111219015524",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000005381,
+          "runner_name": "GitHub Actions 1000005381",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111219115138,
+          "run_id": 37128625107,
+          "workflow_name": "Android APK Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625107",
+          "run_attempt": 1,
+          "node_id": "CR_kwDORZKejM8AAAAZ5S0Egg",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111219115138",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625107/job/111219115138",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:09:37Z",
+          "started_at": "2026-10-03T14:09:38Z",
+          "completed_at": "2026-10-03T14:11:56Z",
+          "name": "Build Android APK",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:39Z",
+              "completed_at": "2026-10-03T14:09:40Z"
+            },
+            {
+              "name": "Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:40Z",
+              "completed_at": "2026-10-03T14:10:06Z"
+            },
+            {
+              "name": "Set up Java",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:10:06Z",
+              "completed_at": "2026-10-03T14:10:09Z"
+            },
+            {
+              "name": "Set up Android SDK",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:10:09Z",
+              "completed_at": "2026-10-03T14:10:18Z"
+            },
+            {
+              "name": "Install Android SDK platform",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:10:18Z",
+              "completed_at": "2026-10-03T14:10:20Z"
+            },
+            {
+              "name": "Build APK",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:10:20Z",
+              "completed_at": "2026-10-03T14:11:51Z"
+            },
+            {
+              "name": "Upload Android APK workflow artifact",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:11:51Z",
+              "completed_at": "2026-10-03T14:11:51Z"
+            },
+            {
+              "name": "Post Set up Java",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13,
+              "started_at": "2026-10-03T14:11:51Z",
+              "completed_at": "2026-10-03T14:11:55Z"
+            },
+            {
+              "name": "Post Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 14,
+              "started_at": "2026-10-03T14:11:55Z",
+              "completed_at": "2026-10-03T14:11:55Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 15,
+              "started_at": "2026-10-03T14:11:55Z",
+              "completed_at": "2026-10-03T14:11:55Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111219115138",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000005385,
+          "runner_name": "GitHub Actions 1000005385",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111219501176,
+          "run_id": 37128625107,
+          "workflow_name": "Android APK Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625107",
+          "run_attempt": 1,
+          "node_id": "CR_kwDORZKejM8AAAAZ5TLoeA",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111219501176",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625107/job/111219501176",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:11:56Z",
+          "started_at": "2026-10-03T14:11:58Z",
+          "completed_at": "2026-10-03T14:12:46Z",
+          "name": "Publish Android APK To GitHub Release",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:11:59Z",
+              "completed_at": "2026-10-03T14:12:01Z"
+            },
+            {
+              "name": "Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:12:01Z",
+              "completed_at": "2026-10-03T14:12:31Z"
+            },
+            {
+              "name": "Download Android APK artifact",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:12:31Z",
+              "completed_at": "2026-10-03T14:12:32Z"
+            },
+            {
+              "name": "Validate publishable APK artifact",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:12:32Z",
+              "completed_at": "2026-10-03T14:12:32Z"
+            },
+            {
+              "name": "Resolve release notes mode",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:12:32Z",
+              "completed_at": "2026-10-03T14:12:32Z"
+            },
+            {
+              "name": "Publish Android APK asset with curated notes",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:12:32Z",
+              "completed_at": "2026-10-03T14:12:44Z"
+            },
+            {
+              "name": "Publish Android APK asset with generated notes fallback",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 7,
+              "started_at": "2026-10-03T14:12:44Z",
+              "completed_at": "2026-10-03T14:12:44Z"
+            },
+            {
+              "name": "Post Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 14,
+              "started_at": "2026-10-03T14:12:44Z",
+              "completed_at": "2026-10-03T14:12:44Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 15,
+              "started_at": "2026-10-03T14:12:44Z",
+              "completed_at": "2026-10-03T14:12:44Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111219501176",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000005390,
+          "runner_name": "GitHub Actions 1000005390",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        }
+      ]
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-03T14:09:01Z",
+      "databaseId": 37128625039,
+      "event": "push",
+      "headSha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "name": "Server Docker Release",
+      "status": "completed",
+      "updatedAt": "2026-10-03T14:39:31Z",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625039",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 111219015417,
+          "run_id": 37128625039,
+          "workflow_name": "Server Docker Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625039",
+          "run_attempt": 1,
+          "node_id": "CR_kwDORZKejM8AAAAZ5St--Q",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111219015417",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625039/job/111219015417",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:09:01Z",
+          "started_at": "2026-10-03T14:09:03Z",
+          "completed_at": "2026-10-03T14:09:06Z",
+          "name": "Resolve Release Metadata",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:04Z",
+              "completed_at": "2026-10-03T14:09:04Z"
+            },
+            {
+              "name": "Resolve publish metadata",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:04Z",
+              "completed_at": "2026-10-03T14:09:04Z"
+            },
+            {
+              "name": "Summarize publish plan",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:09:04Z",
+              "completed_at": "2026-10-03T14:09:04Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:09:04Z",
+              "completed_at": "2026-10-03T14:09:04Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111219015417",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000005379,
+          "runner_name": "GitHub Actions 1000005379",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111219028105,
+          "run_id": 37128625039,
+          "workflow_name": "Server Docker Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625039",
+          "run_attempt": 1,
+          "node_id": "CR_kwDORZKejM8AAAAZ5SuwiQ",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111219028105",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625039/job/111219028105",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:09:06Z",
+          "started_at": "2026-10-03T14:09:08Z",
+          "completed_at": "2026-10-03T14:39:31Z",
+          "name": "Build And Push Server Image",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:08Z",
+              "completed_at": "2026-10-03T14:09:12Z"
+            },
+            {
+              "name": "Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:12Z",
+              "completed_at": "2026-10-03T14:09:35Z"
+            },
+            {
+              "name": "Free runner disk space",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:09:35Z",
+              "completed_at": "2026-10-03T14:12:21Z"
+            },
+            {
+              "name": "Set up QEMU",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:12:21Z",
+              "completed_at": "2026-10-03T14:12:26Z"
+            },
+            {
+              "name": "Set up Docker Buildx",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:12:26Z",
+              "completed_at": "2026-10-03T14:12:30Z"
+            },
+            {
+              "name": "Login to Docker Hub",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:12:30Z",
+              "completed_at": "2026-10-03T14:12:31Z"
+            },
+            {
+              "name": "Build and push default multi-arch image",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:12:31Z",
+              "completed_at": "2026-10-03T14:38:11Z"
+            },
+            {
+              "name": "Build and push zh multi-arch image",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 8,
+              "started_at": "2026-10-03T14:38:11Z",
+              "completed_at": "2026-10-03T14:38:11Z"
+            },
+            {
+              "name": "Publish summary",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9,
+              "started_at": "2026-10-03T14:38:11Z",
+              "completed_at": "2026-10-03T14:38:11Z"
+            },
+            {
+              "name": "Move beta tag",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10,
+              "started_at": "2026-10-03T14:38:11Z",
+              "completed_at": "2026-10-03T14:38:14Z"
+            },
+            {
+              "name": "Post Build and push default multi-arch image",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 16,
+              "started_at": "2026-10-03T14:38:14Z",
+              "completed_at": "2026-10-03T14:38:16Z"
+            },
+            {
+              "name": "Post Login to Docker Hub",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 17,
+              "started_at": "2026-10-03T14:38:16Z",
+              "completed_at": "2026-10-03T14:38:16Z"
+            },
+            {
+              "name": "Post Set up Docker Buildx",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 18,
+              "started_at": "2026-10-03T14:38:16Z",
+              "completed_at": "2026-10-03T14:39:27Z"
+            },
+            {
+              "name": "Post Set up QEMU",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 19,
+              "started_at": "2026-10-03T14:39:27Z",
+              "completed_at": "2026-10-03T14:39:28Z"
+            },
+            {
+              "name": "Post Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 20,
+              "started_at": "2026-10-03T14:39:28Z",
+              "completed_at": "2026-10-03T14:39:28Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 21,
+              "started_at": "2026-10-03T14:39:28Z",
+              "completed_at": "2026-10-03T14:39:29Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111219028105",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000005382,
+          "runner_name": "GitHub Actions 1000005382",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        }
+      ]
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-03T14:09:01Z",
+      "databaseId": 37128625065,
+      "event": "push",
+      "headSha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "name": "iOS App Store Connect Release",
+      "status": "completed",
+      "updatedAt": "2026-10-03T14:24:03Z",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625065",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 111219015300,
+          "run_id": 37128625065,
+          "workflow_name": "iOS App Store Connect Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625065",
+          "run_attempt": 1,
+          "node_id": "CR_kwDORZKejM8AAAAZ5St-hA",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111219015300",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625065/job/111219015300",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:09:01Z",
+          "started_at": "2026-10-03T14:09:03Z",
+          "completed_at": "2026-10-03T14:09:39Z",
+          "name": "Resolve iOS Release Metadata",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:04Z",
+              "completed_at": "2026-10-03T14:09:04Z"
+            },
+            {
+              "name": "Checkout workflow helper scripts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:04Z",
+              "completed_at": "2026-10-03T14:09:32Z"
+            },
+            {
+              "name": "Resolve release metadata",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:09:32Z",
+              "completed_at": "2026-10-03T14:09:33Z"
+            },
+            {
+              "name": "Checkout release ref",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:09:33Z",
+              "completed_at": "2026-10-03T14:09:35Z"
+            },
+            {
+              "name": "Resolve release commit SHA",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:09:35Z",
+              "completed_at": "2026-10-03T14:09:35Z"
+            },
+            {
+              "name": "Summarize iOS release plan",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:09:35Z",
+              "completed_at": "2026-10-03T14:09:35Z"
+            },
+            {
+              "name": "Post Checkout release ref",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11,
+              "started_at": "2026-10-03T14:09:35Z",
+              "completed_at": "2026-10-03T14:09:36Z"
+            },
+            {
+              "name": "Post Checkout workflow helper scripts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12,
+              "started_at": "2026-10-03T14:09:36Z",
+              "completed_at": "2026-10-03T14:09:36Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13,
+              "started_at": "2026-10-03T14:09:36Z",
+              "completed_at": "2026-10-03T14:09:36Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111219015300",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000005378,
+          "runner_name": "GitHub Actions 1000005378",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111219120005,
+          "run_id": 37128625065,
+          "workflow_name": "iOS App Store Connect Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625065",
+          "run_attempt": 1,
+          "node_id": "CR_kwDORZKejM8AAAAZ5S0XhQ",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111219120005",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625065/job/111219120005",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:09:39Z",
+          "started_at": "2026-10-03T14:09:46Z",
+          "completed_at": "2026-10-03T14:20:12Z",
+          "name": "Build And Test iOS App",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:47Z",
+              "completed_at": "2026-10-03T14:09:48Z"
+            },
+            {
+              "name": "Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:48Z",
+              "completed_at": "2026-10-03T14:10:36Z"
+            },
+            {
+              "name": "Select Xcode 26 or newer",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:10:36Z",
+              "completed_at": "2026-10-03T14:10:42Z"
+            },
+            {
+              "name": "Install XcodeGen",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:10:42Z",
+              "completed_at": "2026-10-03T14:11:09Z"
+            },
+            {
+              "name": "Select available iOS simulator",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:11:09Z",
+              "completed_at": "2026-10-03T14:11:10Z"
+            },
+            {
+              "name": "Generate, build, and run implementation checks",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:11:10Z",
+              "completed_at": "2026-10-03T14:19:51Z"
+            },
+            {
+              "name": "Write publish secret readiness summary",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:19:51Z",
+              "completed_at": "2026-10-03T14:19:52Z"
+            },
+            {
+              "name": "Upload iOS build/test artifacts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-03T14:19:52Z",
+              "completed_at": "2026-10-03T14:19:55Z"
+            },
+            {
+              "name": "Post Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 16,
+              "started_at": "2026-10-03T14:19:55Z",
+              "completed_at": "2026-10-03T14:19:56Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 17,
+              "started_at": "2026-10-03T14:19:56Z",
+              "completed_at": "2026-10-03T14:20:10Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111219120005",
+          "labels": [
+            "macos-latest"
+          ],
+          "runner_id": 1000005389,
+          "runner_name": "GitHub Actions 1000005389",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111220839549,
+          "run_id": 37128625065,
+          "workflow_name": "iOS App Store Connect Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625065",
+          "run_attempt": 1,
+          "node_id": "CR_kwDORZKejM8AAAAZ5UdUfQ",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111220839549",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625065/job/111220839549",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:20:12Z",
+          "started_at": "2026-10-03T14:20:14Z",
+          "completed_at": "2026-10-03T14:20:45Z",
+          "name": "Validate iOS Publish Secrets",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:20:15Z",
+              "completed_at": "2026-10-03T14:20:16Z"
+            },
+            {
+              "name": "Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:20:16Z",
+              "completed_at": "2026-10-03T14:20:43Z"
+            },
+            {
+              "name": "Fail fast when iOS publish secrets are incomplete",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:20:43Z",
+              "completed_at": "2026-10-03T14:20:43Z"
+            },
+            {
+              "name": "Post Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:20:43Z",
+              "completed_at": "2026-10-03T14:20:43Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:20:43Z",
+              "completed_at": "2026-10-03T14:20:43Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111220839549",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000005391,
+          "runner_name": "GitHub Actions 1000005391",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111220935191,
+          "run_id": 37128625065,
+          "workflow_name": "iOS App Store Connect Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625065",
+          "run_attempt": 1,
+          "node_id": "CR_kwDORZKejM8AAAAZ5UjKFw",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111220935191",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625065/job/111220935191",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:20:46Z",
+          "started_at": "2026-10-03T14:20:54Z",
+          "completed_at": "2026-10-03T14:24:02Z",
+          "name": "Archive And Upload To App Store Connect",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:20:55Z",
+              "completed_at": "2026-10-03T14:20:56Z"
+            },
+            {
+              "name": "Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:20:56Z",
+              "completed_at": "2026-10-03T14:21:53Z"
+            },
+            {
+              "name": "Select Xcode 26 or newer",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:21:53Z",
+              "completed_at": "2026-10-03T14:21:58Z"
+            },
+            {
+              "name": "Install XcodeGen",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:21:58Z",
+              "completed_at": "2026-10-03T14:22:04Z"
+            },
+            {
+              "name": "Initialize temporary publish paths",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:22:04Z",
+              "completed_at": "2026-10-03T14:22:04Z"
+            },
+            {
+              "name": "Import iOS distribution certificate into temporary keychain",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:22:04Z",
+              "completed_at": "2026-10-03T14:22:05Z"
+            },
+            {
+              "name": "Decode, verify, and install App Store provisioning profiles",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:22:05Z",
+              "completed_at": "2026-10-03T14:22:06Z"
+            },
+            {
+              "name": "Generate project and ExportOptions.plist",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-03T14:22:06Z",
+              "completed_at": "2026-10-03T14:22:06Z"
+            },
+            {
+              "name": "Archive and export signed IPA",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9,
+              "started_at": "2026-10-03T14:22:06Z",
+              "completed_at": "2026-10-03T14:23:25Z"
+            },
+            {
+              "name": "Upload IPA to App Store Connect/TestFlight",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10,
+              "started_at": "2026-10-03T14:23:25Z",
+              "completed_at": "2026-10-03T14:23:51Z"
+            },
+            {
+              "name": "Summarize iOS TestFlight upload",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11,
+              "started_at": "2026-10-03T14:23:51Z",
+              "completed_at": "2026-10-03T14:23:52Z"
+            },
+            {
+              "name": "Cleanup iOS signing material",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12,
+              "started_at": "2026-10-03T14:23:52Z",
+              "completed_at": "2026-10-03T14:23:52Z"
+            },
+            {
+              "name": "Upload iOS publish artifacts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13,
+              "started_at": "2026-10-03T14:23:52Z",
+              "completed_at": "2026-10-03T14:23:55Z"
+            },
+            {
+              "name": "Post Checkout workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 26,
+              "started_at": "2026-10-03T14:23:55Z",
+              "completed_at": "2026-10-03T14:23:57Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 27,
+              "started_at": "2026-10-03T14:23:57Z",
+              "completed_at": "2026-10-03T14:24:00Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111220935191",
+          "labels": [
+            "macos-latest"
+          ],
+          "runner_id": 1000005392,
+          "runner_name": "GitHub Actions 1000005392",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        }
+      ]
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-03T14:09:01Z",
+      "databaseId": 37128625067,
+      "event": "push",
+      "headSha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "name": "Desktop Release",
+      "status": "completed",
+      "updatedAt": "2026-10-03T14:51:46Z",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625067",
+      "attempt": 2,
+      "jobs": [
+        {
+          "id": 111222730098,
+          "run_id": 37128625067,
+          "workflow_name": "Desktop Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625067",
+          "run_attempt": 2,
+          "node_id": "CR_kwDORZKejM8AAAAZ5WQtcg",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111222730098",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625067/job/111222730098",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:31:23Z",
+          "started_at": "2026-10-03T14:31:30Z",
+          "completed_at": "2026-10-03T14:49:47Z",
+          "name": "Build macOS Intel x64",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:31:31Z",
+              "completed_at": "2026-10-03T14:31:33Z"
+            },
+            {
+              "name": "Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:31:33Z",
+              "completed_at": "2026-10-03T14:32:16Z"
+            },
+            {
+              "name": "Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:32:16Z",
+              "completed_at": "2026-10-03T14:32:18Z"
+            },
+            {
+              "name": "Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:32:18Z",
+              "completed_at": "2026-10-03T14:32:38Z"
+            },
+            {
+              "name": "Install workspace dependencies",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:32:38Z",
+              "completed_at": "2026-10-03T14:32:49Z"
+            },
+            {
+              "name": "Install Python setuptools for node-gyp",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:32:49Z",
+              "completed_at": "2026-10-03T14:32:51Z"
+            },
+            {
+              "name": "Import Apple code signing certificate",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:32:51Z",
+              "completed_at": "2026-10-03T14:32:51Z"
+            },
+            {
+              "name": "Build Electron macOS Intel x64",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-03T14:32:51Z",
+              "completed_at": "2026-10-03T14:48:41Z"
+            },
+            {
+              "name": "Verify bundled Prisma x64 engine target",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9,
+              "started_at": "2026-10-03T14:48:41Z",
+              "completed_at": "2026-10-03T14:48:42Z"
+            },
+            {
+              "name": "Verify packaged terminal runtime x64",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10,
+              "started_at": "2026-10-03T14:48:42Z",
+              "completed_at": "2026-10-03T14:48:43Z"
+            },
+            {
+              "name": "Verify macOS signing policy x64",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11,
+              "started_at": "2026-10-03T14:48:43Z",
+              "completed_at": "2026-10-03T14:49:07Z"
+            },
+            {
+              "name": "Upload macOS Intel artifacts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12,
+              "started_at": "2026-10-03T14:49:07Z",
+              "completed_at": "2026-10-03T14:49:42Z"
+            },
+            {
+              "name": "Post Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 22,
+              "started_at": "2026-10-03T14:49:42Z",
+              "completed_at": "2026-10-03T14:49:42Z"
+            },
+            {
+              "name": "Post Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 23,
+              "started_at": "2026-10-03T14:49:42Z",
+              "completed_at": "2026-10-03T14:49:43Z"
+            },
+            {
+              "name": "Post Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 24,
+              "started_at": "2026-10-03T14:49:43Z",
+              "completed_at": "2026-10-03T14:49:43Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 25,
+              "started_at": "2026-10-03T14:49:43Z",
+              "completed_at": "2026-10-03T14:49:46Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111222730098",
+          "labels": [
+            "macos-14"
+          ],
+          "runner_id": 1000005393,
+          "runner_name": "GitHub Actions 1000005393",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111222730675,
+          "run_id": 37128625067,
+          "workflow_name": "Desktop Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625067",
+          "run_attempt": 2,
+          "node_id": "CR_kwDORZKejM8AAAAZ5WQvsw",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111222730675",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625067/job/111222730675",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:31:23Z",
+          "started_at": "2026-10-03T14:09:04Z",
+          "completed_at": "2026-10-03T14:09:37Z",
+          "name": "Resolve Release Metadata",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:04Z",
+              "completed_at": "2026-10-03T14:09:05Z"
+            },
+            {
+              "name": "Resolve release metadata",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:05Z",
+              "completed_at": "2026-10-03T14:09:05Z"
+            },
+            {
+              "name": "Checkout release ref",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:09:05Z",
+              "completed_at": "2026-10-03T14:09:33Z"
+            },
+            {
+              "name": "Check repository artifact hygiene",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:09:33Z",
+              "completed_at": "2026-10-03T14:09:33Z"
+            },
+            {
+              "name": "Validate workspace package versions match release tag",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:09:33Z",
+              "completed_at": "2026-10-03T14:09:33Z"
+            },
+            {
+              "name": "Resolve release commit SHA",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:09:33Z",
+              "completed_at": "2026-10-03T14:09:33Z"
+            },
+            {
+              "name": "Post Checkout release ref",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12,
+              "started_at": "2026-10-03T14:09:33Z",
+              "completed_at": "2026-10-03T14:09:33Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13,
+              "started_at": "2026-10-03T14:09:33Z",
+              "completed_at": "2026-10-03T14:09:34Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111222730675",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000005380,
+          "runner_name": "GitHub Actions 1000005380",
+          "runner_group_id": null,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111222730926,
+          "run_id": 37128625067,
+          "workflow_name": "Desktop Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625067",
+          "run_attempt": 2,
+          "node_id": "CR_kwDORZKejM8AAAAZ5WQwrg",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111222730926",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625067/job/111222730926",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:31:23Z",
+          "started_at": "2026-10-03T14:09:39Z",
+          "completed_at": "2026-10-03T14:20:26Z",
+          "name": "Build Windows x64",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:40Z",
+              "completed_at": "2026-10-03T14:09:41Z"
+            },
+            {
+              "name": "Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:41Z",
+              "completed_at": "2026-10-03T14:10:19Z"
+            },
+            {
+              "name": "Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:10:19Z",
+              "completed_at": "2026-10-03T14:10:22Z"
+            },
+            {
+              "name": "Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:10:22Z",
+              "completed_at": "2026-10-03T14:10:28Z"
+            },
+            {
+              "name": "Install workspace dependencies",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:10:28Z",
+              "completed_at": "2026-10-03T14:10:53Z"
+            },
+            {
+              "name": "Install Python setuptools for node-gyp",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:10:53Z",
+              "completed_at": "2026-10-03T14:10:59Z"
+            },
+            {
+              "name": "Build Electron Windows x64",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:10:59Z",
+              "completed_at": "2026-10-03T14:20:04Z"
+            },
+            {
+              "name": "Upload Windows artifacts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-03T14:20:04Z",
+              "completed_at": "2026-10-03T14:20:12Z"
+            },
+            {
+              "name": "Post Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 14,
+              "started_at": "2026-10-03T14:20:12Z",
+              "completed_at": "2026-10-03T14:20:24Z"
+            },
+            {
+              "name": "Post Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 15,
+              "started_at": "2026-10-03T14:20:24Z",
+              "completed_at": "2026-10-03T14:20:24Z"
+            },
+            {
+              "name": "Post Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 16,
+              "started_at": "2026-10-03T14:20:24Z",
+              "completed_at": "2026-10-03T14:20:25Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 17,
+              "started_at": "2026-10-03T14:20:25Z",
+              "completed_at": "2026-10-03T14:20:25Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111222730926",
+          "labels": [
+            "windows-2022"
+          ],
+          "runner_id": 1000005383,
+          "runner_name": "GitHub Actions 1000005383",
+          "runner_group_id": null,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111222731344,
+          "run_id": 37128625067,
+          "workflow_name": "Desktop Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625067",
+          "run_attempt": 2,
+          "node_id": "CR_kwDORZKejM8AAAAZ5WQyUA",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111222731344",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625067/job/111222731344",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:31:23Z",
+          "started_at": "2026-10-03T14:09:38Z",
+          "completed_at": "2026-10-03T14:13:44Z",
+          "name": "Build Linux x64",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:39Z",
+              "completed_at": "2026-10-03T14:09:40Z"
+            },
+            {
+              "name": "Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:40Z",
+              "completed_at": "2026-10-03T14:10:06Z"
+            },
+            {
+              "name": "Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:10:06Z",
+              "completed_at": "2026-10-03T14:10:07Z"
+            },
+            {
+              "name": "Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:10:07Z",
+              "completed_at": "2026-10-03T14:10:10Z"
+            },
+            {
+              "name": "Install Linux build deps",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:10:10Z",
+              "completed_at": "2026-10-03T14:10:27Z"
+            },
+            {
+              "name": "Install workspace dependencies",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:10:27Z",
+              "completed_at": "2026-10-03T14:10:49Z"
+            },
+            {
+              "name": "Build Electron Linux x64",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:10:49Z",
+              "completed_at": "2026-10-03T14:13:22Z"
+            },
+            {
+              "name": "Verify Linux x64 AppImage and updater metadata",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-03T14:13:22Z",
+              "completed_at": "2026-10-03T14:13:22Z"
+            },
+            {
+              "name": "Verify Linux x64 Prisma engines",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9,
+              "started_at": "2026-10-03T14:13:22Z",
+              "completed_at": "2026-10-03T14:13:22Z"
+            },
+            {
+              "name": "Verify Linux x64 packaged server startup",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10,
+              "started_at": "2026-10-03T14:13:22Z",
+              "completed_at": "2026-10-03T14:13:25Z"
+            },
+            {
+              "name": "Upload Linux x64 artifacts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11,
+              "started_at": "2026-10-03T14:13:25Z",
+              "completed_at": "2026-10-03T14:13:37Z"
+            },
+            {
+              "name": "Post Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 20,
+              "started_at": "2026-10-03T14:13:37Z",
+              "completed_at": "2026-10-03T14:13:42Z"
+            },
+            {
+              "name": "Post Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 21,
+              "started_at": "2026-10-03T14:13:42Z",
+              "completed_at": "2026-10-03T14:13:42Z"
+            },
+            {
+              "name": "Post Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 22,
+              "started_at": "2026-10-03T14:13:42Z",
+              "completed_at": "2026-10-03T14:13:43Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 23,
+              "started_at": "2026-10-03T14:13:43Z",
+              "completed_at": "2026-10-03T14:13:43Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111222731344",
+          "labels": [
+            "ubuntu-22.04"
+          ],
+          "runner_id": 1000005384,
+          "runner_name": "GitHub Actions 1000005384",
+          "runner_group_id": null,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111222731348,
+          "run_id": 37128625067,
+          "workflow_name": "Desktop Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625067",
+          "run_attempt": 2,
+          "node_id": "CR_kwDORZKejM8AAAAZ5WQyVA",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111222731348",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625067/job/111222731348",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:31:23Z",
+          "started_at": "2026-10-03T14:09:41Z",
+          "completed_at": "2026-10-03T14:13:47Z",
+          "name": "Build Linux ARM64",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:42Z",
+              "completed_at": "2026-10-03T14:09:44Z"
+            },
+            {
+              "name": "Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:44Z",
+              "completed_at": "2026-10-03T14:10:10Z"
+            },
+            {
+              "name": "Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:10:10Z",
+              "completed_at": "2026-10-03T14:10:11Z"
+            },
+            {
+              "name": "Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:10:11Z",
+              "completed_at": "2026-10-03T14:10:15Z"
+            },
+            {
+              "name": "Install Linux build deps",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:10:15Z",
+              "completed_at": "2026-10-03T14:10:32Z"
+            },
+            {
+              "name": "Install workspace dependencies",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:10:32Z",
+              "completed_at": "2026-10-03T14:10:49Z"
+            },
+            {
+              "name": "Build Electron Linux ARM64",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:10:49Z",
+              "completed_at": "2026-10-03T14:13:24Z"
+            },
+            {
+              "name": "Verify Linux ARM64 AppImage and updater metadata",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-03T14:13:24Z",
+              "completed_at": "2026-10-03T14:13:24Z"
+            },
+            {
+              "name": "Verify Linux ARM64 Prisma engines",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9,
+              "started_at": "2026-10-03T14:13:24Z",
+              "completed_at": "2026-10-03T14:13:24Z"
+            },
+            {
+              "name": "Verify Linux ARM64 packaged server startup",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10,
+              "started_at": "2026-10-03T14:13:24Z",
+              "completed_at": "2026-10-03T14:13:28Z"
+            },
+            {
+              "name": "Upload Linux ARM64 artifacts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11,
+              "started_at": "2026-10-03T14:13:28Z",
+              "completed_at": "2026-10-03T14:13:39Z"
+            },
+            {
+              "name": "Post Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 20,
+              "started_at": "2026-10-03T14:13:39Z",
+              "completed_at": "2026-10-03T14:13:45Z"
+            },
+            {
+              "name": "Post Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 21,
+              "started_at": "2026-10-03T14:13:45Z",
+              "completed_at": "2026-10-03T14:13:45Z"
+            },
+            {
+              "name": "Post Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 22,
+              "started_at": "2026-10-03T14:13:45Z",
+              "completed_at": "2026-10-03T14:13:45Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 23,
+              "started_at": "2026-10-03T14:13:45Z",
+              "completed_at": "2026-10-03T14:13:45Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111222731348",
+          "labels": [
+            "ubuntu-24.04-arm"
+          ],
+          "runner_id": 1000005386,
+          "runner_name": "GitHub Actions 1000005386",
+          "runner_group_id": null,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111222747405,
+          "run_id": 37128625067,
+          "workflow_name": "Desktop Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625067",
+          "run_attempt": 2,
+          "node_id": "CR_kwDORZKejM8AAAAZ5WRxDQ",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111222747405",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625067/job/111222747405",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:31:29Z",
+          "started_at": "2026-10-03T14:09:43Z",
+          "completed_at": "2026-10-03T14:25:50Z",
+          "name": "Build macOS ARM64",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:09:43Z",
+              "completed_at": "2026-10-03T14:09:45Z"
+            },
+            {
+              "name": "Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:09:45Z",
+              "completed_at": "2026-10-03T14:10:38Z"
+            },
+            {
+              "name": "Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:10:38Z",
+              "completed_at": "2026-10-03T14:10:39Z"
+            },
+            {
+              "name": "Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:10:39Z",
+              "completed_at": "2026-10-03T14:10:40Z"
+            },
+            {
+              "name": "Install workspace dependencies",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:10:40Z",
+              "completed_at": "2026-10-03T14:11:15Z"
+            },
+            {
+              "name": "Install Python setuptools for node-gyp",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:11:15Z",
+              "completed_at": "2026-10-03T14:11:16Z"
+            },
+            {
+              "name": "Import Apple code signing certificate",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:11:16Z",
+              "completed_at": "2026-10-03T14:11:17Z"
+            },
+            {
+              "name": "Build Electron macOS ARM64",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-03T14:11:17Z",
+              "completed_at": "2026-10-03T14:24:40Z"
+            },
+            {
+              "name": "Verify bundled Prisma ARM64 engine target",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9,
+              "started_at": "2026-10-03T14:24:40Z",
+              "completed_at": "2026-10-03T14:24:41Z"
+            },
+            {
+              "name": "Verify packaged terminal runtime ARM64",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10,
+              "started_at": "2026-10-03T14:24:41Z",
+              "completed_at": "2026-10-03T14:24:42Z"
+            },
+            {
+              "name": "Verify macOS signing policy ARM64",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11,
+              "started_at": "2026-10-03T14:24:42Z",
+              "completed_at": "2026-10-03T14:24:54Z"
+            },
+            {
+              "name": "Upload macOS artifacts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12,
+              "started_at": "2026-10-03T14:24:54Z",
+              "completed_at": "2026-10-03T14:25:19Z"
+            },
+            {
+              "name": "Post Setup Node",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 22,
+              "started_at": "2026-10-03T14:25:19Z",
+              "completed_at": "2026-10-03T14:25:46Z"
+            },
+            {
+              "name": "Post Setup pnpm",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 23,
+              "started_at": "2026-10-03T14:25:46Z",
+              "completed_at": "2026-10-03T14:25:46Z"
+            },
+            {
+              "name": "Post Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 24,
+              "started_at": "2026-10-03T14:25:46Z",
+              "completed_at": "2026-10-03T14:25:47Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 25,
+              "started_at": "2026-10-03T14:25:47Z",
+              "completed_at": "2026-10-03T14:25:48Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111222747405",
+          "labels": [
+            "macos-14"
+          ],
+          "runner_id": 1000005388,
+          "runner_name": "GitHub Actions 1000005388",
+          "runner_group_id": null,
+          "runner_group_name": "GitHub Actions"
+        },
+        {
+          "id": 111225989650,
+          "run_id": 37128625067,
+          "workflow_name": "Desktop Release",
+          "head_branch": "v1.4.93",
+          "run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/runs/37128625067",
+          "run_attempt": 2,
+          "node_id": "CR_kwDORZKejM8AAAAZ5ZXqEg",
+          "head_sha": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+          "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/jobs/111225989650",
+          "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37128625067/job/111225989650",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T14:49:48Z",
+          "started_at": "2026-10-03T14:49:50Z",
+          "completed_at": "2026-10-03T14:51:45Z",
+          "name": "Publish GitHub Release",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-03T14:49:51Z",
+              "completed_at": "2026-10-03T14:49:52Z"
+            },
+            {
+              "name": "Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-03T14:49:52Z",
+              "completed_at": "2026-10-03T14:50:21Z"
+            },
+            {
+              "name": "Download build artifacts",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-03T14:50:21Z",
+              "completed_at": "2026-10-03T14:51:08Z"
+            },
+            {
+              "name": "Merge macOS updater metadata",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-03T14:51:08Z",
+              "completed_at": "2026-10-03T14:51:08Z"
+            },
+            {
+              "name": "Validate merged macOS updater metadata",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-03T14:51:08Z",
+              "completed_at": "2026-10-03T14:51:08Z"
+            },
+            {
+              "name": "Validate Linux updater metadata",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-03T14:51:08Z",
+              "completed_at": "2026-10-03T14:51:09Z"
+            },
+            {
+              "name": "Resolve release notes mode",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-03T14:51:09Z",
+              "completed_at": "2026-10-03T14:51:09Z"
+            },
+            {
+              "name": "Publish release assets with curated notes",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-03T14:51:09Z",
+              "completed_at": "2026-10-03T14:51:43Z"
+            },
+            {
+              "name": "Publish release assets with generated notes fallback",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 9,
+              "started_at": "2026-10-03T14:51:43Z",
+              "completed_at": "2026-10-03T14:51:43Z"
+            },
+            {
+              "name": "Post Checkout workspace + submodules",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 18,
+              "started_at": "2026-10-03T14:51:43Z",
+              "completed_at": "2026-10-03T14:51:43Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 19,
+              "started_at": "2026-10-03T14:51:43Z",
+              "completed_at": "2026-10-03T14:51:43Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/check-runs/111225989650",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000005394,
+          "runner_name": "GitHub Actions 1000005394",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        }
+      ]
+    }
+  ]
+}

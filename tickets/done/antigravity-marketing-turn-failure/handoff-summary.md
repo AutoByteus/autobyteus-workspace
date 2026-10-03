@@ -1,7 +1,7 @@
 # Handoff Summary — antigravity-marketing-turn-failure
 
 ## Current State
-**User-accepted; repository finalization and stable v1.4.93 publication in progress. Not Delivery Completed yet.**
+**DR-002: User-accepted, repository finalized; stable v1.4.93 launched, publication/workflows and cleanup pending. Not Delivery Completed yet.**
 - User signal, 2026-10-03: “finalize and release a new stable version thanks.” after the explicit verification packet. Scope accepted; no manual/live-provider testing claimed. [user-verification.json](evidence/delivery/user-verification.json).
 - **task_size=Medium; architectural_risk=Low; Direct Low-Risk**. Approved SR-002 / completed SR-003 design, IR-001, API-REV-001 Pass / 95%. Independent architecture/source reviews and revisions **N/A — not applicable**; test-code review **Not Required**, not passed.
 - Source commit 29c1fa66b8adbe55602e553f1bd4e3be45d19afc; durable API test commit 3e42d6a77bcdeed199df40fefba6462ae5239bd8; API evidence commit 6889fc13b13f83aa43b2a67b43d9f3cab5b4553f. No delivery source fix.
@@ -28,3 +28,18 @@ Stop rollout/revert scoped adapter/test/docs changes if actual message, privacy/
 
 ## Complete Package / Current Locations
 [delivery-package-inventory.md](delivery-package-inventory.md) indexes all approved current authorities, factual/history supplements, source/tests and complete evidence. Upstream absolute old worktree/in-progress paths are provenance; resolve ticket-relative references under current archived root. [delivery-revision-record.md](delivery-revision-record.md) retains DR-001, with the next completed result appended rather than rewriting it. Current finalization/publication is unfinished; terminal not sent.
+
+## DR-002 Repository / Stable Launch Receipt
+- Ticket commit **05f72f41c** pushed; clean isolated personal refreshed from **01859eb53a98e6223bede602a814dd3b7f6c28c0**, merged ticket with --no-ff to **ce23d92c336902a27192db501f32e5a4216da57a**, pushed target.
+- Documented helper consumed archived release notes and pushed package/release commit **1b976216da0cbd0cc84fef3fe22a2739325b8ad3** plus **v1.4.93**. No duplicate manual dispatch. Workflow/asset/Latest/Docker/iOS completion still required; cleanup pending.
+
+## Publication Recovery — Desktop Attempt 1
+- Intel macOS app signing/notarization succeeded; final DMG codesign failed because Apple's timestamp service was unavailable. Original failed log and attempt1 matrix retained.
+- Deployment-local external availability; no source defect established. One unchanged `gh run rerun 37128625067 --failed` accepted (exit 0), same tag/commit, no fresh workflow dispatch, tag mutation, source fix or signing-check weakening. Desktop publication remains pending retry; completion not inferred.
+- Android and iOS/TestFlight workflows already successful. Docker still building; no full release completion claimed. Exact recovery record: evidence/delivery/release/desktop-retry.json.
+
+## Current Publication Result — Verified Complete
+- All four tag-push workflows **success**: Desktop 37128625067 (attempt 2), Android 37128625107, iOS/TestFlight 37128625065 and Docker 37128625039 (attempt 1). Same source/tag; original Intel timestamp-service failure retained and unchanged retry cleared its owning gate.
+- Stable GitHub Latest **v1.4.93**, non-draft/non-prerelease; exact curated notes; all **17 expected assets** uploaded. Four updater metadata files reference matching version/assets; both Linux embedded blockMapSize validators passed; Android SHA256 sidecar matches GitHub APK digest.
+- Docker **1.4.93 / latest / beta** share digest `sha256:6bd413de476de077c0af39cf5a0bcaeab224389d1e349e6efc3b6e00fbe448c0`, with linux/amd64 and linux/arm64. iOS upload step and publish artifact succeeded; public App Store review remains external.
+- Exact current authorities: evidence/delivery/release/workflow-matrix.json and publication-verification.json. Publication/rollout gates **Completed**; remaining owning gate is safe worktree/local-branch/temporary-clone cleanup and final authoritative receipt. No user-node deployment performed.
