@@ -26,6 +26,7 @@ package's script from its own directory.
 | Antigravity (AGY) runtime E2E, fake CLI | AGY stream conversion through the real server (WebSocket, history, Files) with a scripted CLI; no model call | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute path>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/<file> --no-watch` |
 | Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1` or `RUN_AGY_RECOVERY_E2E=1`, then the same `vitest run` command |
 | Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
+| Composer voice lifetime regression | Unchanged Team publication vs genuine destination cancellation through run/Chat composers and native browser capture | `pnpm -C autobyteus-web test:e2e:composer-voice-lifetime --output-dir <fresh-dir>` |
 | Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
 | Team Reload member freshness (real product) | Completed local source edits, cold/warm scoped/shared member inspection, repeated Reload, required-read error/retry, source preservation and owned cleanup | `pnpm -C autobyteus-web test:e2e:team-reload-member-freshness` |
 | Isolated desktop instances | The real desktop app, driven like a user | `pnpm --silent isolated-app start --build` (then drive with the browser-automation skill; `pnpm --silent isolated-app stop`) |
@@ -88,6 +89,50 @@ The optional `--ledger-file <absolute-path>` appends case results as they finish
 The probe stops its exact instance and removes its own data/source fixtures on
 success or failure. Inspect cleanup results as well as case results; unrelated
 instances and the user's app/data must remain untouched.
+
+### Composer Voice Lifetime Regression
+
+Run from the repository root after installing workspace dependencies, building
+the required workspace contracts and running
+`pnpm -C autobyteus-web exec nuxt prepare`:
+
+```bash
+pnpm -C autobyteus-web test:e2e:composer-voice-lifetime --output-dir <fresh-evidence-directory>
+```
+
+The durable CLI and fixture live in `autobyteus-web/tests/e2e/`. Chrome must be
+available; pass `--browser-executable <path>` or set
+`PLAYWRIGHT_CHROME_EXECUTABLE_PATH` if it is not discovered. Relative output
+paths resolve from `autobyteus-web/`; the default is
+`autobyteus-web/test-results/composer-voice-lifetime`. An existing `evidence.json`
+or installed probe page is refused rather than overwritten. Optional
+`--ledger-file <initialized-absolute-path>` appends case progress; initialize
+that file before running and keep evidence in the ticket or test-output folder.
+
+Seven journeys exercise the actual run and Chat composer callers, Team
+publication/projection and selection stores, voice adapter/button/store, native
+media APIs and production AudioWorklet. They assert repeated background
+publications preserve capture past startup, manual/keyboard Stop appends once
+to an existing draft without Send, startup/pending-transcription refreshes
+preserve the owner, and genuine member changes/unmount dispose capture or
+reject late results. Exact-context, eligibility, binding and multiple-owner
+guards are additionally covered by the colocated adapter tests and
+`tests/integration/composer-voice-lifetime.integration.test.ts`.
+
+The probe owns a free-port Nuxt server, temporary fixture route, fresh headless
+Chrome and synthetic PCM microphone input with a test permission grant. Team
+events enter the actual view locally; transcription IPC/results are fixtures.
+This is renderer/native-browser proof, not real microphone/OS permissions,
+network Team producer, official model/native Electron IPC, packaged desktop,
+full Team/mobile product or comprehensive accessibility certification. It never
+uses the user's app/data. Inspect `evidence.json` case results, page errors and
+cleanup receipts as well as screenshots: the probe disposes native capture,
+closes owned Chrome, terminates its exact Nuxt process group/listener and removes
+its temporary page on success or failure.
+
+See [Capture Startup And Ownership](autobyteus-web/docs/electron_packaging.md#capture-startup-and-ownership)
+for the stable exact-destination sink contract; wrapper recreation alone is not
+a destination change.
 
 ## Choosing the path
 

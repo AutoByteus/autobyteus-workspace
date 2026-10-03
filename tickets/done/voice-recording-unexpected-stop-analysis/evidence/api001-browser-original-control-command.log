@@ -1,0 +1,74 @@
+
+> autobyteus@1.4.93-beta.2 test:e2e:composer-voice-lifetime /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+> node tests/e2e/composer-voice-lifetime-probe.mjs --output-dir ../tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/api001-browser-original-control
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ undefined
+- 'composer-r09tsr8tiz'
+
+    at publish (file:///Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:79:10)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:149:17
+    at async scenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:98:26)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:145:3 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: 'composer-r09tsr8tiz',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+{
+  "result": "Fail",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/api001-browser-original-control/evidence.json",
+  "cases": {
+    "B-001": "Fail"
+  },
+  "cleanup": {
+    "renderer": {
+      "kind": "run",
+      "visible": true,
+      "focused": "lead",
+      "starting": false,
+      "recording": false,
+      "transcribing": false,
+      "captureStats": false,
+      "level": 0,
+      "pendingMedia": false,
+      "pendingIpc": false,
+      "publications": 1,
+      "wrappersChanged": 1,
+      "sends": 0,
+      "stops": 0,
+      "cancellations": 1,
+      "ipc": 0,
+      "tracks": [
+        "ended"
+      ],
+      "audioContexts": [
+        "closed"
+      ],
+      "wavs": [],
+      "diagnostics": null,
+      "outcome": "recording",
+      "error": null,
+      "leadDraft": "existing draft",
+      "reviewerDraft": ""
+    },
+    "browser": {
+      "result": "closed",
+      "pid": 39510
+    },
+    "dev": {
+      "result": "terminated",
+      "pid": 39467,
+      "exitCode": 0,
+      "signal": null,
+      "groupExited": true,
+      "portClosed": true
+    },
+    "page": "removed"
+  }
+}
+ ELIFECYCLE  Command failed with exit code 1.

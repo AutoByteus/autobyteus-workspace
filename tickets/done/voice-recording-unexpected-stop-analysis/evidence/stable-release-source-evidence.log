@@ -1,0 +1,77 @@
+=== Remote tag validation ===
+6474957f533b8e6a5ac11f93337c1e6eeef65b77	refs/tags/v1.4.91
+93f33d4d785debe8e99efbc27a3c682ad8fa2eec	refs/tags/v1.4.92
+=== Exact peeled tags ===
+c8c7351e559ca8b9e1bb686173e42b07915fa69f
+a634eba53dc8016767e0e14344b8c157484d159c
+=== Introducing commit ancestry ===
+v1.4.91 c8c7351e559ca8b9e1bb686173e42b07915fa69f contains introducing commit: False
+v1.4.92 a634eba53dc8016767e0e14344b8c157484d159c contains introducing commit: True
+v1.4.92-beta.10 2056b04f3b654ffe583aa956c371869f7d06444d contains introducing commit: False
+v1.4.92-beta.11 777548b050527ab3ff5904a085c0c95677e50e74 contains introducing commit: True
+v1.4.93-beta.2 fe37e693e6f4f1ed0d2f12ed3d83d9106ea037d1 contains introducing commit: True
+=== Prior stable relevant paths ===
+autobyteus-web/components/agentInput/VoiceInputButton.vue
+=== Faulty stable adapter ===
+import { computed, onBeforeUnmount } from 'vue'
+import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget'
+import type { VoiceTranscriptTarget } from '~/types/voiceInput'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { mergeTranscriptWithDraft } from '~/utils/voiceInputCapture'
+/** The composer owns its actual destination; recording never invents or looks up an AgentContext. */
+export function useComposerVoiceTarget(getTarget: () => ComposerTarget | null) {
+  let alive = true
+  const node = useWindowNodeContextStore()
+  onBeforeUnmount(() => { alive = false })
+  return computed<VoiceTranscriptTarget | null>(() => {
+    const target = getTarget()
+    if (!target || target.access === 'read_only') return null
+    const context = target.context, revision = node.bindingRevision
+    return {key: `composer-${Math.random().toString(36).slice(2)}`,
+      isCurrent: () => alive && node.bindingRevision === revision && getTarget()?.context === context,
+      appendTranscript: (text) => { context.requirement = mergeTranscriptWithDraft(context.requirement, text) },
+    }
+  })
+}
+=== Faulty stable watcher ===
+onMounted(() => {
+  void voiceInputStore.initialize();
+});
+
+watch(() => props.target, (target, old) => {
+  if (old && old.key !== target?.key) void voiceInputStore.cancelOperationForTarget(old.key);
+});
+
+onUnmounted(() => {
+  if (props.target) void voiceInputStore.cancelOperationForTarget(props.target.key);
+});
+</script>
+=== Stable probe adaptation (metadata/source selection only) ===
+--- tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.cjs	2026-10-03 14:20:06
++++ tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/stable-source-probe.cjs	2026-10-03 14:47:17
+@@ -11,6 +11,7 @@
+ const {pathToFileURL} = require('node:url');
+ const {execFileSync} = require('node:child_process');
+ const baselineRef = process.env.PROBE_BASELINE_REF || null;
++const sourceRef = process.env.PROBE_SOURCE_REF || baselineRef;
+ const repo = path.resolve(__dirname, '../../../../');
+ const shared = process.env.PROBE_DEPENDENCY_ROOT || '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo';
+ const sharedRequire = createRequire(path.join(shared, 'autobyteus-web/package.json'));
+@@ -61,7 +62,7 @@
+ function load(file) {
+   if (mocks[file]) return mocks[file];
+   if (loaded.has(file)) return loaded.get(file).exports;
+-  let src = baselineRef ? execFileSync('git', ['show', `${baselineRef}:${path.relative(repo, file)}`], {cwd: repo, encoding: 'utf8'}) : fs.readFileSync(file, 'utf8');
++  let src = sourceRef ? execFileSync('git', ['show', `${sourceRef}:${path.relative(repo, file)}`], {cwd: repo, encoding: 'utf8'}) : fs.readFileSync(file, 'utf8');
+   if (file.endsWith('.vue')) {
+     const parsed = compiler.parse(src, {filename: file});
+     src = compiler.compileScript(parsed.descriptor, {id: 'investigation-probe', inlineTemplate: true}).content;
+@@ -118,7 +119,7 @@
+ store.$onAction(({name, args}) => actionTrace.push({name, args: name === 'cancelOperationForTarget' ? args : undefined}));
+ const buttonNode = () => {const find = (n) => n.tag === 'button' ? n : (n.children || []).map(find).find(Boolean); return find(root);};
+ async function start() {await buttonNode().props.onClick(); assert.equal(store.isRecording, true); store.audioWorklet.port.onmessage({data: {type: 'capture-stats', level: .25}}); assert.equal(store.hasReceivedCaptureStats, true);}
+-const report = {sourceRef: baselineRef || 'worktree HEAD', mode: 'Controlled production-source renderer probe, not Electron/microphone/transport E2E', dependencyVersions: {vue: vue.version, pinia: piniaRequire('./package.json').version}, cases: []};
++const report = {sourceRef: sourceRef || 'worktree HEAD', mode: 'Controlled production-source renderer probe, not Electron/microphone/transport E2E', dependencyVersions: {vue: vue.version, pinia: piniaRequire('./package.json').version}, cases: []};
+ (async () => {
+   await start();
+   const stableVoice = voice.value;

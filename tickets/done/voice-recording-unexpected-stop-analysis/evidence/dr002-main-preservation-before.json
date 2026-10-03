@@ -1,0 +1,651 @@
+{
+  "at": "2026-10-03T13:48:32.423161+00:00",
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "files": [
+    {
+      "status": " M",
+      "path": "tickets/done/embedded-browser-open-tab-investigation/docs-sync-report.md",
+      "sha256": "9c76e8385462af2a575046189664077c2b17aae2b4947d1db4e375bc4ae15c5b"
+    },
+    {
+      "status": " M",
+      "path": "tickets/done/embedded-browser-open-tab-investigation/handoff-summary.md",
+      "sha256": "fa3a499601d07a9ae1b40f93e88a19d0b83eb79929b233241fccd0afca41102d"
+    },
+    {
+      "status": " M",
+      "path": "tickets/done/embedded-browser-open-tab-investigation/release-deployment-report.md",
+      "sha256": "a5c56a4cd3eea6823afec1a504793365a9bff8d549bf42c0ff69036d83b46452"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/article.md",
+      "sha256": "09dea298eed334221b397a3067741c78284e39cd703e95259249f097d2aa3bc8"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/assets/imagegen-agent-handoff-graph-cover-v3.png",
+      "sha256": "9c78f934cda9d3a0040bc52395904d1a2311701f396431b98ccbf778a6f8c201"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/assets/imagegen-engineering-team-handoff-v3.png",
+      "sha256": "60f9782194a242ddf7b9e844d9dff9af077929862e5afe559b509904c0a923e0"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/assets/imagegen-execution-routing-boundary-v3.png",
+      "sha256": "fe30841abdea071878c96b612c612ee443b8b8c92f54ae0bc15dab4af73f552d"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/assets/imagegen-founder-release-relay-v3.png",
+      "sha256": "4e0dd208d273b565121af3e4b6943373734aa0abb7af7148232e0235fc0449e9"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/assets/imagegen-handoff-lifecycles-v3.png",
+      "sha256": "5eb386a05385fe39dea380a5fa604ff4e9170abcc090dd1aff0df9f791b218b9"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/assets/imagegen-handoff-safeguards-v3.png",
+      "sha256": "fa70f38c3b4c5c632168314d888be8931f2aa426848ee06092858cc180a7217f"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/assets/imagegen-release-context-handoff-v3.png",
+      "sha256": "aaa9a184df6235adbc4d815c88738f06e2ecc5eb26571c4944420febea472263"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/brief.md",
+      "sha256": "d20b360392062edf837a912beb7a3878918736a63392a3e99483f632b369ff1b"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/claim-evidence-ledger.md",
+      "sha256": "89273c671d7a270959cc0f3dd14d0a2608bbbd17f489b021a73dc0aa02cc3161"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/outline.md",
+      "sha256": "a3e2824a8741c553e6a5e11ad95b0010722c09eed89dc8ce4c8784cda77a600f"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/review-report.md",
+      "sha256": "5eea3fc6fe0a5d842c0c8a79ed0a8ac126ad7ab6dde99f8073d583b0b8308120"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/source-index.md",
+      "sha256": "0c967253276a379c625b24bb900620dd5beed8930528ed53af96b3273914323e"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/style-profile-notes.md",
+      "sha256": "1637850d4f66f44915dce4238dfa1d8c21c29d56b895c168eaff749c000a6510"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/understanding-notes.md",
+      "sha256": "385b4d09566ca74a8369c1a6a35f04dcf9971d5f791fd75f5e8df3691aef9be9"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/visual-asset-index.md",
+      "sha256": "ef8644349cb2841b9b79ca4bd9a25b30936e9de273878db73b1c925a14a346e8"
+    },
+    {
+      "status": "??",
+      "path": ".article-work/agent-handoff-graph/visual-plan.md",
+      "sha256": "3e9fdab5abbf8991154606c0a1aecef1b27f1f3ddff7f77f5ee9629d48b366c9"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/README.md",
+      "sha256": "b32acac4aa96a7862d3b5228d4b3c53f30a3147aed7ef8a746db3118450b9462"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json",
+      "sha256": "8357e18afc58a152c25cdb3119148883e362c8d7e26c29ce06776e0c487a57f4"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md",
+      "sha256": "f4bb3e4d767c63b8f02737001fe8a196e9ca95857c5d3331049e6f389d4cbfe3"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent-config.json",
+      "sha256": "908788b1c0533500e980978b055b74702b8218f924aa5aeeb3330555a3a39de2"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent.md",
+      "sha256": "91a695b415ecade8d963771d0d6c3a63cc66a101faaeb7f42e9c00c63cf0ecdc"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team-config.json",
+      "sha256": "ad41013e5f9ed3568800698e332f75091138c4baf8674e64f1f4f3c29c563866"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team.md",
+      "sha256": "5d1538e6b0ec84a1891c2d47105356e7796145654e2d69f713bf2493c530cc18"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/application.json",
+      "sha256": "0b47e4512dfe94e29e90444281f6585159dc2a434ec35d66f5e686b218239edf"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/bundle.json",
+      "sha256": "59936fd0a96a772edaf8bcabc33dd3918d615bdf4a05006d4fdad67fb8b794a7"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/entry.mjs",
+      "sha256": "d50d42babd1863d416c7eb33c27520c497a457ded02893b554f92a2a7cbe09d7"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/001_create_brief_tables.sql",
+      "sha256": "b18d150ee9900c36c75a2e05414a4c3be54d58e8ce5019dc04d80a9b53b9d7be"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/002_artifact_publication_model.sql",
+      "sha256": "d8d7b1ced11e3525acdbb07d83899af86120258695ff9fe37ab88d54c32ca8e7"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/003_application_owned_orchestration.sql",
+      "sha256": "487febfd2b9c0b0a8f00c091bafe779e9887f41383f969addb3260ea06f0289b"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/004_pending_launch_requests.sql",
+      "sha256": "1b21739380032a3b0e19a5bd90da37795ceb2cb2ccc78420e163585f849929e4"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/005_published_artifact_reconciliation.sql",
+      "sha256": "c27da5695301dff98c5c44b30ec8b473c822c0edfc1074e3d7111a880a9c0a7a"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/app.js",
+      "sha256": "74e9834857cdf4f2371800270bd0d79460aa2d28f0bcd10b33c5abb12c419b32"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-renderer.js",
+      "sha256": "177f6e331446de0e8844c646ea7590f15c343c350545880ab5b85c9f6f4ee86d"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-runtime.js",
+      "sha256": "f59ece38676a0d6d1a15712fdef564bd5c96167aaa6ab3e9ff4a6af704049e4a"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/generated/graphql-client.js",
+      "sha256": "0f5cf81e58ae33e4fd61fc873eb4664327182e8f23ff729bbf38900c5e5222d1"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/icon.svg",
+      "sha256": "45d1634112fb8b1f83c4ee346f674c8705c199e17f756d8b64dcf7d87bc9269a"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/index.html",
+      "sha256": "ddc65c01a4eb9cee230c586a6486774a10a73f01a08b29d8ba48997a6eec626b"
+    },
+    {
+      "status": "??",
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/styles.css",
+      "sha256": "ef092b0eea0eaa49783c0e2fa2c886c3789bd708fb07173061eabdd5f35d81c0"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/README.md",
+      "sha256": "d244776e0efc61fc65a6953f5ef31a7e20c307879339e6f6c0747f878d66100e"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent-config.json",
+      "sha256": "8a1f0a17f8c12bd9f1d37509905ee5aab5d3e10ba280dbbdc0eadd1a7cef6a9c"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent.md",
+      "sha256": "cf868d2f977e081c6adad87f83ab41cb0244e3b0713332f6ed7edefc936724f8"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/agent-teams/socratic-math-team/team-config.json",
+      "sha256": "70f40ed12574ac5a00785c57fdaf133d1010fa370528471d1e4b6da03f3a3fb6"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/agent-teams/socratic-math-team/team.md",
+      "sha256": "5b4ec23c663ea3b35f511644f84395560a61403e0413314684d1df6ef4cb5b7d"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/application.json",
+      "sha256": "ce5744c365df0c6b6e9381cf87e3947accf0e2c8280a21bda767bf4fd6f2f6e6"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/bundle.json",
+      "sha256": "59936fd0a96a772edaf8bcabc33dd3918d615bdf4a05006d4fdad67fb8b794a7"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/entry.mjs",
+      "sha256": "27ccf0833b031cf1faca7e6aaa43702bff8d30f89f331015cf0f0eaee90d6582"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/migrations/001_create_lessons.sql",
+      "sha256": "59005a15e4a665cf4ff98d098c64a16a4713bf64803ea3c1311449e031b91ffc"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/migrations/002_pending_launch_requests.sql",
+      "sha256": "72fa11857c9995165620a92d84c88cfdde663f59c69887ffc535de0f0efefd24"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/migrations/003_published_artifact_reconciliation.sql",
+      "sha256": "bdabf858099ef2afbd882c72f25f783e260511fa46ff324d66c53269129623a8"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/app.js",
+      "sha256": "8734c27d828c36aa0f046671892c7197b5023a86e38add0b1f2fad58049e7410"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/generated/graphql-client.js",
+      "sha256": "9c5000661c4c21faa5fa336bef6eea81fb852dfd7430e157665a746af72f3a26"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/icon.svg",
+      "sha256": "81521256001a345860d8233d69fb78b1363f40e5a4a5e167418d62f5b78e522b"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/index.html",
+      "sha256": "dabe96a4be106a0c0befddf939f597ed64718a77ae417054b798d56a3fc0a4f6"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/socratic-renderer.js",
+      "sha256": "1ab10513a0d47a4f2b3fc3a21bc46f04395107238dae8fe74ee1bebec3515d27"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/socratic-runtime.js",
+      "sha256": "e3199dc5503ea793e418e4a4898e964e796d9b690f4704e21b2c2f57a084a2ac"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/socratic-tutor-session.js",
+      "sha256": "342883ed4806cdd1c96d32ba1691ca363d8e7eea20cb30176feaf12695c2bd41"
+    },
+    {
+      "status": "??",
+      "path": "applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/styles.css",
+      "sha256": "82f820e3e57ee3daaf69442370b5df53091857a05e18b4f8b78b361238c4759a"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts",
+      "sha256": "61586112d9bf99dc3678b48447ae6d52ca3d7060455256f6937e03d799d66129"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map",
+      "sha256": "f2a08902b14a5fa637bd9cf6cf85d711c370e8c53a5c66c70f7b4cab4b872058"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js",
+      "sha256": "89e7db31e5f3b9eecfcf0960e9b1c2b2bc5d881aa7416808883b23e278b05b43"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map",
+      "sha256": "1d6543ecd1183fb13de071e8869a80db1c837702feb04e5cb5f1408396bda644"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/index.d.ts",
+      "sha256": "e303e9ec39bdee104fff0e4fdef1a95847e822ecf1fca0af284e03970557d1e6"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/index.d.ts.map",
+      "sha256": "5b045e30b22aaae379e75d71d56900b1475951d4e142804380d5c9df5e56cdcc"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/index.js",
+      "sha256": "01cac3372e789f0885584aa479044478663febdf80bca4a56d12d7bbaff11e3f"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/index.js.map",
+      "sha256": "831156d86d7c50bec4022b737b41fa9c12f724efd79df5f8f0874ff02a74804c"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts",
+      "sha256": "327e013e0d2238c7e8718b71c54c2a2a021359d47964fb462ebf40f2ce8e1d6a"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map",
+      "sha256": "689f483db2761c85cef5599f6a04552b96457c4b6b52895edfa45f9573fb9800"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.js",
+      "sha256": "4e8c95bffe4dc4bdcb267a6c8e3221555af04c0fdead9ca665a0c409bea2baa1"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.js.map",
+      "sha256": "d463f36cd7b9ba3b5e1f6991687c0f7a1495b71c24f83e4ff3aa57d4db31b20d"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts",
+      "sha256": "3eade94c01c3ee8a859e403087558c991d5f28271d5820b2a0995f8e242e3cbf"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map",
+      "sha256": "16361848fb226a04b016aa3aa6b5d370458d80f87dc9cb306fa836c834925422"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js",
+      "sha256": "5d6bc94d25b435fcd7139519cdcdccae0bbc9e493910e847411368e10c7a02c1"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map",
+      "sha256": "ac3be91f5599be58359b182baa67260397e5cce6e212ba8b577058e6514c71a1"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts",
+      "sha256": "8c31dac7590ecc69e52142ca79c09c70b741943d03ac3ff9e4d673e7cbe3fb57"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map",
+      "sha256": "6e959615b3bf5cc5ac3487acc874208b422f2144f11bba29a4688ce0f1161d2b"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js",
+      "sha256": "00004fd8954d44028a724d97d70ea2830e8e00baa243f9d01efa755e6af71583"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map",
+      "sha256": "e6b6189c28bedc19021347cc8aaa314148a101fc055b809f55a805bd2defbeaa"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts",
+      "sha256": "d32606dc371d7eb53ceff9ac2fe574339a7a4bed7abf07d1c63828be9f71e9f2"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map",
+      "sha256": "9f84f7a7d16ad70d2da120c6f1c383d0bd19bef84d3358aa377e6f0ff8bf7d96"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js",
+      "sha256": "010591b002515e0dc231a63e3f07f583608c3accf8ca4559be2848fa92abb671"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js.map",
+      "sha256": "979139c60bfc991b573fa5c957744d0d58d5ab8cd2b18c96c4eebf6752b5e17f"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts",
+      "sha256": "6af1a20dce1e8b621ba36774a212746e3f877de724e5e9f922ddad4c7a5d38cd"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map",
+      "sha256": "abe426d736ecbb988f36dea8318c40e8c1f70c2cab11c2f2cb965da72e2c8ac2"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js",
+      "sha256": "458ee497eece6227aa7a6360d4c950f11c1ee5bab7cb0c1b33cfda5655075e8c"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map",
+      "sha256": "0a08ea3e52a6c9e5f5223847517f8a46fd55dabb2d37b2cbd02e25265bc65d02"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts",
+      "sha256": "0d67f4f2c5661a24d84e2bb48d910e2efe29c080c4c21ee7b8f759ff3ac09e12"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map",
+      "sha256": "1931697506cf1ca1cdec5974e9265ccd1ab6829caf96b07aedea4044cc9190ff"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js",
+      "sha256": "b77ce83d9188a9ce63ca413cf67db85342b9b37e10810909e58a91323b7e9354"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map",
+      "sha256": "456b2aeb896be26ea795cd3b796a2807475bd7efc5b0d9fa46473d6832de3ce0"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts",
+      "sha256": "ec8872c892ae9e809e8909286e4d44623f113f00418dae8da44a5543eeef4885"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map",
+      "sha256": "042a2c0b3b2c6016799f4becf39b41592ad48c09ebf2b77e33852add0cf632e9"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js",
+      "sha256": "b4971792d41a31602603efee84de51e45aebb7c27e74fa9dd5ed4209c56f546f"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map",
+      "sha256": "456b4a6bfbd529c14623429401acfb9d1fee7c06bbeb8dbe87fbd0752a2a0702"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts",
+      "sha256": "92a7953d0c6be93b3197e1c41cc224e093cb4b140df98e9b9242ddb3934e459c"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map",
+      "sha256": "a3ae5904afe2257dfcd9685832cfbba2a7f3c1ddeab183c6d30b929de1f2a61d"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js",
+      "sha256": "a47cf1818019108570002ca3bc589db266e359d208856ecc29864b3096b2fcf7"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map",
+      "sha256": "10f558b4a343441d4254762c0ddb4a537e68eb712d61f7f89724f8b7c2643ff9"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts",
+      "sha256": "5e6093ee59029f72d3dcf7d27ad2b6b9f29ce9146d0062536172672a517f51ba"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map",
+      "sha256": "f81a383fe9aef767e26797009f54c8a5771407f077b80ea98d29c1d8cc5a87c4"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js",
+      "sha256": "a92f9273c2dc5f3f282d445f7b592df907809131e7688bd822c144ce529bdf0d"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map",
+      "sha256": "91ab4024355be9c6207ff70a8a0c1a66c87d6e7d5e4f403e871ef8583c72977f"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts",
+      "sha256": "e298ac67d2003f79af57a1de9aca0055b1f17b44b455054becad99241ce11fa2"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map",
+      "sha256": "147f0744192bf77832d42e46c80798bfdc68f809ff5d9fff8d1ab2021fb04fd6"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js",
+      "sha256": "d9004bf25435c48a7a1eadbd51cc4881b372a707d06f77b75c3b948f23965a6b"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js.map",
+      "sha256": "b1bcc88bcbeb0d7b1462d81bb83348adc988fa5dfe9f9e41a6af414e64b27f39"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts",
+      "sha256": "8f076699a3e02df1c73d91508d1d421b16f3ec2812e8726f55265dfb253d1e77"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map",
+      "sha256": "1a5a93ce98d7befb9e252dee78b8858265fc83a0889dbc72d51b79bd0e015316"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js",
+      "sha256": "701b64cb0afa3e3d65671dcd5b18f4a1b5a437827a9bc5f26de906a0721cacc6"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js.map",
+      "sha256": "896a152ed5bec8423fe2c716d9db2d6de08f3f178ba354682d23d93680b04f1d"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/index.d.ts",
+      "sha256": "68fbc66ebfc863ec137b007040bf04523b7ed63e0c4c54d7df3c199c2e6c4c1c"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/index.d.ts.map",
+      "sha256": "d5c23e88c1640e0789ceda3faedc72688cda0d07a14239e27013d1a0ec52fba3"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/index.js",
+      "sha256": "251aa9169c72bc841eb7d66f80740ea4a2c62e120e3128ee069663ba0babc95c"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/index.js.map",
+      "sha256": "13fd55377993390db563b5a2463d6407dd6dd06f070b78e85ca410bb6345a753"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts",
+      "sha256": "b1c7039ec91211f90b90b05289fec071e3028775c5ccce216b80ca93495a7b6b"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts.map",
+      "sha256": "27ac8c91a2119c40fa4c307fd7cf4ad2e4b2a018c4cb1d4780dfd75cd0b864bd"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.js",
+      "sha256": "138353f936d015a9d869c83906d5cb0fba5306ec0eabd66ce80b4608a42a04d3"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.js.map",
+      "sha256": "6223b1d547c6e71bceb9fac76b28d730caf2f7b91d9e357857b109ae1652152b"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts",
+      "sha256": "006a7d414226aa8670b288ee3536d9045e91dba880bb34c5d4164fc24ee5f406"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map",
+      "sha256": "849ec74f2ed68f338cc635fed6006d5223fd7bb334a8373589e81c24582552cc"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js",
+      "sha256": "65f0e957cf24f61163a466d3715105a8a94e200a4d5d90b2ac8c795ed5776a20"
+    },
+    {
+      "status": "??",
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map",
+      "sha256": "9fc8c3e04902d8849811c4b0f6ff55ff0cae0ee2bb7bfcf4990b173c41a60510"
+    },
+    {
+      "status": "??",
+      "path": "tickets/done/chat-composer-menus-open-upward/solution-designer-terminal-receipt.md",
+      "sha256": "07a2664e29ab3f600d69a7428031fa12d3f64c839db70aeeb9f7eeaedb391ea1"
+    },
+    {
+      "status": "??",
+      "path": "tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/finalization-receipt.json",
+      "sha256": "9585e2be714791b7a6d7308a9e4b37fc03cc0d20c9951ffa78abe992c06de958"
+    },
+    {
+      "status": "??",
+      "path": "tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/ios-failed.log",
+      "sha256": "0bf53f33b2d33df2c82191e96ac6237ce6a9d01e9b2bfb3dd79f6c5642f62771"
+    },
+    {
+      "status": "??",
+      "path": "tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/ios-retry.md",
+      "sha256": "515ce666bea66800d75327fa9d3aa84d4f8c287c6617280fe995411b06f8cf51"
+    }
+  ]
+}

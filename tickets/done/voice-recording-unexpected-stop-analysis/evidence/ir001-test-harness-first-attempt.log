@@ -1,0 +1,173 @@
+
+> autobyteus@1.4.93-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts tests/integration/composer-voice-lifetime.integration.test.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+
+stderr | composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/composer-voice-lifetime.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/composer-voice-lifetime.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts (7 tests | 4 failed) 19ms
+   × mounted composer voice destination lifetime > retains the exact sink/key across presentation, draft, and live-access refreshes 9ms
+     → expected { key: 'composer-tayvwkl6bvp', …(2) } to be { key: 'composer-og4755ixd8a', …(2) } // Object.is equality
+   × mounted composer voice destination lifetime > replaces an exact context even if the runId/key are the same, without revival 2ms
+     → expected true to be false // Object.is equality
+   × mounted composer voice destination lifetime > retires observed null eligibility and never revives that sink 2ms
+     → expected true to be false // Object.is equality
+   × mounted composer voice destination lifetime > retires observed read_only eligibility and never revives that sink 2ms
+     → expected true to be false // Object.is equality
+   ✓ mounted composer voice destination lifetime > retires on actual node rebinding, but not on rebinding the same node 1ms
+   ✓ mounted composer voice destination lifetime > isolates mounted owners and retires only the unmounted owner 1ms
+   ✓ mounted composer voice destination lifetime > starts without a destination and never issues a current sink after teardown 1ms
+ ❯ tests/integration/composer-voice-lifetime.integration.test.ts (11 tests | 11 failed) 11ms
+   × composer voice work across actual unrelated Team publications > keeps capture active across repeated refreshes, then manual Stop appends once without Send 4ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > cancels actual member lifetime loss and disposes capture 1ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > cancels actual node lifetime loss and disposes capture 0ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > cancels actual unmount lifetime loss and disposes capture 1ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > handles publication during pending microphone startup (genuine invalidation=false) 1ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > handles publication during pending microphone startup (genuine invalidation=true) 1ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > preserves unchanged publication during pending flush, rejects a genuinely obsolete result 0ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > preserves unchanged publication during pending ipc, rejects a genuinely obsolete result 0ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > does not cancel another composer owner for the same context 1ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > leaves an independent project-task operation intact on composer refresh/teardown 0ms
+     → mediaDevices does not exist
+   × composer voice work across actual unrelated Team publications > leaves an independent settings-test operation intact on composer refresh/teardown 1ms
+     → mediaDevices does not exist
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > keeps capture active across repeated refreshes, then manual Stop appends once without Send
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > cancels actual member lifetime loss and disposes capture
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > cancels actual node lifetime loss and disposes capture
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > cancels actual unmount lifetime loss and disposes capture
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > handles publication during pending microphone startup (genuine invalidation=false)
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > handles publication during pending microphone startup (genuine invalidation=true)
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > preserves unchanged publication during pending flush, rejects a genuinely obsolete result
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > preserves unchanged publication during pending ipc, rejects a genuinely obsolete result
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > does not cancel another composer owner for the same context
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > leaves an independent project-task operation intact on composer refresh/teardown
+ FAIL  tests/integration/composer-voice-lifetime.integration.test.ts > composer voice work across actual unrelated Team publications > leaves an independent settings-test operation intact on composer refresh/teardown
+Error: mediaDevices does not exist
+ ❯ tests/integration/composer-voice-lifetime.integration.test.ts:134:6
+    132|   vi.stubGlobal('AudioWorkletNode', ControlledWorklet)
+    133|   Object.defineProperty(window, 'electronAPI', { configurable: true, v…
+    134|   vi.spyOn(navigator, 'mediaDevices', 'get').mockReturnValue({
+       |      ^
+    135|     enumerateDevices: vi.fn(async () => [{ kind: 'audioinput', deviceI…
+    136|     getUserMedia: resources.getUserMedia, addEventListener: vi.fn(),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts > mounted composer voice destination lifetime > retains the exact sink/key across presentation, draft, and live-access refreshes
+AssertionError: expected { key: 'composer-tayvwkl6bvp', …(2) } to be { key: 'composer-og4755ixd8a', …(2) } // Object.is equality
+
+- Expected
++ Received
+
+  {
+    "appendTranscript": [Function appendTranscript],
+    "isCurrent": [Function isCurrent],
+-   "key": "composer-og4755ixd8a",
++   "key": "composer-tayvwkl6bvp",
+  }
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts:38:27
+     36|         mentionScope: { rootKind: 'agent', rootRunId: 'root', focusedN…
+     37|       await nextTick()
+     38|       expect(voice.value).toBe(first)
+       |                           ^
+     39|       expect(voice.value!.key).toBe(first.key)
+     40|       expect(first.isCurrent()).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts > mounted composer voice destination lifetime > replaces an exact context even if the runId/key are the same, without revival
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts:61:31
+     59|     await nextTick()
+     60|     expect(voice.value!.key).not.toBe(first.key)
+     61|     expect(first.isCurrent()).toBe(false)
+       |                               ^
+     62|     expect(replacement.isCurrent()).toBe(false)
+     63|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts > mounted composer voice destination lifetime > retires observed null eligibility and never revives that sink
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts:76:31
+     74|     await nextTick()
+     75|     expect(voice.value!.key).not.toBe(first.key)
+     76|     expect(first.isCurrent()).toBe(false)
+       |                               ^
+     77|   })
+     78| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts > mounted composer voice destination lifetime > retires observed read_only eligibility and never revives that sink
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts:70:31
+     68|     const first = voice.value!
+     69|     current.value = kind === 'null' ? null : { ...original, access: 'r…
+     70|     expect(first.isCurrent()).toBe(false)
+       |                               ^
+     71|     await nextTick()
+     72|     expect(voice.value).toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  15 failed | 3 passed (18)
+   Start at  14:48:05
+   Duration  6.54s (transform 3.07s, setup 11.66s, collect 151ms, tests 30ms, environment 462ms, prepare 309ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
