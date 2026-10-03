@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-10-03T17:27:31.823477+00:00",
+  "recordedOwnPorts": [
+    {
+      "port": 58227,
+      "closed": true
+    },
+    {
+      "port": 58258,
+      "closed": true
+    }
+  ],
+  "ownRoots": [
+    {
+      "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-P1PiaB",
+      "absent": true
+    },
+    {
+      "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-arguments-home-R1Emug",
+      "absent": true
+    },
+    {
+      "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy",
+      "absent": true
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-Z7mYrr",
+      "absent": true
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-qUpguE",
+      "absent": true
+    }
+  ],
+  "temporaryFiles": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-web/pages/api-e2e-native-arguments.vue",
+      "absent": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tests/e2e/runtime/agy-native-arguments-validation.tmp.test.ts",
+      "absent": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tsconfig.agy-api-renew-check.json",
+      "absent": true
+    }
+  ],
+  "browserClosed": true,
+  "studioClosed": true,
+  "ownedNuxtStopped": true,
+  "globalRegistryCleanup": "new CLI diagnostic metadata retained; unrelated provider registry untouched",
+  "sourceDiffFromReviewedHead": ""
+}

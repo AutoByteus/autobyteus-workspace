@@ -1,0 +1,296 @@
+{
+  "runId": "agy_native_input_live_784d635b_bdd1_4eaa_b59d_20_07c16b9b14c34cea8f5535fcc91e20b4",
+  "conversationId": "60463604-0f61-47ca-b34e-14228c362876",
+  "comparisons": [
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-2",
+      "toolName": "write_to_file",
+      "nativeStep": 2,
+      "providerArgs": {
+        "CodeContent": "BEFORE_NATIVE_9382\nsecond line\n",
+        "Description": "Write marker file for verification",
+        "Overwrite": true,
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "toolAction": "Writing marker file",
+        "toolSummary": "Marker file write"
+      },
+      "canonicalArgs": {
+        "CodeContent": "BEFORE_NATIVE_9382\nsecond line\n",
+        "Description": "Write marker file for verification",
+        "Overwrite": true,
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "toolAction": "Writing marker file",
+        "toolSummary": "Marker file write"
+      },
+      "rawArgs": {
+        "CodeContent": "BEFORE_NATIVE_9382\nsecond line\n",
+        "Description": "Write marker file for verification",
+        "Overwrite": true,
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "toolAction": "Writing marker file",
+        "toolSummary": "Marker file write"
+      },
+      "equal": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-4",
+      "toolName": "view_file",
+      "nativeStep": 4,
+      "providerArgs": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing marker file",
+        "toolSummary": "Marker file view"
+      },
+      "canonicalArgs": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing marker file",
+        "toolSummary": "Marker file view"
+      },
+      "rawArgs": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing marker file",
+        "toolSummary": "Marker file view"
+      },
+      "equal": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-6",
+      "toolName": "replace_file_content",
+      "nativeStep": 6,
+      "providerArgs": {
+        "AllowMultiple": false,
+        "Description": "Update marker content to MIDDLE",
+        "EndLine": 2,
+        "Instruction": "Replace BEFORE_NATIVE_9382 with MIDDLE_NATIVE_9382",
+        "ReplacementContent": "MIDDLE_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "BEFORE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "toolAction": "Replacing marker text",
+        "toolSummary": "Marker text replacement"
+      },
+      "canonicalArgs": {
+        "AllowMultiple": false,
+        "Description": "Update marker content to MIDDLE",
+        "EndLine": 2,
+        "Instruction": "Replace BEFORE_NATIVE_9382 with MIDDLE_NATIVE_9382",
+        "ReplacementContent": "MIDDLE_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "BEFORE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "toolAction": "Replacing marker text",
+        "toolSummary": "Marker text replacement"
+      },
+      "rawArgs": {
+        "AllowMultiple": false,
+        "Description": "Update marker content to MIDDLE",
+        "EndLine": 2,
+        "Instruction": "Replace BEFORE_NATIVE_9382 with MIDDLE_NATIVE_9382",
+        "ReplacementContent": "MIDDLE_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "BEFORE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "toolAction": "Replacing marker text",
+        "toolSummary": "Marker text replacement"
+      },
+      "equal": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-8",
+      "toolName": "replace_file_content",
+      "nativeStep": 8,
+      "providerArgs": {
+        "AllowMultiple": false,
+        "Description": "Update marker content to AFTER",
+        "EndLine": 2,
+        "Instruction": "Replace MIDDLE_NATIVE_9382 with AFTER_NATIVE_9382",
+        "ReplacementContent": "AFTER_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "MIDDLE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "toolAction": "Replacing marker text",
+        "toolSummary": "Marker text replacement"
+      },
+      "canonicalArgs": {
+        "AllowMultiple": false,
+        "Description": "Update marker content to AFTER",
+        "EndLine": 2,
+        "Instruction": "Replace MIDDLE_NATIVE_9382 with AFTER_NATIVE_9382",
+        "ReplacementContent": "AFTER_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "MIDDLE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "toolAction": "Replacing marker text",
+        "toolSummary": "Marker text replacement"
+      },
+      "rawArgs": {
+        "AllowMultiple": false,
+        "Description": "Update marker content to AFTER",
+        "EndLine": 2,
+        "Instruction": "Replace MIDDLE_NATIVE_9382 with AFTER_NATIVE_9382",
+        "ReplacementContent": "AFTER_NATIVE_9382",
+        "StartLine": 1,
+        "TargetContent": "MIDDLE_NATIVE_9382",
+        "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "toolAction": "Replacing marker text",
+        "toolSummary": "Marker text replacement"
+      },
+      "equal": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-10",
+      "toolName": "grep_search",
+      "nativeStep": 10,
+      "providerArgs": {
+        "CaseInsensitive": false,
+        "Includes": [
+          "*.txt"
+        ],
+        "MatchPerLine": true,
+        "Query": "AFTER_NATIVE_9382",
+        "SearchPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "toolAction": "Searching for marker text",
+        "toolSummary": "Marker grep search"
+      },
+      "canonicalArgs": {
+        "CaseInsensitive": false,
+        "Includes": [
+          "*.txt"
+        ],
+        "MatchPerLine": true,
+        "Query": "AFTER_NATIVE_9382",
+        "SearchPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "toolAction": "Searching for marker text",
+        "toolSummary": "Marker grep search"
+      },
+      "rawArgs": {
+        "CaseInsensitive": false,
+        "Includes": [
+          "*.txt"
+        ],
+        "MatchPerLine": true,
+        "Query": "AFTER_NATIVE_9382",
+        "SearchPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "toolAction": "Searching for marker text",
+        "toolSummary": "Marker grep search"
+      },
+      "equal": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-12",
+      "toolName": "find_by_name",
+      "nativeStep": 12,
+      "providerArgs": {
+        "MaxDepth": 1,
+        "Pattern": "*.txt",
+        "SearchDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "Type": "file",
+        "toolAction": "Finding text files",
+        "toolSummary": "Text file search"
+      },
+      "canonicalArgs": {
+        "MaxDepth": 1,
+        "Pattern": "*.txt",
+        "SearchDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "Type": "file",
+        "toolAction": "Finding text files",
+        "toolSummary": "Text file search"
+      },
+      "rawArgs": {
+        "MaxDepth": 1,
+        "Pattern": "*.txt",
+        "SearchDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "Type": "file",
+        "toolAction": "Finding text files",
+        "toolSummary": "Text file search"
+      },
+      "equal": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-14",
+      "toolName": "list_dir",
+      "nativeStep": 14,
+      "providerArgs": {
+        "DirectoryPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "toolAction": "Listing directory contents",
+        "toolSummary": "Workspace directory list"
+      },
+      "canonicalArgs": {
+        "DirectoryPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "toolAction": "Listing directory contents",
+        "toolSummary": "Workspace directory list"
+      },
+      "rawArgs": {
+        "DirectoryPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "toolAction": "Listing directory contents",
+        "toolSummary": "Workspace directory list"
+      },
+      "equal": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-16",
+      "toolName": "run_command",
+      "nativeStep": 16,
+      "providerArgs": {
+        "CommandLine": "sleep 3; printf NATIVE_ARGUMENTS_REAL_OK",
+        "Cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "IsDaemon": false,
+        "WaitMsBeforeAsync": 10000,
+        "toolAction": "Running sleep and printf",
+        "toolSummary": "Run sleep command"
+      },
+      "canonicalArgs": {
+        "CommandLine": "sleep 3; printf NATIVE_ARGUMENTS_REAL_OK",
+        "Cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "IsDaemon": false,
+        "WaitMsBeforeAsync": 10000,
+        "toolAction": "Running sleep and printf",
+        "toolSummary": "Run sleep command"
+      },
+      "rawArgs": {
+        "CommandLine": "sleep 3; printf NATIVE_ARGUMENTS_REAL_OK",
+        "Cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+        "IsDaemon": false,
+        "WaitMsBeforeAsync": 10000,
+        "toolAction": "Running sleep and printf",
+        "toolSummary": "Run sleep command"
+      },
+      "equal": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-18",
+      "toolName": "view_file",
+      "nativeStep": 18,
+      "providerArgs": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing marker file",
+        "toolSummary": "Marker file view"
+      },
+      "canonicalArgs": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing marker file",
+        "toolSummary": "Marker file view"
+      },
+      "rawArgs": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing marker file",
+        "toolSummary": "Marker file view"
+      },
+      "equal": true
+    }
+  ],
+  "finalContent": "AFTER_NATIVE_9382\nsecond line\n",
+  "allNineNativeCanonicalRawEqual": true
+}

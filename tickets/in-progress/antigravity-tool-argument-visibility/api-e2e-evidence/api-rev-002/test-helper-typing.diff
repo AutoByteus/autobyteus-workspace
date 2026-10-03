@@ -1,0 +1,13 @@
+diff --git a/autobyteus-server-ts/tests/e2e/helpers/runtime-error-case-evidence.ts b/autobyteus-server-ts/tests/e2e/helpers/runtime-error-case-evidence.ts
+index 956214ad8..3daa4eba1 100644
+--- a/autobyteus-server-ts/tests/e2e/helpers/runtime-error-case-evidence.ts
++++ b/autobyteus-server-ts/tests/e2e/helpers/runtime-error-case-evidence.ts
+@@ -1,7 +1,7 @@
+ import fs from "node:fs/promises";
+ 
+ /** Optional ticket ledger; plain test runs do not write external artifacts. */
+-export const recordCase = async (id: string, action: () => Promise<unknown>) => {
++export const recordCase = async <T>(id: string, action: () => Promise<T>): Promise<T> => {
+   const ledger = process.env["AGY_ERROR_LEDGER"];
+   const event = async (stage: string, result: string, detail: string) => {
+     if (ledger) await fs.appendFile(ledger, `| auto | ${id} | ${new Date().toISOString()} | ${stage} | Approved runtime message/continuity | ${detail.replaceAll("|", "/").replaceAll("\n", " ")} | ${result} | evidence/api-e2e/${process.env["AGY_ERROR_EXECUTION_LOG"] ?? "transport.log"} |\n`);
