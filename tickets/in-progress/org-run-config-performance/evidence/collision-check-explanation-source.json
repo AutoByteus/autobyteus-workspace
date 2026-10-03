@@ -1,0 +1,46 @@
+{
+  "kind": "Read-only current-source causal clarification; no additional UI performance samples",
+  "base": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "sources": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/identity/agent-run-id.ts",
+      "lines": "22\u201332: UUID-token candidate generation",
+      "sha256": "23778fae640f2ff728f6edbdb4a6f631636a96016677b83bd1be10f33aae9afd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      "lines": "64\u2013112: per-agent generation/reservation/active-metadata-path-collaboration collision checks",
+      "sha256": "0d0b3f14d877da4b8fb5ae19a555451e4064903be51e7205af6b5b023c20730d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts",
+      "lines": "91\u2013102, 182\u2013183: full admitted-root loop, tree read and reconstructed AgentOrgExecutionIndex",
+      "sha256": "c8cbb22634c5f2df7a9072248e6cb9aeabe28dab652bd9304bd6a7abeaa1be5a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/store/agent-org-run-execution-tree-store.ts",
+      "lines": "19\u201327: read file, parse JSON, validate entire payload",
+      "sha256": "b4892ba837701b419ed13c143675a4cb6f69441ebc6be82e8c29ce1a0454a3fc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.ts",
+      "lines": "78\u201383: cross-family containsRunId checks",
+      "sha256": "63d26f59385a964dec178e2247f4b7f4a8f1ca7bcd6d1a8462bdd85737d2eb60"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "lines": "119\u2013124, 187\u2013193: stored-only Org location service passed to allocator",
+      "sha256": "692fe53516726f02c3e2404854481f45a417b00e5e0696ef184cc1c956dffca3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "lines": "27\u201356: history list includes full Org tree per root",
+      "sha256": "af242aff825fe3b8a0c518f6ef58b9d47e7d709b78633a89388dd98e91a413ed"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryNavigationProjection.ts",
+      "lines": "77\u201389, 141\u2013145: serialize old/new nodes to reuse equal object references",
+      "sha256": "c25d3baf43c60f491caa4b67ac02f2c6c234bcdfca1887b35e72cfb6664de0ee"
+    }
+  ]
+}

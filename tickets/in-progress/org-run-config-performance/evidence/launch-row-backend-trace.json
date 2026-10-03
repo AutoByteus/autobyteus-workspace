@@ -1,0 +1,1290 @@
+{
+  "purpose": "Timing-only instrumented API creation; separate from uninstrumented UI performance samples",
+  "traces": [
+    {
+      "n": 1,
+      "elapsedMs": 1320.613625,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_96e2ef2dc543467188eb27133032045d"
+          }
+        }
+      },
+      "spans": [
+        {
+          "id": 1,
+          "parentId": 0,
+          "label": "DefinitionAdmissionService.requireAvailable",
+          "start": 1607173.727583,
+          "end": 1607545.389208,
+          "durationMs": 371.62858300004154,
+          "failed": false
+        },
+        {
+          "id": 2,
+          "parentId": 0,
+          "label": "AgentOrgRunPlanner.resolveConfiguration",
+          "start": 1607545.61125,
+          "end": 1607556.440458,
+          "durationMs": 10.818499999819323,
+          "failed": false
+        },
+        {
+          "id": 5,
+          "parentId": 4,
+          "label": "ModelCatalogService.runtimeModelSelectionCatalog",
+          "start": 1607556.474541,
+          "end": 1607671.979791,
+          "durationMs": 115.48691699979827,
+          "failed": false
+        },
+        {
+          "id": 4,
+          "parentId": 3,
+          "label": "RunModelSelectionService.validateMany",
+          "start": 1607556.463666,
+          "end": 1607672.016125,
+          "durationMs": 115.54900000011548,
+          "failed": false
+        },
+        {
+          "id": 3,
+          "parentId": 0,
+          "label": "AgentOrgRunService.validateCompleteConfiguration",
+          "start": 1607556.446166,
+          "end": 1607672.023958,
+          "durationMs": 115.57533399993554,
+          "failed": false
+        },
+        {
+          "id": 7,
+          "parentId": 6,
+          "label": "AgentOrgRunPlanner.resolveConfiguration",
+          "start": 1607672.044708,
+          "end": 1607689.426708,
+          "durationMs": 17.36712499987334,
+          "failed": false
+        },
+        {
+          "id": 12,
+          "parentId": 8,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1607691.176458,
+          "end": 1607820.89925,
+          "durationMs": 129.68608299992047,
+          "failed": false
+        },
+        {
+          "id": 8,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1607689.439833,
+          "end": 1607820.915291,
+          "durationMs": 131.4701669998467,
+          "failed": false
+        },
+        {
+          "id": 10,
+          "parentId": 9,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1607690.875958,
+          "end": 1607820.993666,
+          "durationMs": 130.11691699991934,
+          "failed": false
+        },
+        {
+          "id": 9,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1607689.484333,
+          "end": 1607821.008916,
+          "durationMs": 131.52408300014213,
+          "failed": false
+        },
+        {
+          "id": 1020,
+          "parentId": 1013,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1607824.410875,
+          "end": 1608147.788041,
+          "durationMs": 323.37612499995157,
+          "failed": false
+        },
+        {
+          "id": 1013,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1607821.089625,
+          "end": 1608147.796375,
+          "durationMs": 326.7058749999851,
+          "failed": false
+        },
+        {
+          "id": 1022,
+          "parentId": 1014,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1607824.476125,
+          "end": 1608148.154583,
+          "durationMs": 323.67808300000615,
+          "failed": false
+        },
+        {
+          "id": 1014,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1607821.108791,
+          "end": 1608148.158875,
+          "durationMs": 327.0497500000056,
+          "failed": false
+        },
+        {
+          "id": 1018,
+          "parentId": 1012,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1607824.265833,
+          "end": 1608148.442833,
+          "durationMs": 324.1767500001006,
+          "failed": false
+        },
+        {
+          "id": 1012,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1607821.032083,
+          "end": 1608148.447208,
+          "durationMs": 327.4149169998709,
+          "failed": false
+        },
+        {
+          "id": 1028,
+          "parentId": 1016,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1607824.893708,
+          "end": 1608148.610625,
+          "durationMs": 323.71670800005086,
+          "failed": false
+        },
+        {
+          "id": 1016,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1607821.148375,
+          "end": 1608148.612125,
+          "durationMs": 327.4635830000043,
+          "failed": false
+        },
+        {
+          "id": 1026,
+          "parentId": 1015,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1607824.762625,
+          "end": 1608148.728458,
+          "durationMs": 323.9654580000788,
+          "failed": false
+        },
+        {
+          "id": 1015,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1607821.126791,
+          "end": 1608148.730208,
+          "durationMs": 327.60308400006033,
+          "failed": false
+        },
+        {
+          "id": 1024,
+          "parentId": 1017,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1607824.670416,
+          "end": 1608148.938208,
+          "durationMs": 324.26762499986216,
+          "failed": false
+        },
+        {
+          "id": 1017,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1607821.170708,
+          "end": 1608148.939541,
+          "durationMs": 327.76866700011306,
+          "failed": false
+        },
+        {
+          "id": 4026,
+          "parentId": 4025,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1608149.166625,
+          "end": 1608271.921583,
+          "durationMs": 122.75399999995716,
+          "failed": false
+        },
+        {
+          "id": 4025,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1608149.025083,
+          "end": 1608271.931083,
+          "durationMs": 122.90520799998194,
+          "failed": false
+        },
+        {
+          "id": 4038,
+          "parentId": 4024,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1608151.348625,
+          "end": 1608273.339583,
+          "durationMs": 121.99041599989869,
+          "failed": false
+        },
+        {
+          "id": 4024,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1608148.961875,
+          "end": 1608273.341916,
+          "durationMs": 124.37966599990614,
+          "failed": false
+        },
+        {
+          "id": 6,
+          "parentId": 0,
+          "label": "AgentOrgRunPlanner.build",
+          "start": 1607672.031958,
+          "end": 1608273.522166,
+          "durationMs": 601.4865419999696,
+          "failed": false
+        },
+        {
+          "id": 5030,
+          "parentId": 5029,
+          "label": "AgentOrgExecutionScopeBuilder.build",
+          "start": 1608273.575625,
+          "end": 1608315.497916,
+          "durationMs": 41.91299999994226,
+          "failed": false
+        },
+        {
+          "id": 5033,
+          "parentId": 5032,
+          "label": "RootRunPackageCurrentValidator.scan",
+          "start": 1608315.51175,
+          "end": 1608473.587291,
+          "durationMs": 158.06770799984224,
+          "failed": false
+        },
+        {
+          "id": 5032,
+          "parentId": 5031,
+          "label": "RootRunPackageReadinessIndex.rebuild",
+          "start": 1608315.508833,
+          "end": 1608473.86425,
+          "durationMs": 158.35241700010374,
+          "failed": false
+        },
+        {
+          "id": 5031,
+          "parentId": 5029,
+          "label": "RootRunPackageReadinessIndex.admitCurrent",
+          "start": 1608315.503,
+          "end": 1608473.871666,
+          "durationMs": 158.3674999999348,
+          "failed": false
+        },
+        {
+          "id": 5029,
+          "parentId": 5028,
+          "label": "AgentOrgRunManager.materialize",
+          "start": 1608273.567541,
+          "end": 1608473.886166,
+          "durationMs": 200.31716700014658,
+          "failed": false
+        },
+        {
+          "id": 5028,
+          "parentId": 0,
+          "label": "AgentOrgRunManager.create",
+          "start": 1608273.525208,
+          "end": 1608473.888416,
+          "durationMs": 200.3619999999646,
+          "failed": false
+        },
+        {
+          "id": 5535,
+          "parentId": 0,
+          "label": "AgentOrgRunHistoryCatalogService.recordCreated",
+          "start": 1608473.891625,
+          "end": 1608487.298541,
+          "durationMs": 13.39904100005515,
+          "failed": false
+        },
+        {
+          "id": 0,
+          "parentId": null,
+          "label": "AgentOrgRunService.create",
+          "start": 1607173.626208,
+          "end": 1608487.321958,
+          "durationMs": 1313.674417000031,
+          "failed": false
+        }
+      ],
+      "aggregates": {
+        "DefinitionAdmissionService.requireAvailable | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 371.62858300004154,
+          "maxMs": 371.62858300004154
+        },
+        "AgentOrgRunPlanner.resolveConfiguration | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 10.818499999819323,
+          "maxMs": 10.818499999819323
+        },
+        "ModelCatalogService.runtimeModelSelectionCatalog | parent=RunModelSelectionService.validateMany": {
+          "count": 1,
+          "totalMs": 115.48691699979827,
+          "maxMs": 115.48691699979827
+        },
+        "RunModelSelectionService.validateMany | parent=AgentOrgRunService.validateCompleteConfiguration": {
+          "count": 1,
+          "totalMs": 115.54900000011548,
+          "maxMs": 115.54900000011548
+        },
+        "AgentOrgRunService.validateCompleteConfiguration | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 115.57533399993554,
+          "maxMs": 115.57533399993554
+        },
+        "AgentOrgRunPlanner.resolveConfiguration | parent=AgentOrgRunPlanner.build": {
+          "count": 1,
+          "totalMs": 17.36712499987334,
+          "maxMs": 17.36712499987334
+        },
+        "AgentOrgRunExecutionTreeStore.read | parent=AgentOrgExecutionTreeLocationService.containsRunId": {
+          "count": 5000,
+          "totalMs": 2402.4376240032725,
+          "maxMs": 8.368167000124231
+        },
+        "AgentOrgExecutionTreeLocationService.containsRunId | parent=AgentRunIdentityAllocator.allocateForAgentDefinition": {
+          "count": 10,
+          "totalMs": 2447.728164999746,
+          "maxMs": 324.26762499986216
+        },
+        "AgentRunIdentityAllocator.allocateForAgentDefinition | parent=AgentOrgRunPlanner.build": {
+          "count": 10,
+          "totalMs": 2474.284999999916,
+          "maxMs": 327.76866700011306
+        },
+        "AgentOrgRunPlanner.build | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 601.4865419999696,
+          "maxMs": 601.4865419999696
+        },
+        "AgentOrgExecutionScopeBuilder.build | parent=AgentOrgRunManager.materialize": {
+          "count": 1,
+          "totalMs": 41.91299999994226,
+          "maxMs": 41.91299999994226
+        },
+        "AgentOrgRunExecutionTreeStore.read | parent=RootRunPackageCurrentValidator.scan": {
+          "count": 501,
+          "totalMs": 77.21092500002123,
+          "maxMs": 0.6628749999217689
+        },
+        "RootRunPackageCurrentValidator.scan | parent=RootRunPackageReadinessIndex.rebuild": {
+          "count": 1,
+          "totalMs": 158.06770799984224,
+          "maxMs": 158.06770799984224
+        },
+        "RootRunPackageReadinessIndex.rebuild | parent=RootRunPackageReadinessIndex.admitCurrent": {
+          "count": 1,
+          "totalMs": 158.35241700010374,
+          "maxMs": 158.35241700010374
+        },
+        "RootRunPackageReadinessIndex.admitCurrent | parent=AgentOrgRunManager.materialize": {
+          "count": 1,
+          "totalMs": 158.3674999999348,
+          "maxMs": 158.3674999999348
+        },
+        "AgentOrgRunManager.materialize | parent=AgentOrgRunManager.create": {
+          "count": 1,
+          "totalMs": 200.31716700014658,
+          "maxMs": 200.31716700014658
+        },
+        "AgentOrgRunManager.create | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 200.3619999999646,
+          "maxMs": 200.3619999999646
+        },
+        "AgentOrgRunHistoryCatalogService.recordCreated | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 13.39904100005515,
+          "maxMs": 13.39904100005515
+        },
+        "AgentOrgRunService.create | parent=root": {
+          "count": 1,
+          "totalMs": 1313.674417000031,
+          "maxMs": 1313.674417000031
+        }
+      }
+    },
+    {
+      "n": 2,
+      "elapsedMs": 2140.233792,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_86c3439ab0e941a1b90ce608c191e370"
+          }
+        }
+      },
+      "spans": [
+        {
+          "id": 1,
+          "parentId": 0,
+          "label": "DefinitionAdmissionService.requireAvailable",
+          "start": 1608492.158291,
+          "end": 1608669.765541,
+          "durationMs": 177.5914590000175,
+          "failed": false
+        },
+        {
+          "id": 2,
+          "parentId": 0,
+          "label": "AgentOrgRunPlanner.resolveConfiguration",
+          "start": 1608669.88875,
+          "end": 1608679.43275,
+          "durationMs": 9.54162500007078,
+          "failed": false
+        },
+        {
+          "id": 5,
+          "parentId": 4,
+          "label": "ModelCatalogService.runtimeModelSelectionCatalog",
+          "start": 1608679.452166,
+          "end": 1608802.165916,
+          "durationMs": 122.70537500013597,
+          "failed": false
+        },
+        {
+          "id": 4,
+          "parentId": 3,
+          "label": "RunModelSelectionService.validateMany",
+          "start": 1608679.444166,
+          "end": 1608802.190958,
+          "durationMs": 122.74529200000688,
+          "failed": false
+        },
+        {
+          "id": 3,
+          "parentId": 0,
+          "label": "AgentOrgRunService.validateCompleteConfiguration",
+          "start": 1608679.434208,
+          "end": 1608802.197166,
+          "durationMs": 122.76183299999684,
+          "failed": false
+        },
+        {
+          "id": 7,
+          "parentId": 6,
+          "label": "AgentOrgRunPlanner.resolveConfiguration",
+          "start": 1608802.207625,
+          "end": 1608860.415458,
+          "durationMs": 58.20366599992849,
+          "failed": false
+        },
+        {
+          "id": 12,
+          "parentId": 8,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1608864.930208,
+          "end": 1609186.245958,
+          "durationMs": 321.30695800017565,
+          "failed": false
+        },
+        {
+          "id": 8,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1608860.420583,
+          "end": 1609186.2535,
+          "durationMs": 325.8310000000056,
+          "failed": false
+        },
+        {
+          "id": 10,
+          "parentId": 9,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1608864.67575,
+          "end": 1609186.330416,
+          "durationMs": 321.6541659999639,
+          "failed": false
+        },
+        {
+          "id": 9,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1608860.455708,
+          "end": 1609186.332,
+          "durationMs": 325.8759999999311,
+          "failed": false
+        },
+        {
+          "id": 1028,
+          "parentId": 1014,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1609192.922916,
+          "end": 1609930.485791,
+          "durationMs": 737.5616669999436,
+          "failed": false
+        },
+        {
+          "id": 1014,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1609186.379291,
+          "end": 1609930.49225,
+          "durationMs": 744.1120839999057,
+          "failed": false
+        },
+        {
+          "id": 1024,
+          "parentId": 1017,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1609192.458375,
+          "end": 1609931.551375,
+          "durationMs": 739.0923750000075,
+          "failed": false
+        },
+        {
+          "id": 1017,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1609186.51525,
+          "end": 1609931.554166,
+          "durationMs": 745.0385000000242,
+          "failed": false
+        },
+        {
+          "id": 1022,
+          "parentId": 1015,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1609192.302083,
+          "end": 1609933.420083,
+          "durationMs": 741.1172499998938,
+          "failed": false
+        },
+        {
+          "id": 1015,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1609186.476166,
+          "end": 1609933.423625,
+          "durationMs": 746.9467090000398,
+          "failed": false
+        },
+        {
+          "id": 1033,
+          "parentId": 1018,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1609193.571708,
+          "end": 1609935.630583,
+          "durationMs": 742.0582500000019,
+          "failed": false
+        },
+        {
+          "id": 1018,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1609186.532833,
+          "end": 1609935.634,
+          "durationMs": 749.1004580000881,
+          "failed": false
+        },
+        {
+          "id": 1020,
+          "parentId": 1016,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1609192.170958,
+          "end": 1609935.704958,
+          "durationMs": 743.5337920000311,
+          "failed": false
+        },
+        {
+          "id": 1016,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1609186.497125,
+          "end": 1609935.706291,
+          "durationMs": 749.2090000000317,
+          "failed": false
+        },
+        {
+          "id": 1026,
+          "parentId": 1019,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1609192.793916,
+          "end": 1609936.317041,
+          "durationMs": 743.5226249999832,
+          "failed": false
+        },
+        {
+          "id": 1019,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1609186.546333,
+          "end": 1609936.319541,
+          "durationMs": 749.7727500000037,
+          "failed": false
+        },
+        {
+          "id": 4034,
+          "parentId": 4033,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1609936.594208,
+          "end": 1610391.085375,
+          "durationMs": 454.4899999999907,
+          "failed": false
+        },
+        {
+          "id": 4033,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1609936.426083,
+          "end": 1610391.090875,
+          "durationMs": 454.66379200015217,
+          "failed": false
+        },
+        {
+          "id": 4046,
+          "parentId": 4032,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1609947.777375,
+          "end": 1610393.679833,
+          "durationMs": 445.90179100004025,
+          "failed": false
+        },
+        {
+          "id": 4032,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1609936.360666,
+          "end": 1610393.683375,
+          "durationMs": 457.32212499994785,
+          "failed": false
+        },
+        {
+          "id": 6,
+          "parentId": 0,
+          "label": "AgentOrgRunPlanner.build",
+          "start": 1608802.199708,
+          "end": 1610393.972666,
+          "durationMs": 1591.7690419999417,
+          "failed": false
+        },
+        {
+          "id": 5040,
+          "parentId": 5039,
+          "label": "AgentOrgExecutionScopeBuilder.build",
+          "start": 1610393.9995,
+          "end": 1610422.796958,
+          "durationMs": 28.788625000044703,
+          "failed": false
+        },
+        {
+          "id": 5043,
+          "parentId": 5042,
+          "label": "RootRunPackageCurrentValidator.scan",
+          "start": 1610422.8085,
+          "end": 1610613.824583,
+          "durationMs": 191.00799999991432,
+          "failed": false
+        },
+        {
+          "id": 5042,
+          "parentId": 5041,
+          "label": "RootRunPackageReadinessIndex.rebuild",
+          "start": 1610422.806958,
+          "end": 1610614.499208,
+          "durationMs": 191.68808300001547,
+          "failed": false
+        },
+        {
+          "id": 5041,
+          "parentId": 5039,
+          "label": "RootRunPackageReadinessIndex.admitCurrent",
+          "start": 1610422.800208,
+          "end": 1610614.503166,
+          "durationMs": 191.70175000000745,
+          "failed": false
+        },
+        {
+          "id": 5039,
+          "parentId": 5038,
+          "label": "AgentOrgRunManager.materialize",
+          "start": 1610393.992916,
+          "end": 1610614.519625,
+          "durationMs": 220.52512499992736,
+          "failed": false
+        },
+        {
+          "id": 5038,
+          "parentId": 0,
+          "label": "AgentOrgRunManager.create",
+          "start": 1610393.97525,
+          "end": 1610614.521666,
+          "durationMs": 220.54550000000745,
+          "failed": false
+        },
+        {
+          "id": 5546,
+          "parentId": 0,
+          "label": "AgentOrgRunHistoryCatalogService.recordCreated",
+          "start": 1610614.523708,
+          "end": 1610629.031041,
+          "durationMs": 14.496874999953434,
+          "failed": false
+        },
+        {
+          "id": 0,
+          "parentId": null,
+          "label": "AgentOrgRunService.create",
+          "start": 1608492.155666,
+          "end": 1610629.036583,
+          "durationMs": 2136.8779589999467,
+          "failed": false
+        }
+      ],
+      "aggregates": {
+        "DefinitionAdmissionService.requireAvailable | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 177.5914590000175,
+          "maxMs": 177.5914590000175
+        },
+        "AgentOrgRunPlanner.resolveConfiguration | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 9.54162500007078,
+          "maxMs": 9.54162500007078
+        },
+        "ModelCatalogService.runtimeModelSelectionCatalog | parent=RunModelSelectionService.validateMany": {
+          "count": 1,
+          "totalMs": 122.70537500013597,
+          "maxMs": 122.70537500013597
+        },
+        "RunModelSelectionService.validateMany | parent=AgentOrgRunService.validateCompleteConfiguration": {
+          "count": 1,
+          "totalMs": 122.74529200000688,
+          "maxMs": 122.74529200000688
+        },
+        "AgentOrgRunService.validateCompleteConfiguration | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 122.76183299999684,
+          "maxMs": 122.76183299999684
+        },
+        "AgentOrgRunPlanner.resolveConfiguration | parent=AgentOrgRunPlanner.build": {
+          "count": 1,
+          "totalMs": 58.20366599992849,
+          "maxMs": 58.20366599992849
+        },
+        "AgentOrgRunExecutionTreeStore.read | parent=AgentOrgExecutionTreeLocationService.containsRunId": {
+          "count": 5010,
+          "totalMs": 5919.764211995527,
+          "maxMs": 13.234000000171363
+        },
+        "AgentOrgExecutionTreeLocationService.containsRunId | parent=AgentRunIdentityAllocator.allocateForAgentDefinition": {
+          "count": 10,
+          "totalMs": 5990.2388740000315,
+          "maxMs": 743.5337920000311
+        },
+        "AgentRunIdentityAllocator.allocateForAgentDefinition | parent=AgentOrgRunPlanner.build": {
+          "count": 10,
+          "totalMs": 6047.87241800013,
+          "maxMs": 749.7727500000037
+        },
+        "AgentOrgRunPlanner.build | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 1591.7690419999417,
+          "maxMs": 1591.7690419999417
+        },
+        "AgentOrgExecutionScopeBuilder.build | parent=AgentOrgRunManager.materialize": {
+          "count": 1,
+          "totalMs": 28.788625000044703,
+          "maxMs": 28.788625000044703
+        },
+        "AgentOrgRunExecutionTreeStore.read | parent=RootRunPackageCurrentValidator.scan": {
+          "count": 502,
+          "totalMs": 93.86141400178894,
+          "maxMs": 1.3783340000081807
+        },
+        "RootRunPackageCurrentValidator.scan | parent=RootRunPackageReadinessIndex.rebuild": {
+          "count": 1,
+          "totalMs": 191.00799999991432,
+          "maxMs": 191.00799999991432
+        },
+        "RootRunPackageReadinessIndex.rebuild | parent=RootRunPackageReadinessIndex.admitCurrent": {
+          "count": 1,
+          "totalMs": 191.68808300001547,
+          "maxMs": 191.68808300001547
+        },
+        "RootRunPackageReadinessIndex.admitCurrent | parent=AgentOrgRunManager.materialize": {
+          "count": 1,
+          "totalMs": 191.70175000000745,
+          "maxMs": 191.70175000000745
+        },
+        "AgentOrgRunManager.materialize | parent=AgentOrgRunManager.create": {
+          "count": 1,
+          "totalMs": 220.52512499992736,
+          "maxMs": 220.52512499992736
+        },
+        "AgentOrgRunManager.create | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 220.54550000000745,
+          "maxMs": 220.54550000000745
+        },
+        "AgentOrgRunHistoryCatalogService.recordCreated | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 14.496874999953434,
+          "maxMs": 14.496874999953434
+        },
+        "AgentOrgRunService.create | parent=root": {
+          "count": 1,
+          "totalMs": 2136.8779589999467,
+          "maxMs": 2136.8779589999467
+        }
+      }
+    },
+    {
+      "n": 3,
+      "elapsedMs": 1583.9761669999998,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_5e793d30950e4bd0968c8c5a3ed0a8b2"
+          }
+        }
+      },
+      "spans": [
+        {
+          "id": 1,
+          "parentId": 0,
+          "label": "DefinitionAdmissionService.requireAvailable",
+          "start": 1610633.128958,
+          "end": 1611015.036666,
+          "durationMs": 381.90308299986646,
+          "failed": false
+        },
+        {
+          "id": 2,
+          "parentId": 0,
+          "label": "AgentOrgRunPlanner.resolveConfiguration",
+          "start": 1611015.424625,
+          "end": 1611051.459083,
+          "durationMs": 36.03087499993853,
+          "failed": false
+        },
+        {
+          "id": 5,
+          "parentId": 4,
+          "label": "ModelCatalogService.runtimeModelSelectionCatalog",
+          "start": 1611051.482041,
+          "end": 1611168.964583,
+          "durationMs": 117.47604200011119,
+          "failed": false
+        },
+        {
+          "id": 4,
+          "parentId": 3,
+          "label": "RunModelSelectionService.validateMany",
+          "start": 1611051.472916,
+          "end": 1611168.994375,
+          "durationMs": 117.52000000001863,
+          "failed": false
+        },
+        {
+          "id": 3,
+          "parentId": 0,
+          "label": "AgentOrgRunService.validateCompleteConfiguration",
+          "start": 1611051.461125,
+          "end": 1611169.000333,
+          "durationMs": 117.53833300014958,
+          "failed": false
+        },
+        {
+          "id": 7,
+          "parentId": 6,
+          "label": "AgentOrgRunPlanner.resolveConfiguration",
+          "start": 1611169.010625,
+          "end": 1611198.250916,
+          "durationMs": 29.236665999982506,
+          "failed": false
+        },
+        {
+          "id": 12,
+          "parentId": 9,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611200.095666,
+          "end": 1611446.012041,
+          "durationMs": 245.91225000005215,
+          "failed": false
+        },
+        {
+          "id": 9,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611198.290833,
+          "end": 1611446.017916,
+          "durationMs": 247.72583299991675,
+          "failed": false
+        },
+        {
+          "id": 10,
+          "parentId": 8,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611199.932125,
+          "end": 1611446.095,
+          "durationMs": 246.16245800000615,
+          "failed": false
+        },
+        {
+          "id": 8,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611198.254958,
+          "end": 1611446.096458,
+          "durationMs": 247.84125000005588,
+          "failed": false
+        },
+        {
+          "id": 1030,
+          "parentId": 1016,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611450.085958,
+          "end": 1611864.685833,
+          "durationMs": 414.5988330000546,
+          "failed": false
+        },
+        {
+          "id": 1016,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611446.114708,
+          "end": 1611864.692875,
+          "durationMs": 418.57708299998194,
+          "failed": false
+        },
+        {
+          "id": 1032,
+          "parentId": 1020,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611450.162,
+          "end": 1611864.760291,
+          "durationMs": 414.5980410000775,
+          "failed": false
+        },
+        {
+          "id": 1020,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611446.254666,
+          "end": 1611864.761416,
+          "durationMs": 418.5066250001546,
+          "failed": false
+        },
+        {
+          "id": 1028,
+          "parentId": 1021,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611450.006,
+          "end": 1611865.085916,
+          "durationMs": 415.0797500000335,
+          "failed": false
+        },
+        {
+          "id": 1021,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611446.280125,
+          "end": 1611865.086875,
+          "durationMs": 418.80662499996834,
+          "failed": false
+        },
+        {
+          "id": 1026,
+          "parentId": 1018,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611449.916,
+          "end": 1611865.160916,
+          "durationMs": 415.2447909999173,
+          "failed": false
+        },
+        {
+          "id": 1018,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611446.201625,
+          "end": 1611865.162291,
+          "durationMs": 418.96054100012407,
+          "failed": false
+        },
+        {
+          "id": 1022,
+          "parentId": 1019,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611449.520208,
+          "end": 1611865.793916,
+          "durationMs": 416.27350000012666,
+          "failed": false
+        },
+        {
+          "id": 1019,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611446.234916,
+          "end": 1611865.798416,
+          "durationMs": 419.56325000012293,
+          "failed": false
+        },
+        {
+          "id": 1024,
+          "parentId": 1017,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611449.69575,
+          "end": 1611866.064875,
+          "durationMs": 416.36899999994785,
+          "failed": false
+        },
+        {
+          "id": 1017,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611446.172791,
+          "end": 1611866.065958,
+          "durationMs": 419.8930420000106,
+          "failed": false
+        },
+        {
+          "id": 4042,
+          "parentId": 4041,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611866.322041,
+          "end": 1611993.602666,
+          "durationMs": 127.27962499996647,
+          "failed": false
+        },
+        {
+          "id": 4041,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611866.156375,
+          "end": 1611993.610041,
+          "durationMs": 127.45287499995902,
+          "failed": false
+        },
+        {
+          "id": 4054,
+          "parentId": 4040,
+          "label": "AgentOrgExecutionTreeLocationService.containsRunId",
+          "start": 1611869.311666,
+          "end": 1611995.510166,
+          "durationMs": 126.19745900016278,
+          "failed": false
+        },
+        {
+          "id": 4040,
+          "parentId": 6,
+          "label": "AgentRunIdentityAllocator.allocateForAgentDefinition",
+          "start": 1611866.091625,
+          "end": 1611995.515458,
+          "durationMs": 129.4230830001179,
+          "failed": false
+        },
+        {
+          "id": 6,
+          "parentId": 0,
+          "label": "AgentOrgRunPlanner.build",
+          "start": 1611169.003,
+          "end": 1611995.66475,
+          "durationMs": 826.6601249999367,
+          "failed": false
+        },
+        {
+          "id": 5050,
+          "parentId": 5049,
+          "label": "AgentOrgExecutionScopeBuilder.build",
+          "start": 1611995.689833,
+          "end": 1612029.920125,
+          "durationMs": 34.22516699996777,
+          "failed": false
+        },
+        {
+          "id": 5053,
+          "parentId": 5052,
+          "label": "RootRunPackageCurrentValidator.scan",
+          "start": 1612029.932833,
+          "end": 1612199.157791,
+          "durationMs": 169.22124999994412,
+          "failed": false
+        },
+        {
+          "id": 5052,
+          "parentId": 5051,
+          "label": "RootRunPackageReadinessIndex.rebuild",
+          "start": 1612029.930875,
+          "end": 1612199.43875,
+          "durationMs": 169.5065829998348,
+          "failed": false
+        },
+        {
+          "id": 5051,
+          "parentId": 5049,
+          "label": "RootRunPackageReadinessIndex.admitCurrent",
+          "start": 1612029.924041,
+          "end": 1612199.441416,
+          "durationMs": 169.51683400012553,
+          "failed": false
+        },
+        {
+          "id": 5049,
+          "parentId": 5048,
+          "label": "AgentOrgRunManager.materialize",
+          "start": 1611995.68325,
+          "end": 1612199.452,
+          "durationMs": 203.76816600002348,
+          "failed": false
+        },
+        {
+          "id": 5048,
+          "parentId": 0,
+          "label": "AgentOrgRunManager.create",
+          "start": 1611995.666416,
+          "end": 1612199.453541,
+          "durationMs": 203.78645899984986,
+          "failed": false
+        },
+        {
+          "id": 5557,
+          "parentId": 0,
+          "label": "AgentOrgRunHistoryCatalogService.recordCreated",
+          "start": 1612199.455583,
+          "end": 1612214.206708,
+          "durationMs": 14.746999999973923,
+          "failed": false
+        },
+        {
+          "id": 0,
+          "parentId": null,
+          "label": "AgentOrgRunService.create",
+          "start": 1610633.12625,
+          "end": 1612214.210916,
+          "durationMs": 1581.0838750000112,
+          "failed": false
+        }
+      ],
+      "aggregates": {
+        "DefinitionAdmissionService.requireAvailable | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 381.90308299986646,
+          "maxMs": 381.90308299986646
+        },
+        "AgentOrgRunPlanner.resolveConfiguration | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 36.03087499993853,
+          "maxMs": 36.03087499993853
+        },
+        "ModelCatalogService.runtimeModelSelectionCatalog | parent=RunModelSelectionService.validateMany": {
+          "count": 1,
+          "totalMs": 117.47604200011119,
+          "maxMs": 117.47604200011119
+        },
+        "RunModelSelectionService.validateMany | parent=AgentOrgRunService.validateCompleteConfiguration": {
+          "count": 1,
+          "totalMs": 117.52000000001863,
+          "maxMs": 117.52000000001863
+        },
+        "AgentOrgRunService.validateCompleteConfiguration | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 117.53833300014958,
+          "maxMs": 117.53833300014958
+        },
+        "AgentOrgRunPlanner.resolveConfiguration | parent=AgentOrgRunPlanner.build": {
+          "count": 1,
+          "totalMs": 29.236665999982506,
+          "maxMs": 29.236665999982506
+        },
+        "AgentOrgRunExecutionTreeStore.read | parent=AgentOrgExecutionTreeLocationService.containsRunId": {
+          "count": 5020,
+          "totalMs": 3183.5804440167267,
+          "maxMs": 23.28341699996963
+        },
+        "AgentOrgExecutionTreeLocationService.containsRunId | parent=AgentRunIdentityAllocator.allocateForAgentDefinition": {
+          "count": 10,
+          "totalMs": 3237.715707000345,
+          "maxMs": 416.36899999994785
+        },
+        "AgentRunIdentityAllocator.allocateForAgentDefinition | parent=AgentOrgRunPlanner.build": {
+          "count": 10,
+          "totalMs": 3266.750207000412,
+          "maxMs": 419.8930420000106
+        },
+        "AgentOrgRunPlanner.build | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 826.6601249999367,
+          "maxMs": 826.6601249999367
+        },
+        "AgentOrgExecutionScopeBuilder.build | parent=AgentOrgRunManager.materialize": {
+          "count": 1,
+          "totalMs": 34.22516699996777,
+          "maxMs": 34.22516699996777
+        },
+        "AgentOrgRunExecutionTreeStore.read | parent=RootRunPackageCurrentValidator.scan": {
+          "count": 503,
+          "totalMs": 82.7045359981712,
+          "maxMs": 1.3559999999124557
+        },
+        "RootRunPackageCurrentValidator.scan | parent=RootRunPackageReadinessIndex.rebuild": {
+          "count": 1,
+          "totalMs": 169.22124999994412,
+          "maxMs": 169.22124999994412
+        },
+        "RootRunPackageReadinessIndex.rebuild | parent=RootRunPackageReadinessIndex.admitCurrent": {
+          "count": 1,
+          "totalMs": 169.5065829998348,
+          "maxMs": 169.5065829998348
+        },
+        "RootRunPackageReadinessIndex.admitCurrent | parent=AgentOrgRunManager.materialize": {
+          "count": 1,
+          "totalMs": 169.51683400012553,
+          "maxMs": 169.51683400012553
+        },
+        "AgentOrgRunManager.materialize | parent=AgentOrgRunManager.create": {
+          "count": 1,
+          "totalMs": 203.76816600002348,
+          "maxMs": 203.76816600002348
+        },
+        "AgentOrgRunManager.create | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 203.78645899984986,
+          "maxMs": 203.78645899984986
+        },
+        "AgentOrgRunHistoryCatalogService.recordCreated | parent=AgentOrgRunService.create": {
+          "count": 1,
+          "totalMs": 14.746999999973923,
+          "maxMs": 14.746999999973923
+        },
+        "AgentOrgRunService.create | parent=root": {
+          "count": 1,
+          "totalMs": 1581.0838750000112,
+          "maxMs": 1581.0838750000112
+        }
+      }
+    }
+  ],
+  "restored": true
+}

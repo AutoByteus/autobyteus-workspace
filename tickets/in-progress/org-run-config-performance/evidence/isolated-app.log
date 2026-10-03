@@ -1,0 +1,997 @@
+[2026-10-03T14:27:33.445Z] [INFO] [electron] Application started
+[2026-10-03T14:27:33.515Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-10-03T14:27:33.515Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-10-03T14:27:33.515Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/db
+[2026-10-03T14:27:33.515Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/logs
+[2026-10-03T14:27:33.515Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/download
+
+DevTools listening on ws://127.0.0.1:50886/devtools/browser/9c6603ef-2b14-4a5e-a4ac-fc5b1f168a6c
+[2026-10-03T14:27:33.570Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:50891
+[2026-10-03T14:27:33.581Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-03T14:27:33.581Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-03T14:27:33.582Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Applications/AutoByteus.app/Contents/Resources/server
+[2026-10-03T14:27:33.582Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data
+[2026-10-03T14:27:33.582Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-10-03T14:27:33.585Z] [INFO] [electron.server.app-data] Generated runtime .env at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/.env
+[2026-10-03T14:27:33.585Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-10-03T14:27:33.585Z] [INFO] [electron.server.base-server-manager] Port 50887 is free.
+[2026-10-03T14:27:33.585Z] [INFO] [electron] Server entrypoint: /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+[2026-10-03T14:27:34.642Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-03T14:27:34.642Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg05xBdOo:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-10-03T14:27:34.642Z] [INFO] [electron] Using PATH from login shell
+[2026-10-03T14:27:34.643Z] [INFO] [electron] Starting server with port: 50887
+[2026-10-03T14:27:34.643Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:50887
+[2026-10-03T14:27:34.643Z] [INFO] [electron] Working directory: /Applications/AutoByteus.app/Contents/Resources/server
+[2026-10-03T14:27:34.643Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data
+[2026-10-03T14:27:34.643Z] [INFO] [electron] Executing: /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 50887 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data
+[2026-10-03T14:27:34.644Z] [INFO] [electron] Server process spawned with PID: 63730
+[2026-10-03T14:27:34.761Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-03T14:27:34.761Z] [INFO] [electron.embedded-server.stdout] App root directory: /Applications/AutoByteus.app/Contents/Resources/server
+[2026-10-03T14:27:34.761Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data
+[2026-10-03T14:27:34.761Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/.env
+[2026-10-03T14:27:34.761Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/.env
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (2) from ../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:50887
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Applications/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:50887
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Applications/AutoByteus.app/Contents/Resources/server
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/db
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/logs
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/download
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory
+[2026-10-03T14:27:34.762Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-03T14:27:35.916Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-03T14:27:36.207Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-03T14:27:36.209Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-10-03T14:27:36.499Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-03T14:27:36.502Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/db/production.db"
+[2026-10-03T14:27:36.949Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/db/production.db
+[2026-10-03T14:27:36.960Z] [INFO] [electron.embedded-server.stdout] 26 migrations found in prisma/migrations
+[2026-10-03T14:27:36.964Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-10-03T14:27:36.971Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-10-03T14:27:36.975Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-10-03T14:27:36.976Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-10-03T14:27:36.977Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-10-03T14:27:36.978Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-10-03T14:27:36.979Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-10-03T14:27:36.984Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-10-03T14:27:36.985Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-10-03T14:27:36.988Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-10-03T14:27:36.989Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-10-03T14:27:36.990Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-10-03T14:27:36.993Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-10-03T14:27:36.995Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-10-03T14:27:36.997Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-10-03T14:27:37.002Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-10-03T14:27:37.004Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-10-03T14:27:37.006Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-10-03T14:27:37.007Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-10-03T14:27:37.008Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-10-03T14:27:37.010Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-10-03T14:27:37.010Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-10-03T14:27:37.012Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-10-03T14:27:37.015Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-10-03T14:27:37.017Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-10-03T14:27:37.018Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260924120000_remove_external_channel_tables`
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]   └─ 20260924120000_remove_external_channel_tables/
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-03T14:27:37.020Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-10-03T14:27:37.040Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-03T14:27:37.046Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-03T14:27:37.184Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 22 predefined settings
+[2026-10-03T14:27:37.185Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-03T14:27:37.185Z] [INFO] [electron.embedded-server.stdout] [2026-10-03T14:27:37.185Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-03T14:27:37.192Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-03T14:27:37.193Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-03T14:27:37.248Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-03T14:27:37.248Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+[2026-10-03T14:27:37.249Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-03T14:27:37.250Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-03T14:27:37.260Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_task'
+[2026-10-03T14:27:37.261Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-03T14:27:37.262Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-03T14:27:37.262Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-03T14:27:37.262Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-03T14:27:37.269Z] [INFO] [electron.embedded-server.stdout] Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+[2026-10-03T14:27:37.269Z] [INFO] [electron.embedded-server.stdout] Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+[2026-10-03T14:27:37.269Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-10-03T14:27:37.270Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 2 items.
+[2026-10-03T14:27:37.270Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-10-03T14:27:37.270Z] [INFO] [electron.embedded-server.stdout] [2026-10-03T14:27:37.270Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-03T14:27:37.270Z] [INFO] [electron.embedded-server.stdout] [2026-10-03T14:27:37.270Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+[2026-10-03T14:27:37.270Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 2 items.
+[2026-10-03T14:27:37.276Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791037657276,"pid":63730,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50918"}
+[2026-10-03T14:27:37.295Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791037657295,"pid":63730,"hostname":"MacBookPro","msg":"Server listening at http://0.0.0.0:50887"}
+[2026-10-03T14:27:37.295Z] [INFO] [electron.embedded-server.stdout] [2026-10-03T14:27:37.295Z] [INFO] [server.runtime] Server listening on 0.0.0.0:50887
+[2026-10-03T14:27:37.295Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-03T14:27:37.298Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-03T14:27:37.299Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-03T14:27:37.299Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 33 LLM models into cache.
+[2026-10-03T14:27:37.299Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-03T14:27:37.299Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-03T14:27:37.299Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-03T14:27:37.299Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-03T14:27:37.407Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-03T14:27:37.408Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-03T14:27:37.408Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:27:37.503Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-10-03T14:27:37.798Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:27:37.800Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:27:37.887Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:27:37.888Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:27:39.766Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:27:39.769Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:27:42.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:27:42.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:27:47.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:27:47.896Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:27:52.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:27:52.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:27:57.894Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:27:57.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:02.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:02.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:07.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:07.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:12.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:12.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:17.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:17.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:22.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:22.896Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:27.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:27.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:32.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:32.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:37.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:37.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:42.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:42.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:47.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:47.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:52.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:52.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:28:57.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:28:57.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:02.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:02.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:07.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:07.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:12.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:12.896Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:17.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:17.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:22.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:22.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:27.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:27.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:32.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:32.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:37.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:37.896Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:42.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:42.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:47.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:47.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:52.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:52.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:29:58.615Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:29:58.618Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:02.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:02.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:07.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:07.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:12.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:12.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:17.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:17.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:21.951Z] [INFO] [electron.embedded-server.stdout] Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+[2026-10-03T14:30:21.951Z] [INFO] [electron.embedded-server.stdout] Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+[2026-10-03T14:30:21.981Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-10-03T14:30:21.985Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 9 items.
+[2026-10-03T14:30:21.985Z] [INFO] [electron.embedded-server.stdout] [2026-10-03T14:30:21.985Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-03T14:30:21.992Z] [INFO] [electron.embedded-server.stdout] [2026-10-03T14:30:21.992Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 14 items.
+[2026-10-03T14:30:22.895Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:22.896Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:27.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:27.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:27.909Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791037827908,"pid":63730,"hostname":"MacBookPro","reqId":"req-3g","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","extensions":{}},"msg":"Graphql validation error"}
+[2026-10-03T14:30:27.909Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791037827909,"pid":63730,"hostname":"MacBookPro","reqId":"req-3g","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":1.880083978176117,"msg":"http request completed"}
+[2026-10-03T14:30:27.912Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791037827912,"pid":63730,"hostname":"MacBookPro","reqId":"req-3h","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","extensions":{}},"msg":"Graphql validation error"}
+[2026-10-03T14:30:27.912Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791037827912,"pid":63730,"hostname":"MacBookPro","reqId":"req-3h","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.44729095697402954,"msg":"http request completed"}
+[2026-10-03T14:30:27.916Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791037827916,"pid":63730,"hostname":"MacBookPro","reqId":"req-3i","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","extensions":{}},"msg":"Graphql validation error"}
+[2026-10-03T14:30:27.916Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791037827916,"pid":63730,"hostname":"MacBookPro","reqId":"req-3i","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.4169590473175049,"msg":"http request completed"}
+[2026-10-03T14:30:32.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:32.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:37.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:37.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:42.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:42.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:47.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:47.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:52.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:52.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:30:57.137Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:30:57.137170Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:30:57.137Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:30:57.249Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:30:57.249208Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:30:57.249Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:30:57.352Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:30:57.351957Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:30:57.352Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:30:57.460Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:30:57.460095Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:30:57.460Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:30:57.577Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:30:57.577296Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:30:57.577Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:30:57.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:30:57.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:02.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:02.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:07.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:07.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:12.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:12.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:17.311Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791037877311,"pid":63730,"hostname":"MacBookPro","reqId":"req-4i","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","extensions":{}},"msg":"Graphql validation error"}
+[2026-10-03T14:31:17.311Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791037877311,"pid":63730,"hostname":"MacBookPro","reqId":"req-4i","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":1.1111250519752502,"msg":"http request completed"}
+[2026-10-03T14:31:17.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:17.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:22.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:22.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:27.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:27.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:32.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:32.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:37.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:37.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:42.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:42.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:47.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:47.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:52.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:52.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:31:57.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:31:57.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:02.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:02.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:07.896Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:07.897Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:12.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:12.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:17.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:17.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:22.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:22.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:27.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:27.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:31.048Z] [INFO] [electron.embedded-server.stdout] Discovering LM Studio models from host: http://localhost:1234
+[2026-10-03T14:32:31.053Z] [INFO] [electron.embedded-server.stdout] Discovering Ollama models from host: http://localhost:11434
+[2026-10-03T14:32:31.058Z] [ERROR] [electron.embedded-server.stderr] Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+[2026-10-03T14:32:31.067Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[2026-10-03T14:32:31.239Z] [INFO] [electron.embedded-server.stdout] Created terminal session 0654f634-fedc-4607-84df-9653a0c8d7c0 using backend IsolatedPtySession for target /Users/normy
+[2026-10-03T14:32:31.240Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 0654f634-fedc-4607-84df-9653a0c8d7c0
+[2026-10-03T14:32:31.240Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-03T14:32:32.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:32.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:37.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:37.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:42.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:42.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:43.816Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:32:43.816372Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:32:43.816Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:32:47.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:47.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:52.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:52.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:32:57.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:32:57.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:02.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:02.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:07.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:07.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:09.151Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:33:09.243Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:33:09.243197Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:33:09.243Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:33:09.400Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/product_team_4381e5b5694e4e4bb1de0ffeb87e1b7b/product_ui_ux_designer_d1682954e982489b9b1642b41ed52600/raw_traces_active.jsonl
+[2026-10-03T14:33:09.401Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/product_team_4381e5b5694e4e4bb1de0ffeb87e1b7b/ui_baseline_bootstrapper_79f1c895238e41eb8c7e13555ea1a6ec/raw_traces_active.jsonl
+[2026-10-03T14:33:09.402Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/solution_designer_b0e22a21951c47b4b11857824612a6a6/raw_traces_active.jsonl
+[2026-10-03T14:33:09.402Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/architecture_reviewer_70b8ef773ab74880b47bbd36f97e6492/raw_traces_active.jsonl
+[2026-10-03T14:33:09.403Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/implementation_engineer_67807d8be5194df2b89b2d7cbaece2d2/raw_traces_active.jsonl
+[2026-10-03T14:33:09.403Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/code_reviewer_4d7934342764433d976211677dca212b/raw_traces_active.jsonl
+[2026-10-03T14:33:09.403Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/delivery_engineer_1bb1cb9c05b14ea287d30fe3ded0c1e9/raw_traces_active.jsonl
+[2026-10-03T14:33:09.404Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/marketing_team_16d6b1da384b4ea7891a8684a73ba235/marketing_content_creator_2659471d82424f36b933b160e18b7ab1/raw_traces_active.jsonl
+[2026-10-03T14:33:09.405Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/marketing_team_16d6b1da384b4ea7891a8684a73ba235/computer_use_operator_0c2346efb73341b88ed1288ab883eb9e/raw_traces_active.jsonl
+[2026-10-03T14:33:09.405Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/api_e2e_engineer_3f9397f4830f4c708e668a7ce661031c/raw_traces_active.jsonl
+[2026-10-03T14:33:09.424Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/product_team_4381e5b5694e4e4bb1de0ffeb87e1b7b/product_ui_ux_designer_d1682954e982489b9b1642b41ed52600/raw_traces_active.jsonl
+[2026-10-03T14:33:09.425Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/product_team_4381e5b5694e4e4bb1de0ffeb87e1b7b/ui_baseline_bootstrapper_79f1c895238e41eb8c7e13555ea1a6ec/raw_traces_active.jsonl
+[2026-10-03T14:33:09.426Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/solution_designer_b0e22a21951c47b4b11857824612a6a6/raw_traces_active.jsonl
+[2026-10-03T14:33:09.427Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/architecture_reviewer_70b8ef773ab74880b47bbd36f97e6492/raw_traces_active.jsonl
+[2026-10-03T14:33:09.427Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/implementation_engineer_67807d8be5194df2b89b2d7cbaece2d2/raw_traces_active.jsonl
+[2026-10-03T14:33:09.428Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/code_reviewer_4d7934342764433d976211677dca212b/raw_traces_active.jsonl
+[2026-10-03T14:33:09.429Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/delivery_engineer_1bb1cb9c05b14ea287d30fe3ded0c1e9/raw_traces_active.jsonl
+[2026-10-03T14:33:09.430Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/marketing_team_16d6b1da384b4ea7891a8684a73ba235/marketing_content_creator_2659471d82424f36b933b160e18b7ab1/raw_traces_active.jsonl
+[2026-10-03T14:33:09.430Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/marketing_team_16d6b1da384b4ea7891a8684a73ba235/computer_use_operator_0c2346efb73341b88ed1288ab883eb9e/raw_traces_active.jsonl
+[2026-10-03T14:33:09.431Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_827e8a39a6a040b09fe8b2d31bdf14b5/software_engineering_team_b1c27a8065bc4112b9ab6e48ef7cd3fa/api_e2e_engineer_3f9397f4830f4c708e668a7ce661031c/raw_traces_active.jsonl
+[2026-10-03T14:33:12.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:12.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:17.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:17.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:22.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:22.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:27.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:27.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:32.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:32.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:37.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:37.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:42.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:42.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:47.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:47.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:52.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:52.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:33:57.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:33:57.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:02.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:02.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:07.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:07.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:11.806Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 0654f634-fedc-4607-84df-9653a0c8d7c0
+[2026-10-03T14:34:11.806Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 0654f634-fedc-4607-84df-9653a0c8d7c0
+[2026-10-03T14:34:12.023Z] [INFO] [electron.embedded-server.stdout] Created terminal session c150e405-bbeb-4433-b01b-607198da2a78 using backend IsolatedPtySession for target /Users/normy
+[2026-10-03T14:34:12.023Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: c150e405-bbeb-4433-b01b-607198da2a78
+[2026-10-03T14:34:12.023Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-03T14:34:12.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:12.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:17.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:17.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:22.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:22.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:23.887Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:34:24.007Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:34:24.006790Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:34:24.007Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:34:24.156Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/product_team_09c2dba6c555430cac9b158108e0aa4b/product_ui_ux_designer_f5e0f5e6e494447eb41ed58bf0073174/raw_traces_active.jsonl
+[2026-10-03T14:34:24.156Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/product_team_09c2dba6c555430cac9b158108e0aa4b/ui_baseline_bootstrapper_9c70a03b16bf4b4289c67f03115ae46a/raw_traces_active.jsonl
+[2026-10-03T14:34:24.157Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/solution_designer_cdd252696c96497dacc69b36bf55dcd2/raw_traces_active.jsonl
+[2026-10-03T14:34:24.157Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/architecture_reviewer_f15208363ba842399cb7ca33d8649aa1/raw_traces_active.jsonl
+[2026-10-03T14:34:24.158Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/implementation_engineer_2be06cd4f3d7448b954fa32226003da9/raw_traces_active.jsonl
+[2026-10-03T14:34:24.158Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/code_reviewer_0dd80fdafa3c47739c4320a9dce18762/raw_traces_active.jsonl
+[2026-10-03T14:34:24.159Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/delivery_engineer_ffb41ed8038a4013857c8a37c0ea92e1/raw_traces_active.jsonl
+[2026-10-03T14:34:24.160Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/marketing_team_0eb248f5f32a41498ce0705e687f9d52/marketing_content_creator_1563f0d15f47451d8cff23a95fe85884/raw_traces_active.jsonl
+[2026-10-03T14:34:24.160Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/marketing_team_0eb248f5f32a41498ce0705e687f9d52/computer_use_operator_b861af39157049ce8af3029fc0e7bd30/raw_traces_active.jsonl
+[2026-10-03T14:34:24.161Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/api_e2e_engineer_38efa2570b4b481d805acc17fb6425bc/raw_traces_active.jsonl
+[2026-10-03T14:34:24.180Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/product_team_09c2dba6c555430cac9b158108e0aa4b/product_ui_ux_designer_f5e0f5e6e494447eb41ed58bf0073174/raw_traces_active.jsonl
+[2026-10-03T14:34:24.180Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/product_team_09c2dba6c555430cac9b158108e0aa4b/ui_baseline_bootstrapper_9c70a03b16bf4b4289c67f03115ae46a/raw_traces_active.jsonl
+[2026-10-03T14:34:24.181Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/solution_designer_cdd252696c96497dacc69b36bf55dcd2/raw_traces_active.jsonl
+[2026-10-03T14:34:24.181Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/architecture_reviewer_f15208363ba842399cb7ca33d8649aa1/raw_traces_active.jsonl
+[2026-10-03T14:34:24.185Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/implementation_engineer_2be06cd4f3d7448b954fa32226003da9/raw_traces_active.jsonl
+[2026-10-03T14:34:24.185Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/code_reviewer_0dd80fdafa3c47739c4320a9dce18762/raw_traces_active.jsonl
+[2026-10-03T14:34:24.185Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/delivery_engineer_ffb41ed8038a4013857c8a37c0ea92e1/raw_traces_active.jsonl
+[2026-10-03T14:34:24.185Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/marketing_team_0eb248f5f32a41498ce0705e687f9d52/marketing_content_creator_1563f0d15f47451d8cff23a95fe85884/raw_traces_active.jsonl
+[2026-10-03T14:34:24.185Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/marketing_team_0eb248f5f32a41498ce0705e687f9d52/computer_use_operator_b861af39157049ce8af3029fc0e7bd30/raw_traces_active.jsonl
+[2026-10-03T14:34:24.185Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_05e2680f30f448ee9657eb55ac7011bd/software_engineering_team_2ac53b481dab486a890265752a7fe7a9/api_e2e_engineer_38efa2570b4b481d805acc17fb6425bc/raw_traces_active.jsonl
+[2026-10-03T14:34:27.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:27.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:32.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:32.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:37.897Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:37.898Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:42.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:42.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:47.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:47.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:52.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:52.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:34:57.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:34:57.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:02.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:02.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:07.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:07.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:12.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:12.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:17.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:17.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:22.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:22.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:27.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:27.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:32.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:32.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:37.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:37.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:42.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:42.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:47.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:47.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:52.151Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:52.232Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:52.231949Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:52.232Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:52.542Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:52.597Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:52.597323Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:52.597Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:52.879Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:52.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:52.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:52.934Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:52.934174Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:52.934Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:53.243Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:53.298Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:53.298380Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:53.298Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:53.584Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:53.639Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:53.638809Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:53.639Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:53.918Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:53.976Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:53.976362Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:53.976Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:54.264Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:54.318Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:54.317857Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:54.318Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:54.613Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:54.671Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:54.670854Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:54.671Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:54.980Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:55.033Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:55.033385Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:55.033Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:55.320Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:55.374Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:55.374355Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:55.374Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:55.659Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:55.713Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:55.713576Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:55.713Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:56.005Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:56.060Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:56.060566Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:56.060Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:56.344Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:56.400Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:56.400426Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:56.400Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:56.715Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:56.772Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:56.771939Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:56.772Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:57.088Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:57.147Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:57.146896Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:57.147Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:57.448Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:57.512Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:57.512330Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:57.512Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:57.808Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:57.862Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:57.862225Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:57.862Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:35:57.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:35:57.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:35:58.158Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:35:58.210Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:35:58.210438Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:35:58.210Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:36:02.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:02.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:07.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:07.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:08.540Z] [INFO] [electron.embedded-server.stdout] Closed PTY session c150e405-bbeb-4433-b01b-607198da2a78
+[2026-10-03T14:36:08.540Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: c150e405-bbeb-4433-b01b-607198da2a78
+[2026-10-03T14:36:12.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:12.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:17.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:17.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:22.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:22.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:27.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:27.907Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:30.365Z] [INFO] [electron.embedded-server.stdout] Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+[2026-10-03T14:36:30.374Z] [INFO] [electron.embedded-server.stdout] FileSystemWatcher initialized for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[2026-10-03T14:36:30.522Z] [INFO] [electron.embedded-server.stdout] Started filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace
+[2026-10-03T14:36:30.522Z] [INFO] [electron.embedded-server.stdout] Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+[2026-10-03T14:36:30.522Z] [INFO] [electron.embedded-server.stdout] FileExplorerSession created: 433f8823-8875-4eb9-81c3-ee31e11b205f for workspace temp_ws_default
+[2026-10-03T14:36:30.523Z] [INFO] [electron.embedded-server.stdout] Created file explorer session 433f8823-8875-4eb9-81c3-ee31e11b205f for workspace temp_ws_default. Active sessions: 1
+[2026-10-03T14:36:30.523Z] [INFO] [electron.embedded-server.stdout] File explorer WebSocket connected: 433f8823-8875-4eb9-81c3-ee31e11b205f for workspace temp_ws_default
+[2026-10-03T14:36:30.523Z] [INFO] [electron.embedded-server.stdout] File explorer websocket attached for workspace temp_ws_default
+[2026-10-03T14:36:32.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:32.919Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:37.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:37.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:42.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:42.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:47.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:47.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:52.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:52.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:36:57.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:36:57.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:02.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:02.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:07.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:07.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:12.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:12.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:17.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:17.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:22.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:22.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:27.898Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:27.899Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:32.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:32.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:37.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:37.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:42.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:42.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:47.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:47.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:52.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:52.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:37:57.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:37:57.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:02.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:02.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:07.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:07.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:12.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:12.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:17.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:17.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:22.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:22.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:27.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:27.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:32.899Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:32.900Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:37.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:37.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:42.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:42.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:46.415Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:38:46.414984Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:38:46.415Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:38:46.974Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791038326974,"pid":63730,"hostname":"MacBookPro","reqId":"req-p4","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","extensions":{}},"msg":"Graphql validation error"}
+[2026-10-03T14:38:46.975Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791038326975,"pid":63730,"hostname":"MacBookPro","reqId":"req-p4","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":2.9284579753875732,"msg":"http request completed"}
+[2026-10-03T14:38:47.034Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:38:47.033973Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:38:47.034Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:38:47.093Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791038327093,"pid":63730,"hostname":"MacBookPro","reqId":"req-p7","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","extensions":{}},"msg":"Graphql validation error"}
+[2026-10-03T14:38:47.093Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791038327093,"pid":63730,"hostname":"MacBookPro","reqId":"req-p7","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.37024998664855957,"msg":"http request completed"}
+[2026-10-03T14:38:47.150Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:38:47.150229Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:38:47.150Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:38:47.207Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791038327207,"pid":63730,"hostname":"MacBookPro","reqId":"req-pa","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","extensions":{}},"msg":"Graphql validation error"}
+[2026-10-03T14:38:47.207Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1791038327207,"pid":63730,"hostname":"MacBookPro","reqId":"req-pa","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.407459020614624,"msg":"http request completed"}
+[2026-10-03T14:38:47.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:47.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:52.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:52.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:38:57.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:38:57.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:02.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:02.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:07.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:07.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:10.971Z] [INFO] [electron.embedded-server.stdout] Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+[2026-10-03T14:39:10.972Z] [INFO] [electron.embedded-server.stdout] Logically stopped filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace
+[2026-10-03T14:39:10.972Z] [INFO] [electron.embedded-server.stdout] FileExplorerSession closed: 433f8823-8875-4eb9-81c3-ee31e11b205f
+[2026-10-03T14:39:10.972Z] [INFO] [electron.embedded-server.stdout] Closed file explorer session 433f8823-8875-4eb9-81c3-ee31e11b205f. Active sessions: 0
+[2026-10-03T14:39:10.972Z] [INFO] [electron.embedded-server.stdout] File explorer WebSocket disconnected: 433f8823-8875-4eb9-81c3-ee31e11b205f
+[2026-10-03T14:39:12.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:12.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:16.655Z] [INFO] [electron.embedded-server.stdout] Created terminal session 101f40f1-4200-4e66-8085-000ea5dd204e using backend IsolatedPtySession for target /Users/normy
+[2026-10-03T14:39:16.655Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 101f40f1-4200-4e66-8085-000ea5dd204e
+[2026-10-03T14:39:16.655Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-03T14:39:17.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:17.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:22.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:22.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:27.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:27.908Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:32.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:32.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:37.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:37.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:42.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:42.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:46.807Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 101f40f1-4200-4e66-8085-000ea5dd204e
+[2026-10-03T14:39:46.807Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 101f40f1-4200-4e66-8085-000ea5dd204e
+[2026-10-03T14:39:47.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:47.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:52.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:52.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:57.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:39:57.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:39:58.602Z] [INFO] [electron.embedded-server.stdout] Created terminal session 76109db6-812c-4935-a860-aae290215f5a using backend IsolatedPtySession for target /Users/normy
+[2026-10-03T14:39:58.602Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 76109db6-812c-4935-a860-aae290215f5a
+[2026-10-03T14:39:58.602Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-03T14:40:02.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:02.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:07.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:07.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:12.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:12.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:17.900Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:17.901Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:22.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:22.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:27.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:27.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:32.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:32.907Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:37.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:37.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:42.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:42.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:47.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:47.908Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:52.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:52.907Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:40:57.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:40:57.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:02.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:02.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:07.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:07.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:12.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:12.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:17.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:17.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:22.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:22.907Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:27.901Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:27.902Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:32.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:32.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:37.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:37.907Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:42.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:42.907Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:47.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:47.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:52.907Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:52.910Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:41:57.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:41:57.907Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:02.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:02.907Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:07.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:07.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:12.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:12.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:17.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:17.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:22.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:22.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:27.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:27.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:32.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:32.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:37.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:37.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:42.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:42.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:47.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:47.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:52.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:52.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:42:57.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:42:57.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:02.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:02.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:07.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:07.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:12.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:12.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:17.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:17.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:22.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:22.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:27.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:27.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:32.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:32.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:37.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:37.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:42.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:42.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:47.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:47.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:52.902Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:52.903Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:43:57.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:43:57.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:02.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:02.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:07.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:07.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:11.177Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 76109db6-812c-4935-a860-aae290215f5a
+[2026-10-03T14:44:11.179Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 76109db6-812c-4935-a860-aae290215f5a
+[2026-10-03T14:44:12.090Z] [INFO] [electron.embedded-server.stdout] Created terminal session 07c64f5a-cf75-43c6-86c1-95bbb40516d7 using backend IsolatedPtySession for target /Users/normy
+[2026-10-03T14:44:12.090Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 07c64f5a-cf75-43c6-86c1-95bbb40516d7
+[2026-10-03T14:44:12.090Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-03T14:44:12.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:12.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:17.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:17.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:21.105Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 07c64f5a-cf75-43c6-86c1-95bbb40516d7
+[2026-10-03T14:44:21.105Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 07c64f5a-cf75-43c6-86c1-95bbb40516d7
+[2026-10-03T14:44:22.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:22.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:24.079Z] [INFO] [electron.embedded-server.stdout] Created terminal session dec0c5e6-ff38-416e-b25b-f0af3064b653 using backend IsolatedPtySession for target /Users/normy
+[2026-10-03T14:44:24.079Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: dec0c5e6-ff38-416e-b25b-f0af3064b653
+[2026-10-03T14:44:24.079Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-03T14:44:27.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:27.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:32.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:32.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:37.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:37.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:42.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:42.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:47.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:47.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:52.520Z] [INFO] [electron.embedded-server.stdout] Closed PTY session dec0c5e6-ff38-416e-b25b-f0af3064b653
+[2026-10-03T14:44:52.520Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: dec0c5e6-ff38-416e-b25b-f0af3064b653
+[2026-10-03T14:44:52.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:52.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:44:53.156Z] [INFO] [electron.embedded-server.stdout] Created terminal session bfbb0468-32c8-4b9b-8af3-97b644ff03e2 using backend IsolatedPtySession for target /Users/normy
+[2026-10-03T14:44:53.156Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: bfbb0468-32c8-4b9b-8af3-97b644ff03e2
+[2026-10-03T14:44:53.156Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-03T14:44:57.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:44:57.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:02.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:02.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:07.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:07.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:12.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:12.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:17.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:17.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:22.811Z] [INFO] [electron.embedded-server.stdout] Closed PTY session bfbb0468-32c8-4b9b-8af3-97b644ff03e2
+[2026-10-03T14:45:22.811Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: bfbb0468-32c8-4b9b-8af3-97b644ff03e2
+[2026-10-03T14:45:22.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:22.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:27.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:27.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:31.876Z] [INFO] [electron.embedded-server.stdout] Created terminal session 3ea517fa-be5a-4d39-93d3-4f2fcf25c0c3 using backend IsolatedPtySession for target /Users/normy
+[2026-10-03T14:45:31.876Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 3ea517fa-be5a-4d39-93d3-4f2fcf25c0c3
+[2026-10-03T14:45:31.876Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-03T14:45:31.908Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:45:31.908182Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:45:31.908Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:45:32.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:32.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:37.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:37.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:40.008Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-03T14:45:40.075Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:45:40.075642Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:45:40.075Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:45:40.271Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/product_team_5dc65c2076914c02b5e8775bc94beb5e/product_ui_ux_designer_2cb154e004834c8f95b5092a527d1af5/raw_traces_active.jsonl
+[2026-10-03T14:45:40.272Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/product_team_5dc65c2076914c02b5e8775bc94beb5e/ui_baseline_bootstrapper_a2a3ae964c7748868f8aa9c321d39f29/raw_traces_active.jsonl
+[2026-10-03T14:45:40.272Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/solution_designer_3c198a46a63f4a208b164ecade59dbaf/raw_traces_active.jsonl
+[2026-10-03T14:45:40.272Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/architecture_reviewer_6ac14d83cd2346309ebc0e658036cac6/raw_traces_active.jsonl
+[2026-10-03T14:45:40.272Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/implementation_engineer_99718890a0c24e9793912f793c7aa91d/raw_traces_active.jsonl
+[2026-10-03T14:45:40.273Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/code_reviewer_ab6610692c2748299c235b8fffd8b0c1/raw_traces_active.jsonl
+[2026-10-03T14:45:40.274Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/api_e2e_engineer_20d0f7251bb741d699df9814ba53688b/raw_traces_active.jsonl
+[2026-10-03T14:45:40.274Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/delivery_engineer_f4be5b05049d4eff97165d5fe6dbf35b/raw_traces_active.jsonl
+[2026-10-03T14:45:40.275Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/marketing_team_c1a53afbe2744d6bbb3b8155afd19ca3/marketing_content_creator_2170fa2b88784b7691a8dc2c0163900d/raw_traces_active.jsonl
+[2026-10-03T14:45:40.276Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/marketing_team_c1a53afbe2744d6bbb3b8155afd19ca3/computer_use_operator_783a4057dc354d85bfcf5f7a628f80ee/raw_traces_active.jsonl
+[2026-10-03T14:45:40.324Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/product_team_5dc65c2076914c02b5e8775bc94beb5e/product_ui_ux_designer_2cb154e004834c8f95b5092a527d1af5/raw_traces_active.jsonl
+[2026-10-03T14:45:40.325Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/product_team_5dc65c2076914c02b5e8775bc94beb5e/ui_baseline_bootstrapper_a2a3ae964c7748868f8aa9c321d39f29/raw_traces_active.jsonl
+[2026-10-03T14:45:40.325Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/solution_designer_3c198a46a63f4a208b164ecade59dbaf/raw_traces_active.jsonl
+[2026-10-03T14:45:40.325Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/architecture_reviewer_6ac14d83cd2346309ebc0e658036cac6/raw_traces_active.jsonl
+[2026-10-03T14:45:40.326Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/implementation_engineer_99718890a0c24e9793912f793c7aa91d/raw_traces_active.jsonl
+[2026-10-03T14:45:40.327Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/code_reviewer_ab6610692c2748299c235b8fffd8b0c1/raw_traces_active.jsonl
+[2026-10-03T14:45:40.328Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/delivery_engineer_f4be5b05049d4eff97165d5fe6dbf35b/raw_traces_active.jsonl
+[2026-10-03T14:45:40.328Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/marketing_team_c1a53afbe2744d6bbb3b8155afd19ca3/marketing_content_creator_2170fa2b88784b7691a8dc2c0163900d/raw_traces_active.jsonl
+[2026-10-03T14:45:40.329Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/marketing_team_c1a53afbe2744d6bbb3b8155afd19ca3/computer_use_operator_783a4057dc354d85bfcf5f7a628f80ee/raw_traces_active.jsonl
+[2026-10-03T14:45:40.329Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/memory/agent_orgs/autobyteus_org_aad17af484d94cde8d3ecf11b40f015d/software_engineering_team_c0003136877a4037af83e6c45179acb9/api_e2e_engineer_20d0f7251bb741d699df9814ba53688b/raw_traces_active.jsonl
+[2026-10-03T14:45:42.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:42.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:47.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:47.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:52.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:52.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:45:57.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:45:57.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:02.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:02.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:07.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:07.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:12.903Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:12.904Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:17.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:17.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:22.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:22.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:23.110Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 3ea517fa-be5a-4d39-93d3-4f2fcf25c0c3
+[2026-10-03T14:46:23.110Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 3ea517fa-be5a-4d39-93d3-4f2fcf25c0c3
+[2026-10-03T14:46:27.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:27.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:31.821Z] [INFO] [electron.embedded-server.stdout] Created terminal session 7ad7ed32-4a4a-4b10-8f15-df00df26f595 using backend IsolatedPtySession for target /Users/normy
+[2026-10-03T14:46:31.821Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 7ad7ed32-4a4a-4b10-8f15-df00df26f595
+[2026-10-03T14:46:31.821Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-03T14:46:32.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:32.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:33.644Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:46:33.644594Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:46:33.645Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:46:37.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:37.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:42.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:42.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:47.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:47.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:49.540Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 7ad7ed32-4a4a-4b10-8f15-df00df26f595
+[2026-10-03T14:46:49.540Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 7ad7ed32-4a4a-4b10-8f15-df00df26f595
+[2026-10-03T14:46:52.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:52.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:46:57.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:46:57.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:02.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:02.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:07.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:07.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:10.513Z] [INFO] [electron.embedded-server.stdout] FileSystemWatcher initialized for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[2026-10-03T14:47:10.710Z] [INFO] [electron.embedded-server.stdout] Started filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace
+[2026-10-03T14:47:10.710Z] [INFO] [electron.embedded-server.stdout] Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+[2026-10-03T14:47:10.710Z] [INFO] [electron.embedded-server.stdout] FileExplorerSession created: fa8b7507-3006-421e-9957-2f86e5a51e06 for workspace temp_ws_default
+[2026-10-03T14:47:10.710Z] [INFO] [electron.embedded-server.stdout] Created file explorer session fa8b7507-3006-421e-9957-2f86e5a51e06 for workspace temp_ws_default. Active sessions: 1
+[2026-10-03T14:47:10.711Z] [INFO] [electron.embedded-server.stdout] File explorer WebSocket connected: fa8b7507-3006-421e-9957-2f86e5a51e06 for workspace temp_ws_default
+[2026-10-03T14:47:10.711Z] [INFO] [electron.embedded-server.stdout] File explorer websocket attached for workspace temp_ws_default
+[2026-10-03T14:47:12.357Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-03T14:47:12.356808Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-03T14:47:12.357Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-03T14:47:12.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:12.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:17.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:17.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:22.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:22.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:27.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:27.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:32.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:32.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:37.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:37.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:42.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:42.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:47.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:47.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:52.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:52.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:47:57.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:47:57.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:02.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:02.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:07.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:07.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:12.904Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:12.905Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:17.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:17.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:22.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:22.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:27.906Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:27.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:32.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:32.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:37.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:37.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:42.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:42.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:47.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:47.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:52.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:52.906Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:48:57.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:48:57.907Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:49:02.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:49:02.908Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-03T14:49:07.905Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-03T14:49:07.908Z] [INFO] [electron] ServerStatusManager: Emitting status change: running

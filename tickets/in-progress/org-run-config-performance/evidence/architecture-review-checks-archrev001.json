@@ -1,0 +1,117 @@
+{
+  "reviewRevision": "ARCH-REV-001",
+  "solutionRevision": "SR-010",
+  "approvedRequirementsBaseline": "SR-006",
+  "at": "2026-10-03T19:21:13.960503+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "branch": "codex/org-run-config-performance",
+  "head": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "priorCanonicalReportExisted": false,
+  "priorRevisionRecordExisted": false,
+  "sourcePinsChecked": 38,
+  "sourcePinMismatches": [],
+  "frozenApprovedRequirementsSha256": "5444ff7b9069b37bd3cdf35aec3a3b3d732fb8a3bca3f31691f3a8af56841365",
+  "trackedApplicationDiff": "",
+  "method": "Independent cat/sed/nl/rg production/caller/test/docs review, hashes and arithmetic on retained evidence only. No executable application validation, UI/app launch, model inference or upstream artifact edits.",
+  "rawPrimarySeriesRecomputed": [
+    {
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/launch-row-small-history.json",
+      "groups": {
+        "warm": {
+          "count": 5,
+          "rowVisibleMs": {
+            "min": 361.19999998807907,
+            "median": 370.19999998807907,
+            "max": 434.10000002384186
+          },
+          "completed": true,
+          "exactModelAndRuntime": true
+        },
+        "cold-renderer": {
+          "count": 5,
+          "rowVisibleMs": {
+            "min": 388.4000000357628,
+            "median": 468.19999998807907,
+            "max": 530.7999999523163
+          },
+          "completed": true,
+          "exactModelAndRuntime": true
+        }
+      },
+      "errors": [],
+      "consoleErrors": []
+    },
+    {
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/launch-row-stored-history-500-light.json",
+      "groups": {
+        "warm": {
+          "count": 5,
+          "rowVisibleMs": {
+            "min": 1723.699999988079,
+            "median": 1765.800000011921,
+            "max": 1990.800000011921
+          },
+          "completed": true,
+          "exactModelAndRuntime": true
+        },
+        "cold-renderer": {
+          "count": 5,
+          "rowVisibleMs": {
+            "min": 1689.199999988079,
+            "median": 1734.5,
+            "max": 2046.5
+          },
+          "completed": true,
+          "exactModelAndRuntime": true
+        }
+      },
+      "errors": [],
+      "consoleErrors": []
+    }
+  ],
+  "instrumentedCountsRechecked": [
+    {
+      "trace": 1,
+      "memberAllocations": 10,
+      "collisionPurposeStoredOrgTreeReads": 5000,
+      "separateStructuralAdmissionTreeReads": 501
+    },
+    {
+      "trace": 2,
+      "memberAllocations": 10,
+      "collisionPurposeStoredOrgTreeReads": 5010,
+      "separateStructuralAdmissionTreeReads": 502
+    },
+    {
+      "trace": 3,
+      "memberAllocations": 10,
+      "collisionPurposeStoredOrgTreeReads": 5020,
+      "separateStructuralAdmissionTreeReads": 503
+    }
+  ],
+  "applicationTestsBuildOrChangedPerformancePass": "Not performed; downstream-owned",
+  "scopeLimits": "No release/deployment/finalization; no user app/data/process signals; shared dirty checkout untouched.",
+  "authorityHashes": {
+    "requirements-doc.md": "23b13c5e4753c771f64d7c87d8f2091514c0e3643428b8362213ddf2d39492e8",
+    "investigation-notes.md": "316dcceb6ee87a22521dced3f0fc8e66cb0887887811420c50aa97aaf70e467f",
+    "design-spec.md": "5f746eeae692d5efe1d9b88b9f9e5dc1b8a57376cf137fd373616f70ddfb0f40",
+    "solution-revision-record.md": "8357ed61b56444d62dce6d69664d56f27f60622ed79ca762d9d916a8d6acbdf8",
+    "architecture-design-result.md": "1fdbae82fc4bd0a65bbd11941d46e3dcbcc4ca10d2422cb6f11bd62da596606f"
+  },
+  "upstreamCompletionRecheck": {
+    "at": "2026-10-03T19:28:03.028565+00:00",
+    "changes": {
+      "architecture-design-result.md": {
+        "before": "1fdbae82fc4bd0a65bbd11941d46e3dcbcc4ca10d2422cb6f11bd62da596606f",
+        "after": "a6d0a78d280bb484cd82fcaa3a0de6059c740c5189a64ea87fa83c7c4b25fdde"
+      }
+    },
+    "judgment": "Only architecture-design-result.md appended a post-handoff user clarification explaining scoped UI refresh, explicitly no solution revision. Read and confirmed consistent with design C. Requirements, investigation, design and solution revision record hashes unchanged. Reviewer did not edit upstream."
+  },
+  "reviewArtifactChecks": {
+    "allTemplateSections": true,
+    "localLinks": true,
+    "whitespace": true,
+    "upstreamDesignAndIntentUnchanged": true
+  }
+}

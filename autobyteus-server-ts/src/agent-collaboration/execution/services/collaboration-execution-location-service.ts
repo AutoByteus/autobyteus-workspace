@@ -13,7 +13,7 @@ export type LocatedCollaborationAgentExecution =
   | LocatedAgentRunCollaborationAgentExecution;
 
 type Input = { rootSubjectKind?: RootSubjectKind | null; rootRunId?: string | null; agentRunId?: string | null; memberAddress?: string | null; containingTeamRunId?: string | null };
-type Family = "findAgent" | "findAgentSync" | "listAgents" | "containsRunId";
+type Family = "findAgent" | "findAgentSync" | "listAgents";
 
 /** The launch settings an execution runs with: its configured placement, else its collaborator snapshot. */
 export const locatedLaunchConfiguration = (location: LocatedCollaborationAgentExecution): AgentLaunchConfiguration | null => {
@@ -75,13 +75,7 @@ export class CollaborationExecutionLocationService {
     }
     return output;
   }
-  async containsRunId(runId: string): Promise<boolean> {
-    const found = await Promise.all([
-      this.input.teams.containsRunId(runId), this.input.orgs.containsRunId(runId), this.input.agents.containsRunId(runId),
-    ]);
-    if (found.filter(Boolean).length > 1) throw new Error(`Run identity '${runId}' is present in more than one collaboration root family.`);
-    return found.some(Boolean);
-  }
+
   private tagTeam(item: LocatedTeamAgentExecution): LocatedCollaborationAgentExecution {
     return Object.freeze({ ...item, rootSubjectKind: "agent_team", rootRunId: item.rootTeamRunId });
   }

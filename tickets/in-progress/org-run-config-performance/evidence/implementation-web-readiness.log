@@ -1,0 +1,67 @@
+
+> autobyteus@1.4.93 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > keeps exact Codex/model selection pending, then ready while unrelated discovery and collection remain pending
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > keeps exact Codex/model selection pending, then ready while unrelated discovery and collection remain pending
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > keeps exact Codex/model selection pending, then ready while unrelated discovery and collection remain pending
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > keeps exact Codex/model selection pending, then ready while unrelated discovery and collection remain pending
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > shows selected verification failure and retries only that capability plus its catalog despite inventory failure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > shows selected verification failure and retries only that capability plus its catalog despite inventory failure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > does not optimistically enable native capability for a blank inherited/default runtime
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > does not optimistically enable native capability for a blank inherited/default runtime
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts (3 tests) 46ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (9 tests) 116ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (6 tests) 665ms
+
+ Test Files  3 passed (3)
+      Tests  18 passed (18)
+   Start at  21:57:26
+   Duration  6.07s (transform 3.15s, setup 13.71s, collect 844ms, tests 827ms, environment 569ms, prepare 408ms)
+

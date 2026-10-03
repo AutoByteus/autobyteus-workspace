@@ -20,7 +20,7 @@ const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
 vi.mock('~/services/runHydration/teamCommunicationHydrationService', () => ({ fetchTeamCommunicationForTeam: vi.fn().mockResolvedValue([]) }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: () => ({
-  availabilities: [{ runtimeKind: 'autobyteus', enabled: true }], fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: () => ({ enabled: true }), isRuntimeEnabled: () => true, runtimeReason: () => null,
+  availabilities: [{ runtimeKind: 'autobyteus', enabled: true }], fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: () => ({ enabled: true }), isRuntimeEnabled: () => true, runtimeReason: () => null,
 }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({
   fetchProvidersWithModels: vi.fn().mockResolvedValue([]), ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined), providerSnapshots: () => [],

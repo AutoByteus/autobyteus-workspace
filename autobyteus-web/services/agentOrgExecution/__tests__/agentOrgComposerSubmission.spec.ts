@@ -22,10 +22,10 @@ vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAcce
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
-  applyAgentOrgActivity: mocks.activity, refreshAgentOrgHistory: mocks.historyRefresh, applyRunNavigationEffect: mocks.navigation,
+  applyAgentOrgActivity: mocks.activity, refreshAgentOrgHistoryItem: mocks.historyRefresh, applyRunNavigationEffect: mocks.navigation,
 }) }))
 vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({
-  isAvailable: false, initialize: vi.fn(), cancelOperationForSource: vi.fn(),
+  isAvailable: false, initialize: vi.fn(), cancelOperationForTarget: vi.fn().mockResolvedValue(undefined),
 }) }))
 
 class Socket {
@@ -100,6 +100,8 @@ async function open(agentRunId = 'agent-director') {
   const active = useActiveContextStore()
   wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
   await flushPromises()
+  expect(mocks.historyRefresh).toHaveBeenCalledWith('org-run') // Inspection/snapshot publication observes only this root.
+  mocks.historyRefresh.mockClear()
   return { org, active, context: active.activeAgentContext! }
 }
 
@@ -298,7 +300,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     expect(replacement.getAgentContext('agent-director')!.submissionPending).toBe(false)
     expect(replacement.getAgentContext('agent-director')!.conversation.messages).toEqual([])
     expect(socket.sent).toEqual([])
-    expect(mocks.historyRefresh).not.toHaveBeenCalled()
+    expect(mocks.historyRefresh).toHaveBeenCalledOnce() // Accepted recovery snapshot, not an input-frame refresh.
   })
 
   it('preserves actual textarea edits while a verified same-Agent replacement is held', async () => {
@@ -342,7 +344,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     expect(useAgentOrgContextsStore().contextFor('org-run')!.phase).toBe('live')
     expect(initialSocket.sent).toEqual([])
     expect(socket.sent).toEqual([])
-    expect(mocks.historyRefresh).not.toHaveBeenCalled()
+    expect(mocks.historyRefresh).toHaveBeenCalledOnce() // Accepted recovery snapshot, not an input-frame refresh.
     expect(mocks.navigation).not.toHaveBeenCalled()
   })
 
@@ -386,6 +388,8 @@ async function inactive(id = 'agent-director') {
   const active = useActiveContextStore()
   wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
   await flushPromises()
+  expect(mocks.historyRefresh).toHaveBeenCalledWith('org-run')
+  mocks.historyRefresh.mockClear()
   return { store, active, context: active.activeAgentContext! }
 }
 async function readyRestored() {
@@ -433,7 +437,7 @@ describe('observational Org history, exact deliberate continuation and retained 
     echo(); ack(); status('idle'); await sent; await flushPromises()
     expect(context.conversation.messages.filter((m) => m.type === 'user')).toHaveLength(1)
     expect(context.submissionPending).toBe(false)
-    expect(mocks.mutate).toHaveBeenCalledOnce(); expect(mocks.historyRefresh).toHaveBeenCalledOnce()
+    expect(mocks.mutate).toHaveBeenCalledOnce(); expect(mocks.historyRefresh).toHaveBeenCalledTimes(3) // Restore fact, snapshot, accepted Send summary.
     expect(mocks.navigation).not.toHaveBeenCalled()
   })
 
@@ -574,7 +578,7 @@ describe('Org strict candidate and terminal boundaries', () => {
       expect(store.activeTargetFor('org-run')?.access).toBe('read_only')
       expect(store.errorFor('org-run')).toBe('socket unavailable')
       expect(store.operations).toEqual({}); expect(Socket.instances).toHaveLength(0)
-      expect(mocks.historyRefresh).not.toHaveBeenCalled()
+      expect(mocks.historyRefresh).toHaveBeenCalledOnce() // Restore succeeded, even though stream readiness failed.
       await workspace.vm.$nextTick()
       expect(workspace.get('[role="alert"]').text()).toBe(localizationRuntime.translate('workspace.agentOrg.recovery.exhausted'))
       expect(workspace.text()).not.toContain(localizationRuntime.translate('workspace.agentOrg.inspectionUnavailable'))

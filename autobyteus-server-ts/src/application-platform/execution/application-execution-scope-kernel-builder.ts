@@ -145,10 +145,6 @@ export const buildApplicationExecutionScopeKernel = (
     );
     const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
       agentDefinitionService: input.agentDefinitionService,
-      agentRunManager,
-      agentRunMetadataService: metadataService,
-      teamRunExecutionTreeLocationService: storedTeamLocations,
-      memoryDir: input.memoryDir,
     });
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
       agentRunIdentityAllocator,

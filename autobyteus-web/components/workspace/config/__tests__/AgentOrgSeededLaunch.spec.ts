@@ -19,7 +19,7 @@ import { CreateAgentOrgRun } from '~/graphql/mutations/agentOrgRunMutations'
 const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), route: null as any, push: vi.fn(), replace: vi.fn(), models: vi.fn(), availability: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
 vi.mock('vue-router', () => ({ useRoute: () => io.route, useRouter: () => ({ push: io.push, replace: io.replace }) }))
-vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshTreeQuietly: vi.fn(), applyAgentOrgActivity: vi.fn(), resolveWorkspaceMetadataByRootPath: () => null }) }))
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshAgentOrgHistoryItem: vi.fn(), applyAgentOrgActivity: vi.fn(), resolveWorkspaceMetadataByRootPath: () => null }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({
   fetchProvidersWithModels: io.models, ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined), providerSnapshots: () => [],
   providersWithModelsForSelection: () => [{ provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
@@ -28,7 +28,7 @@ vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => 
 }) }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: () => ({
   availabilities: [{ runtimeKind: 'autobyteus', enabled: true }, { runtimeKind: 'codex_app_server', enabled: true }],
-  fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: io.availability,
+  fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: io.availability,
   isRuntimeEnabled: () => true, runtimeReason: () => null,
 }) }))
 const wrappers: ReturnType<typeof mount>[] = []

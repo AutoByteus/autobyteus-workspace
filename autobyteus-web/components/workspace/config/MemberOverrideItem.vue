@@ -55,7 +55,7 @@
           {{ option.label }}
         </option>
       </select>
-      <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">{{ selectedRuntimeUnavailableReason }}</p>
+      <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">{{ selectedRuntimeUnavailableReason }} <button type="button" class="ml-1 font-semibold underline disabled:opacity-50" :disabled="isInteractionDisabled" @click="retryRuntimeCatalog">{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.retry') }}</button></p>
       <p
         v-if="runtimeCatalogPresentationState.status === 'loading'"
         role="status"
@@ -163,6 +163,7 @@ import WorkspaceSelector from './WorkspaceSelector.vue'
 import FixedWorkspacePath from './FixedWorkspacePath.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { effectiveAutoExecuteTools, isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
+import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { loadRuntimeProviderGroupsForSelection, useRuntimeScopedModelSelection } from '~/composables/useRuntimeScopedModelSelection'
 import {
   buildUnavailableInheritedModelMessage,
@@ -426,6 +427,7 @@ const handleRuntimeChange = async (value: string) => {
       loadRuntimeProviderGroupsForSelection(nextEffectiveRuntimeKind),
       loadRuntimeCurrentModelDescriptors(nextEffectiveRuntimeKind,
         [globalModelIdentifier.value, explicitModelIdentifier.value]),
+
     ])
   } catch (cause) {
     runtimeEditOperation.value = {
@@ -507,6 +509,7 @@ const retryRuntimeCatalog = () => {
     void handleRuntimeChange(failedOperation.requestedOverrideRuntimeKind ?? '')
     return
   }
+  if (effectiveRuntimeKind.value) void useRuntimeAvailabilityStore().fetchRuntimeAvailability(effectiveRuntimeKind.value, true).catch(() => undefined)
   emit('retry-runtime-catalog', effectiveRuntimeKind.value ?? '')
 }
 </script>

@@ -1,0 +1,5 @@
+{
+  "recordedAt": "2026-10-03T15:37:22.354085+00:00",
+  "clarification": "The user distinguishes config model-choice readiness from a separate delay after selecting runtime/model and clicking Run Agent Org: new Org history row/navigation appears only after a while. Explicitly requests testing that part, especially AutoByteus Org.",
+  "approvalForImplementation": false
+}

@@ -1,0 +1,1384 @@
+{
+  "testOwnedInstanceId": "iso-54639-13b7",
+  "source": "Only IDs from owned create receipts",
+  "results": [
+    {
+      "id": "autobyteus_org_a02a14468aa5456780aecf2f5df947e4",
+      "durationMs": 42.26775,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_a02a14468aa5456780aecf2f5df947e4"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_ac63a37351a44f7abb3f6b9a8cff0fff",
+      "durationMs": 15.188625000000009,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_ac63a37351a44f7abb3f6b9a8cff0fff"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_a2536a02a55d478cbfd736f5789138ce",
+      "durationMs": 14.030958999999996,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_a2536a02a55d478cbfd736f5789138ce"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_25f01c93040a4f7487376c8bbf7ff2df",
+      "durationMs": 14.210791999999998,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_25f01c93040a4f7487376c8bbf7ff2df"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_42983c11aa294a01baa75ceed8cd119e",
+      "durationMs": 15.514332999999993,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_42983c11aa294a01baa75ceed8cd119e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_4b96150c7d5c47febd52e16e70ea0d58",
+      "durationMs": 17.556082999999987,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_4b96150c7d5c47febd52e16e70ea0d58"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_de150b0d50294c8086896041de703d48",
+      "durationMs": 12.86012500000001,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_de150b0d50294c8086896041de703d48"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_82be32082f494d75a6cd6f8c4b5bf11e",
+      "durationMs": 14.045541999999983,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_82be32082f494d75a6cd6f8c4b5bf11e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_43e343ef592742b2812510ed345e783f",
+      "durationMs": 22.918166999999983,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_43e343ef592742b2812510ed345e783f"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_71ff6f6cffb04094938538f779bcd90f",
+      "durationMs": 13.651167000000015,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_71ff6f6cffb04094938538f779bcd90f"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_d9f51fb585684ac28d9e21b11c4c3290",
+      "durationMs": 17.343209,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_d9f51fb585684ac28d9e21b11c4c3290"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_fd05a5572be443ab9055b55c4f0a1afb",
+      "durationMs": 13.920041999999995,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_fd05a5572be443ab9055b55c4f0a1afb"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_b30386bddd8640a39a2009f0387f4dae",
+      "durationMs": 14.153333000000003,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_b30386bddd8640a39a2009f0387f4dae"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_a803c62d20cc4e0c973eab8987a7e36d",
+      "durationMs": 11.362000000000023,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_a803c62d20cc4e0c973eab8987a7e36d"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_d818cff8834f494483d925b88bd71881",
+      "durationMs": 13.205540999999982,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_d818cff8834f494483d925b88bd71881"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_5fdc5dfafebd4be699663a687e2c08d2",
+      "durationMs": 14.275791999999967,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_5fdc5dfafebd4be699663a687e2c08d2"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_94cc6ad2d8394f518c45f9576167712e",
+      "durationMs": 14.143584000000033,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_94cc6ad2d8394f518c45f9576167712e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_f65bee3c48324b43a37a906692c2a44f",
+      "durationMs": 12.340166999999951,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_f65bee3c48324b43a37a906692c2a44f"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_91686fd5848e45629779984544c7eaf7",
+      "durationMs": 13.186750000000018,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_91686fd5848e45629779984544c7eaf7"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_e26d9b71b52a40d1bc4b1e38de2130a9",
+      "durationMs": 14.252458999999988,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_e26d9b71b52a40d1bc4b1e38de2130a9"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_7b27abeca1fe48c8aaa7233a5c665298",
+      "durationMs": 14.299666000000002,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_7b27abeca1fe48c8aaa7233a5c665298"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_b7b4c1af9e0d435d9b057dc778ab3dc1",
+      "durationMs": 13.693624999999997,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_b7b4c1af9e0d435d9b057dc778ab3dc1"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_ff883b9127a6445ca64b073e7135408e",
+      "durationMs": 15.160249999999962,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_ff883b9127a6445ca64b073e7135408e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_6b0ddd021fcf4bed9ac44622cccc9108",
+      "durationMs": 19.46629200000001,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_6b0ddd021fcf4bed9ac44622cccc9108"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_d54a9845f50546799ebaf6a9b58c0a18",
+      "durationMs": 16.74837500000001,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_d54a9845f50546799ebaf6a9b58c0a18"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_3b7368627e2c4bf59c7fac4eae57d9c2",
+      "durationMs": 13.377999999999986,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_3b7368627e2c4bf59c7fac4eae57d9c2"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_62a0c83c5fa84ad5aec13834d63e7057",
+      "durationMs": 15.344583999999998,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_62a0c83c5fa84ad5aec13834d63e7057"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_c492c4270f3849739d16559d4c244109",
+      "durationMs": 14.250749999999982,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_c492c4270f3849739d16559d4c244109"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_5a69569f318e4804afd1a4f771327458",
+      "durationMs": 14.472415999999953,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_5a69569f318e4804afd1a4f771327458"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_922cc734ece6479fa1f2ddeb75a7566f",
+      "durationMs": 15.098833000000013,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_922cc734ece6479fa1f2ddeb75a7566f"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_2245f30a40e84becb3eea1f09de1ea54",
+      "durationMs": 15.37700000000001,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_2245f30a40e84becb3eea1f09de1ea54"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_a5253a819c1f45e3a8639e27ef845204",
+      "durationMs": 17.627207999999996,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_a5253a819c1f45e3a8639e27ef845204"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_408ad7ee173348708a1b02825a88dc56",
+      "durationMs": 16.82395800000006,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_408ad7ee173348708a1b02825a88dc56"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_be50fce2e30d45e5bf39adab53245288",
+      "durationMs": 16.540666999999985,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_be50fce2e30d45e5bf39adab53245288"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_b7dbaecaea2a40bea8416483860efa2e",
+      "durationMs": 17.167790999999966,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_b7dbaecaea2a40bea8416483860efa2e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_e4e4720ede7c44f8a0513a55482023d1",
+      "durationMs": 16.274667000000022,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_e4e4720ede7c44f8a0513a55482023d1"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_c02072d7c079419aba9002b20263ea23",
+      "durationMs": 18.477625000000103,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_c02072d7c079419aba9002b20263ea23"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_2a2c7d2e1e4448048e3ff9ce613000f1",
+      "durationMs": 21.55779199999995,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_2a2c7d2e1e4448048e3ff9ce613000f1"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_29184f73fc72460b80796a33127a20ef",
+      "durationMs": 20.287166999999954,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_29184f73fc72460b80796a33127a20ef"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_da865b24613e4351a7f3edf326e54746",
+      "durationMs": 18.714207999999985,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_da865b24613e4351a7f3edf326e54746"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_195f6667f94642eaa188625ae8ddb9e0",
+      "durationMs": 16.383583000000044,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_195f6667f94642eaa188625ae8ddb9e0"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_7a24cd1cfb36440cb7dcbfe5937736c9",
+      "durationMs": 16.05483300000003,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_7a24cd1cfb36440cb7dcbfe5937736c9"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_348bc17337364b12a43fe3b576ca97e2",
+      "durationMs": 16.648500000000013,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_348bc17337364b12a43fe3b576ca97e2"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_0b5525c66db647d8a251bad9f5c444a7",
+      "durationMs": 18.75033300000007,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_0b5525c66db647d8a251bad9f5c444a7"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_a85c77f2a96c4f1d864c164436c48d6e",
+      "durationMs": 16.633790999999974,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_a85c77f2a96c4f1d864c164436c48d6e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_a90ebef7516345bf84bf0e6811d18366",
+      "durationMs": 18.327334000000064,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_a90ebef7516345bf84bf0e6811d18366"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_7efa40e806264984b30390c441025f33",
+      "durationMs": 17.961125000000038,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_7efa40e806264984b30390c441025f33"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_d0f9fe15ea554b42a4f11c6af9e5eef3",
+      "durationMs": 17.367875000000026,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_d0f9fe15ea554b42a4f11c6af9e5eef3"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_48e01cb9ea7b49d0bcfd99ae00a868d8",
+      "durationMs": 16.358249999999998,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_48e01cb9ea7b49d0bcfd99ae00a868d8"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_99270d8ffa534b4a9df8792b58944f3d",
+      "durationMs": 17.523416999999995,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_99270d8ffa534b4a9df8792b58944f3d"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_3b818cd1d91a405b800249f98f273bd8",
+      "durationMs": 17.221667000000025,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_3b818cd1d91a405b800249f98f273bd8"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_545fd553937d4f33a6fa4078926abd29",
+      "durationMs": 14.225084000000038,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_545fd553937d4f33a6fa4078926abd29"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_c92eed6fd3ca4889a71475469e6a7f08",
+      "durationMs": 13.480999999999995,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_c92eed6fd3ca4889a71475469e6a7f08"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_81b9bcf4d5704bf6a433032b0f7c4bb6",
+      "durationMs": 18.77312500000005,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_81b9bcf4d5704bf6a433032b0f7c4bb6"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_c62103ffe1ad474c968489c456cb2818",
+      "durationMs": 24.09979199999998,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_c62103ffe1ad474c968489c456cb2818"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_4110aad670bf42c4b7bcb792f9d7548f",
+      "durationMs": 18.30675000000008,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_4110aad670bf42c4b7bcb792f9d7548f"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_9b5137317f7f406b855fc4c82b6428d7",
+      "durationMs": 18.842750000000024,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_9b5137317f7f406b855fc4c82b6428d7"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_02cd70fe39c4457d9034da2f64745b2f",
+      "durationMs": 18.67208400000004,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_02cd70fe39c4457d9034da2f64745b2f"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_9e4880a939644be398a3e3dea1277ff5",
+      "durationMs": 17.680665999999974,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_9e4880a939644be398a3e3dea1277ff5"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_71e3e9452cd24885983aa2538eed409e",
+      "durationMs": 21.781292000000008,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_71e3e9452cd24885983aa2538eed409e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_807833c73dd24c00bd02a1874c94b9e9",
+      "durationMs": 31.14149999999995,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_807833c73dd24c00bd02a1874c94b9e9"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_365d701075474039b5ec291800e4b6f3",
+      "durationMs": 23.706249999999955,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_365d701075474039b5ec291800e4b6f3"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_3cc09c27f0cb47b39557f4c29bd31ac4",
+      "durationMs": 16.877666999999974,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_3cc09c27f0cb47b39557f4c29bd31ac4"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_e21c592ca76241e98fe6d1533fbbf591",
+      "durationMs": 18.298999999999978,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_e21c592ca76241e98fe6d1533fbbf591"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_ced68ef8145f45c9badcc727d67589b6",
+      "durationMs": 16.360625000000027,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_ced68ef8145f45c9badcc727d67589b6"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_2a7e5ccc619f4718ace86f16efab588e",
+      "durationMs": 18.59683300000006,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_2a7e5ccc619f4718ace86f16efab588e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_476d7e5be3a641368e7fac38cb027cac",
+      "durationMs": 25.123708999999963,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_476d7e5be3a641368e7fac38cb027cac"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_6017cc2964414ef4a925bf69921dda58",
+      "durationMs": 18.844540999999936,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_6017cc2964414ef4a925bf69921dda58"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_2fb217369d0e49e0a916ee144c5cfe96",
+      "durationMs": 16.620584000000008,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_2fb217369d0e49e0a916ee144c5cfe96"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_5da9b1f3936d4bc6973c49d277c68210",
+      "durationMs": 18.04600000000005,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_5da9b1f3936d4bc6973c49d277c68210"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_3c0de2b7354946eeae32e548240e50d7",
+      "durationMs": 23.891208000000006,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_3c0de2b7354946eeae32e548240e50d7"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_4020754021cf4ba98ff8dbb3176a2960",
+      "durationMs": 18.633000000000038,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_4020754021cf4ba98ff8dbb3176a2960"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_14c6787c2b704594944f16b7137346b2",
+      "durationMs": 19.253625000000056,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_14c6787c2b704594944f16b7137346b2"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_01da7366168e4908870138428e20d8ba",
+      "durationMs": 15.666582999999946,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_01da7366168e4908870138428e20d8ba"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_2b145c6f29a144f3bd22835ceb136f37",
+      "durationMs": 22.19708300000002,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_2b145c6f29a144f3bd22835ceb136f37"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_3c208ef0c35b4c8f9244b8fa136aba03",
+      "durationMs": 15.466249999999945,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_3c208ef0c35b4c8f9244b8fa136aba03"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_bc977883fb71446aa8b57b705fc9dad5",
+      "durationMs": 19.95891699999993,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_bc977883fb71446aa8b57b705fc9dad5"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_e55431dbf3fd4077a51b881ead9ab232",
+      "durationMs": 20.04012499999999,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_e55431dbf3fd4077a51b881ead9ab232"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_fdb5035390e14f0390de32c9f9d65a8b",
+      "durationMs": 19.793332999999848,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_fdb5035390e14f0390de32c9f9d65a8b"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_b68f8ecc442f42faaa8e6680917b5a98",
+      "durationMs": 17.83008300000006,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_b68f8ecc442f42faaa8e6680917b5a98"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_ec9f928c270049ee9b4031e7ccae211e",
+      "durationMs": 23.925624999999854,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_ec9f928c270049ee9b4031e7ccae211e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_c7721da842f1456ab0bf757b4c87b24c",
+      "durationMs": 15.186582999999928,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_c7721da842f1456ab0bf757b4c87b24c"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_bf9999b029d741518c1ad1a257278288",
+      "durationMs": 14.923874999999953,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_bf9999b029d741518c1ad1a257278288"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_1ddc7ee1024f4f65bb487010e439c105",
+      "durationMs": 13.298000000000002,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_1ddc7ee1024f4f65bb487010e439c105"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_4a6bd738829a4e56b16ceb158d46b772",
+      "durationMs": 13.16495800000007,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_4a6bd738829a4e56b16ceb158d46b772"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_9ff7c5c344234b63954eba8c18e8cce9",
+      "durationMs": 13.219209000000092,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_9ff7c5c344234b63954eba8c18e8cce9"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_a7e46c5bb041464eb52ea7f01252b0b9",
+      "durationMs": 13.261166999999887,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_a7e46c5bb041464eb52ea7f01252b0b9"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_6c6d91f830754ebe8d4ede95e241b81d",
+      "durationMs": 12.215541999999914,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_6c6d91f830754ebe8d4ede95e241b81d"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_9b5b1ce525b34a74b69714f0d2270a2a",
+      "durationMs": 13.322292000000061,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_9b5b1ce525b34a74b69714f0d2270a2a"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_43b279aa41b34004b5f6f916b9fc0ff2",
+      "durationMs": 14.252500000000055,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_43b279aa41b34004b5f6f916b9fc0ff2"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_a756720b9f1047f59304215d3df0796b",
+      "durationMs": 13.169125000000122,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_a756720b9f1047f59304215d3df0796b"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_2621359794c848f9913f825fd3895b91",
+      "durationMs": 13.427458000000115,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_2621359794c848f9913f825fd3895b91"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_e159083abb9544f5aa8ccd5589f301ee",
+      "durationMs": 13.169750000000022,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_e159083abb9544f5aa8ccd5589f301ee"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_fdee9adf0f5f435c9fadee47d609c8aa",
+      "durationMs": 15.332709000000023,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_fdee9adf0f5f435c9fadee47d609c8aa"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_79acf1d82e6c4236b5bc6b0156223188",
+      "durationMs": 13.179665999999997,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_79acf1d82e6c4236b5bc6b0156223188"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_15dc9c1d157d42ceaa2bb0db4ad9942e",
+      "durationMs": 13.458458999999948,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_15dc9c1d157d42ceaa2bb0db4ad9942e"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_9df5bd73e6d2479dacde028d5be66337",
+      "durationMs": 14.190875000000005,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_9df5bd73e6d2479dacde028d5be66337"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_3ed83cebf1214fc68723230c5ecc1fc3",
+      "durationMs": 15.175707999999986,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_3ed83cebf1214fc68723230c5ecc1fc3"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_38c1d92f0223418fbcdceaace7c64744",
+      "durationMs": 13.086000000000013,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_38c1d92f0223418fbcdceaace7c64744"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_178866009a3444ee905fbb992e1c3be2",
+      "durationMs": 13.495290999999952,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_178866009a3444ee905fbb992e1c3be2"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_9008f63276c94bc89ecb3473d3cda5b3",
+      "durationMs": 13.103000000000065,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_9008f63276c94bc89ecb3473d3cda5b3"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_0816260dd38142bfa43d4a71c8b5edb7",
+      "durationMs": 14.41816700000004,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_0816260dd38142bfa43d4a71c8b5edb7"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_98942b81ea0f4e508bb8a202ec3a51ac",
+      "durationMs": 14.116708000000017,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_98942b81ea0f4e508bb8a202ec3a51ac"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_d1cfef3a126d4b06be944c3e15b968d4",
+      "durationMs": 13.283249999999953,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_d1cfef3a126d4b06be944c3e15b968d4"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_73548d0b8238486f9fbb07beae0f1c0b",
+      "durationMs": 13.253540999999814,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_73548d0b8238486f9fbb07beae0f1c0b"
+          }
+        }
+      }
+    },
+    {
+      "id": "autobyteus_org_d7c2b1e590a04e1f8c13bb2e95957044",
+      "durationMs": 16.012959000000137,
+      "body": {
+        "data": {
+          "terminateAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run terminated successfully.",
+            "agentOrgRunId": "autobyteus_org_d7c2b1e590a04e1f8c13bb2e95957044"
+          }
+        }
+      }
+    }
+  ]
+}

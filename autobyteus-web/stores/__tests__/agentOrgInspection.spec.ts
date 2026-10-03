@@ -9,7 +9,7 @@ vi.mock('~/services/agentOrgExecution/agentOrgStreamingService', () => ({ AgentO
   constructor(readonly options: any) { mocks.instances.push(this) }
 } }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
-  applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistory: vi.fn(), ensureWorkspaceByRootPath: vi.fn(), resolveWorkspaceMetadataByRootPath: vi.fn(),
+  applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistoryItem: vi.fn(), ensureWorkspaceByRootPath: vi.fn(), resolveWorkspaceMetadataByRootPath: vi.fn(),
 }) }))
 import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
 const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: { ...variables,

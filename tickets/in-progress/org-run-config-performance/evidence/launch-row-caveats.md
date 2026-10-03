@@ -1,0 +1,14 @@
+# Post-Run Investigation Caveats
+- Exact new-row DOM and viewport-bounds readiness, not compositor paint or controller transport. Passive DOM observation adds some overhead; layout checks appear in the separate CPU profile.
+- Primary stress result uses metadata-only response observation, except the tiny create response. Earlier series also decoded history responses in the observing process, potentially adding host/transport overhead; retained, not silently substituted.
+- Creation request durations are browser network intervals. Absolute network-start versus DOM-click conversion spans processes/clocks; small offsets (including a negative ~6ms case) are not application ordering evidence.
+- Cold means renderer reload with warm server, not OS reboot/server start. Runtime/model/schema readiness completed before the measured Run click.
+- Fixture population is synthetic public-API load, not an approved bulk-create product journey. 500 is a stress condition, not the user's confirmed run count or a new capacity guarantee. All source-copy files are hash-pinned; original agent source was dirty and untouched.
+- Eight-way concurrent population timings are NOT single-user launch latency. Population finished before UI/profile measurements.
+- Idle Orgs stopped through normal public API to represent stored histories. Already stopped IDs return false/not found on repeat; 106 such results in second stop batch were expected, not cleanup failures.
+- Backend timing hooks and renderer CPU profiling are separately instrumented runs, not primary latency samples. Inclusive child durations overlap; do not add them as exclusive wall time. All backend hooks restored; instance/ports/private fixtures cleaned.
+- Initial Node-inspector dynamic import failed before hooks/state were installed; corrected using builtin module access. This is probe setup, not app failure.
+- Default Playwright test-id attribute initially did not match data-test; those waits failed before dispatch. Corrected from observed DOM; excluded from all performance samples.
+- Repository-referenced browser-automation locator was absent in its original repository. An exploratory tab inventory used an available launcher; no UI actions used that unsupported skill locator. Actual measurements used the repository packaged-test Playwright/CDP boundary bound only to the owned instance.
+- No provider turn/inference, user-run/data mutation, credential copy, persistence migration, production source fix, release or deployment. Installed1.4.93 baseline is not changed-source validation.
+- User's exact history volume, transcript/message sizes and concurrently active workload remain unmeasured; do not claim full reproduction of their environment.

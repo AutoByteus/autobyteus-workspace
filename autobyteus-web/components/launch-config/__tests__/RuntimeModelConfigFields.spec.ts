@@ -38,7 +38,7 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     })
     ;(useRuntimeAvailabilityStore as any).mockReturnValue({
       availabilities: [],
-      fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
+      fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
       availabilityByKind: vi.fn((kind: string) => kind === 'removed-runtime' ? null : { enabled: true }),
       isRuntimeEnabled: vi.fn((runtimeKind: string) => runtimeKind !== 'removed-runtime'),
       runtimeReason: vi.fn().mockReturnValue(null),

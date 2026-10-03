@@ -130,10 +130,8 @@ export class RuntimeAvailabilityService {
     this.providers.set(provider.runtimeKind, provider);
   }
 
-  async listRuntimeAvailabilities(): Promise<RuntimeAvailability[]> {
-    return Promise.all(Array.from(this.providers.values()).map((provider) =>
-      provider.getRuntimeAvailability(),
-    ));
+  listRuntimeKinds(): RuntimeKind[] {
+    return Array.from(this.providers.keys());
   }
 
   async getRuntimeAvailability(runtimeKind: RuntimeKind): Promise<RuntimeAvailability> {

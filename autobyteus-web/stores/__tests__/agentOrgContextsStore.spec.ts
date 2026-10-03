@@ -6,7 +6,7 @@ import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBear
 const mocks = vi.hoisted(() => ({
   applyAgentOrgActivity: vi.fn(),
   instances: [] as Array<Record<string, any>>,
-  refreshAgentOrgHistory: vi.fn(async () => undefined),
+  refreshAgentOrgHistoryItem: vi.fn(async () => undefined),
 }))
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async ({ variables }: any) => variables.agentRunId
@@ -35,7 +35,7 @@ vi.mock('~/services/agentOrgExecution/agentOrgStreamingService', () => ({
 }))
 
 vi.mock('~/stores/runHistoryStore', () => ({
-  useRunHistoryStore: () => ({ refreshAgentOrgHistory: mocks.refreshAgentOrgHistory, applyAgentOrgActivity: mocks.applyAgentOrgActivity }),
+  useRunHistoryStore: () => ({ refreshAgentOrgHistoryItem: mocks.refreshAgentOrgHistoryItem, applyAgentOrgActivity: mocks.applyAgentOrgActivity }),
 }))
 
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
@@ -47,10 +47,11 @@ describe('agentOrgContextsStore lifecycle ownership', () => {
     vi.clearAllMocks()
   })
 
-  it('injects one authoritative AgentOrg-family refresh callback into the stream owner', async () => {
+  it('observes only the affected root on inspection, ACK, inactivity and topology changes', async () => {
     const store = useAgentOrgContextsStore()
     await store.openForInspection('org-run')
 
+    expect(mocks.refreshAgentOrgHistoryItem).toHaveBeenCalledExactlyOnceWith('org-run')
     expect(mocks.instances).toHaveLength(1)
     expect(mocks.instances[0]?.options.orgRunId).toBe('org-run')
     await mocks.instances[0]?.options.onAcceptedExternalUserMessage({
@@ -59,11 +60,14 @@ describe('agentOrgContextsStore lifecycle ownership', () => {
       commandId: 'command-1',
     })
 
-    expect(mocks.refreshAgentOrgHistory).toHaveBeenCalledTimes(1)
+    expect(mocks.refreshAgentOrgHistoryItem).toHaveBeenCalledTimes(2)
     mocks.applyAgentOrgActivity.mockClear()
     mocks.instances[0]?.options.onInactive()
     expect(mocks.applyAgentOrgActivity).toHaveBeenCalledExactlyOnceWith('org-run', false)
-    expect(mocks.refreshAgentOrgHistory).toHaveBeenCalledTimes(1)
+    expect(mocks.refreshAgentOrgHistoryItem).toHaveBeenCalledTimes(3)
+    mocks.instances[0]?.options.onExecutionTreeChanged()
+    expect(mocks.refreshAgentOrgHistoryItem).toHaveBeenCalledTimes(4)
+    expect(mocks.refreshAgentOrgHistoryItem.mock.calls.every(([id]) => id === 'org-run')).toBe(true)
     store.releaseContext('org-run')
   })
 

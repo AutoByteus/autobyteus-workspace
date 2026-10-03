@@ -1,36 +1,91 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
+import { flushPromises } from '@vue/test-utils';
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore';
-import { getApolloClient } from '~/utils/apolloClient';
+import { ControlledOrgApollo } from '~/test-support/agentOrgApolloFixture';
+const io = vi.hoisted(() => ({ client: null as any }));
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }));
+let transport: ControlledOrgApollo, store: ReturnType<typeof useRuntimeAvailabilityStore>;
+const INVENTORY = 'GetRuntimeAvailabilityKinds', CAPABILITY = 'GetRuntimeAvailability';
+const row = (kind: string, enabled = true) => ({ runtimeAvailability: { runtimeKind: kind, enabled, reason: enabled ? null : 'Missing CLI' } });
+const kindCall = (kind: string) => transport.pending(CAPABILITY).find(r => r.operation.variables.runtimeKind === kind)!;
+beforeEach(() => { setActivePinia(createPinia()); transport = new ControlledOrgApollo(); io.client = transport.client; store = useRuntimeAvailabilityStore(); });
+afterEach(() => transport.client.stop());
 
-vi.mock('~/utils/apolloClient', () => ({
-  getApolloClient: vi.fn(),
-}));
-
-describe('runtimeAvailabilityStore', () => {
-  beforeEach(() => {
-    setActivePinia(createPinia());
+describe('independent verified runtime publication through real Apollo', () => {
+  it('publishes Codex before an unrelated probe completes but preserves collection completion flags', async () => {
+    expect(store.isRuntimeEnabled('autobyteus')).toBe(false);
+    const all = store.fetchRuntimeAvailabilities();
+    const shared = store.fetchRuntimeAvailabilities();
+    expect(transport.named(INVENTORY)).toHaveLength(1);
+    transport.pending(INVENTORY)[0]!.respond({ runtimeAvailabilityKinds: ['autobyteus', 'codex_app_server', 'antigravity_cli'] });
+    await flushPromises();
+    expect(transport.named(CAPABILITY)).toHaveLength(3);
+    kindCall('codex_app_server').respond(row('codex_app_server'));
+    kindCall('autobyteus').respond(row('autobyteus'));
+    await flushPromises();
+    expect(store.isRuntimeEnabled('codex_app_server')).toBe(true);
+    expect(store.isLoading).toBe(true); expect(store.hasFetched).toBe(false);
+    kindCall('antigravity_cli').respond(row('antigravity_cli', false));
+    await Promise.all([all, shared]);
+    expect(store.hasFetched).toBe(true); expect(store.isLoading).toBe(false);
+    expect(store.isRuntimeEnabled('antigravity_cli')).toBe(false);
+    expect(store.runtimeReason('antigravity_cli')).toBe('Missing CLI');
+    await store.fetchRuntimeAvailabilities(); expect(transport.named(INVENTORY)).toHaveLength(1);
   });
-
-  it('loads runtime capability metadata and exposes enablement getters', async () => {
-    (getApolloClient as any).mockReturnValue({
-      query: vi.fn().mockResolvedValue({
-        data: {
-          runtimeAvailabilities: [
-            { runtimeKind: 'autobyteus', enabled: true, reason: null },
-            { runtimeKind: 'codex_app_server', enabled: false, reason: 'Codex CLI is not available on PATH.' },
-            { runtimeKind: 'claude_agent_sdk', enabled: true, reason: null },
-          ],
-        },
-      }),
-    });
-
-    const store = useRuntimeAvailabilityStore();
-    await store.fetchRuntimeAvailabilities();
-
-    expect(store.isRuntimeEnabled('autobyteus')).toBe(true);
+  it('checks selected Codex independently of failed inventory and retains it on unrelated failure', async () => {
+    const all = store.fetchRuntimeAvailabilities().catch(e => e);
+    const codex = store.fetchRuntimeAvailability('codex_app_server');
+    transport.pending(INVENTORY)[0]!.fail('inventory unavailable');
+    kindCall('codex_app_server').respond(row('codex_app_server'));
+    await Promise.all([all, codex]);
+    expect(store.isRuntimeEnabled('codex_app_server')).toBe(true); expect(store.hasFetched).toBe(false);
+    const other = store.fetchRuntimeAvailability('antigravity_cli').catch(e => e);
+    kindCall('antigravity_cli').fail('probe unavailable'); await other;
+    expect(store.isRuntimeEnabled('codex_app_server')).toBe(true);
+    expect(store.runtimeReason('antigravity_cli')).toBe('probe unavailable');
+  });
+  it('shares same-kind work, rejects mismatched rows, retries only that kind, ignores late superseded responses', async () => {
+    const old = store.fetchRuntimeAvailability('codex_app_server');
+    const shared = store.fetchRuntimeAvailability('codex_app_server');
+    expect(transport.named(CAPABILITY)).toHaveLength(1);
+    const newer = store.fetchRuntimeAvailability('codex_app_server', true).catch(e => e);
+    expect(transport.named(CAPABILITY)).toHaveLength(2);
+    const calls = transport.named(CAPABILITY);
+    calls.forEach(r => expect(r.operation.getContext().queryDeduplication).toBe(false));
+    calls[1]!.respond(row('autobyteus')); await newer;
+    expect(store.runtimeReason('codex_app_server')).toContain('Invalid runtime capability');
+    calls[0]!.respond(row('codex_app_server')); await Promise.all([old, shared]);
     expect(store.isRuntimeEnabled('codex_app_server')).toBe(false);
-    expect(store.isRuntimeEnabled('claude_agent_sdk')).toBe(true);
-    expect(store.runtimeReason('codex_app_server')).toContain('Codex CLI is not available');
+    const retry = store.fetchRuntimeAvailability('codex_app_server', true);
+    kindCall('codex_app_server').respond(row('codex_app_server')); await retry;
+    expect(store.isRuntimeEnabled('codex_app_server')).toBe(true);
+    expect(transport.named(INVENTORY)).toHaveLength(0);
   });
+  it('reset prevents a response from an earlier state incarnation publishing into a new request', async () => {
+    const old = store.fetchRuntimeAvailability('codex_app_server'); const first = kindCall('codex_app_server');
+    store.$reset(); const next = store.fetchRuntimeAvailability('codex_app_server'); const second = transport.named(CAPABILITY)[1]!;
+    first.respond(row('codex_app_server')); await old; expect(store.availabilities).toEqual([]);
+    second.respond(row('codex_app_server', false)); await next; expect(store.runtimeReason('codex_app_server')).toBe('Missing CLI');
+  });
+});
+
+it.each(['success','failure'])('collection awaits a superseding selected-kind verification (%s) rather than declaring old work complete', async outcome => {
+  const collection = store.fetchRuntimeAvailabilities().catch(error => error); let complete = false;
+  void collection.then(() => { complete = true });
+  transport.pending(INVENTORY)[0]!.respond({runtimeAvailabilityKinds:['codex_app_server','antigravity_cli']});
+  await flushPromises(); const old = kindCall('codex_app_server');
+  const retry = store.fetchRuntimeAvailability('codex_app_server',true).catch(error => error);
+  old.respond(row('codex_app_server')); kindCall('antigravity_cli').respond(row('antigravity_cli',false));
+  await flushPromises();
+  expect(complete).toBe(false); expect(store.isLoading).toBe(true); expect(store.hasFetched).toBe(false);
+  expect(store.isRuntimeEnabled('codex_app_server')).toBe(false);
+  if(outcome==='success') kindCall('codex_app_server').respond(row('codex_app_server'));
+  else kindCall('codex_app_server').fail('Current Codex failure');
+  const [result] = await Promise.all([collection,retry]);
+  expect(store.isLoading).toBe(false); expect(store.hasFetched).toBe(outcome==='success');
+  expect(store.isRuntimeEnabled('codex_app_server')).toBe(outcome==='success');
+  if(outcome==='failure') expect(result.message).toBe('Current Codex failure');
+  expect(transport.named(INVENTORY)).toHaveLength(1);
+  expect(transport.named(CAPABILITY)).toHaveLength(3);
 });

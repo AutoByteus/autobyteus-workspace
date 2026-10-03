@@ -25,7 +25,7 @@ const orgInspectionResponse = (id = 'org-history') => {
     root_org: {
       base_change_sequence: 0, is_active: false, execution_tree: row.org,
       communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] },
-      agent_statuses: [],
+      agent_statuses: [], agent_input_states: [],
     },
   } } };
 };
@@ -46,6 +46,7 @@ beforeEach(() => {
     const name=query.definitions.find((d:any)=>d.name)?.name.value;
     if(name==='ListWorkspaceRunHistory') return workspace.promise;
     if(name==='ListCollaborationRootHistory') return org.promise;
+    if(name==='GetAgentOrgRootHistory') return {data:{getAgentOrgRootHistory:buildAgentOrgHistoryRow({rootRunId:variables.orgRunId,workspaceRootPath:'/fixture',definitionName:'History Org'})}};
     if(name==='GetWorkspaceRunHistory') return catalog.promise.then(()=>({data:{workspaceRunHistory:historyWorkspaceFixture()}}));
     if(name==='GetAgentOrgRunInspection') return orgInspectionResponse();
     if(name==='GetAgentOrgMemberRunProjection') return { data: { getAgentOrgMemberRunProjection: {
@@ -113,6 +114,7 @@ describe('independent family publication through real initialized Pinia projecti
     hydration.resolve();await completion;await flushPromises();
     expect(useAgentRunStore().connectToAgentStream).toHaveBeenCalledWith('agent-history');expect(store.loading).toBe(false);
     expect(store.agentAvatarByDefinitionId['agent-definition']).toContain('avatar.png');expect(orgIds()).toEqual(['org-history']);
+    expect(wrapper!.find('img[src="https://fixture.invalid/avatar.png"]').exists()).toBe(true);
     expect(selection.subject).toBe(selected);expect(wrapper!.get('[data-test="workspace-row"]').attributes('aria-expanded')).toBe('true');
   });
   it('publishes a later Org response while existing active hydration is already blocked', async () => {

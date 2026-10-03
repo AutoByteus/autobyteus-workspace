@@ -1,0 +1,707 @@
+src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-collaboration/execution/backends/root-agent-execution-registry.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-collaboration/execution/communication/root-communication-adapter.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-collaboration/execution/communication/root-communication-runtime-builder.ts(2,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-collaboration/execution/communication/root-communication-runtime-builder.ts(3,28): error TS2307: Cannot find module 'autobyteus-ts/agent/sender-type.js' or its corresponding type declarations.
+src/agent-collaboration/execution/domain/collaboration-agent-execution-event.ts(2,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-collaboration/execution/events/member-input-presentation-event-builder.ts(2,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-collaboration/execution/events/task-system-input-presentation.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-collaboration/execution/events/task-system-input-presentation.ts(2,67): error TS2307: Cannot find module 'autobyteus-ts/agent/message/system-task-notification-metadata.js' or its corresponding type declarations.
+src/agent-collaboration/execution/events/task-system-input-presentation.ts(3,28): error TS2307: Cannot find module 'autobyteus-ts/agent/sender-type.js' or its corresponding type declarations.
+src/agent-collaboration/execution/task/root-task-execution-adapter.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-collaboration/execution/task/task-execution-input.ts(4,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-collaboration/execution/task/task-execution-input.ts(5,28): error TS2307: Cannot find module 'autobyteus-ts/agent/sender-type.js' or its corresponding type declarations.
+src/agent-communication/services/global-agent-run-message-runtime-builders.ts(2,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-communication/services/global-agent-run-message-runtime-builders.ts(3,28): error TS2307: Cannot find module 'autobyteus-ts/agent/sender-type.js' or its corresponding type declarations.
+src/agent-customization/processors/prompt/prompt-context-builder.ts(3,33): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-type.js' or its corresponding type declarations.
+src/agent-customization/processors/prompt/prompt-context-builder.ts(4,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-customization/processors/prompt/user-input-context-building-processor.ts(7,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-customization/processors/prompt/user-input-context-building-processor.ts(8,47): error TS2307: Cannot find module 'autobyteus-ts/agent/events/agent-events.js' or its corresponding type declarations.
+src/agent-customization/processors/prompt/user-input-context-building-processor.ts(9,33): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-type.js' or its corresponding type declarations.
+src/agent-customization/processors/prompt/user-input-context-building-processor.ts(10,34): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file.js' or its corresponding type declarations.
+src/agent-customization/processors/prompt/user-input-context-building-processor.ts(27,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'UserInputContextBuildingProcessor' does not extend another class.
+src/agent-customization/processors/prompt/user-input-context-building-processor.ts(31,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'UserInputContextBuildingProcessor' does not extend another class.
+src/agent-customization/processors/prompt/user-input-context-building-processor.ts(35,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'UserInputContextBuildingProcessor' does not extend another class.
+src/agent-customization/processors/prompt/user-input-context-building-processor.ts(152,67): error TS7006: Parameter 'cf' implicitly has an 'any' type.
+src/agent-customization/processors/response-customization/media-url-transformer-processor.ts(3,61): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-customization/processors/response-customization/media-url-transformer-processor.ts(4,55): error TS2307: Cannot find module 'autobyteus-ts/agent/events/agent-events.js' or its corresponding type declarations.
+src/agent-customization/processors/response-customization/media-url-transformer-processor.ts(5,39): error TS2307: Cannot find module 'autobyteus-ts/llm/utils/response-types.js' or its corresponding type declarations.
+src/agent-customization/processors/response-customization/media-url-transformer-processor.ts(6,43): error TS2307: Cannot find module 'autobyteus-ts/agent/streaming/segments/segment-events.js' or its corresponding type declarations.
+src/agent-customization/processors/response-customization/media-url-transformer-processor.ts(25,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'MediaUrlTransformerProcessor' does not extend another class.
+src/agent-customization/processors/response-customization/media-url-transformer-processor.ts(29,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'MediaUrlTransformerProcessor' does not extend another class.
+src/agent-customization/processors/response-customization/media-url-transformer-processor.ts(33,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'MediaUrlTransformerProcessor' does not extend another class.
+src/agent-customization/processors/security-processor/workspace-path-sanitization-processor.ts(6,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-customization/processors/security-processor/workspace-path-sanitization-processor.ts(7,47): error TS2307: Cannot find module 'autobyteus-ts/agent/events/agent-events.js' or its corresponding type declarations.
+src/agent-customization/processors/security-processor/workspace-path-sanitization-processor.ts(21,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'WorkspacePathSanitizationProcessor' does not extend another class.
+src/agent-customization/processors/security-processor/workspace-path-sanitization-processor.ts(25,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'WorkspacePathSanitizationProcessor' does not extend another class.
+src/agent-customization/processors/security-processor/workspace-path-sanitization-processor.ts(29,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'WorkspacePathSanitizationProcessor' does not extend another class.
+src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.ts(1,48): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.ts(2,35): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.ts(3,37): error TS2307: Cannot find module 'autobyteus-ts/agent/tool-invocation.js' or its corresponding type declarations.
+src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.ts(4,28): error TS2307: Cannot find module 'autobyteus-ts/llm/llm-factory.js' or its corresponding type declarations.
+src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.ts(5,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.ts(24,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'MediaInputPathNormalizationPreprocessor' does not extend another class.
+src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.ts(28,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'MediaInputPathNormalizationPreprocessor' does not extend another class.
+src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.ts(32,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'MediaInputPathNormalizationPreprocessor' does not extend another class.
+src/agent-definition/services/agent-definition-service.ts(7,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts(2,51): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts(7,51): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/acp/input/acp-prompt-builder.ts(2,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/backends/acp/input/acp-prompt-builder.ts(3,51): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-reference-section.js' or its corresponding type declarations.
+src/agent-execution/backends/agent-run-backend.ts(1,70): error TS2307: Cannot find module 'autobyteus-ts/memory/compaction/compaction-recovery.js' or its corresponding type declarations.
+src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts(1,39): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/agent-communication/autobyteus-send-message-tool-factory.ts(1,31): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool-composer.ts(1,31): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool-composer.ts(2,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool-native-schema-projector.ts(1,33): error TS2307: Cannot find module 'autobyteus-ts/tools/mcp/schema-mapper.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool-native-schema-projector.ts(2,38): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool-native-schema-projector.ts(3,54): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(1,35): error TS2307: Cannot find module 'autobyteus-ts/agent/context/agent-context.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(7,8): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(8,38): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(9,49): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(34,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'ApplicationAgentTool' does not extend another class.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(42,19): error TS4112: This member cannot have an 'override' modifier because its containing class 'ApplicationAgentTool' does not extend another class.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(46,25): error TS4112: This member cannot have an 'override' modifier because its containing class 'ApplicationAgentTool' does not extend another class.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(52,14): error TS2339: Property 'agentId' does not exist on type 'ApplicationAgentTool'.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(53,12): error TS2339: Property 'setAgentId' does not exist on type 'ApplicationAgentTool'.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(59,18): error TS2339: Property 'getToolResultExecutionMode' does not exist on type 'ApplicationAgentTool'.
+src/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.ts(65,22): error TS4112: This member cannot have an 'override' modifier because its containing class 'ApplicationAgentTool' does not extend another class.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts(1,73): error TS2307: Cannot find module 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts(20,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts(21,53): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts(22,28): error TS2307: Cannot find module 'autobyteus-ts/agent/agent.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts(417,32): error TS7006: Parameter 'execution' implicitly has an 'any' type.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts(1,70): error TS2307: Cannot find module 'autobyteus-ts/memory/compaction/compaction-recovery.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts(2,34): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts(3,35): error TS2307: Cannot find module 'autobyteus-ts/agent/context/agent-context.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts(4,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts(15,51): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts(263,68): error TS7006: Parameter 'error' implicitly has an 'any' type.
+src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts(1,31): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts(2,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-config.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts(3,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-collaboration-tool-exposure.ts(1,30): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-category.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/autobyteus-collaboration-tool-exposure.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/available-llm-construction.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts(1,34): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/claude/session/claude-session-output-events.ts(1,39): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/claude/session/claude-session.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/backends/claude/session/claude-user-message-builder.ts(3,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/backends/claude/session/claude-user-message-builder.ts(4,51): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-reference-section.js' or its corresponding type declarations.
+src/agent-execution/backends/claude/session/claude-user-message-builder.ts(5,33): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-type.js' or its corresponding type declarations.
+src/agent-execution/backends/claude/session/claude-user-message-builder.ts(6,34): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file.js' or its corresponding type declarations.
+src/agent-execution/backends/claude/session/claude-user-message-builder.ts(90,42): error TS7006: Parameter 'contextFile' implicitly has an 'any' type.
+src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts(2,43): error TS2307: Cannot find module 'autobyteus-ts/llm/provider-display-names.js' or its corresponding type declarations.
+src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts(3,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/agent-execution/backends/codex/thread/codex-thread.ts(1,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/backends/codex/thread/codex-thread.ts(37,51): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts(4,8): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-reference-section.js' or its corresponding type declarations.
+src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts(5,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts(6,34): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file.js' or its corresponding type declarations.
+src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts(7,33): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-type.js' or its corresponding type declarations.
+src/agent-execution/compaction/compaction-llm-factory.ts(1,43): error TS2307: Cannot find module 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js' or its corresponding type declarations.
+src/agent-execution/compaction/compaction-llm-factory.ts(2,43): error TS2307: Cannot find module 'autobyteus-ts/memory/compaction/compaction-summary-prompt.js' or its corresponding type declarations.
+src/agent-execution/compaction/compaction-llm-factory.ts(3,44): error TS2307: Cannot find module 'autobyteus-ts/llm/utils/llm-config-overrides.js' or its corresponding type declarations.
+src/agent-execution/compaction/compaction-llm-factory.ts(4,32): error TS2307: Cannot find module 'autobyteus-ts/llm/utils/llm-config.js' or its corresponding type declarations.
+src/agent-execution/compaction/compaction-llm-factory.ts(5,31): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/agent-execution/compaction/compaction-llm-factory.ts(38,67): error TS7031: Binding element 'parentModelIdentifier' implicitly has an 'any' type.
+src/agent-execution/compaction/compaction-llm-factory.ts(42,6): error TS7006: Parameter 'model' implicitly has an 'any' type.
+src/agent-execution/compaction/compaction-llm-factory.ts(42,13): error TS7006: Parameter 'defaults' implicitly has an 'any' type.
+src/agent-execution/domain/agent-run-command-observer-dispatch.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/domain/agent-run-command-observer.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/domain/agent-run-context.ts(2,35): error TS2307: Cannot find module 'autobyteus-ts/agent/context/agent-context.js' or its corresponding type declarations.
+src/agent-execution/domain/agent-run.ts(2,45): error TS2307: Cannot find module 'autobyteus-ts/memory/compaction/compaction-recovery.js' or its corresponding type declarations.
+src/agent-execution/domain/agent-run.ts(6,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/domain/system-instructions-supplied-event.ts(1,51): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/events/pending-system-instruction-event.ts(1,51): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-execution/input/agent-run-compaction-recovery.ts(1,28): error TS2307: Cannot find module 'autobyteus-ts/agent/sender-type.js' or its corresponding type declarations.
+src/agent-execution/input/agent-run-compaction-recovery.ts(2,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/input/agent-run-compaction-recovery.ts(3,45): error TS2307: Cannot find module 'autobyteus-ts/memory/compaction/compaction-recovery.js' or its corresponding type declarations.
+src/agent-execution/input/agent-run-input-admission-state.ts(2,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/input/agent-run-input-admission-state.ts(374,106): error TS7006: Parameter 'file' implicitly has an 'any' type.
+src/agent-execution/input/agent-run-input-contract.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/input/agent-run-provider-input-normalizer.ts(1,46): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-attachments.js' or its corresponding type declarations.
+src/agent-execution/input/agent-run-provider-input-normalizer.ts(2,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/input/agent-run-provider-input-normalizer.ts(3,29): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file.js' or its corresponding type declarations.
+src/agent-execution/input/agent-run-provider-input-normalizer.ts(26,35): error TS7006: Parameter 'source' implicitly has an 'any' type.
+src/agent-execution/providers/agent-provider-factory-builder.ts(1,43): error TS2307: Cannot find module 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js' or its corresponding type declarations.
+src/agent-execution/services/agent-run-command-coordinator.ts(1,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-execution/services/agent-run-command-types.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-memory/domain/memory-recording-models.ts(1,43): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-reference.js' or its corresponding type declarations.
+src/agent-memory/domain/memory-recording-models.ts(2,36): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-item.js' or its corresponding type declarations.
+src/agent-memory/domain/models.ts(1,43): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-reference.js' or its corresponding type declarations.
+src/agent-memory/domain/models.ts(2,36): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-item.js' or its corresponding type declarations.
+src/agent-memory/services/agent-conversation-activity-inspector.ts(3,36): error TS2307: Cannot find module 'autobyteus-ts/memory/store/run-memory-file-store.js' or its corresponding type declarations.
+src/agent-memory/services/memory-run-summary-builder.ts(7,8): error TS2307: Cannot find module 'autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/agent-memory/services/raw-trace-file-source-service.ts(2,52): error TS2307: Cannot find module 'autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/agent-memory/services/raw-trace-file-source-service.ts(3,36): error TS2307: Cannot find module 'autobyteus-ts/memory/store/run-memory-file-store.js' or its corresponding type declarations.
+src/agent-memory/services/raw-trace-file-source-service.ts(112,68): error TS7006: Parameter 'segment' implicitly has an 'any' type.
+src/agent-memory/services/raw-trace-record-normalizer.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-memory/services/raw-trace-record-normalizer.ts(7,36): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-item.js' or its corresponding type declarations.
+src/agent-memory/services/raw-trace-record-normalizer.ts(9,46): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-attachments.js' or its corresponding type declarations.
+src/agent-memory/services/runtime-memory-event-accumulator.ts(2,43): error TS2307: Cannot find module 'autobyteus-ts/agent/message/inter-agent-sender.js' or its corresponding type declarations.
+src/agent-memory/services/runtime-memory-event-accumulator.ts(6,46): error TS2307: Cannot find module 'autobyteus-ts/memory/tool-trace-lifecycle-index.js' or its corresponding type declarations.
+src/agent-memory/services/runtime-memory-event-payload.ts(2,46): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-attachments.js' or its corresponding type declarations.
+src/agent-memory/services/runtime-memory-location-classifier.ts(3,52): error TS2307: Cannot find module 'autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/agent-memory/services/runtime-tool-trace-sequencer.ts(8,8): error TS2307: Cannot find module 'autobyteus-ts/memory/models/tool-call-identity.js' or its corresponding type declarations.
+src/agent-memory/services/runtime-tool-trace-sequencer.ts(9,46): error TS2307: Cannot find module 'autobyteus-ts/memory/tool-trace-lifecycle-index.js' or its corresponding type declarations.
+src/agent-memory/services/system-instruction-capture-service.ts(4,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-memory/store/external-runtime-memory-writer.ts(2,56): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-item.js' or its corresponding type declarations.
+src/agent-memory/store/external-runtime-memory-writer.ts(3,36): error TS2307: Cannot find module 'autobyteus-ts/memory/store/run-memory-file-store.js' or its corresponding type declarations.
+src/agent-memory/store/external-runtime-memory-writer.ts(7,8): error TS2307: Cannot find module 'autobyteus-ts/memory/tool-trace-lifecycle-index.js' or its corresponding type declarations.
+src/agent-memory/store/memory-file-store.ts(8,8): error TS2307: Cannot find module 'autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/agent-memory/store/memory-file-store.ts(9,36): error TS2307: Cannot find module 'autobyteus-ts/memory/store/run-memory-file-store.js' or its corresponding type declarations.
+src/agent-memory/store/memory-file-store.ts(10,47): error TS2307: Cannot find module 'autobyteus-ts/memory/store/raw-trace-archive-manifest.js' or its corresponding type declarations.
+src/agent-org-execution/domain/agent-org-run.ts(6,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-run-collaboration/domain/agent-run-collaboration-root.ts(2,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/backends/team-run-backend.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/domain/root-team-run.ts(1,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/domain/task-agent-execution.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/domain/task-team-execution.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/domain/team-member-execution-command.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/domain/team-run.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/local/flat-team-agent-execution-handle.ts(2,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/local/flat-team-execution-manager.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/local/flat-team-run-backend.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/local/registries/task-agent-execution-registry.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/services/inter-agent-message-runtime-builders.ts(1,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-team-execution/services/inter-agent-message-runtime-builders.ts(2,28): error TS2307: Cannot find module 'autobyteus-ts/agent/sender-type.js' or its corresponding type declarations.
+src/agent-team-execution/services/team-member-input-event-builder.ts(2,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/get-handoff-rules-parameter-schema.ts(1,33): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/get-handoff-rules.ts(1,26): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/get-handoff-rules.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-config.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/get-handoff-rules.ts(3,30): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-category.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/get-handoff-rules.ts(4,32): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/get-handoff-rules.ts(5,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/get-handoff-rules.ts(6,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/get-handoff-rules.ts(63,8): error TS2339: Property 'definition' does not exist on type 'AutoByteusGetHandoffRulesTool'.
+src/agent-tools/agent-communication/register-agent-communication-tools.ts(1,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/send-message-to-parameter-schema.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/send-message-to.ts(1,26): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/send-message-to.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-config.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/send-message-to.ts(3,30): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-category.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/send-message-to.ts(4,32): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/send-message-to.ts(5,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/send-message-to.ts(6,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/agent-tools/agent-communication/send-message-to.ts(106,8): error TS2339: Property 'definition' does not exist on type 'AutoByteusSendMessageToTool'.
+src/agent-tools/agent-discovery/list-available-agents-contract.ts(1,33): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/agent-discovery/list-available-agents-tool.ts(1,26): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-tools/agent-discovery/list-available-agents-tool.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-config.js' or its corresponding type declarations.
+src/agent-tools/agent-discovery/list-available-agents-tool.ts(3,30): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-category.js' or its corresponding type declarations.
+src/agent-tools/agent-discovery/list-available-agents-tool.ts(4,32): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/agent-tools/agent-discovery/list-available-agents-tool.ts(5,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-discovery/list-available-agents-tool.ts(6,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/agent-tools/agent-discovery/list-available-agents-tool.ts(60,8): error TS2339: Property 'definition' does not exist on type 'AutoByteusListAvailableAgentsTool'.
+src/agent-tools/agent-management/create-agent-definition.ts(1,85): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-management/create-agent-definition.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-management/delete-agent-definition.ts(1,85): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-management/delete-agent-definition.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-management/get-agent-definition.ts(1,85): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-management/get-agent-definition.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-management/list-agent-definitions.ts(1,49): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-management/list-agent-definitions.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-management/update-agent-definition.ts(1,85): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-management/update-agent-definition.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-team-management/create-agent-team-definition.ts(1,85): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-team-management/create-agent-team-definition.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-team-management/delete-agent-team-definition.ts(1,85): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-team-management/delete-agent-team-definition.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-team-management/get-agent-team-definition.ts(1,85): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-team-management/get-agent-team-definition.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-team-management/list-agent-team-definitions.ts(1,49): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-team-management/list-agent-team-definitions.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/agent-team-management/update-agent-team-definition.ts(1,85): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/agent-team-management/update-agent-team-definition.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/browser-tool-parameter-schemas.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/close-tab.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/close-tab.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/dom-snapshot.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/dom-snapshot.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/list-tabs.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/list-tabs.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/navigate-to.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/navigate-to.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/open-tab.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/open-tab.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/read-page.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/read-page.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/register-browser-tools.ts(1,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/run-script.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/run-script.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/screenshot.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/screenshot.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/browser/set-device-emulation.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/browser/set-device-emulation.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/mcp/agent-tool-mcp-catalog.ts(1,56): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/mcp/agent-tool-mcp-catalog.ts(2,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/agent-tools/mcp/agent-tool-mcp-definition-provider.ts(1,38): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/mcp/agent-tools-mcp-host.ts(1,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/mcp/agent-tools-mcp-schema-mapper.ts(1,38): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/mcp/application-agent-tool-mcp-adapter.ts(27,38): error TS7006: Parameter 'block' implicitly has an 'any' type.
+src/agent-tools/mcp/configured-mcp/configured-mcp-agent-tool-source-resolver.ts(1,56): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/mcp/configured-mcp/configured-mcp-agent-tool-source-resolver.ts(2,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/agent-tools/mcp/configured-mcp/configured-mcp-registry-tool-adapter.ts(1,56): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/mcp/configured-mcp/configured-mcp-registry-tool-adapter.ts(2,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/agent-tools/media/media-autobyteus-tools.ts(1,26): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/media/media-autobyteus-tools.ts(2,32): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/agent-tools/media/media-autobyteus-tools.ts(3,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/media/media-autobyteus-tools.ts(4,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/agent-tools/media/media-autobyteus-tools.ts(5,33): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-config.js' or its corresponding type declarations.
+src/agent-tools/media/media-autobyteus-tools.ts(6,38): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/media/media-autobyteus-tools.ts(32,22): error TS4112: This member cannot have an 'override' modifier because its containing class 'MediaAutobyteusTool' does not extend another class.
+src/agent-tools/media/media-autobyteus-tools.ts(51,21): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-tools/media/media-generation-service.ts(1,47): error TS2307: Cannot find module 'autobyteus-ts/multimedia/utils/response-types.js' or its corresponding type declarations.
+src/agent-tools/media/media-generation-service.ts(2,46): error TS2307: Cannot find module 'autobyteus-ts/multimedia/utils/response-types.js' or its corresponding type declarations.
+src/agent-tools/media/media-generation-service.ts(3,46): error TS2307: Cannot find module 'autobyteus-ts/multimedia/utils/response-types.js' or its corresponding type declarations.
+src/agent-tools/media/media-generation-service.ts(4,44): error TS2307: Cannot find module 'autobyteus-ts/multimedia/utils/operation-options.js' or its corresponding type declarations.
+src/agent-tools/media/media-generation-service.ts(9,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/media/media-tool-manifest.ts(1,38): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-manifest.ts(3,43): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-model-resolver.ts(1,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/audio/audio-client-factory.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-model-resolver.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/audio/audio-model.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-model-resolver.ts(3,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/image/image-client-factory.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-model-resolver.ts(4,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/image/image-model.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-model-resolver.ts(5,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-client-factory.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-model-resolver.ts(6,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-model-resolver.ts(44,10): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+src/agent-tools/media/media-tool-model-resolver.ts(52,10): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+src/agent-tools/media/media-tool-model-resolver.ts(59,8): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+src/agent-tools/media/media-tool-parameter-schemas.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-path-resolver.ts(4,37): error TS2307: Cannot find module 'autobyteus-ts/utils/download-utils.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-path-resolver.ts(6,44): error TS2307: Cannot find module 'autobyteus-ts/multimedia/utils/operation-options.js' or its corresponding type declarations.
+src/agent-tools/media/register-media-tools.ts(1,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/project-tasks/project-task-native-tools.ts(1,53): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-tools/project-tasks/project-task-native-tools.ts(2,30): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-category.js' or its corresponding type declarations.
+src/agent-tools/project-tasks/project-task-native-tools.ts(3,35): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-meta.js' or its corresponding type declarations.
+src/agent-tools/project-tasks/project-task-native-tools.ts(10,55): error TS2339: Property 'getName' does not exist on type 'ProjectTaskNativeTool'.
+src/agent-tools/project-tasks/project-task-native-tools.ts(16,67): error TS2339: Property 'getName' does not exist on type 'ProjectTaskNativeTool'.
+src/agent-tools/project-tasks/project-task-tool-contract.ts(1,69): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/published-artifacts/publish-artifacts-tool.ts(1,26): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/published-artifacts/publish-artifacts-tool.ts(2,69): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/published-artifacts/publish-artifacts-tool.ts(3,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/published-artifacts/publish-artifacts-tool.ts(4,32): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/agent-tools/published-artifacts/publish-artifacts-tool.ts(5,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/agent-tools/published-artifacts/publish-artifacts-tool.ts(6,33): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-config.js' or its corresponding type declarations.
+src/agent-tools/published-artifacts/publish-artifacts-tool.ts(204,23): error TS7006: Parameter 'config' implicitly has an 'any' type.
+src/agent-tools/search/register-search-tool.ts(1,24): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/search/register-search-tool.ts(2,32): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/agent-tools/search/register-search-tool.ts(3,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/search/register-search-tool.ts(4,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/agent-tools/search/register-search-tool.ts(16,23): error TS7006: Parameter 'config' implicitly has an 'any' type.
+src/agent-tools/search/search-provisioning-service.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/search/search-provisioning-service.ts(6,29): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/agent-tools/task-delegation/delegate-task.ts(1,26): error TS2307: Cannot find module 'autobyteus-ts/tools/base-tool.js' or its corresponding type declarations.
+src/agent-tools/task-delegation/delegate-task.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-config.js' or its corresponding type declarations.
+src/agent-tools/task-delegation/delegate-task.ts(3,30): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-category.js' or its corresponding type declarations.
+src/agent-tools/task-delegation/delegate-task.ts(4,35): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-meta.js' or its corresponding type declarations.
+src/agent-tools/task-delegation/register-task-delegation-tools.ts(1,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/agent-tools/task-delegation/task-delegation-tool-contract.ts(15,33): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-config.js' or its corresponding type declarations.
+src/agent-tools/task-delegation/task-delegation-tool-manifest.ts(1,38): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/agent-work-traces/services/agent-work-trace-projection-service.ts(7,39): error TS2307: Cannot find module 'autobyteus-ts/memory/tool-interaction-builder.js' or its corresponding type declarations.
+src/agent-work-traces/services/agent-work-trace-projection-service.ts(8,37): error TS2307: Cannot find module 'autobyteus-ts/memory/models/tool-call-identity.js' or its corresponding type declarations.
+src/agent-work-traces/services/agent-work-trace-projection-service.ts(80,78): error TS7006: Parameter 'interaction' implicitly has an 'any' type.
+src/agent-work-traces/services/agent-work-trace-projection-service.ts(86,24): error TS18046: 'interaction' is of type 'unknown'.
+src/agent-work-traces/services/agent-work-trace-projection-service.ts(88,61): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/agent-work-traces/services/agent-work-trace-projection-service.ts(90,5): error TS2322: Type 'Map<string, { interactionByIdentity: Map<unknown, unknown>; traceById: Map<string, MemoryTurnTraceEvent>; includedToolIdentityKeys: Set<string>; }>' is not assignable to type 'Map<string, Required<Pick<HistoricalReplayBuildOptions, "interactionByIdentity" | "traceById" | "includedToolIdentityKeys">>>'.
+  Type '{ interactionByIdentity: Map<unknown, unknown>; traceById: Map<string, MemoryTurnTraceEvent>; includedToolIdentityKeys: Set<string>; }' is not assignable to type 'Required<Pick<HistoricalReplayBuildOptions, "interactionByIdentity" | "traceById" | "includedToolIdentityKeys">>'.
+    The types of 'interactionByIdentity.forEach' are incompatible between these types.
+      Type '(callbackfn: (value: unknown, key: unknown, map: Map<unknown, unknown>) => void, thisArg?: any) => void' is not assignable to type '(callbackfn: (value: ToolInteraction, key: string, map: ReadonlyMap<string, ToolInteraction>) => void, thisArg?: any) => void'.
+        Types of parameters 'callbackfn' and 'callbackfn' are incompatible.
+          Types of parameters 'key' and 'key' are incompatible.
+            Type 'unknown' is not assignable to type 'string'.
+src/agent-work-traces/services/agent-work-trace-renderer.ts(4,43): error TS2307: Cannot find module 'autobyteus-ts/memory/presentation/condensed-tool-call-renderer.js' or its corresponding type declarations.
+src/agent-work-traces/services/agent-work-trace-renderer.ts(5,39): error TS2307: Cannot find module 'autobyteus-ts/memory/presentation/readable-value-renderer.js' or its corresponding type declarations.
+src/api/graphql/converters/mcp-server-converter.ts(6,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/api/graphql/converters/tool-definition-converter.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/api/graphql/converters/tool-definition-converter.ts(6,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/api/graphql/converters/tool-definition-converter.ts(44,54): error TS7006: Parameter 'param' implicitly has an 'any' type.
+src/api/graphql/converters/user-input-converter.ts(1,69): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/api/graphql/types/agent-customization-options.ts(8,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/api/graphql/types/agent-customization-options.ts(9,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/api/graphql/types/agent-user-input.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-type.js' or its corresponding type declarations.
+src/api/graphql/types/llm-provider-model-catalog.ts(3,43): error TS2307: Cannot find module 'autobyteus-ts/llm/provider-display-names.js' or its corresponding type declarations.
+src/api/graphql/types/llm-provider-model-catalog.ts(4,34): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/api/graphql/types/llm-provider-model-catalog.ts(5,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/audio/audio-model.js' or its corresponding type declarations.
+src/api/graphql/types/llm-provider-model-catalog.ts(6,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/image/image-model.js' or its corresponding type declarations.
+src/api/graphql/types/llm-provider-model-catalog.ts(7,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+src/api/graphql/types/llm-provider-model-catalog.ts(112,7): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'typeof ModelMetadataProvenanceGraphql'.
+src/api/graphql/types/mcp-server.ts(6,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/api/graphql/types/mcp-server.ts(22,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/api/graphql/types/tool-management.ts(2,28): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/api/graphql/types/tool-management.ts(10,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/api/graphql/types/tool-management.ts(32,20): error TS7006: Parameter 'tool' implicitly has an 'any' type.
+src/api/graphql/types/tool-management.ts(33,17): error TS7006: Parameter 'tool' implicitly has an 'any' type.
+src/api/graphql/types/tool-management.ts(39,17): error TS7006: Parameter 'tool' implicitly has an 'any' type.
+src/api/graphql/types/tool-management.ts(42,51): error TS7006: Parameter 'tool' implicitly has an 'any' type.
+src/api/graphql/types/tool-management.ts(57,16): error TS18046: 'tools' is of type 'unknown'.
+src/api/graphql/types/tool-management.ts(57,27): error TS7006: Parameter 'tool' implicitly has an 'any' type.
+src/api/rest/application-backend-route-handlers.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/api/rest/application-backends.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/api/rest/application-execution-resources.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/api/websocket/application-agent-communication.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/api/websocket/application-backends.ts(2,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(1,23): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(55,44): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(66,31): error TS2347: Untyped function calls may not accept type arguments.
+src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts(67,26): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts(3,52): error TS2307: Cannot find module 'autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts(8,8): error TS2307: Cannot find module 'autobyteus-ts/memory/store/raw-trace-archive-manifest.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/custom-provider-migration-name-snapshot.ts(6,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/app-data-migrations/migrations/custom-provider-migration-name-snapshot.ts(7,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/custom-provider-migration-name-snapshot.ts(8,58): error TS2307: Cannot find module 'autobyteus-ts/llm/openai-compatible-endpoint-discovery.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/custom-provider-migration-name-snapshot.ts(79,38): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/app-data-migrations/migrations/custom-provider-migration-name-snapshot.ts(79,42): error TS7031: Binding element 'name' implicitly has an 'any' type.
+src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.ts(9,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/app-data-migrations/migrations/custom-provider-v1-app-data-migration.ts(1,50): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/app-data-migrations/migrations/custom-provider-v1-app-data-migration.ts(2,58): error TS2307: Cannot find module 'autobyteus-ts/llm/openai-compatible-endpoint-discovery.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/custom-provider-v1-app-data-migration.ts(3,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts(8,8): error TS2307: Cannot find module 'autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts(9,36): error TS2307: Cannot find module 'autobyteus-ts/memory/store/run-memory-file-store.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts(14,8): error TS2307: Cannot find module 'autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts(15,45): error TS2307: Cannot find module 'autobyteus-ts/memory/store/working-context-snapshot-store.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts(16,92): error TS2307: Cannot find module 'autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts(210,78): error TS7006: Parameter 'trace' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-active-file-name-migration-files.ts(4,52): error TS2307: Cannot find module 'autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/raw-trace-rotation-layout-migration-files.ts(10,8): error TS2307: Cannot find module 'autobyteus-ts/memory/store/raw-trace-archive-manifest.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/raw-trace-rotation-layout-migration-files.ts(151,56): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout-migration-files.ts(152,55): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout-migration-files.ts(163,38): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout-migration-files.ts(173,49): error TS7006: Parameter 'segment' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout-migration-files.ts(192,55): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout-migration-run.ts(8,8): error TS2307: Cannot find module 'autobyteus-ts/memory/store/raw-trace-archive-manifest.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts(4,52): error TS2307: Cannot find module 'autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts(3,52): error TS2307: Cannot find module 'autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.ts(1,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.ts(159,45): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.ts(281,30): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.ts(287,30): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts(1,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts(101,38): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts(1,67): error TS2307: Cannot find module 'autobyteus-ts/llm/provider-display-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts(2,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts(3,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts(95,38): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts(1,23): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts(223,8): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/app-data-migrations/repositories/app-data-migration-record-repository.ts(1,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/application-agent-communication/domain/application-agent-communication-models.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-frame-parser.ts(3,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-frame-parser.ts(4,58): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-service.ts(2,52): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-session.ts(9,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-session.ts(10,58): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/domain/application-agent-streaming-models.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-stream-event-mapper.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-stream-event-projector.ts(1,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-stream-runtime-source.ts(1,51): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-stream-subscription.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-streaming-service.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-streaming-service.ts(110,67): error TS2322: Type 'unknown' is not assignable to type 'Error'.
+src/application-agent-tools/domain/application-agent-tool-declaration-snapshot.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-tools/services/application-agent-tool-capability.ts(1,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-tools/services/application-agent-tool-capability.ts(11,49): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-tools/services/application-agent-tool-gateway.ts(1,49): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-tools/services/application-agent-tool-payload-validator.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-tools/services/application-agent-tool-worker-invoker.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts(2,53): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-backend-api-gateway/websockets/application-backend-websocket-session-service.ts(2,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-bundles/domain/models.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-bundles/utils/application-backend-manifest.ts(8,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-bundles/utils/application-backend-manifest.ts(101,23): error TS2538: Type 'symbol' cannot be used as an index type.
+src/application-bundles/utils/application-backend-manifest.ts(102,70): error TS2731: Implicit conversion of a 'symbol' to a 'string' will fail at runtime. Consider wrapping this expression in 'String(...)'.
+src/application-bundles/utils/application-backend-manifest.ts(104,19): error TS2538: Type 'symbol' cannot be used as an index type.
+src/application-bundles/utils/application-manifest.ts(17,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-bundles/utils/application-manifest.ts(273,7): error TS2322: Type 'Set<string | number | symbol>' is not assignable to type 'ReadonlySet<string>'.
+  Types of property 'forEach' are incompatible.
+    Type '(callbackfn: (value: string | number | symbol, value2: string | number | symbol, set: Set<string | number | symbol>) => void, thisArg?: any) => void' is not assignable to type '(callbackfn: (value: string, value2: string, set: ReadonlySet<string>) => void, thisArg?: any) => void'.
+      Types of parameters 'callbackfn' and 'callbackfn' are incompatible.
+        Types of parameters 'value' and 'value' are incompatible.
+          Type 'string | number | symbol' is not assignable to type 'string'.
+            Type 'number' is not assignable to type 'string'.
+src/application-bundles/utils/application-manifest.ts(301,7): error TS2322: Type 'Set<string | number | symbol>' is not assignable to type 'ReadonlySet<string>'.
+  Types of property 'forEach' are incompatible.
+    Type '(callbackfn: (value: string | number | symbol, value2: string | number | symbol, set: Set<string | number | symbol>) => void, thisArg?: any) => void' is not assignable to type '(callbackfn: (value: string, value2: string, set: ReadonlySet<string>) => void, thisArg?: any) => void'.
+      Types of parameters 'callbackfn' and 'callbackfn' are incompatible.
+        Types of parameters 'value' and 'value' are incompatible.
+          Type 'string | number | symbol' is not assignable to type 'string'.
+            Type 'number' is not assignable to type 'string'.
+src/application-bundles/utils/application-manifest.ts(307,7): error TS2322: Type 'Set<string | number | symbol>' is not assignable to type 'ReadonlySet<string>'.
+  Types of property 'forEach' are incompatible.
+    Type '(callbackfn: (value: string | number | symbol, value2: string | number | symbol, set: Set<string | number | symbol>) => void, thisArg?: any) => void' is not assignable to type '(callbackfn: (value: string, value2: string, set: ReadonlySet<string>) => void, thisArg?: any) => void'.
+      Types of parameters 'callbackfn' and 'callbackfn' are incompatible.
+        Types of parameters 'value' and 'value' are incompatible.
+          Type 'string | number | symbol' is not assignable to type 'string'.
+            Type 'number' is not assignable to type 'string'.
+src/application-engine/runtime/application-engine-client.ts(7,59): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/runtime/application-engine-client.ts(266,49): error TS2339: Property 'code' does not exist on type '{}'.
+src/application-engine/runtime/application-engine-client.ts(266,80): error TS2339: Property 'recoverable' does not exist on type '{}'.
+src/application-engine/runtime/protocol.ts(22,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/services/application-agent-stream-observer-activation-barrier.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/services/application-engine-controller.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/services/application-engine-launcher.ts(1,46): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/services/application-engine-state-registry.ts(2,46): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-agent-stream-observer-registry.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-backend-definition-loader.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-backend-definition-loader.ts(86,60): error TS7006: Parameter 'route' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(86,67): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(104,46): error TS7006: Parameter 'segment' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(104,55): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(168,50): error TS7031: Binding element 'method' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(168,58): error TS7031: Binding element 'path' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(169,68): error TS7031: Binding element 'path' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-host.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-backend-host.ts(105,75): error TS7006: Parameter 'route' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-host.ts(108,42): error TS2339: Property 'handler' does not exist on type '{ path: string; }'.
+src/application-engine/worker/application-backend-host.ts(132,34): error TS2339: Property 'open' does not exist on type '{ path: string; }'.
+src/application-engine/worker/application-handler-context-factory.ts(13,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-handler-context-factory.ts(14,59): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-handler-context-factory.ts(39,31): error TS7006: Parameter 'filter' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(42,33): error TS7006: Parameter 'slotKey' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(47,22): error TS7006: Parameter 'runId' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(50,30): error TS7006: Parameter 'revisionInput' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(54,35): error TS7006: Parameter 'topic' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(54,42): error TS7006: Parameter 'payload' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(74,26): error TS7006: Parameter 'input' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(75,30): error TS7006: Parameter 'input' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(76,25): error TS7006: Parameter 'input' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(77,25): error TS7006: Parameter 'bindingId' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(78,19): error TS7006: Parameter 'bindingId' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(79,20): error TS7006: Parameter 'filter' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(80,37): error TS7006: Parameter 'launchRequestId' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(81,36): error TS7006: Parameter 'address' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(81,45): error TS7006: Parameter 'observer' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(81,55): error TS7006: Parameter 'options' implicitly has an 'any' type.
+src/application-engine/worker/application-websocket-session-registry.ts(8,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-websocket-session-registry.ts(74,14): error TS7006: Parameter 'frame' implicitly has an 'any' type.
+src/application-engine/worker/application-worker-host-bridge-client.ts(10,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/domain/application-agent-input-validator.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/domain/application-execution-producer-projector.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/domain/application-run-binding-record-codec.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/domain/models.ts(9,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/domain/models.ts(13,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-agent-target-authorization-service.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-execution-event-ingress-service.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-execution-resource-resolver.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-orchestration-host-service.ts(14,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-published-artifact-delivery-queue.ts(1,56): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-published-artifact-relay-service.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-run-binding-launch-service.ts(14,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-run-ownership-service.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-runtime-input-normalizer.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-runtime-input-normalizer.ts(6,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/application-orchestration/services/application-runtime-input-normalizer.ts(7,29): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file.js' or its corresponding type declarations.
+src/application-orchestration/services/application-runtime-input-normalizer.ts(8,38): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-type.js' or its corresponding type declarations.
+src/application-orchestration/services/application-runtime-input-normalizer.ts(9,28): error TS2307: Cannot find module 'autobyteus-ts/agent/sender-type.js' or its corresponding type declarations.
+src/application-orchestration/stores/application-execution-event-journal-store.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/stores/application-launch-override-store.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/stores/application-run-binding-store.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/execution/application-execution-scope-contracts.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/application-platform/execution/application-execution-scope-contracts.ts(3,51): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-current-model-selection-guard.ts(1,62): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-current-model-selection-guard.ts(2,52): error TS2307: Cannot find module 'autobyteus-ts/llm/index.js' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-current-model-selection-guard.ts(40,18): error TS18046: 'error' is of type 'unknown'.
+src/application-platform/launch-configuration/application-current-model-selection-policy.ts(1,51): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-current-model-selection-policy.ts(2,62): error TS2307: Cannot find module 'autobyteus-ts/llm/openai-compatible-endpoint-model.js' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-execution-resource-ref.ts(1,54): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-configuration-diagnostics.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-configuration-diagnostics.ts(13,33): error TS7006: Parameter 'issue' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-configuration-service.ts(15,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-configuration-service.ts(190,35): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-configuration-service.ts(312,28): error TS7031: Binding element 'runtimeKind' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-configuration-service.ts(312,41): error TS7031: Binding element 'llmModelIdentifier' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-configuration-service.ts(457,58): error TS7006: Parameter 'leaf' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-host-capability-validator.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-host-capability-validator.ts(7,52): error TS2307: Cannot find module 'autobyteus-ts/llm/index.js' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-host-capability-validator.ts(106,11): error TS18046: 'error' is of type 'unknown'.
+src/application-platform/launch-configuration/application-launch-override-normalizer.ts(13,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-override-overlay.ts(12,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-override-overlay.ts(234,55): error TS7006: Parameter 'member' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-override-overlay.ts(238,48): error TS7006: Parameter 'scope' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-override-overlay.ts(243,40): error TS7006: Parameter 'leaf' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-resource-baseline-builder.ts(8,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-stored-override-reader.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts(3,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts(4,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts(5,28): error TS2307: Cannot find module 'autobyteus-ts/llm/runtimes.js' or its corresponding type declarations.
+src/application-platform/runtime/application-definition-runtime-readiness.ts(72,64): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/application-platform/runtime/application-runtime-definition-validator.ts(3,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/runtime/application-runtime-definition-validator.ts(4,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/compositions/build-studio-server.ts(60,28): error TS2307: Cannot find module 'autobyteus-ts/llm/llm-factory.js' or its corresponding type declarations.
+src/compositions/create-process-agent-provider-factory-builder.ts(9,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/config/prisma-client-factory.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/context-files/services/context-file-record-locators.ts(1,36): error TS2307: Cannot find module 'autobyteus-ts/memory/store/run-memory-file-store.js' or its corresponding type declarations.
+src/context-files/services/context-file-record-locators.ts(2,46): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-attachments.js' or its corresponding type declarations.
+src/llm-management/domain/model-selection-presentation.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/llm-providers/builtins/built-in-llm-provider-catalog.ts(1,70): error TS2307: Cannot find module 'autobyteus-ts/llm/provider-display-names.js' or its corresponding type declarations.
+src/llm-management/llm-providers/builtins/built-in-llm-provider-catalog.ts(2,34): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/llm-management/llm-providers/builtins/built-in-llm-provider-catalog.ts(7,43): error TS7006: Parameter 'providerId' implicitly has an 'any' type.
+src/llm-management/llm-providers/domain/models.ts(1,34): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/llm-management/llm-providers/domain/models.ts(2,39): error TS2307: Cannot find module 'autobyteus-ts/llm/custom-llm-provider-identity.js' or its corresponding type declarations.
+src/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.ts(7,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/llm-management/llm-providers/services/llm-provider-service.ts(8,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/llm-management/llm-providers/services/llm-provider-service.ts(9,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/llm-management/llm-providers/services/llm-provider-service.ts(134,49): error TS7031: Binding element 'id' implicitly has an 'any' type.
+src/llm-management/llm-providers/services/llm-provider-service.ts(134,53): error TS7031: Binding element 'name' implicitly has an 'any' type.
+src/llm-management/llm-providers/stores/custom-llm-provider-store.ts(9,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/llm-management/llm-providers/stores/custom-llm-provider-store.ts(10,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/llm-management/llm-providers/stores/custom-llm-provider-store.ts(94,12): error TS7006: Parameter 'provider' implicitly has an 'any' type.
+src/llm-management/llm-providers/stores/custom-llm-provider-store.ts(98,36): error TS7006: Parameter 'provider' implicitly has an 'any' type.
+src/llm-management/llm-providers/stores/custom-llm-provider-store.ts(129,61): error TS7006: Parameter 'provider' implicitly has an 'any' type.
+src/llm-management/services/antigravity-model-catalog.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/antigravity-model-catalog.ts(2,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/llm-management/services/autobyteus-remote-model-discovery-service.ts(1,56): error TS2307: Cannot find module 'autobyteus-ts/clients/autobyteus-discovery-authentication.js' or its corresponding type declarations.
+src/llm-management/services/autobyteus-remote-model-discovery-service.ts(2,41): error TS2307: Cannot find module 'autobyteus-ts/llm/autobyteus-provider.js' or its corresponding type declarations.
+src/llm-management/services/autobyteus-remote-model-discovery-service.ts(3,55): error TS2307: Cannot find module 'autobyteus-ts/llm/discovery-endpoint-identity.js' or its corresponding type declarations.
+src/llm-management/services/autobyteus-remote-model-discovery-service.ts(4,31): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/autobyteus-remote-model-discovery-service.ts(5,46): error TS2307: Cannot find module 'autobyteus-ts/multimedia/audio/autobyteus-audio-provider.js' or its corresponding type declarations.
+src/llm-management/services/autobyteus-remote-model-discovery-service.ts(6,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/audio/audio-model.js' or its corresponding type declarations.
+src/llm-management/services/autobyteus-remote-model-discovery-service.ts(7,46): error TS2307: Cannot find module 'autobyteus-ts/multimedia/image/autobyteus-image-provider.js' or its corresponding type declarations.
+src/llm-management/services/autobyteus-remote-model-discovery-service.ts(8,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/image/image-model.js' or its corresponding type declarations.
+src/llm-management/services/claude-model-catalog.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/codex-model-catalog.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/gemini-configuration-service.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/llm-management/services/gemini-runtime-resolver-adapter.ts(1,44): error TS2307: Cannot find module 'autobyteus-ts/utils/gemini-runtime.js' or its corresponding type declarations.
+src/llm-management/services/grok-build-model-catalog.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(1,28): error TS2307: Cannot find module 'autobyteus-ts/llm/llm-factory.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(2,55): error TS2307: Cannot find module 'autobyteus-ts/llm/discovery-endpoint-identity.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(8,8): error TS2307: Cannot find module 'autobyteus-ts/llm/openai-compatible-endpoint-model.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(9,28): error TS2307: Cannot find module 'autobyteus-ts/llm/runtimes.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(10,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/audio/audio-client-factory.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(11,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/image/image-client-factory.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(12,58): error TS2307: Cannot find module 'autobyteus-ts/multimedia/model-identifier.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(13,35): error TS2307: Cannot find module 'autobyteus-ts/multimedia/runtimes.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(14,39): error TS2307: Cannot find module 'autobyteus-ts/llm/lmstudio-provider.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(15,37): error TS2307: Cannot find module 'autobyteus-ts/llm/ollama-provider.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(16,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/llm-management/services/model-availability-service.ts(114,16): error TS7006: Parameter 'model' implicitly has an 'any' type.
+src/llm-management/services/model-availability-service.ts(130,16): error TS7006: Parameter 'model' implicitly has an 'any' type.
+src/llm-management/services/model-availability-service.ts(144,16): error TS7006: Parameter 'model' implicitly has an 'any' type.
+src/llm-management/services/model-catalog-service.ts(7,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(8,39): error TS2307: Cannot find module 'autobyteus-ts/llm/lmstudio-provider.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(9,37): error TS2307: Cannot find module 'autobyteus-ts/llm/ollama-provider.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(10,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(11,28): error TS2307: Cannot find module 'autobyteus-ts/llm/runtimes.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(12,31): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(13,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/audio/audio-client-factory.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(14,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/audio/audio-model.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(15,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/image/image-client-factory.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(16,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/image/image-model.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(17,35): error TS2307: Cannot find module 'autobyteus-ts/multimedia/runtimes.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(18,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-client-factory.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(19,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(227,76): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/llm-management/services/model-catalog-service.ts(361,18): error TS7006: Parameter 'model' implicitly has an 'any' type.
+src/llm-management/services/model-catalog-service.ts(366,49): error TS7006: Parameter 'model' implicitly has an 'any' type.
+src/llm-management/services/model-catalog-service.ts(370,49): error TS7006: Parameter 'model' implicitly has an 'any' type.
+src/llm-management/services/model-catalog-service.ts(373,16): error TS7006: Parameter 'model' implicitly has an 'any' type.
+src/llm-management/services/model-config-schema-validation.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/model-metadata-provisioning-service.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/model-metadata-provisioning-service.ts(2,49): error TS2307: Cannot find module 'autobyteus-ts/llm/multimodal-capabilities.js' or its corresponding type declarations.
+src/llm-management/services/model-metadata-provisioning-service.ts(3,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/llm-management/services/model-metadata-provisioning-service.ts(13,8): error TS2307: Cannot find module 'autobyteus-ts/llm/metadata/model-metadata-resolver.js' or its corresponding type declarations.
+src/llm-management/services/model-metadata-provisioning-service.ts(14,48): error TS2307: Cannot find module 'autobyteus-ts/llm/metadata/anthropic-model-metadata-provider.js' or its corresponding type declarations.
+src/llm-management/services/model-metadata-provisioning-service.ts(15,57): error TS2307: Cannot find module 'autobyteus-ts/llm/metadata/gemini-developer-api-model-metadata-provider.js' or its corresponding type declarations.
+src/llm-management/services/model-metadata-provisioning-service.ts(16,43): error TS2307: Cannot find module 'autobyteus-ts/llm/metadata/kimi-model-metadata-provider.js' or its corresponding type declarations.
+src/llm-management/services/model-metadata-provisioning-service.ts(17,46): error TS2307: Cannot find module 'autobyteus-ts/llm/metadata/mistral-model-metadata-provider.js' or its corresponding type declarations.
+src/llm-management/services/model-metadata-provisioning-service.ts(18,45): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/llm-management/services/native-model-capacity.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/llm-management/services/run-model-selection-service.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/mcp-gateway/mcp-gateway-tool-catalog.ts(1,56): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-registry.js' or its corresponding type declarations.
+src/mcp-gateway/mcp-gateway-tool-catalog.ts(2,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/mcp-gateway/mcp-gateway-tool-catalog.ts(3,28): error TS2307: Cannot find module 'autobyteus-ts/tools/tool-origin.js' or its corresponding type declarations.
+src/mcp-gateway/mcp-gateway-tool-catalog.ts(4,38): error TS2307: Cannot find module 'autobyteus-ts/utils/parameter-schema.js' or its corresponding type declarations.
+src/mcp-gateway/mcp-gateway-tool-catalog.ts(39,16): error TS7006: Parameter 'definition' implicitly has an 'any' type.
+src/mcp-gateway/mcp-gateway-tool-catalog.ts(40,14): error TS7006: Parameter 'left' implicitly has an 'any' type.
+src/mcp-gateway/mcp-gateway-tool-catalog.ts(40,20): error TS7006: Parameter 'right' implicitly has an 'any' type.
+src/mcp-gateway/mcp-gateway-tool-catalog.ts(41,13): error TS7006: Parameter 'definition' implicitly has an 'any' type.
+src/mcp-server-management/domain/models.ts(6,8): error TS2307: Cannot find module 'autobyteus-ts/tools/mcp/types.js' or its corresponding type declarations.
+src/mcp-server-management/providers/cached-provider.ts(1,36): error TS2307: Cannot find module 'autobyteus-ts/tools/mcp/types.js' or its corresponding type declarations.
+src/mcp-server-management/providers/file-provider.ts(2,58): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/mcp-server-management/providers/file-provider.ts(3,36): error TS2307: Cannot find module 'autobyteus-ts/tools/mcp/types.js' or its corresponding type declarations.
+src/mcp-server-management/providers/persistence-provider.ts(1,36): error TS2307: Cannot find module 'autobyteus-ts/tools/mcp/types.js' or its corresponding type declarations.
+src/mcp-server-management/services/mcp-config-service.ts(1,76): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/mcp-server-management/services/mcp-config-service.ts(2,36): error TS2307: Cannot find module 'autobyteus-ts/tools/mcp/types.js' or its corresponding type declarations.
+src/mcp-server-management/services/mcp-config-service.ts(3,37): error TS2307: Cannot find module 'autobyteus-ts/tools/registry/tool-definition.js' or its corresponding type declarations.
+src/multimedia-management/providers/video-model-provider.ts(1,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-client-factory.js' or its corresponding type declarations.
+src/multimedia-management/providers/video-model-provider.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+src/run-history/projection/event-monitor-active-trace-page-projection.ts(1,43): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-reference.js' or its corresponding type declarations.
+src/run-history/projection/event-monitor-active-trace-page-projection.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-type.js' or its corresponding type declarations.
+src/run-history/projection/event-monitor-active-trace-page-projection.ts(4,36): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-item.js' or its corresponding type declarations.
+src/run-history/projection/event-monitor-active-trace-page-projection.ts(60,44): error TS7006: Parameter 'url' implicitly has an 'any' type.
+src/run-history/projection/event-monitor-active-trace-page-types.ts(1,38): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-type.js' or its corresponding type declarations.
+src/run-history/projection/historical-replay-event-identity.ts(3,36): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-item.js' or its corresponding type declarations.
+src/run-history/projection/historical-replay-event-identity.ts(14,49): error TS7006: Parameter 'locator' implicitly has an 'any' type.
+src/run-history/projection/historical-replay-event-types.ts(7,43): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-reference.js' or its corresponding type declarations.
+src/run-history/projection/historical-replay-event-types.ts(8,36): error TS2307: Cannot find module 'autobyteus-ts/memory/models/raw-trace-item.js' or its corresponding type declarations.
+src/run-history/projection/run-projection-types.ts(1,43): error TS2307: Cannot find module 'autobyteus-ts/agent/message/context-file-reference.js' or its corresponding type declarations.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(1,61): error TS2307: Cannot find module 'autobyteus-ts/memory/models/tool-call-identity.js' or its corresponding type declarations.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(2,56): error TS2307: Cannot find module 'autobyteus-ts/memory/models/tool-interaction.js' or its corresponding type declarations.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(3,39): error TS2307: Cannot find module 'autobyteus-ts/memory/tool-interaction-builder.js' or its corresponding type declarations.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(4,38): error TS2307: Cannot find module 'autobyteus-ts/memory/tool-trace-lifecycle-index.js' or its corresponding type declarations.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(155,53): error TS7006: Parameter 'interaction' implicitly has an 'any' type.
+src/runtime-management/acp/acp-agent-launch-profile.ts(2,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/runtime-management/claude/client/claude-sdk-client.ts(2,34): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/runtime-management/claude/client/claude-sdk-model-normalizer.ts(1,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/runtime-management/claude/client/claude-sdk-model-normalizer.ts(2,43): error TS2307: Cannot find module 'autobyteus-ts/llm/provider-display-names.js' or its corresponding type declarations.
+src/runtime-management/claude/client/claude-sdk-model-normalizer.ts(3,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/runtime-management/claude/client/claude-sdk-model-normalizer.ts(4,28): error TS2307: Cannot find module 'autobyteus-ts/llm/runtimes.js' or its corresponding type declarations.
+src/runtime-management/claude/client/claude-sdk-model-normalizer.ts(5,69): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/runtime-management/grok/grok-build-capability.ts(2,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/runtime-management/grok/grok-build-launch-profile.ts(2,69): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/runtime-management/grok/grok-build-launch-profile.ts(3,32): error TS2307: Cannot find module 'autobyteus-ts/llm/models.js' or its corresponding type declarations.
+src/runtime-management/grok/grok-build-launch-profile.ts(4,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/runtime-management/grok/grok-build-launch-profile.ts(5,28): error TS2307: Cannot find module 'autobyteus-ts/llm/runtimes.js' or its corresponding type declarations.
+src/secret-management/persistence/secret-encryption-metadata-repository.ts(2,3): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/secret-management/persistence/secret-encryption-metadata-repository.ts(3,8): error TS2305: Module '"@prisma/client"' has no exported member 'SecretEncryptionMetadata'.
+src/secret-management/persistence/secret-entry-repository.ts(2,3): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/secret-management/persistence/secret-entry-repository.ts(3,8): error TS2305: Module '"@prisma/client"' has no exported member 'SecretEntry'.
+src/secret-management/provisioning/local-environment-secret-import-service.ts(3,29): error TS2307: Cannot find module 'autobyteus-ts/secrets/secret-value.js' or its corresponding type declarations.
+src/secret-management/resolution/secret-management-provider-api-key-resolver.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/secret-management/resolution/secret-management-provider-api-key-resolver.ts(6,63): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/secret-management/services/secret-management-service.ts(2,29): error TS2307: Cannot find module 'autobyteus-ts/secrets/secret-value.js' or its corresponding type declarations.
+src/server-runtime.ts(16,46): error TS2307: Cannot find module 'autobyteus-ts/tools/file/workspace-path-utils.js' or its corresponding type declarations.
+src/services/agent-streaming/agent-collaboration-stream-handler.ts(8,69): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/services/agent-streaming/agent-org-stream-handler.ts(8,69): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/services/agent-streaming/agent-stream-handler.ts(8,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/services/agent-streaming/agent-team-stream-handler.ts(9,69): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/services/terminal-streaming/pty-session-manager.ts(1,42): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/services/terminal-streaming/pty-session-manager.ts(2,62): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/services/terminal-streaming/pty-session-manager.ts(69,38): error TS7006: Parameter 'closeError' implicitly has an 'any' type.
+src/services/terminal-streaming/pty-session-manager.ts(83,36): error TS7006: Parameter 'closeError' implicitly has an 'any' type.
+src/skill-improvement/services/improver-session/skill-improvement-improver-trigger-message-builder.ts(1,39): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its corresponding type declarations.
+src/skill-improvement/services/improver-session/skill-improvement-improver-trigger-message-builder.ts(2,28): error TS2307: Cannot find module 'autobyteus-ts/agent/sender-type.js' or its corresponding type declarations.
+src/standalone-application-host/api/register-standalone-application-rest.ts(2,48): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/standalone-application-host/api/register-standalone-application-websockets.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/standalone-application-host/services/standalone-application-bootstrap-service.ts(1,60): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/standalone-application-host/start-standalone-application-host.ts(4,46): error TS2307: Cannot find module 'autobyteus-ts/tools/file/workspace-path-utils.js' or its corresponding type declarations.
+src/standalone-application-host/start-standalone-application-host.ts(62,28): error TS2307: Cannot find module 'autobyteus-ts/llm/llm-factory.js' or its corresponding type declarations.
+src/startup/agent-customization-loader.ts(11,8): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/startup/token-usage-current-schema-readiness.ts(1,15): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/startup/token-usage-current-schema-readiness.ts(41,42): error TS7031: Binding element 'name' implicitly has an 'any' type.
+src/startup/token-usage-current-schema-readiness.ts(51,24): error TS7031: Binding element 'name' implicitly has an 'any' type.
+src/token-usage/pricing/token-price-config-provider.ts(1,51): error TS2307: Cannot find module 'autobyteus-ts' or its corresponding type declarations.
+src/token-usage/pricing/token-price-config-provider.ts(71,103): error TS7006: Parameter 'tier' implicitly has an 'any' type.
+src/token-usage/pricing/token-pricing-schedule-selector.ts(5,8): error TS2307: Cannot find module 'autobyteus-ts/llm/utils/token-pricing-schedule.js' or its corresponding type declarations.
+src/token-usage/pricing/token-pricing-schedule-selector.ts(50,36): error TS7006: Parameter 'schedule' implicitly has an 'any' type.
+src/token-usage/pricing/token-pricing-schedule-selector.ts(51,56): error TS7006: Parameter 'latest' implicitly has an 'any' type.
+src/token-usage/pricing/token-pricing-schedule-selector.ts(51,64): error TS7006: Parameter 'schedule' implicitly has an 'any' type.
+src/token-usage/pricing/token-pricing-schedule-selector.ts(73,34): error TS7006: Parameter 'window' implicitly has an 'any' type.
+src/token-usage/pricing/token-pricing-schedule-selector.ts(77,41): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+src/token-usage/projections/token-usage-model-display-projection.ts(1,67): error TS2307: Cannot find module 'autobyteus-ts/llm/provider-display-names.js' or its corresponding type declarations.
+src/token-usage/projections/token-usage-model-display-projection.ts(2,29): error TS2307: Cannot find module 'autobyteus-ts/llm/providers.js' or its corresponding type declarations.
+src/token-usage/repositories/sql/token-usage-analytics-repository.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/token-usage/repositories/sql/token-usage-analytics-repository.ts(1,23): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/token-usage/repositories/sql/token-usage-analytics-repository.ts(73,44): error TS7006: Parameter 'transaction' implicitly has an 'any' type.
+src/token-usage/repositories/sql/token-usage-run-record-codec.ts(2,3): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/token-usage/repositories/sql/token-usage-run-record-codec.ts(3,8): error TS2305: Module '"@prisma/client"' has no exported member 'TokenUsageRunRecord'.
+src/token-usage/repositories/sql/token-usage-run-repository.ts(2,3): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/token-usage/repositories/sql/token-usage-run-repository.ts(3,3): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/token-usage/repositories/sql/token-usage-run-repository.ts(23,44): error TS7006: Parameter 'transaction' implicitly has an 'any' type.

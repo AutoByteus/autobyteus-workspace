@@ -1,0 +1,191 @@
+{
+  "purpose": "One separately profiled stress launch; not part of primary latency series",
+  "samplingIntervalUs": 1000,
+  "totalHits": 1584,
+  "hot": [
+    {
+      "function": "(idle)",
+      "url": "",
+      "line": -1,
+      "column": -1,
+      "hits": 990
+    },
+    {
+      "function": "(program)",
+      "url": "",
+      "line": -1,
+      "column": -1,
+      "hits": 115
+    },
+    {
+      "function": "",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/workspace.BtwlJi55.js",
+      "line": 726,
+      "column": 28605,
+      "hits": 41
+    },
+    {
+      "function": "",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/workspace.BtwlJi55.js",
+      "line": 726,
+      "column": 28605,
+      "hits": 38
+    },
+    {
+      "function": "(garbage collector)",
+      "url": "",
+      "line": -1,
+      "column": -1,
+      "hits": 30
+    },
+    {
+      "function": "",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/workspace.BtwlJi55.js",
+      "line": 726,
+      "column": 28605,
+      "hits": 20
+    },
+    {
+      "function": "",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/workspace.BtwlJi55.js",
+      "line": 726,
+      "column": 28605,
+      "hits": 19
+    },
+    {
+      "function": "",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/workspace.BtwlJi55.js",
+      "line": 726,
+      "column": 28605,
+      "hits": 18
+    },
+    {
+      "function": "Rx",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 81,
+      "column": 8019,
+      "hits": 17
+    },
+    {
+      "function": "getClientRects",
+      "url": "",
+      "line": -1,
+      "column": -1,
+      "hits": 16
+    },
+    {
+      "function": "yk",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 86,
+      "column": 138,
+      "hits": 15
+    },
+    {
+      "function": "",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 81,
+      "column": 7976,
+      "hits": 14
+    },
+    {
+      "function": "",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 81,
+      "column": 7908,
+      "hits": 11
+    },
+    {
+      "function": "",
+      "url": "",
+      "line": 9,
+      "column": 29,
+      "hits": 10
+    },
+    {
+      "function": "Lp",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 86,
+      "column": 5368,
+      "hits": 8
+    },
+    {
+      "function": "xp",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 81,
+      "column": 7484,
+      "hits": 7
+    },
+    {
+      "function": "e._zod.check",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/workspace.BtwlJi55.js",
+      "line": 117,
+      "column": 11219,
+      "hits": 7
+    },
+    {
+      "function": "Lp",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 86,
+      "column": 5368,
+      "hits": 6
+    },
+    {
+      "function": "e._zod.run",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/workspace.BtwlJi55.js",
+      "line": 83,
+      "column": 977,
+      "hits": 6
+    },
+    {
+      "function": "getFieldValue",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 86,
+      "column": 15216,
+      "hits": 5
+    },
+    {
+      "function": "Lp",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 86,
+      "column": 5368,
+      "hits": 5
+    },
+    {
+      "function": "Lp",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 86,
+      "column": 5368,
+      "hits": 5
+    },
+    {
+      "function": "Lp",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 86,
+      "column": 5368,
+      "hits": 5
+    },
+    {
+      "function": "Ix",
+      "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.Db321QQ0.js",
+      "line": 81,
+      "column": 7860,
+      "hits": 5
+    },
+    {
+      "function": "",
+      "url": "",
+      "line": 0,
+      "column": 19,
+      "hits": 5
+    }
+  ],
+  "identifiedHotspot": {
+    "compiledUrlSuffix": "workspace.BtwlJi55.js",
+    "lineZeroBased": 726,
+    "columnZeroBased": 28605,
+    "combinedSelfSampleHits": 136,
+    "expression": "prior && JSON.stringify(prior) === JSON.stringify(node)",
+    "sourceOwner": "autobyteus-web/stores/runHistoryNavigationProjection.ts:retainEqualNodes",
+    "interpretation": "One profiled launch identifies full navigation-subtree JSON equality as a renderer hotspot; not precise exclusive wall-time or complete active-workload proof"
+  }
+}

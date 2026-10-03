@@ -10,7 +10,7 @@ const io = vi.hoisted(() => ({ query: vi.fn(), read: vi.fn(), save: vi.fn(), met
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
 vi.mock('~/services/runConfigEditing/agentOrgRunConfigClient', () => ({ readAgentOrgRunConfig: io.read, updateStoppedAgentOrgRunConfig: io.save }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
-  resolveWorkspaceMetadataByRootPath: io.metadata, applyAgentOrgActivity: vi.fn(),
+  resolveWorkspaceMetadataByRootPath: io.metadata, applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistoryItem: vi.fn(async () => undefined),
 }) }))
 vi.mock('~/services/agentOrgExecution/agentOrgReferenceProjection', () => ({
   loadAgentOrgImmediateReferenceProjection: vi.fn().mockResolvedValue({ agents: {}, teams: {} }),

@@ -1,0 +1,13 @@
+{
+  "question": "Before I move this ticket into architecture design, do you approve the combined scope: remove historical collision scans from fresh UUID allocation, simplify Org history/new-row publication, and make verified Codex readiness independent of unrelated discovery\u2014while preserving required validation, exact model choices, and fresh/correct history?",
+  "options": [
+    "Approve all three changes",
+    "Only backend and frontend launch changes",
+    "Refine the scope first"
+  ],
+  "toolAccepted": true,
+  "answer": "Confirmed all three by direct user messages; see user-application-scope-approval.json",
+  "requirementsBaseline": "SR-006",
+  "requirementsFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/requirements-doc.md",
+  "requirementsSha256": "5444ff7b9069b37bd3cdf35aec3a3b3d732fb8a3bca3f31691f3a8af56841365"
+}

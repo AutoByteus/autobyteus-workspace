@@ -186,11 +186,6 @@ export class GeneralProcessRunSupervisor {
       });
       const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
         agentDefinitionService: input.agentDefinitionService,
-        agentRunManager,
-        agentRunMetadataService: metadataService,
-        teamRunExecutionTreeLocationService: storedTeamLocations,
-        collaborationExecutionLocationService: collaborationLocations,
-        memoryDir,
       });
       const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
         agentRunIdentityAllocator,

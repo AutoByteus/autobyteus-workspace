@@ -33,24 +33,16 @@ describe("Runtime capability GraphQL e2e", () => {
   });
 
   const queryCapabilities = async (): Promise<RuntimeCapability[]> => {
-    const result = await graphql({
-      schema,
-      source: `
-        query RuntimeCapabilities {
-          runtimeAvailabilities {
-            runtimeKind
-            enabled
-            reason
-          }
-        }
-      `,
-    });
-    if (result.errors?.length) {
-      throw result.errors[0];
-    }
-    const capabilities = (result.data as any)?.runtimeAvailabilities as RuntimeCapability[];
-    expect(Array.isArray(capabilities)).toBe(true);
-    return capabilities;
+    const inventory = await graphql({ schema, source: "{ runtimeAvailabilityKinds }" });
+    if (inventory.errors?.length) throw inventory.errors[0];
+    const kinds = (inventory.data as any).runtimeAvailabilityKinds as string[];
+    return Promise.all(kinds.map(async (runtimeKind) => {
+      const result = await graphql({ schema, source: `query RuntimeCapability($runtimeKind: String!) {
+        runtimeAvailability(runtimeKind: $runtimeKind) { runtimeKind enabled reason }
+      }`, variableValues: { runtimeKind } });
+      if (result.errors?.length) throw result.errors[0];
+      return (result.data as any).runtimeAvailability as RuntimeCapability;
+    }));
   };
 
   const grokRowWith = async (env: Record<string, string | undefined>): Promise<RuntimeCapability | undefined> => {

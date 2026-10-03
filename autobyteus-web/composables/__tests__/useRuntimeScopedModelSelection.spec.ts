@@ -10,7 +10,7 @@ const store = vi.hoisted(() => ({
 }))
 const runtimeAvailabilityStore = vi.hoisted(() => ({
   availabilities: [{ runtimeKind: 'autobyteus', enabled: true, reason: null }],
-  fetchRuntimeAvailabilities: vi.fn(),
+  fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn(),
   isRuntimeEnabled: vi.fn(() => true),
   availabilityByKind: vi.fn(() => ({ runtimeKind: 'autobyteus', enabled: true, reason: null })),
   runtimeReason: vi.fn(() => null),

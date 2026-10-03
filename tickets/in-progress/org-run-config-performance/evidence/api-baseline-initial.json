@@ -1,0 +1,194 @@
+[
+  {
+    "name": "import-test-owned-package",
+    "durationMs": 116.18595800000003,
+    "status": 200,
+    "body": {
+      "data": {
+        "importAgentPackage": [
+          {
+            "packageId": "built-in:default",
+            "displayName": "Built-in Storage",
+            "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/server-data",
+            "sharedAgentCount": 2,
+            "teamLocalAgentCount": 0,
+            "agentTeamCount": 0
+          },
+          {
+            "packageId": "local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fautobyteus-isolated-root-BzZYfR%2Ffixture-agent-package",
+            "displayName": "fixture-agent-package",
+            "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR/fixture-agent-package",
+            "sharedAgentCount": 7,
+            "teamLocalAgentCount": 47,
+            "agentTeamCount": 14
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "runtime-availability-1",
+    "durationMs": 2749.109958,
+    "status": 200,
+    "body": {
+      "data": {
+        "runtimeAvailabilities": [
+          {
+            "runtimeKind": "autobyteus",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "codex_app_server",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "claude_agent_sdk",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "antigravity_cli",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "grok_build",
+            "enabled": true,
+            "reason": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "runtime-availability-2",
+    "durationMs": 1642.6133339999997,
+    "status": 200,
+    "body": {
+      "data": {
+        "runtimeAvailabilities": [
+          {
+            "runtimeKind": "autobyteus",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "codex_app_server",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "claude_agent_sdk",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "antigravity_cli",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "grok_build",
+            "enabled": true,
+            "reason": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "runtime-availability-3",
+    "durationMs": 1513.3524159999997,
+    "status": 200,
+    "body": {
+      "data": {
+        "runtimeAvailabilities": [
+          {
+            "runtimeKind": "autobyteus",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "codex_app_server",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "claude_agent_sdk",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "antigravity_cli",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "grok_build",
+            "enabled": true,
+            "reason": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "codex-catalog-1",
+    "durationMs": 4.532624999999825,
+    "status": 400,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Cannot query field \"displayName\" on type \"ModelDetail\".",
+          "locations": [
+            {
+              "line": 1,
+              "column": 131
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "codex-catalog-2",
+    "durationMs": 3.4002500000005966,
+    "status": 400,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Cannot query field \"displayName\" on type \"ModelDetail\".",
+          "locations": [
+            {
+              "line": 1,
+              "column": 131
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "codex-catalog-3",
+    "durationMs": 3.276542000000518,
+    "status": 400,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Cannot query field \"displayName\" on type \"ModelDetail\".",
+          "locations": [
+            {
+              "line": 1,
+              "column": 131
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

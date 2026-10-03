@@ -1,0 +1,123 @@
+
+> autobyteus@1.4.93 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts stores/__tests__/agentOrgContextsStore.spec.ts stores/__tests__/agentOrgInspection.spec.ts stores/__tests__/agentOrgRetainedRecovery.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgRetainedRecovery.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgInspection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentOrgInspection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentOrgContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentOrgRetainedRecovery.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/agentOrgContextsStore.spec.ts (2 tests | 2 failed) 17ms
+   × agentOrgContextsStore lifecycle ownership > injects one authoritative AgentOrg-family refresh callback into the stream owner 13ms
+     → (0 , useRunHistoryStore)(...).refreshAgentOrgHistoryItem is not a function
+   × agentOrgContextsStore lifecycle ownership > retains isolated member drafts across root navigation until the exact root is explicitly released 3ms
+     → (0 , useRunHistoryStore)(...).refreshAgentOrgHistoryItem is not a function
+ ✓ stores/__tests__/agentOrgInspection.spec.ts (5 tests) 20ms
+ ✓ stores/__tests__/agentOrgRetainedRecovery.spec.ts (20 tests) 107ms
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports upload failure without replay and preserves a newer real textarea draft
+Error uploading context file: Error: upload rejected
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:193:40
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports finalize failure without replay and preserves a newer real textarea draft
+Failed to send message via activeContextStore: Error: finalize rejected
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:205:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports finalize failure without replay and preserves a newer real textarea draft
+Error sending requirement: Error: finalize rejected
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:205:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > restores a finalized attachment after rejected Send and opens/removes it without deleting the retained file
+Failed to send message via activeContextStore: Error: Input rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > restores a finalized attachment after rejected Send and opens/removes it without deleting the retained file
+Error sending requirement: Error: Input rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts (9 tests) 413ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (16 tests) 1408ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentOrgContextsStore.spec.ts > agentOrgContextsStore lifecycle ownership > injects one authoritative AgentOrg-family refresh callback into the stream owner
+TypeError: (0 , useRunHistoryStore)(...).refreshAgentOrgHistoryItem is not a function
+ ❯ publish stores/agentOrgContextsStore.ts:71:31
+     69|     errors.value = { ...errors.value, [id]: null }
+     70|     useRunHistoryStore().applyAgentOrgActivity(id, candidate.isActive)
+     71|     void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
+       |                               ^
+     72|   }
+     73| 
+ ❯ readInspection stores/agentOrgContextsStore.ts:140:7
+ ❯ stores/__tests__/agentOrgContextsStore.spec.ts:52:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  stores/__tests__/agentOrgContextsStore.spec.ts > agentOrgContextsStore lifecycle ownership > retains isolated member drafts across root navigation until the exact root is explicitly released
+TypeError: (0 , useRunHistoryStore)(...).refreshAgentOrgHistoryItem is not a function
+ ❯ publish stores/agentOrgContextsStore.ts:71:31
+     69|     errors.value = { ...errors.value, [id]: null }
+     70|     useRunHistoryStore().applyAgentOrgActivity(id, candidate.isActive)
+     71|     void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
+       |                               ^
+     72|   }
+     73| 
+ ❯ readInspection stores/agentOrgContextsStore.ts:140:7
+ ❯ stores/__tests__/agentOrgContextsStore.spec.ts:72:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  2 failed | 50 passed (52)
+   Start at  21:49:21
+   Duration  12.04s (transform 5.21s, setup 46.23s, collect 1.92s, tests 1.96s, environment 2.38s, prepare 1.08s)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,184 @@
+
+> autobyteus@1.4.93 dev /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> nuxt dev --host 0.0.0.0 --port 62478
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+ 
+              █▀▀▀▀▀▀▀█▀██▀▀▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▄ █▀  ███ █▀▀▀█ █
+              █ █   █ ██▀█▀▄▄▄▄▄█ █   █ █
+              █ ▀▀▀▀▀ █▀█ █ █ █ █ ▀▀▀▀▀ █
+              █▀▀█▀▀█▀█▄▀  ▀▄█ ██▀█████▀█
+              ███▀█ ▀▀█▄▄▀▀▄▄▀ ▄ ▀▀  ▄▄▀█
+              █▄▀██▀ ▀▀▄ ▄█▀█▀▄▀ ▀█▄▄▄▄ █
+              █    █ ▀▄▀▄█▄ ██ ▀▀█▄▄▀▀ ▀█
+              █ █▄ ▀▀▀█ ▄██▄▀ █ ▀▀▀ █ ▀▄█
+              █▀▀▀▀▀▀▀█▄█ ▀▄█▄▄ █▀█ ▀█▄▀█
+              █ █▀▀▀█ █▀█▀▄█▄▄▀ ▀▀▀ ▀█▄██
+              █ █   █ █▄▄   ▀▀███▄▄▀▄▀  █
+              █ ▀▀▀▀▀ █ ▀▄ ██▀ ▀▄ ▄▄▀▄▄ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ 
+  ➜ Local:    http://0.0.0.0:62478/
+  ➜ Network:  http://192.168.2.158:62478/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 46ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), {
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x2)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x3)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x4)
+
+✔ Vite server built in 646ms
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x5)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x6)
+
+[nitro] ✔ Nuxt Nitro server built in 540ms
+ℹ Vite client warmed up in 1ms
+ℹ .nuxt/dist directory has been removed. Restarting Nuxt...
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 29ms
+✔ Vite server built in 505ms
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x7)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x8)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x9)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x10)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x11)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=725a6cb5:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x12)
+
+[nitro] ✔ Nuxt Nitro server built in 769ms
+ℹ Vite client warmed up in 1ms
+ℹ .nuxt/dist directory has been removed. Restarting Nuxt...
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 27ms
+✔ Vite server built in 436ms
+[nitro] ✔ Nuxt Nitro server built in 531ms
+ℹ Vite client warmed up in 1ms
+ℹ hmr update /components/launch-config/RuntimeModelConfigFields.vue, /app.vue?vue&type=style&index=0&lang.css
+ℹ hmr update /components/workspace/config/MemberOverrideItem.vue, /app.vue?vue&type=style&index=0&lang.css
+ℹ hmr update /pages/workspace.vue, /components/AppLeftPanel.vue, /components/layout/WorkspaceAdaptiveLayout.vue, /components/workspace/config/AgentOrgRunConfigPanel.vue, /components/workspace/team/TeamWorkspaceView.vue, /components/workspace/config/RunConfigPanel.vue, /components/workspace/org/AgentOrgWorkspaceView.vue, /components/workspace/agent/AgentWorkspaceView.vue, /components/layout/RightSideTabs.vue, /components/layout/WorkspaceToolShell.vue, /components/layout/RightSidebarStrip.vue, /components/workspace/history/WorkspaceAgentRunsTreePanel.vue, /components/conversation/ToolCallIndicator.vue, /components/workspace/history/WorkspaceHistoryWorkspaceSection.vue, /components/workspace/history/AgentRunTaskRows.vue, /components/workspace/config/ExistingRunConfigEditor.vue, /components/workspace/agent/ArtifactsTab.vue, /components/progress/BackgroundTaskPanel.vue, /components/progress/ActivityFeed.vue, /components/workspace/usage/TokenUsageMeterPanel.vue, /components/agentInput/CollaboratorAddFailureNotice.vue, /components/agentInput/AgentUserInputForm.vue, /components/workspace/config/WorkspaceSelector.vue, /components/workspace/config/DraftRunConfigEditor.vue, /components/workspace/tools/TerminalPanel.vue, /components/fileExplorer/FileExplorer.vue, /components/fileExplorer/FileExplorerTabs.vue, /components/workspace/tools/Terminal.vue, /components/fileExplorer/FileItem.vue, /components/agentInput/ContextFilePathInputArea.vue, /components/conversation/UserMessage.vue, /components/agentInput/AgentUserInputTextArea.vue, /components/workspace/agent/AgentWorkspaceSurface.vue, /components/workspace/history/WorkspaceTransientExecutionRow.vue, /components/workspace/history/WorkspaceStableExecutionRow.vue

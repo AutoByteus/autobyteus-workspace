@@ -1,0 +1,27 @@
+{
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/SOLUTION_DESIGN_BEST_PRACTICES.md",
+      "lines": 297,
+      "sha256": "a9782dbbe72948a193c53e8e6c3dab3f6edb7a20274e8eb2c9ddabd235dc6f32"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/AGENTS.md",
+      "lines": 26,
+      "sha256": "90e805df6889f1c69bbfb0ff19cae49ae3c781e5de3dcf85d15e47825f222f16"
+    }
+  ],
+  "brokenLinks": [],
+  "trailingWhitespace": [],
+  "validationScope": "Documentation/link/content checks only; no application implementation or behavior tests.",
+  "contentChecks": {
+    "canonicalGuide": true,
+    "mandatoryRules": true,
+    "twoPhases": true,
+    "noPrematureOptimization": true,
+    "correctnessNotDeferred": true,
+    "existingRealScopeNotIgnored": true,
+    "antiPatternsRetained": true,
+    "readRequired": true
+  }
+}

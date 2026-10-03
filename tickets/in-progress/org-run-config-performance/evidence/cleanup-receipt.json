@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-03T14:51:38.913114+00:00",
+  "isolatedStop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-50886-d874",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BzZYfR",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "listenerChecks": {
+    "50886": "",
+    "50887": "",
+    "50910": "",
+    "50911": ""
+  },
+  "passivePluginRemoved": true,
+  "browser": "Test-owned CUA Chrome tab 1211485195 closed successfully",
+  "nuxtSession": "57097 interrupted; exit 130",
+  "collectorSession": "71089 interrupted; exit 130",
+  "userApp": "No UI actions, requests, restarts, data mutations or terminations against the user running app; two initial read-only observations only"
+}

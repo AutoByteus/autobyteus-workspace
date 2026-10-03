@@ -226,7 +226,8 @@ const operationResponse = (name, variables) => {
     case 'GetAgentDefinitions': return { agentDefinitions: [agent] }
     case 'GetAgentTeamDefinitions': return { agentTeamDefinitions: [team] }
     case 'GetAllWorkspaces': return { workspaces: [workspace(), { ...workspace('/workspace/temp'), workspaceId: 'temp_ws_default', name: 'Temp Workspace', displayName: 'Temp Workspace', isTemp: true }] }
-    case 'GetRuntimeAvailabilities': return { runtimeAvailabilities: ['autobyteus','codex_app_server','claude_agent_sdk','antigravity_cli'].map(runtimeKind => ({ runtimeKind, enabled: true, reason: null })) }
+    case 'GetRuntimeAvailabilityKinds': return { runtimeAvailabilityKinds: ['autobyteus','codex_app_server','claude_agent_sdk','antigravity_cli'] }
+    case 'GetRuntimeAvailability': return { runtimeAvailability: { runtimeKind: variables.runtimeKind, enabled: true, reason: null } }
     case 'GetProviderModelCatalogSnapshots': return { providerModelCatalogSnapshots: [{ ...clone(catalogSnapshot), runtimeKind: variables.runtimeKind ?? 'autobyteus' }] }
     case 'RuntimeCurrentModelDescriptors': return { runtimeCurrentModelDescriptors: variables.identifiers.map(identifier => ({ identifier, model: catalogSnapshot.llmModels.find(model => model.modelIdentifier === identifier) ?? null })) }
     case 'GetProviderCredentialSettings': return { providerCredentialSettings: [] }

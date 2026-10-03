@@ -10,7 +10,7 @@ vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => true, getBoundEndpoints: () => ({ orgWs: 'ws://example.test/org' }) }) }))
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
-vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyAgentOrgActivity: mocks.activity, refreshAgentOrgHistory: vi.fn() }) }))
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyAgentOrgActivity: mocks.activity, refreshAgentOrgHistoryItem: vi.fn() }) }))
 vi.mock('~/stores/agentOrgRunStore', () => ({ useAgentOrgRunStore: () => ({ terminate: mocks.terminate, restore: mocks.mutate }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => null }) }))
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'

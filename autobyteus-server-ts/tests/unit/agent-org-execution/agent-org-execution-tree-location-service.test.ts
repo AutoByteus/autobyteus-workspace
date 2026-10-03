@@ -33,14 +33,13 @@ describe("AgentOrg and compound execution locations", () => {
     const mounted = service.findAgentSync({ rootRunId: "org-one", memberAddress: fixture.member.address });
     expect(mounted).toMatchObject({ containingTeamRunId: fixture.team.teamRunId, ancestorTeamRunIds: [fixture.team.teamRunId], agentRunId: fixture.member.agentRunId });
     expect(mounted?.memoryDir).toBe(path.join(memoryDir, "agent_orgs", "org-one", fixture.team.teamRunId, fixture.member.agentRunId));
-    expect(await service.containsRunId(fixture.team.teamRunId)).toBe(true);
   });
 
   it("uses the explicit Org root when the same address exists in multiple stored Orgs", async () => {
     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
     await createStoredOrg(memoryDir, "org-a"); const second = await createStoredOrg(memoryDir, "org-b");
     const orgs = new AgentOrgExecutionTreeLocationService({ memoryDir });
-    const teams = { findAgent: vi.fn(async () => null), findAgentSync: vi.fn(() => null), listAgents: vi.fn(async () => []), containsRunId: vi.fn(async () => false) };
+    const teams = { findAgent: vi.fn(async () => null), findAgentSync: vi.fn(() => null), listAgents: vi.fn(async () => []) };
     const compound = new CollaborationExecutionLocationService({ teams: teams as never, orgs });
     const resolved = await compound.findAgent({ rootSubjectKind: "agent_org", rootRunId: "org-b", memberAddress: "/shared" });
     expect(resolved).toMatchObject({ rootSubjectKind: "agent_org", rootRunId: "org-b", agentRunId: second.direct.agentRunId });
@@ -88,12 +87,11 @@ describe("AgentOrg and compound execution locations", () => {
     const item = { rootTeamRunId: "team-root", ancestorTeamRunIds: [], agentRunId: "duplicate", memberAddress: "/agent", memoryDir: "/team" };
     const org = { rootSubjectKind: "agent_org" as const, rootRunId: "org-root", containingTeamRunId: null, ancestorTeamRunIds: [], agentRunId: "duplicate", memberAddress: "/agent", configuredPlacement: null, memoryDir: "/org", tree: {} as never, isActive: false };
     const service = new CollaborationExecutionLocationService({
-      teams: { findAgent: async () => item as never, findAgentSync: () => item as never, listAgents: async () => [item as never], containsRunId: async () => true },
-      orgs: { findAgent: async () => org, findAgentSync: () => org, listAgents: async () => [org], containsRunId: async () => true },
-      agents: { findAgent: async () => null, findAgentSync: () => null, listAgents: async () => [], containsRunId: async () => false },
+      teams: { findAgent: async () => item as never, findAgentSync: () => item as never, listAgents: async () => [item as never] },
+      orgs: { findAgent: async () => org, findAgentSync: () => org, listAgents: async () => [org] },
+      agents: { findAgent: async () => null, findAgentSync: () => null, listAgents: async () => [] },
     });
     await expect(service.findAgent({ agentRunId: "duplicate" })).rejects.toThrow("ambiguous across collaboration root families");
     await expect(service.listAgents()).rejects.toThrow("more than one collaboration root");
-    await expect(service.containsRunId("duplicate")).rejects.toThrow("more than one collaboration root family");
   });
 });

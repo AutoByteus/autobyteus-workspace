@@ -1,0 +1,8 @@
+{
+  "messages": [
+    "Okay, I think we just experienced one serious issue, right? So solution designer, because when you're doing solution, let me put this way. This kind of solution was earlier designed by you, you know, basically you're over engineered, right? And I think we need to have in the root project, currently we already have one testing.md. We should have another like an MD file, maybe call it solution design, MD, or solution design best practices, you know, this kind of MD file or solution design. Yeah, it's better to call it a solution design best practices or architecture design best practices, this kind of file. And then in this file, you will write down the solution design best practices, because this is a very typical example that currently you already see you're over engineered in the previous place. So in the future, when you do similar, when you do solution design, you will read that file, you know, then you can read that file and then you will not. Then in this file, it has also anti patterns, then in this anti pattern, you can give the examples, you know, why not? Why don't you create this file right now?",
+    "name the file as solution design best practices md would be perfect"
+  ],
+  "authorizedScope": "Create a root solution-design best-practices Markdown guide with practical anti-pattern examples and future-design read guidance.",
+  "approvalLimit": "This documentation request does not approve the pending application refactor or authorize implementation/release."
+}

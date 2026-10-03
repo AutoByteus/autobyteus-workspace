@@ -79,7 +79,7 @@ export const useRuntimeScopedModelSelection = (params: {
   const runtimeAvailabilityStore = useRuntimeAvailabilityStore()
   const providerGroupsByRuntime = ref<Record<string, ProviderWithModels[]>>({})
   const providerSourceStatusesByRuntime = ref<Record<string, RuntimeProviderSourceStatus[]>>({})
-  const isLoadingModels = ref(false)
+  const catalogLoading = ref(false)
   const modelLoadError = ref<string | null>(null)
 
   void runtimeAvailabilityStore.fetchRuntimeAvailabilities().catch((error) => {
@@ -102,7 +102,7 @@ export const useRuntimeScopedModelSelection = (params: {
       return
     }
 
-    isLoadingModels.value = true
+    catalogLoading.value = true
     modelLoadError.value = null
     try {
       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
@@ -128,7 +128,7 @@ export const useRuntimeScopedModelSelection = (params: {
       modelLoadError.value = error instanceof Error ? error.message : String(error)
       throw error
     } finally {
-      isLoadingModels.value = false
+      catalogLoading.value = false
     }
   }
 
@@ -137,21 +137,25 @@ export const useRuntimeScopedModelSelection = (params: {
     providerGroupsByRuntime.value = Object.fromEntries(
       Object.entries(providerGroupsByRuntime.value).filter(([key]) => key !== normalizedRuntimeKind),
     )
-    isLoadingModels.value = true
+    catalogLoading.value = true
     modelLoadError.value = null
     try {
-      await llmStore.refreshLocalCatalog(normalizedRuntimeKind)
+      await Promise.all([
+        runtimeAvailabilityStore.fetchRuntimeAvailability(normalizedRuntimeKind, true),
+        llmStore.refreshLocalCatalog(normalizedRuntimeKind),
+      ])
       await ensureModelsForRuntime(normalizedRuntimeKind)
     } catch (error) {
       modelLoadError.value = error instanceof Error ? error.message : String(error)
     } finally {
-      isLoadingModels.value = false
+      catalogLoading.value = false
     }
   }
 
   watch(
     () => effectiveRuntimeKind.value,
     (runtimeKind) => {
+      if (runtimeKind) void runtimeAvailabilityStore.fetchRuntimeAvailability(runtimeKind).catch(() => undefined)
       if (runtimeKind && params.loadCatalog !== false) void ensureModelsForRuntime(runtimeKind).catch(() => undefined)
     },
     { immediate: true },
@@ -169,15 +173,7 @@ export const useRuntimeScopedModelSelection = (params: {
       optionByKind.set(availability.runtimeKind, {
         value: availability.runtimeKind,
         label: runtimeKindToLabel(availability.runtimeKind),
-        enabled: availability.enabled,
-      })
-    }
-
-    if (!optionByKind.has(DEFAULT_AGENT_RUNTIME_KIND)) {
-      optionByKind.set(DEFAULT_AGENT_RUNTIME_KIND, {
-        value: DEFAULT_AGENT_RUNTIME_KIND,
-        label: runtimeKindToLabel(DEFAULT_AGENT_RUNTIME_KIND),
-        enabled: true,
+        enabled: runtimeAvailabilityStore.isRuntimeEnabled(availability.runtimeKind),
       })
     }
 
@@ -194,18 +190,14 @@ export const useRuntimeScopedModelSelection = (params: {
     )
   })
 
+  const isLoadingRuntime = computed(() => Boolean(effectiveRuntimeKind.value
+    && runtimeAvailabilityStore.isRuntimePending(effectiveRuntimeKind.value)))
+  const isLoadingModels = computed(() => catalogLoading.value || isLoadingRuntime.value)
   const selectedRuntimeUnavailableReason = computed(() => {
-    if (!effectiveRuntimeKind.value) return null
-    const availability = runtimeAvailabilityStore.availabilityByKind(effectiveRuntimeKind.value)
-    if (!availability) {
-      return effectiveRuntimeKind.value === DEFAULT_AGENT_RUNTIME_KIND
-        ? null
-        : 'Runtime is not available in current capabilities.'
-    }
-    if (availability.enabled) {
-      return null
-    }
-    return runtimeAvailabilityStore.runtimeReason(effectiveRuntimeKind.value)
+    const kind = effectiveRuntimeKind.value
+    if (!kind || isLoadingRuntime.value) return null
+    if (runtimeAvailabilityStore.isRuntimeEnabled(kind)) return null
+    return runtimeAvailabilityStore.runtimeReason(kind) || 'Runtime is not available in current capabilities.'
   })
 
   const availableProviderGroups = computed<ProviderWithModels[]>(() =>
@@ -273,6 +265,7 @@ export const useRuntimeScopedModelSelection = (params: {
     groupedModelOptions,
     hasModelIdentifier,
     isLoadingModels,
+    isLoadingRuntime,
     modelLoadError,
     modelConfigSchemaByIdentifier,
     modelIdentifiers,

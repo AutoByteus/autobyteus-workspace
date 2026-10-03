@@ -444,7 +444,7 @@ const runOrg = async () => {
       teamOverrides: serializedTeams,
       agentOverrides: serializedAgents,
     })
-    void runHistoryStore.refreshTreeQuietly()
+    void runHistoryStore.refreshAgentOrgHistoryItem(orgRunId)
     await router.replace({
       path: '/workspace',
       query: { rootSubjectKind: 'agent_org', definitionId: org.value.id, orgRunId, mode: 'active' },

@@ -323,7 +323,8 @@ const operationResponse = async (operationName, variables) => {
         scopeKind: scopeAddress === '/' ? 'CONFIGURED_TEAM' : 'CONFIGURED_AGENT' }
     }) } }
   if (operationName === 'GetProviderModelCatalogSnapshots') return { data: { providerModelCatalogSnapshots: [catalogSnapshot] } }
-  if (operationName === 'GetRuntimeAvailabilities') return { data: { runtimeAvailabilities: [{ runtimeKind: 'autobyteus', enabled: true, reason: null }] } }
+  if (operationName === 'GetRuntimeAvailabilityKinds') return { data: { runtimeAvailabilityKinds: ['autobyteus'] } }
+  if (operationName === 'GetRuntimeAvailability') return { data: { runtimeAvailability: { runtimeKind: variables.runtimeKind, enabled: true, reason: null } } }
   if (operationName === 'UpdateStoppedAgentRunModelConfig') {
     state.agentMutations.push(clone(variables))
     await delay(250)

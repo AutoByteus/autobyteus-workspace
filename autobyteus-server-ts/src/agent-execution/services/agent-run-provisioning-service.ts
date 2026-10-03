@@ -67,11 +67,7 @@ export class AgentRunProvisioningService {
       deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
     this.agentRunIdentityAllocator =
-      deps.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
-        agentRunManager: this.agentRunManager,
-        agentRunMetadataService: this.metadataService,
-        memoryDir,
-      });
+      deps.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator();
   }
 
   async prepareAgentRun(

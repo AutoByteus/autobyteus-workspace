@@ -85,18 +85,6 @@ export class AgentRunCollaborationLocationService {
     return output;
   }
 
-  /** Whether a child AgentRun or TeamRun of any Agent root uses this identity. */
-  async containsRunId(runIdInput: string): Promise<boolean> {
-    const runId = runIdInput.trim();
-    if (!runId) throw new Error("runId is required.");
-    for (const hostRunId of await this.listHostRunIds()) {
-      const tree = await this.readTree(hostRunId);
-      if (!tree) continue;
-      const index = new AgentRunCollaborationExecutionIndex(tree);
-      if (index.getTeam(runId) || (index.getAgent(runId) && index.hostRunId !== runId)) return true;
-    }
-    return false;
-  }
 
   /** Host run IDs whose run directory holds a collaboration package, sorted. */
   async listHostRunIds(): Promise<string[]> {

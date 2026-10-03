@@ -1,0 +1,201 @@
+
+> autobyteus@1.4.93 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentOrgContextsStore.spec.ts stores/__tests__/agentOrgRunConfigPublication.spec.ts components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+
+stderr | stores/__tests__/agentOrgContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgRunConfigPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentOrgContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentOrgRunConfigPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts (14 tests) 121ms
+ ✓ stores/__tests__/agentOrgContextsStore.spec.ts (2 tests) 16ms
+ ✓ stores/__tests__/agentOrgRunConfigPublication.spec.ts (6 tests) 19ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts (7 tests) 23ms
+stderr | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts > independent family publication through real initialized Pinia projection and sidebar > renders ready org while other query and catalogs remain pending
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceAgentOrgHistoryCollection avatars= {
+  showAgentAvatar: [Function: showAgentAvatar],
+  onAgentAvatarError: [Function: onAgentAvatarError],
+  getOrgAvatarUrl: [Function: getOrgAvatarUrl],
+  showOrgAvatar: [Function: showOrgAvatar],
+  onOrgAvatarError: [Function: onOrgAvatarError],
+  getAgentInitials: [Function: getAgentInitials],
+  showTeamAvatar: [Function: showTeamAvatar],
+  getTeamAvatarUrl: [Function: getTeamAvatarUrl],
+  onTeamAvatarError: [Function: onTeamAvatarError],
+  showTeamMemberAvatar: [Function: showTeamMemberAvatar],
+  getTeamMemberAvatarUrl: [Function: getTeamMemberAvatarUrl],
+  onTeamMemberAvatarError: [Function: onTeamMemberAvatarError],
+  getTeamMemberDisplayName: [Function: getTeamMemberDisplayName],
+  getTeamMemberInitials: [Function: getTeamMemberInitials]
+} workspace-id="workspace:/fixture" groups= [
+  {
+    stableKey: 'agent_org_definition:org-definition',
+    definitionId: 'org-definition',
+    name: 'History Org',
+    runs: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/fixture" workspace-node= {
+  stableKey: 'workspace:/fixture',
+  workspaceId: 'history:/fixture',
+  workspaceRootPath: '/fixture',
+  workspaceName: 'fixture',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: false,
+  agents: [],
+  agentOrgDefinitions: [
+    {
+      stableKey: 'agent_org_definition:org-definition',
+      definitionId: 'org-definition',
+      name: 'History Org',
+      runs: [Array]
+    }
+  ]
+} workspace-teams= []  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (9 tests) 130ms
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (6 tests | 4 failed) 650ms
+   × Org activity publication with selected /director > publishes Stop before history I/O (stopped inspection available=true) 157ms
+     → expected 1 to be 3 // Object.is equality
+   × Org activity publication with selected /director > publishes Stop before history I/O (stopped inspection available=false) 124ms
+     → expected 1 to be 2 // Object.is equality
+   ✓ Org activity publication with selected /director > keeps active navigation and exact selection/conversation while requiring fresh input transport when Stop is rejected 66ms
+   × Org activity publication with selected /team/lead > publishes Stop before history I/O (stopped inspection available=true) 119ms
+     → expected 1 to be 3 // Object.is equality
+   × Org activity publication with selected /team/lead > publishes Stop before history I/O (stopped inspection available=false) 121ms
+     → expected 1 to be 2 // Object.is equality
+   ✓ Org activity publication with selected /team/lead > keeps active navigation and exact selection/conversation while requiring fresh input transport when Stop is rejected 62ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /director > publishes Stop before history I/O (stopped inspection available=true)
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /team/lead > publishes Stop before history I/O (stopped inspection available=true)
+AssertionError: expected 1 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 1
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts:162:23
+    160|     stop.resolve({ data: { terminateAgentOrgRun: { success: true } } })
+    161|     await stopResult; await flushPromises()
+    162|     expect(refreshes).toBe(inspectionAvailable ? 3 : 2)
+       |                       ^
+    163|     const assertStopped = () => {
+    164|       expect(wrapper!.find('[aria-label="Running"]').exists()).toBe(fa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /director > publishes Stop before history I/O (stopped inspection available=false)
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /team/lead > publishes Stop before history I/O (stopped inspection available=false)
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts:162:23
+    160|     stop.resolve({ data: { terminateAgentOrgRun: { success: true } } })
+    161|     await stopResult; await flushPromises()
+    162|     expect(refreshes).toBe(inspectionAvailable ? 3 : 2)
+       |                       ^
+    163|     const assertStopped = () => {
+    164|       expect(wrapper!.find('[aria-label="Running"]').exists()).toBe(fa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ZodError: [
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ readAgentOrgRunInspection services/agentOrgExecution/agentOrgRunInspection.ts:10:47
+      8|     variables: { orgRunId }, fetchPolicy: 'network-only', context: { q…
+      9|   if (result.errors?.length) throw new Error(result.errors.map((error:…
+     10|   const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAg…
+       |                                               ^
+     11|   if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_…
+     12|     throw new Error('AgentOrg inspection root mismatch.')
+ ❯ readInspection stores/agentOrgContextsStore.ts:135:20
+ ❯ execute composables/useWorkspaceHistorySubjectActions.ts:49:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { _zod: { def: [ { expected: 'array', code: 'invalid_type', path: [ 'root_org', 'agent_input_states' ], message: 'Invalid input: expected array, received undefined' } ], constr: 'Function<ZodError>', traits: { constructor: 'Function<Set>', has: 'Function<has>', add: 'Function<add>', delete: 'Function<delete>', clear: 'Function<clear>', entries: 'Function<entries>', forEach: 'Function<forEach>', size: 2, values: 'Function<values>', keys: 'Function<values>', union: 'Function<union>', intersection: 'Function<intersection>', difference: 'Function<difference>', symmetricDifference: 'Function<symmetricDifference>', isSubsetOf: 'Function<isSubsetOf>', isSupersetOf: 'Function<isSupersetOf>', isDisjointFrom: 'Function<isDisjointFrom>' }, deferred: [] }, issues: [ { expected: 'array', code: 'invalid_type', path: [ 'root_org', 'agent_input_states' ], message: 'Invalid input: expected array, received undefined' } ], format: 'Function<value>', flatten: 'Function<value>', addIssue: 'Function<value>', addIssues: 'Function<value>', isEmpty: false }
+This error originated in "components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "renders ready org while other query and catalogs remain pending". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  4 failed | 40 passed (44)
+     Errors  1 error
+   Start at  21:55:07
+   Duration  6.93s (transform 3.54s, setup 31.62s, collect 2.00s, tests 958ms, environment 1.60s, prepare 933ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

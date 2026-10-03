@@ -1,0 +1,156 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "scope": "implementation only",
+  "commands": [
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "prebuild"
+      ],
+      "result": "pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-prerequisites.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "exec",
+        "nuxt",
+        "prepare"
+      ],
+      "result": "pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-nuxt-prepare.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "tsc",
+        "-p",
+        "tsconfig.build.json",
+        "--noEmit"
+      ],
+      "result": "pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-server-typecheck-final.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/agent-execution/agent-run-identity-allocator.test.ts",
+        "tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+        "tests/unit/agent-org-execution/agent-org-run-config.test.ts",
+        "tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts",
+        "tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts",
+        "tests/unit/run-history/services/collaboration-root-history-readiness.test.ts",
+        "tests/unit/run-history/services/collaboration-root-history-scoped.test.ts",
+        "tests/unit/runtime-management/runtime-availability-service.test.ts",
+        "tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts",
+        "tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+        "tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts",
+        "--no-watch"
+      ],
+      "result": "68 tests / 11 files pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-server-final.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "stores/__tests__/runtimeCapabilitiesStore.spec.ts",
+        "stores/__tests__/agentOrgHistoryApollo.spec.ts",
+        "stores/__tests__/runHistoryStore.spec.ts",
+        "stores/__tests__/runHistoryNavigationProjection.spec.ts",
+        "stores/__tests__/agentOrgContextsStore.spec.ts",
+        "stores/__tests__/agentOrgInspection.spec.ts",
+        "stores/__tests__/agentOrgRetainedRecovery.spec.ts",
+        "stores/__tests__/agentOrgRunConfigPublication.spec.ts",
+        "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+        "services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts",
+        "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+        "services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts",
+        "composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+        "components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+        "components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+        "components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts",
+        "components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+        "components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts",
+        "components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts",
+        "components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+        "components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+        "components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts",
+        "components/workspace/config/__tests__/TeamRunConfigForm.spec.ts",
+        "components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts",
+        "components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+        "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+        "components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+        "services/chat/__tests__/chatLaunchService.spec.ts",
+        "stores/__tests__/chatDraftStore.spec.ts",
+        "tests/integration/web-boundary-guard.integration.test.ts",
+        "--run"
+      ],
+      "result": "427 tests / 30 files pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-web-complete.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "build:full"
+      ],
+      "result": "pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-server-build-final.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "build"
+      ],
+      "result": "pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-web-build-complete.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "exec",
+        "graphql-codegen",
+        "--config",
+        "codegen.ts"
+      ],
+      "env": {
+        "BACKEND_GRAPHQL_BASE_URL": "http://127.0.0.1:62297/graphql"
+      },
+      "result": "pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-codegen.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "exec",
+        "vue-tsc",
+        "--noEmit"
+      ],
+      "result": "unavailable \u2014 command not found; not a typecheck pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-web-typecheck.log"
+    }
+  ],
+  "failedPreliminaryAttempts": "all prior implementation logs retained and explicitly superseded by focused successful final checks; no API/E2E execution"
+}

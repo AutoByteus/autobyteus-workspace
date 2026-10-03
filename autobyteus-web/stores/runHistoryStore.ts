@@ -24,6 +24,7 @@ import {
   ensureRunHistoryWorkspaceByRootPath,
   fetchRunHistoryTree,
   refreshAgentOrgHistoryForStore,
+  refreshAgentOrgHistoryItemForStore,
   openHistoricalRun,
   resolveRunHistoryWorkspaceMetadataByRootPath,
   type RunHistorySelectionMode,
@@ -65,6 +66,9 @@ export const useRunHistoryStore = defineStore('runHistory', {
     agentOrgHistory: [] as AgentOrgRunHistoryItem[],
     historyFamilyErrors: { workspace: null, agentOrg: null } as RunHistoryFamilyErrors,
     agentOrgRequestGeneration: 0,
+    agentOrgSnapshotRevision: 0,
+    agentOrgRequestSequenceById: {} as Record<string, number>,
+    agentOrgHistoryItemErrors: {} as Record<string, string>,
     workspaceRequestGeneration: 0,
     workspaceHistoryLoadingById: {} as Record<string, boolean>,
     workspaceHistoryErrorById: {} as Record<string, string | null>,
@@ -84,6 +88,8 @@ export const useRunHistoryStore = defineStore('runHistory', {
   }),
 
   getters: {
+    agentOrgHistoryError: (state): string | null => state.historyFamilyErrors.agentOrg
+      || Object.values(state.agentOrgHistoryItemErrors)[0] || null,
     getResumeConfig: (state) => (runId: string): RunResumeConfigPayload | null => {
       return state.resumeConfigByRunId[runId] || null;
     },
@@ -115,12 +121,14 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     async fetchTree(limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
       await fetchRunHistoryTree(this, limitPerAgent, options);
-      this.refreshRunNavigationTopology('history-fetch');
     },
 
     async refreshAgentOrgHistory(): Promise<void> {
       await refreshAgentOrgHistoryForStore(this);
-      this.refreshRunNavigationTopology('agent-org-history-refresh');
+    },
+
+    async refreshAgentOrgHistoryItem(orgRunId: string): Promise<void> {
+      await refreshAgentOrgHistoryItemForStore(this, orgRunId);
     },
 
     async openRun(runId: string, options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {}): Promise<WorkspaceSelectionOutcome> {
@@ -236,11 +244,12 @@ export const useRunHistoryStore = defineStore('runHistory', {
     },
 
     applyAgentOrgActivity(orgRunId: string, isActive: boolean): void {
+      const row = this.agentOrgHistory.find(run => run.rootRunId === orgRunId);
+      if (!row || row.isActive === isActive) return;
       this.agentOrgRequestGeneration += 1;
-      this.agentOrgHistory = this.agentOrgHistory.map((run) => run.rootRunId === orgRunId ? { ...run, isActive } : run);
-      // Publish the confirmed fact to already-rendered rows before refresh I/O.
+      this.agentOrgRequestSequenceById[orgRunId] = (this.agentOrgRequestSequenceById[orgRunId] ?? 0) + 1;
+      this.agentOrgHistory = this.agentOrgHistory.map(run => run === row ? { ...run, isActive } : run);
       this.refreshRunNavigationTopology('agent-org-activity');
-      void this.refreshAgentOrgHistory();
     },
 
     markTeamAsActive(teamRunId: string): void {

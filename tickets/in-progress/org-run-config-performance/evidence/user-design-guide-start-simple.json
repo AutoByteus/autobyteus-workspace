@@ -1,0 +1,4 @@
+{
+  "userMessage": "Or you can call it architecture design based practices. At least then in this file, you can write down the negative architecture design you made earlier and write down a few points about what is the correct way of doing architecture design. This is definitely one anti-pattern you made earlier. You can create this file right now by yourself. Very important. And you can also write a few best practices. Normally architecture design is special for bigger tickets to start simple. Start simple meaning that don't assume a lot of age cases. Start simple like you know what I mean right? Sorry for the interruption, please continue.",
+  "interpretation": "Either solution/architecture best-practices name acceptable; retain the already-created requested SOLUTION_DESIGN_BEST_PRACTICES.md. Emphasize start simple for large tickets and do not invent edge cases; include concrete prior negative patterns and corrected reasoning."
+}

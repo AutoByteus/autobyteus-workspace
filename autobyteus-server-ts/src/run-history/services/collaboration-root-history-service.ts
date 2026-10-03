@@ -1,3 +1,4 @@
+import type { AgentOrgRunIndexRowRecord } from "../store/agent-org-run-history-index-record-types.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
@@ -17,7 +18,7 @@ export class CollaborationRootHistoryService {
   constructor(private readonly dependencies: Readonly<{
     memoryDir: string;
     teams: Pick<TeamRunHistoryService, "listTeamRunHistory">;
-    orgs: Pick<AgentOrgRunHistoryCatalogService, "listCatalogRows">;
+    orgs: Pick<AgentOrgRunHistoryCatalogService, "listCatalogRows" | "getCatalogRow">;
     orgRuns: Pick<AgentOrgRunManager, "getActive">;
     orgTrees?: AgentOrgRunExecutionTreeStore;
   }>) {
@@ -39,20 +40,33 @@ export class CollaborationRootHistoryService {
       team,
     }));
     for (const row of orgRows) {
-      const active = this.dependencies.orgRuns.getActive(row.orgRunId);
-      const tree = active?.getExecutionTreeSnapshot()
-        ?? await this.orgTrees.read(this.layout.getOrgDirPath(row.orgRunId), row.orgRunId);
-      if (!tree || (row.archivedAt && !active)) continue;
-      items.push(Object.freeze({
-        root_subject_kind: "agent_org",
-        root_run_id: row.orgRunId,
-        created_at: row.createdAt,
-        archived_at: row.archivedAt,
-        is_active: Boolean(active),
-        summary: row.summary,
-        org: tree,
-      }));
+      const item = await this.projectAgentOrg(row);
+      if (item) items.push(item);
     }
     return Object.freeze(items.sort((left, right) => right.created_at.localeCompare(left.created_at)));
+  }
+
+  async getAgentOrg(orgRunId: string): Promise<Extract<CollaborationRootHistoryItem, { root_subject_kind: "agent_org" }> | null> {
+    const id = orgRunId.trim();
+    if (!id) throw new Error("orgRunId is required.");
+    const row = await this.dependencies.orgs.getCatalogRow(id);
+    return row ? this.projectAgentOrg(row) : null;
+  }
+
+  private async projectAgentOrg(row: AgentOrgRunIndexRowRecord): Promise<Extract<CollaborationRootHistoryItem, { root_subject_kind: "agent_org" }> | null> {
+    const active = this.dependencies.orgRuns.getActive(row.orgRunId);
+    const tree = active?.getExecutionTreeSnapshot()
+      ?? await this.orgTrees.read(this.layout.getOrgDirPath(row.orgRunId), row.orgRunId);
+    if (!tree || (row.archivedAt && !active)) return null;
+    if (tree.rootOrg.orgRunId !== row.orgRunId) throw new Error(`AgentOrg history root mismatch for '${row.orgRunId}'.`);
+    return Object.freeze({
+      root_subject_kind: "agent_org",
+      root_run_id: row.orgRunId,
+      created_at: row.createdAt,
+      archived_at: row.archivedAt,
+      is_active: Boolean(active),
+      summary: row.summary,
+      org: tree,
+    });
   }
 }

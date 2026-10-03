@@ -67,6 +67,7 @@ export class AgentOrgStreamingService {
     orgRunId: string
     publish(context: AgentOrgExecutionContext, commitActivities: () => void): void
     onInactive?(): void
+    onExecutionTreeChanged?(): void
     reportError(message: string): void
     onAcceptedExternalUserMessage?(event: Readonly<{
       orgRunId: string
@@ -327,6 +328,9 @@ export class AgentOrgStreamingService {
       }
       const application = this.context.applyEvent(message.payload.change_sequence, message.payload.event)
       if (application === 'checkpoint_required') await this.reopenOwned(generation)
+      else if (application === 'applied' && message.payload.event.kind === 'collaborator_added' && this.isCurrent(generation)) {
+        this.options.onExecutionTreeChanged?.()
+      }
       return
     }
     this.context.setActive(message.payload.is_active)

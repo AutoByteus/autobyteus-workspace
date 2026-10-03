@@ -74,7 +74,7 @@ describe('AgentRunConfigForm', () => {
         { runtimeKind: 'autobyteus', enabled: true, reason: null },
         { runtimeKind: 'codex_app_server', enabled: true, reason: null },
       ],
-      fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
+      fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
       availabilityByKind: vi.fn((runtimeKind: string) =>
         runtimeAvailabilityStore.availabilities.find((availability: any) => availability.runtimeKind === runtimeKind) ?? null,
       ),

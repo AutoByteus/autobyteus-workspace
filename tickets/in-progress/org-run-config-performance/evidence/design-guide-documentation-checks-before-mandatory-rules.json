@@ -1,0 +1,29 @@
+{
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/SOLUTION_DESIGN_BEST_PRACTICES.md",
+      "lines": 240,
+      "sha256": "ff54fe10a38bf9fa47b7f09f922b7a9ffcd2dc961dce45388881ebbb0c432b69"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/AGENTS.md",
+      "lines": 16,
+      "sha256": "bc727d60c99b9a3cd4cf9771f41f3f5ae259ad186edb717b1fa4fd4905862f4f"
+    }
+  ],
+  "brokenLinks": [],
+  "trailingWhitespace": [],
+  "validationScope": "Documentation/link/content checks only; no app source or behavior changed.",
+  "contentChecks": {
+    "requestedName": true,
+    "startSimpleForBigTickets": true,
+    "noInventedEdgeCases": true,
+    "necessarySafeguards": true,
+    "ownReasoningFailure": true,
+    "uuidAntiPattern": true,
+    "frontendAntiPattern": true,
+    "discoveryAntiPattern": true,
+    "mandatoryRead": true,
+    "oneCanonicalGuide": true
+  }
+}

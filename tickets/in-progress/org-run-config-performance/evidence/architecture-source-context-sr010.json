@@ -1,0 +1,162 @@
+{
+  "package": "org-run-config-performance",
+  "round": "SR-010",
+  "head": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "approvedBaseline": "SR-006",
+  "method": "Read-only sed/cat/rg source mapping after explicit user approval; no app source changes or new runtime measurements. Canonical observations in investigation-notes.md F-009\u2013013.",
+  "sources": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      "sha256": "0d0b3f14d877da4b8fb5ae19a555451e4064903be51e7205af6b5b023c20730d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/identity/agent-run-id.ts",
+      "sha256": "23778fae640f2ff728f6edbdb4a6f631636a96016677b83bd1be10f33aae9afd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "sha256": "692fe53516726f02c3e2404854481f45a417b00e5e0696ef184cc1c956dffca3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+      "sha256": "6d07e1ffdc39d6b249a6f0b1c66b066f159eab66f06ad5fb25fc5156c18b1bb2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+      "sha256": "8a9c393d807aa40c56bd61ebeed7501073c488157d562fe9698fdf04abc82541"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
+      "sha256": "d54547ab66b8a4a428e43cde4a4c210ce020ec8579eede1f4abff7998d66842e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.ts",
+      "sha256": "63d26f59385a964dec178e2247f4b7f4a8f1ca7bcd6d1a8462bdd85737d2eb60"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts",
+      "sha256": "c8cbb22634c5f2df7a9072248e6cb9aeabe28dab652bd9304bd6a7abeaa1be5a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts",
+      "sha256": "798bc33bfd86db1745a37ff3b23aa3b66c78d337b29de5b944aec7b20c0173c4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-location-service.ts",
+      "sha256": "f95b8e1d59eadc47d9c023220321ae083e678b170d54132370498c241c619a01"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/runtime-management/runtime-availability-service.ts",
+      "sha256": "6a2917826798ed32148893a022e1bed6a4dd8e3871932d54ed52adb996617fc6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/api/graphql/types/runtime-availability.ts",
+      "sha256": "4508c360114b344fecd4d1c2d669458de583ee7e589ab856a57a452979286bad"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "sha256": "af242aff825fe3b8a0c518f6ef58b9d47e7d709b78633a89388dd98e91a413ed"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/agent-org-run-history-catalog-service.ts",
+      "sha256": "ca1bb0208dd87d1b33ca56142c003b48d49fa3cf17ea87009b61527ea84f5a42"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/collaboration-run-history-catalog-core.ts",
+      "sha256": "ea36cf0659a86f0cab36672e1f1bcdac599ed0fa3385c21e75322e137e1e3140"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+      "sha256": "bba63f11c0001ede3067e8a5da188f2b9d44674a527a08b1eff9c856f118a349"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/api/graphql/types/collaboration-root-history.ts",
+      "sha256": "e4b76371ab609411ff92d6ab4411270f945bc0ef0213ca62a85018ff023d735e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+      "sha256": "4ae42fcd0950940b2b294f12c9f537238013ab67ea05768f2492afb30d7385ab"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts",
+      "sha256": "ea8729737048aadd46d863990c96d58cc851cef4d9fdb732e6d69f7758dd04f8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "sha256": "1662c2537679720f1aa5c936fa5bf869bad73f627341f2400b02f913e9bfb4c4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+      "sha256": "a135c640fc8ed7da969407a298eeab64efe0143cf7cd73556667ad9b4903e390"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryLoadActions.ts",
+      "sha256": "e0be3a84b1d435366f74a7609f24ff33a873eda613872893c6441fa797cb6514"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryStore.ts",
+      "sha256": "492290eef62a42b6080859d384f1372fbde2b5867fda93b3af5ba38f9e72ec0a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryStoreSupport.ts",
+      "sha256": "bea93e460db5786a42475dc9f18bbcb413e795d5dec0ddc38cc72751176df5d7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryTypes.ts",
+      "sha256": "281b03778a0bc6b75d41aac547b659694736c74d6cdf5f58c7b4ce95a29745d8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryNavigationProjection.ts",
+      "sha256": "c25d3baf43c60f491caa4b67ac02f2c6c234bcdfca1887b35e72cfb6664de0ee"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryNavigationStoreActions.ts",
+      "sha256": "1ea4da51a2a6254e737e8091c5f8c7b5a4ab76a2884a7f97ae0ead59f4f7de38"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/utils/runTreeProjection.ts",
+      "sha256": "a6095f8c52998db2fd27a08e55783910374405f0ad20e5379d342b98e1617d90"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/agentOrgContextsStore.ts",
+      "sha256": "d93adbd2426aad8e1fdeb351d1dab5663afa0386fd1c3128acd0c32b1fc9c0c5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+      "sha256": "7dff6062cf759dc71aaf604aff76753460f468a859e4cb9aa68c3e48a1f2fdba"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "sha256": "6b56cef827e048db24e56af872a49feded927a4a1fdac37ed1a0a01950c2dc53"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "sha256": "7a4accce83fcff68ea3b514b4f97255f115a820adfbfcbedf556c42f30238086"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "sha256": "fbffbd9b5f44aad4bd668b7f33d0aeaafabdb7b35915b414ba3134d759cda1bb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts",
+      "sha256": "2d2ffdb8899944ea8100195d4249d8cadb7c04bfbb4ab5989ddc2b502774482f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/codegen.ts",
+      "sha256": "754a1bed84f7e105cb5058ce3f22aa97bbbbd714cf4ef1a2c30ca281ee68ee4e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/AGENTS.md",
+      "sha256": "90e805df6889f1c69bbfb0ff19cae49ae3c781e5de3dcf85d15e47825f222f16"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/SOLUTION_DESIGN_BEST_PRACTICES.md",
+      "sha256": "ff6d2e1ecad2f475f79b9581ade6cbe53c96f3e414323e0266762ac999cc9342"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/TESTING.md",
+      "sha256": "2a81eec79b5e5bd413ec4709e97e44629e3f82c0e63d1e7e40ec98fcd0c0490f"
+    }
+  ],
+  "initialPathGuessesNotFound": []
+}

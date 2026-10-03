@@ -21,10 +21,10 @@ vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAcce
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
-  applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistory: mocks.historyRefresh, applyRunNavigationEffect: mocks.navigation,
+  applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistoryItem: mocks.historyRefresh, applyRunNavigationEffect: mocks.navigation,
 }) }))
 vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({
-  isAvailable: false, initialize: vi.fn(), cancelOperationForSource: vi.fn(),
+  isAvailable: false, initialize: vi.fn(), cancelOperationForTarget: vi.fn().mockResolvedValue(undefined),
 }) }))
 
 class Socket {
@@ -165,7 +165,8 @@ describe('actual shared Org file input -> active target -> attachment upload own
     const opened = vi.spyOn(window, 'open').mockImplementation(() => null)
     await message.find('button[title^="Open "]').trigger('click')
     expect(await uploaded.get(opened.mock.calls[0]![0] as string)!.text()).toBe('Exact selected Agent file contents')
-    expect(mocks.historyRefresh).toHaveBeenCalledOnce(); expect(mocks.navigation).not.toHaveBeenCalled()
+    expect(mocks.historyRefresh).toHaveBeenCalledTimes(4); // Inspection, Restore, synchronized snapshot, accepted Send.
+    expect(mocks.historyRefresh.mock.calls.every(([id]) => id === 'org-run')).toBe(true); expect(mocks.navigation).not.toHaveBeenCalled()
     expect(mocks.delete).not.toHaveBeenCalled()
   })
   it('captures upload ownership across focus switches and does not acquire draft ownership for stopped tasks', async () => {

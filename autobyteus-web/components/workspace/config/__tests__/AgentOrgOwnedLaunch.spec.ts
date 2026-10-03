@@ -86,6 +86,7 @@ beforeEach(() => {
   vi.spyOn(useWorkspaceStore(), 'fetchAllWorkspaces').mockResolvedValue(undefined)
   vi.spyOn(useWorkspaceStore(), 'createWorkspace').mockResolvedValue('workspace')
   vi.spyOn(useRunHistoryStore(), 'refreshTreeQuietly').mockResolvedValue(undefined)
+  vi.spyOn(useRunHistoryStore(), 'refreshAgentOrgHistoryItem').mockResolvedValue(undefined)
   transport.query.mockImplementation(async request => exactResponse(request))
   transport.mutate.mockResolvedValue({ data: { createAgentOrgRun: { success: true, agentOrgRunId: 'new-org-run' } } })
 })
@@ -120,6 +121,21 @@ describe('selected Org launch references through real panel, stores, projector a
       teamOverrides: [], agentOverrides: [{ address: '/group/lead', configuration: { autoExecuteTools: true } }],
     } } })
     expect(transport.replace).toHaveBeenCalledWith(expect.objectContaining({ query: expect.objectContaining({ orgRunId: 'new-org-run' }) }))
+    expect(useRunHistoryStore().refreshAgentOrgHistoryItem).toHaveBeenCalledExactlyOnceWith('new-org-run')
+    expect(useRunHistoryStore().refreshTreeQuietly).not.toHaveBeenCalled()
+  })
+
+  it('navigates with the confirmed created identity while its one-root history observation is pending', async () => {
+    const observation = deferred()
+    vi.mocked(useRunHistoryStore().refreshAgentOrgHistoryItem).mockReturnValue(observation.promise)
+    const wrapper = panel(); configure(); await flushPromises()
+    await wrapper.get('[data-test="run-agent-org"]').trigger('click'); await flushPromises()
+    expect(transport.mutate).toHaveBeenCalledTimes(1)
+    expect(transport.replace).toHaveBeenCalledWith(expect.objectContaining({query:expect.objectContaining({orgRunId:'new-org-run'})}))
+    expect(useRunHistoryStore().refreshAgentOrgHistoryItem).toHaveBeenCalledExactlyOnceWith('new-org-run')
+    expect(useRunHistoryStore().refreshTreeQuietly).not.toHaveBeenCalled()
+    observation.resolve(undefined); await flushPromises()
+    expect(transport.mutate).toHaveBeenCalledTimes(1)
   })
 
   it('blocks while pending without premature missing-Team error and preserves drafts without refetch on form edits', async () => {

@@ -1,0 +1,6 @@
+{
+  "userMessage": "archiecture design best practice or solution design best practice or solution design constraint, which file do you recommend",
+  "recommendation": "SOLUTION_DESIGN_BEST_PRACTICES.md",
+  "basis": "Existing guide covers scenario/contract reasoning, architecture, performance costs, simplification, anti-pattern examples and validation; constraints alone implies only binding prohibitions.",
+  "change": "Recommendation only; no rename/content change or application approval inferred."
+}

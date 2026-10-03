@@ -1,0 +1,35 @@
+{
+  "durationMs": 55.181041999999955,
+  "request": {
+    "operationName": "ImportAgentPackage",
+    "query": "mutation ImportAgentPackage($input: ImportAgentPackageInput!){importAgentPackage(input:$input){packageId displayName path sharedAgentCount teamLocalAgentCount agentTeamCount}}",
+    "variables": {
+      "input": {
+        "sourceKind": "LOCAL_PATH",
+        "source": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-3grOik/fixture-agent-package"
+      }
+    }
+  },
+  "body": {
+    "data": {
+      "importAgentPackage": [
+        {
+          "packageId": "built-in:default",
+          "displayName": "Built-in Storage",
+          "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-3grOik/server-data",
+          "sharedAgentCount": 2,
+          "teamLocalAgentCount": 0,
+          "agentTeamCount": 0
+        },
+        {
+          "packageId": "local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fautobyteus-isolated-root-3grOik%2Ffixture-agent-package",
+          "displayName": "fixture-agent-package",
+          "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-3grOik/fixture-agent-package",
+          "sharedAgentCount": 7,
+          "teamLocalAgentCount": 47,
+          "agentTeamCount": 14
+        }
+      ]
+    }
+  }
+}
