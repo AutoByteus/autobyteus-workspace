@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import AgentTeamList from '../AgentTeamList.vue';
@@ -132,5 +132,39 @@ describe('AgentTeamList', () => {
     await flushAsyncUi();
 
     expect(store.refreshAndReloadAllAgentTeamDefinitions).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps Reload disabled while required reads are pending, shows failure, and permits retry', async () => {
+    const wrapper = await mountComponent();
+    const store = useAgentTeamDefinitionStore();
+    let rejectRead!: (error: Error) => void;
+    (store.refreshAndReloadAllAgentTeamDefinitions as any).mockImplementationOnce(async () => {
+      store.loading = true;
+      try {
+        await new Promise((_, reject) => { rejectRead = reject; });
+      } catch (error) {
+        store.error = error;
+        throw error;
+      } finally {
+        store.loading = false;
+      }
+    });
+    const reload = wrapper.findAll('button').find((button) => button.text().includes('Reload'))!;
+    await reload.trigger('click');
+    expect(reload.attributes('disabled')).toBeDefined();
+    expect(reload.text()).toContain('Reloading');
+    rejectRead(new Error('Member definitions unavailable'));
+    await flushPromises();
+    expect(wrapper.text()).toContain('Member definitions unavailable');
+    expect(reload.attributes('disabled')).toBeUndefined();
+    (store.refreshAndReloadAllAgentTeamDefinitions as any).mockImplementationOnce(async () => {
+      store.error = null;
+    });
+    await reload.trigger('click');
+    await flushPromises();
+    expect(store.refreshAndReloadAllAgentTeamDefinitions).toHaveBeenCalledTimes(2);
+    expect(wrapper.text()).not.toContain('Member definitions unavailable');
+    expect(reload.attributes('disabled')).toBeUndefined();
+    wrapper.unmount();
   });
 });

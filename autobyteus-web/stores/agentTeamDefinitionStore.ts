@@ -8,6 +8,7 @@ import {
   RefreshAgentTeamDefinitionCatalog,
   UpdateAgentTeamDefinition,
 } from '~/graphql/mutations/agentTeamDefinitionMutations'
+import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 
@@ -153,6 +154,10 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
       if (mutationResult.errors && mutationResult.errors.length > 0) {
         throw new Error(mutationResult.errors.map((entry: { message: string }) => entry.message).join(', '))
       }
+
+      // Team refresh also refreshes the backend Agent catalog; publish members
+      // before completing Reload so warmed detail views use current definitions.
+      await useAgentDefinitionStore().reloadAllAgentDefinitions()
 
       const { data, errors } = await client.query({
         query: GetAgentTeamDefinitions,
