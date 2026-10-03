@@ -1,0 +1,8 @@
+tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/api-rev-002/live-validation.log:296: new blank line at EOF.
+tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/api-rev-002/native-transport-final.log:377: new blank line at EOF.
+tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/api-rev-002/regressions.log:824: new blank line at EOF.
+tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/api-rev-002/runtime-error-transport.log:873: new blank line at EOF.
+tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/api-rev-002/test-helper-typing.diff:7: trailing whitespace.
++ 
+tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/api-rev-002/transport-after-typing-fix.log:1157: new blank line at EOF.
+tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/api-rev-002/web-regressions.log:109: new blank line at EOF.

@@ -45,3 +45,5 @@ No unresolved prior completed API failure. DR-001 fixture conflict repaired in I
 - Delivery DR-001 blocked reports remain historical unchanged; no remote push/targetmerge/release/deployment/DeliveryCompleted/Terminal. Current source review/test review remain separate; new helper review pending.
 
 - Actual route selected by fresh get_handoff_rules: single Pass + High-risk + proportional-test-review rule, **/code_reviewer**. Rules/decision in api-e2e-evidence/api-rev-002/handoff-rule-result.json. No duplicate Delivery notification.
+
+- API artifacts/evidence commit d73c698c993a69eb19568a994cfff10f92bdc842 (helper commit separate). Artifact-wide whitespace exit2 flags only6 rawlog EOF blanklines and valid unified-diff blank context; exact output retained, no source/test formatting failure or blanketartifact Pass. Outside reviewer files/dist/scratch unchanged.
