@@ -1,0 +1,152 @@
+{
+  "releaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.93-beta.2",
+  "tag": "v1.4.93-beta.2",
+  "prerelease": true,
+  "draft": false,
+  "assetCount": 17,
+  "allAssetsUploadedNonzero": true,
+  "installerArchitectures": [
+    "macOS arm64/x64",
+    "Linux arm64/x64",
+    "Windows x64",
+    "Android"
+  ],
+  "updaterMetadata": {
+    "latest.yml": {
+      "version": "1.4.93-beta.2",
+      "assetReferences": [
+        "AutoByteus_personal_windows-1.4.93-beta.2.exe",
+        "AutoByteus_personal_windows-1.4.93-beta.2.exe"
+      ]
+    },
+    "latest-mac.yml": {
+      "version": "1.4.93-beta.2",
+      "assetReferences": [
+        "AutoByteus_personal_macos-arm64-1.4.93-beta.2.zip",
+        "AutoByteus_personal_macos-arm64-1.4.93-beta.2.dmg",
+        "AutoByteus_personal_macos-x64-1.4.93-beta.2.zip",
+        "AutoByteus_personal_macos-x64-1.4.93-beta.2.dmg",
+        "AutoByteus_personal_macos-arm64-1.4.93-beta.2.zip"
+      ]
+    },
+    "latest-linux.yml": {
+      "version": "1.4.93-beta.2",
+      "assetReferences": [
+        "AutoByteus_personal_linux-x64-1.4.93-beta.2.AppImage",
+        "AutoByteus_personal_linux-x64-1.4.93-beta.2.AppImage"
+      ]
+    },
+    "latest-linux-arm64.yml": {
+      "version": "1.4.93-beta.2",
+      "assetReferences": [
+        "AutoByteus_personal_linux-arm64-1.4.93-beta.2.AppImage",
+        "AutoByteus_personal_linux-arm64-1.4.93-beta.2.AppImage"
+      ]
+    }
+  },
+  "stableLatestUnchanged": "v1.4.92",
+  "assets": [
+    {
+      "name": "AutoByteus_personal_android-1.4.93-beta.2-release.apk",
+      "size": 1846695,
+      "digest": "sha256:eaf6f9cde8c635dce0768cba2e01bdcb58b376c97327f75640a629da7f415514",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_android-1.4.93-beta.2-release.apk"
+    },
+    {
+      "name": "AutoByteus_personal_android-1.4.93-beta.2-release.apk.sha256",
+      "size": 120,
+      "digest": "sha256:09991c6b4b5225dce480a89cfd8affca36748738724d96c55e4d2f9ccb26bc3e",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_android-1.4.93-beta.2-release.apk.sha256"
+    },
+    {
+      "name": "AutoByteus_personal_linux-arm64-1.4.93-beta.2.AppImage",
+      "size": 446225943,
+      "digest": "sha256:93567ae277603fe5358b1b5552d6fd39d4aab84e26066db79ad922cbaa1e4e0b",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_linux-arm64-1.4.93-beta.2.AppImage"
+    },
+    {
+      "name": "AutoByteus_personal_linux-x64-1.4.93-beta.2.AppImage",
+      "size": 458178767,
+      "digest": "sha256:18926d580b9709783e5527c32d886b5b03e1274fb2eec514a6607ea9cae7a33b",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_linux-x64-1.4.93-beta.2.AppImage"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.93-beta.2.dmg",
+      "size": 513818612,
+      "digest": "sha256:f2a498e9463a205b6f6f78fa924a81f90f17a513740aa76747700baef35d7de6",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_macos-arm64-1.4.93-beta.2.dmg"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.93-beta.2.dmg.blockmap",
+      "size": 533065,
+      "digest": "sha256:d0e133f90c4cf23bcd7178c143b0081377660755ad4cd7e5ebd354669105a9a1",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_macos-arm64-1.4.93-beta.2.dmg.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.93-beta.2.zip",
+      "size": 509483846,
+      "digest": "sha256:12a49f9eae13a92c35b8971419312ac24fec1a49622ee706bff708bd05e07662",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_macos-arm64-1.4.93-beta.2.zip"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.93-beta.2.zip.blockmap",
+      "size": 523742,
+      "digest": "sha256:e37feecdb2009b11821697406bd54a0f2bc718a0671325b099b99e6903e623a4",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_macos-arm64-1.4.93-beta.2.zip.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.93-beta.2.dmg",
+      "size": 536469111,
+      "digest": "sha256:7bfb08c597643fa4bc1c240bb96e1a105b0cf93b64c8c9680bde96fc75f73e08",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_macos-x64-1.4.93-beta.2.dmg"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.93-beta.2.dmg.blockmap",
+      "size": 558661,
+      "digest": "sha256:8299692f4e585caf47f069e9d53a39da94357eba8f13d480e9e6e16adaded23d",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_macos-x64-1.4.93-beta.2.dmg.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.93-beta.2.zip",
+      "size": 531123361,
+      "digest": "sha256:b302df97704964325007328274e59ff9c14daf6169816cd5050b7cad910cb289",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_macos-x64-1.4.93-beta.2.zip"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.93-beta.2.zip.blockmap",
+      "size": 544666,
+      "digest": "sha256:5cb3d37fc61320e82b161f7439387955343adf17a6c15f6fd6237ff2d8a79f61",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_macos-x64-1.4.93-beta.2.zip.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_windows-1.4.93-beta.2.exe",
+      "size": 339907165,
+      "digest": "sha256:52cbd0b218ca4ca3302a14af091ec565ca9c1dcef5416b7d457a8bea637c543f",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/AutoByteus_personal_windows-1.4.93-beta.2.exe"
+    },
+    {
+      "name": "latest-linux-arm64.yml",
+      "size": 438,
+      "digest": "sha256:fd7953a8849cc06ef6db08e63986556554ada5a9f6fc9950a7e66bd81b85fad5",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/latest-linux-arm64.yml"
+    },
+    {
+      "name": "latest-linux.yml",
+      "size": 434,
+      "digest": "sha256:b6c9ac161e93b9a9d04377acc8db76c3667fd73cfa64aa41713fe15c2c40bf2b",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/latest-linux.yml"
+    },
+    {
+      "name": "latest-mac.yml",
+      "size": 939,
+      "digest": "sha256:8bd907dbe17e4c83f3dec436d931f74e7e2e3ec576dba91965d3f2ed12c31cf5",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/latest-mac.yml"
+    },
+    {
+      "name": "latest.yml",
+      "size": 375,
+      "digest": "sha256:985e20e1310fa4821f5abbb92ca3da1c7c29dd0583a90cbf51e76be9e306924d",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.93-beta.2/latest.yml"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+warning: deleting branch 'codex/auto-approve-default-run-setup' that has been merged to
+         'refs/remotes/origin/personal', but not yet merged to HEAD
+Deleted branch codex/auto-approve-default-run-setup (was 6f1784d05).
+warning: deleting branch 'delivery/auto-approve-beta-finalize' that has been merged to
+         'refs/remotes/origin/personal', but not yet merged to HEAD
+Deleted branch delivery/auto-approve-beta-finalize (was fe37e693e).
+remote: 
+remote: GitHub found 939 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 428 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/auto-approve-default-run-setup
