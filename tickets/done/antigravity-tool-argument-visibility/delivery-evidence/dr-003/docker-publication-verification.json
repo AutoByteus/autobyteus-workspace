@@ -1,0 +1,50 @@
+{
+  "tags": {
+    "1.4.94-beta.1": {
+      "digest": "sha256:58df1c44365198fee8114ecb0fd7e6fcf938a26edc8ce8540dfcea86492d551c",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ]
+    },
+    "beta": {
+      "digest": "sha256:58df1c44365198fee8114ecb0fd7e6fcf938a26edc8ce8540dfcea86492d551c",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ]
+    },
+    "latest": {
+      "digest": "sha256:6bd413de476de077c0af39cf5a0bcaeab224389d1e349e6efc3b6e00fbe448c0",
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ]
+    }
+  },
+  "newestRecognizedRelease": true,
+  "versionBetaSameDigest": true,
+  "stableLatestUnchanged": true,
+  "anonymousTokenPersisted": false
+}

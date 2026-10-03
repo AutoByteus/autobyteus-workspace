@@ -1,0 +1,45 @@
+{
+  "total_count": 2,
+  "artifacts": [
+    {
+      "id": 11282805263,
+      "node_id": "MDg6QXJ0aWZhY3QxMTI4MjgwNTI2Mw==",
+      "name": "ios-build-test-artifacts",
+      "size_in_bytes": 880155,
+      "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/11282805263",
+      "archive_download_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/11282805263/zip",
+      "expired": false,
+      "digest": "sha256:ceb35bfa91f57f31d0fd38529deeb4213926d749c9f90ffc63bd38609c61408e",
+      "created_at": "2026-10-03T19:03:07Z",
+      "updated_at": "2026-10-03T19:03:07Z",
+      "expires_at": "2026-10-17T19:03:04Z",
+      "workflow_run": {
+        "id": 37145920202,
+        "repository_id": 1167236748,
+        "head_repository_id": 1167236748,
+        "head_branch": "v1.4.94-beta.1",
+        "head_sha": "8409bd899d290553730eff0d1ba3bca22205a939"
+      }
+    },
+    {
+      "id": 11282591339,
+      "node_id": "MDg6QXJ0aWZhY3QxMTI4MjU5MTMzOQ==",
+      "name": "ios-app-store-connect-artifacts",
+      "size_in_bytes": 416832,
+      "url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/11282591339",
+      "archive_download_url": "https://api.github.com/repos/AutoByteus/autobyteus-workspace/actions/artifacts/11282591339/zip",
+      "expired": false,
+      "digest": "sha256:879c5d3c92253b3946716c1e690452a849cb69971465447756cb4b4783147c02",
+      "created_at": "2026-10-03T19:06:31Z",
+      "updated_at": "2026-10-03T19:06:31Z",
+      "expires_at": "2026-10-17T19:06:30Z",
+      "workflow_run": {
+        "id": 37145920202,
+        "repository_id": 1167236748,
+        "head_repository_id": 1167236748,
+        "head_branch": "v1.4.94-beta.1",
+        "head_sha": "8409bd899d290553730eff0d1ba3bca22205a939"
+      }
+    }
+  ]
+}

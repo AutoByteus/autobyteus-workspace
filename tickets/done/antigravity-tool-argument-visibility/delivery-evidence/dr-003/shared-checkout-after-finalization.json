@@ -1,0 +1,10 @@
+{
+  "result": "Completed fast-forward; unrelated tracked user edits hash-identical, untracked resources not removed",
+  "head": "8409bd899d290553730eff0d1ba3bca22205a939",
+  "trackedUnrelatedPreserved": {
+    "tickets/done/embedded-browser-open-tab-investigation/docs-sync-report.md": true,
+    "tickets/done/embedded-browser-open-tab-investigation/handoff-summary.md": true,
+    "tickets/done/embedded-browser-open-tab-investigation/release-deployment-report.md": true
+  },
+  "status": " M tickets/done/embedded-browser-open-tab-investigation/docs-sync-report.md\n M tickets/done/embedded-browser-open-tab-investigation/handoff-summary.md\n M tickets/done/embedded-browser-open-tab-investigation/release-deployment-report.md\n?? .article-work/\n?? applications/brief-studio/dist/\n?? applications/socratic-math-teacher/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/done/antigravity-marketing-turn-failure/evidence/delivery/final-repository-receipt.json\n?? tickets/done/antigravity-marketing-turn-failure/evidence/delivery/terminal-handoff-receipt.json\n?? tickets/done/antigravity-marketing-turn-failure/evidence/delivery/terminal-handoff-request.json\n?? tickets/done/antigravity-marketing-turn-failure/evidence/delivery/terminal-handoff-rules.json\n?? tickets/done/chat-composer-menus-open-upward/solution-designer-terminal-receipt.md\n?? tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/finalization-receipt.json\n?? tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/ios-failed.log\n?? tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/ios-retry.md\n"
+}

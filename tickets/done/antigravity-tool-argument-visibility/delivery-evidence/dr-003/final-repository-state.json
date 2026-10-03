@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-03T19:37:49.186894+00:00",
+  "branch": "personal",
+  "head": "7a31f2dddeada8647cc23c8e1d49b5ac08eb43ae",
+  "remotePersonal": "7a31f2dddeada8647cc23c8e1d49b5ac08eb43ae",
+  "ticketFinalCommit": "f2023d63be575a05fe117015281e72b5a523887c",
+  "targetMerge": "9ff0a22882f5e0c12b06ccba96ba1f0ef4acc38f",
+  "releaseTag": "v1.4.94-beta.1",
+  "releaseCommit": "8409bd899d290553730eff0d1ba3bca22205a939",
+  "publicationEvidenceCommit": "7c2c82e82d65e54a68a2f99e1129914a7a3de356",
+  "finalArtifactCommitAndPush": "Completed",
+  "localTicketBranch": "Deleted",
+  "remoteTicketBranch": "Retained",
+  "worktreeAndReleaseClone": "Removed",
+  "unrelatedUserEdits": "Preserved; never staged",
+  "postCommitOperationalReceipts": "Local durable metadata; no source/release delta"
+}

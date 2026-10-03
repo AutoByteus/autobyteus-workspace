@@ -1,0 +1,26 @@
+{
+  "instance": "iso-59458-20b6",
+  "stopResult": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-59458-20b6",
+      "wasRunning": false,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-jfar4P",
+      "dataRootRemoved": false,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-59458-20b6.log"
+    }
+  },
+  "ownedPortsClosed": {
+    "59458": true,
+    "59459": true
+  },
+  "keptManualUserTestData": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-jfar4P",
+  "dataExists": true,
+  "unrelatedInstancesStopped": false,
+  "productionUserDataTouched": false
+}

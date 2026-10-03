@@ -1,0 +1,54 @@
+[personal 7c2c82e82] docs(delivery): verify antigravity beta publication
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 43 files changed, 5073 insertions(+), 9 deletions(-)
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/beta-helper.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/beta-launch.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/docker-channels-before.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/docker-publication-verification.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/github-release.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/ios-workflow-artifacts.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/manual-instance-cleanup-audit.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/manual-instance-stop.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/publication-check-correction.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/publication-verification-initial.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/publication-verification.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/publication-verification.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/release-clone.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/releases-before.txt
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/repository-finalization.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/shared-checkout-after-finalization.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/shared-fast-forward.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/shared-fetch.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/stable-release-after.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/stable-release-before.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/state-before-cleanup/delivery-revision-record.md
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/state-before-cleanup/handoff-summary.md
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/state-before-cleanup/release-deployment-report.md
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/target-checkout.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/target-fetch.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/target-merge.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/target-push.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/updater-metadata/AutoByteus_personal_android-1.4.94-beta.1-release.apk.sha256
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/updater-metadata/latest-linux-arm64.yml
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/updater-metadata/latest-linux.yml
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/updater-metadata/latest-mac.yml
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/updater-metadata/latest.yml
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/verify-beta-publication-initial.py
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/verify-beta-publication.py
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/workflow-matrix.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/workflow-monitor.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/workflow-status-current.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/workflow-status-final.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/workflow-status-initial.json

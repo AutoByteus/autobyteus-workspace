@@ -40,3 +40,6 @@ If hands-on testing is requested, ask Delivery to launch a fresh isolated worktr
 
 ## Continuation / Handoff Status
 Coordination is awaiting the user's answer; no result handoff yet. Once an actual signal is received, record its exact text/reference and applicability to this candidate, call fresh handoff rules, and return the signal/release direction or requested isolated launch to Delivery through the applicable exact recipient. Delivery retains target refresh, material-change checks/reverification, archive/commit/push/merge/publication and safe cleanup ownership. No Terminal claim is eligible.
+
+## Subsequent Direct User Signal — DR-003
+The pending coordination state above is historical. Delivery subsequently received the direct user instruction **“finalize and release a new beta”**. Current acceptance/publication authority is **USER-ACCEPTANCE-2026-10-03-FINALIZE-BETA**, recorded in `delivery-evidence/dr-003/user-acceptance.json`, with current outcomes in `release-deployment-report.md` and `delivery-revision-record.md`. The instruction accepts the presented current candidate and authorizes beta finalization; no specific hands-on test actions are inferred. This does not change SR-002 requirements approval or SR-003 design.
