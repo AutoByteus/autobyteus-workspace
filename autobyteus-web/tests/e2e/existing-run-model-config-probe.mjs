@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Optional --ledger-file <existing path> records each case after evidence persistence.
 import { createWriteStream, existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import net from 'node:net'
@@ -28,6 +29,8 @@ const getArg = (name, fallback = undefined) => {
 
 const timeoutMs = Number(getArg('timeout-ms', '90000'))
 const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/existing-run-model-config'))
+const ledgerArg = getArg('ledger-file')
+const ledgerPath = ledgerArg ? path.resolve(webDir, ledgerArg) : null
 const explicitPort = getArg('port')
 const browserExecutableArg = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
 const browserCandidates = [
@@ -428,10 +431,12 @@ const runScenario = async (id, description, fn) => {
     if (id === 'API-E2E-004-B') releaseInitialTeamRead()
     // Persist each independent case before starting the next long-running journey.
     await fs.writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, 'utf8')
+    if (ledgerPath) await fs.appendFile(ledgerPath, `\n${new Date().toISOString()} ${id}: ${evidence.scenarios[id].status}; ${description}; evidence ${evidencePath}\n`)
   }
 }
 
 try {
+  assert(!ledgerPath || existsSync(ledgerPath), 'Explicit ledger must already exist')
   assert(existsSync(fixturePath), `Fixture does not exist: ${fixturePath}`)
   assert(!existsSync(installedPagePath), `Refusing to overwrite existing page: ${installedPagePath}`)
   await fs.copyFile(fixturePath, installedPagePath)
@@ -498,6 +503,8 @@ try {
     await effort.waitFor({ state: 'visible', timeout: timeoutMs })
     await waitFor('Agent schema readiness', async () => await effort.isEnabled())
     assert(await page.locator('#agent-run-runtime-kind').isDisabled(), 'Existing Agent runtime must remain fixed')
+    // AC-004 (fresh approval defaults): normal canonical readers must retain saved false.
+    assert(await page.locator('#auto-execute').getAttribute('aria-checked') === 'false', 'Saved Agent opt-out must not be elevated by fresh defaults')
     const modelButton = page.locator('#agent-run-runtime-kind').locator('xpath=../following-sibling::div[1]//button').first()
     assert(await modelButton.isEnabled(), 'Stopped Agent model selection must be editable')
     assert((await page.locator('[data-test="editor-host"]').innerText()).includes('This run is stopped.'), 'Agent stopped editability notice must render')
@@ -525,6 +532,7 @@ try {
     releaseInitialTeamRead()
     const form = page.locator('[data-test="team-run-config-form"]')
     await form.waitFor({ state: 'visible', timeout: timeoutMs })
+    await waitFor('Saved Team false approval render', async () => await page.locator('[data-test="root-team-config-fields"] [role="switch"]').getAttribute('aria-checked') === 'false')
     assert(await form.getAttribute('data-mode') === 'existing', 'Team must render in existing-run mode')
     const rootWorkspace = page.locator('[data-test="root-team-config-fields"] [data-test="fixed-workspace-path"]')
     assert(await rootWorkspace.count() === 1, 'Saved Team root must use one fixed workspace presentation')
@@ -541,6 +549,8 @@ try {
     await disclosure.click()
     assert(await disclosure.getAttribute('aria-expanded') === 'true', 'Team member hierarchy disclosure must be operable')
     assert(await page.locator('[data-test="member-override-item"]').count() === 3, 'Flat configured hierarchy must render coordinator, direct lead, and direct reviewer')
+    const savedMemberApproval = await page.locator('[data-test="member-override-item"] input[type="checkbox"]').evaluateAll(inputs => inputs.map(input => input.checked))
+    assert(savedMemberApproval.length === 3 && savedMemberApproval.every(checked => checked === false), 'Saved Team member opt-outs must remain false', savedMemberApproval)
     const memberWorkspaces = page.locator('[data-test="member-override-item"] [data-test="fixed-workspace-path"]')
     assert(await memberWorkspaces.count() === 3, 'Each saved Team member must use one fixed workspace presentation')
     const displayedMemberPaths = await memberWorkspaces.locator('[data-test="fixed-workspace-value"]').allTextContents()

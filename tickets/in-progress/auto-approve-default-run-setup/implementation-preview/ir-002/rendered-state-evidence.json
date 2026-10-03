@@ -1,0 +1,67 @@
+{
+  "surface": "Implementation card self-check with real constructors and controlled props; not B08 target-picker/E2E execution",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "states": [
+    {
+      "name": "fresh Agent and Team cards",
+      "cards": [
+        {
+          "target": "agent",
+          "checked": "true",
+          "disabled": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        },
+        {
+          "target": "team",
+          "checked": "true",
+          "disabled": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        }
+      ]
+    },
+    {
+      "name": "Agent pointer and Team keyboard opt-out",
+      "cards": [
+        {
+          "target": "agent",
+          "checked": "false",
+          "disabled": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        },
+        {
+          "target": "team",
+          "checked": "false",
+          "disabled": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        }
+      ]
+    },
+    {
+      "name": "Antigravity checked locked and unchanged explanation",
+      "cards": [
+        {
+          "target": "agent",
+          "checked": "true",
+          "disabled": true,
+          "help": "Antigravity always runs with auto-approve, so it can't be turned off."
+        },
+        {
+          "target": "team",
+          "checked": "true",
+          "disabled": true,
+          "help": "Antigravity always runs with auto-approve, so it can't be turned off."
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "cleanup": {
+    "ownedBrowser": "closed",
+    "ownedNuxtServer": "stopped",
+    "port15401Listener": "absent",
+    "temporaryPage": "removed"
+  }
+}

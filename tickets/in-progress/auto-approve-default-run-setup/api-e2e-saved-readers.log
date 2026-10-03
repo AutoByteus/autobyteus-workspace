@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.92 test:e2e:existing-run-model-config /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-default-run-setup/autobyteus-web
+> node tests/e2e/existing-run-model-config-probe.mjs --output-dir ../tickets/in-progress/auto-approve-default-run-setup/saved-reader-probe
+
+Existing run model-config probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-default-run-setup/tickets/in-progress/auto-approve-default-run-setup/saved-reader-probe/existing-run-model-config-evidence.json

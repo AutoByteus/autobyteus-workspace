@@ -1,0 +1,42 @@
+
+> autobyteus@1.4.92 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-default-run-setup/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/mobile/__tests__/MobileLaunchRunOptionsCard.spec.ts composables/__tests__/useDefinitionLaunchDefaults.spec.ts utils/__tests__/agentRunRuntimeDraftPolicy.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/auto-approve-default-run-setup/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileLaunchRunOptionsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/agentRunRuntimeDraftPolicy.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useDefinitionLaunchDefaults.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/agentRunRuntimeDraftPolicy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useDefinitionLaunchDefaults.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileLaunchRunOptionsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/agentRunRuntimeDraftPolicy.spec.ts (4 tests) 3ms
+ ✓ composables/__tests__/useDefinitionLaunchDefaults.spec.ts (22 tests) 18ms
+ ✓ components/mobile/__tests__/MobileLaunchRunOptionsCard.spec.ts (4 tests) 18ms
+
+ Test Files  3 passed (3)
+      Tests  30 passed (30)
+   Start at  11:49:40
+   Duration  7.19s (transform 4.04s, setup 19.41s, collect 55ms, tests 39ms, environment 800ms, prepare 498ms)
+
