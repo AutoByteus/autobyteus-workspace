@@ -163,6 +163,32 @@ non-green, even if the overall turn succeeds. A `DONE` step does **not** prove
 that an underlying shell command exited zero: retain provider state/output and
 do not invent an exit code.
 
+For newly recorded native tool calls, the backend resolves actual typed inputs
+before the first canonical `TOOL_EXECUTION_STARTED`. The optional source is the
+bound conversation's `.system_generated/logs/transcript_full.jsonl`, an
+undocumented AGY-internal file. Recognition requires an adjacent `step_index - 1`
+DONE MODEL PLANNER_RESPONSE containing exactly one same-name call with object
+`args`, an ordered unambiguous step range, and typed agreement with every stream
+summary field. Only `run_command.CommandLine` has an evidenced lossy-summary
+exception: a nonempty literal prefix plus Unicode ellipsis may corroborate a
+strictly longer full command from that exact record. No missing suffix is guessed.
+
+The provider-file reader scans asynchronously in reverse from one guarded regular
+file snapshot, using 64 KiB chunks and a 2 MiB complete-row bound. It discards an
+incomplete trailing row and does not use a fixed-tail window or standard-log
+string reparsing. Missing, unsafe, malformed, oversized, ambiguous or changed
+evidence retains the available stream summary without failing tool execution.
+Stop, termination and process close abort a pending lookup; the backend checks
+the same live turn again before publishing. Native STARTED, terminal and
+background-close events reuse the first captured input snapshot.
+
+The ordinary recorder and history readers preserve those arguments on reopen,
+including future calls after a run resumes, without needing the native source
+again. Previously saved summary-only calls remain unchanged; there is no
+historical backfill, tool replay, result/diff recovery or provider-format support
+promise across future AGY releases. MCP projection and native-image result
+resolution remain separate and unchanged.
+
 AGY carries every MCP call through its own `call_mcp_tool` step with wrapper
 parameters `ServerName`, `ToolName` and `Arguments`. The converter presents
 such a call as the tool that was actually called (`agy-mcp-tool-call.ts`): a

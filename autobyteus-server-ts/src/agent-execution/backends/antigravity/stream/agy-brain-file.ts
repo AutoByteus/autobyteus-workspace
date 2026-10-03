@@ -57,3 +57,85 @@ export const resolveWithinAgyConversation = (conversationDir: string, candidate:
   const realConversation = fs.realpathSync(conversationDir);
   return realCandidate.startsWith(realConversation + path.sep) ? realCandidate : null;
 };
+
+const REVERSE_CHUNK_BYTES = 64 * 1024;
+const MAX_JSONL_ROW_BYTES = 2 * 1024 * 1024;
+
+/**
+ * Visit complete UTF-8 JSONL rows newest first, from one guarded descriptor snapshot.
+ * Returning false stops visitation. False from the scan means evidence was unreadable,
+ * aborted, oversized or changed inconsistently; callers must discard visited evidence.
+ * An appended suffix is outside the snapshot; an unterminated final row is ignored.
+ */
+export const scanAgyBrainJsonLinesReverse = async (
+  brainRoot: string, conversationId: string, relativeFile: string,
+  visit: (line: string) => boolean, signal?: AbortSignal,
+): Promise<boolean> => {
+  let handle: fs.promises.FileHandle | undefined;
+  try {
+    if (signal?.aborted || !isAgyConversationId(conversationId)) return false;
+    const root = await fs.promises.realpath(brainRoot);
+    const conversationDir = agyConversationDir(root, conversationId);
+    if (!(await fs.promises.lstat(conversationDir)).isDirectory() ||
+        await fs.promises.realpath(conversationDir) !== conversationDir) return false;
+    const file = path.resolve(conversationDir, relativeFile);
+    if (!file.startsWith(conversationDir + path.sep)) return false;
+    const realFile = await fs.promises.realpath(file);
+    if (!realFile.startsWith(conversationDir + path.sep)) return false;
+    const entry = await fs.promises.lstat(file);
+    if (!entry.isFile() || signal?.aborted) return false;
+    handle = await fs.promises.open(file, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
+    const snapshot = await handle.stat();
+    if (!snapshot.isFile() || snapshot.ino !== entry.ino || snapshot.dev !== entry.dev || signal?.aborted) return false;
+
+    const chunk = Buffer.alloc(REVERSE_CHUNK_BYTES);
+    const decoder = new TextDecoder("utf-8", { fatal: true });
+    let parts: Buffer[] = [];
+    let rowBytes = 0;
+    let discardTail = true;
+    let stopped = false;
+    const addPart = (part: Buffer) => {
+      rowBytes += part.length;
+      if (rowBytes > MAX_JSONL_ROW_BYTES) throw new Error("AGY_JSONL_ROW_TOO_LARGE");
+      if (part.length) parts.unshift(Buffer.from(part));
+    };
+    const visitRow = () => {
+      if (signal?.aborted) throw new Error("AGY_JSONL_SCAN_ABORTED");
+      const row = decoder.decode(Buffer.concat(parts, rowBytes));
+      stopped = !visit(row.endsWith("\r") ? row.slice(0, -1) : row);
+      parts = []; rowBytes = 0;
+    };
+    let position = snapshot.size;
+    while (position > 0 && !stopped) {
+      if (signal?.aborted) return false;
+      const length = Math.min(position, REVERSE_CHUNK_BYTES);
+      position -= length;
+      const { bytesRead } = await handle.read(chunk, 0, length, position);
+      if (bytesRead !== length || signal?.aborted) return false;
+      let end = length;
+      for (let i = length - 1; i >= 0 && !stopped; i -= 1) {
+        if (chunk[i] !== 10) continue;
+        if (discardTail) discardTail = false;
+        else { addPart(chunk.subarray(i + 1, end)); visitRow(); }
+        end = i;
+      }
+      if (!discardTail && !stopped) addPart(chunk.subarray(0, end));
+    }
+    if (!stopped && !discardTail) visitRow();
+    // Replacements, truncation and same-size edits invalidate the scan; append-only growth
+    // is normal provider behavior and does not change the opened snapshot's complete rows.
+    const current = await handle.stat();
+    const finalEntry = await fs.promises.lstat(file);
+    const finalFile = await fs.promises.realpath(file);
+    const finalConversation = await fs.promises.realpath(conversationDir);
+    return finalEntry.isFile() && finalFile === realFile && finalConversation === conversationDir &&
+      current.ino === snapshot.ino && current.dev === snapshot.dev && current.size >= snapshot.size &&
+      finalEntry.ino === snapshot.ino && finalEntry.dev === snapshot.dev && finalEntry.size >= snapshot.size &&
+      !(current.size === snapshot.size && current.mtimeMs !== snapshot.mtimeMs) &&
+      !(finalEntry.size === snapshot.size && finalEntry.mtimeMs !== snapshot.mtimeMs) && !signal?.aborted;
+  } catch {
+    return false;
+  } finally {
+    await handle?.close().catch(() => undefined);
+  }
+};

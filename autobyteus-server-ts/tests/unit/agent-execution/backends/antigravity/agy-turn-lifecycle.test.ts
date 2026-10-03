@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-native-tool-arguments-reader.js", () => ({
+  readAgyNativeToolArguments: vi.fn().mockResolvedValue(null),
+}));
+
 const readAgyNativeImagePath = vi.hoisted(() => vi.fn());
 vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-step-output-reader.js", () => ({ readAgyNativeImagePath }));
 const scanAgyTaskExitMessages = vi.hoisted(() => vi.fn());
