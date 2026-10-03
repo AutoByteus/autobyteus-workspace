@@ -48,7 +48,7 @@
 - Medium/High independent route retained; all approval/design/review/API authorities and 13 factual supplements preserved.
 - Canonical authorities: docs-sync-report.md (Pass/Updated); handoff-summary.md; release-deployment-report.md; release-notes.md; dr-003 cumulative-package.json/final-path-map.json.
 - Post-acceptance refresh: same origin/personaldc4eb5470c14d846df3a22b0371a675690657ccd; no new base/source-test delta, no protective checkpoint/reintegration/rerun/reverification needed. Current API-REV-002/CRR-004 retained.
-- Archived ticket before final commit; exact ordered ticket commit/push/target update/merge/push and beta helper pending. Shared user changes protected; upstream scratch byte-preserved outside worktree.
+- Archived ticket before final commit; ordered ticket commit/push/target update/merge/push and beta helper **Completed**, with actual revisions in the completion evidence below. Shared user changes protected; upstream scratch byte-preserved outside worktree.
 - Terminal return to Solution Designer: **Eligible / prepared**, send only after final artifact commit/remote check; actual message reference will be terminal-handoff-receipt.json.
 - Remaining gates: **None after final artifact commit/remote check; terminal tool send follows**.
 

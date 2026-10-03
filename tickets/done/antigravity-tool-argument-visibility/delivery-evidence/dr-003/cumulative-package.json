@@ -32,7 +32,7 @@
   "releaseCommit": "8409bd899d290553730eff0d1ba3bca22205a939",
   "releasePublication": "Completed \u2014 four workflows and assets/channels checked",
   "safeCleanup": "Completed; deliberate retained data/remote branch deletion not required",
-  "referenceCount": 317,
+  "referenceCount": 320,
   "referenceFiles": [
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/TESTING.md",
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
@@ -350,7 +350,10 @@
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md",
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/run_history.md",
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md",
-    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/final-artifact-check.json"
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/final-artifact-check.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/final-repository-state.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/antigravity-beta-final-evidence-commit.log",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/antigravity-beta-final-evidence-push.log"
   ],
   "missingFiles": [],
   "terminalEligible": true,
