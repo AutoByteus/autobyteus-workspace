@@ -1,0 +1,15 @@
+    result(payload, turnId) {
+        const events = this.closeText(turnId);
+        events.push(...this.closeBackgroundTools());
+        const status = payload.status;
+        if (status !== "SUCCESS" || hasProviderError(payload.error)) {
+            this.onProviderFailure?.({ kind: "turn", runId: this.runId, turnId,
+                safeReasonCode: status !== "SUCCESS" ? "TERMINAL_STATUS_NOT_SUCCESS" : "TERMINAL_ERROR_PRESENT",
+                providerStatus: status, providerError: payload.error, providerResponse: payload.response });
+            events.push(this.event(AgentRunEventType.ERROR, {
+                turn_id: turnId, code: "AGY_TURN_ERROR", message: "Antigravity could not complete this turn.",
+                error_scope: "turn", error_effect: "terminal",
+            }, "ERROR"));
+            this.turnId = null;
+            return events;
+        }
