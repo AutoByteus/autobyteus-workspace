@@ -61,8 +61,10 @@ standalone path (`AgentRunService.resolveCommandReadyAgentRun` and the lifecycle
 
 - The package is lazy: `memory/agents/<host>/collaboration/` is created with the first
   collaborator, and the catalog row then gets `hasCollaboration: true`.
-- A host crash does not end the root. The next user message, child message or stream connect
-  makes the host ready again through its handle. Children keep running.
+- A host crash does not end the root. The next user message, a child's `send_message_to` to the
+  host, or a collaboration-stream connect makes the host ready again through its handle. Children
+  keep running, and commands to children on the collaboration stream go to the active root
+  without restarting the host.
 - History delete and archive go through `StandaloneRunLiveness.releaseForHistory`
   (`run-history/services/standalone-run-liveness.ts`): refused while the host is active,
   otherwise `manager.endRoot` ends a remaining root (fence, stop every child, unregister) before
@@ -123,8 +125,9 @@ service (`StandaloneRootLocationService`) resolves a child through the third roo
   makes the host ready (a stopped run's host starts when its collaboration view is opened), then
   sends the Agent-root snapshot (`root_subject_kind: "agent"`, `root_agent`; `is_active` is the
   host's live state), events (`agent_presentation`, `task_execution_started`, `communication`,
-  `collaborator_added`) and lifecycle. Commands target children only; a command to the host is
-  rejected (`AGENT_ROOT_HOST_COMMAND_REJECTED`). A run that cannot host collaborators closes the
+  `collaborator_added`) and lifecycle. Commands target children only and use the active root as
+  is (only when no root is active is it resolved and its host made ready, as on connect); a
+  command to the host is rejected (`AGENT_ROOT_HOST_COMMAND_REJECTED`). A run that cannot host collaborators closes the
   socket with `4004` and `AGENT_ROOT_UNAVAILABLE`.
 - **GraphQL.** `agentRunCollaboration(runId)` returns the live snapshot or the stored package
   (children offline) and never restores. `agentRunCollaborationMemberProjection` and

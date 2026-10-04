@@ -28,6 +28,7 @@ export async function registerWebsocketRoutes(
     new AgentOrgStreamHandler(dependencies.agentOrgRunService),
     new AgentCollaborationStreamHandler({
       resolveRoot: (hostRunId) => getStandaloneAgentRunRootManager().resolveRoot(hostRunId),
+      getActive: (hostRunId) => getStandaloneAgentRunRootManager().getActive(hostRunId),
     }),
   );
   await registerApplicationBackendNotificationWebsocket(app, {

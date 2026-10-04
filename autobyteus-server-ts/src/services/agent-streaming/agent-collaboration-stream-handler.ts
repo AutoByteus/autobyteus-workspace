@@ -44,14 +44,15 @@ const commandAck = (
 /**
  * Agent-root stream `/ws/agent-collaboration/:hostRunId`: snapshot, events and commands for
  * the run's collaborators. Connecting resolves the run's root and makes its host ready
- * (restoring it when needed); commands for the host itself stay on `/ws/agent/:runId`.
+ * (restoring it when needed). Child commands use the active root as is: a crashed host is not
+ * restarted for them. Commands for the host itself stay on `/ws/agent/:runId`.
  */
 export class AgentCollaborationStreamHandler {
   private readonly sessions = new Map<string, { connection: WebSocketConnection; hostRunId: string; close(): void }>();
 
-  constructor(private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot">) {}
+  constructor(private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">) {}
 
-  /** The run's root with its host ready, as the stream's connect and commands need it. */
+  /** The run's root with its host ready, as the stream's connect needs it. */
   private async readyRoot(hostRunId: string): Promise<StandaloneAgentRunRoot> {
     const root = await this.roots.resolveRoot(hostRunId);
     if (!root) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' cannot host collaborators.`);
@@ -122,7 +123,8 @@ export class AgentCollaborationStreamHandler {
       if (message.payload.root_subject_kind !== "agent" || message.payload.root_run_id !== session.hostRunId) {
         throw new Error("Agent-root command root correlation mismatch.");
       }
-      const root = await this.readyRoot(session.hostRunId);
+      // Child commands never need the host: an active root (host crashed or not) takes them directly.
+      const root = this.roots.getActive(session.hostRunId) ?? await this.readyRoot(session.hostRunId);
       const target = message.payload.target_agent_run_id;
       if (message.type === "SEND_MESSAGE") {
         let content = message.payload.content;
