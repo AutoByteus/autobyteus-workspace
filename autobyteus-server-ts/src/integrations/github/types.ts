@@ -16,4 +16,3 @@ export type GitHubRepositoryMetadata = {
 export type GitHubRepositoryRevisionMetadata = GitHubRepositoryMetadata & {
   latestRevision: string;
 };
-
