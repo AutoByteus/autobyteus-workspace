@@ -1,0 +1,15 @@
+{
+  "taskWorktreeRemoved": true,
+  "taskWorktreePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources",
+  "localTicketBranchRemoved": true,
+  "ticketCommit": "dafdf8d8d",
+  "ticketCommitInRemoteTarget": true,
+  "remoteTicketBranchRetained": true,
+  "worktreePrune": "Not required; removal unregistered worktree, no other owners touched",
+  "releaseCloneRemoved": true,
+  "releaseClonePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources-finalize",
+  "temporaryDownloadsRemoved": true,
+  "sharedUnrelatedModifiedFilesSha256Unchanged": true,
+  "sharedOriginalPorcelainEntriesUnchanged": true,
+  "durableArchive": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources"
+}
