@@ -542,6 +542,17 @@ child is ordinary conversation and Messages history. Old conversations that
 contain task notifications or submit/review tool calls still render as
 history.
 
+Messages rendering is bounded by what is visible, not by history size.
+`CollaborationMessagesSection` computes `listMessages()` once per view and
+passes the rows to `CollaborationMessagesPanel`. Each message row shows a
+reference count. Only the selected message lists reference rows, capped at 20
+until the user chooses `Show all N files`. AgentOrg reference identity is
+derived on demand: `projectAgentOrgReference` exposes `referenceId`
+(`sha256(messageId + "\0" + path)`, the same value the server uses) as a
+memoized getter, so only displayed or opened references are hashed. Do not add
+consumers that read `referenceId` across every reference of every message.
+That would bring back the per-switch hashing cost this design removed.
+
 The Org index (`AgentOrgExecutionViewIndex`) records configured and delegated
 executions with their actual host binding, captured launch configuration, and
 delegation binding (`executionRunId`, nullable `delegatorAgentRunId`). Every
@@ -1578,7 +1589,9 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
       host/delegation identity. The delegation work packet (a task-system
       input) belongs in the event monitor, not ordinary Messages.
       AgentOrg references open through the AgentOrg-rooted message route; no
-      Team store or second ledger is created.
+      Team store or second ledger is created. The client-side AgentOrg
+      `referenceId` is computed lazily on first read
+      (`agentOrgReferenceProjection.ts`) and is never persisted.
 3.  **Activity (`AgentActivityStore`)**:
     - Tracks run activities as a discriminated `RunActivity` history. Tool calls, file writes, and terminal commands are `kind: 'tool'`; compaction lifecycle/boundary rows are `kind: 'compaction'`; exact run-scoped instruction captures are `kind: 'system_instruction'`.
     - Is updated through shared tool Activity projection from eligible live transcript segment events and lifecycle events, through `compactionActivityProjection.ts` for live `COMPACTION_STATUS` payloads, and through `systemInstructionActivityHandler.ts` for live/replayed exact instruction facts.

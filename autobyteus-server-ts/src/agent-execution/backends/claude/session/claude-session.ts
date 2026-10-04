@@ -11,7 +11,8 @@ import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { claudeSessionReasoningOptions, type ClaudeSessionConfig } from "./claude-session-config.js";
 import type { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
 import { resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
-import { buildClaudeProviderCompactionEvent, buildClaudeTurnTerminalErrorEvent } from "./claude-session-output-events.js";
+import { buildClaudeTurnTerminalErrorEvent } from "./claude-session-output-events.js";
+import { ClaudeCompactionOperationTracker, resolveClaudeCompactionCloseReason } from "./claude-compaction-operation-tracker.js";
 import { formatClaudeRuntimeError, type ClaudeProcessDiagnostics } from "./claude-process-diagnostics.js";
 import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
@@ -87,6 +88,7 @@ export class ClaudeSession {
     method: ClaudeSessionEventName.BACKGROUND_TASK_UPDATED, params: buildBackgroundTaskUpdatedPayload(task),
   }));
   private readonly turnTracker: ClaudeTurnTracker;
+  private readonly compactionTracker = new ClaudeCompactionOperationTracker();
   private readonly process: ClaudeSessionProcess;
   private readonly interruptTasks = new Map<string, Promise<void>>();
   private textProjector: ClaudeTextSegmentProjector | null = null;
@@ -464,9 +466,8 @@ export class ClaudeSession {
     if (!textProjector) {
       return;
     }
-    const compactionEvent = buildClaudeProviderCompactionEvent({ chunk: frame, turnId, sessionId: this.sessionId });
-    if (compactionEvent) {
-      this.emitRuntimeEvent(compactionEvent);
+    for (const event of this.compactionTracker.observeFrame(frame, { turnId, sessionId: this.sessionId })) {
+      this.emitRuntimeEvent(event);
     }
     const processedOrderedContent = processOrderedClaudeContentBlocks({
       chunk: frame,
@@ -481,6 +482,10 @@ export class ClaudeSession {
   }
 
   private handleTurnSettled(turnId: string, settlement: ClaudeTurnSettlement): void {
+    const reason = resolveClaudeCompactionCloseReason(settlement);
+    for (const event of this.compactionTracker.closeOpenOperation({ turnId, sessionId: this.sessionId, reason })) {
+      this.emitRuntimeEvent(event);
+    }
     const textProjector = this.textProjector;
     this.textProjector = null;
     textProjector?.finishTurn();

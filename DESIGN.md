@@ -289,6 +289,29 @@ installed 1.4.92 backend; packaged post-Run tests used version 1.4.93 and
 test-owned history. These are examples, not latency guarantees or proof of the
 user's exact dataset.
 
+## Project-specific design documents
+
+Some kinds of change have their own design policy or canonical contract. When a
+change touches one of these areas, read the linked document and follow it, or
+update it in the same change.
+
+- **Persisted data and migrations:** the
+  [Data Migration Guideline](autobyteus-server-ts/docs/design/data_migration_guideline.md)
+  is the canonical policy for any change to persisted app data. Answer its
+  checklist (section 2) in the design spec. Historical data must never lock
+  users out of startup or new work; prefer tolerant readers over migrations; no
+  schema version fields; never reuse a field name with a new meaning; old shapes
+  live only inside registered migrations.
+- **Server startup and configuration-dependent services:**
+  [Startup Initialization and Lazy Service Access](autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md).
+- **Mandatory agent processors:**
+  [Mandatory Processor Defaults](autobyteus-server-ts/docs/design/mandatory-processor-defaults.md).
+- **Area contracts:**
+  [Agent WebSocket Streaming Protocol](autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md),
+  [Streaming Parsing Architecture](autobyteus-server-ts/docs/design/streaming_parsing_architecture.md),
+  [Codex Raw Event Mapping](autobyteus-server-ts/docs/design/codex_raw_event_mapping.md),
+  [Terminal Service Unification](autobyteus-server-ts/docs/design/terminal_service_unification.md).
+
 ## Before accepting a design
 
 Use this short check within the existing design/review process—not as another

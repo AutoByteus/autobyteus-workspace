@@ -1,0 +1,11 @@
+{
+ "build": "base 26b555126",
+ "application": "applied",
+ "firstFrameMs": 1345,
+ "settledMs": 2276,
+ "refRows": 45151,
+ "viewerBefore": "solution-scope-clarification.md",
+ "viewerAfter": "solution-scope-clarification.md",
+ "contentRequestsAfterArrival": 2,
+ "sameUrl": 1
+}

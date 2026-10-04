@@ -100,6 +100,7 @@ export type ProviderCompactionBoundaryPayload = {
     | "codex.context_compaction_completed"
     | "claude.compact_boundary"
     | "claude.status_compacting"
+    | "claude.compaction_failed"
     | string;
   boundary_key: string;
   provider_thread_id?: string | null;
@@ -109,8 +110,11 @@ export type ProviderCompactionBoundaryPayload = {
   provider_timestamp?: number | null;
   turn_id?: string | null;
   trigger?: "auto" | "manual" | string | null;
-  status?: "compacting" | "compacted" | string | null;
+  status?: "compacting" | "compacted" | "failed" | string | null;
   pre_tokens?: number | null;
+  post_tokens?: number | null;
+  duration_ms?: number | null;
+  error_message?: string | null;
   rotation_eligible: boolean;
   semantic_compaction: false;
 };

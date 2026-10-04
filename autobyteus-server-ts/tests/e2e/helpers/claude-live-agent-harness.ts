@@ -53,7 +53,11 @@ export const useStandaloneClaudeCli = (candidate: ClaudeCliExecutableCandidate):
   vi.stubEnv("CLAUDE_CODE_EXECUTABLE_PATH", candidate.executablePath);
 };
 
-const buildRunContext = (runId: string, workspaceRoot: string): AgentRunContext<ClaudeAgentRunContext> =>
+const buildRunContext = (
+  runId: string,
+  workspaceRoot: string,
+  memoryDir: string | null,
+): AgentRunContext<ClaudeAgentRunContext> =>
   new AgentRunContext({
     runId,
     config: new AgentRunConfig({
@@ -61,6 +65,7 @@ const buildRunContext = (runId: string, workspaceRoot: string): AgentRunContext<
       llmModelIdentifier: "haiku",
       autoExecuteTools: true,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      memoryDir,
     }),
     runtimeContext: new ClaudeAgentRunContext({
       sessionConfig: buildClaudeSessionConfig({
@@ -83,14 +88,15 @@ const buildRunContext = (runId: string, workspaceRoot: string): AgentRunContext<
 /**
  * Real AgentRun + Claude backend/session + real SDK/CLI behind the agent websocket. Pass
  * `restoreSessionId` to build a fresh stack that restores an existing Claude session, as a
- * restarted server does.
+ * restarted server does. Pass `memoryDir` to give the run a memory folder (raw traces).
  */
 export const createClaudeLiveAgentHarness = async (input: {
   runId: string;
   workspaceRoot: string;
   restoreSessionId?: string;
+  memoryDir?: string;
 }): Promise<ClaudeLiveAgentHarness> => {
-  const runContext = buildRunContext(input.runId, input.workspaceRoot);
+  const runContext = buildRunContext(input.runId, input.workspaceRoot, input.memoryDir ?? null);
   const sessionManager = new ClaudeSessionManager(
     { activateForRun: () => ({ kind: "not_exposed" as const }) } as never,
     {} as never,

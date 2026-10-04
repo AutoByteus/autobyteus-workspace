@@ -1,0 +1,207 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mrecords one compaction operation, one rotation-eligible marker and one archive segment for /compact, and reopens at the latest segment [path-claude]
+[22m[39mAgent websocket attached for run claude-live-compaction-13e73980-0184-419a-986c-c98aee6f51b2
+Created agent session ab6f5719-6813-4159-a8d8-bd98aa148b64 for run claude-live-compaction-13e73980-0184-419a-986c-c98aee6f51b2
+Agent WebSocket connected: session=ab6f5719-6813-4159-a8d8-bd98aa148b64, run=claude-live-compaction-13e73980-0184-419a-986c-c98aee6f51b2
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mrecords one compaction operation, one rotation-eligible marker and one archive segment for /compact, and reopens at the latest segment [path-claude]
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mrecords one compaction operation, one rotation-eligible marker and one archive segment for /compact, and reopens at the latest segment [path-claude]
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mrecords one compaction operation, one rotation-eligible marker and one archive segment for /compact, and reopens at the latest segment [path-claude]
+[22m[39mClosed agent session ab6f5719-6813-4159-a8d8-bd98aa148b64
+Agent WebSocket disconnected: ab6f5719-6813-4159-a8d8-bd98aa148b64
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mrecords one compaction operation, one rotation-eligible marker and one archive segment for /compact, and reopens at the latest segment [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-compaction-08110aa1-a977-4786-9730-c16b62bb066e
+Created agent session 841d3c5c-f123-4033-a87d-70133281ad34 for run claude-live-compaction-08110aa1-a977-4786-9730-c16b62bb066e
+Agent WebSocket connected: session=841d3c5c-f123-4033-a87d-70133281ad34, run=claude-live-compaction-08110aa1-a977-4786-9730-c16b62bb066e
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mrecords one compaction operation, one rotation-eligible marker and one archive segment for /compact, and reopens at the latest segment [sdk-bundled-claude]
+[22m[39mClosed agent session 841d3c5c-f123-4033-a87d-70133281ad34
+Agent WebSocket disconnected: 841d3c5c-f123-4033-a87d-70133281ad34
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a /compact stopped by the user as one failed operation without rotation, and the run continues [path-claude]
+[22m[39mAgent websocket attached for run claude-live-compaction-b528b794-8cf3-4897-aa05-77d6db7a1010
+Created agent session b8fce71d-67e2-424e-8b24-1e5608226c32 for run claude-live-compaction-b528b794-8cf3-4897-aa05-77d6db7a1010
+Agent WebSocket connected: session=b8fce71d-67e2-424e-8b24-1e5608226c32, run=claude-live-compaction-b528b794-8cf3-4897-aa05-77d6db7a1010
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a /compact stopped by the user as one failed operation without rotation, and the run continues [path-claude]
+[22m[39mClosed agent session b8fce71d-67e2-424e-8b24-1e5608226c32
+Agent WebSocket disconnected: b8fce71d-67e2-424e-8b24-1e5608226c32
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a /compact stopped by the user as one failed operation without rotation, and the run continues [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-compaction-babdc91d-2b8b-43f3-a2f3-8d053adcae86
+Created agent session 9a1e8b4f-4102-467d-a437-84487ee23337 for run claude-live-compaction-babdc91d-2b8b-43f3-a2f3-8d053adcae86
+Agent WebSocket connected: session=9a1e8b4f-4102-467d-a437-84487ee23337, run=claude-live-compaction-babdc91d-2b8b-43f3-a2f3-8d053adcae86
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a /compact stopped by the user as one failed operation without rotation, and the run continues [sdk-bundled-claude]
+[22m[39mClosed agent session 9a1e8b4f-4102-467d-a437-84487ee23337
+Agent WebSocket disconnected: 9a1e8b4f-4102-467d-a437-84487ee23337
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a compaction cut off by a Claude process exit as failed before the turn error, without rotation [path-claude]
+[22m[39mAgent websocket attached for run claude-live-compaction-51f02709-8bdb-4c31-98f7-47216c3ddd94
+Created agent session 0e71e64d-b708-4a37-9b3f-21f500f29bb8 for run claude-live-compaction-51f02709-8bdb-4c31-98f7-47216c3ddd94
+Agent WebSocket connected: session=0e71e64d-b708-4a37-9b3f-21f500f29bb8, run=claude-live-compaction-51f02709-8bdb-4c31-98f7-47216c3ddd94
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a compaction cut off by a Claude process exit as failed before the turn error, without rotation [path-claude]
+[22m[39mClaude process for run 'claude-live-compaction-51f02709-8bdb-4c31-98f7-47216c3ddd94' exited: Error: Claude Code process terminated by signal SIGKILL
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11802)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a compaction cut off by a Claude process exit as failed before the turn error, without rotation [path-claude]
+[22m[39mClosed agent session 0e71e64d-b708-4a37-9b3f-21f500f29bb8
+Agent WebSocket disconnected: 0e71e64d-b708-4a37-9b3f-21f500f29bb8
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a compaction cut off by a Claude process exit as failed before the turn error, without rotation [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-compaction-aec57525-a34b-4edc-9afc-a97d2ef20c5c
+Created agent session 7e618d2c-c4c9-4e68-8743-d99c338b38ee for run claude-live-compaction-aec57525-a34b-4edc-9afc-a97d2ef20c5c
+Agent WebSocket connected: session=7e618d2c-c4c9-4e68-8743-d99c338b38ee, run=claude-live-compaction-aec57525-a34b-4edc-9afc-a97d2ef20c5c
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a compaction cut off by a Claude process exit as failed before the turn error, without rotation [sdk-bundled-claude]
+[22m[39mClaude process for run 'claude-live-compaction-aec57525-a34b-4edc-9afc-a97d2ef20c5c' exited: Error: Claude Code process terminated by signal SIGKILL
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11802)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-work-transfer-analysis/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mcloses a compaction cut off by a Claude process exit as failed before the turn error, without rotation [sdk-bundled-claude]
+[22m[39mClosed agent session 7e618d2c-c4c9-4e68-8743-d99c338b38ee
+Agent WebSocket disconnected: 7e618d2c-c4c9-4e68-8743-d99c338b38ee
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mpairs every auto compaction operation and rotates once per completed operation
+[22m[39mAgent websocket attached for run claude-live-compaction-54c1100d-2675-4393-98d0-574797e53c76
+Created agent session fe87c3b9-d2a2-4a1a-a9ad-ace922a3beb0 for run claude-live-compaction-54c1100d-2675-4393-98d0-574797e53c76
+Agent WebSocket connected: session=fe87c3b9-d2a2-4a1a-a9ad-ace922a3beb0, run=claude-live-compaction-54c1100d-2675-4393-98d0-574797e53c76
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mpairs every auto compaction operation and rotates once per completed operation
+[22m[39mClaude auto compaction operations: [{"statuses":["compacting","failed"],"error":"too_few_groups","pre_tokens":null,"duration_ms":null},{"statuses":["compacting","compacted"],"error":null,"pre_tokens":138622,"duration_ms":13899}]
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts[2m > [22m[2mClaude compaction rotation (live E2E)[2m > [22m[2mpairs every auto compaction operation and rotates once per completed operation
+[22m[39mClosed agent session fe87c3b9-d2a2-4a1a-a9ad-ace922a3beb0
+Agent WebSocket disconnected: fe87c3b9-d2a2-4a1a-a9ad-ace922a3beb0
+
+ [32m✓[39m tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 95867[2mms[22m[39m
+     [33m[2m✓[22m[39m records one compaction operation, one rotation-eligible marker and one archive segment for /compact, and reopens at the latest segment [path-claude] [33m 15889[2mms[22m[39m
+     [33m[2m✓[22m[39m records one compaction operation, one rotation-eligible marker and one archive segment for /compact, and reopens at the latest segment [sdk-bundled-claude] [33m 32262[2mms[22m[39m
+     [33m[2m✓[22m[39m closes a /compact stopped by the user as one failed operation without rotation, and the run continues [path-claude] [33m 6365[2mms[22m[39m
+     [33m[2m✓[22m[39m closes a /compact stopped by the user as one failed operation without rotation, and the run continues [sdk-bundled-claude] [33m 8385[2mms[22m[39m
+     [33m[2m✓[22m[39m closes a compaction cut off by a Claude process exit as failed before the turn error, without rotation [path-claude] [33m 5406[2mms[22m[39m
+     [33m[2m✓[22m[39m closes a compaction cut off by a Claude process exit as failed before the turn error, without rotation [sdk-bundled-claude] [33m 5396[2mms[22m[39m
+     [33m[2m✓[22m[39m pairs every auto compaction operation and rotates once per completed operation [33m 22164[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+[2m   Start at [22m 09:45:07
+[2m   Duration [22m 100.33s[2m (transform 2.52s, setup 13ms, import 3.98s, tests 95.87s, environment 0ms)[22m
+
+exit 0
