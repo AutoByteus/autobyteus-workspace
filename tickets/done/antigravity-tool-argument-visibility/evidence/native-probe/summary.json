@@ -1,0 +1,23 @@
+{
+  "conversation": "a5fcdebd-7b3b-44f7-a504-8affe0873386",
+  "sent": true,
+  "result": {
+    "event": "result",
+    "result": {
+      "conversation_id": "a5fcdebd-7b3b-44f7-a504-8affe0873386",
+      "status": "SUCCESS",
+      "response": "DONE\n",
+      "duration_seconds": 20.878226,
+      "num_turns": 1,
+      "usage": {
+        "input_tokens": 80913,
+        "output_tokens": 944,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 81857
+      }
+    }
+  },
+  "exitCode": 1,
+  "fileContent": "AFTER_MARKER_7831\nsecond line\n"
+}

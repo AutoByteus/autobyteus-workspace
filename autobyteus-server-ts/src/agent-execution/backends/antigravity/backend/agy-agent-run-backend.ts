@@ -9,6 +9,7 @@ import { AgyStreamProcess } from "../stream/agy-stream-process.js";
 import { AgyStreamEventConverter } from "../stream/agy-stream-event-converter.js";
 import { recordAgyProviderDiagnostic } from "../stream/agy-provider-diagnostic-sink.js";
 import { readAgyNativeImagePath } from "../stream/agy-step-output-reader.js";
+import { readAgyNativeToolArguments } from "../stream/agy-native-tool-arguments-reader.js";
 import type { AgyStreamMessage } from "../stream/agy-stream-message.js";
 import { AgyBackgroundTaskMonitor } from "../stream/agy-background-task-monitor.js";
 import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTask } from "../../../domain/agent-background-task.js";
@@ -25,6 +26,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   private turnId: string | null = null;
   private phase: AgentRuntimeLifecycleSnapshot["phase"] = "idle";
   private cancelled = false;
+  private argumentLookup: AbortController | null = null;
 
   constructor(private readonly context: AgyRunContext, private readonly process: AgyStreamProcess) {
     const conversationId = context.runtimeContext.conversationId;
@@ -74,6 +76,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
     } catch {
       if (this.active) {
         this.cancelled = true; this.active = false; this.processAlive = false; this.phase = "error";
+        this.argumentLookup?.abort();
         this.process.stop();
         this.enqueue(async () => { await this.deliver(this.converter.interrupt()); this.turnId = null; });
         this.backgroundTasks.stopAll();
@@ -90,6 +93,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   async interrupt(turnId: string | null): Promise<AgentOperationResult> {
     if (!turnId || this.turnId !== turnId) return { accepted: false, code: "NO_ACTIVE_TURN", message: "AGY has no matching active turn." };
     this.cancelled = true; this.active = false; this.processAlive = false;
+    this.argumentLookup?.abort();
     this.process.stop();
     this.enqueue(async () => {
       await this.deliver(this.converter.interrupt());
@@ -103,6 +107,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   async terminate(): Promise<AgentOperationResult> {
     if (this.turnId) return this.interrupt(this.turnId);
     this.active = false; this.processAlive = false; this.process.stop();
+    this.argumentLookup?.abort();
     this.backgroundTasks.stopAll();
     await this.eventQueue;
     return { accepted: true };
@@ -110,7 +115,25 @@ export class AgyAgentRunBackend implements AgentRunBackend {
 
   private async handleMessage(message: AgyStreamMessage): Promise<void> {
     if (!this.turnId || this.cancelled) return;
-    const events = this.converter.convert(message);
+    const turnId = this.turnId;
+    const lookup = this.converter.getPendingNativeToolArgumentLookup(message);
+    let nativeArguments: Record<string, unknown> | null = null;
+    if (lookup) {
+      if (!this.isActive()) return;
+      const controller = new AbortController();
+      this.argumentLookup = controller;
+      try {
+        nativeArguments = await readAgyNativeToolArguments(this.context.runtimeContext.conversationId, lookup,
+          { signal: controller.signal });
+      } catch {
+        // Optional observability must not turn a valid provider event into process failure.
+        nativeArguments = null;
+      } finally {
+        this.argumentLookup = null;
+      }
+      if (controller.signal.aborted || this.turnId !== turnId || this.cancelled || !this.isActive()) return;
+    }
+    const events = this.converter.convert(message, nativeArguments);
     if (message.event === "result") {
       this.turnId = null;
       this.phase = this.processAlive ? "idle" : "error";
@@ -127,6 +150,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
     this.eventQueue = this.eventQueue.then(task).catch(() => {
       // Source-listener failures stop this backend; the app still owns public delivery.
       this.active = false; this.processAlive = false; this.phase = "error";
+      this.argumentLookup?.abort();
       this.process.stop();
       this.backgroundTasks.stopAll();
     });
@@ -138,10 +162,16 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   }
 
   private handleClose(): void {
+    const hadPendingLookup = this.argumentLookup !== null;
+    this.argumentLookup?.abort();
     if (!this.processAlive) return;
     this.processAlive = false;
     this.backgroundTasks.stopAll();
     if (this.cancelled) return;
+    // A close during the await invalidates this turn's queued provider messages as
+    // well as the pending step. A result already queued without an await retains
+    // the existing result-before-close behavior.
+    if (hadPendingLookup) this.cancelled = true;
     this.enqueue(async () => {
       if (!this.turnId) { this.active = false; this.phase = "error"; return; }
       const events: AgentRunEvent[] = [{

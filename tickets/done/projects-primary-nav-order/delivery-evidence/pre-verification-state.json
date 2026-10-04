@@ -1,0 +1,21 @@
+{
+  "package": "projects-primary-nav-order",
+  "revision": "DR-001",
+  "bootstrap_base": "8409bd899d290553730eff0d1ba3bca22205a939",
+  "checked_remote_base": "474dda0e1f37acd60eac8383234b4d2feb4e8197",
+  "integrated_head": "7cf1911a0acd48029e4ae3bd9b9f1587bcfc8741",
+  "commands": [
+    "pnpm -C autobyteus-web test:nuxt composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts composables/__tests__/useShellPrimaryNavigation.spec.ts components/__tests__/AppLeftPanel.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts --run",
+    "pnpm -C autobyteus-web test:e2e:projects-navigation --output-dir ../tickets/in-progress/projects-primary-nav-order/delivery-evidence/browser"
+  ],
+  "results": {
+    "focused": "4 files / 22 tests Pass",
+    "browser": "5 cases Pass",
+    "page_errors": 0,
+    "cleanup": "Complete"
+  },
+  "docs_edits_after_merge_and_focused_pass": true,
+  "user_verification": "Pending",
+  "finalization": "Not performed",
+  "release_deployment": "Not required"
+}

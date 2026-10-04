@@ -1,0 +1,10 @@
+{
+  "classification": "Delivery-local verification harness correction",
+  "initialResult": "Failed local assertion: compared annotated tag object SHA to release commit SHA",
+  "evidence": "Documented helper uses git tag -a; remote refs/tags/v1.4.94-beta.1=df3d1829dc95de99d61a900c791075317ac9179d and peeled ^{}=8409bd899d290553730eff0d1ba3bca22205a939",
+  "correction": "Compare peeled annotated tag commit, falling back to direct SHA for lightweight tags; product/helper/tag/workflow unchanged",
+  "initialLogPreserved": "publication-verification-initial.log",
+  "initialScriptPreserved": "verify-beta-publication-initial.py",
+  "productSourceFailureInferred": false,
+  "duplicateWorkflowOrReleasePerformed": false
+}

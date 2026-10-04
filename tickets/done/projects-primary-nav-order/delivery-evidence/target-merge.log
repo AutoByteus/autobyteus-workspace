@@ -1,0 +1,153 @@
+Merge made by the 'ort' strategy.
+ autobyteus-web/README.md                           |  30 ++
+ .../useShellPrimaryNavigation.capabilities.spec.ts |  16 +-
+ .../composables/useShellPrimaryNavigation.ts       |   2 +-
+ autobyteus-web/docs/projects.md                    |  15 +
+ autobyteus-web/package.json                        |   1 +
+ .../fixtures/projects-primary-navigation.page.vue  |  18 +
+ .../e2e/projects-primary-navigation-probe.mjs      | 143 ++++++
+ .../projects-primary-nav-order/analysis-result.md  |  25 ++
+ .../api-e2e-coverage-investigation.md              | 103 +++++
+ .../api-e2e-evidence/affected.log                  |  74 ++++
+ .../api-e2e-evidence/browser-attempt-1.log         |  21 +
+ .../api-e2e-evidence/browser-attempt-2.log         |   6 +
+ .../browser-attempt-2/compact-applications-on.png  | Bin 0 -> 19584 bytes
+ .../browser-attempt-2/evidence.json                | 446 +++++++++++++++++++
+ .../browser-attempt-2/expanded-applications-on.png | Bin 0 -> 34911 bytes
+ .../browser-attempt-2/nuxt-dev.log                 |  19 +
+ .../api-e2e-evidence/browser-attempt-3.log         |   6 +
+ .../browser-attempt-3/B-003-failure.png            | Bin 0 -> 49939 bytes
+ .../browser-attempt-3/compact-applications-on.png  | Bin 0 -> 19584 bytes
+ .../browser-attempt-3/compact-subroute-active.png  | Bin 0 -> 52418 bytes
+ .../browser-attempt-3/evidence.json                | 376 ++++++++++++++++
+ .../browser-attempt-3/expanded-applications-on.png | Bin 0 -> 34911 bytes
+ .../browser-attempt-3/nuxt-dev.log                 |  17 +
+ .../api-e2e-evidence/browser-attempt-4.log         |   5 +
+ .../browser-attempt-4/compact-applications-on.png  | Bin 0 -> 19584 bytes
+ .../browser-attempt-4/compact-subroute-active.png  | Bin 0 -> 52418 bytes
+ .../browser-attempt-4/evidence.json                | 485 ++++++++++++++++++++
+ .../browser-attempt-4/expanded-applications-on.png | Bin 0 -> 34911 bytes
+ .../mobile-runtime-eligibility.png                 | Bin 0 -> 18292 bytes
+ .../browser-attempt-4/narrow-drawer.png            | Bin 0 -> 23798 bytes
+ .../browser-attempt-4/narrow-strip.png             | Bin 0 -> 28365 bytes
+ .../browser-attempt-4/nuxt-dev.log                 |  17 +
+ .../api-e2e-evidence/browser-repeat.log            |   5 +
+ .../browser-repeat/compact-applications-on.png     | Bin 0 -> 19584 bytes
+ .../browser-repeat/compact-subroute-active.png     | Bin 0 -> 52418 bytes
+ .../api-e2e-evidence/browser-repeat/evidence.json  | 485 ++++++++++++++++++++
+ .../browser-repeat/expanded-applications-on.png    | Bin 0 -> 34911 bytes
+ .../browser-repeat/mobile-runtime-eligibility.png  | Bin 0 -> 16676 bytes
+ .../browser-repeat/narrow-drawer.png               | Bin 0 -> 23798 bytes
+ .../browser-repeat/narrow-strip.png                | Bin 0 -> 28365 bytes
+ .../api-e2e-evidence/browser-repeat/nuxt-dev.log   |  17 +
+ .../api-e2e-evidence/focused.log                   |  50 +++
+ .../api-e2e-execution-coverage-report.md           |  94 ++++
+ .../api-e2e-revision-record.md                     |  28 ++
+ .../api-e2e-test-case-ledger.md                    |  38 ++
+ .../delivery-evidence/browser.log                  |   5 +
+ .../browser/compact-applications-on.png            | Bin 0 -> 19584 bytes
+ .../browser/compact-subroute-active.png            | Bin 0 -> 52418 bytes
+ .../delivery-evidence/browser/evidence.json        | 493 +++++++++++++++++++++
+ .../browser/expanded-applications-on.png           | Bin 0 -> 34911 bytes
+ .../browser/mobile-runtime-eligibility.png         | Bin 0 -> 18292 bytes
+ .../delivery-evidence/browser/narrow-drawer.png    | Bin 0 -> 23798 bytes
+ .../delivery-evidence/browser/narrow-strip.png     | Bin 0 -> 28365 bytes
+ .../delivery-evidence/browser/nuxt-dev.log         |  17 +
+ .../delivery-evidence/cumulative-package.json      |  58 +++
+ .../delivery-evidence/focused.log                  |  50 +++
+ .../delivery-evidence/integration.txt              |  66 +++
+ .../delivery-evidence/pre-verification-state.json  |  21 +
+ .../delivery-evidence/shared-checkout-before.json  | 146 ++++++
+ .../delivery-evidence/user-verification.md         |  15 +
+ .../delivery-revision-record.md                    |  49 ++
+ .../done/projects-primary-nav-order/design-spec.md | 161 +++++++
+ .../projects-primary-nav-order/docs-sync-report.md |  43 ++
+ .../projects-primary-nav-order/handoff-summary.md  |  82 ++++
+ .../implementation-evidence/expanded-preview.png   | Bin 0 -> 33085 bytes
+ .../implementation-evidence/install.log            |  11 +
+ .../implementation-evidence/prepare.log            |  13 +
+ .../preview-fixture.vue.txt                        |  18 +
+ .../implementation-evidence/preview-server.log     |  24 +
+ .../implementation-evidence/rendered-check.md      |  11 +
+ .../implementation-evidence/unit.log               |  49 ++
+ .../implementation-handoff.md                      |  69 +++
+ .../implementation-revision-record.md              |  21 +
+ .../investigation-notes.md                         |  56 +++
+ .../release-deployment-report.md                   |  79 ++++
+ .../projects-primary-nav-order/release-notes.md    |   7 +
+ .../projects-primary-nav-order/requirements-doc.md |  73 +++
+ .../solution-revision-record.md                    |  29 ++
+ 78 files changed, 4200 insertions(+), 8 deletions(-)
+ create mode 100644 autobyteus-web/tests/e2e/fixtures/projects-primary-navigation.page.vue
+ create mode 100644 autobyteus-web/tests/e2e/projects-primary-navigation-probe.mjs
+ create mode 100644 tickets/done/projects-primary-nav-order/analysis-result.md
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/affected.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-1.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-2.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-2/compact-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-2/evidence.json
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-2/expanded-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-2/nuxt-dev.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-3.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-3/B-003-failure.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-3/compact-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-3/compact-subroute-active.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-3/evidence.json
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-3/expanded-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-3/nuxt-dev.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-4.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-4/compact-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-4/compact-subroute-active.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-4/evidence.json
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-4/expanded-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-4/mobile-runtime-eligibility.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-4/narrow-drawer.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-4/narrow-strip.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-attempt-4/nuxt-dev.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-repeat.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-repeat/compact-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-repeat/compact-subroute-active.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-repeat/evidence.json
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-repeat/expanded-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-repeat/mobile-runtime-eligibility.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-repeat/narrow-drawer.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-repeat/narrow-strip.png
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/browser-repeat/nuxt-dev.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-evidence/focused.log
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-revision-record.md
+ create mode 100644 tickets/done/projects-primary-nav-order/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/browser.log
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/browser/compact-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/browser/compact-subroute-active.png
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/browser/evidence.json
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/browser/expanded-applications-on.png
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/browser/mobile-runtime-eligibility.png
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/browser/narrow-drawer.png
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/browser/narrow-strip.png
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/browser/nuxt-dev.log
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/cumulative-package.json
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/focused.log
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/integration.txt
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/pre-verification-state.json
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/shared-checkout-before.json
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-evidence/user-verification.md
+ create mode 100644 tickets/done/projects-primary-nav-order/delivery-revision-record.md
+ create mode 100644 tickets/done/projects-primary-nav-order/design-spec.md
+ create mode 100644 tickets/done/projects-primary-nav-order/docs-sync-report.md
+ create mode 100644 tickets/done/projects-primary-nav-order/handoff-summary.md
+ create mode 100644 tickets/done/projects-primary-nav-order/implementation-evidence/expanded-preview.png
+ create mode 100644 tickets/done/projects-primary-nav-order/implementation-evidence/install.log
+ create mode 100644 tickets/done/projects-primary-nav-order/implementation-evidence/prepare.log
+ create mode 100644 tickets/done/projects-primary-nav-order/implementation-evidence/preview-fixture.vue.txt
+ create mode 100644 tickets/done/projects-primary-nav-order/implementation-evidence/preview-server.log
+ create mode 100644 tickets/done/projects-primary-nav-order/implementation-evidence/rendered-check.md
+ create mode 100644 tickets/done/projects-primary-nav-order/implementation-evidence/unit.log
+ create mode 100644 tickets/done/projects-primary-nav-order/implementation-handoff.md
+ create mode 100644 tickets/done/projects-primary-nav-order/implementation-revision-record.md
+ create mode 100644 tickets/done/projects-primary-nav-order/investigation-notes.md
+ create mode 100644 tickets/done/projects-primary-nav-order/release-deployment-report.md
+ create mode 100644 tickets/done/projects-primary-nav-order/release-notes.md
+ create mode 100644 tickets/done/projects-primary-nav-order/requirements-doc.md
+ create mode 100644 tickets/done/projects-primary-nav-order/solution-revision-record.md

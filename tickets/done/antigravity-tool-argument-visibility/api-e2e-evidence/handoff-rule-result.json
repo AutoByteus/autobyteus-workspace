@@ -1,0 +1,17 @@
+{
+  "tool": "get_handoff_rules",
+  "lookupSucceeded": true,
+  "outcome": "API-REV-001 Pass",
+  "classification": {
+    "task_size": "Medium",
+    "architectural_risk": "High"
+  },
+  "matchedWhen": "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+  "recipient_address": "/code_reviewer",
+  "otherRulesNotMatched": [
+    "Validation Fail / failure-origin",
+    "Direct Small or Medium / Low / Delivery",
+    "Requirement Gap / Design Impact / Unclear upstream before execution"
+  ],
+  "handoffType": "Successful test-code review, not source rereview/failure-origin/delivery"
+}

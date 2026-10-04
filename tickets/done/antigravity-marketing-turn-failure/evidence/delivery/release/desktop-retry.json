@@ -1,0 +1,23 @@
+{
+  "recordedAt": "2026-10-03T14:31:21.203321+00:00",
+  "run": 37128625067,
+  "failedJob": 111219114641,
+  "platform": "macOS Intel x64",
+  "failedStep": "Build Electron macOS Intel x64",
+  "observedCause": "DMG codesign failed: The timestamp service is not available.",
+  "classification": "Deployment-local external signing-service availability; no source/packaging-code defect established",
+  "priorChecks": "App signing policy and notarization succeeded; DMG final signing failed",
+  "sourceTag": "v1.4.93",
+  "sourceCommit": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "retainedOriginalEvidence": [
+    "desktop-attempt1-failed.log",
+    "workflow-attempt1-matrix.json"
+  ],
+  "recoveryCommand": "gh run rerun 37128625067 --repo AutoByteus/autobyteus-workspace --failed",
+  "commandExitCode": 0,
+  "freshTagManualDispatch": false,
+  "sourceOrSigningAssertionsChanged": false,
+  "recoveryOutcome": "Completed \u2014 unchanged attempt 2 succeeded, Intel build/signing/verification and desktop publication passed",
+  "alreadyPublishedRepositoryUndo": false,
+  "finalWorkflowMatrix": "workflow-matrix.json"
+}

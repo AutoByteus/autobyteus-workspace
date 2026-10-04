@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/verify-beta-publication.py", line 74, in <module>
+    assert remote_tag == sha
+AssertionError

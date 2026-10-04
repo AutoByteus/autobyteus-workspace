@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "paths": {
+      "ws": [
+        "../node_modules/.pnpm/@types+ws@8.18.1/node_modules/@types/ws/index.d.ts"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts",
+    "tests/e2e/runtime/agy-failure-transport.e2e.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

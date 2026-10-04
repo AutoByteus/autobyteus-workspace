@@ -1,7 +1,7 @@
 # Delivery Package Inventory — antigravity-marketing-turn-failure
 
 ## Authority / Path Rules
-- Current root: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/tickets/done/antigravity-marketing-turn-failure.
+- Current root: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-marketing-turn-failure.
 - Complete cumulative approved SR-002 / design SR-003, IR-001 and API-REV-001 package retained below. History snapshots are audit-only; canonical current requirements/design own behavior.
 - **Medium / Low; Direct Low-Risk**; independent architecture/source/test-code review reports/revisions **N/A — not applicable**, not review passes. No normative Product/prototype supplements.
 - Before archive, all listed ticket-relative paths resolve beneath this root. After archive and safe worktree cleanup, resolve them beneath the final durable `tickets/done/antigravity-marketing-turn-failure/` root recorded by finalization reports. Absolute in-progress/worktree paths within unchanged upstream records are historical execution provenance; this inventory is the location bridge.
@@ -162,3 +162,8 @@ Repository-relative paths remain unchanged by archiving or worktree cleanup:
 ## DR-002 Current Location And Release Scope
 - Ticket archived before final commit. Stable v1.4.93 requested by explicit user acceptance. Current working root /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/tickets/done/antigravity-marketing-turn-failure. Final durable root will be the primary repository tickets/done/antigravity-marketing-turn-failure after safe cleanup; latest report records exact paths.
 - Complete delivery recheck evidence: evidence/delivery/post-verification/; DR-001 canonical report snapshots: evidence/delivery/DR-001/.
+
+## DR-003 Authoritative Final Location
+- **Delivery Completed**; durable root /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-marketing-turn-failure. All old workspace/in-progress absolute strings in upstream artifacts are provenance, mapped by evidence/delivery/final-path-map.json.
+- Complete final delivery evidence tree: evidence/delivery/ (including post-verification/, DR-001/, release/, cleanup-final.json, final-path-map.json and cumulative-terminal-reference-files.json). Publication/recovery logs and original failed attempt retained. Current canonical report/summary/revision supersede all earlier holds.
+- Versioned final authorities/evidence are in personal; post-push commit/dispatch receipts are closure metadata, not product changes or new release work.

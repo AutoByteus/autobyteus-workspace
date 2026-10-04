@@ -1,0 +1,50 @@
+diff --git a/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts b/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts
+index 837b903f6..868c12fbb 100644
+--- a/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts
++++ b/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts
+@@ -1,3 +1,4 @@
++import { redactProviderSecrets } from "autobyteus-ts";
+ import { normalizeBrowserMcpToolResult } from "../../../../agent-tools/browser/browser-mcp-result-normalizer.js";
+ import { OPEN_TAB_TOOL_NAME } from "../../../../agent-tools/browser/browser-tool-contract.js";
+ import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
+@@ -184,7 +185,8 @@ export class AgyStreamEventConverter {
+         safeReasonCode: status !== "SUCCESS" ? "TERMINAL_STATUS_NOT_SUCCESS" : "TERMINAL_ERROR_PRESENT",
+         providerStatus: status, providerError: payload.error, providerResponse: payload.response });
+       events.push(this.event(AgentRunEventType.ERROR, {
+-        turn_id: turnId, code: "AGY_TURN_ERROR", message: "Antigravity could not complete this turn.",
++        turn_id: turnId, code: "AGY_TURN_ERROR",
++        message: redactProviderSecrets(errorText(payload.error).trim()) || "Antigravity could not complete this turn.",
+         error_scope: "turn", error_effect: "terminal",
+       }, "ERROR"));
+       this.turnId = null;
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts
+index 7da83309c..51c0231bd 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts
+@@ -82,17 +82,23 @@ describe("AGY ordinary turn lifecycle", () => {
+     expect(run.process.sent).toEqual(["first", "second"]);
+   });
+ 
+-  it("emits a fixed terminal error without a tool and lets the normal next turn start", async () => {
++  it("emits the actual terminal error without a tool and lets the normal next turn complete", async () => {
+     const run = setup();
+     await start(run.backend, "first");
+     run.process.emit({ event: "result", result: { conversation_id: conversationId,
+-      status: "ERROR", error: "token=private", response: "token=private-response" } });
++      status: "ERROR", error: "Read limit reached. token=private", response: "token=private-response" } });
+     await waitFor(() => run.events.some((item) => item.eventType === AgentRunEventType.ERROR));
+     expect(run.events.map((item) => item.eventType)).toEqual([AgentRunEventType.TURN_STARTED, AgentRunEventType.ERROR]);
+-    expect(run.events.at(-1)?.payload).toMatchObject({ code: "AGY_TURN_ERROR", error_scope: "turn", error_effect: "terminal" });
++    expect(run.events.at(-1)?.payload).toMatchObject({ code: "AGY_TURN_ERROR", error_scope: "turn", error_effect: "terminal",
++      message: "Read limit reached. token=<redacted>" });
+     expect(JSON.stringify(run.events)).not.toContain("token=private");
+     expect(run.backend.getLifecycleSnapshot().phase).toBe("idle");
+     expect((await start(run.backend, "second")).forwarded).toBe(true);
++    expect(run.process.sent).toEqual(["first", "second"]);
++    run.process.emit(result("SUCCESS", "Retry succeeded."));
++    await waitFor(() => run.events.some((item) => item.eventType === AgentRunEventType.TURN_COMPLETED));
++    expect(run.events.filter((item) => item.eventType === AgentRunEventType.TURN_COMPLETED)).toHaveLength(1);
++    expect(run.backend.getLifecycleSnapshot().phase).toBe("idle");
+   });
+ 
+   it("keeps process close before result safe and terminal; close after result makes the run offline", async () => {

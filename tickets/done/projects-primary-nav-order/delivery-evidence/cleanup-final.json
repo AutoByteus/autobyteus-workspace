@@ -1,0 +1,10 @@
+{
+  "worktree_cleanup": "Completed",
+  "worktree_prune": "Completed",
+  "local_branch_cleanup": "Completed",
+  "worktree_absent": true,
+  "branch_absent": true,
+  "remote_ticket_branch_cleanup": "Not required \u2014 pushed branch retained for traceability",
+  "preservation": "cleanup-preservation.json",
+  "release_deployment": "Not required"
+}

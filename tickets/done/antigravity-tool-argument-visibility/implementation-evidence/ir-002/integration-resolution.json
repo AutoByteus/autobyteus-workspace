@@ -1,0 +1,33 @@
+{
+  "revision": "IR-002",
+  "trigger": "DR-001 Blocked / Local Fix",
+  "result": "Local Fix Complete \u2014 implementation-scoped validation; independent source review pending",
+  "task_size": "Medium",
+  "architectural_risk": "High",
+  "bootstrapBase": "98d8fb36a632ce0f46136cda20129d1fe1ee0ac8",
+  "deliveryCheckpoint": "4d5f96df86f9d9cea0d242ac62e3982592030b97",
+  "integratedTarget": "dc4eb5470c14d846df3a22b0371a675690657ccd",
+  "localMergeCommit": "d2401d236d37088f063d8969a03c682810951b53",
+  "mergeParents": [
+    "4d5f96df86f9d9cea0d242ac62e3982592030b97",
+    "dc4eb5470c14d846df3a22b0371a675690657ccd"
+  ],
+  "unmergedFiles": [],
+  "mergeInProgress": false,
+  "changedOwnerPaths": [
+    "autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts"
+  ],
+  "preservedAutoMergedOverlap": "latest-base converter runtime-error text/redaction and lifecycle/converter tests",
+  "localChecks": {
+    "unitFiles": 14,
+    "testsPassed": 234,
+    "newFixtureRoutingTests": 14,
+    "productionBuild": "Pass",
+    "focusedTypecheck": "Pass",
+    "fixtureSyntax": "Pass"
+  },
+  "apiE2ERerun": "Not run by implementation; downstream ownership",
+  "upstreamPassApplicability": "CRR-001/002 and API-REV-001 Pass/95% describe pre-integration package only",
+  "pushOrTargetMergeOrReleaseDeployment": false
+}

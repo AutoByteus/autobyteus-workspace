@@ -1,0 +1,16 @@
+{
+  "reviewRevision": "CRR-003",
+  "primaryHandoff": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /api_e2e_engineer.",
+    "target_agent_run_id": "api_e2e_engineer_00e3674884d2436bbeb3daf62550e262"
+  },
+  "informationalNotification": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /implementation_engineer.",
+    "target_agent_run_id": "implementation_engineer_6f8e1c2fafd741038009ef9dd154eb20"
+  },
+  "deliveryCompleted": false
+}

@@ -1,0 +1,322 @@
+{
+  "cases": [
+    {
+      "file": "API-A-credential.json",
+      "expected": "Workspace unavailable token=<redacted> <img src=x onerror=alert(1)>",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-empty.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-malformed.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-missing.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-quota.json",
+      "expected": "Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-structured.json",
+      "expected": "Read limit reached. Try again after the provider permits requests.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-unfamiliar.json",
+      "expected": "Workspace service temporarily unavailable. Reference W-771; try again later.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-credential.json",
+      "expected": "Workspace unavailable token=<redacted> <img src=x onerror=alert(1)>",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-empty.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-malformed.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-missing.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-quota.json",
+      "expected": "Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-structured.json",
+      "expected": "Read limit reached. Try again after the provider permits requests.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-unfamiliar.json",
+      "expected": "Workspace service temporarily unavailable. Reference W-771; try again later.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-credential.json",
+      "expected": "Workspace unavailable token=<redacted> <img src=x onerror=alert(1)>",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-empty.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-malformed.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-missing.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-quota.json",
+      "expected": "Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-structured.json",
+      "expected": "Read limit reached. Try again after the provider permits requests.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-unfamiliar.json",
+      "expected": "Workspace service temporarily unavailable. Reference W-771; try again later.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    }
+  ],
+  "agentActualRestoreCase": "API-C02",
+  "unchangedActivitiesAfterRestore": true,
+  "exactProviderConversationAfterRestore": true,
+  "cleanup": {
+    "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-Z7mYrr",
+    "dataRemoved": true,
+    "serverClosed": true,
+    "socketsClosed": true,
+    "remainingOwnedRoots": 0,
+    "cleanupErrors": [],
+    "userNode8001Accessed": false
+  },
+  "finalAfterTypeOnlyHelperFix": [
+    {
+      "file": "API-A-credential.json",
+      "expected": "Workspace unavailable token=<redacted> <img src=x onerror=alert(1)>",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-empty.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-malformed.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-missing.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-quota.json",
+      "expected": "Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-structured.json",
+      "expected": "Read limit reached. Try again after the provider permits requests.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-A-unfamiliar.json",
+      "expected": "Workspace service temporarily unavailable. Reference W-771; try again later.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-credential.json",
+      "expected": "Workspace unavailable token=<redacted> <img src=x onerror=alert(1)>",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-empty.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-malformed.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-missing.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-quota.json",
+      "expected": "Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-structured.json",
+      "expected": "Read limit reached. Try again after the provider permits requests.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-O-unfamiliar.json",
+      "expected": "Workspace service temporarily unavailable. Reference W-771; try again later.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-credential.json",
+      "expected": "Workspace unavailable token=<redacted> <img src=x onerror=alert(1)>",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-empty.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-malformed.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-missing.json",
+      "expected": "Antigravity could not complete this turn.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-quota.json",
+      "expected": "Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-structured.json",
+      "expected": "Read limit reached. Try again after the provider permits requests.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    },
+    {
+      "file": "API-T-unfamiliar.json",
+      "expected": "Workspace service temporarily unavailable. Reference W-771; try again later.",
+      "sameIdentity": true,
+      "publicPrivateResponseAbsent": true,
+      "savedCompletedWork": true
+    }
+  ],
+  "finalRestoreIdentityAndActivitiesUnchanged": true,
+  "finalCleanup": {
+    "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-qUpguE",
+    "dataRemoved": true,
+    "serverClosed": true,
+    "socketsClosed": true,
+    "remainingOwnedRoots": 0,
+    "cleanupErrors": [],
+    "userNode8001Accessed": false
+  }
+}

@@ -134,6 +134,41 @@ See [Capture Startup And Ownership](autobyteus-web/docs/electron_packaging.md#ca
 for the stable exact-destination sink contract; wrapper recreation alone is not
 a destination change.
 
+### Antigravity Native Argument Capture Regression
+
+From the repository root, with installed dependencies and the current workspace
+build outputs, run:
+
+```bash
+RUN_AGY_FAILURE_E2E=1 \
+ANTIGRAVITY_CLI_COMMAND="$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs" \
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts --no-watch
+```
+
+This deterministic suite uses the real Studio HTTP/WebSocket, recorder, history
+and GraphQL restore paths; only the external CLI/model is emulated. It creates
+its disposable HOME before provider modules load and owns its server, data,
+workspace, sockets and CLI processes. Do not substitute the user's provider
+conversation or application data. Without the opt-in flag and executable fake
+CLI, the suite skips; a skip is not argument-capture proof.
+
+Assertions cover typed first STARTED and immediate raw-disk inputs before a
+terminal event, repeated same-path edits, verified command-prefix expansion,
+background-close snapshot reuse, source-free saved history, and actual
+terminate/restore with exact CLI conversation binding. Future enriched calls
+must preserve the old summary-only raw prefix and projected entries. Missing or
+ambiguous detail must complete with verified summaries, not count as successful
+full-input capture. The companion `agy-failure-cli-routing.test.ts` under
+`tests/unit/agent-execution/backends/antigravity/` protects coexistence of native
+argument, runtime-error and existing fixture routes.
+
+Fake-CLI coverage does not prove installed-provider input availability or
+rendered Activity. For those boundaries, separately compare actual native inputs
+to first canonical events, raw history and live/reloaded production rendering
+using owned services and data. Web-equivalent browser evidence is not packaged
+Electron navigation/restart or explicit user verification. See the
+[AGY runtime contract](autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md).
+
 ## Choosing the path
 
 Start with the smallest layer that directly proves the change, then add the

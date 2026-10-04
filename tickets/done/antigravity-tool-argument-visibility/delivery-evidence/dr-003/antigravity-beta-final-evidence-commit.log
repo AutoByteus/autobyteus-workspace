@@ -1,0 +1,24 @@
+[personal 7a31f2ddd] docs(delivery): complete antigravity beta delivery and cleanup
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 14 files changed, 429 insertions(+), 91 deletions(-)
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/antigravity-beta-publication-evidence-commit.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/antigravity-beta-publication-evidence-push.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/cleanup-final.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/final-artifact-check.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/local-branch-delete.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/shared-final-evidence-fast-forward.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/worktree-artifact-preservation.json
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/worktree-prune.log
+ create mode 100644 tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/worktree-remove.log

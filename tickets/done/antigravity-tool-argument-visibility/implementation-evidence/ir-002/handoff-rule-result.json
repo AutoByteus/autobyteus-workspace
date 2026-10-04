@@ -1,0 +1,12 @@
+{
+  "tool": "get_handoff_rules",
+  "selection": "single most-specific matching returned rule",
+  "outcome": "Delivery-requested implementation-owned Local Fix Complete",
+  "task_size": "Medium",
+  "architectural_risk": "High",
+  "selectedRule": {
+    "when": "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.",
+    "recipient_address": "/code_reviewer"
+  },
+  "nonSelectedRoutes": "general completed implementation rule is less specific; Low/direct and design-gap rules do not match"
+}

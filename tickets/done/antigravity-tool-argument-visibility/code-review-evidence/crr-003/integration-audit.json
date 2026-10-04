@@ -1,0 +1,83 @@
+{
+  "reviewRevision": "CRR-003",
+  "upstreamReferenceCount": 121,
+  "missingFiles": [],
+  "lostDeliveryReferences": [],
+  "sourceDeltaFromDeliveryCheckpoint": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts"
+  ],
+  "sourceSizes": [
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "nonempty": {
+        "98d8fb36": 143,
+        "4d5f96df": 173,
+        "dc4eb547": 143,
+        "HEAD": 173
+      },
+      "baseDelta": 30,
+      "checkpointDelta": 0,
+      "diffFromCheckpoint": "",
+      "sizePass": true,
+      "deltaPass": true
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-brain-file.ts",
+      "nonempty": {
+        "98d8fb36": 50,
+        "4d5f96df": 129,
+        "dc4eb547": 50,
+        "HEAD": 129
+      },
+      "baseDelta": 79,
+      "checkpointDelta": 0,
+      "diffFromCheckpoint": "",
+      "sizePass": true,
+      "deltaPass": true
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-native-tool-arguments-reader.ts",
+      "nonempty": {
+        "98d8fb36": 0,
+        "4d5f96df": 58,
+        "dc4eb547": 0,
+        "HEAD": 58
+      },
+      "baseDelta": 58,
+      "checkpointDelta": 0,
+      "diffFromCheckpoint": "",
+      "sizePass": true,
+      "deltaPass": true
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts",
+      "nonempty": {
+        "98d8fb36": 213,
+        "4d5f96df": 236,
+        "dc4eb547": 215,
+        "HEAD": 238
+      },
+      "baseDelta": 25,
+      "checkpointDelta": 2,
+      "diffFromCheckpoint": "3\t1\tautobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts",
+      "sizePass": true,
+      "deltaPass": true
+    }
+  ],
+  "unmergedFiles": [],
+  "mergeInProgress": false,
+  "mergeParents": [
+    "4d5f96df86f9d9cea0d242ac62e3982592030b97",
+    "dc4eb5470c14d846df3a22b0371a675690657ccd"
+  ],
+  "reviewedHead": "351050d8b0f8c5c58fb31aa0d557eaffac74eae3",
+  "priorPassesPreIntegration": [
+    "CRR-001",
+    "CRR-002",
+    "API-REV-001"
+  ],
+  "runtimeErrorBasis": "tickets/done/antigravity-marketing-turn-failure/requirements-doc.md SR-002 and design-spec.md SR-003; preservation context, not reopened task scope",
+  "factualSupplementsUnchangedFromCheckpoint": true,
+  "providerSourceUnchangedExceptConverter": true,
+  "syntaxAndScopedWhitespace": "Pass \u2014 both fixture node --check commands; checkpoint-to-HEAD provider source/tests/selected fixtures git diff --check exit 0"
+}

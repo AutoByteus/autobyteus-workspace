@@ -1,0 +1,61 @@
+{
+  "checks": [
+    {
+      "receipt": "live-cleanup-initial.json",
+      "resources": {
+        "dataDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt",
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Gv5zwt/workspace",
+        "backendUrl": "http://127.0.0.1:55552/",
+        "nuxtPid": 17185,
+        "nuxtPort": 55594,
+        "browserClosed": true,
+        "nuxtStopped": true,
+        "pageRemoved": true,
+        "serverClosed": true,
+        "dataRemoved": true
+      },
+      "nuxtPortClosed": true,
+      "backendPortClosed": true,
+      "dataAbsent": true
+    },
+    {
+      "receipt": "live-cleanup-second.json",
+      "resources": {
+        "dataDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-lwl7zo",
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-lwl7zo/workspace",
+        "backendUrl": "http://127.0.0.1:55949/",
+        "nuxtPid": 39855,
+        "nuxtPort": 55992,
+        "browserClosed": true,
+        "nuxtStopped": true,
+        "pageRemoved": true,
+        "serverClosed": true,
+        "dataRemoved": true
+      },
+      "nuxtPortClosed": true,
+      "backendPortClosed": true,
+      "dataAbsent": true
+    },
+    {
+      "receipt": "live-cleanup.json",
+      "resources": {
+        "dataDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm",
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-Map2Jm/workspace",
+        "backendUrl": "http://127.0.0.1:56162/",
+        "nuxtPid": 51845,
+        "nuxtPort": 56196,
+        "browserClosed": true,
+        "nuxtStopped": true,
+        "pageRemoved": true,
+        "serverClosed": true,
+        "dataRemoved": true
+      },
+      "nuxtPortClosed": true,
+      "backendPortClosed": true,
+      "dataAbsent": true
+    }
+  ],
+  "temporaryPagesTestsConfigsAbsent": true,
+  "userAppOrDataTouched": false,
+  "newOwnAgySessionMetadataRetained": true
+}

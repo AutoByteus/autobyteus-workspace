@@ -1,0 +1,181 @@
+{
+  "capturedAtUtc": "2026-10-03T14:02:54.000273+00:00",
+  "purpose": "Architecture feasibility of strict adjacency, single-call, native-name and summary-value agreement; not implementation acceptance.",
+  "nativeCallsChecked": 681,
+  "counts": {
+    "matched": 667,
+    "unmatched": 14
+  },
+  "mismatchedSteps": [
+    288,
+    296,
+    462,
+    640,
+    652,
+    658,
+    730,
+    740,
+    806,
+    810,
+    830,
+    832,
+    1155,
+    1408
+  ],
+  "source": "/Users/normy/.gemini/antigravity-cli/brain/738a76ed-5cb0-4705-b131-aaaad04573c3/.system_generated/logs/transcript_full.jsonl",
+  "sourceBytes": 3034540,
+  "maxCompleteRowBytes": 22772,
+  "allToolBearingPlannersSingleCall": true,
+  "firstProbeMaxCompleteRowBytes": 2988,
+  "caveat": "Observed shape recognition only; ambiguous/multi-call or format-changed records must be unresolved rather than guessed.",
+  "summaryMismatchDetails": [
+    {
+      "step": 288,
+      "summaryChars": 513,
+      "actualChars": 706,
+      "summarySuffix": "ce as the runnable browser sa\u2026",
+      "actualSuffix": "s across mounted parent Orgs.\"",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 296,
+      "summaryChars": 513,
+      "actualChars": 2248,
+      "summarySuffix": "erpretation).\n- AI agents wri\u2026",
+      "actualSuffix": ", symlinks, and frontmatter).\"",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 462,
+      "summaryChars": 513,
+      "actualChars": 2387,
+      "summarySuffix": "arge translation gap with eng\u2026",
+      "actualSuffix": ", symlinks, and frontmatter).\"",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 640,
+      "summaryChars": 513,
+      "actualChars": 1030,
+      "summarySuffix": "product-team/agents/product-p\u2026",
+      "actualSuffix": "ux-design-refactor/validate.py",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 652,
+      "summaryChars": 513,
+      "actualChars": 564,
+      "summarySuffix": " the updated role titles whil\u2026",
+      "actualSuffix": "sses and folder paths stable.\"",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 658,
+      "summaryChars": 513,
+      "actualChars": 2831,
+      "summarySuffix": "erience baseline with UI pari\u2026",
+      "actualSuffix": "rontmatter, and org configs).\"",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 730,
+      "summaryChars": 513,
+      "actualChars": 532,
+      "summarySuffix": "rogress/product-ui-ux-design-\u2026",
+      "actualSuffix": "ux-design-refactor/validate.py",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 740,
+      "summaryChars": 513,
+      "actualChars": 3023,
+      "summarySuffix": "ciples**: renamed shared prin\u2026",
+      "actualSuffix": "rontmatter, and org configs).\"",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 806,
+      "summaryChars": 513,
+      "actualChars": 737,
+      "summarySuffix": "\n- Add Accessibility & Keyboa\u2026",
+      "actualSuffix": "quence and validation script.\"",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 810,
+      "summaryChars": 513,
+      "actualChars": 4385,
+      "summarySuffix": "ciples**: renamed shared prin\u2026",
+      "actualSuffix": "mplate section verification).\"",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 830,
+      "summaryChars": 513,
+      "actualChars": 583,
+      "summarySuffix": "ootstrapper agent-teams/produ\u2026",
+      "actualSuffix": "kills/ui-baseline-bootstrapper",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 832,
+      "summaryChars": 513,
+      "actualChars": 1510,
+      "summarySuffix": "t-experience-design/templates\u2026",
+      "actualSuffix": "tes/product-ticket-template.md",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 1155,
+      "summaryChars": 513,
+      "actualChars": 4821,
+      "summarySuffix": "totyper\\`).\n- **UI Baseline B\u2026",
+      "actualSuffix": "c template sections verified.\"",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    },
+    {
+      "step": 1408,
+      "summaryChars": 513,
+      "actualChars": 1268,
+      "summarySuffix": "uct-experience-design/templat\u2026",
+      "actualSuffix": "factor/agent-package-result.md",
+      "literalPrefix": false,
+      "withoutEllipsisPrefix": true,
+      "asciiEllipsisPrefix": null
+    }
+  ],
+  "lossySummaryAgreement": {
+    "count": 14,
+    "tool": "run_command",
+    "field": "CommandLine",
+    "allHaveLiteralUnicodeEllipsis": true,
+    "allHave512CharacterPrefix": true,
+    "note": "14 historical stream summaries contain first 512 characters then \u2026, corroborated by the longer exact native input. Reader must not require byte-for-byte equality of this lossy summary to actual CommandLine; preserve full source input when the strict adjacent/single-call/name identity and prefix evidence agree."
+  }
+}

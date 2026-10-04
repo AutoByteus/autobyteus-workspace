@@ -1,0 +1,74 @@
+
+> autobyteus@1.4.94-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/projects-primary-nav-order/autobyteus-web
+> cross-env NUXT_TEST=true vitest utils/__tests__/mobileFeatureGates.spec.ts middleware/__tests__/mobileFeatureGate.global.spec.ts middleware/__tests__/feature-flags.global.spec.ts stores/capabilities/__tests__/createBoundNodeCapabilityStore.spec.ts stores/__tests__/applicationsCapabilityStore.spec.ts layouts/__tests__/default.spec.ts layouts/__tests__/default-drawer.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/projects-primary-nav-order/autobyteus-web
+
+stderr | utils/__tests__/mobileFeatureGates.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | middleware/__tests__/feature-flags.global.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/applicationsCapabilityStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | middleware/__tests__/mobileFeatureGate.global.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default-drawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/capabilities/__tests__/createBoundNodeCapabilityStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/capabilities/__tests__/createBoundNodeCapabilityStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/applicationsCapabilityStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | middleware/__tests__/feature-flags.global.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | middleware/__tests__/mobileFeatureGate.global.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default-drawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/mobileFeatureGates.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ layouts/__tests__/default.spec.ts (8 tests) 7ms
+ ✓ utils/__tests__/mobileFeatureGates.spec.ts (4 tests) 2ms
+ ✓ stores/capabilities/__tests__/createBoundNodeCapabilityStore.spec.ts (7 tests) 59ms
+ ✓ stores/__tests__/applicationsCapabilityStore.spec.ts (4 tests) 110ms
+ ✓ middleware/__tests__/mobileFeatureGate.global.spec.ts (4 tests) 3ms
+ ✓ middleware/__tests__/feature-flags.global.spec.ts (8 tests) 4ms
+ ✓ layouts/__tests__/default-drawer.spec.ts (4 tests) 79ms
+
+ Test Files  7 passed (7)
+      Tests  39 passed (39)
+   Start at  21:52:21
+   Duration  7.53s (transform 4.00s, setup 42.49s, collect 1.53s, tests 264ms, environment 1.93s, prepare 1.23s)
+

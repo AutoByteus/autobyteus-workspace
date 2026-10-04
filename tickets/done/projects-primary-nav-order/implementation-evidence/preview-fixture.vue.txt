@@ -1,0 +1,18 @@
+<template>
+  <main class="p-6">
+    <h1 class="text-xl font-semibold">Navigation implementation preview</h1>
+    <p class="my-3">Test-owned capability state; no backend or project data.</p>
+    <button class="rounded border px-3 py-2" @click="toggleApplications">Toggle Applications</button>
+    <button class="ml-3 rounded border px-3 py-2" @click="toggleProjects">Toggle Projects</button>
+  </main>
+</template>
+<script setup lang="ts">
+import { useProjectsCapabilityStore } from '~/stores/projectsCapabilityStore';
+import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore';
+const projects = useProjectsCapabilityStore();
+const applications = useApplicationsCapabilityStore();
+projects.$patch({ status: 'resolved', capability: { enabled: true, settingKey: 'ENABLE_PROJECTS', source: 'SERVER_SETTING' } });
+applications.$patch({ status: 'resolved', capability: { enabled: true, settingKey: 'ENABLE_APPLICATIONS', source: 'SERVER_SETTING', scope: 'BOUND_NODE' } });
+const toggleApplications = () => applications.$patch({ capability: { ...applications.capability!, enabled: !applications.isEnabled } });
+const toggleProjects = () => projects.$patch({ capability: { ...projects.capability!, enabled: !projects.isEnabled } });
+</script>

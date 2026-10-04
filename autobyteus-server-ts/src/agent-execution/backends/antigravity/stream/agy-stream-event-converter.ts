@@ -7,6 +7,7 @@ import { agyRecord, agyString, type AgyStreamMessage } from "./agy-stream-messag
 import type { AgyProviderFailureDiagnostic } from "./agy-provider-diagnostic-sink.js";
 import type { AgyNativeImagePathResolution } from "./agy-step-output-reader.js";
 import type { AgyBackgroundToolStep } from "./agy-background-task-monitor.js";
+import type { AgyNativeToolArgumentLookup } from "./agy-native-tool-arguments-reader.js";
 
 export type AgyNativeImagePathResolver = (stepIndex: number) => AgyNativeImagePathResolution;
 
@@ -45,7 +46,24 @@ export class AgyStreamEventConverter {
     return [this.event(AgentRunEventType.TURN_STARTED, { turn_id: turnId })];
   }
 
-  convert(message: AgyStreamMessage): AgentRunEvent[] {
+  /** Eligibility only: malformed messages still go through the existing convert error boundary. */
+  getPendingNativeToolArgumentLookup(message: AgyStreamMessage): AgyNativeToolArgumentLookup | null {
+    if (!this.turnId || message.event !== "step_update") return null;
+    const payload = message.step_update;
+    const index = payload.step_index;
+    if (payload.conversation_id !== this.conversationId || payload.step_type !== "tool" ||
+        typeof index !== "number" || !Number.isSafeInteger(index) || index < 0 ||
+        (payload.state !== "ACTIVE" && payload.state !== "DONE" && payload.state !== "ERROR") ||
+        this.toolStarts.has(index) || this.toolTerminals.has(index)) return null;
+    const info = agyRecord(payload.tool_info);
+    const name = agyString(payload.tool_name) ?? agyString(info?.name);
+    const summary = agyRecord(info?.parameters);
+    if (!name || name === "call_mcp_tool" || !summary ||
+        (agyString(payload.tool_name) && agyString(info?.name) && payload.tool_name !== info?.name)) return null;
+    return { stepIndex: index, toolName: name, summary };
+  }
+
+  convert(message: AgyStreamMessage, nativeArguments: Record<string, unknown> | null = null): AgentRunEvent[] {
     if (message.event === "init") return [];
     const payload = message.event === "result" ? message.result : message.step_update;
     if (agyString(payload.conversation_id) !== this.conversationId)
@@ -58,7 +76,7 @@ export class AgyStreamEventConverter {
     const state = agyString(payload.state);
     if (stepIndex === null || !stepType || !state) throw new Error("AGY_STREAM_INVALID_STEP");
     if (stepType === "agent_response") return this.agentResponse(payload, turnId, stepIndex, state);
-    if (stepType === "tool") return this.tool(payload, turnId, stepIndex, state);
+    if (stepType === "tool") return this.tool(payload, turnId, stepIndex, state, nativeArguments);
     return [];
   }
 
@@ -89,7 +107,8 @@ export class AgyStreamEventConverter {
     return events;
   }
 
-  private tool(payload: Record<string, unknown>, turnId: string, stepIndex: number, state: string): AgentRunEvent[] {
+  private tool(payload: Record<string, unknown>, turnId: string, stepIndex: number, state: string,
+    nativeArguments: Record<string, unknown> | null): AgentRunEvent[] {
     if (state !== "ACTIVE" && state !== "DONE" && state !== "ERROR") throw new Error(`AGY_STREAM_INVALID_TOOL_STATE: ${state}`);
     if (this.toolTerminals.has(stepIndex)) return [];
     const info = agyRecord(payload.tool_info);
@@ -101,8 +120,13 @@ export class AgyStreamEventConverter {
     const mcpCall = projectAgyMcpToolCall(name, parameters);
     const output = mcpCall ? projectAgyMcpToolOutput(info?.output ?? null) : info?.output ?? null;
     const invocationId = `agy-tool-${turnId}-${stepIndex}`;
-    const common = { turn_id: turnId, invocation_id: invocationId,
-      tool_name: mcpCall?.toolName ?? name, arguments: mcpCall?.arguments ?? parameters ?? {} };
+    // Native inputs are chosen once, before STARTED. Later summaries/details cannot
+    // change the canonical input already saved by the first-observation recorder.
+    const common = (name !== "call_mcp_tool" ? this.openTools.get(stepIndex) : undefined) ?? {
+      turn_id: turnId, invocation_id: invocationId, tool_name: mcpCall?.toolName ?? name,
+      arguments: name === "call_mcp_tool" ? mcpCall?.arguments ?? parameters ?? {}
+        : structuredClone(nativeArguments ?? parameters ?? {}),
+    };
     const events: AgentRunEvent[] = [];
     if (!this.toolStarts.has(stepIndex)) {
       this.toolStarts.add(stepIndex);

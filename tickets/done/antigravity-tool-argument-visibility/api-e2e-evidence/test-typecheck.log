@@ -1,0 +1,2 @@
+tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts(7,23): error TS7016: Could not find a declaration file for module 'ws'. '/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/node_modules/.pnpm/ws@8.19.0/node_modules/ws/wrapper.mjs' implicitly has an 'any' type.
+  If the 'ws' package actually exposes this module, consider sending a pull request to amend 'https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/ws'

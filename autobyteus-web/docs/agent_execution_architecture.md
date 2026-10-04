@@ -13,6 +13,13 @@ success, but must not be labeled as a verified shell exit-zero; explicit
 denial/error remains non-green. The server-owned runtime contract is in
 [Antigravity CLI Runtime](../../autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md).
 
+For newly recorded AGY native calls, existing Activity Arguments render the
+typed inputs already supplied by canonical events and saved projections. The
+frontend does not read native transcripts, infer omitted fields or repair old
+calls. Live and reopened cards therefore use the same recorded input snapshot;
+unsafe or unavailable detail remains the backend's verified summary. This adds
+no diff/output recovery, completeness badge or new expand/collapse interaction.
+
 For `grok_build` (Grok Build over ACP stdio), the backend likewise converts
 ACP session updates into these structured events, with Grok tools under
 canonical names (`run_bash`, `write_file`, `edit_file`, and Agent Tools such

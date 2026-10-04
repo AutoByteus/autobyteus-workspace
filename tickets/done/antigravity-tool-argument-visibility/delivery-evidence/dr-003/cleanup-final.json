@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-03T19:33:45.172077+00:00",
+  "ticketWorktreeRemoved": true,
+  "taskWorktreeRegistrationAbsent": true,
+  "worktreePrune": "Completed \u2014 no unrelated stale entries pruned",
+  "localTicketBranchDeleted": true,
+  "remoteTicketBranch": "Retained \u2014 deletion not required",
+  "releaseCloneRemoved": true,
+  "allUncommittedTaskEvidenceDurablyCopiedAndPushedBeforeRemoval": true,
+  "sharedUserEditsPreserved": {
+    "tickets/done/embedded-browser-open-tab-investigation/docs-sync-report.md": true,
+    "tickets/done/embedded-browser-open-tab-investigation/handoff-summary.md": true,
+    "tickets/done/embedded-browser-open-tab-investigation/release-deployment-report.md": true
+  },
+  "upstreamScratchBackup": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003",
+  "keptManualTestDataDeleted": false,
+  "userProductionDataMutated": false,
+  "unrelatedInstancesOrWorktreesRemoved": false
+}

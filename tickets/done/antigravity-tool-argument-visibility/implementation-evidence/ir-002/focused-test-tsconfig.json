@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "noEmit": true
+  },
+  "include": [
+    "tests/unit/agent-execution/backends/antigravity/agy-brain-file.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-native-tool-arguments-reader.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-native-argument-converter.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-native-argument-persistence.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

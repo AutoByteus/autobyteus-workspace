@@ -1,0 +1,7 @@
+{
+  "historicalWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility",
+  "durableRepository": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+  "historicalTicket": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility",
+  "archivedTicket": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-tool-argument-visibility",
+  "rule": "Replace worktree prefix with durableRepository, then /tickets/in-progress/antigravity-tool-argument-visibility/ with /tickets/done/antigravity-tool-argument-visibility/. Historical upstream logs/reports retain original bytes; current terminal manifest lists resolved paths."
+}

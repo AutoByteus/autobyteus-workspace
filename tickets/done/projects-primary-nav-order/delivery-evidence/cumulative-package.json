@@ -1,0 +1,92 @@
+{
+  "package": "projects-primary-nav-order",
+  "task_size": "Small",
+  "architectural_risk": "Low",
+  "route": "Direct low-risk",
+  "revisions": [
+    "SR-001",
+    "SR-002",
+    "IR-001",
+    "API-REV-001",
+    "DR-001",
+    "DR-002"
+  ],
+  "requirements_approval": "AP-001",
+  "user_acceptance": "UV-001",
+  "independent_review_artifacts": "N/A \u2014 not applicable",
+  "Product_supplements": "N/A \u2014 not applicable",
+  "final_artifact_root": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order",
+  "historical_path_mapping": {
+    "worktree_in_progress": "/Users/normy/autobyteus_org/autobyteus-worktrees/projects-primary-nav-order/tickets/in-progress/projects-primary-nav-order",
+    "durable_archive": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order"
+  },
+  "artifacts": {
+    "release-deployment-report.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/release-deployment-report.md",
+    "handoff-summary.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/handoff-summary.md",
+    "release-notes.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/release-notes.md",
+    "docs-sync-report.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/docs-sync-report.md",
+    "api-e2e-coverage-investigation.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/api-e2e-coverage-investigation.md",
+    "api-e2e-test-case-ledger.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/api-e2e-test-case-ledger.md",
+    "requirements-doc.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/requirements-doc.md",
+    "investigation-notes.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/investigation-notes.md",
+    "delivery-revision-record.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/delivery-revision-record.md",
+    "implementation-revision-record.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/implementation-revision-record.md",
+    "solution-revision-record.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/solution-revision-record.md",
+    "api-e2e-revision-record.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/api-e2e-revision-record.md",
+    "api-e2e-execution-coverage-report.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/api-e2e-execution-coverage-report.md",
+    "analysis-result.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/analysis-result.md",
+    "implementation-handoff.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/implementation-handoff.md",
+    "design-spec.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/design-spec.md"
+  },
+  "evidence": {
+    "upstream": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/api-e2e-evidence",
+    "integrated": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/delivery-evidence"
+  },
+  "durable_source_tests": [
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/composables/useShellPrimaryNavigation.ts",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/projects-primary-navigation-probe.mjs",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/fixtures/projects-primary-navigation.page.vue",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/package.json"
+  ],
+  "source_commit": "4e97e8a05d269f3076541e240387ae23d419d517",
+  "test_commit": "536e7675e6ba4322aa3767f863e6c4a97079a144",
+  "integrated_head": "7cf1911a0acd48029e4ae3bd9b9f1587bcfc8741",
+  "confidence": "Upstream 95%; integrated fresh focused/browser pass",
+  "release_deployment": "Not required \u2014 explicit UV-001 no new version/release",
+  "screenshot_supplement": "/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_fc29bf04d2dd4d5e97eaecca7ea57653/solution_designer_4d70731a76584fceaf1bc0632d0493f8/context_files/ctx_78a7d24a8574__image.png",
+  "delivery_result": "Delivery Completed",
+  "delivery_revision": "DR-002",
+  "ticket_commit": "7dba097dea553418216487f2d89d82bbd9245b02",
+  "personal_application_merge": "e340f0cd2f8e4214154174eb4c540ac4b7aeeae1",
+  "repository_finalization": "Completed",
+  "safe_cleanup": "Completed",
+  "version": "1.4.94-beta.1",
+  "complete_final_artifacts": {
+    "release-deployment-report.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/release-deployment-report.md",
+    "handoff-summary.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/handoff-summary.md",
+    "release-notes.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/release-notes.md",
+    "docs-sync-report.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/docs-sync-report.md",
+    "api-e2e-coverage-investigation.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/api-e2e-coverage-investigation.md",
+    "api-e2e-test-case-ledger.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/api-e2e-test-case-ledger.md",
+    "requirements-doc.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/requirements-doc.md",
+    "investigation-notes.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/investigation-notes.md",
+    "delivery-revision-record.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/delivery-revision-record.md",
+    "implementation-revision-record.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/implementation-revision-record.md",
+    "solution-revision-record.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/solution-revision-record.md",
+    "api-e2e-revision-record.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/api-e2e-revision-record.md",
+    "api-e2e-execution-coverage-report.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/api-e2e-execution-coverage-report.md",
+    "analysis-result.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/analysis-result.md",
+    "implementation-handoff.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/implementation-handoff.md",
+    "design-spec.md": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/design-spec.md"
+  },
+  "completion_receipts": [
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/delivery-evidence/user-verification.md",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/delivery-evidence/repository-finalization.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/delivery-evidence/ticket-push-verification.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/delivery-evidence/cleanup-preservation.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/delivery-evidence/cleanup-final.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order/delivery-evidence/shared-checkout-after.json"
+  ],
+  "remaining_blockers": []
+}
