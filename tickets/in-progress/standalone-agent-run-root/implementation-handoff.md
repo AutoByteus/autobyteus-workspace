@@ -26,7 +26,9 @@
 - Related architecture-review revision IDs: ARCH-REV-003 (ARCH-REV-002 for the SR-004 substance).
 - Related code-review revision IDs: CRR-001, CRR-002 (Pass), CRR-003. API/E2E revision IDs: API-REV-001. Delivery revision IDs: N/A.
 - Triggering finding IDs: CR-002 (API/E2E F-01). CR-001 was resolved in IR-002.
-- Code review status: CRR-002 Pass (CR-001 resolved by IR-002, score 9.3/10; `code-review-report.md`). The reviewer routed the package to `/api_e2e_engineer`.
+- Code review status:
+  - CRR-004 Pass: CR-002 resolved by IR-003, score 9.3/10 (`code-review-report.md`). The reviewer routed the package to `/api_e2e_engineer` for the AE-10 rerun and the web suites.
+  - Earlier: CRR-002 Pass (CR-001 resolved by IR-002).
 - Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`, branch `codex/standalone-agent-run-root`.
   - Base: `b37d7a934`.
   - Commits on the branch:
