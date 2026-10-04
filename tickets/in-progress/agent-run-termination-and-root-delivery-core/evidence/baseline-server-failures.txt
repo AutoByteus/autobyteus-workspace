@@ -1,0 +1,31 @@
+# Baseline failing tests on origin/personal @ 03d5db06b (2026-10-04)
+# Command: npx vitest run tests/unit/{agent-execution,agent-collaboration,agent-org-execution,agent-team-execution,standalone-agent-run-root} tests/integration/{standalone-agent-run-root,agent-team-execution,agent-org-execution}
+ Test Files  7 failed | 193 passed | 3 skipped (203)
+      Tests  27 failed | 1695 passed | 5 skipped (1727)
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+ FAIL  tests/unit/agent-execution/agent-api-status-projectors.test.ts > agent API status and runtime lifecycle projectors > projects identified and anonymous Autobyteus turns as current running work
+ FAIL  tests/unit/agent-execution/agent-api-status-projectors.test.ts > agent API status and runtime lifecycle projectors > serializes status without the removed interrupt capability
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > aborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > allows retry only after candidate abort confirms inactivity
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > claims the run id before the first backend await and rejects overlapping preparation
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates exactly once when a post-activation backend identity mismatch fails before attachment
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > detaches run resources and invokes exact-run MCP cleanup after accepted termination
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines attachment rollback when exact-run session deactivation fails
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rolls back already-attached run resources when a later attachment fails
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches accepted-but-active failure without removing or retrying
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches cleanup failure after exact removal and never releases twice
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > cancels through the exact run without releasing it and permits a fresh preparation
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > coalesces one committed finish attempt and caches successful finalization
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > rejects a missing or different exact instance before lower-level preparation
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries only after a rejected finish and releases once after acceptance
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal identity_mismatch as terminal without resource cleanup
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal not_found as terminal without resource cleanup
+ FAIL  tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > does not persist activation failure state and permits retry from prepared facts
+ FAIL  tests/unit/agent-execution/backends/autobyteus/events/autobyteus-status-projector.test.ts > projectAutoByteusAgentLifecycleSnapshot > lets current anonymous work establish running
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > correlates started/local-completed/raw output and admits it through the strict Team boundary
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > retains exact tool identity across a retry diagnostic
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > uses an exact direct raw provider tool name without inventing correlation
+ FAIL  tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts > AgentOrg status snapshot traversal > streams every root-owned and recursively Team-owned Agent exactly once across reselect
