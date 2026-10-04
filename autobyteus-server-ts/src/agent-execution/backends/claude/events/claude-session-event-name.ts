@@ -9,6 +9,7 @@ export enum ClaudeSessionEventName {
   STATUS_CHANGED = "session/status/changed",
   STATUS_COMPACTING = "session/status/compacting",
   COMPACT_BOUNDARY = "session/compactBoundary",
+  COMPACTION_FAILED = "session/compaction/failed",
   TOKEN_USAGE_UPDATED = "session/tokenUsageUpdated",
   ITEM_ADDED = "item/added",
   ITEM_COMPLETED = "item/completed",
