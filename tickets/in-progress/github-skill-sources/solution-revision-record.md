@@ -10,6 +10,7 @@
 | SR-005 | Evidence | User explains rationale | Ready for Approval | Ready for Approval | BEH-004 | Explicit choices override forgotten platform defaults |
 | SR-006 | Requirements | USER-APPROVAL-006 | Ready for Approval | Approved | All baseline IDs | Design authorized |
 | SR-007 | Design | Approved baseline + A-001–011 | Design N/A | Design Ready | All baseline IDs | Architecture Design Complete; Large/High |
+| SR-008 | Design | ARCH-REV-001 / AR-001 | SR-007 reviewed Fail | Revised Design Ready | REQ-005/007, BEH-003/004, UC-004 | Architecture Design Complete; Large/High; re-review required |
 
 ## SR-001 — Public GitHub skill sources baseline
 - Classification: Initial Baseline; triggering finding IDs: N/A.
@@ -68,3 +69,14 @@
 - Independent architecture/code review and downstream artifacts: N/A — not applicable yet; no tests or implementation claimed.
 - Approval basis: USER-APPROVAL-006, approved-requirements-sr006.md hash in design. No renewed approval required for technical design.
 - Routing: apply get_handoff_rules after persisting full handoff; result recorded in architecture-handoff.md. Next expected action: independent architecture review, not direct implementation.
+
+## SR-008 — Managed generation transition at runtime holder owner
+- Phase/classification: Design / Design Impact. Trigger: architecture_reviewer ARCH-REV-001, finding AR-001, material premise MP-001; report commit 56356b688.
+- Prior design SR-007 received Fail; revised design SR-008 Ready for re-review. Requirements Approved SR-006 remain unchanged.
+- Affected BEH-003/004, REQ-005/007, UC-004, SCN-003/future-run portion of SCN-001, AC-005/007; no scenario validity or intended-behavior change. MP-001 is an existing supported ＋/Send journey, not new scope.
+- Added evidence A-012–015 in investigation. Canonical design updates current-state/root-cause, publication/reference disposition, DS-003/006, new DS-008, ownership/interfaces/provenance, link transfer/holders, concrete file map, removal, sequencing and test plan. Effective preparation results avoid stale source references in bootstrap.
+- Retain generic different-source collisions and user-owned workspace protection. Transfer only trusted same-managed-source/name to current catalog generation. No requirement to stop old runs; no live-run context refresh promise.
+- Approval impact: none; exact approved basis USER-APPROVAL-006 / snapshot hash unchanged. Reviewer artifacts linked as reviewer-owned; not modified.
+- task_size=Large / architectural_risk=High retained, now explicitly includes runtime-holder transition; no implementation/test success claims.
+- AR-001 disposition: addressed by design proposal, closure belongs to architecture re-review. ARCH-REV-001 Fail remains authoritative for SR-007 until reviewer publishes later result.
+- Full cumulative re-review context: architecture-handoff.md. Apply rules and send revised package for architecture review; no direct implementation route.
