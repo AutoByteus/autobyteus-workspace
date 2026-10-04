@@ -8,6 +8,7 @@
 | API-REV-002 | `code_reviewer`, `code-review-report.md`, CRR-004 (round 4 Pass, CR-002 fix) | IR-003 (`782ec9f11`), CRR-003, CRR-004 | Fail / 86% | Fail / 87% |
 | API-REV-003 | `code_reviewer`, `code-review-report.md`, CRR-006 (round 6 Pass, F-02 fix) | SR-006, ARCH-REV-004, IR-004 (`eccea069b`), CRR-005, CRR-006 | Fail / 87% | **Pass / 93%** |
 | API-REV-004 | `code_reviewer`, CRR-008 (delivery re-entry DR-001) | DR-001, IR-005 (`3c7b62f53`), merge `1195f4356`, CRR-008 | Pass / 93% | **Pass / 93%** |
+| API-REV-005 | User request (real app quit/relaunch, own package, all root types) | head `e43b5dc27` (docs-only since API-REV-004) | Pass / 93% | **Pass / 95%** |
 
 ## Revision Entries
 
@@ -134,3 +135,24 @@ None.
   - Grok and LM Studio;
   - `agent-run.ts` at 498 effective lines;
   - `TESTING.md:222` (delivery).
+
+### API-REV-005 — Real desktop app quit/relaunch and crash relaunch with an imported test package; Pass
+
+- Trigger: the user asked for a test that shuts the application down, restarts it and continues the conversations, using our own agent package (individual agent, Agent Team, Agent Org, collaborators) on one runtime.
+- Delta: no code change. The surface is new: an isolated desktop app built from the worktree.
+- Coverage decisions: no durable test changes. The test package is retained as a fixture: `api-e2e-evidence/r5/sar-test-agents/`.
+- Cases: R5-A through R5-G (ledger #50–#60), all Pass.
+
+#### Prior Failure Resolution
+
+None.
+
+- Prior result and confidence: Pass, 93%.
+- Current result and confidence: **Pass, 95%**.
+- Remaining risks:
+  - Org list refresh after import;
+  - ERROR-level missing-trace logs at Team/Org creation;
+  - acronym title-casing in sender labels;
+  - CG-05;
+  - Grok and LM Studio;
+  - `agent-run.ts` at 498 lines.

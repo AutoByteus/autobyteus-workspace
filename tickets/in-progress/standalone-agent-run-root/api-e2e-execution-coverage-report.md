@@ -20,12 +20,41 @@
 - API/E2E Test-Case Ledger: `…/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `…/api-e2e-revision-record.md`
 - Evidence folder: `…/api-e2e-evidence/` (round-2 files prefixed `r2-`, round-3 files `r3-`)
-- Current API/E2E Revision ID: `API-REV-004`
-- Current Execution Round: 4
+- Current API/E2E Revision ID: `API-REV-005`
+- Current Execution Round: 5
 - Trigger: CRR-008 (delivery re-entry DR-001; IR-005 `3c7b62f53`; merge `1195f4356` of origin/personal@1b9739cad; head `dc0c702dc`)
 - Prior Round Reviewed: round 3 (API-REV-003, Pass)
-- Latest Authoritative Round: 4
+- Latest Authoritative Round: 5
 - Branch validated: `codex/standalone-agent-run-root` @ `1eda354f7` (code `eccea069b`); base `b37d7a934`
+
+## Round 5 Summary (authoritative; user-requested real-app quit/relaunch with an imported test package)
+
+- **Request.** The user asked to shut down the application, restart it, and continue the conversations, using our own agent package covering an individual agent, Agent Team, Agent Org and collaborators, on one runtime (Codex astra or Claude Sonnet 5).
+- **Surface.** TESTING.md isolated desktop instance built from this worktree (head `e43b5dc27`; code unchanged since API-REV-004), driven with Playwright over the app's CDP control port (trusted mouse/keyboard). Runtime: Codex `gpt-6-astra`.
+- **Fixture.** Package `api-e2e-evidence/r5/sar-test-agents/`, imported through Settings → Agent Packages:
+  - SAR Host (individual);
+  - SAR Helper (collaborator);
+  - SAR Squad (Team: lead/mate, lead→mate handoff);
+  - SAR Org (chief + Org-mounted SAR Ops lead/mate, chief→/ops handoff).
+
+| Case | Before shutdown | After graceful quit + relaunch | After hard kill + relaunch | Result |
+| --- | --- | --- | --- | --- |
+| Individual agent + collaborators | Code word ALPHA-SEVEN; `@SAR Helper` brief/report; `@SAR Squad` collaborator Team lead→mate→lead→host DONE (6 server comm messages); delegate_task copy; helper code word ECHO-FOUR | History and tree restored; host recalls ALPHA-SEVEN; helper recalls ECHO-FOUR; host→/sar_squad DONE; helper→/sar_host delivered (header `sender address: /sar_helper`) | Host recalls ALPHA-SEVEN; helper recalls ECHO-FOUR; host→/sar_squad DONE | Pass |
+| Agent Team + Team-root collaborator | Code word BRAVO-THREE; lead→mate CONFIRMED; `@SAR Helper` in the Team run; helper code word SIERRA-SIX | Lead recalls BRAVO-THREE; new handoff CONFIRMED; Team helper (restored via the registry) recalls SIERRA-SIX and messages /lead | Lead recalls BRAVO-THREE | Pass |
+| Agent Org + Org collaborator | Code word CHARLIE-NINE; chief→ops lead→mate→ops lead→chief DONE (tool approvals by Approve clicks); chief brings in /sar_helper → ORG-HELPER-READY | Chief recalls CHARLIE-NINE; new handoff DONE; Org helper→/chief delivered | Chief recalls CHARLIE-NINE | Pass |
+
+- **Shutdown and relaunch details.**
+  - The graceful quit logged "Received SIGTERM. Shutting down server..." with no shutdown errors.
+  - The hard kill (`kill -9` of the app process group, including its codex app-server) relaunched cleanly.
+  - 0 F-4 warnings. Final stop was graceful (`forced:false`).
+- **Observations (not failures; outside this ticket's changed code):**
+  - after a package import, the Agent Orgs list needed a manual Reload to show the new Org (docs promise refresh for Agents/Teams only);
+  - ERROR-level "Memory file missing …/raw_traces_active.jsonl" logs at Team/Org run creation for fresh members;
+  - the shared name formatter renders acronym addresses as "Sar Host" / "Sar Helper";
+  - Org runs default auto-approve to off.
+- **Result: Pass.** This round adds real-app quit/relaunch and crash-relaunch evidence for all three root types and their collaborators. Confidence is raised to 95% (lifecycle category 92% → 97%).
+
+---
 
 ## Round 4 Summary (authoritative; delivery re-entry DR-001. Round 3 below remains valid and carries forward)
 

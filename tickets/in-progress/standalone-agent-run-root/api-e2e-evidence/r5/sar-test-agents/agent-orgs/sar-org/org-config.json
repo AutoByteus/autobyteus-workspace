@@ -1,0 +1,11 @@
+{
+  "members": [
+    { "memberName": "chief", "ref": "agent-org-owned-agent:sar-org:sar-org-chief", "refType": "agent", "refScope": "org_local" },
+    { "memberName": "ops", "ref": "agent-org-owned-team:sar-org:sar-ops", "refType": "agent_team", "refScope": "org_local" }
+  ],
+  "handoffs": [
+    { "from": "/chief", "to": "/ops", "rules": ["When a user task needs execution, hand it to the ops team."] }
+  ],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

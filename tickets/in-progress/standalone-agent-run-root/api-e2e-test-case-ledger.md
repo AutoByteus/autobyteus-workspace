@@ -105,3 +105,39 @@
 - Last event: #49. All round-4 cases have terminal results.
 - Post-merge totals on the branch: full mention suite 4/4 in 4 of 7 runs. Claude DI-001 6/8; Codex first test 5/7. Upstream: 2/3 each, with identical failure signatures.
 - Temporary edits (afterAll data-dir keep) were reverted; the kept data dirs were deleted.
+
+## Round 5 (API-REV-005) — user-requested real desktop app quit/relaunch with an imported test package
+
+- Request (user): shut down the application, restart it, and continue the conversations. Use your own agent package covering individual agents, Agent Team, Agent Org and collaborators. One runtime is enough (Codex with the "astra" model, or Claude Sonnet 5).
+- Surface: TESTING.md isolated desktop instance built from this worktree (`pnpm --silent isolated-app start --build --keep`), driven like a user. The user's installed app and data are untouched.
+- Runtime: Codex `gpt-6-astra` (listed by `codex debug models`). The Claude catalog has no explicit "Sonnet 5" entry.
+- Package (fixture, retained): `api-e2e-evidence/r5/sar-test-agents/`. Contents: shared agents SAR Host and SAR Helper; Team SAR Squad (lead/mate, lead→mate handoff); Org SAR Org (direct chief + Org-mounted Team SAR Ops lead/mate, chief→/ops handoff).
+
+| Case ID | Journey | Requirement focus |
+| --- | --- | --- |
+| R5-A | Import the package through the app UI (local path); the agents, Team and Org appear | Fixture via the real import path |
+| R5-B | Individual agent SAR Host: code word; @SAR Helper (collaborator) brief/report; @SAR Squad (collaborator Team) handoff; delegate_task copy; direct message to the helper from its composer | REQ-001, AC-001/005/006 |
+| R5-C | Team run SAR Squad: code word; lead→mate handoff; @SAR Helper brought into the Team run (Team-root collaborator); message the helper | REQ-002, AC-002 |
+| R5-D | Org run SAR Org: code word; chief→/ops lead→mate→report; chief brings in SAR Helper by address | REQ-003, AC-001 Org |
+| R5-E | Quit the app while all three runs are active (`isolated-app restart`: graceful stop, then relaunch on the same data) | Restart |
+| R5-F | After relaunch, for each run: history intact; the root agent recalls its code word; collaborators, members and helpers receive new messages and answer; a new delegation flow works | Continue after restart |
+| R5-G | Hard kill of the whole app, relaunch on the same data, one continuation per run | Crash restart |
+
+| Sequence | Case ID | Timestamp | Event | Command / Entry Point | Expected | Observed | Result | Evidence | Next |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 50 | R5 | start | Started | `pnpm --silent isolated-app start --build --keep` (worktree head `e43b5dc27`; commits since `dc0c702dc` are docs-only) | Instance ready | building | — | `r5/isolated-start.json`, `r5/isolated-build.log` | — |
+| 51 | R5 | build | Completed | Isolated app built and started | Ready | `iso-53160-67d9`, control 53160, backend 53161, own data root (kept) | Pass | `r5/isolated-start.json` | — |
+| 52 | R5-A | — | Completed | Settings → Agent Packages → typed the local path → Import Package (Playwright trusted input) | Package visible | "Agent package imported. sar-test-agents Local Path, Shared Agents 2, Team-local Agents 2, Teams 1"; GraphQL lists SAR Org, SAR Squad, SAR Host, SAR Helper. Observation: the Agent Orgs page needed a manual Reload to show SAR Org after import (docs promise refresh for Agents/Teams only; outside this ticket) | Pass | `r5/shots/r5-04-imported.png`, `r5-20c-org-reload.png` | Note for backlog |
+| 53 | R5-B | — | Completed | SAR Host run (Codex gpt-6-astra, auto-approve) via Agents → Run. Composer: code word ALPHA-SEVEN; `@SAR Helper` brief → "From Sar Helper: HELPER-READY"; `@SAR Squad` task → lead→mate CONFIRMED→lead→host "From Lead: DONE" (server comm log confirms all 6 messages); delegate_task copy of /sar_helper (copy run created); helper composer: code word ECHO-FOUR | All work | All observed | Pass | `r5/shots/r5-09…r5-13*` | — |
+| 54 | R5-C | — | Completed | SAR Squad Team run (Codex gpt-6-astra, auto-approve). Lead: code word BRAVO-THREE; task → get_handoff_rules → mate "CONFIRMED"; `@SAR Helper` in the lead composer → "From Sar Helper: TEAM-HELPER-READY" (Team-root collaborator in the tree); helper composer: code word SIERRA-SIX | All work | All observed | Pass | `r5/shots/r5-16…r5-19*` | — |
+| 55 | R5-D | — | Completed | SAR Org run (Codex gpt-6-astra; Org auto-approve default off, so tool calls were approved by clicking Approve on each member's page). Chief: code word CHARLIE-NINE; task → chief→/ops lead→mate CONFIRMED→ops lead→chief "From Lead: DONE"; chief `send_message_to /sar_helper` → helper brought into the Org → "From Sar Helper: ORG-HELPER-READY" | All work | All observed (7 approvals across chief/ops lead/ops mate/helper pages) | Pass | `r5/shots/r5-23…r5-33*` | — |
+| 56 | R5-E | pre-restart | Checkpoint | State snapshot before quitting | — | Active runs: agent `sar_host_3489…`, team `sar_squad_68ff…`, org `sar_org_2369…`; host view active, 7 comm messages; statuses helper idle, copy offline, squad lead/mate idle | — | `r5/pre-restart-host-view.json` | Quit and relaunch |
+| 57 | R5-E | restart 1 | Completed | `pnpm --silent isolated-app restart iso-53160-67d9` with all three runs active | Graceful quit + relaunch on the same data | Server log "Received SIGTERM. Shutting down server..."; no shutdown errors; relaunched pid 88709, same ports and data root | Pass | `r5/isolated-restart-1.json`, `r5/isolated-app.log` | — |
+| 58 | R5-F | after restart 1 | Completed | Reopen each run from history; continue through the composers | History intact; conversations continue | **Agent:** tree restored (collaborator, collaborator Team lead/mate, copy); "From Sar Helper:" / "From Lead:" history; host (Offline) recalled "ALPHA-SEVEN"; collaborator recalled "ECHO-FOUR"; host → /sar_squad → "From Lead: DONE"; collaborator → /sar_host "HELLO-AFTER-RESTART" delivered (header carries `sender address: /sar_helper`); extra: collaborator → /sar_squad → DONE. **Team:** lead (Offline) recalled "BRAVO-THREE"; new task → mate "CONFIRMED"; Team-root collaborator helper (Offline, restored via registry) recalled "SIERRA-SIX" and messaged /lead → lead shows "From Sar Helper: TEAM-HELLO-AFTER-RESTART". **Org:** chief (Offline) recalled "CHARLIE-NINE"; new task chief → ops lead → mate → ops lead → chief "From Lead: DONE"; Org helper → /chief "ORG-HELLO-AFTER-RESTART" | Pass | `r5/shots/r5-41…r5-66*` | — |
+| 59 | R5-G | hard kill | Completed | `kill -9 -<pgid>` of the whole app process group (incl. its codex app-server), then `isolated-app restart` | Relaunch on the same data and continue | Relaunched pid 64736. Host recalled ALPHA-SEVEN; collaborator ECHO-FOUR; Team lead BRAVO-THREE; Org chief CHARLIE-NINE; host → /sar_squad → "From Lead: DONE" | Pass | `r5/isolated-restart-2-after-kill.json`, `r5/shots/r5-70…r5-81*` | — |
+| 60 | R5 | wrap | Completed | Log scan; stop; cleanup | No product errors | Only noise: Codex `deprecationNotice` "app-server message was not routed"; "Memory file missing …/raw_traces_active.jsonl" at Team/Org run creation for fresh members (ERROR-level log noise, configured Team/Org members, not standalone code; not checked on base). 0 F-4 warnings. One operator slip: a message landed in the Org chief composer; its `send_message_to /sar_squad` was denied (no side effect). `isolated-app stop` graceful (`forced:false`), ports released, data root deleted; other people's instances untouched | Pass | `r5/isolated-stop.json` | Observations: Org list refresh after import; ERROR-level missing-trace log; acronym title-casing ("Sar Host") |
+
+### Round 5 Reconciliation
+
+- All R5 cases have terminal results: R5-A through R5-G Pass.
+- Evidence: `api-e2e-evidence/r5/` (package fixture `sar-test-agents/`, Playwright steps `probes/`, screenshots `shots/`, app log and lifecycle JSON).
