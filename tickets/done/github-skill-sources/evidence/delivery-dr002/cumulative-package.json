@@ -1,0 +1,123 @@
+{
+  "package": "github-skill-sources",
+  "deliveryRevision": "DR-002",
+  "result": "Delivery Completed",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "route": "Independent architecture/source/API-E2E/proportional test reviews",
+  "requirements": "SR-006 / USER-APPROVAL-006",
+  "design": "SR-008",
+  "architecture": "ARCH-REV-002 Pass",
+  "implementation": "IR-001",
+  "sourceReview": "CRR-001 Pass",
+  "apiValidation": "API-REV-002 Pass (95%, API-owner attributed)",
+  "testReview": "CRR-002 Pass",
+  "userVerification": "USER-VERIFY-DR002",
+  "release": "v1.4.94-beta.4",
+  "releaseCommit": "517409d404a0731675943735c0810348000cb2e0",
+  "canonicalArtifacts": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/api-e2e-coverage-investigation.md",
+      "sha256": "a7a4aac7326b40679e745e7014ce8ad1c0e51b8c29beb07ae6c02a9a664d0527"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/api-e2e-execution-coverage-report.md",
+      "sha256": "1585276c88969bb259527a5ce7221eaec2d2df9cd5e9c2f7cdace3158fa04a81"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/api-e2e-revision-record.md",
+      "sha256": "58a0aad750599980b5979edccad972cbb5e7a7df14e95a2f2157ba66d2b3a0d9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/api-e2e-test-case-ledger.md",
+      "sha256": "71713256c2ea21a8f247cf6d85eeabd8fe886456f6f7444714c6dddf8f505a56"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/api-e2e-test-review-report.md",
+      "sha256": "eba39cb2771fdf84b450580cfd42c688e1ff0b97f913f88afa28368d689f3c7e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/approval-request.md",
+      "sha256": "69589310da39d37d1ec012d7285091f8caf4b43ad83af7462c8c6cb72e7c48fc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/approved-requirements-sr006.md",
+      "sha256": "65035d7ba2b63e33eef2e8c8bbd72066cfb0f4148eb129fc798aec004d4dccb8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/architecture-handoff.md",
+      "sha256": "2c18aa3d606798ef677da2b4686e5038ea5fcff6e90b4c1e95f268b330bfedc8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/architecture-review-revision-record.md",
+      "sha256": "9470466c782a17c30c188b9b302fe600367bd749d321ffa0721630eeb687597c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/code-review-report.md",
+      "sha256": "7ce23fc936f3f8439d362bd0167faa3c60d3623b810327948c6fa2625f3805c0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/code-review-revision-record.md",
+      "sha256": "17186f76dc130b9336582cec33d757e41fd2a81c4c6b109df87f590d8db86322"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/delivery-revision-record.md",
+      "sha256": "e63af1b41e28020adc29704c73ab319f75280943e583b79a24a80ff14d800785"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/design-review-report.md",
+      "sha256": "d48bd8d1e3c516bffb1a5446d6a057494a882b90a25a45e6309455c4a7278939"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/design-spec.md",
+      "sha256": "272160df4f771d10d01c22fe0413b05513581fa18cf14bf044f323124a0c1f3f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/docs-sync-report.md",
+      "sha256": "1882235ccb1db853234d9fd2b49f72c468632fe21151261acdc8c8e19a7b7675"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/handoff-summary.md",
+      "sha256": "a87b8d03138a9f18c608a92ba307698b3169d744c829f6d5f2309eb0eb6bb0a9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/implementation-handoff.md",
+      "sha256": "55817721a3f3d8a9c1a49b63d5b8ec43c75f99c772b1b31a96d796da53f24e76"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/implementation-revision-record.md",
+      "sha256": "ebf8347c7dfb347814470f8925ed3f7c788dd7a7c9e1a4e58d672b53f31a0e4e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/investigation-notes.md",
+      "sha256": "f75d2b119b8a53d1296bc344ba469e939d8896cb829be267b60060c42c918fc0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/release-deployment-report.md",
+      "sha256": "987fe88b4a389261dba0c4f1ccd22f671c794652f5e2efd336591fa0be893b6f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/release-notes.md",
+      "sha256": "fdc9aade5e58dccf3849534eef36064ddb7b534aca757c612cbe9ad3efa8f7f4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/requirements-doc.md",
+      "sha256": "388b1fff37d90a0b408f8d5cbe7727e14bba3c08b72ad9c5ca04ed891ad69fd7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/solution-revision-record.md",
+      "sha256": "c481f09371809e53578ec924bed561c88b60f2fc0801b7219b6dd98c69ba40b9"
+    }
+  ],
+  "currentEvidence": [
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/evidence/delivery-dr001-checks.md",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/evidence/delivery-dr001-web/result.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/evidence/delivery-dr001-web/provider.jsonl",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/evidence/delivery-dr002/user-verification.md",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/evidence/delivery-dr002/workflows.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/evidence/delivery-dr002/published-release.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/evidence/delivery-dr002/asset-verification.json",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/evidence/delivery-dr002/ios-retry.md",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/github-skill-sources/evidence/delivery-dr002/cleanup-receipt.json"
+  ]
+}

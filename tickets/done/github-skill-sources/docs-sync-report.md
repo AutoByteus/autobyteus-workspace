@@ -3,7 +3,7 @@
 ## Scope and result
 - DR-001, 2026-10-04; trigger: CRR-002 proportional API/E2E Test Review Pass at `187cab01a`.
 - Classification preserved: **Large / High; independently reviewed route**.
-- Docs sync **Pass / Updated**. DR-002 user verification received; finalization/new beta in progress, not yet Delivery Completed.
+- Docs sync **Pass / Updated**. DR-002 user verification received; repository finalization and beta publication Completed. Final cleanup/receipt is tracked in release-deployment-report.md.
 - Bootstrap base: `origin/personal` at `278fc7ee8eccf3fdcbdbbe9696f8689e8b1c89c0`.
 - Freshly fetched base: `1b9739cadba18125ac766b458fc2e4c0d392044e`.
 - Integrated by conflict-free merge `7bb0b639560924601af0298629d0c5202b755ff9` before delivery-owned edits. Candidate was clean; no safety checkpoint needed.
@@ -29,10 +29,9 @@
 - Physical-root-only collision description is replaced by the narrowly authorized managed-generation transition; unrelated/user-owned paths remain protected.
 - Local-folder registration was extended, not removed. Reload still scans installed files rather than checking remote revisions.
 
-## Continuation
-- No unresolved documentation or implementation finding.
-- Explicit user Windows/Electron-shell exclusion is preserved; neither is a delivery blocker or claimed pass.
-- Next: user verifies the integrated feature; then refresh target again and complete applicable finalization gates. No target merge, push, release, deployment or ticket archival performed.
-
-## DR-002 continuation
-User verification/new-beta authorization: USER-VERIFY-DR002. Post-verification target unchanged; no effective implementation/documentation change or rerun required. DR-001 docs remain accurate. Ticket archived before final commit; repository/release receipts will be in release-deployment-report.md.
+## Final delivery continuation — DR-002
+- No unresolved documentation/implementation finding; Delivery Completed.
+- USER-VERIFY-DR002 received; refreshed target unchanged, so no new integration/rerun required. DR-001 documentation remains accurate.
+- Ticket archived before final commit; target finalized and v1.4.94-beta.4 published, safe cleanup completed. Exact release/recovery/cleanup receipts in release-deployment-report.md.
+- Windows/Electron-shell feature-testing exclusion preserved; release packaging jobs do not redefine that scope.
+- Next: push the docs-only final receipt and return the cumulative terminal package through the handoff-rule-selected recipient. Original DR-001 verification-hold report is retained in evidence/delivery-dr002/prior-docs-sync-report.md.

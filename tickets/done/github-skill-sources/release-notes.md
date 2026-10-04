@@ -1,6 +1,6 @@
 # Release Notes — GitHub Skill Sources
 
-Prepared for verification; this feature has not been published by this delivery round.
+Published in **v1.4.94-beta.4** after USER-VERIFY-DR002. This is the archived functional summary; the documented beta workflow publishes generated GitHub notes.
 
 - Add public GitHub repository-root URLs in **Skills → Sources**, alongside existing local folders. Root skills and supported collections become ordinary catalog skills.
 - See automatic checks when Sources opens and manually recheck. Updates are explicit, confirmed whole-source replacements; failed preparation keeps the prior install.

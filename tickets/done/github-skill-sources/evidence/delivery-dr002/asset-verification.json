@@ -1,0 +1,10 @@
+{
+  "prerelease": true,
+  "draft": false,
+  "assets": 17,
+  "updaterVersions": "All 1.4.94-beta.4",
+  "updaterAssetReferences": "All exist",
+  "androidSha256": "be927beff27a8704bc849d2bed6d828ec821a7823338e12f477036ba10f8d267",
+  "stableLatest": "v1.4.93",
+  "desktopBinaryDownloadAndInstall": "Not performed; CI packaging/publication receipts only"
+}

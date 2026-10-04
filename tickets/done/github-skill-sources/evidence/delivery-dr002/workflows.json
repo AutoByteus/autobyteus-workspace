@@ -1,0 +1,34 @@
+[
+  {
+    "conclusion": "success",
+    "databaseId": 37222785493,
+    "headSha": "517409d404a0731675943735c0810348000cb2e0",
+    "name": "Android APK Release",
+    "status": "completed",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37222785493"
+  },
+  {
+    "conclusion": "success",
+    "databaseId": 37222785591,
+    "headSha": "517409d404a0731675943735c0810348000cb2e0",
+    "name": "iOS App Store Connect Release",
+    "status": "completed",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37222785591"
+  },
+  {
+    "conclusion": "success",
+    "databaseId": 37222785502,
+    "headSha": "517409d404a0731675943735c0810348000cb2e0",
+    "name": "Desktop Release",
+    "status": "completed",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37222785502"
+  },
+  {
+    "conclusion": "success",
+    "databaseId": 37222785604,
+    "headSha": "517409d404a0731675943735c0810348000cb2e0",
+    "name": "Server Docker Release",
+    "status": "completed",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37222785604"
+  }
+]
