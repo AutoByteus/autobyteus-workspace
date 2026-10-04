@@ -90,6 +90,29 @@ The probe stops its exact instance and removes its own data/source fixtures on
 success or failure. Inspect cleanup results as well as case results; unrelated
 instances and the user's app/data must remain untouched.
 
+### Project and Task Description Voice Regression
+
+Run the full Projects browser/API probe with optional native-browser voice cases:
+
+```bash
+pnpm -C autobyteus-web test:e2e:projects --voice-input --output-dir=<fresh-directory>
+```
+
+The existing probe builds this worktree's server, creates disposable SQLite
+nodes, and owns Nuxt/Chrome and cleanup. Chrome and installed dependencies are
+required; `--skip-server-build` is valid only after a current-worktree server build.
+`--ledger-file=<initialized-absolute-path>` appends every case's result. Relative
+output paths resolve from `autobyteus-web/`; existing output directories are refused.
+
+The six optional cases use real project/task routes, editors, voice store,
+native browser capture/AudioWorklet and real API/database reads/writes. They cover
+create/edit append, typing and explicit save, optional blank descriptions,
+quiet success, error/no-speech retry, recording cancellation and late-result
+rejection after navigation. Extension discovery and transcription IPC are fixture
+responses; Chrome supplies synthetic microphone input with a test permission
+grant. This does not prove physical microphones, OS permission dialogs, model
+quality, Electron IPC or packaged-shell behavior. No user app/data is used.
+
 ### Composer Voice Lifetime Regression
 
 Run from the repository root after installing workspace dependencies, building

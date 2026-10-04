@@ -1,0 +1,42 @@
+
+> autobyteus@1.4.94-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/task-voice-success-cleanup/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/projects/__tests__/ProjectEditor.spec.ts components/projects/__tests__/ProjectVoiceStatus.spec.ts components/projects/__tests__/TaskDescriptionComposer.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/task-voice-success-cleanup/autobyteus-web
+
+stderr | components/projects/__tests__/TaskDescriptionComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectVoiceStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/projects/__tests__/ProjectVoiceStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/TaskDescriptionComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/projects/__tests__/ProjectVoiceStatus.spec.ts (7 tests) 16ms
+ ✓ components/projects/__tests__/TaskDescriptionComposer.spec.ts (1 test) 14ms
+ ✓ components/projects/__tests__/ProjectEditor.spec.ts (9 tests) 89ms
+
+ Test Files  3 passed (3)
+      Tests  17 passed (17)
+   Start at  08:21:37
+   Duration  6.97s (transform 3.65s, setup 18.07s, collect 307ms, tests 119ms, environment 763ms, prepare 524ms)
+
