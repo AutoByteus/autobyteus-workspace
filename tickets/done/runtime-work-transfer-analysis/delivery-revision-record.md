@@ -7,6 +7,7 @@ The latest docs-sync-report.md, handoff-summary.md and release-deployment-report
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API-REV-001 Pass (IR-001 / SR-013) | N/A | Integration + docs sync Pass; Blocked awaiting user verification | docs-sync-report.md, handoff-summary.md, release-deployment-report.md |
+| DR-002 | User finalization authorization (no release) | DR-001 Blocked on verification | Re-integrated, rechecked, archived, finalized into origin/personal | handoff-summary.md, docs-sync-report.md, release-deployment-report.md |
 
 ## Revision Entries
 
@@ -26,3 +27,19 @@ The latest docs-sync-report.md, handoff-summary.md and release-deployment-report
 - Why this baseline was recorded: it records the completed delivery preparation. Delivery itself is not complete.
 - Next recipient/action: user verifies the candidate using the handoff-summary.md checklist. Then delivery refreshes the target, archives the ticket, commits, pushes, merges into personal, cleans up, and sends the terminal return.
 - Remaining blockers, rollback concerns, or untested scope: user verification. Validation ran on macOS only, and the live 30 s keepalive was not reproduced (OBS-4). OBS-1..OBS-3 are non-blocking follow-up candidates.
+
+### DR-002 — User-authorized finalization without release
+
+- Delivery round and trigger: round 2. The user said "now finalize, no need to release a new version."
+- Triggering upstream report, verification, or evidence: explicit user acceptance. No manual checklist result is claimed.
+- Prior authoritative result: DR-001, Blocked awaiting user verification.
+- Current authoritative result: origin/personal advanced to 7d880ee7e (8 unrelated commits, no file overlap). Delivery edits were protected in be72f056c, then merged into 1cb4b1e13. Rerun: 113/113 server unit tests, src typecheck, 118/118 web tests, all pass. Renewed verification is not needed because this ticket's user-facing state is unchanged. Ticket archived. Finalization: commit, push the ticket branch, fast-forward origin/personal through a detached target worktree, then clean up. The observed results are in release-deployment-report.md.
+- Docs sync report: docs-sync-report.md (DR-002 continuation; still accurate)
+- Handoff summary: handoff-summary.md (DR-002 section)
+- Release/publication/deployment report: release-deployment-report.md (authoritative for finalization and cleanup results)
+- Integration and post-integration verification: as above.
+- User verification/finalization state: authorized; release is not required.
+- Terminal return to `/solution_designer`: sent only after finalization and cleanup are confirmed (see release-deployment-report.md "Final Status").
+- Why this delivery revision was recorded: the user authorization changes the delivery state from held to finalizing.
+- Next recipient/action: finalize, clean up, then send the terminal return to /solution_designer.
+- Remaining blockers, rollback concerns, or untested scope: no blocker. Validation ran on macOS only. OBS-1..OBS-4 remain follow-up candidates.
