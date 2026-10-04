@@ -1,0 +1,602 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:83030) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-04T10:42:24.654Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/data/.env
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+Skill name 'shared-skill' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/data/agents/pkg-agent/skills/shared-skill', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias/shared-skill'.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+Agent definition cache populated with 44 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[2026-10-04T10:42:24.748Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[2026-10-04T10:42:24.762Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-nM4qrG/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-nM4qrG/data/.env
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+Agent definition cache populated with 44 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[2026-10-04T10:42:24.796Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[2026-10-04T10:42:24.802Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-wRCoh0/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-wRCoh0/data/.env
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+Agent definition cache populated with 44 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[2026-10-04T10:42:24.820Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[2026-10-04T10:42:24.827Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/data/.env
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill name 't4-only' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/data/skills/t4-only', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills/t4-only'.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+Agent definition cache populated with 44 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[2026-10-04T10:42:24.848Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[2026-10-04T10:42:24.857Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/data/.env
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill name 'desk-beta' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/ok-package/agents/beta-helper/skills/desk-beta', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills/desk-beta'.
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+Agent definition cache populated with 44 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[2026-10-04T10:42:24.891Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[2026-10-04T10:42:24.897Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Kwjv6H/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Kwjv6H/data/.env
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+Skill name 'desk-alpha' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Kwjv6H/data/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Kwjv6H/local-package/agents/desk-helper/skills/desk-alpha'.
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+Agent definition cache populated with 44 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[2026-10-04T10:42:24.926Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[2026-10-04T10:42:24.934Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v8ykUK/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v8ykUK/data/.env
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+Agent definition cache populated with 44 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[2026-10-04T10:42:25.311Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[2026-10-04T10:42:25.318Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-bTq67X/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-bTq67X/data/.env
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+Skill name 'org-writer-skill' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-bTq67X/data/skills/org-writer-skill', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-bTq67X/data/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill'.
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+Agent definition cache populated with 44 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[2026-10-04T10:42:25.339Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[2026-10-04T10:42:25.345Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-mj6FOM/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-mj6FOM/data/.env
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stderr | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-HmC2Gl/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-lpJco8/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-ZBUtWn/codex-home/skills
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+Agent definition cache populated with 44 items.
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[2026-10-04T10:42:25.377Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > DEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[2026-10-04T10:42:25.383Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+ ❯ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts (9 tests | 2 failed) 730ms
+     ✓ AC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there 59ms
+     × AR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched 40ms
+     ✓ AC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted 25ms
+     ✓ AC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used 30ms
+     ✓ AC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins 40ms
+     ✓ AC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy 37ms
+     × AC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back 384ms
+     ✓ DEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not 27ms
+     ✓ DEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load 37ms
+stdout | tests/unit/skills/github/runtime-generation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/skills/github/runtime-generation.test.ts (15 tests) 485ms
+stdout | tests/unit/skills/github/source-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/skills/github/source-lifecycle.test.ts > GitHub skill source lifecycle through its public owner > rejects conflicts as one operation, while runtime defaults remain notices
+Skill 'writer': '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-zJnUoX/data/skill-sources/github/4d203a90-0521-4ae1-8db8-f1ea2b636420/generations/27dab84c-9fa9-475a-9e53-cadcebb4ac8a/repository' takes precedence; ignoring the runtime default copy '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-zJnUoX/runtime-default/writer'.
+
+stderr | tests/unit/skills/github/source-lifecycle.test.ts > GitHub skill source lifecycle through its public owner > rejects conflicts as one operation, while runtime defaults remain notices
+Skill name 'writer' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-zJnUoX/data/skill-sources/github/4d203a90-0521-4ae1-8db8-f1ea2b636420/generations/27dab84c-9fa9-475a-9e53-cadcebb4ac8a/repository', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-zJnUoX/runtime-default/writer'.
+
+ ✓ tests/unit/skills/github/source-lifecycle.test.ts (26 tests) 363ms
+ ✓ tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts (16 tests) 42ms
+stdout | tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts (11 tests) 391ms
+ ✓ tests/unit/agent-execution/backends/shared/workspace-skill-materializer-collision-policy.test.ts (8 tests) 34ms
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:83503) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > imports root/support files, reuses equivalent URLs, and retains all fields on query and Reload
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-IN0mS9/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-IN0mS9/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > checks without replacement, retains offline availability, and updates a collection with disabled choices
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-RNAIm6/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-RNAIm6/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > maps conflicts with both paths and rejects the whole source without partial publication
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-GNprf2/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-GNprf2/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > retains REMOVING after deletion fault and retries through the API after owner reconstruction
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-8OnDzo/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-8OnDzo/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > keeps local mutations and Reload usable with a malformed managed registry without rewriting it
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-i7R5gd/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-i7R5gd/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > keeps local mutations and Reload usable with a malformed managed registry without rewriting it
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: AUTOBYTEUS_SKILLS_PATHS
+Server setting 'AUTOBYTEUS_SKILLS_PATHS' updated
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > keeps local mutations and Reload usable with a malformed managed registry without rewriting it
+Server setting 'AUTOBYTEUS_SKILLS_PATHS' updated
+
+ ✓ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts (5 tests) 236ms
+stdout | tests/unit/agent-packages/agent-package-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts (11 tests) 217ms
+stderr | tests/unit/skills/services/skill-service.test.ts > SkillService > returns resolved skills by configured names and skips unknown entries
+Skill 'missing' could not be resolved via SkillService. Skipping.
+
+stderr | tests/unit/skills/services/skill-service.test.ts > SkillService > prefers standalone skills over bundled canonical agent package skills when names collide
+Skill name 'requirements-engineer' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-ZO6P8E/skills/requirements-engineer', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-ZO6P8E/package-root/agents/requirements-engineer/skills/requirements-engineer'.
+
+stdout | tests/unit/skills/services/skill-service.test.ts > SkillService > returns a skill file tree
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-S9HZFZ/skills/tree_skill' with max_depth=null
+
+stdout | tests/unit/skills/services/skill-service.test.ts > SkillService > returns a skill file tree
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-S9HZFZ/skills/tree_skill' completed in 0.0040 seconds.
+
+ ✓ tests/unit/skills/services/skill-service.test.ts (42 tests) 159ms
+stdout | tests/unit/agent-packages/agent-package-skill-name-validation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-packages/agent-package-skill-name-validation.test.ts (7 tests) 77ms
+stdout | tests/unit/skills/services/skill-catalog-one-per-name.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/skills/services/skill-catalog-one-per-name.test.ts (11 tests) 66ms
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:83878) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > creates and queries a skill
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-bG57qa
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-bG57qa/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > does not expose removed skill history fields, operations, or types
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-Olv3Eq
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-Olv3Eq/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-I1xMZo
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-I1xMZo/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-I1xMZo/skills/file_skill' with max_depth=null
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-I1xMZo/skills/file_skill' completed in 0.0020 seconds.
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > reloads the skill catalog after external file edits and returns refreshed sources
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-jSv1gm
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-jSv1gm/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > deletes a skill
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-vusadg
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-vusadg/.env
+
+ ✓ tests/e2e/skills/skills-graphql.e2e.test.ts (5 tests) 693ms
+stdout | tests/unit/skills/github/archive-boundary.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/skills/github/archive-boundary.test.ts (21 tests) 81ms
+stderr | tests/unit/skills/services/skill-service-all-installed-scope.test.ts > SkillService ALL_INSTALLED skill scope > keeps listSkills precedence: a global skill wins over a bundled skill with the same name
+Skill name 'global-writer' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-all-installed-VGPqDc/skills/global-writer', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-all-installed-VGPqDc/autobyteus-agents/agents/research-engineer/skills/global-writer'.
+
+ ✓ tests/unit/skills/services/skill-service-all-installed-scope.test.ts (9 tests) 86ms
+ ✓ tests/unit/skills/services/skill-catalog-agent-orgs.test.ts (7 tests) 62ms
+stdout | tests/unit/skills/services/skill-sources-management.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/skills/services/skill-sources-management.test.ts
+Initialized server settings service with 22 predefined settings
+
+stderr | tests/unit/skills/services/skill-sources-management.test.ts > SkillService skill source management > prefers the default directory when duplicates exist
+Skill name 'shared_skill' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-src-ws7N0j/default_skills/shared_skill', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-src-ws7N0j/extra_skills/shared_skill'.
+
+ ✓ tests/unit/skills/services/skill-sources-management.test.ts (15 tests) 27ms
+ ✓ tests/unit/skills/github/github-client.test.ts (5 tests) 17ms
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (32 tests) 18ms
+stdout | tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts > grok_build runtime registration > restores from the stored Grok session id and references it as the run session
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+
+ ✓ tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts (6 tests) 12ms
+ ✓ tests/unit/skills/loader.test.ts (10 tests) 11ms
+stderr | tests/unit/skills/disabled-skills-store.test.ts > DisabledSkillsStore > handles corrupted file gracefully
+Failed to parse disabled_skills.json: SyntaxError: Unexpected token 'o', "not valid json {{{" is not valid JSON. Starting with empty list.
+
+ ✓ tests/unit/skills/disabled-skills-store.test.ts (10 tests) 11ms
+ ✓ tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts (2 tests) 6ms
+stdout | tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts (4 tests) 6ms
+ ✓ tests/unit/agent-execution/backends/codex/codex-workspace-skill-materializer.test.ts (2 tests) 6ms
+ ✓ tests/integration/skills/skill-integration.test.ts (1 test) 6ms
+ ✓ tests/unit/agent-packages/github-repository-source.test.ts (3 tests) 3ms
+ ✓ tests/unit/agent-packages/github-agent-package-installer.test.ts (2 tests) 2ms
+ ✓ tests/unit/skills/domain/models.test.ts (2 tests) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+GraphQLError: Duplicate skill names: shared-skill
+ ❯ toSkillNameConflictGraphqlError src/api/graphql/errors/skill-name-conflict-graphql-error.ts:11:7
+      9| export const toSkillNameConflictGraphqlError = (error: unknown): unkno…
+     10|   error instanceof SkillNameConflictError
+     11|     ? new GraphQLError(error.message, {
+       |       ^
+     12|         extensions: { code: error.code, conflicts: error.conflicts },
+     13|       })
+ ❯ withSkillNameConflictMapping src/api/graphql/errors/skill-name-conflict-graphql-error.ts:20:11
+ ❯ SkillResolver.addSkillSource src/api/graphql/types/skills.ts:307:12
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98
+ ❯ exec tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts:130:20
+ ❯ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts:221:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts > Skill name catalog GraphQL e2e (D-19) > AC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+AssertionError: expected 'CHECK_FAILED' to be 'UPDATE_AVAILABLE' // Object.is equality
+
+Expected: "UPDATE_AVAILABLE"
+Received: "CHECK_FAILED"
+
+ ❯ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts:362:116
+    360|     const checked = await exec<{ checkAgentPackageUpdates: Array<{ pac…
+    361|       CHECK_UPDATES, { ids: [pkg.packageId] });
+    362|     expect(checked.checkAgentPackageUpdates.find((entry) => entry.pack…
+       |                                                                                                                    ^
+    363|
+    364|     const updateConflicts = await expectConflict(UPDATE_PACKAGE, { id:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 27 passed (28)
+      Tests  2 failed | 295 passed (297)
+   Start at  12:42:18
+   Duration  26.19s (transform 4.13s, setup 124ms, import 18.98s, tests 3.85s, environment 2ms)

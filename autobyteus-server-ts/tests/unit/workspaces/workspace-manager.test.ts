@@ -1,3 +1,5 @@
+import { SkillService } from "../../../src/skills/services/skill-service.js";
+import { Skill } from "../../../src/skills/domain/models.js";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -213,4 +215,21 @@ describe("WorkspaceManager", () => {
     expect(tempWorkspace).toBeInstanceOf(TempWorkspace);
     expect(tempWorkspace.workspaceId).toBe(TempWorkspace.TEMP_WORKSPACE_ID);
   });
+  it("rebinds a cached skill workspace after generation publication and rejects a removed skill", async () => {
+    const g1 = path.join(appDataDir, "g1"), g2 = path.join(appDataDir, "g2");
+    fs.mkdirSync(g1); fs.mkdirSync(g2);
+    let selected: Skill | null = new Skill({ name: "writer", description: "writer", content: "old", rootPath: g1 });
+    vi.spyOn(SkillService.prototype, "getSkill").mockImplementation(() => selected);
+    const first = await manager.getOrCreateWorkspace("skill_ws_writer");
+    const close = vi.spyOn(first, "close");
+    selected = new Skill({ name: "writer", description: "writer", content: "new", rootPath: g2 });
+    const second = await manager.getOrCreateWorkspace("skill_ws_writer");
+    expect(close).toHaveBeenCalledOnce();
+    expect(second).not.toBe(first);
+    expect(second.getBasePath()).toBe(g2);
+    selected = null;
+    await expect(manager.getOrCreateWorkspace("skill_ws_writer")).rejects.toThrow("Failed to create");
+    expect(manager.getWorkspaceById("skill_ws_writer")).toBeUndefined();
+  });
+
 });

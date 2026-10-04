@@ -1,3 +1,5 @@
+import { SkillSourceService } from "../../../skills/services/skill-source-service.js";
+import type { SkillSourceInfo } from "../../../skills/domain/skill-source.js";
 import {
   Arg,
   Field,
@@ -9,7 +11,7 @@ import {
   Resolver,
 } from "type-graphql";
 import { SkillService } from "../../../skills/services/skill-service.js";
-import type { Skill as SkillModel, SkillSourceInfo } from "../../../skills/domain/models.js";
+import type { Skill as SkillModel } from "../../../skills/domain/models.js";
 import { withSkillNameConflictMapping } from "../errors/skill-name-conflict-graphql-error.js";
 
 @ObjectType()
@@ -76,7 +78,22 @@ export class DeleteSkillResult {
 }
 
 @ObjectType()
+export class GitHubSkillSource {
+  @Field(() => String) repositoryUrl!: string;
+  @Field(() => String) defaultBranch!: string;
+  @Field(() => String) installedRevision!: string;
+  @Field(() => String, { nullable: true }) latestRevision!: string | null;
+  @Field(() => String, { nullable: true }) latestCheckedAt!: string | null;
+  @Field(() => String) status!: string;
+  @Field(() => String, { nullable: true }) lastError!: string | null;
+}
+
+@ObjectType()
 export class SkillSource {
+  @Field(() => String) sourceId!: string;
+  @Field(() => String) sourceKind!: string;
+  @Field(() => GitHubSkillSource, { nullable: true }) github!: GitHubSkillSource | null;
+
   @Field(() => String)
   path!: string;
 
@@ -85,6 +102,12 @@ export class SkillSource {
 
   @Field(() => Boolean)
   isDefault!: boolean;
+}
+
+@ObjectType()
+export class SkillSourceOperationResult {
+  @Field(() => [SkillSource]) sources!: SkillSource[];
+  @Field(() => [String]) warnings!: string[];
 }
 
 /** Copies of a name the catalog ignores (Skills page banner, REQ-024). */
@@ -106,6 +129,7 @@ export class SkillNameIssue {
 
 @ObjectType()
 export class SkillCatalogReloadResult {
+  @Field(() => String, { nullable: true }) skillSourceRegistryError!: string | null;
   @Field(() => [Skill])
   skills!: Skill[];
 
@@ -135,6 +159,7 @@ const mapSkill = (skill: SkillModel): Skill => ({
 });
 
 const mapSkillSource = (source: SkillSourceInfo): SkillSource => ({
+  sourceId: source.sourceId, sourceKind: source.sourceKind, github: source.github,
   path: source.path,
   skillCount: source.skillCount,
   isDefault: source.isDefault,
@@ -195,7 +220,7 @@ export class SkillResolver {
 
   @Query(() => [SkillSource])
   skillSources(): SkillSource[] {
-    const service = SkillService.getInstance();
+    const service = SkillSourceService.getInstance();
     return service.getSkillSources().map(mapSkillSource);
   }
 
@@ -270,20 +295,41 @@ export class SkillResolver {
     const result = service.reloadSkillCatalog();
 
     return {
-      skills: result.skills.map(mapSkill),
-      skillSources: result.skillSources.map(mapSkillSource),
+      skills: result.map(mapSkill),
+      skillSources: SkillSourceService.getInstance().getSkillSources().map(mapSkillSource),
+      skillSourceRegistryError: SkillSourceService.getInstance().getRegistryError(),
     };
   }
 
   @Mutation(() => [SkillSource])
   addSkillSource(@Arg("path", () => String) pathValue: string): Promise<SkillSource[]> {
-    const service = SkillService.getInstance();
+    const service = SkillSourceService.getInstance();
     return withSkillNameConflictMapping(() => service.addSkillSource(pathValue).map(mapSkillSource));
   }
 
   @Mutation(() => [SkillSource])
   removeSkillSource(@Arg("path", () => String) pathValue: string): SkillSource[] {
-    const service = SkillService.getInstance();
+    const service = SkillSourceService.getInstance();
     return service.removeSkillSource(pathValue).map(mapSkillSource);
   }
+  @Query(() => String, { nullable: true })
+  skillSourceRegistryError(): string | null { return SkillSourceService.getInstance().getRegistryError(); }
+
+  @Mutation(() => SkillSourceOperationResult)
+  importGitHubSkillSource(@Arg("repositoryUrl", () => String) url: string): Promise<SkillSourceOperationResult> {
+    return withSkillNameConflictMapping(() => SkillSourceService.getInstance().importGitHubSkillSource(url));
+  }
+  @Mutation(() => SkillSourceOperationResult)
+  checkGitHubSkillSourceUpdates(@Arg("sourceIds", () => [String], { nullable: true }) ids?: string[]): Promise<SkillSourceOperationResult> {
+    return SkillSourceService.getInstance().checkGitHubSkillSourceUpdates(ids);
+  }
+  @Mutation(() => SkillSourceOperationResult)
+  updateGitHubSkillSource(@Arg("sourceId", () => String) id: string): Promise<SkillSourceOperationResult> {
+    return withSkillNameConflictMapping(() => SkillSourceService.getInstance().updateGitHubSkillSource(id));
+  }
+  @Mutation(() => SkillSourceOperationResult)
+  removeGitHubSkillSource(@Arg("sourceId", () => String) id: string): Promise<SkillSourceOperationResult> {
+    return SkillSourceService.getInstance().removeGitHubSkillSource(id);
+  }
+
 }

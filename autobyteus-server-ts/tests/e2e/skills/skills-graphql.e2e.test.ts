@@ -7,6 +7,7 @@ import { beforeAll, beforeEach, afterEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { SkillSourceService } from "../../../src/skills/services/skill-source-service.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 
 describe("Skills GraphQL e2e", () => {
@@ -28,9 +29,12 @@ describe("Skills GraphQL e2e", () => {
     fs.mkdirSync(path.join(tempDir, "skills"), { recursive: true });
     appConfigProvider.config.setCustomAppDataDir(tempDir);
     SkillService.resetInstance();
+    SkillSourceService.resetInstance();
   });
 
   afterEach(() => {
+    SkillSourceService.resetInstance();
+    SkillService.resetInstance();
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
 

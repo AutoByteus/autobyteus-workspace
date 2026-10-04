@@ -89,3 +89,38 @@ export const listAntigravityModels = async (): Promise<{ id: string; name: strin
   if (models.length === 0) throw new AgyDiscoveryError("AGY_MODEL_CATALOG_INVALID");
   return models;
 };
+
+/** First AGY CLI version proven to stream one `checkpoint` DONE step per automatic compaction. */
+export const AGY_COMPACTION_DETECTION_MIN_VERSION = "1.2.16";
+
+const parseVersion = (version: string | null): number[] | null => {
+  const match = version ? /(\d+)\.(\d+)\.(\d+)/.exec(version) : null;
+  return match ? match.slice(1, 4).map(Number) : null;
+};
+
+export const isAgyCompactionDetectionSupported = (version: string | null): boolean => {
+  const actual = parseVersion(version);
+  const minimum = parseVersion(AGY_COMPACTION_DETECTION_MIN_VERSION)!;
+  if (!actual) return false;
+  for (let index = 0; index < minimum.length; index += 1) {
+    if (actual[index]! !== minimum[index]!) return actual[index]! > minimum[index]!;
+  }
+  return true;
+};
+
+let cachedVersion: string | null = null;
+
+/**
+ * `agy --version` (bounded). A read version is cached for the server process; a failed read
+ * returns null without caching, so the next run probes again. Never throws.
+ */
+export const readAntigravityCliVersion = async (): Promise<string | null> => {
+  if (cachedVersion) return cachedVersion;
+  try {
+    const output = await runCommand(["--version"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
+    cachedVersion = output.stdout.trim() || null;
+  } catch {
+    return null;
+  }
+  return cachedVersion;
+};

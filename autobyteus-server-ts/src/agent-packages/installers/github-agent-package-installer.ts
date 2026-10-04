@@ -1,3 +1,4 @@
+import { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import path from "node:path";
@@ -5,18 +6,12 @@ import { randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { downloadFileFromUrl } from "../../utils/download-utils.js";
-import type {
-  GitHubRepositoryMetadata,
-  GitHubRepositoryRevisionMetadata,
-  GitHubRepositorySource,
-  ManagedGitHubInstallResult,
-} from "../types.js";
+import type { GitHubRepositoryMetadata, GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../integrations/github/types.js";
+import type { ManagedGitHubInstallResult } from "../types.js";
 import {
-  buildGitHubRepositoryApiUrl,
   buildGitHubRepositoryArchiveUrl,
   buildGitHubRepositoryArchiveUrlForRef,
-  buildGitHubRepositoryBranchApiUrl,
-} from "../utils/github-repository-source.js";
+} from "../../integrations/github/github-repository-source.js";
 import { validatePackageRoot } from "../utils/package-root-summary.js";
 
 type AppConfigLike = {
@@ -65,7 +60,7 @@ export class GitHubAgentPackageInstaller {
       );
     }
 
-    const metadata = await this.fetchRepositoryRevisionMetadata(source);
+    const metadata = await new GitHubRepositoryClient(this.options.fetchImpl).fetchRepositoryRevisionMetadata(source);
     const stagingDir = await this.createStagingDirectory(source.installKey);
     const extractionDir = path.join(stagingDir, "extracted");
 
@@ -103,53 +98,8 @@ export class GitHubAgentPackageInstaller {
     return this.options.config ?? appConfigProvider.config;
   }
 
-  private getFetch(): FetchLike {
-    return this.options.fetchImpl ?? fetch;
-  }
-
   private getDownloadFileFromUrl(): DownloadFileFromUrlLike {
     return this.options.downloadFileFromUrlImpl ?? downloadFileFromUrl;
-  }
-
-  async fetchRepositoryRevisionMetadata(
-    source: GitHubRepositorySource,
-  ): Promise<GitHubRepositoryRevisionMetadata> {
-    const metadata = await this.fetchRepositoryMetadata(source);
-    const response = await this.getFetch()(
-      buildGitHubRepositoryBranchApiUrl(
-        metadata.owner,
-        metadata.repo,
-        metadata.defaultBranch,
-      ),
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-          "User-Agent": "AutoByteus-AgentPackageInstaller",
-        },
-        signal: AbortSignal.timeout(30_000),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `GitHub repository branch metadata request failed with HTTP ${response.status} ${response.statusText}.`,
-      );
-    }
-
-    const payload = (await response.json()) as Partial<{
-      commit: { sha?: string };
-    }>;
-    const latestRevision = payload.commit?.sha?.trim();
-    if (!latestRevision) {
-      throw new Error(
-        `GitHub repository latest revision is unavailable: ${metadata.canonicalUrl}`,
-      );
-    }
-
-    return {
-      ...metadata,
-      latestRevision,
-    };
   }
 
   async stagePackageReplacement(
@@ -236,58 +186,6 @@ export class GitHubAgentPackageInstaller {
       );
       throw error;
     }
-  }
-
-  private async fetchRepositoryMetadata(
-    source: GitHubRepositorySource,
-  ): Promise<GitHubRepositoryMetadata> {
-    const response = await this.getFetch()(buildGitHubRepositoryApiUrl(source), {
-      headers: {
-        Accept: "application/vnd.github+json",
-        "User-Agent": "AutoByteus-AgentPackageInstaller",
-      },
-      signal: AbortSignal.timeout(30_000),
-    });
-
-    if (response.status === 404) {
-      throw new Error(
-        `GitHub repository not found or not public: ${source.canonicalUrl}. For private repositories, clone locally and import the local path.`,
-      );
-    }
-
-    if (!response.ok) {
-      throw new Error(
-        `GitHub repository metadata request failed with HTTP ${response.status} ${response.statusText}.`,
-      );
-    }
-
-    const payload = (await response.json()) as Partial<{
-      default_branch: string;
-      html_url: string;
-      private: boolean;
-      name: string;
-      owner: { login?: string };
-    }>;
-
-    if (payload.private) {
-      throw new Error(
-        `GitHub repository is not public and cannot be imported: ${source.canonicalUrl}. Clone it locally and import the local path instead.`,
-      );
-    }
-
-    const defaultBranch = payload.default_branch?.trim();
-    if (!defaultBranch) {
-      throw new Error(
-        `GitHub repository default branch is unavailable: ${source.canonicalUrl}`,
-      );
-    }
-
-    return {
-      owner: payload.owner?.login?.trim() || source.owner,
-      repo: payload.name?.trim() || source.repo,
-      canonicalUrl: payload.html_url?.trim() || source.canonicalUrl,
-      defaultBranch,
-    };
   }
 
   private async createStagingDirectory(installKey: string): Promise<string> {

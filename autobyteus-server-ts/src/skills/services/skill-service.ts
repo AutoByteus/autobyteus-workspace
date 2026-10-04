@@ -1,20 +1,19 @@
+import { GitHubSkillSourceStore } from "../stores/github-skill-source-store.js";
 import fs from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { DirectoryTraversal } from "../../file-explorer/directory-traversal.js";
 import { TreeNode } from "../../file-explorer/tree-node.js";
-import { getServerSettingsService } from "../../services/server-settings-service.js";
 import {
   normalizeAgentSkillScope,
   type AgentDefinition,
   type AgentSkillScope,
 } from "../../agent-definition/domain/models.js";
-import { Skill, SkillSourceInfo } from "../domain/models.js";
+import { Skill } from "../domain/models.js";
 import { DisabledSkillsStore } from "../disabled-skills-store.js";
 import { SkillLoader } from "../loader.js";
 import {
-  scanBundledSkillsFromDefinitionRoot,
-  scanSkillDirectory,
+  inspectGitHubSkillRepository,
 } from "./skill-discovery.js";
 import { ConfiguredAgentSkillResolver } from "./configured-agent-skill-resolver.js";
 import {
@@ -56,6 +55,7 @@ type SkillServiceOptions = {
   config?: AppConfigLike;
   loader?: SkillLoader;
   disabledStore?: DisabledSkillsStore;
+  sourceStore?: GitHubSkillSourceStore;
   /** Realpath matcher for runtime default skill folders (tier 4); defaults to the real folders. */
   isRuntimeDefaultSkillFolder?: (directory: string) => boolean;
 };
@@ -64,11 +64,7 @@ type SkillServiceOptions = {
 export type IncomingSkillSource = Pick<SkillCatalogSource, "path" | "layout"> & {
   /** Tier 2 for agent packages; added folders get tier 3 or 4 from the runtime default matcher. */
   tier?: SkillCatalogSource["tier"];
-};
-
-export type SkillCatalogReloadResult = {
-  skills: Skill[];
-  skillSources: SkillSourceInfo[];
+  excludedSourcePath?: string;
 };
 
 export class SkillService {
@@ -87,6 +83,7 @@ export class SkillService {
 
   readonly config: AppConfigLike;
   readonly skillsDir: string;
+  private readonly sourceStore: GitHubSkillSourceStore;
   private loader: SkillLoader;
   private disabledStore: DisabledSkillsStore;
   private readonly isRuntimeDefaultSkillFolder: (directory: string) => boolean;
@@ -95,6 +92,7 @@ export class SkillService {
   constructor(options: SkillServiceOptions = {}) {
     this.config = options.config ?? appConfigProvider.config;
     this.skillsDir = this.config.getSkillsDir();
+    this.sourceStore = options.sourceStore ?? new GitHubSkillSourceStore(this.config.getAppDataDir());
     this.loader = options.loader ?? new SkillLoader();
 
     const disabledSkillsPath = path.join(this.config.getAppDataDir(), "disabled_skills.json");
@@ -129,7 +127,7 @@ export class SkillService {
   private loadCatalog(): SkillCatalog {
     const dependencies = this.getDiscoveryDependencies();
     const catalog = buildSkillCatalog(
-      listSkillCatalogSources(this.config, this.isRuntimeDefaultSkillFolder)
+      listSkillCatalogSources(this.config, this.isRuntimeDefaultSkillFolder, this.sourceStore.listActiveSources())
         .flatMap((source) => scanSkillCatalogSource(source, dependencies)),
     );
     for (const record of catalog.records) {
@@ -167,11 +165,27 @@ export class SkillService {
     return this.listInstalledSkillRecords().map((record) => record.skill);
   }
 
-  reloadSkillCatalog(): SkillCatalogReloadResult {
-    return {
-      skills: this.listSkills(),
-      skillSources: this.getSkillSources(),
-    };
+  reloadSkillCatalog(): Skill[] { return this.listSkills(); }
+
+  resolveManagedSkillForMaterialization(sourceId: string, name: string): Skill | null {
+    const skill = this.getSkill(name);
+    return skill?.managedSource?.sourceId === sourceId ? skill : null;
+  }
+
+  inspectSkillSource(incoming: IncomingSkillSource) {
+    const dependencies = this.getDiscoveryDependencies();
+    const inspection = incoming.layout === "github_repository"
+      ? inspectGitHubSkillRepository(incoming.path, dependencies)
+      : { records: scanSkillCatalogSource({ ...incoming, tier: incoming.tier ?? 3 }, dependencies), warnings: [] };
+    const validation = this.assertNoIncomingSkillNameConflicts(incoming);
+    return { ...inspection, validation };
+  }
+
+  countSkillsInSource(directory: string, layout: SkillCatalogSource["layout"]): number {
+    try {
+      return new Set(scanSkillCatalogSource({ path: directory, layout, tier: 3 }, this.getDiscoveryDependencies())
+        .map((record) => record.skill.name)).size;
+    } catch { return 0; }
   }
 
   getSkill(name: string): Skill | null {
@@ -187,7 +201,7 @@ export class SkillService {
     const tier = incoming.tier ?? (this.isRuntimeDefaultSkillFolder(incoming.path) ? 4 : 3);
     const dependencies = this.getDiscoveryDependencies();
     return validateIncomingSkills(
-      this.loadCatalog().candidates,
+      this.loadCatalog().candidates.filter((record) => !incoming.excludedSourcePath || record.sourcePath !== path.resolve(incoming.excludedSourcePath)),
       scanSkillCatalogSource({ path: incoming.path, layout: incoming.layout, tier }, dependencies),
     );
   }
@@ -424,118 +438,6 @@ export class SkillService {
     }
 
     return true;
-  }
-
-  private countSkillsInSourceDirectory(directory: string): number {
-    if (!fs.existsSync(directory)) {
-      return 0;
-    }
-
-    try {
-      const seen = new Set<string>();
-      for (const record of [
-        ...scanSkillDirectory(directory, this.getDiscoveryDependencies()),
-        ...scanBundledSkillsFromDefinitionRoot(directory, this.getDiscoveryDependencies()),
-      ]) {
-        seen.add(record.skill.name);
-      }
-      return seen.size;
-    } catch {
-      return 0;
-    }
-  }
-
-  getSkillSources(): SkillSourceInfo[] {
-    const sources: SkillSourceInfo[] = [];
-
-    sources.push(
-      new SkillSourceInfo({
-        path: this.skillsDir,
-        skillCount: this.countSkillsInSourceDirectory(this.skillsDir),
-        isDefault: true,
-      }),
-    );
-
-    const additionalDirs = this.config.getAdditionalSkillsDirs();
-    for (const directory of additionalDirs) {
-      sources.push(
-        new SkillSourceInfo({
-          path: directory,
-          skillCount: this.countSkillsInSourceDirectory(directory),
-          isDefault: false,
-        }),
-      );
-    }
-
-    return sources;
-  }
-
-  addSkillSource(pathStr: string): SkillSourceInfo[] {
-    const resolved = path.resolve(pathStr);
-    if (!fs.existsSync(resolved)) {
-      throw new Error(`Directory not found: ${resolved}`);
-    }
-    if (!fs.statSync(resolved).isDirectory()) {
-      throw new Error(`Path is not a directory: ${resolved}`);
-    }
-
-    if (path.resolve(this.skillsDir) === resolved) {
-      throw new Error("Path is already the default skill directory");
-    }
-
-    const currentSources = this.config.getAdditionalSkillsDirs();
-    if (currentSources.some((entry) => path.resolve(entry) === resolved)) {
-      throw new Error("Skill source already exists");
-    }
-
-    this.assertNoIncomingSkillNameConflicts({ path: resolved, layout: "skill_path" });
-
-    const rawEnv = this.config.get("AUTOBYTEUS_SKILLS_PATHS", "");
-    const newEnvValue = rawEnv ? `${rawEnv},${resolved}` : resolved;
-
-    const [success, msg] = getServerSettingsService().updateSetting(
-      "AUTOBYTEUS_SKILLS_PATHS",
-      newEnvValue,
-    );
-    if (!success) {
-      throw new Error(`Failed to update configuration: ${msg}`);
-    }
-
-    return this.getSkillSources();
-  }
-
-  removeSkillSource(pathStr: string): SkillSourceInfo[] {
-    const resolved = path.resolve(pathStr);
-    if (path.resolve(this.skillsDir) === resolved) {
-      throw new Error("Cannot remove default skill directory");
-    }
-
-    const currentSources = this.config.getAdditionalSkillsDirs();
-    const remaining: string[] = [];
-    let found = false;
-
-    for (const source of currentSources) {
-      if (path.resolve(source) === resolved) {
-        found = true;
-      } else {
-        remaining.push(source);
-      }
-    }
-
-    if (!found) {
-      throw new Error(`Skill source not found: ${resolved}`);
-    }
-
-    const newEnvValue = remaining.join(",");
-    const [success, msg] = getServerSettingsService().updateSetting(
-      "AUTOBYTEUS_SKILLS_PATHS",
-      newEnvValue,
-    );
-    if (!success) {
-      throw new Error(`Failed to update configuration: ${msg}`);
-    }
-
-    return this.getSkillSources();
   }
 
   private getDiscoveryDependencies() {

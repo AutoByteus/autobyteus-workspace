@@ -17,6 +17,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
 
 const props = defineProps<{
   skillId: string;
+  rootPath: string;
 }>();
 
 const workspaceStore = useWorkspaceStore();
@@ -60,10 +61,8 @@ onBeforeUnmount(() => {
   unregister();
 });
 
-watch(() => props.skillId, async (newId, oldId) => {
-  if (newId !== oldId) {
-    await unregister();
-    await register();
-  }
+watch(() => [props.skillId, props.rootPath], async () => {
+  await unregister();
+  await register();
 });
 </script>

@@ -1,0 +1,58 @@
+{
+  "requests": [
+    "GetSkills",
+    "GetSkillNameIssues",
+    "GetSkillSources",
+    "CheckGitHubSkillSourceUpdates",
+    "GetSkillNameIssues",
+    "ImportGitHubSkillSource",
+    "GetSkillNameIssues",
+    "GetSkills",
+    "GetSkillNameIssues",
+    "GetSkill",
+    "GetFolderChildren",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetSkills",
+    "GetSkillNameIssues",
+    "GetSkillSources",
+    "CheckGitHubSkillSourceUpdates",
+    "GetSkillNameIssues",
+    "RemoveGitHubSkillSource",
+    "GetSkillNameIssues",
+    "GetSkills",
+    "GetSkillNameIssues",
+    "GetSkillNameIssues",
+    "ImportGitHubSkillSource",
+    "GetSkillNameIssues",
+    "GetSkills",
+    "GetSkillNameIssues"
+  ],
+  "sockets": [
+    {
+      "url": "ws://127.0.0.1:51957/ws/file-explorer/skill_ws_humanizer",
+      "closed": true,
+      "frames": [
+        "{\"type\":\"CONNECTED\",\"payload\":{\"workspace_id\":\"skill_ws_humanizer\",\"session_id\":\"0b2d5c78-7ff8-40af-b685-16aa37ea825b\"}}"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "UI-001-duplicate-and-trust",
+      "result": "Pass"
+    },
+    {
+      "id": "UI-002-removal-cancel",
+      "result": "Pass"
+    },
+    {
+      "id": "UI-003-explorer-open-close",
+      "result": "Pass"
+    },
+    {
+      "id": "UI-004-remove-and-reimport",
+      "result": "Pass"
+    }
+  ]
+}

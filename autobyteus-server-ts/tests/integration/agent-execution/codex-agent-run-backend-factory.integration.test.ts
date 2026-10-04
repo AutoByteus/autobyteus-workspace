@@ -256,7 +256,7 @@ const createFactory = async (input: {
     },
     codex: {
       workspaceSkillMaterializer: {
-        materializeConfiguredWorkspaceSkills: async () => [],
+        materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }),
         cleanupMaterializedWorkspaceSkills: async () => undefined,
       } as never,
       workspaceResolver: {

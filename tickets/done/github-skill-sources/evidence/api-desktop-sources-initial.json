@@ -1,0 +1,24 @@
+{
+  "requests": [
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory"
+  ],
+  "sockets": [],
+  "cases": [
+    {
+      "id": "UI-001-duplicate-and-trust",
+      "result": "Fail",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Manage Skill Sources' }).getByRole('button', { name: 'Import', exact: true })\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/probes/desktop-sources.mjs:21:65\n    at async record (/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/probes/desktop-sources.mjs:13:37)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/probes/desktop-sources.mjs:15:3"
+    }
+  ]
+}

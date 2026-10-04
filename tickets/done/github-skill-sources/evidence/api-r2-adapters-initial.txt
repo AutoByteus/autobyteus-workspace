@@ -1,0 +1,316 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:76890) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > imports root/support files, reuses equivalent URLs, and retains all fields on query and Reload
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-1Ul2El/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-1Ul2El/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > checks without replacement, retains offline availability, and updates a collection with disabled choices
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-2oaavx/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-2oaavx/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > maps conflicts with both paths and rejects the whole source without partial publication
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-dkwbpZ/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-dkwbpZ/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > retains REMOVING after deletion fault and retries through the API after owner reconstruction
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-BQfCh5/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-BQfCh5/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > keeps local mutations and Reload usable with a malformed managed registry without rewriting it
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-1S6Fls/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-1S6Fls/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > keeps local mutations and Reload usable with a malformed managed registry without rewriting it
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: AUTOBYTEUS_SKILLS_PATHS
+Server setting 'AUTOBYTEUS_SKILLS_PATHS' updated
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > keeps local mutations and Reload usable with a malformed managed registry without rewriting it
+Server setting 'AUTOBYTEUS_SKILLS_PATHS' updated
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'CONFIGURED' retain=false reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-ptLxrc/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-ptLxrc/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'CONFIGURED' retain=false reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-k7A2MF/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-k7A2MF/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'CONFIGURED' retain=true reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-1bPGZN/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-1bPGZN/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'CONFIGURED' retain=true reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-q0V10l/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-q0V10l/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=false reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-ftWDH4/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-ftWDH4/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=false reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-IQoiZZ/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-IQoiZZ/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=true reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-mZQYtv/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-mZQYtv/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=true reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-n37FGF/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-n37FGF/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'CONFIGURED' retain=false reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-L8WnCT/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-L8WnCT/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'CONFIGURED' retain=false reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-Y9XF33/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-Y9XF33/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'CONFIGURED' retain=true reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-lBKgOJ/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-lBKgOJ/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'CONFIGURED' retain=true reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-wlbGRc/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-wlbGRc/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=false reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-0CfPkG/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-0CfPkG/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=false reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-L36JhV/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-L36JhV/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=true reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-0PG2gT/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-0PG2gT/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=true reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-SNN7F5/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-SNN7F5/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-LiHlRT/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-LiHlRT/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-HyZA9r/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-HyZA9r/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'CONFIGURED' retain=true reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-SwsoFB/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-SwsoFB/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'CONFIGURED' retain=true reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-kqKHGb/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-kqKHGb/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=false reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-a0mOkI/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-a0mOkI/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=false reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-124cQr/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-124cQr/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=true reverse=false
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-usJqi7/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-usJqi7/data/.env
+
+stdout | tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=true reverse=true
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-Kaws8s/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-api-Kaws8s/data/.env
+
+ ✓ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts (29 tests) 3206ms
+     ✓ prepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=false  530ms
+     ✓ prepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=true  363ms
+     ✓ prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=true reverse=true  378ms
+
+ Test Files  1 passed (1)
+      Tests  29 passed (29)
+   Start at  13:14:59
+   Duration  8.11s (transform 3.19s, setup 13ms, import 4.43s, tests 3.21s, environment 0ms)

@@ -171,7 +171,7 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
         workspaceSkillsRootSegments: [".test", "skills"],
       });
 
-      const descriptors = await materializer.materializeConfiguredWorkspaceSkills({
+      const { materializedSkills: descriptors } = await materializer.materializeConfiguredWorkspaceSkills({
         runId: "run-all-installed",
         workingDirectory: workspace,
         workspaceCollisionPolicy: "prefer_workspace",

@@ -20,11 +20,13 @@ const mountComponent = async () => {
       skillSources: {
         skillSources: [
           {
+            sourceId: 'default', sourceKind: 'DEFAULT', github: null,
             path: '/default/skills',
             skillCount: 3,
             isDefault: true,
           },
           {
+            sourceId: 'local', sourceKind: 'LOCAL_PATH', github: null,
             path: '/custom/skills',
             skillCount: 2,
             isDefault: false,
@@ -59,13 +61,7 @@ const mountComponent = async () => {
         ConfirmationModal: {
           props: ['show'],
           template: `
-            <button
-              v-if="show"
-              data-testid="confirm-remove"
-              @click="$emit('confirm')"
-            >
-              Confirm Remove
-            </button>
+            <div v-if="show"><slot /><button data-testid="confirm-remove" @click="$emit('confirm')">Confirm</button><button data-testid="cancel" @click="$emit('cancel')">Cancel</button></div>
           `,
         },
       },
@@ -84,7 +80,7 @@ describe('SkillSourcesModal', () => {
   it('refreshes skills after removing a source', async () => {
     const { wrapper, sourcesStore, skillStore } = await mountComponent()
 
-    await wrapper.get('.btn-delete').trigger('click')
+    await wrapper.get('.remove').trigger('click')
     await wrapper.get('[data-testid="confirm-remove"]').trigger('click')
     await flushPromises()
 
@@ -98,7 +94,7 @@ describe('SkillSourcesModal', () => {
     sourcesStore.addSkillSource = vi.fn().mockResolvedValue(undefined)
 
     await wrapper.get('.input-group input').setValue('/extra/skills')
-    await wrapper.get('.btn-add').trigger('click')
+    await wrapper.get('form').trigger('submit')
     await flushPromises()
 
     expect(skillNames.runWithSkillNameChecks).toHaveBeenCalledTimes(1)
@@ -111,10 +107,58 @@ describe('SkillSourcesModal', () => {
     skillNames.runWithSkillNameChecks = vi.fn((action: () => Promise<unknown>) => action()) as typeof skillNames.runWithSkillNameChecks
 
     await wrapper.get('.input-group input').setValue('/dup/skills')
-    await wrapper.get('.btn-add').trigger('click')
+    await wrapper.get('form').trigger('submit')
     await flushPromises()
 
     expect((wrapper.get('.input-group input').element as HTMLInputElement).value).toBe('/dup/skills')
     expect(wrapper.find('.success-alert').exists()).toBe(false)
   })
+  it('checks GitHub sources once on open and imports URL through the conflict boundary', async () => {
+    const { wrapper, sourcesStore, skillNames } = await mountComponent()
+    expect(sourcesStore.checkGitHubSources).toHaveBeenCalledOnce()
+    await wrapper.findAll('.input-modes button')[1]!.trigger('click')
+    expect(wrapper.text()).toContain('Import only sources you trust')
+    await wrapper.get('input').setValue('https://github.com/acme/skills')
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(sourcesStore.githubOperation).toHaveBeenCalledWith('import', undefined, 'https://github.com/acme/skills')
+    expect(skillNames.runWithSkillNameChecks).toHaveBeenCalledOnce()
+  })
+
+  it('confirms whole-source replacement, supports cancellation and keeps removal ownership clear', async () => {
+    const { wrapper, sourcesStore } = await mountComponent()
+    sourcesStore.skillSources.push({
+      sourceId: 'remote', sourceKind: 'GITHUB_REPOSITORY', path: '/managed/g1', skillCount: 1, isDefault: false,
+      github: { repositoryUrl: 'https://github.com/acme/skills', defaultBranch: 'main', installedRevision: 'aaaa',
+        latestRevision: 'bbbb', latestCheckedAt: null, status: 'UPDATE_AVAILABLE', lastError: null },
+    })
+    await flushPromises()
+    const row = wrapper.findAll('.source-row').find(row => row.text().includes('https://github.com'))!
+    await row.findAll('button').find(button => button.text() === 'Update')!.trigger('click')
+    expect(wrapper.text()).toContain('Local edits will be overwritten')
+    await wrapper.get('[data-testid="cancel"]').trigger('click')
+    expect(sourcesStore.githubOperation).not.toHaveBeenCalled()
+    await row.findAll('button').find(button => button.text() === 'Update')!.trigger('click')
+    await wrapper.get('[data-testid="confirm-remove"]').trigger('click')
+    await flushPromises()
+    expect(sourcesStore.githubOperation).toHaveBeenCalledWith('update', 'remote')
+    await row.get('.remove').trigger('click')
+    expect(wrapper.text()).toContain('Delete this downloaded skill source and any local edits')
+  })
+
+  it('shows per-row failure and retry-removal while disabling commands during operations', async () => {
+    const { wrapper, sourcesStore } = await mountComponent()
+    sourcesStore.skillSources.push({
+      sourceId: 'remote', sourceKind: 'GITHUB_REPOSITORY', path: '/managed/g1', skillCount: 0, isDefault: false,
+      github: { repositoryUrl: 'https://github.com/acme/skills', defaultBranch: 'main', installedRevision: 'aaaa',
+        latestRevision: null, latestCheckedAt: null, status: 'REMOVING', lastError: 'permission denied' },
+    })
+    await flushPromises()
+    expect(wrapper.text()).toContain('Retry removal')
+    expect(wrapper.text()).toContain('permission denied')
+    sourcesStore.pending.remote = 'remove'
+    await flushPromises()
+    expect(wrapper.findAll('.actions button').every(button => button.attributes('disabled') !== undefined)).toBe(true)
+  })
+
 })

@@ -386,6 +386,52 @@ describe('agentStatusHandler', () => {
       );
     });
 
+    it('shows each AGY checkpoint (completed only, no started phase) as its own completed row', () => {
+      // Payload shape emitted by the server's AGY checkpoint mapping (one event per compaction).
+      const agyCheckpoint = (stepIndex: number, turnId: string, durationMs: number) => ({
+        kind: 'provider_compaction_boundary',
+        runtime_kind: 'ANTIGRAVITY',
+        provider: 'antigravity',
+        source_surface: 'antigravity.checkpoint',
+        boundary_key: `agy:conversation-1:checkpoint:${stepIndex}`,
+        provider_session_id: 'conversation-1',
+        provider_event_id: `checkpoint:${stepIndex}`,
+        provider_timestamp: null,
+        turn_id: turnId,
+        status: 'compacted',
+        trigger: 'auto',
+        rotation_eligible: true,
+        semantic_compaction: false,
+        duration_ms: durationMs,
+      }) as CompactionStatusPayload;
+
+      handleCompactionStatus(agyCheckpoint(9, 'turn-5', 7293), mockContext);
+      handleCompactionStatus(agyCheckpoint(18, 'turn-9', 6730), mockContext);
+
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenCalledTimes(2);
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        1,
+        mockContext.state.runId,
+        expect.objectContaining({
+          activityId: 'compaction:provider:antigravity:conversation-1:checkpoint:9:turn-5',
+          phase: 'completed',
+          provider: 'antigravity',
+          trigger: 'auto',
+          rotationEligible: true,
+          message: 'Provider context compaction boundary recorded',
+        }),
+      );
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        2,
+        mockContext.state.runId,
+        expect.objectContaining({
+          activityId: 'compaction:provider:antigravity:conversation-1:checkpoint:18:turn-9',
+          phase: 'completed',
+        }),
+      );
+      expect(mockContext.state.compactionStatus).toMatchObject({ phase: 'completed', providerEventId: 'checkpoint:18' });
+    });
+
     it('reuses a previous active provider row before falling back to a new boundary key', () => {
       handleCompactionStatus({
         kind: 'provider_compaction_boundary',

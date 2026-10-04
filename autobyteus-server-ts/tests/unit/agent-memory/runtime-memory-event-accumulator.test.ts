@@ -892,6 +892,45 @@ describe("RuntimeMemoryEventAccumulator", () => {
     expect(store.listTurnRawTracesOrdered()).toHaveLength(1);
   });
 
+  it("rotates once for an Antigravity checkpoint boundary and ignores the same boundary again", async () => {
+    const memoryDir = await mkTempDir();
+    const writer = new ExternalRuntimeMemoryWriter({ memoryDir });
+    writer.appendRawTrace({ traceType: "assistant", turnId: "turn-4", content: "before compaction", sourceEvent: "test" });
+    const accumulator = createAccumulator(memoryDir, writer);
+    const checkpoint = event(AgentRunEventType.COMPACTION_STATUS, {
+      kind: "provider_compaction_boundary",
+      runtime_kind: "ANTIGRAVITY",
+      provider: "antigravity",
+      source_surface: "antigravity.checkpoint",
+      boundary_key: "agy:conversation-1:checkpoint:9",
+      provider_session_id: "conversation-1",
+      provider_event_id: "checkpoint:9",
+      provider_timestamp: null,
+      turn_id: "turn-5",
+      status: "compacted",
+      trigger: "auto",
+      rotation_eligible: true,
+      semantic_compaction: false,
+      duration_ms: 7293,
+    });
+
+    accumulator.recordRunEvent(checkpoint);
+    accumulator.recordRunEvent(checkpoint);
+    createAccumulator(memoryDir).recordRunEvent(checkpoint);
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);
+    expect(store.listArchiveTurnRawTracesOrdered().map((trace) => trace.traceType)).toEqual(["assistant"]);
+    const active = store.listTurnRawTracesOrdered();
+    expect(active).toHaveLength(1);
+    expect(active[0]).toMatchObject({
+      traceType: "provider_compaction_boundary",
+      content: "Provider-owned context compaction boundary: antigravity/antigravity.checkpoint",
+      toolResult: expect.objectContaining({ runtime_kind: "ANTIGRAVITY", status: "compacted", trigger: "auto",
+        duration_ms: 7293, provider_event_id: "checkpoint:9", rotation_eligible: true }),
+    });
+  });
+
   it("writes provider compaction markers and rotates settled active traces into segmented archives", async () => {
     const memoryDir = await mkTempDir();
     const accumulator = createAccumulator(memoryDir);

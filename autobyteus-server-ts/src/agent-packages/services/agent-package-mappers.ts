@@ -1,12 +1,6 @@
 import path from "node:path";
-import type {
-  AgentPackage,
-  AgentPackageGitHubSourceMetadata,
-  AgentPackageRecord,
-  AgentPackageSourceMetadata,
-  AgentPackageUpdateInfo,
-  GitHubRepositoryRevisionMetadata,
-} from "../types.js";
+import type { GitHubRepositoryRevisionMetadata } from "../../integrations/github/types.js";
+import type { AgentPackage, AgentPackageGitHubSourceMetadata, AgentPackageRecord, AgentPackageSourceMetadata, AgentPackageUpdateInfo } from "../types.js";
 import {
   buildGitHubPackageId,
   buildLocalPackageId,

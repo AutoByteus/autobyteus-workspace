@@ -1,9 +1,14 @@
+import syncFs from "node:fs";
+import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 
 /** Filesystem operations the workspace skill materializer performs on `<workspace>/<skills root>/<name>`. */
 export type WorkspaceSkillFileSystem = Pick<typeof fs,
   "lstat" | "readlink" | "stat" | "realpath" | "mkdir" | "symlink" | "unlink">;
+
+export type WorkspaceSkillSyncFileSystem = Pick<typeof syncFs,
+  "lstatSync" | "readlinkSync" | "realpathSync" | "statSync" | "symlinkSync" | "renameSync" | "unlinkSync">;
 
 export type BrokenSymlinkState = { kind: "broken-symlink"; rawTargetPath: string; resolvedTargetPath: string; device: number; inode: number };
 
@@ -32,7 +37,8 @@ const pathTypeForStats = (
  * materializer's registry does, and calls these inside its exclusive phases.
  */
 export class WorkspaceSkillLinks {
-  constructor(private readonly runtimeLabel: string, private readonly fileSystem: WorkspaceSkillFileSystem) {}
+  constructor(private readonly runtimeLabel: string, private readonly fileSystem: WorkspaceSkillFileSystem,
+    private readonly sync: WorkspaceSkillSyncFileSystem = syncFs) {}
 
   async hasValidSkillManifest(sourceRootPath: string): Promise<boolean> {
     try {
@@ -120,6 +126,73 @@ export class WorkspaceSkillLinks {
     const resolvedTargetPath = resolveSymlinkTargetPath(materializedRootPath, rawTargetPath);
     if (!(await this.pathsReferToSameTarget(resolvedTargetPath, sourceRootPath))) return;
     await this.unlinkIfPresent(materializedRootPath);
+  }
+
+  /** Exclusive, no-await managed-generation publication. No unowned entry is ever replaced. */
+  replaceOwnedLinkSync(destination: string, previous: string | null, current: string,
+    name: string, claim: boolean): boolean {
+    if (!this.sync.statSync(path.join(current, "SKILL.md")).isFile()) throw new Error("Current skill manifest is unavailable.");
+    const same = (left: string, right: string) => {
+      if (path.resolve(left) === path.resolve(right)) return true;
+      try { return this.sync.realpathSync(left) === this.sync.realpathSync(right); }
+      catch (error) { if (isAbsenceError(error)) return false; throw error; }
+    };
+    const inspect = () => {
+      try {
+        const stats = this.sync.lstatSync(destination);
+        if (!stats.isSymbolicLink()) throw this.sourceCollisionError(name, destination, "workspace-owned entry", current);
+        const raw = this.sync.readlinkSync(destination);
+        const target = resolveSymlinkTargetPath(destination, raw);
+        let broken = false;
+        try { this.sync.statSync(target); } catch (error) {
+          if (!isAbsenceError(error)) throw error;
+          broken = true;
+        }
+        if (!same(target, current) && (!previous || !same(target, previous)) && !(!previous && broken)) {
+          throw this.sourceCollisionError(name, destination, target, current);
+        }
+        return { raw, stats, target, broken };
+      } catch (error) { if (isAbsenceError(error)) return null; throw error; }
+    };
+    const old = inspect();
+    if (!claim && !old?.broken) return false;
+    if (old && same(old.target, current)) return true;
+    const temporary = path.join(path.dirname(destination), `.skill-link-${randomUUID()}`);
+    this.sync.symlinkSync(current, temporary, "dir");
+    try {
+      const final = inspect();
+      if (Boolean(final) !== Boolean(old) || (final && old &&
+          (final.raw !== old.raw || final.stats.dev !== old.stats.dev || final.stats.ino !== old.stats.ino))) {
+        throw new Error("Workspace skill link changed during transfer.");
+      }
+      if (!old) {
+        // symlink is exclusive, unlike rename onto an absent path observed earlier.
+        this.sync.symlinkSync(current, destination, "dir");
+      } else {
+        try { this.sync.renameSync(temporary, destination); }
+        catch (error) {
+          // Windows may not replace a directory symlink by rename. Re-prove ownership.
+          if (process.platform !== "win32" || !["EEXIST", "EPERM", "EACCES"].includes((error as NodeJS.ErrnoException).code ?? "")) throw error;
+          const retry = inspect();
+          if (!retry || retry.raw !== old.raw || retry.stats.ino !== old.stats.ino || retry.stats.dev !== old.stats.dev) throw error;
+          this.sync.unlinkSync(destination);
+          try { this.sync.symlinkSync(current, destination, "dir"); }
+          catch (createError) {
+            try {
+              this.sync.lstatSync(destination);
+            } catch (absent) {
+              if (isAbsenceError(absent)) {
+                try { this.sync.symlinkSync(old.raw, destination, "dir"); } catch { /* owned entry remains retryable */ }
+              }
+            }
+            throw createError;
+          }
+        }
+      }
+      return true;
+    } finally {
+      try { this.sync.unlinkSync(temporary); } catch (error) { if (!isAbsenceError(error)) console.warn(error); }
+    }
   }
 
   sourceCollisionError(skillName: string, materializedRootPath: string, existingSource: string, requestedSource: string): Error {

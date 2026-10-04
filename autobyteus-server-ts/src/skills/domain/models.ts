@@ -1,4 +1,5 @@
 export class Skill {
+  managedSource: { sourceId: string; generation: string } | null = null;
   name: string;
   description: string;
   content: string;
@@ -29,17 +30,5 @@ export class Skill {
     this.isDisabled = options.isDisabled ?? false;
     this.createdAt = options.createdAt ?? null;
     this.updatedAt = options.updatedAt ?? null;
-  }
-}
-
-export class SkillSourceInfo {
-  path: string;
-  skillCount: number;
-  isDefault: boolean;
-
-  constructor(options: { path: string; skillCount?: number; isDefault?: boolean }) {
-    this.path = options.path;
-    this.skillCount = options.skillCount ?? 0;
-    this.isDefault = options.isDefault ?? false;
   }
 }

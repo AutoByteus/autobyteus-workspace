@@ -349,12 +349,13 @@ export class CodexThreadBootstrapper {
     workspaceCollisionPolicy: WorkspaceCollisionPolicy;
   }): Promise<MaterializedWorkspaceSkill[]> {
     const requests = await this.planWorkspaceSkillRequests(input);
-    return this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
+    const prepared = await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
       runId: input.runId,
       workingDirectory: input.workingDirectory,
       requests,
       workspaceCollisionPolicy: input.workspaceCollisionPolicy,
     });
+    return prepared.materializedSkills;
   }
 
   private async planWorkspaceSkillRequests(input: {

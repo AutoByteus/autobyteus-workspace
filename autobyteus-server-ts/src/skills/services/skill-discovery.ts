@@ -195,3 +195,18 @@ export const scanSkillDirectory = (
 
   return records;
 };
+
+/** Only the repository root, direct skill children and conventional nested skills/ chains. */
+export const inspectGitHubSkillRepository = (
+  directory: string, dependencies: SkillDiscoveryDependencies,
+): { records: DiscoveredSkillRecord[]; warnings: string[] } => {
+  if (fs.existsSync(path.join(directory, "SKILL.md"))) {
+    return { records: [{ skill: dependencies.loader.loadSkill(directory, dependencies.isReadonlyPath(directory)) }], warnings: [] };
+  }
+  const warnings: string[] = [];
+  const records = scanSkillDirectory(directory, {
+    ...dependencies,
+    logger: { ...dependencies.logger, warn: (...args: unknown[]) => { warnings.push(args.map(String).join(" ")); } },
+  });
+  return { records, warnings };
+};

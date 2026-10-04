@@ -1,0 +1,47 @@
+{
+  "requests": [
+    "GetSkillNameIssues",
+    "ImportGitHubSkillSource",
+    "GetSkillNameIssues",
+    "GetSkills",
+    "GetSkillNameIssues",
+    "GetSkill",
+    "GetFolderChildren",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory"
+  ],
+  "sockets": [
+    {
+      "url": "ws://127.0.0.1:51957/ws/file-explorer/skill_ws_humanizer",
+      "closed": false,
+      "frames": [
+        "{\"type\":\"CONNECTED\",\"payload\":{\"workspace_id\":\"skill_ws_humanizer\",\"session_id\":\"5547c619-99aa-4a7c-ba8c-aca6529b3c19\"}}"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "UI-001-duplicate-and-trust",
+      "result": "Pass"
+    },
+    {
+      "id": "UI-002-removal-cancel",
+      "result": "Pass"
+    },
+    {
+      "id": "UI-003-explorer-open-close",
+      "result": "Fail",
+      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('SKILL.md', { exact: true }).first() to be visible\u001b[22m\n\u001b[2m    59 × locator resolved to hidden <span data-v-be818e2c=\"\" class=\"drag-preview-text\">SKILL.md</span>\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/probes/desktop-sources.mjs:37:59\n    at async record (/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/probes/desktop-sources.mjs:13:37)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/probes/desktop-sources.mjs:34:3"
+    }
+  ]
+}
