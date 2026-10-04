@@ -7,8 +7,10 @@ import readline from "node:readline";
 const arg = process.argv[2];
 const argValue = (name) => process.argv.includes(name) ? process.argv[process.argv.indexOf(name) + 1] : null;
 if (arg === "--version") {
-  // auto_compaction models the AGY version proven to stream compactions as checkpoint steps.
-  process.stdout.write(process.env.AGY_FAKE_CASE === "auto_compaction" ? "1.2.16\n" : "agy version 1.2.11\n");
+  // auto_compaction models the AGY version proven to stream compactions as checkpoint steps;
+  // AGY_FAKE_VERSION overrides the reported version (e.g. an older CLI for the detection gate).
+  process.stdout.write(process.env.AGY_FAKE_VERSION ? `${process.env.AGY_FAKE_VERSION}\n`
+    : process.env.AGY_FAKE_CASE === "auto_compaction" ? "1.2.16\n" : "agy version 1.2.11\n");
 } else if (arg === "--help") {
   process.stdout.write("--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\n");
 } else if (arg === "models") {

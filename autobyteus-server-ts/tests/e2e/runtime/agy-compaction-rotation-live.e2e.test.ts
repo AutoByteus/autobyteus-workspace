@@ -13,14 +13,17 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 
 // Real AGY automatic compaction through the real server (REQ-A01, AC-A01c). AGY 1.2.16 compacts after
 // ~340K accumulated input; this sends ~90K-token data dumps (one per turn) until a checkpoint arrives
-// (expected on turn 5; capped at 8), then one short turn. Opt-in: uses the local `agy` login and quota
-// (about 1–2 minutes on gemini-3.8-flash-low).
+// (expected on turn 5), then one short turn. It then checks reopened history (BEH-A4), terminates and
+// restores the run, and continues it on the restored AGY process. Opt-in: uses the local `agy` login and
+// quota (about 1–2 minutes on gemini-3.8-flash-low). AGY_COMPACTION_E2E_CHECKPOINTS=2 keeps dumping until
+// a second checkpoint (SCN-A2; AGY compacted again on turn 9 in the investigation, A17).
 // Run: RUN_AGY_COMPACTION_E2E=1 pnpm exec vitest run tests/e2e/runtime/agy-compaction-rotation-live.e2e.test.ts --no-watch
 const live = process.env["RUN_AGY_COMPACTION_E2E"] === "1" && !process.env["ANTIGRAVITY_CLI_COMMAND"] &&
   spawnSync("agy", ["--version"], { stdio: "ignore" })["status"] === 0;
 const suite = live ? describe : describe.skip;
 const MODEL = "gemini-3.8-flash-low";
-const MAX_DUMP_TURNS = 8;
+const TARGET_CHECKPOINTS = Number(process.env["AGY_COMPACTION_E2E_CHECKPOINTS"] || 1);
+const MAX_DUMP_TURNS = 8 * TARGET_CHECKPOINTS;
 const TURN_TIMEOUT_MS = 180_000;
 type Wire = { type: string; payload: Record<string, unknown> };
 type TraceRow = { traceType: string; content: string | null; toolResult: Record<string, unknown> | null };
@@ -51,6 +54,9 @@ suite("real AGY automatic compaction rotates AutoByteus raw traces", () => {
       includeEpisodic: false, includeSemantic: false, includeRawTraces: true, includeRawTraceFiles: true,
       includeArchive: $includeArchive) { rawTraces { traceType content toolResult } rawTraceFiles { fileName kind } } }`,
     { runId, includeArchive })).getAgentRunMemoryView;
+
+  const projection = async () => (await graphql<{ getRunProjection: { conversation: unknown[]; activities: Array<Record<string, unknown>> } }>(
+    "query($runId: String!) { getRunProjection(runId: $runId) { conversation activities } }", { runId })).getRunProjection;
 
   beforeAll(async () => {
     dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "agy-compaction-live-"));
@@ -85,17 +91,20 @@ suite("real AGY automatic compaction rotates AutoByteus raw traces", () => {
         llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli" } });
     expect(started.createAgentRun.success, started.createAgentRun.message).toBe(true);
     runId = started.createAgentRun.runId!;
-    socket = new WebSocket("ws://" + url.hostname + ":" + url.port + "/ws/agent/" + runId);
     const messages: Wire[] = [];
-    socket.on("message", (raw: unknown) => {
-      try {
-        const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type,
-          payload: parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
-            ? parsed.payload as Record<string, unknown> : {} });
-      } catch { /* Ignore only malformed diagnostic transport rows. */ }
-    });
-    await new Promise<void>((resolve, reject) => { socket!.once("open", resolve); socket!.once("error", reject); });
+    const connect = async () => {
+      socket = new WebSocket("ws://" + url.hostname + ":" + url.port + "/ws/agent/" + runId);
+      socket.on("message", (raw: unknown) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
+          if (typeof parsed.type === "string") messages.push({ type: parsed.type,
+            payload: parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+              ? parsed.payload as Record<string, unknown> : {} });
+        } catch { /* Ignore only malformed diagnostic transport rows. */ }
+      });
+      await new Promise<void>((resolve, reject) => { socket!.once("open", resolve); socket!.once("error", reject); });
+    };
+    await connect();
     const settledTurns = () => messages.filter((m) => m.type === "TURN_COMPLETED" || m.type === "ERROR").length;
     const sendTurn = async (content: string) => {
       const before = settledTurns();
@@ -107,8 +116,12 @@ suite("real AGY automatic compaction rotates AutoByteus raw traces", () => {
     };
     const compactions = () => messages.filter((m) => m.type === "COMPACTION_STATUS");
 
-    for (let turn = 1; turn <= MAX_DUMP_TURNS && compactions().length === 0; turn += 1) await sendTurn(dataDump(turn));
-    expect(compactions().length, "AGY compacted within the dump turns").toBeGreaterThanOrEqual(1);
+    for (let turn = 1; turn <= MAX_DUMP_TURNS && compactions().length < TARGET_CHECKPOINTS; turn += 1) {
+      await sendTurn(dataDump(turn));
+    }
+    expect(compactions().length, "AGY compacted within the dump turns").toBeGreaterThanOrEqual(TARGET_CHECKPOINTS);
+    console.info(`AGY live compactions: ${JSON.stringify(compactions().map((c) => ({
+      key: c.payload["boundary_key"], duration_ms: c.payload["duration_ms"] })))}`);
     await sendTurn("Reply with exactly: OK AFTER");
 
     for (const compaction of compactions()) {
@@ -125,5 +138,37 @@ suite("real AGY automatic compaction rotates AutoByteus raw traces", () => {
     const active = (await memoryView(false)).rawTraces ?? [];
     expect(active[0]?.traceType).toBe("provider_compaction_boundary");
     expect(JSON.stringify(active)).toContain("OK AFTER");
+    expect(new Set(compactions().map((c) => c.payload["boundary_key"])).size).toBe(compactions().length);
+
+    // Reopened history shows work since the latest compaction, with one completed compaction row (BEH-A4).
+    const history = await projection();
+    expect(JSON.stringify(history.conversation)).toContain("OK AFTER");
+    // Word boundary: "OK DUMP10" (a later dump) must not match the archived first dump.
+    expect(JSON.stringify(history.conversation)).not.toMatch(/OK DUMP1\b/u);
+    const latest = compactions().at(-1)!.payload;
+    const historyCompactions = history.activities.filter((activity) => activity["kind"] === "compaction");
+    expect(historyCompactions).toHaveLength(1);
+    expect(historyCompactions[0]).toMatchObject({ phase: "completed", provider: "antigravity",
+      providerEventId: latest["provider_event_id"], boundaryKey: latest["boundary_key"], rotationEligible: true });
+
+    // Terminate and restore: the run continues on a new AGY process of the same conversation, with no
+    // spurious compaction and no new archive segment.
+    socket!.close();
+    const terminated = await graphql<{ terminateAgentRun: { success: boolean } }>(
+      "mutation($agentRunId: String!) { terminateAgentRun(agentRunId: $agentRunId) { success } }", { agentRunId: runId });
+    expect(terminated.terminateAgentRun.success).toBe(true);
+    const restored = (await graphql<{ restoreAgentRun: { success: boolean; message: string; runId: string } }>(
+      "mutation($agentRunId: String!) { restoreAgentRun(agentRunId: $agentRunId) { success message runId } }",
+      { agentRunId: runId })).restoreAgentRun;
+    expect(restored, restored.message).toMatchObject({ success: true, runId });
+    const segmentsBeforeRestore = (await segments()).length;
+    const compactionsBeforeRestore = compactions().length;
+    await connect();
+    await sendTurn("Reply with exactly: OK RESTORED");
+    expect(compactions()).toHaveLength(compactionsBeforeRestore);
+    expect(await segments()).toHaveLength(segmentsBeforeRestore);
+    const afterRestore = (await memoryView(false)).rawTraces ?? [];
+    expect(afterRestore[0]?.traceType).toBe("provider_compaction_boundary");
+    expect(JSON.stringify(afterRestore)).toContain("OK RESTORED");
   }, MAX_DUMP_TURNS * TURN_TIMEOUT_MS);
 });
