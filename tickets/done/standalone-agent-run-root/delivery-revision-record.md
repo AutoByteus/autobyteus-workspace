@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | Validated package from `/code_reviewer` (CRR-006 Pass, API-REV-003 Pass, CRR-007 N/A) | N/A | Blocked — Local Fix (stale fixture import breaks `pnpm test:native-input-history`) | `release-deployment-report.md`, `delivery-evidence/` |
 | DR-002 | Re-validated package from `/code_reviewer` (IR-005, CRR-008 Pass, API-REV-004 Pass, CRR-009 N/A) | DR-001 Blocked | Docs synced; handoff ready; awaiting user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `TESTING.md`, `agent_execution.md` |
+| DR-003 | User verification ("now finalize please") | DR-002 awaiting verification | Finalized to `personal`; release not required; cleanup | `release-deployment-report.md`, `handoff-summary.md`, `docs-sync-report.md`, ticket archived to `tickets/done/` |
 
 ## Revision Entries
 
@@ -52,3 +53,18 @@
 - Why this baseline or delivery revision was recorded: the blocker is resolved and the branch is ready for user verification.
 - Next recipient/action: the user (verification and release decision), then finalization to `personal` and cleanup.
 - Remaining blockers, rollback concerns, or untested scope: the residual risks listed in `handoff-summary.md`.
+
+### DR-003 — User-verified finalization
+
+- Delivery round and trigger: the user's explicit verification and finalize instruction after DR-002. The user also commissioned API-REV-005 (real-app quit/relaunch, Pass 95%).
+- Prior authoritative result: DR-002, awaiting user verification.
+- Current authoritative result:
+  - Target re-fetched; it had advanced to `852ea5327`.
+  - API-REV-005 artifacts checkpointed (`98495ca84`).
+  - Re-merged (`3e8d4eeac`, clean).
+  - Checks rerun: typecheck clean; 1878 targeted server tests with 0 new failures; harness 2/2; web specs 127/127.
+  - No material change, so no renewed verification.
+  - Ticket archived; branch committed, pushed and merged into `personal`.
+  - Release: Not required.
+  - Cleanup: see `release-deployment-report.md` § Finalization Results.
+- Terminal return to `/solution_designer`: sent after finalization and cleanup are recorded.

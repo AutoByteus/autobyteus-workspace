@@ -5,7 +5,7 @@
 - Ticket: `standalone-agent-run-root` (`task_size=Large`, `architectural_risk=High`, reviewed route)
 - Trigger: delivery round DR-002, after the DR-001 Local Fix (IR-005 / CRR-008 / API-REV-004 / CRR-009)
 - Bootstrap base reference: `b37d7a934`
-- Integrated base reference used for docs sync: `origin/personal@1b9739cad` (merge `1195f4356`; re-fetched in DR-002, no further advance)
+- Integrated base reference used for docs sync: `origin/personal@1b9739cad` (merge `1195f4356`). In DR-003 the branch was re-integrated with `origin/personal@852ea5327` (merge `3e8d4eeac`). The synced docs were rechecked: TESTING.md kept the path fix next to the base's AGY and GitHub skill-source additions, and `run_history.md` merged cleanly. No further docs impact.
 - Post-integration verification reference: `release-deployment-report.md` § Verification Checks; `api-e2e-execution-coverage-report.md` (API-REV-004)
 
 ## Why Docs Were Updated

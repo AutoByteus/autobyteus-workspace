@@ -5,14 +5,14 @@
 - Ticket: `standalone-agent-run-root`
 - Classification (carried, not reclassified): `task_size=Large`, `architectural_risk=High`, route: reviewed (Architecture Review → Code Review → API/E2E → test-code review).
 - Upstream gates: ARCH-REV-004 Pass; CRR-006 Pass (9.3/10); API-REV-003 Pass (93%); CRR-007 Not Applicable (no durable test code changed by API/E2E).
-- Delivery round: DR-002 (current). DR-001 was blocked at post-integration verification on a stale harness import; that was resolved by IR-005 / CRR-008 / API-REV-004 / CRR-009.
+- Delivery round: DR-003 (finalization, current). DR-002 produced the verified handoff. DR-001 was blocked at post-integration verification on a stale harness import; that was resolved by IR-005 / CRR-008 / API-REV-004 / CRR-009.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/done/standalone-agent-run-root/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/done/standalone-agent-run-root/delivery-revision-record.md`
+- Current delivery revision ID: `DR-003`
 - Notes: Docs sync and the handoff summary were written on the integrated, re-checked branch.
 
 ## Initial Delivery Integration Refresh
@@ -40,6 +40,10 @@
 | Ticket web specs + integrated `agentStatusHandler.spec.ts` | `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentCollaboration stores/__tests__/agentRunCollaborationStore.spec.ts services/eventMonitor components/workspace/usage utils/collaboration components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts` | 14 files / 126 tests pass |
 | **Workspace native-to-web integration** (TESTING.md layer) | `pnpm test:native-input-history` | **FAIL** — `Failed to resolve import "../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture"` from `test-support/native-input-history/native-accepted-input-history.integration.test.ts:10`. Evidence: `delivery-evidence/dr001-native-input-history.log` |
 | DR-002 rerun after IR-005 | `pnpm test:native-input-history` | **Pass** 2/2 |
+| DR-003 server typecheck (after re-merge of `origin/personal@852ea5327`) | `pnpm -C autobyteus-server-ts typecheck` | 0 errors apart from TS6059 |
+| DR-003 targeted server suites (+ workspaces, agent-packages, runtime-management for the new base code) | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/standalone-agent-run-root tests/unit/agent-execution tests/integration/standalone-agent-run-root tests/unit/agent-memory tests/unit/agent-org-execution tests/unit/token-usage tests/unit/services/agent-streaming tests/unit/workspaces tests/unit/agent-packages tests/unit/runtime-management --no-watch` | 1878 tests, 39 failed; **0 new** against the recorded base failure set. Evidence: `delivery-evidence/dr003-server-targeted.json` |
+| DR-003 workspace harness | `pnpm test:native-input-history` | Pass 2/2. Evidence: `delivery-evidence/dr003-native-input-history.log` |
+| DR-003 ticket web specs | same web command as above | 14 files / 127 tests pass |
 | Diagnostic only (DR-001, reverted) | Same command with line 10 import pointed at `tests/integration/standalone-agent-run-root/native-compaction-root-fixture` | 2/2 tests pass; edit reverted, not committed |
 
 The failure is a ticket regression, not a base-integration effect: the ticket renamed `tests/integration/agent-run-collaboration/` to `tests/integration/standalone-agent-run-root/` (R091 `native-compaction-root-fixture.ts`) but left the workspace-owned importer in `test-support/` unchanged. The base never touched that file. None of the API/E2E or code-review artifacts record running `pnpm test:native-input-history`, so the server and web Vitest sweeps did not catch it (the harness runs under its own `test-support` Vitest config).
@@ -50,39 +54,43 @@ The failure is a ticket regression, not a base-integration effect: the ticket re
 - Recommended recipient: `/implementation_engineer` (via `get_handoff_rules`)
 - Why final handoff could not complete: a durable workspace test layer (`pnpm test:native-input-history`) is broken on the ticket branch by a stale import of the moved fixture. Required fix: update line 10 of `test-support/native-input-history/native-accepted-input-history.integration.test.ts` to `../../autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-compaction-root-fixture`. Also search `test-support/` and other workspace-level harnesses for other references to the old `agent-run-collaboration` test/source paths, then rerun `pnpm test:native-input-history`. This changes durable test code, so it returns through the normal review chain.
 
+## Re-Integration Before Final Merge (DR-003)
+
+- Target refreshed after user verification: `origin/personal` had advanced from `1b9739cad` to `852ea5327` (21 commits). They include the AGY automatic-compaction detection `f615e5d06`, GitHub skill sources `c6c4afbf4`, the version bump to 1.4.94-beta.4 `517409d40` and delivery records.
+- Delivery-owned and upstream uncommitted edits protected first: `98495ca84` (API-REV-005 real-app quit/relaunch artifacts and r5 evidence, produced at the user's request after DR-002).
+- Merge: `3e8d4eeac`, no conflicts. Only `TESTING.md` and `run_history.md` changed on both sides, and both merged cleanly (the ticket's TESTING.md path fix is preserved). There is no source-file overlap.
+- Checks rerun: see the DR-003 rows above. All pass, with 0 new failures.
+- Material change to the user-verified handoff state: `No`. The new base features are independent of this ticket's surfaces and caused no test regressions, so renewed verification was not required.
+
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (requested in DR-002; awaiting)
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: user message after DR-002 handoff, "now finalize please" (2026-10-04). The user also commissioned and reviewed API-REV-005 (real desktop app quit/relaunch and crash relaunch, Pass 95%).
+- Renewed verification required after later re-integration: `No` (see Re-Integration Before Final Merge)
+- Renewed verification received: `Not needed`
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/done/standalone-agent-run-root/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `TESTING.md` (moved test path), `autobyteus-server-ts/docs/modules/agent_execution.md` (Root Shutdown Fence)
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `tickets/done/standalone-agent-run-root/`
 
 ## Repository Finalization
 
-- Ticket branch: `codex/standalone-agent-run-root` (local only)
-- Finalization target: `origin/personal`
-- Repository finalization status: Not started (awaiting user verification)
+- Bootstrap context source: code_reviewer delivery package (target `personal`)
+- Ticket branch: `codex/standalone-agent-run-root`
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification: `Yes` (re-integrated in `3e8d4eeac`)
+- Ticket branch commit, push, merge and target push: see the Finalization Results section (recorded after execution)
 
 ## Release / Publication / Deployment
 
-- Applicable: To be decided by the user at verification (project precedent: release only when the user requests it).
-- Release notes artifact (pre-verification): `tickets/in-progress/standalone-agent-run-root/release-notes.md`
+- Applicable: `No`. The user asked to finalize and did not request a release; project precedent is to release only on request.
+- Release/publication/deployment result: `Not required`
+- Release notes handoff result: `Not required` (`release-notes.md` is kept in the archived ticket for a later release)
 
-## Post-Finalization Cleanup
-
-- Not started.
-
-## Final Status
-
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Unresolved blocker: None; awaiting user verification
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`

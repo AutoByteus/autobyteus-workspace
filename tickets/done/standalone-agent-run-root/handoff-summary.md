@@ -21,7 +21,7 @@
 ## Integration State
 
 - Branch `codex/standalone-agent-run-root` in `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`.
-- Merged `origin/personal@1b9739cad` (merge `1195f4356`; Merge method). Re-fetched in DR-002: base unchanged.
+- Merged `origin/personal@1b9739cad` (merge `1195f4356`; Merge method). Re-fetched in DR-002: base unchanged. After user verification (DR-003), re-merged `origin/personal@852ea5327` (`3e8d4eeac`); checks rerun with 0 new failures; no material change to the verified state.
 - Post-integration checks: see `release-deployment-report.md`. Summary:
   - server typecheck clean (TS6059 noise only);
   - targeted server suites: 0 new failures against base;
