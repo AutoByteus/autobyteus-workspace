@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-002 | `/code_reviewer`, `code-review-report.md`, CRR-001 (round 1, Fail) | CR-001 | `Local Fix` | SR-005; ARCH-REV-003; CRR-001; API-REV N/A; DR N/A | Child commands no longer restart a crashed host; back to code review |
 | IR-003 | `/code_reviewer`, `code-review-report.md`, CRR-003 (round 3, failure-origin review of API/E2E F-01) | CR-002 (API/E2E F-01, AE-10) | `Local Fix` | SR-005; ARCH-REV-003; CRR-003; API-REV-001; DR N/A | Standalone children's earlier-events pages use the member query; back to code review |
 | IR-004 | `/architecture_reviewer`, `design-review-report.md`, ARCH-REV-004 (round 4, Pass on SR-006, from CRR-005 / API/E2E F-02) | F-02 (no source finding) | `Design Impact` (implemented SR-006 § 11) | SR-006; ARCH-REV-004; CRR-005; API-REV-002; DR N/A | Root shutdown fence waits for quiescence after a rejected interrupt and retries per attempt; to code review |
+| IR-005 | `/delivery_engineer`, `release-deployment-report.md`, DR-001 (Blocked, Local Fix) | DR-001 native-input-history import | `Local Fix` | SR-006; ARCH-REV-004; CRR-006; API-REV-003; DR-001 | Workspace harness imports the moved root fixture; `pnpm test:native-input-history` 2/2 |
 
 ## Revision Entries
 
@@ -194,3 +195,28 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Remaining limitations or risks:
   - No live run was done in this round.
   - Per ARCH-REV-004 N-1: an EXPIRY warning that shows a local `IDENTIFIED` turn means stale state or a new turn (P-005/P-006). That must be escalated as a Design Impact, not answered by raising the bound or adding error-text recognition. `reconcileRuntimeSnapshot` does not clear a local `IDENTIFIED` turn.
+
+### IR-005 — Workspace native-input-history harness imports the moved root fixture (DR-001)
+
+- Triggering role, report path, and round: `/delivery_engineer`, `release-deployment-report.md` and `delivery-revision-record.md` (DR-001, Blocked, Local Fix). Evidence: `delivery-evidence/dr001-native-input-history.log`.
+- Triggering finding IDs: the DR-001 native-input-history blocker.
+- Classification: `Local Fix` (durable test code).
+- Prior authoritative result: IR-004.
+  - `test-support/native-input-history/native-accepted-input-history.integration.test.ts:10` still imported `../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture`.
+  - IR-001 had moved that folder to `tests/integration/standalone-agent-run-root/`.
+  - `pnpm test:native-input-history` failed to resolve the import. That harness runs under its own Vitest config, outside the server and web sweeps, and it was not run in IR-001–IR-004.
+- Current authoritative result: the import points at `../../autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-compaction-root-fixture`.
+- Related revision IDs: SR-006; ARCH-REV-004; CRR-006; API-REV-003; DR-001.
+- Why recorded: a delivery-detected regression from the IR-001 module move.
+- Approved behavior or requirement IDs affected: AC-001 (relocated fixtures), AC-010.
+- Implementation delta: one import path. Commit `3c7b62f53`.
+- Changed files or areas: `test-support/native-input-history/native-accepted-input-history.integration.test.ts`.
+- **Search for other stale references:** `git grep` over tracked files, excluding `tickets/`, for `tests/integration/agent-run-collaboration`, `src/agent-run-collaboration` and `tests/unit/agent-run-collaboration`. Besides the fixed import, only two kinds of hit remain:
+  - `TESTING.md:222`, left to delivery as requested;
+  - `autobyteus-collaboration-stream-contracts/dist/*.map`, build output that points at `src/agent-run-collaboration-dtos.ts`. That contracts module and `api/graphql/types/agent-run-collaboration.ts` are current, unmoved files whose names are part of the wire and API contract; they were never in scope for the rename.
+  - No workspace script or package config references the old paths.
+- Local validation and result:
+  - `pnpm test:native-input-history` passes 2/2. It first runs the web boundary guard, then the harness.
+  - The same 12 "Failed to fold token usage event … TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED" console warnings appear on the clean base (`b37d7a934`), which also passes 2/2. They are harness noise, not a regression.
+- Next recipient or routing: `get_handoff_rules`, Large/High Local Fix requested by delivery → `/code_reviewer`.
+- Remaining limitations or risks: none new. `TESTING.md` path sync stays with delivery.

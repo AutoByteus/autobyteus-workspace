@@ -21,13 +21,13 @@
 
 - Implementation cycle: `Rework` (IR-004: SR-006 § 11 root shutdown fence, after CRR-005 / API/E2E F-02 Design Impact and ARCH-REV-004 Pass). Earlier rounds: IR-003 (CR-002), IR-002 (CR-001), IR-001 (initial baseline).
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/implementation-revision-record.md`
-- Current implementation revision ID: `IR-004`.
+- Current implementation revision ID: `IR-005` (DR-001 Local Fix: workspace native-input-history harness import). The previous round was IR-004 (SR-006).
 - Related solution revision IDs: SR-005 (requirements SR-002).
 - Related architecture-review revision IDs: ARCH-REV-003 (ARCH-REV-002 for the SR-004 substance).
 - Related solution and architecture-review revisions for this round: SR-006, ARCH-REV-004.
 - Related code-review revision IDs: CRR-001, CRR-002 (Pass), CRR-003, CRR-004 (Pass), CRR-005.
 - Related API/E2E revision IDs: API-REV-001, API-REV-002.
-- Delivery revision IDs: N/A.
+- Delivery revision IDs: DR-001.
 - Triggering finding IDs: F-02 (API/E2E; CRR-005 Design Impact, resolved by SR-006). CR-002 was resolved in IR-003 and CR-001 in IR-002.
 - Code review status:
   - CRR-006 Pass: IR-004 (SR-006 § 11) verified against F-1 to F-4, score 9.3/10. Routed to `/api_e2e_engineer` for the N-1 live validation.
@@ -44,6 +44,7 @@
     - `c0e8ce7fd`: the IR-002 fix for CR-001;
     - `782ec9f11`: the IR-003 fix for CR-002;
     - `eccea069b`: the IR-004 SR-006 root shutdown fence;
+    - `3c7b62f53`: the IR-005 harness import fix (DR-001), on top of delivery's merge `1195f4356` of `origin/personal@1b9739cad`;
     - plus a commit with the updated artifacts.
 - What the code now does:
   - Every collaboration-eligible standalone run is owned by one `StandaloneAgentRunRoot`. A root-owned host handle makes the host ready on every root path, so host crash recovery is uniform. `StandaloneAgentRunRootManager` replaces the old root manager, binding, statics and wake path.
@@ -235,6 +236,8 @@
 - Dev live-check data is under the worktree's `.autobyteus/development/server-data/` (not tracked). The dev stack is stopped.
 
 ## Local Implementation Checks Run
+
+- **IR-005:** `pnpm test:native-input-history` (workspace native-to-web integration layer) passes 2/2 after the import fix. The clean base prints the same token-usage console warnings.
 
 All of these are implementation-scoped local checks, not API/E2E sign-off.
 
