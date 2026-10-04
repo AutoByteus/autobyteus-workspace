@@ -41,3 +41,4 @@ Implementation plus implementation-scoped checks and implementation-handoff.md, 
 ## Routing
 get_handoff_rules → rule "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low" → /implementation_engineer.
 - Sent 2026-10-04 via send_message_to → /implementation_engineer; tool result DELIVERED, target_agent_run_id implementation_engineer_8368905559634bb4a617100bcac1f243.
+- Addendum (2026-10-04, after send): E71 confirms `/compact` in the exact AutoByteus content-block shape triggers manual compaction (probes/claude-autobyteus-shape-compact-probe.mjs). The environment variable used in probe E65 is experiment-only, not part of the design or the tests. No design change.
