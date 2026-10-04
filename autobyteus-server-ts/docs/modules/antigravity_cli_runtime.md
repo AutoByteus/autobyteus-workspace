@@ -359,8 +359,11 @@ Detection is on only when the run's CLI version is at least
 `AGY_COMPACTION_DETECTION_MIN_VERSION` (1.2.16), the version on which the
 signal was proven. `AgyAgentRunBackendFactory` decides this per created or
 restored backend and logs one info line when it is off. Older AGY versions
-also stream early non-compaction checkpoint steps, so on an older or unreadable
-version checkpoint steps stay ignored. AutoByteus does not read AGY transcript
+wrote early non-compaction checkpoint steps (`{{ CHECKPOINT 0 }}` truncation
+notices) to their transcripts and may also stream them, so on an older or
+unreadable version checkpoint steps stay ignored. The gate-off path is covered
+by `agy-compaction-gate-off-transport.e2e.test.ts`, whose fake CLI reports
+1.2.15 through `AGY_FAKE_VERSION`. AutoByteus does not read AGY transcript
 files for compaction, and historical AGY raw traces are not rewritten.
 
 ## Terminal error messages
