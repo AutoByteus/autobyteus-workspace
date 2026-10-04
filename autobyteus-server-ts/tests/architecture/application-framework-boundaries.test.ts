@@ -2997,7 +2997,6 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
       "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
       "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
-      "autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts",
       "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",

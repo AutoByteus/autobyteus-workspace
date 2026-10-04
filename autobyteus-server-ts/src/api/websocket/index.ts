@@ -9,7 +9,7 @@ import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRealtime
 import type { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
 import { AgentOrgStreamHandler } from "../../services/agent-streaming/agent-org-stream-handler.js";
 import { AgentCollaborationStreamHandler } from "../../services/agent-streaming/agent-collaboration-stream-handler.js";
-import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
+import { getStandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
 export async function registerWebsocketRoutes(
   app: FastifyInstance,
@@ -27,8 +27,7 @@ export async function registerWebsocketRoutes(
     undefined,
     new AgentOrgStreamHandler(dependencies.agentOrgRunService),
     new AgentCollaborationStreamHandler({
-      resolveCommandReadyRoot: (hostRunId) => AgentRunCollaborationRootManager.getInstance().resolveCommandReadyRoot(hostRunId),
-      getActive: (hostRunId) => AgentRunCollaborationRootManager.getInstance().getActive(hostRunId),
+      resolveRoot: (hostRunId) => getStandaloneAgentRunRootManager().resolveRoot(hostRunId),
     }),
   );
   await registerApplicationBackendNotificationWebsocket(app, {

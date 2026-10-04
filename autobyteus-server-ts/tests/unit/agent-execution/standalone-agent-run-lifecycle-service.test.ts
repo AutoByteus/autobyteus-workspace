@@ -8,11 +8,15 @@ import { AgentRunCommandCoordinator } from "../../../src/agent-execution/service
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
 import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
 }));
 const RUN_ID = "standalone-run-1";
+/** The member context a run's root builds for its (collaboration-eligible) host. */
+const HOST_CONTEXT = { identity: { agentRunId: RUN_ID }, teamScoped: false } as never;
+const HOST = { memberExecutionContext: HOST_CONTEXT };
 const CLAUDE_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
 const metadata = (overrides: Partial<AgentRunMetadata> = {}): AgentRunMetadata => ({
@@ -113,9 +117,18 @@ const commandReadyRun = () => ({
   }),
 });
 
+/** The eligible run's root, reduced to its host-command order: ready, bind, post. */
+const rootCommandPort = (current: ReturnType<typeof harness>): StandaloneRunCommandPort => ({
+  postUserMessage: async (input) => {
+    const { run } = await current.service.activateHost(input.runId, HOST);
+    input.onActiveRunReady?.(run);
+    return { kind: "posted", run, post: await run.postUserMessage(input.message, input.postOptions) };
+  },
+});
+
 const exactCommandCoordinator = (
   current: ReturnType<typeof harness>,
-  collaborationRoots: ConstructorParameters<typeof AgentRunCommandCoordinator>[0]["collaborationRoots"] = { getActive: () => null },
+  standaloneRuns: StandaloneRunCommandPort = rootCommandPort(current),
 ): AgentRunCommandCoordinator => {
   const agentRunService = new AgentRunService("/unused", {
     agentRunManager: current.agentRunManager as never,
@@ -135,7 +148,7 @@ const exactCommandCoordinator = (
       })),
     } as never,
     broadcaster: { publishToRun: vi.fn(() => 1) } as never,
-    collaborationRoots,
+    standaloneRuns,
   });
 };
 
@@ -169,7 +182,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     try {
       const started = metadata({ platformAgentRunId: CLAUDE_SESSION_ID, startedAt: "2026-08-17T20:05:00.000Z" });
       const current = harness({ metadataStates: [{ kind: "present", metadata: started }] });
-      await expect(current.service.restorePersistedRun(RUN_ID)).rejects.toMatchObject({
+      await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toMatchObject({
         code: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
       });
       expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
@@ -203,8 +216,8 @@ describe("StandaloneAgentRunLifecycleService", () => {
       return run;
     });
 
-    const first = current.service.activatePreparedRun(RUN_ID);
-    const second = current.service.resolveCommandReadyAgentRun(RUN_ID);
+    const first = current.service.activateHost(RUN_ID, HOST).then((result) => result.run);
+    const second = current.service.activateHost(RUN_ID, HOST).then((result) => result.run);
     await vi.waitFor(() => expect(recordRunStarted).toHaveBeenCalledOnce());
     expect(preparedCandidate.commitPublication).not.toHaveBeenCalled();
     release();
@@ -225,43 +238,44 @@ describe("StandaloneAgentRunLifecycleService", () => {
     expect(order).toEqual(["persist-start", "persist-finish", "publish"]);
   });
 
-  it("attaches the host member context at config build and ensures the Agent root after publication", async () => {
+  it("attaches the root-built host member context at config build and requires it for an eligible run (AR-003)", async () => {
     const order: string[] = [];
     const run = { runId: RUN_ID };
     const preparedCandidate = candidate({ run, order });
     const current = harness({ metadataStates: [{ kind: "present", metadata: metadata() }], preparedCandidate });
-    const hostContext = { identity: { agentRunId: RUN_ID }, teamScoped: false } as never;
-    const binding = {
-      buildHostMemberExecutionContext: vi.fn(async () => { order.push("host-context"); return hostContext; }),
-      onHostPublished: vi.fn(async () => { order.push("ensure-root"); }),
-      terminateRoot: vi.fn(async () => true),
-    };
-    current.service.bindCollaboration(binding);
-    expect(() => current.service.bindCollaboration(binding)).toThrow("already set");
 
-    await expect(current.service.activatePreparedRun(RUN_ID)).resolves.toBe(run);
+    await expect(current.service.activateHost(RUN_ID, { memberExecutionContext: null }))
+      .rejects.toThrow("is activated only by its standalone run root");
+    expect(current.agentRunManager.prepareNewAgentRun).not.toHaveBeenCalled();
+
+    await expect(current.service.activateHost(RUN_ID, HOST)).resolves.toMatchObject({ run });
     expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledWith({
       runId: RUN_ID,
-      config: expect.objectContaining({ memberExecutionContext: hostContext }),
+      config: expect.objectContaining({ memberExecutionContext: HOST_CONTEXT }),
     });
-    expect(binding.onHostPublished).toHaveBeenCalledWith({ run, metadata: expect.objectContaining({ runId: RUN_ID }) });
-    expect(order).toEqual(["host-context", "publish", "ensure-root"]);
-    await expect(current.service.terminateCollaborationRoot(RUN_ID)).resolves.toBe(true);
-    expect(binding.terminateRoot).toHaveBeenCalledWith(RUN_ID);
+    expect(order).toEqual(["publish"]);
   });
 
-  it("keeps the host published when the Agent root cannot be ensured", async () => {
+  it("activates helpers and application-owned runs without a member context and refuses one", async () => {
     const run = { runId: RUN_ID };
-    const current = harness({ metadataStates: [{ kind: "present", metadata: metadata() }], preparedCandidate: candidate({ run }) });
-    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    current.service.bindCollaboration({
-      buildHostMemberExecutionContext: vi.fn(async () => null),
-      onHostPublished: vi.fn(async () => { throw new Error("package unreadable"); }),
-      terminateRoot: vi.fn(async () => false),
+    const helper = metadata({ launchPurpose: "server_helper" });
+    const current = harness({ metadataStates: [{ kind: "present", metadata: helper }], preparedCandidate: candidate({ run }) });
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cannot host collaborators");
+    await expect(current.service.activateHost(RUN_ID, { memberExecutionContext: null })).resolves.toMatchObject({ run });
+    expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledWith({
+      runId: RUN_ID,
+      config: expect.objectContaining({ memberExecutionContext: null }),
     });
-    await expect(current.service.activatePreparedRun(RUN_ID)).resolves.toBe(run);
-    expect(error).toHaveBeenCalled();
-    error.mockRestore();
+  });
+
+  it("stops a live host and records it terminated; a host that is not running is left as is", async () => {
+    const current = harness({ metadataStates: [{ kind: "present", metadata: metadata() }] });
+    Object.assign(current.agentRunManager, { terminateAgentRun: vi.fn(async () => true) });
+    Object.assign(current.historyCatalogService, { recordRunTerminated: vi.fn(async () => undefined) });
+    await expect(current.service.terminateHost(RUN_ID)).resolves.toEqual({ outcome: "not_active", runtimeKind: null });
+    current.agentRunManager.getActiveRun.mockReturnValue({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK } as never);
+    await expect(current.service.terminateHost(RUN_ID)).resolves.toEqual({ outcome: "terminated", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK });
+    expect((current.historyCatalogService as unknown as { recordRunTerminated: ReturnType<typeof vi.fn> }).recordRunTerminated).toHaveBeenCalledOnce();
   });
 
   it("restores a started external run from only its exact durable provider identity", async () => {
@@ -272,7 +286,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       restoredCandidate,
     });
 
-    await expect(current.service.restorePersistedRun(RUN_ID)).resolves.toMatchObject({
+    await expect(current.service.activateHost(RUN_ID, HOST)).resolves.toMatchObject({
       run: { runId: RUN_ID },
       metadata: { platformAgentRunId: CLAUDE_SESSION_ID },
     });
@@ -289,7 +303,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const started = metadata({ platformAgentRunId, startedAt: "2026-08-17T20:05:00.000Z" });
     const current = harness({ metadataStates: [{ kind: "present", metadata: started }] });
 
-    await expect(current.service.restorePersistedRun(RUN_ID)).rejects.toMatchObject({
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toMatchObject({
       code: "PLATFORM_AGENT_RUN_BINDING_INVALID",
     });
     expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
@@ -312,7 +326,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       restoredCandidate,
     });
 
-    await expect(current.service.restorePersistedRun(RUN_ID)).resolves.toMatchObject({
+    await expect(current.service.activateHost(RUN_ID, HOST)).resolves.toMatchObject({
       metadata: { runtimeKind: RuntimeKind.AUTOBYTEUS, platformAgentRunId: null },
     });
     expect(current.agentRunManager.prepareRestoreAgentRun).toHaveBeenCalledWith(
@@ -343,11 +357,11 @@ describe("StandaloneAgentRunLifecycleService", () => {
       .mockResolvedValueOnce(firstCandidate)
       .mockResolvedValueOnce(secondCandidate);
 
-    await expect(current.service.activatePreparedRun(RUN_ID))
+    await expect(current.service.activateHost(RUN_ID, HOST).then((result) => result.run))
       .rejects.toThrow("activation metadata did not commit");
     expect(firstCandidate.abort).toHaveBeenCalledOnce();
 
-    await expect(current.service.activatePreparedRun(RUN_ID)).resolves.toMatchObject({ runId: RUN_ID });
+    await expect(current.service.activateHost(RUN_ID, HOST).then((result) => result.run)).resolves.toMatchObject({ runId: RUN_ID });
     expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledTimes(2);
     expect(secondCandidate.commitPublication).toHaveBeenCalledOnce();
   });
@@ -364,11 +378,11 @@ describe("StandaloneAgentRunLifecycleService", () => {
       recordRunStarted: vi.fn(async () => null),
     });
 
-    await expect(current.service.restorePersistedRun(RUN_ID)).rejects.toMatchObject({
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toMatchObject({
       code: "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
     });
     expect(restoredCandidate.abort).toHaveBeenCalledOnce();
-    await expect(current.service.restorePersistedRun(RUN_ID)).rejects.toMatchObject({
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toMatchObject({
       code: "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
     });
     expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledOnce();
@@ -483,7 +497,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       llmConfig: { effort: "high" },
     });
     await vi.waitFor(() => expect(validateModelConfig).toHaveBeenCalledOnce());
-    const restore = current.service.restorePersistedRun(RUN_ID);
+    const restore = current.service.activateHost(RUN_ID, HOST);
     await new Promise((resolve) => setTimeout(resolve, 10));
     expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
 
@@ -612,30 +626,47 @@ describe("StandaloneAgentRunLifecycleService", () => {
     expect(commitRunModelConfig).not.toHaveBeenCalled();
   });
 
-  it("admits mentions on the host's Agent root after activation and posts the composed note", async () => {
+  it("hands mentions to the run's root and maps its admission outcome to the command ack", async () => {
     const activeRun = commandReadyRun();
     const current = harness({ metadataStates: [{ kind: "present", metadata: metadata({ startedAt: "2026-08-17T20:01:00.000Z" }) }] });
     current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
-    const admit = vi.fn(async () => ({
-      admitted: true as const, collaborators: [{ name: "Product Team", kind: "agent_team" as const, address: "/product_team" }],
-    }));
-    const coordinator = exactCommandCoordinator(current, { getActive: () => ({ admitCollaboratorMentions: admit }) as never });
-    await expect(coordinator.postUserMessage({
-      runId: RUN_ID, messageId: "m-1", dedupeKey: "d-1",
-      message: new AgentInputUserMessage("Ask @Product Team"),
-      mentions: [{ kind: "agent_team", definitionId: "product-team" }],
+    const mentions = [{ kind: "agent_team" as const, definitionId: "product-team" }];
+    const port = (outcome: "posted" | "rejected" | "failed"): StandaloneRunCommandPort => ({
+      postUserMessage: vi.fn(async (input) => {
+        expect(input.mentions).toEqual(mentions);
+        input.onActiveRunReady?.(activeRun as never);
+        if (outcome === "rejected") return { kind: "admission_rejected", run: activeRun as never,
+          admission: { admitted: false as const, code: "COLLABORATOR_MENTION_UNAVAILABLE" as const, message: "Product Team is already in this run." } };
+        if (outcome === "failed") return { kind: "admission_failed", run: activeRun as never, message: "catalog unavailable" };
+        return { kind: "posted", run: activeRun as never, post: await activeRun.postUserMessage(input.message, input.postOptions) };
+      }),
+    });
+    await expect(exactCommandCoordinator(current, port("posted")).postUserMessage({
+      runId: RUN_ID, messageId: "m-1", dedupeKey: "d-1", message: new AgentInputUserMessage("Ask @Product Team"), mentions,
     })).resolves.toMatchObject({ ack: { accepted: true } });
-    expect(admit).toHaveBeenCalledWith({ focusedAgentRunId: RUN_ID, mentions: [{ kind: "agent_team", definitionId: "product-team" }] });
-    expect(activeRun.postUserMessage.mock.calls[0]![0].content).toContain("[Mentioned collaborators]");
+    expect(activeRun.postUserMessage.mock.calls[0]![0].metadata).toMatchObject({ message_id: "m-1", dedupe_key: "d-1" });
 
-    const rejecting = exactCommandCoordinator(current, { getActive: () => ({
-      admitCollaboratorMentions: vi.fn(async () => ({ admitted: false as const, code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Product Team is already in this run." })),
-    }) as never });
-    await expect(rejecting.postUserMessage({
-      runId: RUN_ID, messageId: "m-2", dedupeKey: "d-2",
-      message: new AgentInputUserMessage("again"),
+    await expect(exactCommandCoordinator(current, port("rejected")).postUserMessage({
+      runId: RUN_ID, messageId: "m-2", dedupeKey: "d-2", message: new AgentInputUserMessage("again"), mentions,
+    })).resolves.toMatchObject({ ack: { accepted: false, state: "rejected", code: "COLLABORATOR_MENTION_UNAVAILABLE" } });
+    await expect(exactCommandCoordinator(current, port("failed")).postUserMessage({
+      runId: RUN_ID, messageId: "m-3", dedupeKey: "d-3", message: new AgentInputUserMessage("again"), mentions,
+    })).resolves.toMatchObject({ ack: { accepted: false, state: "failed", code: "COLLABORATOR_ADMISSION_FAILED" } });
+    expect(activeRun.postUserMessage).toHaveBeenCalledOnce();
+  });
+
+  it("keeps helpers on the plain path: a mention is unavailable and nothing is posted", async () => {
+    const activeRun = commandReadyRun();
+    const current = harness({ metadataStates: [{ kind: "present", metadata: metadata({ launchPurpose: "server_helper", startedAt: "2026-08-17T20:01:00.000Z" }) }] });
+    current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
+    const plain: StandaloneRunCommandPort = { postUserMessage: vi.fn(async () => null) };
+    await expect(exactCommandCoordinator(current, plain).postUserMessage({
+      runId: RUN_ID, messageId: "m-1", dedupeKey: "d-1", message: new AgentInputUserMessage("Ask @Product Team"),
       mentions: [{ kind: "agent_team", definitionId: "product-team" }],
     })).resolves.toMatchObject({ ack: { accepted: false, state: "rejected", code: "COLLABORATOR_MENTION_UNAVAILABLE" } });
+    await expect(exactCommandCoordinator(current, plain).postUserMessage({
+      runId: RUN_ID, messageId: "m-2", dedupeKey: "d-2", message: new AgentInputUserMessage("hello"),
+    })).resolves.toMatchObject({ ack: { accepted: true } });
     expect(activeRun.postUserMessage).toHaveBeenCalledOnce();
   });
 });

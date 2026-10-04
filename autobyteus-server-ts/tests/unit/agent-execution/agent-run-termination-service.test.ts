@@ -208,32 +208,37 @@ describe("AgentRunService termination", () => {
     stopObserving?.();
   });
 
-  it("ends the Agent root before the host on an explicit Stop, even when the host runtime already died", async () => {
-    const order: string[] = [];
-    const agentRunManager = {
-      getActiveRun: vi.fn(),
-      terminateAgentRun: vi.fn(async () => { order.push("host"); return true; }),
-    };
+  it("an eligible run's Stop goes to its root (children, then host) and maps the host outcome", async () => {
+    const agentRunManager = { getActiveRun: vi.fn(), terminateAgentRun: vi.fn(async () => true) };
     const historyCatalogService = { recordRunTerminated: vi.fn(async () => undefined) };
-    const lifecycleService = {
-      terminateCollaborationRoot: vi.fn(async () => { order.push("root"); return true; }),
-    };
+    const standaloneRuns = { resolveRootAndEnsureHost: vi.fn(), stopRoot: vi.fn() };
     const service = new AgentRunService("/tmp/agent-run-service-test", {
       agentRunManager: agentRunManager as never,
       metadataService: {} as never,
       historyCatalogService: historyCatalogService as never,
       provisioningService: {} as never,
-      lifecycleService: lifecycleService as never,
+      lifecycleService: {} as never,
+      standaloneRuns,
     });
-    agentRunManager.getActiveRun.mockReturnValue({ runtimeKind: RuntimeKind.CODEX_APP_SERVER });
-    await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true });
-    expect(order).toEqual(["root", "host"]);
+    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: true, host: { outcome: "terminated", runtimeKind: RuntimeKind.CODEX_APP_SERVER } });
+    await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true, route: "runtime", runtimeKind: RuntimeKind.CODEX_APP_SERVER });
 
-    agentRunManager.getActiveRun.mockReturnValue(null);
-    await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true, route: "runtime" });
+    // The host runtime already died: the root's children were stopped, so the run is recorded terminated.
+    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: true, host: { outcome: "not_active", runtimeKind: null } });
+    await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true, route: "runtime", runtimeKind: null });
     expect(historyCatalogService.recordRunTerminated).toHaveBeenLastCalledWith({ runId: "run-1" });
 
-    lifecycleService.terminateCollaborationRoot.mockResolvedValue(false);
+    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: false, host: { outcome: "not_active", runtimeKind: null } });
     await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: false, route: "not_found" });
+    standaloneRuns.stopRoot.mockResolvedValueOnce({ rootEnded: true, host: { outcome: "rejected", runtimeKind: RuntimeKind.AUTOBYTEUS } });
+    await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: false, route: "not_found", runtimeKind: RuntimeKind.AUTOBYTEUS });
+    expect(agentRunManager.terminateAgentRun).not.toHaveBeenCalled();
+    expect(historyCatalogService.recordRunTerminated).toHaveBeenCalledOnce();
+
+    // A run that cannot host collaborators stops on the plain path.
+    standaloneRuns.stopRoot.mockResolvedValueOnce(null);
+    agentRunManager.getActiveRun.mockReturnValue({ runtimeKind: RuntimeKind.AUTOBYTEUS });
+    await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true, route: "native" });
+    expect(agentRunManager.terminateAgentRun).toHaveBeenCalledOnce();
   });
 });

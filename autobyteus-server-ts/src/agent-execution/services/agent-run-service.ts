@@ -17,7 +17,11 @@ import { isAgentRunEvent } from "../domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
 import { AgentRunProvisioningService } from "./agent-run-provisioning-service.js";
 import type { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
-import { StandaloneAgentRunLifecycleService } from "./standalone-agent-run-lifecycle-service.js";
+import {
+  StandaloneAgentRunLifecycleService,
+  type StandaloneAgentRunActivationResult,
+} from "./standalone-agent-run-lifecycle-service.js";
+import type { StandaloneRunLifecyclePort } from "./standalone-run-ports.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 
 export interface CreateAgentRunInput {
@@ -77,6 +81,7 @@ export class AgentRunService {
   private historyCatalogService: AgentRunHistoryCatalogService;
   private readonly provisioningService: AgentRunProvisioningService;
   private readonly lifecycleService: StandaloneAgentRunLifecycleService;
+  private readonly standaloneRuns: StandaloneRunLifecyclePort | null;
 
   constructor(
     memoryDir: string,
@@ -88,6 +93,11 @@ export class AgentRunService {
       agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
       provisioningService?: AgentRunProvisioningService;
       lifecycleService: StandaloneAgentRunLifecycleService;
+      /**
+       * The owner of eligible standalone runs (their `StandaloneAgentRunRoot`s). Absent only in a
+       * process that hosts no eligible runs (application execution scopes run application-owned runs).
+       */
+      standaloneRuns?: StandaloneRunLifecyclePort;
     },
   ) {
     if (!deps?.lifecycleService) {
@@ -107,19 +117,23 @@ export class AgentRunService {
       agentRunIdentityAllocator: deps.agentRunIdentityAllocator,
     });
     this.lifecycleService = deps.lifecycleService;
+    this.standaloneRuns = deps.standaloneRuns ?? null;
   }
 
   async terminateAgentRun(runId: string): Promise<AgentRunTerminationResult> {
-    // Only an explicit Stop cascades: the Agent root fences and stops every child first,
-    // even when the host's own runtime already died.
-    const rootTerminated = await this.lifecycleService.terminateCollaborationRoot(runId);
-    const activeRun = this.agentRunManager.getActiveRun(runId);
-    if (!activeRun) {
-      if (rootTerminated) await this.historyCatalogService.recordRunTerminated({ runId });
-      return rootTerminated
-        ? { success: true, message: "Agent run terminated successfully.", route: "runtime", runtimeKind: null }
-        : this.notFound(null);
+    // An eligible run's root stops every child first, then its host, even when the host's own
+    // runtime already died.
+    const stopped = await this.standaloneRuns?.stopRoot(runId) ?? null;
+    if (stopped) {
+      const { host } = stopped;
+      if (host.outcome === "terminated") return this.terminated(host.runtimeKind);
+      if (host.outcome === "rejected") return this.notFound(host.runtimeKind);
+      if (!stopped.rootEnded) return this.notFound(null);
+      await this.historyCatalogService.recordRunTerminated({ runId });
+      return { success: true, message: "Agent run terminated successfully.", route: "runtime", runtimeKind: null };
     }
+    const activeRun = this.agentRunManager.getActiveRun(runId);
+    if (!activeRun) return this.notFound(null);
 
     const route: AgentRunTerminationRoute =
       activeRun.runtimeKind === RuntimeKind.AUTOBYTEUS ? "native" : "runtime";
@@ -134,6 +148,15 @@ export class AgentRunService {
       message: "Agent run terminated successfully.",
       route,
       runtimeKind: activeRun.runtimeKind,
+    };
+  }
+
+  private terminated(runtimeKind: RuntimeKind | null): AgentRunTerminationResult {
+    return {
+      success: true,
+      message: "Agent run terminated successfully.",
+      route: runtimeKind === RuntimeKind.AUTOBYTEUS ? "native" : "runtime",
+      runtimeKind,
     };
   }
 
@@ -216,7 +239,7 @@ export class AgentRunService {
     input: CreateAgentRunInput,
   ): Promise<CreateAgentRunResult> {
     const prepared = await this.provisioningService.prepareAgentRun(input);
-    const activeRun = await this.lifecycleService.activatePreparedRun(prepared.runId);
+    const activeRun = (await this.activate(prepared.runId)).run;
     return { runId: activeRun.runId };
   }
 
@@ -227,9 +250,10 @@ export class AgentRunService {
   }
 
   async activatePreparedRun(runId: string): Promise<AgentRun> {
-    return this.lifecycleService.activatePreparedRun(runId);
+    return (await this.activate(normalizeRequiredRunId(runId))).run;
   }
 
+  /** The plain command path; an eligible run's commands go through its root (`StandaloneRunCommandPort`). */
   resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {
     return this.lifecycleService.resolveCommandReadyAgentRun(runId);
   }
@@ -263,7 +287,13 @@ export class AgentRunService {
   }
 
   async restoreAgentRun(runId: string): Promise<RestoreAgentRunResult> {
-    return this.lifecycleService.restorePersistedRun(normalizeRequiredRunId(runId));
+    return this.activate(normalizeRequiredRunId(runId));
+  }
+
+  /** An eligible run is activated by its root (with its host member context); any other run directly. */
+  private async activate(runId: string): Promise<StandaloneAgentRunActivationResult> {
+    const owned = await this.standaloneRuns?.resolveRootAndEnsureHost(runId) ?? null;
+    return owned ?? this.lifecycleService.activateHost(runId, { memberExecutionContext: null });
   }
 
   updateStoppedModelConfig(input: {

@@ -1,12 +1,11 @@
-import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { CollaboratorDefinitionCatalog } from "./collaborator-candidate-policy.js";
 import { CollaboratorCandidatePolicy } from "./collaborator-candidate-policy.js";
 import { CollaboratorEntryBuilder } from "./collaborator-entry-builder.js";
 import { CollaboratorAdmission } from "./collaborator-admission.js";
 import { CollaboratorRunnabilityValidator } from "./collaborator-runnability-validator.js";
-import { RunModelSelectionService, type RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
-import { getModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
+import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 
 export const createCollaboratorDefinitionCatalog = (services: Readonly<{
   agents: Pick<AgentDefinitionService, "getAllAgentDefinitions" | "getAgentDefinitionById">;
@@ -30,9 +29,20 @@ export const createCollaboratorAdmission = (
   });
 
 let processAdmission: CollaboratorAdmission | null = null;
+
+/** Binds the process admission coordinator, built at process composition over the injected definition services. */
+export const bindProcessCollaboratorAdmission = (admission: CollaboratorAdmission): void => {
+  if (!admission) throw new Error("A process CollaboratorAdmission instance is required.");
+  if (processAdmission) throw new Error("The process CollaboratorAdmission is already initialized.");
+  processAdmission = admission;
+};
+
+export const releaseProcessCollaboratorAdmission = (admission: CollaboratorAdmission): void => {
+  if (processAdmission === admission) processAdmission = null;
+};
+
 /** The process admission coordinator over the shared definition services. */
-export const getCollaboratorAdmission = (): CollaboratorAdmission =>
-  processAdmission ??= createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
-    agents: AgentDefinitionService.getInstance(),
-    teams: AgentTeamDefinitionService.getInstance(),
-  }), new RunModelSelectionService(getModelCatalogService()));
+export const getCollaboratorAdmission = (): CollaboratorAdmission => {
+  if (!processAdmission) throw new Error("The process CollaboratorAdmission is not initialized.");
+  return processAdmission;
+};

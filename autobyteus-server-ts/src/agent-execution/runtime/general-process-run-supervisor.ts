@@ -53,8 +53,23 @@ import { AgentOrgRunHistoryCatalogService } from "../../run-history/services/age
 import { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
-import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
-import { AgentRunCollaborationLocationService } from "../../agent-run-collaboration/services/agent-run-collaboration-location-service.js";
+import {
+  StandaloneAgentRunRootManager,
+  bindProcessStandaloneAgentRunRootManager,
+  releaseProcessStandaloneAgentRunRootManager,
+} from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import {
+  bindProcessStandaloneRunCommandPort,
+  releaseProcessStandaloneRunCommandPort,
+} from "../services/standalone-run-ports.js";
+import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
+import {
+  bindProcessCollaboratorAdmission,
+  createCollaboratorAdmission,
+  createCollaboratorDefinitionCatalog,
+  releaseProcessCollaboratorAdmission,
+} from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 
 export type GeneralProcessRunSupervisorInput = Readonly<{
   memoryDir: string;
@@ -108,8 +123,9 @@ export class GeneralProcessRunSupervisor {
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private readonly agentOrgRunManager: AgentOrgRunManager;
-  private readonly agentRunCollaborationRootManager: AgentRunCollaborationRootManager;
+  private readonly standaloneRootManager: StandaloneAgentRunRootManager;
   private readonly agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
+  private readonly collaboratorAdmission: CollaboratorAdmission;
   private closePromise: Promise<void> | null = null;
 
   constructor(input: GeneralProcessRunSupervisorInput) {
@@ -121,21 +137,30 @@ export class GeneralProcessRunSupervisor {
     const collaborationLocations = new CollaborationExecutionLocationService({
       teams: storedTeamLocations,
       orgs: storedOrgLocations,
-      agents: new AgentRunCollaborationLocationService({
+      agents: new StandaloneRootLocationService({
         memoryDir,
-        roots: { getActiveTree: (hostRunId) => agentRunCollaborationRootManager?.getActiveTree(hostRunId) ?? null },
+        roots: { getActiveTree: (hostRunId) => standaloneRootManager?.getActiveTree(hostRunId) ?? null },
       }),
     });
     let agentRunManager: AgentRunManager | null = null;
-    let agentRunCollaborationRootManager: AgentRunCollaborationRootManager | null = null;
+    let standaloneRootManager: StandaloneAgentRunRootManager | null = null;
+    let standaloneRootManagerBound = false;
     let agentTeamRunManager: AgentTeamRunManager | null = null;
     let agentOrgRunManager: AgentOrgRunManager | null = null;
     let agentRunService: AgentRunService | null = null;
     let teamRunService: TeamRunService | null = null;
     let agentRunServiceBound = false;
     let teamRunServiceBound = false;
+    // One admission coordinator over the injected definition services (no ambient definition getters).
+    const collaboratorAdmission = createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
+      agents: input.agentDefinitionService,
+      teams: input.agentTeamDefinitionService,
+    }), input.modelSelectionValidator);
+    let collaboratorAdmissionBound = false;
 
     try {
+      bindProcessCollaboratorAdmission(collaboratorAdmission);
+      collaboratorAdmissionBound = true;
       const contextFileLayout = new ContextFileLayout({
         appDataDir: input.contextFilePathEnvironment.appDataDir,
         memoryDir,
@@ -245,14 +270,15 @@ export class GeneralProcessRunSupervisor {
         tokenUsageReadiness,
         modelSelectionValidator: input.modelSelectionValidator,
       });
-      const lifecycle = lifecycleService;
       const activeAgentRuns = agentRunManager;
-      agentRunCollaborationRootManager = AgentRunCollaborationRootManager.initializeProcessInstance({
+      // Each eligible standalone run is owned by its root; the lifecycle is its host's activation backend.
+      standaloneRootManager = new StandaloneAgentRunRootManager({
         memoryDir,
         definitions: input.agentDefinitionService,
         host: {
           getActiveRun: (hostRunId) => activeAgentRuns.getActiveRun(hostRunId),
-          resolveCommandReadyAgentRun: (hostRunId) => lifecycle.resolveCommandReadyAgentRun(hostRunId),
+          activateHost: (hostRunId, activation) => lifecycleService.activateHost(hostRunId, activation),
+          terminateHost: (hostRunId) => lifecycleService.terminateHost(hostRunId),
           readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
           recordCollaborationPackageCreated: (hostRunId) => historyCatalogService.recordCollaborationPackageCreated({ runId: hostRunId }),
         },
@@ -264,9 +290,12 @@ export class GeneralProcessRunSupervisor {
           memoryLocator,
           activityInspector,
           workspaceManager,
+          collaboratorAdmission,
         },
       });
-      lifecycleService.bindCollaboration(agentRunCollaborationRootManager);
+      bindProcessStandaloneAgentRunRootManager(standaloneRootManager);
+      bindProcessStandaloneRunCommandPort(standaloneRootManager);
+      standaloneRootManagerBound = true;
       agentRunService = new AgentRunService(memoryDir, {
         agentRunManager,
         metadataService,
@@ -275,6 +304,7 @@ export class GeneralProcessRunSupervisor {
         agentRunIdentityAllocator,
         provisioningService,
         lifecycleService,
+        standaloneRuns: standaloneRootManager,
       });
       const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
         teamRunManager: agentTeamRunManager,
@@ -316,12 +346,13 @@ export class GeneralProcessRunSupervisor {
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentOrgRunManager = agentOrgRunManager;
-      this.agentRunCollaborationRootManager = agentRunCollaborationRootManager;
+      this.standaloneRootManager = standaloneRootManager;
       this.agentRunService = agentRunService;
       this.teamRunService = teamRunService;
       this.agentOrgRunService = agentOrgRunService;
       this.agentOrgRunHistoryCatalogService = agentOrgRunHistoryCatalogService;
       this.agentToolMcpSessionAuthority = input.agentToolMcpSessionAuthority;
+      this.collaboratorAdmission = collaboratorAdmission;
       this.agentRunResumeConfigService = new AgentRunResumeConfigService(memoryDir, {
         statusProjectionService: new AgentRunStatusProjectionService({
           agentRunManager,
@@ -349,14 +380,18 @@ export class GeneralProcessRunSupervisor {
       if (agentOrgRunManager) {
         AgentOrgRunManager.releaseProcessInstance(agentOrgRunManager);
       }
-      if (agentRunCollaborationRootManager) {
-        AgentRunCollaborationRootManager.releaseProcessInstance(agentRunCollaborationRootManager);
+      if (standaloneRootManagerBound && standaloneRootManager) {
+        releaseProcessStandaloneRunCommandPort(standaloneRootManager);
+        releaseProcessStandaloneAgentRunRootManager(standaloneRootManager);
       }
       if (agentTeamRunManager) {
         AgentTeamRunManager.releaseProcessInstance(agentTeamRunManager);
       }
       if (agentRunManager) {
         AgentRunManager.releaseProcessInstance(agentRunManager);
+      }
+      if (collaboratorAdmissionBound) {
+        releaseProcessCollaboratorAdmission(collaboratorAdmission);
       }
       throw error;
     }
@@ -383,8 +418,8 @@ export class GeneralProcessRunSupervisor {
       errors.push(error);
     }
     try {
-      // Agent roots end (and stop their children) before their host runs stop.
-      await this.agentRunCollaborationRootManager.stopAll();
+      // Standalone roots end (and stop their children) before their host runs stop.
+      await this.standaloneRootManager.stopAll();
     } catch (error) {
       errors.push(error);
     }
@@ -397,9 +432,11 @@ export class GeneralProcessRunSupervisor {
       releaseProcessTeamRunService(this.teamRunService);
       releaseProcessAgentRunService(this.agentRunService);
       AgentOrgRunManager.releaseProcessInstance(this.agentOrgRunManager);
-      AgentRunCollaborationRootManager.releaseProcessInstance(this.agentRunCollaborationRootManager);
+      releaseProcessStandaloneRunCommandPort(this.standaloneRootManager);
+      releaseProcessStandaloneAgentRunRootManager(this.standaloneRootManager);
       AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
       AgentRunManager.releaseProcessInstance(this.agentRunManager);
+      releaseProcessCollaboratorAdmission(this.collaboratorAdmission);
     } catch (error) {
       errors.push(error);
     }

@@ -2,7 +2,7 @@ import path from "node:path";
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { renderTeamCollaborationInstruction } from "../../agent-team-execution/services/team-collaboration-instruction-renderer.js";
-import { renderStandaloneCollaborationInstruction } from "../../agent-run-collaboration/prompt/standalone-collaboration-instruction.js";
+import { renderStandaloneCollaborationInstruction } from "./standalone-collaboration-instruction.js";
 import {
   BASH_OPERATING_PRACTICE_SECTION,
   FILE_AND_DIRECTORY_PRACTICE_SECTION,

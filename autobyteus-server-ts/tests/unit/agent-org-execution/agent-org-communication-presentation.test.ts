@@ -353,7 +353,7 @@ it("correlates a committed receiver presentation against the retained tree ident
   const message = { messageId: "committed-before-settlement", senderAgentRunId: "direct-run", receiverAgentRunId: "task-one-run",
     content: "Accepted work", messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-06T00:00:59.000Z" };
   // Exercise only the post-commit callback, not a new admission (which would wake a shut-down child).
-  const committed = subject.run as unknown as { presentCommittedCommunication(message: unknown, receiverInput: unknown): void };
+  const committed = (subject.run as unknown as { delivery: { presentCommittedCommunication(message: unknown, receiverInput: unknown): void } }).delivery;
   expect(() => committed.presentCommittedCommunication(message, new AgentInputUserMessage("Accepted work"))).not.toThrow();
   expect(subject.events).toHaveLength(1);
   expect(subject.events[0]).toMatchObject({ kind: "agent_presentation", execution: { agentRunId: "task-one-run" },

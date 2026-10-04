@@ -1,18 +1,20 @@
 import { CollaborationStreamServerMessageSchema, type CollaborationStreamServerMessage } from "@autobyteus/collaboration-stream-contracts";
 import { describe, expect, it, vi } from "vitest";
 import { AgentCollaborationStreamHandler } from "../../../../src/services/agent-streaming/agent-collaboration-stream-handler.js";
-import { emptyAgentRunCollaborationMessages, emptyAgentRunCollaborationTree } from "../../../../src/agent-run-collaboration/domain/agent-run-collaboration-tree.js";
+import { emptyStandaloneRootMessages, emptyStandaloneRootTree } from "../../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
 
 const HOST = "host-run";
-const tree = emptyAgentRunCollaborationTree({
+const tree = emptyStandaloneRootTree({
   host: { address: "/assistant" as never, agentRunId: HOST, agentDefinitionId: "assistant" },
   createdAt: "2026-09-30T00:00:00.000Z",
 });
 
-const fakeRoot = () => ({
+const fakeRoot = (hostLive = true) => ({
+  ensureHostReady: vi.fn(async () => ({ runId: HOST })),
+  isHostLive: () => hostLive,
   getExecutionTreeSnapshot: () => tree,
   openPackageSnapshotConnection: vi.fn(async () => ({
-    snapshot: { tree, messages: emptyAgentRunCollaborationMessages(HOST), statuses: [], inputStates: [] },
+    snapshot: { tree, messages: emptyStandaloneRootMessages(HOST), statuses: [], inputStates: [] },
     baseChangeSequence: 0,
     subscribe: vi.fn(() => () => undefined),
     close: vi.fn(),
@@ -37,28 +39,38 @@ const send = (overrides: Record<string, unknown> = {}) => JSON.stringify({ type:
 } });
 
 describe("AgentCollaborationStreamHandler", () => {
-  it("makes the root command-ready on connect and sends the Agent-root snapshot", async () => {
+  it("resolves the run's root and makes its host ready on connect, then sends the Agent-root snapshot (AR-001)", async () => {
     const root = fakeRoot();
-    const resolveCommandReadyRoot = vi.fn(async () => root as never);
-    const { wire } = await connect({ resolveCommandReadyRoot, getActive: () => root as never });
-    expect(resolveCommandReadyRoot).toHaveBeenCalledWith(HOST);
+    const resolveRoot = vi.fn(async () => root as never);
+    const { wire } = await connect({ resolveRoot });
+    expect(resolveRoot).toHaveBeenCalledWith(HOST);
+    expect(root.ensureHostReady).toHaveBeenCalledOnce();
+    expect(root.ensureHostReady.mock.invocationCallOrder[0]).toBeLessThan(root.openPackageSnapshotConnection.mock.invocationCallOrder[0]!);
     expect(wire.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE"]);
     expect(wire[1]).toMatchObject({ payload: { root_subject_kind: "agent", root_run_id: HOST, root_agent: { is_active: true } } });
   });
 
-  it("closes with AGENT_ROOT_UNAVAILABLE when the run cannot host collaborators", async () => {
-    const { sessionId, wire, close } = await connect({
-      resolveCommandReadyRoot: vi.fn(async () => { throw Object.assign(new Error("cannot host"), { code: "AGENT_ROOT_UNAVAILABLE" }); }),
-      getActive: () => null,
-    });
-    expect(sessionId).toBeNull();
-    expect(wire).toEqual([{ type: "ERROR", payload: { code: "AGENT_ROOT_UNAVAILABLE", message: "cannot host" } }]);
-    expect(close).toHaveBeenCalledWith(4004);
+  it("reports the host's real state in the snapshot", async () => {
+    const { wire } = await connect({ resolveRoot: async () => fakeRoot(false) as never });
+    expect(wire[1]).toMatchObject({ payload: { root_agent: { is_active: false } } });
+  });
+
+  it("closes with AGENT_ROOT_UNAVAILABLE when the run cannot host collaborators or its host cannot be made ready", async () => {
+    for (const [roots, message] of [
+      [{ resolveRoot: vi.fn(async () => null) }, `Agent run '${HOST}' cannot host collaborators.`],
+      [{ resolveRoot: vi.fn(async () => { throw Object.assign(new Error("not found"), { code: "AGENT_ROOT_UNAVAILABLE" }); }) }, "not found"],
+      [{ resolveRoot: vi.fn(async () => ({ ...fakeRoot(), ensureHostReady: vi.fn(async () => { throw new Error("restore failed"); }) }) as never) }, "restore failed"],
+    ] as const) {
+      const { sessionId, wire, close } = await connect(roots as never);
+      expect(sessionId).toBeNull();
+      expect(wire).toEqual([{ type: "ERROR", payload: { code: "AGENT_ROOT_UNAVAILABLE", message } }]);
+      expect(close).toHaveBeenCalledWith(4004);
+    }
   });
 
   it("admits mentions for the focused child, posts the composed content, and rejects host targets and wrong roots", async () => {
     const root = fakeRoot();
-    const { handler, sessionId, wire } = await connect({ resolveCommandReadyRoot: async () => root as never, getActive: () => root as never });
+    const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never });
     await handler.handleMessage(sessionId!, send({ mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
     expect(root.admitCollaboratorMentions).toHaveBeenCalledWith({ focusedAgentRunId: "child-run", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     expect(root.executeAgentCommand).toHaveBeenCalledWith("child-run", expect.objectContaining({ kind: "post_message", message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned collaborators\]\n- Code Reviewer \(Agent\) at \/code_reviewer\n/) }) }));

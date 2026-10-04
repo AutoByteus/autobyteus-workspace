@@ -17,6 +17,7 @@ import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { CompleteResponse, ChunkResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { Message } from "autobyteus-ts/llm/utils/messages.js";
+import { createStandaloneRunRootsFixture } from "../../fixtures/standalone-run-roots-fixture.js";
 
 const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
   createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
@@ -148,6 +149,7 @@ describe("AgentRunService real memory layout integration", () => {
       agentRunManager: manager,
       workspaceManager,
       lifecycleService,
+      standaloneRuns: createStandaloneRunRootsFixture({ memoryDir, lifecycleService, agentRunManager: manager }),
       agentRunIdentityAllocator: {
         allocateForAgentDefinition: async () =>
           "real_memory_layout_agent_00000000000000000000000000000001",

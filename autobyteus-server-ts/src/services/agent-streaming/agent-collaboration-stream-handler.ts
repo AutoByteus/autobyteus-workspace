@@ -8,7 +8,11 @@ import {
 import { AgentInputUserMessage, ContextFile, ContextFileType } from "autobyteus-ts";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
-import type { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
+import {
+  StandaloneRootUnavailableError,
+  type StandaloneAgentRunRootManager,
+} from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import type { StandaloneAgentRunRoot } from "../../standalone-agent-run-root/domain/standalone-agent-run-root.js";
 import { projectAgentCollaborationEvent, projectAgentCollaborationView } from "./agent-collaboration-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 
@@ -39,19 +43,27 @@ const commandAck = (
 
 /**
  * Agent-root stream `/ws/agent-collaboration/:hostRunId`: snapshot, events and commands for
- * the run's collaborators. Connecting makes the root command-ready (restoring the host when
- * needed); commands for the host itself stay on `/ws/agent/:runId`.
+ * the run's collaborators. Connecting resolves the run's root and makes its host ready
+ * (restoring it when needed); commands for the host itself stay on `/ws/agent/:runId`.
  */
 export class AgentCollaborationStreamHandler {
   private readonly sessions = new Map<string, { connection: WebSocketConnection; hostRunId: string; close(): void }>();
 
-  constructor(private readonly roots: Pick<AgentRunCollaborationRootManager, "resolveCommandReadyRoot" | "getActive">) {}
+  constructor(private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot">) {}
+
+  /** The run's root with its host ready, as the stream's connect and commands need it. */
+  private async readyRoot(hostRunId: string): Promise<StandaloneAgentRunRoot> {
+    const root = await this.roots.resolveRoot(hostRunId);
+    if (!root) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' cannot host collaborators.`);
+    await root.ensureHostReady();
+    return root;
+  }
 
   async connect(connection: WebSocketConnection, hostRunIdInput: string): Promise<string | null> {
     const hostRunId = hostRunIdInput.trim();
     let root;
     try {
-      root = await this.roots.resolveCommandReadyRoot(hostRunId);
+      root = await this.readyRoot(hostRunId);
     } catch (cause) {
       connection.send(serialize(error("AGENT_ROOT_UNAVAILABLE", cause instanceof Error ? cause.message : String(cause))));
       connection.close(4004);
@@ -65,7 +77,7 @@ export class AgentCollaborationStreamHandler {
       })));
       connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-        payload: projectAgentCollaborationView({ hostRunId, isActive: true, snapshot: barrier.snapshot, baseChangeSequence: barrier.baseChangeSequence }),
+        payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot, baseChangeSequence: barrier.baseChangeSequence }),
       })));
       const unsubscribe = barrier.subscribe((event) => {
         try {
@@ -110,7 +122,7 @@ export class AgentCollaborationStreamHandler {
       if (message.payload.root_subject_kind !== "agent" || message.payload.root_run_id !== session.hostRunId) {
         throw new Error("Agent-root command root correlation mismatch.");
       }
-      const root = this.roots.getActive(session.hostRunId) ?? await this.roots.resolveCommandReadyRoot(session.hostRunId);
+      const root = await this.readyRoot(session.hostRunId);
       const target = message.payload.target_agent_run_id;
       if (message.type === "SEND_MESSAGE") {
         let content = message.payload.content;

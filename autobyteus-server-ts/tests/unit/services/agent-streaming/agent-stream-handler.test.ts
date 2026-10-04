@@ -573,6 +573,31 @@ describe("AgentStreamHandler", () => {
     });
   });
 
+  it("keeps tool approval active-only: an offline host is not started (AR-002)", async () => {
+    const activeRun = createActiveRun();
+    const agentRunService = createAgentRunService(activeRun);
+    const commandCoordinator = createCommandCoordinator();
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(),
+      agentRunService as any,
+      undefined,
+      undefined,
+      commandCoordinator as any,
+      createStatusProjectionService() as any,
+    );
+    const sessionId = await handler.connect({ send: vi.fn(), close: vi.fn() }, "agent-123");
+    agentRunService.getAgentRun.mockReturnValue(null);
+
+    for (const type of [ClientMessageType.APPROVE_TOOL, ClientMessageType.DENY_TOOL]) {
+      await handler.handleMessage(sessionId as string, JSON.stringify({ type, payload: { invocation_id: "inv-1" } }));
+    }
+
+    expect(activeRun.approveToolInvocation).not.toHaveBeenCalled();
+    expect(commandCoordinator.postUserMessage).not.toHaveBeenCalled();
+    expect(agentRunService.restoreAgentRun).not.toHaveBeenCalled();
+    expect(agentRunService.activatePreparedRun).not.toHaveBeenCalled();
+  });
+
   it("returns exactly one same-socket acknowledgement for an accepted interrupt", async () => {
     const activeRun = createActiveRun({
       interrupt: vi.fn().mockResolvedValue({ accepted: true }),

@@ -11,6 +11,7 @@ import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../sr
 import type { PreparedLocalExecutionTermination } from "../../../src/agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import type { PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
+import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
 import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../../../src/agent-team-execution/domain/task-team-execution.js";
@@ -276,6 +277,11 @@ const createHarness = async () => {
     publisher,
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
+    // An empty catalog: no available agents or teams to bring in.
+    collaboratorAdmission: createCollaboratorAdmission({
+      listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
+      getAgentDefinition: async () => null, getTeamDefinition: async () => null,
+    }, { validate: vi.fn(), validateMany: async () => [] } as never),
   });
   const commands: MemberTaskCommandCapability = Object.freeze({
     root: createTeamRootExecutionIdentity(rootTeamRunId),

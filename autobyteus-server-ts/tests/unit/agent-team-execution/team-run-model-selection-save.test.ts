@@ -1,5 +1,8 @@
 import "reflect-metadata";
-import { describe, expect, it, vi } from 'vitest';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
 import { MemberExecutionContextBuilder } from '../../../src/agent-team-execution/services/member-team-context-builder.js';
 import { AgentTeamRunManager } from '../../../src/agent-team-execution/services/agent-team-run-manager.js';
@@ -8,14 +11,25 @@ import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team
 import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
 import { StudioRunModelConfigService } from '../../../src/run-history/services/studio-run-model-config-service.js';
 import { AgentTeamRunResolver } from '../../../src/api/graphql/types/agent-team-run.js';
+import { AgentMemoryLayout } from '../../../src/agent-memory/store/agent-memory-layout.js';
+import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
+import { writeAttachmentSidecars } from '../../fixtures/current-attachment-package-fixtures.js';
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
 
-const harness = (physicalOutcome = 'committed', readback = 'ok', runtimeKind = 'codex_app_server') => {
+const memoryDirs: string[] = [];
+afterEach(async () => { await Promise.all(memoryDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true }))); });
+
+/**
+ * Save admits only a current Team package (strict startup admission scans the memory dir), so
+ * the stored Team is a real admitted package on disk; reads and writes go through the
+ * controlled store below.
+ */
+const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKind = 'codex_app_server') => {
   let saved: any = testExecutionTree({ rootTeamRunId: 'root', coordinatorAddress: '/member', children: [testAgentNode('/member', { platformAgentRunId: 'retained-provider-id' })] });
   saved = structuredClone(saved);
   saved.rootTeam.taskExecutions = [{ address: '/task-run', agentRunId: 'retained-task', platformAgentRunId: 'platform-task',
-    delegatorAgentRunId: 'run-member', startedAt: '2026-09-01T00:00:00Z' }];
+    delegatorAgentRunId: 'run-member', startedAt: '2026-09-01T00:00:00.000Z' }];
   const root = saved.rootTeam.defaultLaunchConfiguration;
   root.runtimeKind = runtimeKind; root.llmModelIdentifier = 'small'; root.workspaceRootPath = '/workspace'; root.llmConfig = null;
   const member = saved.rootTeam.members[0].launchConfiguration;
@@ -34,14 +48,19 @@ const harness = (physicalOutcome = 'committed', readback = 'ok', runtimeKind = '
   const capacity = { resolveMany: vi.fn(() => ({ small: 128000, equal: 128000, large: 272000 })) };
   const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
   const memberExecutionContextBuilder = new MemberExecutionContextBuilder({} as any);
-  const manager = new AgentTeamRunManager({ memoryDir: '/tmp/model-save-unit-no-disk', flatTeamExecutionFactory, memberExecutionContextBuilder,
+  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'model-save-unit-'));
+  memoryDirs.push(memoryDir);
+  const packageDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: 'root', ancestorTeamRunIds: [] });
+  await new TeamRunExecutionTreeStore().write(packageDir, saved);
+  writeAttachmentSidecars(packageDir, 'team', 'root');
+  const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => 'task' }),
     executionTreeStore: { read, write } as any, modelSelectionValidator: new RunModelSelectionService(catalog, capacity) });
   return { manager, read, write, capacity, saved: () => saved };
 };
 describe('configured Team model selection Save', () => {
   it('validates every native original baseline before writing and does not omit incompatible children', async () => {
-    const h = harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
+    const h = await harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
     const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [
       { scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', llmModelIdentifier: 'equal', llmConfig: null },
       { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', llmModelIdentifier: 'equal', llmConfig: null },
@@ -51,7 +70,7 @@ describe('configured Team model selection Save', () => {
     expect(h.capacity.resolveMany).toHaveBeenCalledTimes(2);
   });
   it('commits one native tree preserving configured identities and task records; later Save uses new baseline', async () => {
-    const h = harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
+    const h = await harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
     const patch = { scopeKind: 'CONFIGURED_TEAM' as const, scopeAddress: '/', llmModelIdentifier: 'large', llmConfig: null };
     expect((await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [patch] })).outcome).toBe('UPDATED');
     expect(h.write).toHaveBeenCalledTimes(1);
@@ -62,7 +81,7 @@ describe('configured Team model selection Save', () => {
   it.each(['committed', 'renamed_finalization_indeterminate', 'not_renamed'].flatMap(physicalOutcome =>
     ['ok', 'throws', 'missing'].map(readback => ({ physicalOutcome, readback }))))(
     'preserves $physicalOutcome / $readback through Team owner, Studio and resolver', async ({ physicalOutcome, readback }) => {
-      const h = harness(physicalOutcome, readback);
+      const h = await harness(physicalOutcome, readback);
       const original = structuredClone(h.saved());
       const service = new StudioRunModelConfigService({
         modelSelectionService: { listOptions: vi.fn(), listOptionsMany: vi.fn() },
