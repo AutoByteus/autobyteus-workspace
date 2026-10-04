@@ -19,20 +19,22 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`.
+- Implementation cycle: `Rework` (IR-002, Local Fix for CRR-001 / CR-001; IR-001 was the initial baseline).
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`.
+- Current implementation revision ID: `IR-002`.
 - Related solution revision IDs: SR-005 (requirements SR-002).
 - Related architecture-review revision IDs: ARCH-REV-003 (ARCH-REV-002 for the SR-004 substance).
-- Related code-review, API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: N/A.
+- Related code-review revision IDs: CRR-001. API/E2E and delivery revision IDs: N/A.
+- Triggering finding IDs: CR-001.
 - Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`, branch `codex/standalone-agent-run-root`.
   - Base: `b37d7a934`.
   - Commits on the branch:
     - `9c3080a20`: checkpoint, in-progress implementation;
     - `b26f6436c`, `0b6fd46aa`: SR-005 and ARCH-REV-003 records;
-    - `bccb1c095`: this round's implementation;
-    - plus a commit with these two artifacts.
+    - `bccb1c095`: the IR-001 implementation;
+    - `7ef6f828a`: IR-001 handoff artifacts;
+    - `c0e8ce7fd`: the IR-002 fix for CR-001;
+    - plus a commit with the updated artifacts.
 - What the code now does:
   - Every collaboration-eligible standalone run is owned by one `StandaloneAgentRunRoot`. A root-owned host handle makes the host ready on every root path, so host crash recovery is uniform. `StandaloneAgentRunRootManager` replaces the old root manager, binding, statics and wake path.
   - Team-run collaborator Agents live in `TeamRootCollaboratorAgentRegistry`.
@@ -60,7 +62,7 @@
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | BEH-001 Standalone command (REQ-001) | One root owns the eligible run; the host is made ready in the root gate | `AgentRunCommandCoordinator` → `StandaloneRunCommandPort` (`StandaloneAgentRunRootManager.postUserMessage`) → `StandaloneAgentRunRoot.postHostUserMessage` [gate] → `StandaloneRootMessageDelivery.postToHost` → `StandaloneHostAgentHandle.ensureReady` → `StandaloneAgentRunLifecycleService.activateHost` [lane] → `run.postUserMessage` | Done (checkpoint). Live: General Agent on Claude SDK and Codex; reopen after Stop restored the host |
-| BEH-002 Child → host (REQ-001) | Delivery to the host goes through `host.ensureReady`; no special wake | `StandaloneRootMessageDelivery.deliverTo` (host branch) | Done. Live: a collaborator `send_message_to` by sender address reached the host; after a killed Codex app-server, the next message restored the host |
+| BEH-002 Child → host (REQ-001) | Delivery to the host goes through `host.ensureReady`; no special wake. Child commands on the collaboration stream do not need the host (IR-002, CR-001) | `StandaloneRootMessageDelivery.deliverTo` (host branch); `AgentCollaborationStreamHandler.handleMessage` uses `manager.getActive ?? resolveRoot + ensureHostReady` | Done. Live: a collaborator `send_message_to` by sender address reached the host; after a killed Codex app-server, the next message restored the host |
 | BEH-003 Stop / delete / archive / shutdown | `stopRoot` (children, then host) / `endRoot` / `stopAll` | `AgentRunService.terminateAgentRun` → `StandaloneRunLifecyclePort.stopRoot`; `standalone-run-liveness.ts` → `manager.endRoot`; supervisor → `stopAll` | Done. Live: Stop, archive refused while active, archive and delete after Stop |
 | BEH-004 Team collaborator agent (REQ-002) | Collaborator Agents are held in a registry, not in configured-member structures | `agent-team-execution/local/registries/team-root-collaborator-agent-registry.ts`; `flat-team-execution-manager.ts` consults it; `FlatTeamMemberConfigResolver.addCollaborator` and `memberContexts.push` removed | Done (checkpoint) |
 | BEH-005 Self-delegation (REQ-004) | `COLLABORATION_SELF_TARGET_REJECTED` | `StandaloneRootMessageDelivery.delegateTask` | Done (checkpoint) |
@@ -90,6 +92,12 @@
   - No Design Impact.
 
 ## Key Files Or Areas
+
+- **IR-002 (CR-001).**
+  - `autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-stream-handler.ts`: child commands use the active root without host readiness; `connect` is unchanged.
+  - `autobyteus-server-ts/src/api/websocket/index.ts`: injects `getActive`.
+  - Handler unit tests: offline-host child send and interrupt; no-active-root fallback.
+  - Module doc wording.
 
 - **Standalone root.** `autobyteus-server-ts/src/standalone-agent-run-root/**`:
   - root, host handle, manager, message delivery (now also child commands), builder, location, persistence;
