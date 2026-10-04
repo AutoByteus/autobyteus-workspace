@@ -304,6 +304,9 @@ derived (`nameAt` for `hostRunId`).
     the run is quiescent. Input stays fenced in between;
   - an accepted fence stays latched; concurrent callers share one attempt;
   - an interrupt that throws fails only that attempt;
+  - (ARCH-REV-004 N-2) the run becomes quiescent without a canonical event dispatch (for example a pending command is
+    cleared); the expiry-time evaluation settles `{ accepted: true }`. F-4 logs the turn ID at both rejection and
+    expiry, so a turn change is visible;
   - Org: `agent-org-run-termination` covers a first Stop that fails, then a second Stop that succeeds (the frozen scope
     plus AgentRun retry).
   - The existing `agent-run.test.ts:779-903`, `agent-run-compaction-races`, `frozen-root-termination-scope`,
