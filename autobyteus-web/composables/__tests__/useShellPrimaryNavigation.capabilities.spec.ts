@@ -46,28 +46,30 @@ describe('useShellPrimaryNavigation capability gating', () => {
   });
 
   it('hides Projects while the capability is disabled', () => {
-    expect(navKeys()).not.toContain('projects');
+    expect(navKeys()).toEqual(['chat', 'agents', 'agentTeams', 'agentOrgs', 'skills', 'memory', 'nodes']);
   });
 
-  it('shows Projects after Nodes when the capability is enabled', () => {
+  it.each<{ applicationsEnabled: boolean; expectedKeys: string[] }>([
+    { applicationsEnabled: false, expectedKeys: ['chat', 'agents', 'agentTeams', 'agentOrgs', 'projects', 'skills', 'memory', 'nodes'] },
+    { applicationsEnabled: true, expectedKeys: ['chat', 'agents', 'agentTeams', 'agentOrgs', 'projects', 'applications', 'skills', 'memory', 'nodes'] },
+  ])('places Projects immediately after Agent Orgs (Applications enabled: $applicationsEnabled)', ({ applicationsEnabled, expectedKeys }) => {
     projectsCapabilityStoreMock.isEnabled = true;
+    applicationsCapabilityStoreMock.isEnabled = applicationsEnabled;
 
-    const keys = navKeys();
-    expect(keys.indexOf('projects')).toBe(keys.indexOf('nodes') + 1);
+    expect(navKeys()).toEqual(expectedKeys);
   });
 
   it('keeps Projects hidden in the mobile remote-access runtime', () => {
     projectsCapabilityStoreMock.isEnabled = true;
     runtime.mobile = true;
 
-    expect(navKeys()).not.toContain('projects');
+    expect(navKeys()).toEqual(['chat', 'agents', 'agentTeams', 'agentOrgs', 'skills', 'memory']);
   });
 
   it('gates Projects independently of Applications', () => {
     applicationsCapabilityStoreMock.isEnabled = true;
 
-    expect(navKeys()).toContain('applications');
-    expect(navKeys()).not.toContain('projects');
+    expect(navKeys()).toEqual(['chat', 'agents', 'agentTeams', 'agentOrgs', 'applications', 'skills', 'memory', 'nodes']);
   });
 
   it('resolves both capabilities when navigation readiness is requested, tolerating failures', async () => {

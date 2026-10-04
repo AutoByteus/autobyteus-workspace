@@ -1,0 +1,21 @@
+
+> autobyteus@1.4.94-beta.1 test:e2e:projects-navigation /Users/normy/autobyteus_org/autobyteus-worktrees/projects-primary-nav-order/autobyteus-web
+> node tests/e2e/projects-primary-navigation-probe.mjs --output-dir ../tickets/in-progress/projects-primary-nav-order/api-e2e-evidence/browser-attempt-1 --ledger-file ../tickets/in-progress/projects-primary-nav-order/api-e2e-test-case-ledger.md
+
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/projects-primary-nav-order/autobyteus-web/tests/e2e/projects-primary-navigation-probe.mjs:56
+  for (const p of pages) { await fs.mkdir(path.dirname(p), { recursive: true }); await fs.copyFile(path.join(web, 'tests/e2e/fixtures/projects-primary-navigation.page.vue'), p); installed.push(p); if (p === pages[1]) { const text = await fs.readFile(p, 'utf8'); await fs.writeFile(p, text.replace('<script setup lang="ts">', '<script setup lang="ts">\ndefinePageMeta({ path: '/mobile/api-e2e-projects-navigation' })')) } }
+                                                                                                                                                                                                                                                                                                                                                                                                                 ^^^^^^^^^^
+
+SyntaxError: missing ) after argument list
+    at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:110:18)
+    at #translate (node:internal/modules/esm/loader:559:20)
+    at afterLoad (node:internal/modules/esm/loader:612:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:617:12)
+    at #createModuleJob (node:internal/modules/esm/loader:640:36)
+    at #getJobFromResolveResult (node:internal/modules/esm/loader:353:34)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:321:41)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:25)
+
+Node.js v22.23.1
+ ELIFECYCLE  Command failed with exit code 1.

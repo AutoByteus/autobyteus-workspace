@@ -1,0 +1,50 @@
+
+> autobyteus@1.4.94-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/projects-primary-nav-order/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts composables/__tests__/useShellPrimaryNavigation.spec.ts components/__tests__/AppLeftPanel.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/projects-primary-nav-order/autobyteus-web
+
+stderr | composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/__tests__/AppLeftPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useShellPrimaryNavigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/LeftSidebarStrip.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/__tests__/AppLeftPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/LeftSidebarStrip.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useShellPrimaryNavigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/__tests__/AppLeftPanel.spec.ts (4 tests) 4ms
+ ✓ composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts (7 tests) 3ms
+ ✓ composables/__tests__/useShellPrimaryNavigation.spec.ts (3 tests) 3ms
+ ✓ components/layout/__tests__/LeftSidebarStrip.spec.ts (8 tests) 67ms
+
+ Test Files  4 passed (4)
+      Tests  22 passed (22)
+   Start at  21:50:00
+   Duration  6.89s (transform 3.49s, setup 23.92s, collect 333ms, tests 77ms, environment 1.06s, prepare 631ms)
+

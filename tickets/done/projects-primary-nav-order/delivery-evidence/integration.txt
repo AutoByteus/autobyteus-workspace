@@ -1,0 +1,66 @@
+commit 7cf1911a0acd48029e4ae3bd9b9f1587bcfc8741
+Merge: 307637be7 474dda0e1
+Author:     normy <normy@macbookpro.speedport.ip>
+AuthorDate: Sat Oct 3 22:02:28 2026 +0200
+Commit:     normy <normy@macbookpro.speedport.ip>
+CommitDate: Sat Oct 3 22:02:28 2026 +0200
+
+    Merge remote-tracking branch 'origin/personal' into codex/projects-primary-nav-order
+ .../antigravity-beta-final-evidence-commit.log     |   24 +
+ .../antigravity-beta-final-evidence-push.log       |    6 +
+ ...ntigravity-beta-publication-evidence-commit.log |   54 +
+ .../antigravity-beta-publication-evidence-push.log |    6 +
+ .../delivery-evidence/dr-003/beta-helper.log       |  173 ++
+ .../delivery-evidence/dr-003/beta-launch.json      |   11 +
+ .../delivery-evidence/dr-003/cleanup-final.json    |   19 +
+ .../dr-003/cumulative-package.json                 |   71 +-
+ .../dr-003/docker-channels-before.json             |   14 +
+ .../dr-003/docker-publication-verification.json    |   50 +
+ .../dr-003/final-artifact-check.json               |   18 +
+ .../dr-003/final-repository-state.json             |   17 +
+ .../delivery-evidence/dr-003/github-release.json   |  655 ++++++++
+ .../dr-003/ios-workflow-artifacts.json             |   45 +
+ .../dr-003/local-branch-delete.log                 |    1 +
+ .../dr-003/manual-instance-cleanup-audit.json      |   26 +
+ .../dr-003/manual-instance-stop.json               |   15 +
+ .../dr-003/publication-check-correction.json       |   10 +
+ .../dr-003/publication-verification-initial.log    |    4 +
+ .../dr-003/publication-verification.json           |   60 +
+ .../dr-003/publication-verification.log            |   60 +
+ .../delivery-evidence/dr-003/release-clone.log     |    2 +
+ .../delivery-evidence/dr-003/releases-before.txt   |   10 +
+ .../dr-003/repository-finalization.json            |   12 +
+ .../dr-003/shared-checkout-after-finalization.json |   10 +
+ .../dr-003/shared-fast-forward.log                 |  522 ++++++
+ .../delivery-evidence/dr-003/shared-fetch.log      |    3 +
+ .../dr-003/shared-final-evidence-fast-forward.log  |   85 +
+ .../dr-003/stable-release-after.json               |  655 ++++++++
+ .../dr-003/stable-release-before.json              |    1 +
+ .../delivery-revision-record.md                    |   56 +
+ .../dr-003/state-before-cleanup/handoff-summary.md |   27 +
+ .../release-deployment-report.md                   |   67 +
+ .../delivery-evidence/dr-003/target-checkout.log   |    3 +
+ .../delivery-evidence/dr-003/target-fetch.log      |    3 +
+ .../delivery-evidence/dr-003/target-merge.log      |  520 ++++++
+ .../delivery-evidence/dr-003/target-push.log       |    6 +
+ ...rsonal_android-1.4.94-beta.1-release.apk.sha256 |    1 +
+ .../dr-003/updater-metadata/latest-linux-arm64.yml |    9 +
+ .../dr-003/updater-metadata/latest-linux.yml       |    9 +
+ .../dr-003/updater-metadata/latest-mac.yml         |   17 +
+ .../dr-003/updater-metadata/latest.yml             |    7 +
+ .../dr-003/verify-beta-publication-initial.py      |  110 ++
+ .../dr-003/verify-beta-publication.py              |  112 ++
+ .../delivery-evidence/dr-003/workflow-matrix.json  | 1660 ++++++++++++++++++++
+ .../delivery-evidence/dr-003/workflow-monitor.log  |    7 +
+ .../dr-003/workflow-status-current.json            |   46 +
+ .../dr-003/workflow-status-final.json              |   46 +
+ .../dr-003/workflow-status-initial.json            |    1 +
+ .../dr-003/worktree-artifact-preservation.json     |   98 ++
+ .../delivery-evidence/dr-003/worktree-prune.log    |    0
+ .../delivery-evidence/dr-003/worktree-remove.log   |    0
+ .../delivery-revision-record.md                    |   21 +-
+ .../docs-sync-report.md                            |    2 +-
+ .../handoff-summary.md                             |   39 +-
+ .../release-deployment-report.md                   |  115 +-
+ .../user-verification-coordination.md              |    3 +
+ 57 files changed, 5538 insertions(+), 86 deletions(-)

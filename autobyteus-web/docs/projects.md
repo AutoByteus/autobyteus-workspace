@@ -22,6 +22,21 @@ or focuses separate windows; no supported interactive same-window Projects
 rebinding/switch recovery/subscription journey is introduced. Existing binding
 watchers and captured request guards preserve current-node invariants only.
 
+## Primary Navigation
+
+When available, Projects appears immediately after Agent Orgs in both the
+expanded left panel and compact navigation strip. The shared order is Chat →
+Agents → Agent Teams → Agent Orgs → Projects → Applications (when enabled) →
+Skills → Memory → Nodes. Existing capability/runtime filtering still applies;
+when Projects is unavailable it is omitted without reordering other entries.
+
+`composables/useShellPrimaryNavigation.ts` is the sole order/route/active-state
+owner, consumed by `AppLeftPanel.vue` and `layout/LeftSidebarStrip.vue`. Projects
+retains its localized label, folder icon, `/projects` destination and active
+matching on `/projects/*`. Compact navigation retains its existing fitting-strip
+redock and narrow transient-drawer interactions. This placement change does not
+enable Projects by default or add mobile support.
+
 ## Ordinary Routes / Main Owners
 
 | Route | Surface |
