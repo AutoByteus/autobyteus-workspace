@@ -14,6 +14,8 @@ import { GitHubAgentPackageInstaller } from "../../../src/agent-packages/install
 import { AgentPackageService } from "../../../src/agent-packages/services/agent-package-service.js";
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
+import { GitHubRepositoryClient } from "../../../src/integrations/github/github-repository-client.js";
+import { SkillSourceService } from "../../../src/skills/services/skill-source-service.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 import { writeAgentOrg } from "../../fixtures/agent-org-skill-package.js";
@@ -106,6 +108,7 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
     delete process.env["AUTOBYTEUS_AGENT_PACKAGE_ROOTS"];
     appConfigProvider.config.setCustomAppDataDir(dataDir);
     SkillService.resetInstance();
+    SkillSourceService.resetInstance();
     AgentPackageService.resetInstance();
     vi.spyOn(console, "info").mockImplementation(() => undefined);
   });
@@ -113,6 +116,7 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
   afterEach(async () => {
     vi.restoreAllMocks();
     SkillService.resetInstance();
+    SkillSourceService.resetInstance();
     AgentPackageService.resetInstance();
     for (const [key, value] of inheritedEnv) {
       if (value === undefined) delete process.env[key];
@@ -157,7 +161,7 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
   const CHECK_UPDATES = `mutation Check($ids: [String!]) { checkAgentPackageUpdates(packageIds: $ids) { packageId updateInfo { status installedRevision latestRevision } } }`;
   const UPDATE_PACKAGE = `mutation Update($id: String!) { updateAgentPackage(packageId: $id) { packageId } }`;
 
-  const useTestPackageService = (installer?: GitHubAgentPackageInstaller): void => {
+  const useTestPackageService = (fixture?: { installer: GitHubAgentPackageInstaller; githubClient: GitHubRepositoryClient }): void => {
     AgentPackageService.getInstance({
       rootSettingsStore: new AgentPackageRootSettingsStore(
         { getAppDataDir: () => dataDir, getAdditionalAgentPackageRoots: parseRoots,
@@ -168,20 +172,22 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
         } },
       ),
       registryStore: new AgentPackageRegistryStore({ getAppDataDir: () => path.join(base, "registry") }),
-      installer,
+      installer: fixture?.installer,
+      githubClient: fixture?.githubClient,
     });
   };
 
-  const fixtureGitHubInstaller = (repo: string, getRevision: () => string, fixtures: Record<string, string>) =>
-    new GitHubAgentPackageInstaller({
+  const fixtureGitHubInstaller = (repo: string, getRevision: () => string, fixtures: Record<string, string>) => {
+    const fetchImpl: typeof fetch = async (resource) => {
+      const url = typeof resource === "string" ? resource : resource instanceof URL ? resource.toString() : resource.url;
+      const body = url.includes("/branches/")
+        ? { commit: { sha: getRevision() } }
+        : { default_branch: "main", html_url: `https://github.com/AutoByteus/${repo}`, private: false, name: repo, owner: { login: "AutoByteus" } };
+      return new Response(JSON.stringify(body), { status: 200, headers: { "Content-Type": "application/json" } });
+    };
+    const installer = new GitHubAgentPackageInstaller({
       config: { getAppDataDir: () => path.join(base, "github-data"), getDownloadDir: () => path.join(base, "github-data", "downloads") },
-      fetchImpl: async (resource) => {
-        const url = typeof resource === "string" ? resource : resource instanceof URL ? resource.toString() : resource.url;
-        const body = url.includes("/branches/")
-          ? { commit: { sha: getRevision() } }
-          : { default_branch: "main", html_url: `https://github.com/AutoByteus/${repo}`, private: false, name: repo, owner: { login: "AutoByteus" } };
-        return new Response(JSON.stringify(body), { status: 200, headers: { "Content-Type": "application/json" } });
-      },
+      fetchImpl,
       downloadFileFromUrlImpl: async (archiveUrl, downloadDir) => {
         fs.mkdirSync(downloadDir, { recursive: true });
         const revision = decodeURIComponent(archiveUrl.split("/").filter(Boolean).at(-1) ?? getRevision());
@@ -195,6 +201,8 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
         fs.cpSync(fixtures[revision]!, path.join(outputDir, `${repo}-${revision}`), { recursive: true });
       },
     });
+    return { installer, githubClient: new GitHubRepositoryClient(fetchImpl) };
+  };
 
   it("AC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there", async () => {
     const codexDup = writeSkill(path.join(codexSkills, "shared-skill"), "shared-skill", "CODEX-COPY");
