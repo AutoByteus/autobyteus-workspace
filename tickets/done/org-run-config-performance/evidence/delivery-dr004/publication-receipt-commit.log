@@ -1,0 +1,56 @@
+[personal 23d85d69e] docs(delivery): record beta.2 publication and preserve cleanup ownership boundary
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 46 files changed, 39866 insertions(+), 1035 deletions(-)
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/beta-helper.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/cleanup-result.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/docker-publication-verification.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/docker-stable-before.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/github-release.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/handoff-rules.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/monitor-release.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/monitor-release.py
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/observed-unowned-design-guidance.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/observed-unowned-design-guidance.patch
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/AutoByteus_personal_android-1.4.94-beta.2-release.apk.sha256
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/latest-linux-arm64.yml
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/latest-linux.yml
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/latest-mac.yml
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/latest.yml
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/public-release-verification.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/publication-outcome.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/release-commit.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/release-workflows-current.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/repository-finalization.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/rule-evaluation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/shared-fetch-for-reachability.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/stable-latest-after.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/target-checkout.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/target-fetch-before.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/target-fetch-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/target-merge-commit.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/target-merge.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/target-push.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/target-update.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/ticket-commit.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/ticket-final-commit.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/ticket-push.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/workflow-37176016117.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/workflow-37176016117.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/workflow-37176016118.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/workflow-37176016118.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/workflow-37176016120.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/workflow-37176016120.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/workflow-37176016125.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/workflow-37176016125.log

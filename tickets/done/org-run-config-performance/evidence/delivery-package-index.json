@@ -1017,9 +1017,13 @@
     "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/latest-linux-arm64.yml",
     "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/latest.yml",
     "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/latest-linux.yml",
-    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/AutoByteus_personal_android-1.4.94-beta.2-release.apk.sha256"
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/public-assets/AutoByteus_personal_android-1.4.94-beta.2-release.apk.sha256",
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/publication-receipt-commit.log",
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/publication-receipt-push.log",
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/final-repository-state.json",
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/receipt-target-refresh.log"
   ],
-  "referenceCount": 1010,
+  "referenceCount": 1014,
   "successfulTerminalEligible": false,
   "dispatchedReferenceCount": 838,
   "postDispatchReceiptAppended": true,
@@ -1348,5 +1352,6 @@
     "sharedCheckoutTouched": false
   },
   "dispatchedReferenceCountForDR004": 0,
-  "cleanup": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/cleanup-result.json"
+  "cleanup": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/cleanup-result.json",
+  "finalRepositoryState": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/final-repository-state.json"
 }

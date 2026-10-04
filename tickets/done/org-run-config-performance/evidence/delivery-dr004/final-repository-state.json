@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-04T04:54:06.057091+00:00",
+  "targetBranch": "personal",
+  "targetRemote": "origin",
+  "publicationOutcomeReceiptCommit": "23d85d69e93553948fde98508d3eb8998d2366ba",
+  "targetPushConfirmedByRemote": "23d85d69e93553948fde98508d3eb8998d2366ba",
+  "ticketCandidateCommit": "2eb8732c7243aec7883a99107032f73e972d8b9a",
+  "targetMergeCommit": "20a165b8d001696ad806d28186cb1e436ca4589c",
+  "immutableReleaseCommit": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "immutableReleaseTag": "v1.4.94-beta.2",
+  "publication": "Completed; all four workflows/assets/registry Pass",
+  "allSourcePinsStillMatchPublishedInputs": true,
+  "receiptOnlyDelta": true,
+  "safeCleanup": "Blocked; newly appeared external guide edit unchanged/preserved",
+  "worktreeAndBranchesRetained": true,
+  "successfulTerminalSent": false,
+  "nextCommitPolicy": "Append this post-push audit and logs through a receipt-only commit, no release replay or source change"
+}
