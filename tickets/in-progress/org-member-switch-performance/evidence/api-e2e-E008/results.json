@@ -1,0 +1,173 @@
+{
+ "checks": [
+  {
+   "name": "Electron: every Org-tab member switch <= 200 ms with <= 50 reference rows (QR-001/QR-002)",
+   "pass": true,
+   "detail": [
+    [
+     "code reviewer",
+     57,
+     20
+    ],
+    [
+     "api e2e engineer",
+     25,
+     20
+    ],
+    [
+     "code reviewer",
+     59,
+     20
+    ],
+    [
+     "architecture reviewer",
+     60,
+     3
+    ],
+    [
+     "solution designer",
+     23,
+     3
+    ],
+    [
+     "code reviewer",
+     91,
+     20
+    ],
+    [
+     "implementation engineer",
+     44,
+     4
+    ],
+    [
+     "api e2e engineer",
+     51,
+     20
+    ],
+    [
+     "code reviewer",
+     53,
+     20
+    ]
+   ]
+  },
+  {
+   "name": "Electron: Show all 3136 <= 300 ms (QR-003)",
+   "pass": true,
+   "detail": [
+    {
+     "settledMs": 275,
+     "refRows": 3136
+    },
+    {
+     "settledMs": 245,
+     "refRows": 3136
+    },
+    {
+     "settledMs": 246,
+     "refRows": 3136
+    }
+   ]
+  },
+  {
+   "name": "Electron: live arrival with Show all expanded <= 200 ms, rows kept",
+   "pass": true,
+   "detail": {
+    "application": "applied",
+    "settledMs": 145,
+    "refRows": 3136,
+    "firstRow": "Validation Status 4. Okt., 11:00 from api e2e engineer 3,137 3,137 ref"
+   }
+  },
+  {
+   "name": "Electron: no page errors",
+   "pass": true,
+   "detail": []
+  }
+ ],
+ "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.94-beta.2 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36",
+ "viewport": {
+  "w": 1200,
+  "h": 768
+ },
+ "layout": {
+  "tabList": 1,
+  "messageRows": 18
+ },
+ "switches": [
+  {
+   "name": "code reviewer",
+   "settledMs": 57,
+   "domNodes": 1246,
+   "refRows": 20
+  },
+  {
+   "name": "api e2e engineer",
+   "settledMs": 25,
+   "domNodes": 1086,
+   "refRows": 20
+  },
+  {
+   "name": "code reviewer",
+   "settledMs": 59,
+   "domNodes": 1246,
+   "refRows": 20
+  },
+  {
+   "name": "architecture reviewer",
+   "settledMs": 60,
+   "domNodes": 1860,
+   "refRows": 3
+  },
+  {
+   "name": "solution designer",
+   "settledMs": 23,
+   "domNodes": 772,
+   "refRows": 3
+  },
+  {
+   "name": "code reviewer",
+   "settledMs": 91,
+   "domNodes": 1246,
+   "refRows": 20
+  },
+  {
+   "name": "implementation engineer",
+   "settledMs": 44,
+   "domNodes": 1477,
+   "refRows": 4
+  },
+  {
+   "name": "api e2e engineer",
+   "settledMs": 51,
+   "domNodes": 1086,
+   "refRows": 20
+  },
+  {
+   "name": "code reviewer",
+   "settledMs": 53,
+   "domNodes": 1246,
+   "refRows": 20
+  }
+ ],
+ "showAll": [
+  {
+   "settledMs": 275,
+   "refRows": 3136
+  },
+  {
+   "settledMs": 245,
+   "refRows": 3136
+  },
+  {
+   "settledMs": 246,
+   "refRows": 3136
+  }
+ ],
+ "liveArrival": {
+  "application": "applied",
+  "settledMs": 145,
+  "refRows": 3136,
+  "firstRow": "Validation Status 4. Okt., 11:00 from api e2e engineer 3,137 3,137 ref"
+ }
+}

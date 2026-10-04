@@ -1,0 +1,60 @@
+diff --git a/autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue b/autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue
+index 0fcbc03ed..73e46cf3e 100644
+--- a/autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue
++++ b/autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue
+@@ -53,9 +53,10 @@
+                 </div>
+               </div>
+             </button>
+-            <div v-if="message.referenceFiles.length" class="space-y-1 px-3 pb-2 pl-9">
++            <p v-if="message.referenceFiles.length && !isMessageSelected(message)" class="px-3 pb-2 pl-9 text-xs text-gray-500" data-test="team-communication-reference-count">📎 {{ message.referenceFiles.length }}</p>
++            <div v-if="message.referenceFiles.length && isMessageSelected(message)" class="space-y-1 px-3 pb-2 pl-9">
+               <button
+-                v-for="reference in message.referenceFiles"
++                v-for="reference in (showAllReferences ? message.referenceFiles : message.referenceFiles.slice(0, 20))"
+                 :key="reference.referenceId"
+                 class="flex w-full items-center gap-2 rounded px-1.5 py-1 text-left text-sm hover:bg-white focus:outline-none focus-visible:bg-white"
+                 :class="selectedReferenceId === reference.referenceId && selectedMessageId === message.messageId ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600'"
+@@ -70,6 +71,7 @@
+                 />
+                 <span class="truncate">{{ referenceFileName(reference.path) }}</span>
+               </button>
++              <button v-if="!showAllReferences && message.referenceFiles.length > 20" class="px-1.5 py-1 text-xs text-blue-600" data-test="team-communication-show-all-references" @click="showAllReferences = true">Show all {{ message.referenceFiles.length }} files</button>
+             </div>
+           </div>
+         </section>
+@@ -168,6 +170,8 @@ const selectedMessageId = ref<string | null>(null);
+ const selectedReferenceId = ref<string | null>(null);
+ const selectedType = ref<'message' | 'reference'>('message');
+ const referenceRefreshSignal = ref(0);
++const showAllReferences = ref(false);
++watch([() => props.messages.focusedAgentRunId, () => selectedMessageId.value], () => { showAllReferences.value = false; });
+ const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
+   initialWidth: 232,
+   minWidth: 168,
+diff --git a/autobyteus-web/services/agentOrgExecution/agentOrgReferenceProjection.ts b/autobyteus-web/services/agentOrgExecution/agentOrgReferenceProjection.ts
+index 7f9635bc2..5827f6b39 100644
+--- a/autobyteus-web/services/agentOrgExecution/agentOrgReferenceProjection.ts
++++ b/autobyteus-web/services/agentOrgExecution/agentOrgReferenceProjection.ts
+@@ -16,10 +16,14 @@ export const projectAgentOrgReference = (
+   ownerId: string,
+   filePath: string,
+   timestamp: string,
+-): TeamReferenceFile => Object.freeze({
+-  referenceId: sha256(`${ownerId}\0${filePath}`).toString(),
+-  path: filePath,
+-  type: referenceType(filePath),
+-  createdAt: timestamp,
+-  updatedAt: timestamp,
+-})
++): TeamReferenceFile => {
++  // SPIKE: derive the opaque id only when something actually reads it.
++  let id: string | null = null
++  return Object.freeze({
++    get referenceId() { return id ??= sha256(`${ownerId}\0${filePath}`).toString() },
++    path: filePath,
++    type: referenceType(filePath),
++    createdAt: timestamp,
++    updatedAt: timestamp,
++  })
++}

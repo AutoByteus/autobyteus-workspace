@@ -1,0 +1,293 @@
+{
+ "switches": [
+  {
+   "name": "code_reviewer",
+   "settledMs": 219,
+   "domNodes": 5267,
+   "refRows": 20,
+   "messageRows": 241,
+   "counts": 241
+  },
+  {
+   "name": "architecture_reviewer",
+   "settledMs": 69,
+   "domNodes": 2142,
+   "refRows": 19,
+   "messageRows": 62,
+   "counts": 61
+  },
+  {
+   "name": "code_reviewer",
+   "settledMs": 221,
+   "domNodes": 5267,
+   "refRows": 20,
+   "messageRows": 241,
+   "counts": 241
+  },
+  {
+   "name": "implementation_engineer",
+   "settledMs": 70,
+   "domNodes": 3933,
+   "refRows": 20,
+   "messageRows": 144,
+   "counts": 144
+  },
+  {
+   "name": "api_e2e_engineer",
+   "settledMs": 111,
+   "domNodes": 3189,
+   "refRows": 20,
+   "messageRows": 101,
+   "counts": 101
+  },
+  {
+   "name": "code_reviewer",
+   "settledMs": 135,
+   "domNodes": 5275,
+   "refRows": 20,
+   "messageRows": 241,
+   "counts": 241
+  },
+  {
+   "name": "solution_designer",
+   "settledMs": 70,
+   "domNodes": 2506,
+   "refRows": 17,
+   "messageRows": 63,
+   "counts": 62
+  },
+  {
+   "name": "delivery_engineer",
+   "settledMs": 34,
+   "domNodes": 1280,
+   "refRows": 20,
+   "messageRows": 29,
+   "counts": 29
+  },
+  {
+   "name": "code_reviewer",
+   "settledMs": 183,
+   "domNodes": 5267,
+   "refRows": 20,
+   "messageRows": 241,
+   "counts": 241
+  }
+ ],
+ "checks": [
+  {
+   "name": "AC-008: every Team member switch mounts <= 50 reference rows (QR-002 bound)",
+   "pass": true,
+   "detail": [
+    [
+     "code_reviewer",
+     20,
+     241
+    ],
+    [
+     "architecture_reviewer",
+     19,
+     62
+    ],
+    [
+     "code_reviewer",
+     20,
+     241
+    ],
+    [
+     "implementation_engineer",
+     20,
+     144
+    ],
+    [
+     "api_e2e_engineer",
+     20,
+     101
+    ],
+    [
+     "code_reviewer",
+     20,
+     241
+    ],
+    [
+     "solution_designer",
+     17,
+     63
+    ],
+    [
+     "delivery_engineer",
+     20,
+     29
+    ],
+    [
+     "code_reviewer",
+     20,
+     241
+    ]
+   ]
+  },
+  {
+   "name": "code reviewer lists all 241 messages with counts and only selected-message rows",
+   "pass": true,
+   "detail": {
+    "name": "code_reviewer",
+    "settledMs": 183,
+    "domNodes": 5267,
+    "refRows": 20,
+    "messageRows": 241,
+    "counts": 241
+   }
+  },
+  {
+   "name": "largest code-reviewer message (183 refs) shows 20 rows + Show all",
+   "pass": true,
+   "detail": {
+    "idx": 24,
+    "max": 183
+   }
+  },
+  {
+   "name": "Team Show all reveals every reference of the selected message only",
+   "pass": true,
+   "detail": {
+    "settledMs": 35,
+    "refRows": 183
+   }
+  },
+  {
+   "name": "last Team reference resolves through the server-provided id to the file on disk (or the existing unavailable state)",
+   "pass": true,
+   "detail": {
+    "url": "http://127.0.0.1:29811/rest/team-runs/software_engineering_team_e4b7ee1b5b9a4f7e9f0d3bfcd6ad0f58/team-communication/messages/teammsg_oCThj48Ky8_5_FliTZY8MJwPi5g7A7vh/references/9b7abf252a62b7776116408538b9ca588458a4b5101139e8cc050eeca107dfb7/content",
+    "lastName": "toolCardPresentation.spec.ts",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/utils/__tests__/toolCardPresentation.spec.ts",
+    "exists": false,
+    "status": 404,
+    "servedBytes": 107
+   }
+  },
+  {
+   "name": "viewer shows the last Team reference (existing unavailable state when the file is gone)",
+   "pass": true,
+   "detail": {
+    "viewerText": "toolCardPresentation.spec.ts\n/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/utils/__tests__/toolCardPresentation.spec.ts\n\nReference file unavailable\n\nThe file may have been deleted, moved, or become unreadable."
+   }
+  },
+  {
+   "name": "no page errors (en)",
+   "pass": true,
+   "detail": []
+  },
+  {
+   "name": "zh-CN: count title and Show all copy render in Chinese with the number",
+   "pass": true,
+   "detail": {
+    "title": "183 个引用文件",
+    "srText": "183 183 个引用文件",
+    "showAll": "显示全部 183 个文件",
+    "header": "消息 241 消息"
+   }
+  },
+  {
+   "name": "no page errors (zh-CN)",
+   "pass": true,
+   "detail": []
+  }
+ ],
+ "teamTabTimingMs": [
+  [
+   "code_reviewer",
+   219,
+   241
+  ],
+  [
+   "architecture_reviewer",
+   69,
+   62
+  ],
+  [
+   "code_reviewer",
+   221,
+   241
+  ],
+  [
+   "implementation_engineer",
+   70,
+   144
+  ],
+  [
+   "api_e2e_engineer",
+   111,
+   101
+  ],
+  [
+   "code_reviewer",
+   135,
+   241
+  ],
+  [
+   "solution_designer",
+   70,
+   63
+  ],
+  [
+   "delivery_engineer",
+   34,
+   29
+  ],
+  [
+   "code_reviewer",
+   183,
+   241
+  ]
+ ],
+ "filesTabControl": [
+  {
+   "name": "architecture_reviewer",
+   "settledMs": 16,
+   "domNodes": 1438,
+   "refRows": 0,
+   "messageRows": 0,
+   "counts": 0
+  },
+  {
+   "name": "code_reviewer",
+   "settledMs": 16,
+   "domNodes": 1506,
+   "refRows": 0,
+   "messageRows": 0,
+   "counts": 0
+  },
+  {
+   "name": "implementation_engineer",
+   "settledMs": 22,
+   "domNodes": 1806,
+   "refRows": 0,
+   "messageRows": 0,
+   "counts": 0
+  },
+  {
+   "name": "code_reviewer",
+   "settledMs": 16,
+   "domNodes": 1506,
+   "refRows": 0,
+   "messageRows": 0,
+   "counts": 0
+  },
+  {
+   "name": "api_e2e_engineer",
+   "settledMs": 30,
+   "domNodes": 1800,
+   "refRows": 0,
+   "messageRows": 0,
+   "counts": 0
+  },
+  {
+   "name": "code_reviewer",
+   "settledMs": 22,
+   "domNodes": 1506,
+   "refRows": 0,
+   "messageRows": 0,
+   "counts": 0
+  }
+ ]
+}
