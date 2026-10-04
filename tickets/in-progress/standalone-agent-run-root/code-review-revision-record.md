@@ -13,6 +13,8 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-005 | `code-review-report.md` | API/E2E Failure-Origin Review, round 5 (API-REV-002, F-02) | Pass | Fail (Design Impact) | F-02 (no source finding) |
 | CRR-006 | `code-review-report.md` | Implementation Review, round 6 (IR-004, SR-006 § 11) | Fail (Design Impact) | Pass | None |
 | CRR-007 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-003) | Pass (CRR-006) | Not Applicable | None |
+| CRR-008 | `code-review-report.md` | Implementation Review, round 7 (delivery re-entry, IR-005, DR-001) | Not Applicable (CRR-007) | Pass | None |
+| CRR-009 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-004, DR-001 re-entry) | Pass (CRR-008) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -314,3 +316,71 @@ CR-002 verification evidence:
   - The live rejection → quiescence path was not observed.
   - TESTING.md path sync.
   - `origin/personal` integration.
+
+### CRR-008 — Delivery re-entry: DR-001 harness import (IR-005)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/code-review-report.md`
+- Review entry point and round: Implementation Review, round 7
+- Review scope: `Targeted Delta Review` (a one-line test-support import; `07ee58675..3c7b62f53`)
+- Triggering role, report path, and finding or scenario IDs:
+  - Triggered by `/implementation_engineer`.
+  - Triggering report: `delivery-revision-record.md` DR-001, with evidence in `delivery-evidence/dr001-native-input-history.log`.
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-006 Pass; CRR-007 Not Applicable
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - The workspace harness `test-support/native-input-history` imported the root fixture from the pre-IR-001 folder. It now imports from `tests/integration/standalone-agent-run-root/`.
+  - The fixture members the harness uses are unchanged.
+  - My re-run of `pnpm test:native-input-history` passed 2/2.
+  - The round-1 cleanup check missed this out-of-package reference; that review gap is acknowledged in the report.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (no prior open findings; DR-001 resolved by IR-005).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none (score 9.3)
+- Recommended recipient: `/api_e2e_engineer` (scoped rerun, then back to delivery)
+- Remaining risks or uncertainty:
+  - TESTING.md:222 docs sync (delivery).
+  - Otherwise as in CRR-007.
+
+### CRR-009 — Proportional test review after API-REV-004 (delivery re-entry)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs:
+  - Triggered by `/api_e2e_engineer`.
+  - Report: `api-e2e-execution-coverage-report.md` (API-REV-004, Pass, 93%).
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-008)
+- Current authoritative result: `Not Applicable`
+- What changed in the review result and why:
+  - API/E2E changed no durable tests; its temporary `afterAll` edit was reverted, and nothing outside `tickets/` changed since `dc0c702dc`.
+  - The IR-005 harness import is implementation-owned. It was reviewed in CRR-008 and executed 2/2.
+  - The upstream Claude compaction merge was spot-checked by API/E2E with 0 new failures. Its live-model flakiness reproduces on upstream alone.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - Upstream live-model flakiness, not from this branch.
+  - CG-05.
+  - Grok environment; LM Studio not run.
+  - `agent-run.ts` at 498 effective lines.
+  - TESTING.md:222 docs sync.

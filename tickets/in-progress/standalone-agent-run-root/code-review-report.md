@@ -2,7 +2,8 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 6: SR-006 § 11, the root shutdown fence, IR-004).
+- Review Entry Point: `Implementation Review` (round 7: delivery re-entry, IR-005 for DR-001).
+  - Round 6 was an `Implementation Review` of SR-006 § 11, the root shutdown fence (IR-004).
   - Round 5 was an `API/E2E Failure-Origin Review` (F-02, Design Impact).
   - Round 4 was an `Implementation Review` targeted delta (Pass).
   - Round 3 was an `API/E2E Failure-Origin Review`; its section is kept below as the record of F-01's origin.
@@ -20,12 +21,16 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-004 (§ 11 Pass; notes N-1, N-2)
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002 (CR-001 fix), IR-003 (CR-002 fix), IR-004 (SR-006 § 11)
+- Relevant Implementation Revision IDs: IR-001, IR-002 (CR-001 fix), IR-003 (CR-002 fix), IR-004 (SR-006 § 11), IR-005 (DR-001 harness import)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-006`
-- Current Review Round: 6
-- Review Scope: `Full Re-Audit`. The delta touches the shared DS-003 Stop spine (the root-shutdown fence semantics used by every root).
+- Current Code Review Revision ID: `CRR-008`
+- Current Review Round: 7
+- Review Scope: `Targeted Delta Review`. Round 6 was a `Full Re-Audit`.
+- CRR-007 was the separate proportional test review, `api-e2e-test-review-report.md`.
 - Review Scope Evidence (round >1):
+  - Round 7:
+    - The delta `git diff 07ee58675..3c7b62f53` is one line: the import path in `test-support/native-input-history/native-accepted-input-history.integration.test.ts`.
+    - No source change. Delivery's merge of `origin/personal@1b9739cad` (`1195f4356`) is delivery-owned.
   - Round 6:
     - The delta `git diff 470dd1d93..eccea069b` changes 2 source files (`agent-run-root-shutdown-fence.ts`, `agent-run.ts`) and adds tests in 3 files (append-only: +151/+77/+48, 0 deletions).
     - It changes shared lifecycle semantics on the Stop spine, hence a Full Re-Audit.
@@ -39,18 +44,20 @@
   - Three are the CR-001 owners: the collaboration stream handler, the websocket composition line and the module doc. The fourth is the handler's unit test.
   - No shared interface, data shape or spine node outside CR-001 changed. The handler's constructor `Pick` gains `getActive`; its only production caller is `api/websocket/index.ts`, and the integration fixture passes the real manager.
   - Every round-1 check and score not affected by CR-001 is carried forward.
-- Trigger: Implementation Complete IR-004 (SR-006 § 11, after ARCH-REV-004 Pass), from `/implementation_engineer`.
+- Trigger: Local Fix complete IR-005 (DR-001 delivery blocker), from `/implementation_engineer`.
+  - Round 6 was triggered by Implementation Complete IR-004 (SR-006 § 11, after ARCH-REV-004 Pass).
   - Round 5 was triggered by API/E2E Fail (API-REV-002, F-02).
   - Round 4 was triggered by Local Fix IR-003 (CR-002).
   - Round 3 was triggered by API/E2E Fail (API-REV-001, F-01).
   - Round 2 was triggered by Local Fix IR-002.
-- Prior Review Round Reviewed: Round 5 (CRR-005, Fail / Design Impact)
-- Latest Authoritative Round: 6
+- Prior Review Round Reviewed: Round 6 (CRR-006, Pass); test review CRR-007 (Not Applicable)
+- Latest Authoritative Round: 7
 - Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/api-e2e-revision-record.md`
 - Relevant API/E2E Revision IDs: API-REV-001, API-REV-002
-- Delivery Revision Record: N/A
+- Delivery Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/delivery-revision-record.md` (DR-001)
+- Relevant Delivery Revision IDs: DR-001
 - Failing Scenario IDs: F-01 (AE-10; AC-007 / REQ-007 / BEH-008 / DS-006), on standalone collaborator conversation pages
 - Exact Failing Commands / Execution Mode:
   - TESTING.md dev stack (`pnpm dev`), with Chrome driven by playwright-core over CDP (trusted wheel and click input).
@@ -290,6 +297,18 @@
   3. Add a deterministic unit test that resolves the interrupt as rejected before the turn-completed event is dispatched.
 - **Useful additional evidence:** log the fenced AgentRun ID and the local `activeTurn` at the moment of rejection. That would confirm the completion race against a stale turn, and identify which agent (coordinator, helper or copy member) is involved.
 
+## Round 7 — Delivery Re-Entry (DR-001, IR-005)
+
+- **Blocker.** `pnpm test:native-input-history`, the workspace native-to-web layer in TESTING.md, could not resolve `../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture`. The folder was moved in IR-001.
+- **Fix.** The import now points at `tests/integration/standalone-agent-run-root/native-compaction-root-fixture`.
+  - The harness uses only fixture members that still exist: `manager.getInspection`, `root.executeAgentCommand`, `connect`, `send`, `close`, `run`, `native` and `compress`. None of them were renamed by the branch.
+- **Verification.** My own re-run of `pnpm test:native-input-history` passed: 1 file, 2 tests.
+- **Remaining old-path references** (tracked files, outside `tickets/`):
+  - `TESTING.md:222`, which is delivery's docs sync;
+  - `autobyteus-collaboration-stream-contracts/dist/*.map`, which is build output;
+  - the deliberately kept API-contract names (`api/graphql/types/agent-run-collaboration.ts` and the contracts DTO module).
+- **Review gap (acknowledged).** The round-1 cleanup check searched server `src` and `tests` only. It should have covered every workspace reference to moved test paths, including `test-support/` harnesses with their own Vitest configs. The impact was limited to a test harness, and delivery caught it.
+
 ## Round 6 — SR-006 § 11 Root Shutdown Fence Review (IR-004)
 
 ### Behavior basis
@@ -340,7 +359,7 @@
 | Naming quality and naming-to-responsibility alignment check | Pass | Names match the design (`StandaloneAgentRunRoot`, `StandaloneHostAgentHandle`, `TeamRootCollaboratorAgentRegistry`). The GraphQL resolver file keeps its API name `agent-run-collaboration.ts`, which is acceptable | — |
 | No unjustified duplication of code / repeated structures in changed scope | Pass | The frozen header in the migration is intentional; the "duplicate" is a historical format | — |
 | Patch-on-patch complexity control | Pass | Round 6: the fence change replaces latch semantics in its owner rather than layering a retry wrapper on top. Earlier: clean replacement of the old manager and binding; no layered workarounds | — |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No `agent-run-collaboration/`, `AgentRunCollaborationRootManager`, `resolveCommandReadyRoot`, `bindCollaboration` or `onHostPublished` references remain (grep over `src` and `tests`) | — |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Round 7: the stale harness import (DR-001) is fixed; a workspace-wide grep leaves only TESTING.md (docs sync) and build-output maps. Earlier: No `agent-run-collaboration/`, `AgentRunCollaborationRootManager`, `resolveCommandReadyRoot`, `bindCollaboration` or `onHostPublished` references remain (grep over `src` and `tests`) | — |
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Round 4 adds CR-002 tests: the store gives every standalone child `standaloneMember`; the service routes each of the four subjects with exact variables; the row renders "From General Agent:" without the raw header. Earlier rounds: new tests cover AR-001/002/003, handle concurrency, Stop order, REQ-004, the header on three builders, roll-up (stored, live, none), the page projection and the migration regression. Round 2 adds two CR-001 tests: a crashed host is not restored for a child send or interrupt, even when the restore would throw; and the fallback resolves the root only when no root is active | — |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | `tests/fixtures/standalone-run-roots-fixture.ts` is shared by the `AgentRunService` integration tests | — |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Predecessor tests were moved, not duplicated; removed assertions are API substitutions only (old and new versions compared side by side) | — |
@@ -456,6 +475,7 @@ New material premises: none beyond the candidate gate above (CG-01 is fully capt
 
 ## Classification
 
+- Round 7: none (Pass).
 - Round 6: none (Pass).
 - Round 5: `Design Impact` (F-02). A pre-existing shared root-shutdown fence defect, exposed by this branch, that needs a scope and semantics decision.
 - Round 4: none (Pass).
@@ -465,7 +485,10 @@ New material premises: none beyond the candidate gate above (CG-01 is fully capt
 
 ## Recommended Recipient
 
-- `/api_e2e_engineer` (round 6 Pass): LE-O1 on Codex at least 10 times in a row; the AC-001 suites on Claude and Codex; record any F-4 warning with its turn state (N-1).
+- `/api_e2e_engineer` (round 7 Pass): implementation-owned fixes return through API/E2E.
+  - Scoped rerun: `pnpm test:native-input-history`, plus a confirmation that the rest of the API-REV-003 evidence carries forward, since no source changed.
+  - Then API/E2E returns the package to delivery through the test review.
+- Round 6 went to `/api_e2e_engineer`: LE-O1 on Codex at least 10 times in a row; the AC-001 suites on Claude and Codex; record any F-4 warning with its turn state (N-1).
 - Round 5 went to `/solution_designer` (Design Impact for F-02).
 - Round 4 went to `/api_e2e_engineer`, and F-01 has since been confirmed resolved live in API-REV-002.
 
@@ -490,7 +513,8 @@ New material premises: none beyond the candidate gate above (CG-01 is fully capt
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 6, CRR-006, SR-006 § 11 implemented as designed).
+- Review Decision: `Pass` (round 7, CRR-008, DR-001 harness import fixed).
+- Round 6 (CRR-006) was a Pass: SR-006 § 11 implemented as designed.
 - Round 5 (CRR-005) was a Fail: the failure origin of F-02, a Design Impact.
   - Round 4 (CRR-004) was a Pass on implementation review; the F-01/CR-002 fix was confirmed live.
 - Review Entry Point: `Implementation Review` (Full Re-Audit of the Stop-spine delta)

@@ -7,6 +7,7 @@
 | API-REV-001 | `code_reviewer`, `code-review-report.md`, CRR-002 (round 2 Pass) | SR-005 (req SR-002), ARCH-REV-003, IR-002, CRR-002 | N/A | Fail / 86% |
 | API-REV-002 | `code_reviewer`, `code-review-report.md`, CRR-004 (round 4 Pass, CR-002 fix) | IR-003 (`782ec9f11`), CRR-003, CRR-004 | Fail / 86% | Fail / 87% |
 | API-REV-003 | `code_reviewer`, `code-review-report.md`, CRR-006 (round 6 Pass, F-02 fix) | SR-006, ARCH-REV-004, IR-004 (`eccea069b`), CRR-005, CRR-006 | Fail / 87% | **Pass / 93%** |
+| API-REV-004 | `code_reviewer`, CRR-008 (delivery re-entry DR-001) | DR-001, IR-005 (`3c7b62f53`), merge `1195f4356`, CRR-008 | Pass / 93% | **Pass / 93%** |
 
 ## Revision Entries
 
@@ -103,3 +104,33 @@ None.
   - the live rejection-to-quiescence path not observed (unit-proven);
   - `agent-run.ts` at 498 effective lines;
   - the TESTING.md path sync (delivery).
+
+### API-REV-004 — Delivery re-entry DR-001: native harness green; merge spot-checked; Pass
+
+- Triggering role, report path, and round: `/code_reviewer`, CRR-008. Delivery `delivery-revision-record.md` DR-001.
+- Triggering finding or case IDs: DR-001 (`pnpm test:native-input-history` could not resolve the moved root fixture).
+- Related revision IDs: IR-005, CRR-008, merge `1195f4356`.
+- Why recorded: a scoped rerun after the delivery integration and the harness import fix.
+- Coverage decisions or durable test paths changed: none by API/E2E.
+- Cases:
+  - DR-001 harness (branch + base);
+  - full server and web vs base;
+  - live mention-suite spot-check, with a same-conditions upstream comparison.
+- Delta: the merge brought upstream Claude compaction source changes (`307d0e775`), not only docs, so I spot-checked the server, web and live paths.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| DR-001 (delivery: native harness import) | Local Fix (IR-005) | **Resolved.** 2/2, guard passed, 12 base-identical warnings | `r4-native-input-history*.log` |
+
+- Prior result and confidence: Pass, 93%.
+- Current result and confidence: **Pass, 93%**.
+- New or remaining failure IDs: none.
+- Recommended owner: `/code_reviewer` (proportional test review → delivery).
+- Remaining risks:
+  - upstream live-model flakiness in the mention suite. It occurs on `1b9739cad` without this branch: Claude DI-001 lead handoff timeouts and Codex first-turn tool-call timeouts;
+  - CG-05;
+  - Grok and LM Studio;
+  - `agent-run.ts` at 498 effective lines;
+  - `TESTING.md:222` (delivery).

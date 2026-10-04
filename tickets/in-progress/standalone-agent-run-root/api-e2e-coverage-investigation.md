@@ -15,12 +15,12 @@
 - Code Review Revision Record: `…/standalone-agent-run-root/code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `…/standalone-agent-run-root/api-e2e-revision-record.md` (created after the first result)
-- Current API/E2E Revision ID: `API-REV-003`
+- Current API/E2E Revision ID: `API-REV-004`
 - API/E2E Test-Case Ledger: `…/standalone-agent-run-root/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 3
+- Current Investigation Round: 4
 - Trigger: round 1, code review pass CRR-002. Round 2, CRR-004 Pass after the F-01 fix (IR-003, `782ec9f11`).
 - Prior Investigation Reviewed: round 1 (API-REV-001)
-- Latest Authoritative Investigation: this file, round 3
+- Latest Authoritative Investigation: this file, round 4
 
 (`…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress`)
 
@@ -264,10 +264,22 @@ Scored after the repository suites and the live-provider suites (AE-01 to AE-03)
 - **Server.** 0 new failures vs the clean base.
 - **Durable coverage by API/E2E.** None.
 
+## Round 4 Delta (API-REV-004, delivery re-entry DR-001)
+
+- **Trigger.** CRR-008 (IR-005 `3c7b62f53`: one `test-support` import line). Delivery merged origin/personal@1b9739cad (`1195f4356`).
+- **Premise check.** The merge is not docs-only. It brings upstream `307d0e775`, Claude compaction frame detection and raw-trace rotation: `claude-session.ts`, `claude-session-output-events.ts`, `claude-session-event-converter.ts`, the new `claude-compaction-operation-tracker.ts`, and the `agent-memory` recording models and boundary recorder, with tests.
+- **Decision.** Spot-check the server, web and live Claude/Codex paths in addition to the requested `pnpm test:native-input-history`.
+- **Results.**
+  - Native harness: 2/2 on both sides (identical 12 warnings).
+  - Server: 0 new failures vs pre-merge and vs base.
+  - Web: 0 new.
+  - Live mention suite: intermittent model timeouts. A same-conditions comparison with upstream `1b9739cad` reproduced both signatures without the branch, while the branch passed 3/3 in parallel.
+- **Carry-forward.** API-REV-003 evidence carries forward: F-02 fix, AC-001 gate, F-01, AC-005/006/008, SC-04. No branch source changed; the merged upstream code is exercised by the server suites and the live mention suite.
+
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Yes` (round 3 completed)
-- Repository-Resident Durable Coverage Added / Updated / Removed by API/E2E: `No`
-- Final confidence: 93% (execution report, round 3)
-- Broader validation decision: `Required` (executed)
-- Reroute Required: `No`. Result `Pass` → proportional review by `code_reviewer`.
+- Proceed: `Yes` (round 4 completed)
+- Durable coverage added/updated/removed by API/E2E: `No`
+- Final confidence: 93%
+- Broader validation: `Required` (live spot-check executed)
+- Reroute Required: `No`. Result `Pass` → `code_reviewer`.

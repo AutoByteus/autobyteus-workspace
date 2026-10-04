@@ -1,0 +1,25 @@
+branch total/pass/fail (4833, 4613, 147) base (4817, 4597, 147)
+NEW failures: 0
+No longer failing: 0
+Changed message: 7
+  ~ autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts :: AgentRunService fresh definition runtime integration falls back to description when fresh defini 
+     branch: AgentCreationError: Failed to prepare agent run 'blank-instructions-agent-blank-1791122793452-578a96-run'. 
+     base:   AgentCreationError: Failed to prepare agent run 'blank-instructions-agent-blank-1791119901208-931826-run'.
+  ~ autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts :: AgentRunService fresh definition runtime integration uses fresh definition instructions for the  
+     branch: AgentCreationError: Failed to prepare agent run 'fresh-agent-fresh-1791122793330-f828cb-run'. 
+     base:   AgentCreationError: Failed to prepare agent run 'fresh-agent-fresh-1791119901080-dc6946-run'.
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm defaults to non-query log kinds 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-5OmVZ8/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-YNmJAP/synthetic-prisma-loader.m
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm import acquires no Prisma client or datasource 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-5OmVZ8/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-YNmJAP/synthetic-prisma-loader.m
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm rejects a conflicting post-bind logging policy 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-5OmVZ8/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-YNmJAP/synthetic-prisma-loader.m
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm honors typed policy and typed-false precedence 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-5OmVZ8/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-YNmJAP/synthetic-prisma-loader.m
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm honors explicit environment query-log policy only 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-5OmVZ8/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-YNmJAP/synthetic-prisma-loader.m

@@ -15,17 +15,54 @@
 - Implementation Revision Record: `…/implementation-revision-record.md`
 - Code Review Report: `…/code-review-report.md` (CRR-006 Pass)
 - Code Review Revision Record: `…/code-review-revision-record.md`
-- Delivery Revision Record: N/A
+- Delivery Revision Record: `…/delivery-revision-record.md` (DR-001)
 - Coverage Investigation: `…/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `…/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `…/api-e2e-revision-record.md`
 - Evidence folder: `…/api-e2e-evidence/` (round-2 files prefixed `r2-`, round-3 files `r3-`)
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Execution Round: 3
-- Trigger: CRR-006 Pass (F-02 fixed in IR-004, `eccea069b`; head `1eda354f7`)
-- Prior Round Reviewed: round 2 (API-REV-002, Fail on F-02)
-- Latest Authoritative Round: 3
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Execution Round: 4
+- Trigger: CRR-008 (delivery re-entry DR-001; IR-005 `3c7b62f53`; merge `1195f4356` of origin/personal@1b9739cad; head `dc0c702dc`)
+- Prior Round Reviewed: round 3 (API-REV-003, Pass)
+- Latest Authoritative Round: 4
 - Branch validated: `codex/standalone-agent-run-root` @ `1eda354f7` (code `eccea069b`); base `b37d7a934`
+
+## Round 4 Summary (authoritative; delivery re-entry DR-001. Round 3 below remains valid and carries forward)
+
+- **Delta since API-REV-003 (`1eda354f7`).**
+  - IR-005 changes one import line in `test-support/native-input-history/native-accepted-input-history.integration.test.ts`.
+  - The merge `1195f4356` of origin/personal@1b9739cad is **not docs-only**. It brings upstream `307d0e775`, which changes Claude compaction frame detection and raw-trace rotation in server `claude-session*`, the event converter, a new compaction tracker and the `agent-memory` recording code, with tests, plus docs (`DESIGN.md` rename, `TESTING.md`, `AGENTS.md`).
+  - No branch source changed.
+
+| Case ID | Purpose | Command / Surface | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| DR-001 | TESTING.md native-to-web layer | `pnpm test:native-input-history` (repo root), branch and clean base | **Pass.** Web boundary guard passed; 2/2. The 12 `TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED` warnings are identical on base (2/2, 12) | `r4-native-input-history.log`, `r4-native-input-history-base.log` |
+| AE-05 | Merged server code | Full server vs the round-3 branch and vs base | **Pass.** 0 new failures (147 failing; same 7 noise diffs). Merged Claude areas pass: session 47, converter 34, compaction tracker 9, output events 15, memory accumulator 23. Standalone root suites pass | `r4-ae05-server-vs-{r3-branch,base}.txt` |
+| AE-06 | Web after merge | Full web vs base | **Pass.** 0 new, 0 changed | `r4-ae06-web-compare.txt` |
+| AE-01 spot | Live Claude/Codex after the merge | Mention suite, Claude + Codex | **Pass**, with intermittent model timeouts attributed upstream. Branch post-merge: the full suite passed 4/4 in 4 of 7 runs. Claude DI-001 6/8 ("lead → mate → lead → host" timeout); Codex first test 5/7 ("pre-mention delegate_task result" timeout; the model wrote text instead of calling the tool). Same-conditions comparison: upstream `1b9739cad` without the branch, 3 runs in parallel with 3 branch runs. Upstream failed Claude DI-001 once and the Codex first test once with **identical signatures**; the branch passed 3/3 | `r4-ae01-mention-claude-codex*.log`, `r4-diag-*.log`, `r4-upstream-mention-*.log`, `r4-branch-mention-*.log` |
+| F-4 census | — | All round-4 live logs | 0 warnings | — |
+
+- **Carry-forward judgment.** The API-REV-003 evidence stands. The F-02 fix, AC-001 gate, F-01/AC-007, AC-005, AC-006, AC-008 and SC-04 paths are unchanged by IR-005 and by the merge. The merged upstream Claude code is covered by the server suites and the live Claude mention runs above. I did not rerun the full agent-initiated suites: the merge does not touch roots, collaboration, the fence or Codex, and the Claude path was exercised live.
+- **Temporary scaffolding.**
+  - A local edit to the mention suite's `afterAll` kept its data dir; it is reverted.
+  - The clean-base worktree was temporarily checked out at `1b9739cad`; it is restored to `b37d7a934`.
+  - The kept temp dirs are deleted.
+- **New residual risk (upstream, not branch).** The intermittent live-model timeouts in the mention suite (Claude collaborator-Team lead handoff; Codex first-turn tool call) also occur on upstream `1b9739cad`. Delivery should know about them.
+
+### Latest Authoritative Result (round 4)
+
+- Result: **`Pass`**
+- Final validation confidence: 93% (unchanged; no category below 90%; every critical AC directly proven)
+- Durable coverage changed by API/E2E: `No`. The IR-005 import change was exercised by `pnpm test:native-input-history`.
+- Next recipient: `/code_reviewer` (proportional test review → delivery)
+- Residual risks:
+  - CG-05 (held);
+  - upstream live-model flakiness (above);
+  - Grok environment; LM Studio not run;
+  - `agent-run.ts` at 498 effective lines;
+  - `TESTING.md:222` old path (delivery docs sync).
+
+---
 
 ## Round 3 Summary (authoritative; sections below this are kept from round 2 and superseded where they conflict)
 
