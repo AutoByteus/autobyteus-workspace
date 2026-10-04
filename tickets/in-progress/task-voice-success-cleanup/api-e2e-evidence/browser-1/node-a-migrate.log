@@ -87,7 +87,7 @@ migrations/
     └─ migration.sql
   └─ 20260924120000_remove_external_channel_tables/
     └─ migration.sql
-      
+
 All migrations have been successfully applied.
 ┌─────────────────────────────────────────────────────────┐
 │  Update available 5.22.0 -> 8.0.0-rc.19                 │
