@@ -5,15 +5,15 @@
 - Ticket: `standalone-agent-run-root`
 - Classification (carried, not reclassified): `task_size=Large`, `architectural_risk=High`, route: reviewed (Architecture Review → Code Review → API/E2E → test-code review).
 - Upstream gates: ARCH-REV-004 Pass; CRR-006 Pass (9.3/10); API-REV-003 Pass (93%); CRR-007 Not Applicable (no durable test code changed by API/E2E).
-- Delivery round: DR-001, **Blocked** at post-integration verification (see Escalation).
+- Delivery round: DR-002 (current). DR-001 was blocked at post-integration verification on a stale harness import; that was resolved by IR-005 / CRR-008 / API-REV-004 / CRR-009.
 
 ## Handoff Summary
 
-- Handoff summary artifact: Not yet created (blocked before delivery-owned edits).
-- Handoff summary status: `Blocked`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/handoff-summary.md`
+- Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: Docs sync and the handoff summary wait until the integrated branch passes its post-integration checks.
+- Current delivery revision ID: `DR-002`
+- Notes: Docs sync and the handoff summary were written on the integrated, re-checked branch.
 
 ## Initial Delivery Integration Refresh
 
@@ -25,10 +25,10 @@
 - Integration method: `Merge` (`origin/personal` into `codex/standalone-agent-run-root`)
 - Integration result: `Completed` — merge commit `1195f4356`, no conflicts, no file overlap between base delta and ticket delta
 - Post-integration executable checks rerun: `Yes`
-- Post-integration verification result: `Blocked`
+- Post-integration verification result: `Passed` (DR-002). DR-001 was `Blocked` on the native-input-history import; it was fixed in `3c7b62f53` and rerun 2/2 by delivery.
 - Delivery edits started only after integrated state was current: `Yes` (the one TESTING.md edit was reverted on finding the blocker; no delivery-owned docs are committed)
 - Handoff state current with latest tracked remote base: `Yes` (as of `1b9739cad`)
-- Blocker: the workspace native-to-web harness fails (see Verification Checks and Escalation).
+- Blocker: None (DR-001 blocker resolved). DR-002 re-fetch: `origin/personal` still at `1b9739cad`.
 
 ## Verification Checks
 
@@ -39,30 +39,26 @@
 | Integrated base Claude changes + fence/termination | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts tests/unit/agent-execution/agent-run-root-shutdown-fence.test.ts tests/unit/agent-org-execution/agent-org-run-termination.test.ts --no-watch` | 21 files / 244 tests pass |
 | Ticket web specs + integrated `agentStatusHandler.spec.ts` | `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentCollaboration stores/__tests__/agentRunCollaborationStore.spec.ts services/eventMonitor components/workspace/usage utils/collaboration components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts` | 14 files / 126 tests pass |
 | **Workspace native-to-web integration** (TESTING.md layer) | `pnpm test:native-input-history` | **FAIL** — `Failed to resolve import "../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture"` from `test-support/native-input-history/native-accepted-input-history.integration.test.ts:10`. Evidence: `delivery-evidence/dr001-native-input-history.log` |
-| Diagnostic only (reverted) | Same command with line 10 import pointed at `tests/integration/standalone-agent-run-root/native-compaction-root-fixture` | 2/2 tests pass; edit reverted, not committed |
+| DR-002 rerun after IR-005 | `pnpm test:native-input-history` | **Pass** 2/2 |
+| Diagnostic only (DR-001, reverted) | Same command with line 10 import pointed at `tests/integration/standalone-agent-run-root/native-compaction-root-fixture` | 2/2 tests pass; edit reverted, not committed |
 
 The failure is a ticket regression, not a base-integration effect: the ticket renamed `tests/integration/agent-run-collaboration/` to `tests/integration/standalone-agent-run-root/` (R091 `native-compaction-root-fixture.ts`) but left the workspace-owned importer in `test-support/` unchanged. The base never touched that file. None of the API/E2E or code-review artifacts record running `pnpm test:native-input-history`, so the server and web Vitest sweeps did not catch it (the harness runs under its own `test-support` Vitest config).
 
-## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
+## Escalation / Reroute (DR-001, resolved)
 
-- Classification: `Local Fix`
+- Classification: `Local Fix` (resolved by IR-005 `3c7b62f53`)
 - Recommended recipient: `/implementation_engineer` (via `get_handoff_rules`)
 - Why final handoff could not complete: a durable workspace test layer (`pnpm test:native-input-history`) is broken on the ticket branch by a stale import of the moved fixture. Required fix: update line 10 of `test-support/native-input-history/native-accepted-input-history.integration.test.ts` to `../../autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-compaction-root-fixture`. Also search `test-support/` and other workspace-level harnesses for other references to the old `agent-run-collaboration` test/source paths, then rerun `pnpm test:native-input-history`. This changes durable test code, so it returns through the normal review chain.
 
-## Pending Delivery Items (resume after the fix returns)
-
-1. Docs sync: TESTING.md line 222 still cites `tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts`. The correct path is `tests/integration/standalone-agent-run-root/...`. Delivery owns this edit and will apply it after the fix; the change was verified and then reverted for now.
-2. Handoff summary and docs-sync report on the re-checked integrated state.
-3. User verification, carrying the residual risks: CG-05 standalone Token Meter shows children-only usage on the next host report; `agent-run.ts` at 498 effective lines; Grok unreliable (environment) and LM Studio not run; fence live rejection → quiescence path unit-proven only; configured-Team member earlier page not driven live.
-4. Finalization to `personal`, then cleanup of the ticket worktree/branch and of `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root-cleanbase`.
-
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (not requested; blocked earlier)
+- Initial explicit user completion/verification received: `No` (requested in DR-002; awaiting)
 
 ## Docs Sync Result
 
-- Docs sync result: Pending (blocked before docs sync)
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/docs-sync-report.md`
+- Docs sync result: `Updated`
+- Docs updated: `TESTING.md` (moved test path), `autobyteus-server-ts/docs/modules/agent_execution.md` (Root Shutdown Fence)
 
 ## Ticket State Transition
 
@@ -70,13 +66,14 @@ The failure is a ticket regression, not a base-integration effect: the ticket re
 
 ## Repository Finalization
 
-- Ticket branch: `codex/standalone-agent-run-root` (local only, head `1195f4356`)
+- Ticket branch: `codex/standalone-agent-run-root` (local only)
 - Finalization target: `origin/personal`
-- Repository finalization status: `Blocked` (not started)
+- Repository finalization status: Not started (awaiting user verification)
 
 ## Release / Publication / Deployment
 
-- Applicable: To be decided at finalization; not started.
+- Applicable: To be decided by the user at verification (project precedent: release only when the user requests it).
+- Release notes artifact (pre-verification): `tickets/in-progress/standalone-agent-run-root/release-notes.md`
 
 ## Post-Finalization Cleanup
 
@@ -86,6 +83,6 @@ The failure is a ticket regression, not a base-integration effect: the ticket re
 
 - Explicit user testing/verification complete: `No`
 - Repository finalization complete: `No`
-- Unresolved blocker: stale fixture import in `test-support/native-input-history` (Local Fix)
+- Unresolved blocker: None; awaiting user verification
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`

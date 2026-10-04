@@ -219,7 +219,7 @@ native-argument regression above when integrating changes to that fixture.
 
 The native outer fixture's current admission factory and acquired-resource
 cleanup are checked separately with
-`tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts`.
+`tests/integration/standalone-agent-run-root/native-root-fixture-cleanup.integration.test.ts`.
 Its five cases cover defined successful/rejected setup paths after the
 underlying native fixture returns and preserve the original setup error. They
 are not an exhaustive infrastructure-failure guarantee; keep the workspace
