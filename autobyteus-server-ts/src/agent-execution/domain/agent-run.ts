@@ -66,13 +66,8 @@ export class AgentRun {
   private recoveryShutdownFenced = false;
   private activeInputDispatch: Promise<void> | null = null;
   private readonly interruptState: AgentRunInterruptState;
-  private readonly rootShutdownFence = new AgentRunRootShutdownFence({
-    snapshot: () => ({
-      quiescent: this.isRootShutdownQuiescent(),
-      hasActiveTurn: this.lifecycleState.activeTurn.kind !== "NONE",
-    }),
-    interruptActiveTurn: () => this.interrupt(),
-  });
+  /** The current root-shutdown attempt: shared while pending, kept once accepted, replaced after a failure. */
+  private rootShutdownFence: AgentRunRootShutdownFence | null = null;
   private tryingQuiescentTermination: Promise<PreparedAgentRunTermination | null> | null = null;
   private preparingTermination: Promise<PreparedAgentRunTermination> | null = null;
   private preparedTermination: PreparedAgentRunTermination | null = null;
@@ -255,18 +250,32 @@ export class AgentRun {
   }
 
   async fenceInputAndInterruptForRootShutdown(): Promise<AgentOperationResult> {
-    const gateWithoutTurn = await this.dispatchQueue.enqueue(this.runId, () => {
+    const fenced = await this.dispatchQueue.enqueue(this.runId, () => {
       this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
       this.inputAdmissionState.fenceForRootShutdown();
       this.recoveryShutdownFenced = !!this.lifecycleState.recoverableBlock;
       this.publishInputState();
-      this.rootShutdownFence.begin();
-      return this.recoveryShutdownFenced && this.lifecycleState.activeTurn.kind === "NONE";
+      if (!this.rootShutdownFence?.isReusable) this.rootShutdownFence = this.createRootShutdownFence();
+      return {
+        attempt: this.rootShutdownFence,
+        gateWithoutTurn: this.recoveryShutdownFenced && this.lifecycleState.activeTurn.kind === "NONE",
+      };
     });
     // The existing fence owns active-turn interruption; only the no-turn gate needs a separate control.
-    if (gateWithoutTurn) await this.interrupt();
+    if (fenced.gateWithoutTurn) await this.interrupt();
     this.scheduleRootShutdownFenceEvaluation();
-    return this.rootShutdownFence.result;
+    return fenced.attempt.result;
+  }
+
+  private createRootShutdownFence(): AgentRunRootShutdownFence {
+    return new AgentRunRootShutdownFence({
+      snapshot: () => ({
+        quiescent: this.isRootShutdownQuiescent(),
+        hasActiveTurn: this.lifecycleState.activeTurn.kind !== "NONE",
+      }),
+      interruptActiveTurn: () => this.interrupt(),
+      diagnostics: () => ({ runId: this.runId, activeTurn: this.lifecycleState.activeTurn, hasPendingCommand: this.lifecycleState.hasPendingCommand }),
+    }, { warn: (message) => logger.warn(message) });
   }
 
   async terminate(): Promise<AgentOperationResult> {
@@ -451,7 +460,7 @@ export class AgentRun {
   }
 
   private scheduleRootShutdownFenceEvaluation(): void {
-    queueMicrotask(() => this.rootShutdownFence.evaluate());
+    queueMicrotask(() => this.rootShutdownFence?.evaluate());
   }
 
   private finishCommittedTermination(): Promise<AgentOperationResult> {
