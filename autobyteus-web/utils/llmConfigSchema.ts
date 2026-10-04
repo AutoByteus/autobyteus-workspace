@@ -1,3 +1,4 @@
+import type { ProviderWithModels } from '~/stores/llmProviderConfig'
 // `llmThinkingConfigAdapter` imports this module too; neither calls the other at load time.
 import { getThinkingParamKeys } from '~/utils/llmThinkingConfigAdapter';
 
@@ -309,3 +310,15 @@ export const applyModelConfigSchemaDefaults = (
   return changed ? nextConfig : config ?? null;
 };
 
+
+export const modelConfigSchemaFromProviderGroups = (
+  rows: ProviderWithModels[],
+  modelIdentifier: string | null | undefined,
+): UiModelConfigSchema | null => {
+  const identifier = (modelIdentifier || '').trim()
+  for (const row of rows) {
+    const normalized = normalizeModelConfigSchema(row.models.find((model) => model.modelIdentifier === identifier)?.configSchema)
+    if (normalized && Object.keys(normalized).length) return normalized
+  }
+  return null
+}

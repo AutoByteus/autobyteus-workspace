@@ -1,0 +1,148 @@
+{
+  "at": "2026-10-03T20:52:25.960Z",
+  "status": 200,
+  "body": {
+    "data": {
+      "agentOrgDefinitions": [
+        {
+          "id": "autobyteus-org",
+          "name": "AutoByteus Org",
+          "members": [
+            {
+              "memberName": "product_team",
+              "ref": "product-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "software_engineering_team",
+              "ref": "software-engineering-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "marketing_team",
+              "ref": "marketing-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED"
+            }
+          ]
+        },
+        {
+          "id": "northstar-operating-company",
+          "name": "Northstar Operating Company",
+          "members": [
+            {
+              "memberName": "ceo",
+              "ref": "agent-org-owned-agent:northstar-operating-company:ceo",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "chief_of_staff",
+              "ref": "agent-org-owned-agent:northstar-operating-company:chief-of-staff",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "cto",
+              "ref": "agent-org-owned-agent:northstar-operating-company:cto",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "cpo",
+              "ref": "agent-org-owned-agent:northstar-operating-company:cpo",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "cmo",
+              "ref": "agent-org-owned-agent:northstar-operating-company:cmo",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "cro",
+              "ref": "agent-org-owned-agent:northstar-operating-company:cro",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "coo",
+              "ref": "agent-org-owned-agent:northstar-operating-company:coo",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "cfo",
+              "ref": "agent-org-owned-agent:northstar-operating-company:cfo",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "chief_people_officer",
+              "ref": "agent-org-owned-agent:northstar-operating-company:chief-people-officer",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "engineering_org",
+              "ref": "agent-org-owned-team:northstar-operating-company:engineering-org",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "product_org",
+              "ref": "agent-org-owned-team:northstar-operating-company:product-org",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "marketing_org",
+              "ref": "agent-org-owned-team:northstar-operating-company:marketing-org",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "revenue_org",
+              "ref": "agent-org-owned-team:northstar-operating-company:revenue-org",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "operations_org",
+              "ref": "agent-org-owned-team:northstar-operating-company:operations-org",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED"
+            },
+            {
+              "memberName": "finance_people_org",
+              "ref": "agent-org-owned-team:northstar-operating-company:finance-people-org",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED"
+            }
+          ]
+        },
+        {
+          "id": "software-development-department",
+          "name": "Software Development Department",
+          "members": [
+            {
+              "memberName": "product_team",
+              "ref": "product-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED"
+            },
+            {
+              "memberName": "software_engineering_team",
+              "ref": "software-engineering-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

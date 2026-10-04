@@ -1,0 +1,72 @@
+<template>
+  <main class="mx-auto max-w-3xl p-5">
+    <h1 class="mb-1 text-xl font-semibold">Implementation catalog-recovery preview</h1>
+    <p class="mb-4 text-sm text-slate-500">Controlled transport · actual source components and stores · no runs or inference</p>
+    <ClientOnly><AgentOrgRunConfigForm v-if="model" :editable-model="model" member-overrides-label="Member Overrides" @schema-state="setSchema">
+      <RuntimeModelConfigFields :runtime-kind="kind" :llm-model-identifier="exactModel" :llm-config="config" id-prefix="preview-root" control-variant="quiet" @schema-state="setSchema('/', $event)" />
+    </AgentOrgRunConfigForm></ClientOnly>
+    <pre class="mt-5 whitespace-pre-wrap rounded bg-slate-100 p-3 text-xs" data-test="preview-schemas">{{ schemas }}</pre>
+  </main>
+</template>
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { ApolloClient, ApolloLink, InMemoryCache, Observable } from '@apollo/client/core'
+import AgentOrgRunConfigForm from '~/components/workspace/config/AgentOrgRunConfigForm.vue'
+import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
+import { registerBoundApolloClient } from '~/plugins/30.apollo.client'
+import { seedFixture } from '~/services/runConfigEditing/__tests__/orgSeedFixture'
+import { projectEditableAgentOrgRunFormModel } from '~/utils/editableAgentOrgRunFormModel'
+definePageMeta({ layout: false })
+const kind = 'codex_app_server', exactModel = 'gpt-6.1-sol'
+const config = { reasoning_effort: 'high', temperature: 0.2 }
+const rawSchema = { type: 'object', properties: {
+  reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'] },
+  temperature: { type: 'number', minimum: 0, maximum: 2 },
+} }
+const catalog = (runtimeKind: string) => [{
+  __typename: 'ProviderModelCatalogSnapshotObject', runtimeKind,
+  ownerProvider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false, baseUrl: null, catalogMode: 'STATIC' },
+  sources: [{ modelKind: 'LLM', state: 'READY', modelCount: 1, successfulUnitCount: 1, failedUnitCount: 0, safeMessage: null }],
+  llmModels: [{ modelIdentifier: exactModel, name: 'GPT-6.1 Sol', description: null, value: exactModel, canonicalName: exactModel,
+    providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: runtimeKind, hostUrl: null,
+    configSchema: rawSchema, maxContextTokens: null, activeContextTokens: null, maxInputTokens: null,
+    maxOutputTokens: null, metadataProvenance: null, selectionPresentation: { recommended: false } }],
+  audioModels: [], imageModels: [], videoModels: [],
+}]
+
+const fixture = seedFixture()
+const schemas = ref<Record<string, unknown>>({})
+const setSchema = (address: string, state: unknown) => { schemas.value = { ...schemas.value, [address]: state } }
+const root = { runtimeKind: kind, llmModelIdentifier: exactModel, llmConfig: config, autoExecuteTools: false, workspaceId: null, workspaceMetadata: null, workspaceRootPath: '/fixture/root' }
+const projection = computed(() => projectEditableAgentOrgRunFormModel({
+  orgDefinition: fixture.definition, rootConfig: root, teamOverrides: {}, agentOverrides: {},
+  getTeamDefinitionById: id => fixture.references.teams[id] ?? null,
+  getAgentDisplayNameById: id => fixture.references.agents[id]?.name ?? null,
+  workspaceSelectionFor: () => ({ mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/fixture/root' }),
+  workspaceOperationFor: () => ({ status: 'idle', error: null }),
+  runtimeCatalogStateFor: () => ({ status: 'ready', error: null }),
+}))
+const model = computed(() => projection.value.status === 'ready' ? projection.value.model : null)
+if (import.meta.client) {
+  let reads = 0
+  const client = new ApolloClient({ cache: new InMemoryCache(), link: new ApolloLink(operation => new Observable(observer => {
+    const runtime = operation.variables.runtimeKind
+    if (operation.operationName === 'GetProviderModelCatalogSnapshots') {
+      const fail = ++reads === 1
+      setTimeout(() => {
+        observer.next(fail ? { errors: [{ message: `Transient catalog outage: ${runtime}` }] } : { data: { providerModelCatalogSnapshots: catalog(runtime) } }); observer.complete()
+      }, 1000)
+      return
+    }
+    const data = operation.operationName === 'GetRuntimeAvailabilityKinds'
+      ? { runtimeAvailabilityKinds: [kind] }
+      : operation.operationName === 'GetRuntimeAvailability'
+        ? { runtimeAvailability: { runtimeKind: runtime, enabled: true, reason: null } }
+        : operation.operationName === 'RuntimeCurrentModelDescriptors'
+          ? { runtimeCurrentModelDescriptors: operation.variables.identifiers.map((identifier: string) => ({ identifier, model: null })) }
+          : {}
+    setTimeout(() => { observer.next({ data }); observer.complete() }, 300)
+  })) })
+  registerBoundApolloClient(useNuxtApp() as any, client)
+}
+</script>

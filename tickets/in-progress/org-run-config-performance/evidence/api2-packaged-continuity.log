@@ -1,0 +1,10 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs"]
+start=2026-10-03T22:46:05.618086+00:00
+locator.click: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for getByTestId('agent-org-run-open-autobyteus_org_4782a680b8ac4d71a1245e5a7269ccb8')[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs:16:142
+
+exit=1 elapsed_seconds=20.822080875

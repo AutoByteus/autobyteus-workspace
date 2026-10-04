@@ -163,7 +163,6 @@ import WorkspaceSelector from './WorkspaceSelector.vue'
 import FixedWorkspacePath from './FixedWorkspacePath.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { effectiveAutoExecuteTools, isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
-import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { loadRuntimeProviderGroupsForSelection, useRuntimeScopedModelSelection } from '~/composables/useRuntimeScopedModelSelection'
 import {
   buildUnavailableInheritedModelMessage,
@@ -175,6 +174,7 @@ import {
 } from '~/utils/teamRunConfigUtils'
 import {
   normalizeModelConfigSchema,
+  modelConfigSchemaFromProviderGroups,
   validateUiModelConfig,
   type UiModelConfigSchema,
   type UiModelConfigValidationIssue,
@@ -219,6 +219,7 @@ const {
   hasModelIdentifier,
   isLoadingModels,
   modelLoadError,
+  reloadModelsForRuntime,
   modelConfigSchemaByIdentifier,
   runtimeOptions,
   selectedRuntimeUnavailableReason,
@@ -239,7 +240,8 @@ const runtimeCatalogPresentationState = computed(() => {
   if (operation?.schemaState.status === 'unavailable') {
     return { status: 'error' as const, error: operation.schemaState.message }
   }
-  if (operation) return { status: 'loading' as const, error: null }
+  if (operation || isLoadingModels.value) return { status: 'loading' as const, error: null }
+  if (modelLoadError.value) return { status: 'error' as const, error: modelLoadError.value }
   return editableNode.value?.runtimeCatalogState ?? { status: 'idle' as const, error: null }
 })
 const explicitModelIdentifier = computed(() => editableOverride.value?.llmModelIdentifier || '')
@@ -264,6 +266,8 @@ const unresolvedInheritedModelMessage = computed(() => buildUnavailableInherited
   memberName: props.node.displayName,
 }))
 const effectiveModelIdentifier = computed(() => props.node.effectiveConfig.llmModelIdentifier || '')
+const isLoadingCurrentModel = computed(() => effectiveModelIdentifier.value === seedModelIdentifier.value
+  && !hasModelIdentifier(effectiveModelIdentifier.value) && currentModel.loading.value)
 const selectedModelIdentifier = computed(() => existingNode.value ? effectiveModelIdentifier.value : explicitModelIdentifier.value)
 const modelConfigSchema = computed(() => modelConfigSchemaByIdentifier(effectiveModelIdentifier.value)
   || (effectiveModelIdentifier.value === seedModelIdentifier.value ? currentModel.schema.value : null))
@@ -298,6 +302,7 @@ watch(
     editableNode,
     runtimeEditOperation,
     isLoadingModels,
+    isLoadingCurrentModel,
     modelLoadError,
     selectedRuntimeUnavailableReason,
     isUnresolvedInheritedModel,
@@ -310,7 +315,7 @@ watch(
     if (!editableNode.value) return
     if (runtimeEditOperation.value) return
     let state: RuntimeModelConfigSchemaState
-    if (isLoadingModels.value || (effectiveModelIdentifier.value === seedModelIdentifier.value && currentModel.loading.value)) {
+    if (isLoadingModels.value || isLoadingCurrentModel.value) {
       state = { status: 'loading', message: null }
     } else if (modelLoadError.value || selectedRuntimeUnavailableReason.value) {
       state = {
@@ -389,17 +394,6 @@ const shouldOpenAdvancedForSchema = (
   const state = getThinkingControlState(schema, config)
   return state.supported && state.enabled
 }
-const modelConfigSchemaFromRows = (
-  rows: ProviderWithModels[],
-  modelIdentifier: string | null | undefined,
-): UiModelConfigSchema | null => {
-  const identifier = (modelIdentifier || '').trim()
-  for (const row of rows) {
-    const normalized = normalizeModelConfigSchema(row.models.find((model) => model.modelIdentifier === identifier)?.configSchema)
-    if (normalized && Object.keys(normalized).length) return normalized
-  }
-  return null
-}
 const maybeOpenAdvanced = (schema: UiModelConfigSchema | null, config: Record<string, unknown> | null | undefined) => {
   if (shouldOpenAdvancedForSchema(schema, config)) memberAdvancedExplicitlyExpanded.value = true
 }
@@ -464,7 +458,7 @@ const handleRuntimeChange = async (value: string) => {
     effectiveRuntimeKind: nextEffectiveRuntimeKind,
     schemaState: { status: 'loading', message: null },
   }
-  maybeOpenAdvanced(modelConfigSchemaFromRows(nextRows, effectiveModel)
+  maybeOpenAdvanced(modelConfigSchemaFromProviderGroups(nextRows, effectiveModel)
     || (effectiveModel && exactCurrent[effectiveModel]?.configSchema
       ? normalizeModelConfigSchema(exactCurrent[effectiveModel]!.configSchema) : null),
     retainedConfig ?? editable.baselineConfig.llmConfig)
@@ -509,7 +503,7 @@ const retryRuntimeCatalog = () => {
     void handleRuntimeChange(failedOperation.requestedOverrideRuntimeKind ?? '')
     return
   }
-  if (effectiveRuntimeKind.value) void useRuntimeAvailabilityStore().fetchRuntimeAvailability(effectiveRuntimeKind.value, true).catch(() => undefined)
+  if (effectiveRuntimeKind.value) void reloadModelsForRuntime(effectiveRuntimeKind.value)
   emit('retry-runtime-catalog', effectiveRuntimeKind.value ?? '')
 }
 </script>

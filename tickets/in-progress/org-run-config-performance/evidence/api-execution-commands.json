@@ -1,0 +1,1382 @@
+[
+  {
+    "case": "API-001",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "prebuild"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:36:01.082765+00:00",
+    "finishedAt": "2026-10-03T20:36:06.548064+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 5.464350791999999,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-prebuild.log"
+  },
+  {
+    "case": "API-002",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "exec",
+      "nuxt",
+      "prepare"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:37:53.931578+00:00",
+    "finishedAt": "2026-10-03T20:37:55.978903+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 2.0466935410000002,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-nuxt-prepare.log"
+  },
+  {
+    "case": "API-001",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/agent-execution/agent-run-identity-allocator.test.ts",
+      "tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+      "tests/unit/agent-org-execution/agent-org-run-config.test.ts",
+      "tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts",
+      "tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts",
+      "tests/unit/run-history/services/collaboration-root-history-readiness.test.ts",
+      "tests/unit/run-history/services/collaboration-root-history-scoped.test.ts",
+      "tests/unit/runtime-management/runtime-availability-service.test.ts",
+      "tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts",
+      "tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:37:44.956253+00:00",
+    "finishedAt": "2026-10-03T20:37:57.852171+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 12.895313041,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-server-narrow.log"
+  },
+  {
+    "case": "API-003",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "build:full"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:38:14.567564+00:00",
+    "finishedAt": "2026-10-03T20:38:26.700854+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 12.132045375,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-server-build.log"
+  },
+  {
+    "case": "API-002",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "stores/__tests__/runtimeCapabilitiesStore.spec.ts",
+      "stores/__tests__/agentOrgHistoryApollo.spec.ts",
+      "stores/__tests__/runHistoryStore.spec.ts",
+      "stores/__tests__/runHistoryNavigationProjection.spec.ts",
+      "stores/__tests__/agentOrgContextsStore.spec.ts",
+      "stores/__tests__/agentOrgInspection.spec.ts",
+      "stores/__tests__/agentOrgRetainedRecovery.spec.ts",
+      "stores/__tests__/agentOrgRunConfigPublication.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts",
+      "composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts",
+      "components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+      "components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts",
+      "components/workspace/config/__tests__/TeamRunConfigForm.spec.ts",
+      "components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts",
+      "components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+      "services/chat/__tests__/chatLaunchService.spec.ts",
+      "stores/__tests__/chatDraftStore.spec.ts",
+      "tests/integration/web-boundary-guard.integration.test.ts",
+      "--run"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:38:13.417735+00:00",
+    "finishedAt": "2026-10-03T20:38:33.367064+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 19.94855625,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-web-narrow.log"
+  },
+  {
+    "case": "API-003",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:38:45.252877+00:00",
+    "finishedAt": "2026-10-03T20:38:57.866606+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 12.613095000000001,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-capability-e2e.log"
+  },
+  {
+    "case": "API-004",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:39:11.074251+00:00",
+    "finishedAt": "2026-10-03T20:39:16.054630+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 4.979685583,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-scoped-history-e2e.log"
+  },
+  {
+    "case": "API-005",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:39:50.021675+00:00",
+    "finishedAt": "2026-10-03T20:39:54.337506+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 4.315174625,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-stopped-workspace-e2e.log"
+  },
+  {
+    "case": "API-006",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:e2e:existing-run-model-config",
+      "--output-dir",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-existing-model",
+      "--ledger-file",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:40:33.495823+00:00",
+    "finishedAt": "2026-10-03T20:40:52.650559+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 19.15393425,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-existing-model-probe.log"
+  },
+  {
+    "case": "API-006",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:e2e:fresh-run-auto-approval",
+      "--output-dir",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-fresh-approval",
+      "--ledger-file",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:41:23.956659+00:00",
+    "finishedAt": "2026-10-03T20:42:15.717173+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 51.759733833,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-fresh-approval-probe.log"
+  },
+  {
+    "case": "API-006",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:e2e:fresh-run-auto-approval",
+      "--output-dir",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-fresh-approval-warm",
+      "--ledger-file",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:42:37.420244+00:00",
+    "finishedAt": "2026-10-03T20:42:56.161752+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 18.740774292,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-fresh-approval-probe-warm.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:49:01.572587+00:00",
+    "finishedAt": "2026-10-03T20:49:32.319608+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 30.745683542000002,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:50:09.489567+00:00",
+    "finishedAt": "2026-10-03T20:50:40.622870+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 31.132331417,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup-retry.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:51:17.872428+00:00",
+    "finishedAt": "2026-10-03T20:51:48.497726+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 30.624215417,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup-after-reload.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.mjs",
+      "--already-imported"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:52:13.956028+00:00",
+    "finishedAt": "2026-10-03T20:52:15.635882+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 1.6789861670000001,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup-resume.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-timing.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:52:32.613330+00:00",
+    "finishedAt": "2026-10-03T20:52:46.739570+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 14.125399457999999,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-small-timing.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-populate.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:54:07.514304+00:00",
+    "finishedAt": "2026-10-03T20:57:39.984414+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 212.47040975000002,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-population.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-timing.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:57:52.949891+00:00",
+    "finishedAt": "2026-10-03T20:58:11.958516+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 19.0078395,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-stress-timing.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T20:59:42.236831+00:00",
+    "finishedAt": "2026-10-03T20:59:44.098040+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 1.8604768749999998,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T21:00:20.979482+00:00",
+    "finishedAt": "2026-10-03T21:00:22.819594+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 1.838869791,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional-runtime-corrected.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T21:00:50.278627+00:00",
+    "finishedAt": "2026-10-03T21:01:08.206513+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 17.927260125,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional-route-synchronized.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-backend-trace.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T21:01:31.713353+00:00",
+    "finishedAt": "2026-10-03T21:01:31.775443+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 0.061496749999999996,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-backend-install.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-backend-trace.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T21:01:31.814571+00:00",
+    "finishedAt": "2026-10-03T21:01:33.503131+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 1.687929792,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-backend-trace.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T21:01:51.853028+00:00",
+    "finishedAt": "2026-10-03T21:02:10.024904+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 18.158910416999998,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional-catalog-labeled.log"
+  },
+  {
+    "case": "API-011",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T21:05:22.490526+00:00",
+    "finishedAt": "2026-10-03T21:05:30.323227+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 7.831899542,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api-packaged-continuity.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T21:06:54.266060+00:00",
+    "finishedAt": "2026-10-03T21:06:54.329054+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 0.06221391700000001,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-continuity.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "python3",
+      "tickets/in-progress/org-run-config-performance/evidence/api-summarize-performance.py"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T21:09:35.559325+00:00",
+    "finishedAt": "2026-10-03T21:09:35.616377+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 0.056394,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-performance-summary.log"
+  },
+  {
+    "case": "API-001",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "prebuild"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:20:34.834927+00:00",
+    "finishedAt": "2026-10-03T22:20:39.876699+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 5.039889958,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-prebuild.log"
+  },
+  {
+    "case": "API-002",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "exec",
+      "nuxt",
+      "prepare"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:21:10.855213+00:00",
+    "finishedAt": "2026-10-03T22:21:12.508940+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 1.653120458,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-nuxt-prepare.log"
+  },
+  {
+    "case": "API-002",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts",
+      "composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "--run"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:21:12.551605+00:00",
+    "finishedAt": "2026-10-03T22:21:20.383443+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 7.831082375,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-recovery-narrow.log"
+  },
+  {
+    "case": "API-011",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-setup.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:27:47.894004+00:00",
+    "finishedAt": "2026-10-03T22:27:50.245503+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 2.350234834,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-setup.log"
+  },
+  {
+    "case": "API-011",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:29:41.805632+00:00",
+    "finishedAt": "2026-10-03T22:29:42.891296+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 1.084866667,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.log"
+  },
+  {
+    "case": "API-011",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:30:37.222102+00:00",
+    "finishedAt": "2026-10-03T22:31:00.168518+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 22.945176875,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery-normal.log"
+  },
+  {
+    "case": "API-011",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:31:58.777243+00:00",
+    "finishedAt": "2026-10-03T22:32:42.114444+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 43.336436667,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery-qualified.log"
+  },
+  {
+    "case": "API-001",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/agent-execution/agent-run-identity-allocator.test.ts",
+      "tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+      "tests/unit/agent-org-execution/agent-org-run-config.test.ts",
+      "tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts",
+      "tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts",
+      "tests/unit/run-history/services/collaboration-root-history-readiness.test.ts",
+      "tests/unit/run-history/services/collaboration-root-history-scoped.test.ts",
+      "tests/unit/runtime-management/runtime-availability-service.test.ts",
+      "tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts",
+      "tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:33:23.188732+00:00",
+    "finishedAt": "2026-10-03T22:33:35.779651+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 12.590116917,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-server-narrow.log"
+  },
+  {
+    "case": "API-002",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "stores/__tests__/runtimeCapabilitiesStore.spec.ts",
+      "stores/__tests__/agentOrgHistoryApollo.spec.ts",
+      "stores/__tests__/runHistoryStore.spec.ts",
+      "stores/__tests__/runHistoryNavigationProjection.spec.ts",
+      "stores/__tests__/agentOrgContextsStore.spec.ts",
+      "stores/__tests__/agentOrgInspection.spec.ts",
+      "stores/__tests__/agentOrgRetainedRecovery.spec.ts",
+      "stores/__tests__/agentOrgRunConfigPublication.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts",
+      "composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts",
+      "components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+      "components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts",
+      "components/workspace/config/__tests__/TeamRunConfigForm.spec.ts",
+      "components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts",
+      "components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+      "services/chat/__tests__/chatLaunchService.spec.ts",
+      "stores/__tests__/chatDraftStore.spec.ts",
+      "tests/integration/web-boundary-guard.integration.test.ts",
+      "components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts",
+      "--run"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:33:35.818602+00:00",
+    "finishedAt": "2026-10-03T22:33:55.292358+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 19.472920833000003,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-web-broad.log"
+  },
+  {
+    "case": "API-003",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:33:55.343581+00:00",
+    "finishedAt": "2026-10-03T22:34:06.454294+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 11.109501042,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-capability-e2e.log"
+  },
+  {
+    "case": "API-004",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:34:06.508216+00:00",
+    "finishedAt": "2026-10-03T22:34:11.519178+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 5.010136041,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-scoped-history-e2e.log"
+  },
+  {
+    "case": "API-005",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:34:11.562234+00:00",
+    "finishedAt": "2026-10-03T22:34:15.427727+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 3.86477825,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-stopped-workspace-e2e.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:36:49.701460+00:00",
+    "finishedAt": "2026-10-03T22:36:52.219225+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 2.516964792,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:38:38.188486+00:00",
+    "finishedAt": "2026-10-03T22:38:40.118269+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 1.9286955829999999,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal-qualified.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:39:37.310498+00:00",
+    "finishedAt": "2026-10-03T22:39:39.954913+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 2.643542333,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal-team-ready.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:41:14.795439+00:00",
+    "finishedAt": "2026-10-03T22:41:17.198343+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 2.4021318750000002,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal-settled.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "env",
+      "RUN_AGY_FAILURE_E2E=1",
+      "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "AGY_RUNTIME_ERROR_EVIDENCE_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-agy-transport",
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/agy-failure-transport.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:41:48.303708+00:00",
+    "finishedAt": "2026-10-03T22:42:10.431588+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 22.126983625,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-agy-failure-transport.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "pnpm",
+      "test:native-input-history"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:42:10.485382+00:00",
+    "finishedAt": "2026-10-03T22:42:24.150239+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 13.663269041,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-input-history.log"
+  },
+  {
+    "case": "API-006",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:e2e:agent-org-task-team-disclosure",
+      "--output-dir",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-task-team-disclosure",
+      "--ledger",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:42:24.827477+00:00",
+    "finishedAt": "2026-10-03T22:42:41.805158+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 16.976510542,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-task-team-disclosure.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:46:05.618086+00:00",
+    "finishedAt": "2026-10-03T22:46:26.441464+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 20.822080875,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:47:38.350823+00:00",
+    "finishedAt": "2026-10-03T22:47:59.228817+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 20.87656075,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity-normal-entry.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:49:35.475463+00:00",
+    "finishedAt": "2026-10-03T22:49:56.120882+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 20.643969000000002,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity-entry-ready.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:50:59.962090+00:00",
+    "finishedAt": "2026-10-03T22:51:20.586934+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 20.622673,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity-bucket-expanded.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:52:02.612260+00:00",
+    "finishedAt": "2026-10-03T22:52:03.458550+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 0.845473,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity-disclosures-ready.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "env",
+      "RECEIPT=api2-packaged-restart.json",
+      "AFTER_RESTART=1",
+      "OUTPUT=api2-packaged-continuity-after-restart.json",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:53:14.862659+00:00",
+    "finishedAt": "2026-10-03T22:53:15.442257+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 0.578734042,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity-after-restart.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "prebuild"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:24:09.403862+00:00",
+    "finishedAt": "2026-10-03T23:24:14.420611+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 5.014716334,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-prebuild.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "pnpm",
+      "test:native-input-history"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:24:14.467447+00:00",
+    "finishedAt": "2026-10-03T23:24:27.130560+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 12.662238959,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-native-input-history.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:24:37.848075+00:00",
+    "finishedAt": "2026-10-03T23:24:42.393423+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 4.5445597090000005,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-native-fixture-cleanup.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+      "tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:24:53.399255+00:00",
+    "finishedAt": "2026-10-03T23:25:00.616405+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 7.216357,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-native-shared-callers.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "env",
+      "RUN_AGY_FAILURE_E2E=1",
+      "RUN_AGY_ERROR_BROWSER=1",
+      "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "AGY_ERROR_EVIDENCE_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-agy-transport",
+      "AGY_ERROR_LEDGER=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md",
+      "AGY_ERROR_EXECUTION_LOG=api3-agy-real-transport-browser.log",
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/agy-failure-transport.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:26:14.191924+00:00",
+    "finishedAt": "2026-10-03T23:26:50.377793+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 36.184774667,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-agy-real-transport-browser.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "env",
+      "RUN_AGY_FAILURE_E2E=1",
+      "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts",
+      "-t",
+      "E06",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:27:42.536804+00:00",
+    "finishedAt": "2026-10-03T23:27:50.711709+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 8.189731624999999,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-actual-mcp-delegation.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "COMPARATOR=1",
+      "START_RECEIPT=api3-baseline-start.json",
+      "OUT_PREFIX=api3-baseline",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-setup.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:29:56.637548+00:00",
+    "finishedAt": "2026-10-03T23:30:01.047548+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 4.409195625,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-baseline-setup.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-baseline-start.json",
+      "OUT_PREFIX=api3-baseline",
+      "PHASE=small-history",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-timing.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:30:14.851427+00:00",
+    "finishedAt": "2026-10-03T23:30:36.835215+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 21.983030833,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-baseline-small-timing.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "env",
+      "RUN_AGY_FAILURE_E2E=1",
+      "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "AGY_ERROR_EVIDENCE_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-org-publication",
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:36:07.984612+00:00",
+    "finishedAt": "2026-10-03T23:36:19.189849+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 11.204220290999999,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-org-publication-http.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-baseline-start.json",
+      "OUT_PREFIX=api3-baseline",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-populate.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:31:07.107753+00:00",
+    "finishedAt": "2026-10-03T23:36:32.184286+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 325.078651541,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-baseline-population.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-baseline-start.json",
+      "OUT_PREFIX=api3-baseline",
+      "PHASE=stored-history-500",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-timing.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:36:56.454468+00:00",
+    "finishedAt": "2026-10-03T23:37:34.725236+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 38.27026,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-baseline-stress-timing.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-baseline-start.json",
+      "OUT_PREFIX=api3-baseline",
+      "TRACE_MODE=install",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-backend-trace.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:38:25.195671+00:00",
+    "finishedAt": "2026-10-03T23:38:25.261700+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 0.06527429200000001,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-baseline-backend-install.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-baseline-start.json",
+      "OUT_PREFIX=api3-baseline",
+      "TRACE_MODE=trace",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-backend-trace.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:38:25.300524+00:00",
+    "finishedAt": "2026-10-03T23:38:28.691834+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 3.390642833,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-baseline-backend-trace.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-packaged-start.json",
+      "OUT_PREFIX=api3-packaged",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-setup.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:40:05.831153+00:00",
+    "finishedAt": "2026-10-03T23:40:07.437396+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 1.6053092500000001,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-packaged-setup.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-packaged-start.json",
+      "OUT_PREFIX=api3-packaged",
+      "PHASE=small-history",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-timing.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:40:47.242757+00:00",
+    "finishedAt": "2026-10-03T23:40:59.840105+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 12.596531708,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-packaged-small-timing.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "env",
+      "RUN_AGY_FAILURE_E2E=1",
+      "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts",
+      "-t",
+      "E06",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:42:07.836404+00:00",
+    "finishedAt": "2026-10-03T23:42:16.384162+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 8.546977292000001,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-final-mcp-regression.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:e2e:team-reload-member-freshness",
+      "--skip-build",
+      "--check-fresh-approval",
+      "--output-dir",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-team-member-freshness",
+      "--ledger-file",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:43:01.387060+00:00",
+    "finishedAt": "2026-10-03T23:43:17.241282+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 15.853642417000001,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-team-member-freshness.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-packaged-start.json",
+      "OUT_PREFIX=api3-packaged",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-populate.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:41:36.979820+00:00",
+    "finishedAt": "2026-10-03T23:45:06.963187+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 209.98436270800002,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-packaged-population.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-packaged-start.json",
+      "OUT_PREFIX=api3-packaged",
+      "PHASE=stored-history-500",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-timing.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:46:12.551201+00:00",
+    "finishedAt": "2026-10-03T23:46:30.081410+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 17.52952775,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-packaged-stress-timing.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-packaged-start.json",
+      "OUT_PREFIX=api3-packaged",
+      "TRACE_MODE=install",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-backend-trace.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:47:14.441623+00:00",
+    "finishedAt": "2026-10-03T23:47:14.504975+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 0.06267575,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-packaged-backend-install.log"
+  },
+  {
+    "case": "API-008",
+    "argv": [
+      "env",
+      "START_RECEIPT=api3-packaged-start.json",
+      "OUT_PREFIX=api3-packaged",
+      "TRACE_MODE=trace",
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-backend-trace.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:47:14.544901+00:00",
+    "finishedAt": "2026-10-03T23:47:16.481509+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 1.9359126249999998,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-packaged-backend-trace.log"
+  },
+  {
+    "case": "API-007",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-org-reference-guards.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:47:24.962307+00:00",
+    "finishedAt": "2026-10-03T23:47:32.358489+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 7.395400459,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-org-reference-guards.log"
+  },
+  {
+    "case": "API-010",
+    "argv": [
+      "bash",
+      "-c",
+      "pnpm --silent isolated-app stop iso-52965-ef9d > tickets/in-progress/org-run-config-performance/evidence/api3-packaged-stop.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:53:59.514663+00:00",
+    "finishedAt": "2026-10-03T23:54:00.684345+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 1.168741708,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-packaged-stop.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "bash",
+      "-c",
+      "pnpm --silent isolated-app start --from-worktree --data-root /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42 > tickets/in-progress/org-run-config-performance/evidence/api3-transition-start.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:54:00.724332+00:00",
+    "finishedAt": "2026-10-03T23:54:04.546967+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 3.821925417,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-transition-start.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:55:25.483672+00:00",
+    "finishedAt": "2026-10-03T23:55:46.710657+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 21.226206666,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader-chat-entry-failure.log",
+    "originalLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader.log",
+    "evidencePreservationNote": "Raw failed attempt saved before unchanged-assertion normal-entry rerun; log pointer corrected to retained attempt."
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "env",
+      "RUN_AGY_FAILURE_E2E=1",
+      "RUN_AGY_ERROR_BROWSER=1",
+      "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "AGY_ERROR_EVIDENCE_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-final-agy-transport",
+      "AGY_ERROR_LEDGER=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md",
+      "AGY_ERROR_EXECUTION_LOG=api3-final-agy-real-transport-browser.log",
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/agy-failure-transport.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:55:52.647750+00:00",
+    "finishedAt": "2026-10-03T23:56:29.555799+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 36.902723584,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-final-agy-real-transport-browser.log"
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:56:55.492279+00:00",
+    "finishedAt": "2026-10-03T23:57:16.803592+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 21.309879249999998,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader-workspace-entry-failure.log",
+    "originalLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader.log",
+    "evidencePreservationNote": "Raw failed attempt saved before unchanged-assertion normal-entry rerun; log pointer corrected to retained attempt."
+  },
+  {
+    "case": "API-009",
+    "argv": [
+      "node",
+      "tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:57:39.846351+00:00",
+    "finishedAt": "2026-10-03T23:57:42.015974+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 2.16867675,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader.log"
+  },
+  {
+    "case": "API-010",
+    "argv": [
+      "bash",
+      "-c",
+      "pnpm --silent isolated-app stop iso-53675-ad40 > tickets/in-progress/org-run-config-performance/evidence/api3-transition-stop.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T23:58:40.251722+00:00",
+    "finishedAt": "2026-10-03T23:58:41.195104+00:00",
+    "exitCode": 0,
+    "elapsedSeconds": 0.942506584,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-transition-stop.log"
+  }
+]

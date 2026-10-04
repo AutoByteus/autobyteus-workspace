@@ -1,0 +1,28 @@
+{
+  "revision": "CRR-003",
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts",
+    "composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+    "components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+    "components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+    "components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+    "components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+    "stores/__tests__/llmProviderConfig.spec.ts",
+    "utils/__tests__/llmConfigSchema.spec.ts",
+    "components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+    "--run",
+    "--maxWorkers=2"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "startedAt": "2026-10-03T22:09:31.832456+00:00",
+  "completedAt": "2026-10-03T22:09:44.731910+00:00",
+  "exitCode": 0,
+  "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/code-review-focused-web-crr003.log",
+  "scope": "focused implementation source re-review unit/component tests only; no API/E2E, packaged, model inference or performance run",
+  "filesPassed": 8,
+  "testsPassed": 77
+}

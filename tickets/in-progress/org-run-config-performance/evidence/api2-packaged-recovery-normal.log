@@ -1,0 +1,20 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs"]
+start=2026-10-03T22:30:37.222102+00:00
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+0 !== 1
+
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs:35:191
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+route.continue: Route is already handled!
+    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs:31:24) {
+  name: 'Error'
+}
+
+Node.js v22.23.1
+
+exit=1 elapsed_seconds=22.945176875

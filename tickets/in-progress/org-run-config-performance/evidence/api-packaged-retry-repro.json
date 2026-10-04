@@ -1,0 +1,1093 @@
+{
+  "id": "API-011",
+  "startedAt": "2026-10-03T21:05:22.731Z",
+  "info": {
+    "instanceId": "iso-64996-c89a",
+    "pid": 31587,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:64997",
+    "graphqlUrl": "http://127.0.0.1:64997/graphql",
+    "controlEndpoint": "http://127.0.0.1:64996",
+    "controlPort": 64996,
+    "serverPort": 64997,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7eqZ5e",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7eqZ5e/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-64996-c89a.log"
+  },
+  "observer": "fresh app restart; NO passive init scripts/profiling/backend hooks",
+  "requests": [
+    {
+      "at": "2026-10-03T21:05:22.854Z",
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.855Z",
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.856Z",
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.857Z",
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.859Z",
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.860Z",
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.861Z",
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.862Z",
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.863Z",
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.864Z",
+      "operation": "EnsureProviderModelCatalog",
+      "variables": {
+        "providerId": "AUTOBYTEUS",
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.865Z",
+      "operation": "EnsureProviderModelCatalog",
+      "variables": {
+        "providerId": "LMSTUDIO",
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.866Z",
+      "operation": "EnsureProviderModelCatalog",
+      "variables": {
+        "providerId": "OLLAMA",
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.870Z",
+      "operation": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "at": "2026-10-03T21:05:22.923Z",
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.971Z",
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.972Z",
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:24.694Z",
+      "operation": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:24.696Z",
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "at": "2026-10-03T21:05:26.108Z",
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:26.109Z",
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:29.689Z",
+      "operation": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:29.690Z",
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    }
+  ],
+  "responses": [
+    {
+      "at": "2026-10-03T21:05:22.925Z",
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "status": 200,
+      "body": {
+        "data": null,
+        "errors": [
+          {
+            "message": "API/E2E owned selected-catalog outage"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:22.978Z",
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "status": 200,
+      "body": {
+        "data": {
+          "runtimeAvailability": {
+            "runtimeKind": "codex_app_server",
+            "enabled": true,
+            "reason": null,
+            "__typename": "RuntimeAvailabilityObject"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:23.439Z",
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "status": 200,
+      "body": {
+        "data": {
+          "providerModelCatalogSnapshots": [
+            {
+              "runtimeKind": "codex_app_server",
+              "ownerProvider": {
+                "id": "OPENAI",
+                "name": "OpenAI",
+                "providerType": "OPENAI",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "gpt-5.5",
+                  "name": "GPT-5.5 (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-5.5",
+                  "canonicalName": "gpt-5.5",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-luna",
+                  "name": "GPT-5.6-Luna (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-5.6-luna",
+                  "canonicalName": "gpt-5.6-luna",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-sol",
+                  "name": "GPT-5.6-Sol (default reasoning: low)",
+                  "description": null,
+                  "value": "gpt-5.6-sol",
+                  "canonicalName": "gpt-5.6-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "low",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-terra",
+                  "name": "GPT-5.6-Terra (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-5.6-terra",
+                  "canonicalName": "gpt-5.6-terra",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6-astra",
+                  "name": "GPT-6-Astra (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-6-astra",
+                  "canonicalName": "gpt-6-astra",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6-luna",
+                  "name": "GPT-6-Luna (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-6-luna",
+                  "canonicalName": "gpt-6-luna",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6-sol",
+                  "name": "GPT-6-Sol (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-6-sol",
+                  "canonicalName": "gpt-6-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6.1-sol",
+                  "name": "GPT-6.1-Sol (default reasoning: low)",
+                  "description": null,
+                  "value": "gpt-6.1-sol",
+                  "canonicalName": "gpt-6.1-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "low",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:26.116Z",
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "status": 200,
+      "body": {
+        "data": {
+          "runtimeAvailability": {
+            "runtimeKind": "codex_app_server",
+            "enabled": true,
+            "reason": null,
+            "__typename": "RuntimeAvailabilityObject"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-10-03T21:05:26.227Z",
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "status": 200,
+      "body": {
+        "data": {
+          "providerModelCatalogSnapshots": [
+            {
+              "runtimeKind": "codex_app_server",
+              "ownerProvider": {
+                "id": "OPENAI",
+                "name": "OpenAI",
+                "providerType": "OPENAI",
+                "isCustom": false,
+                "baseUrl": null,
+                "catalogMode": "STATIC",
+                "__typename": "CatalogProviderObject"
+              },
+              "sources": [],
+              "llmModels": [
+                {
+                  "modelIdentifier": "gpt-5.5",
+                  "name": "GPT-5.5 (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-5.5",
+                  "canonicalName": "gpt-5.5",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-luna",
+                  "name": "GPT-5.6-Luna (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-5.6-luna",
+                  "canonicalName": "gpt-5.6-luna",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-sol",
+                  "name": "GPT-5.6-Sol (default reasoning: low)",
+                  "description": null,
+                  "value": "gpt-5.6-sol",
+                  "canonicalName": "gpt-5.6-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "low",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-terra",
+                  "name": "GPT-5.6-Terra (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-5.6-terra",
+                  "canonicalName": "gpt-5.6-terra",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6-astra",
+                  "name": "GPT-6-Astra (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-6-astra",
+                  "canonicalName": "gpt-6-astra",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6-luna",
+                  "name": "GPT-6-Luna (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-6-luna",
+                  "canonicalName": "gpt-6-luna",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6-sol",
+                  "name": "GPT-6-Sol (default reasoning: medium)",
+                  "description": null,
+                  "value": "gpt-6-sol",
+                  "canonicalName": "gpt-6-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "medium",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                },
+                {
+                  "modelIdentifier": "gpt-6.1-sol",
+                  "name": "GPT-6.1-Sol (default reasoning: low)",
+                  "description": null,
+                  "value": "gpt-6.1-sol",
+                  "canonicalName": "gpt-6.1-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api",
+                  "hostUrl": null,
+                  "configSchema": {
+                    "parameters": [
+                      {
+                        "name": "reasoning_effort",
+                        "type": "enum",
+                        "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                        "required": false,
+                        "default_value": "low",
+                        "enum_values": [
+                          "low",
+                          "medium",
+                          "high",
+                          "xhigh",
+                          "max",
+                          "ultra"
+                        ]
+                      },
+                      {
+                        "name": "service_tier",
+                        "label": "Fast mode",
+                        "type": "enum",
+                        "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                        "required": false,
+                        "enum_values": [
+                          "fast"
+                        ]
+                      }
+                    ]
+                  },
+                  "maxContextTokens": null,
+                  "activeContextTokens": null,
+                  "maxInputTokens": null,
+                  "maxOutputTokens": null,
+                  "metadataProvenance": null,
+                  "selectionPresentation": null,
+                  "__typename": "ModelDetail"
+                }
+              ],
+              "audioModels": [],
+              "imageModels": [],
+              "videoModels": [],
+              "__typename": "ProviderModelCatalogSnapshotObject"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "pageErrors": [],
+  "cases": [],
+  "initial": {
+    "rootRuntime": "codex_app_server",
+    "disabled": true,
+    "diagnostic": "Model configuration for / is not ready: API/E2E owned selected-catalog outage"
+  },
+  "afterRootRetry": {
+    "disabled": true,
+    "modelButton": "OpenAI / GPT-6.1-Sol (default reasoning: low)",
+    "diagnostic": "Model configuration for /product_team is not ready: API/E2E owned selected-catalog outage"
+  },
+  "afterDisclosure": {
+    "disabled": true,
+    "diagnostic": "Model configuration for /product_team is not ready: API/E2E owned selected-catalog outage",
+    "visibleCatalogErrors": [
+      "Model options could not be loaded. Saved settings were not changed.Retry",
+      "Model options could not be loaded. Saved settings were not changed.Retry",
+      "Model options could not be loaded. Saved settings were not changed.Retry",
+      "Model configuration for /product_team is not ready: API/E2E owned selected-catalog outage"
+    ]
+  },
+  "afterAffectedTeamRetry": {
+    "disabled": true,
+    "diagnostic": "Model configuration for /product_team/product_ui_ux_designer is not ready: API/E2E owned selected-catalog outage",
+    "catalogErrors": [
+      "Model options could not be loaded. Saved settings were not changed.Retry",
+      "Model options could not be loaded. Saved settings were not changed.Retry",
+      "Model configuration for /product_team/product_ui_ux_designer is not ready: API/E2E owned selected-catalog outage"
+    ]
+  },
+  "final": {
+    "disabled": true,
+    "diagnostic": "Model configuration for /product_team/product_ui_ux_designer is not ready: API/E2E owned selected-catalog outage",
+    "dom": "Agent Org\nAutoByteus Org\nRuntime\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\n\nSelects the runtime used by this organization run.\n\nDefault LLM Model\nOpenAI / GPT-6.1-Sol (default reasoning: low)\n\nUsed across the organization unless a placement is customized.\n\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nAutomatically allows tool calls and access requests for this run.\n\nAuto approve tools\nMember overrides (10)\nProduct Team\nTEAM\n/product_team\nInherited\nRuntime\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\n\nRuntime used by this Team scope.\n\nDefault LLM Model\nOpenAI / GPT-6.1-Sol (default reasoning: low)\n\nAgents in this Team inherit this value unless customized.\n\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nInherited by descendant scopes without an override.\n\nAuto approve tools\nproduct_ui_ux_designer\nCoordinator\n\nproduct_team / product_ui_ux_designer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nui_baseline_bootstrapper\n\nproduct_team / ui_baseline_bootstrapper\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nSoftware Engineering Team\nTEAM\n/software_engineering_team\nInherited\nRuntime\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\n\nRuntime used by this Team scope.\n\nDefault LLM Model\ngpt-6.1-sol\n\nAgents in this Team inherit this value unless customized.\n\nModel options could not be loaded. Saved settings were not changed.\nRetry\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nInherited by descendant scopes without an override.\n\nAuto approve tools\nsolution_designer\nCoordinator\n\nsoftware_engineering_team / solution_designer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\narchitecture_reviewer\n\nsoftware_engineering_team / architecture_reviewer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nimplementation_engineer\n\nsoftware_engineering_team / implementation_engineer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\ncode_reviewer\n\nsoftware_engineering_team / code_reviewer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\napi_e2e_engineer\n\nsoftware_engineering_team / api_e2e_engineer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\ndelivery_engineer\n\nsoftware_engineering_team / delivery_engineer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nMarketing Team\nTEAM\n/marketing_team\nInherited\nRuntime\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\n\nRuntime used by this Team scope.\n\nDefault LLM Model\ngpt-6.1-sol\n\nAgents in this Team inherit this value unless customized.\n\nModel options could not be loaded. Saved settings were not changed.\nRetry\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nInherited by descendant scopes without an override.\n\nAuto approve tools\nmarketing_content_creator\nCoordinator\n\nmarketing_team / marketing_content_creator\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\ncomputer_use_operator\n\nmarketing_team / computer_use_operator\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\n\nModel configuration for /product_team/product_ui_ux_designer is not ready: API/E2E owned selected-catalog outage\n\nRun Agent Org"
+  },
+  "result": "Fail",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected inherited configuration recovery after supported root and affected-Team retries\n\ntrue !== false\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.mjs:20:9",
+  "failedDom": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nAgent Org\nAutoByteus Org\nRuntime\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\n\nSelects the runtime used by this organization run.\n\nDefault LLM Model\nOpenAI / GPT-6.1-Sol (default reasoning: low)\n\nUsed across the organization unless a placement is customized.\n\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nAutomatically allows tool calls and access requests for this run.\n\nAuto approve tools\nMember overrides (10)\nProduct Team\nTEAM\n/product_team\nInherited\nRuntime\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\n\nRuntime used by this Team scope.\n\nDefault LLM Model\nOpenAI / GPT-6.1-Sol (default reasoning: low)\n\nAgents in this Team inherit this value unless customized.\n\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nInherited by descendant scopes without an override.\n\nAuto approve tools\nproduct_ui_ux_designer\nCoordinator\n\nproduct_team / product_ui_ux_designer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nui_baseline_bootstrapper\n\nproduct_team / ui_baseline_bootstrapper\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nSoftware Engineering Team\nTEAM\n/software_engineering_team\nInherited\nRuntime\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\n\nRuntime used by this Team scope.\n\nDefault LLM Model\ngpt-6.1-sol\n\nAgents in this Team inherit this value unless customized.\n\nModel options could not be loaded. Saved settings were not changed.\nRetry\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nInherited by descendant scopes without an override.\n\nAuto approve tools\nsolution_designer\nCoordinator\n\nsoftware_engineering_team / solution_designer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\narchitecture_reviewer\n\nsoftware_engineering_team / architecture_reviewer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nimplementation_engineer\n\nsoftware_engineering_team / implementation_engineer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\ncode_reviewer\n\nsoftware_engineering_team / code_reviewer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\napi_e2e_engineer\n\nsoftware_engineering_team / api_e2e_engineer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\ndelivery_engineer\n\nsoftware_engineering_team / delivery_engineer\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nMarketing Team\nTEAM\n/marketing_team\nInherited\nRuntime\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\n\nRuntime used by this Team scope.\n\nDefault LLM Model\ngpt-6.1-sol\n\nAgents in this Team inherit this value unless customized.\n\nModel options could not be loaded. Saved settings were not changed.\nRetry\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nInherited by descendant scopes without an override.\n\nAuto approve tools\nmarketing_content_creator\nCoordinator\n\nmarketing_team / marketing_content_creator\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\ncomputer_use_operator\n\nmarketing_team / computer_use_operator\n\nRuntime\nGlobal default\nAutoByteus\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nCodex App Server\nLLM Model\nGlobal default\nAuto approve\nGlobal default\n\nModel configuration for /product_team/product_ui_ux_designer is not ready: API/E2E owned selected-catalog outage\n\nRun Agent Org",
+  "completedAt": "2026-10-03T21:05:30.316Z"
+}

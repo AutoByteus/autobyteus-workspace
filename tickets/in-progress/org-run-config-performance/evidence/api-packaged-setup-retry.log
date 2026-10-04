@@ -1,0 +1,10 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.mjs"]
+start=2026-10-03T20:50:09.489567+00:00
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByTestId('org-card-autobyteus-org') to be visible[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.mjs:18:257
+
+exit=1 elapsed_seconds=31.132331417

@@ -1,0 +1,391 @@
+{
+  "startedAt": "2026-10-03T20:59:42.522Z",
+  "instanceId": "iso-64996-c89a",
+  "cases": [
+    {
+      "id": "PKG-01-unrelated-pending",
+      "expected": "PKG-01-unrelated-pending",
+      "result": "Fail",
+      "error": "AssertionError [ERR_ASSERTION]: Unrelated verification remains outstanding\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:13:636\n    at async check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:8:99)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:13:2",
+      "at": "2026-10-03T20:59:43.999Z"
+    }
+  ],
+  "requests": [
+    {
+      "at": 1791061182753,
+      "operation": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706"
+      }
+    },
+    {
+      "at": 1791061182763,
+      "operation": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "at": 1791061182764,
+      "operation": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1791061182765,
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "at": 1791061182766,
+      "operation": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "at": 1791061182767,
+      "operation": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "at": 1791061182767,
+      "operation": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "at": 1791061182768,
+      "operation": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "at": 1791061182769,
+      "operation": "GetProjectsCapability",
+      "variables": {}
+    },
+    {
+      "at": 1791061182770,
+      "operation": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "at": 1791061182776,
+      "operation": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7eqZ5e/server-data/temp_workspace"
+      }
+    },
+    {
+      "at": 1791061182785,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/product_team/product_ui_ux_designer",
+        "agentRunId": "product_ui_ux_designer_45882bd62b884bb28ad58258b8c17652"
+      }
+    },
+    {
+      "at": 1791061182786,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/product_team/ui_baseline_bootstrapper",
+        "agentRunId": "ui_baseline_bootstrapper_e044cbb31fbf40529f9126a0bc84ed82"
+      }
+    },
+    {
+      "at": 1791061182786,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_d8f3787322e341809eba391a13b24c2c"
+      }
+    },
+    {
+      "at": 1791061182786,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_9be699c248574e17be7d7d6224453005"
+      }
+    },
+    {
+      "at": 1791061182787,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_cfb16af3888e4af4960f7792c26812fb"
+      }
+    },
+    {
+      "at": 1791061182787,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9f26b6b0dc4d45d8a6ab126968ca8954"
+      }
+    },
+    {
+      "at": 1791061182788,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_8eef7c04159e4b4fa77435138930f426"
+      }
+    },
+    {
+      "at": 1791061182788,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_f6da4e0568db4b2684f51050d2754a6e"
+      }
+    },
+    {
+      "at": 1791061182789,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/marketing_team/marketing_content_creator",
+        "agentRunId": "marketing_content_creator_6d09655e28f843e4af8f503c50216e68"
+      }
+    },
+    {
+      "at": 1791061182790,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/marketing_team/computer_use_operator",
+        "agentRunId": "computer_use_operator_4efb66c109e24a1bbcfd9bc31f1787c5"
+      }
+    },
+    {
+      "at": 1791061182807,
+      "operation": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706"
+      }
+    },
+    {
+      "at": 1791061182809,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/product_team/product_ui_ux_designer",
+        "agentRunId": "product_ui_ux_designer_45882bd62b884bb28ad58258b8c17652"
+      }
+    },
+    {
+      "at": 1791061182810,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/product_team/ui_baseline_bootstrapper",
+        "agentRunId": "ui_baseline_bootstrapper_e044cbb31fbf40529f9126a0bc84ed82"
+      }
+    },
+    {
+      "at": 1791061182811,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_d8f3787322e341809eba391a13b24c2c"
+      }
+    },
+    {
+      "at": 1791061182812,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_9be699c248574e17be7d7d6224453005"
+      }
+    },
+    {
+      "at": 1791061182812,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_cfb16af3888e4af4960f7792c26812fb"
+      }
+    },
+    {
+      "at": 1791061182813,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9f26b6b0dc4d45d8a6ab126968ca8954"
+      }
+    },
+    {
+      "at": 1791061182814,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_8eef7c04159e4b4fa77435138930f426"
+      }
+    },
+    {
+      "at": 1791061182815,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/software_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_f6da4e0568db4b2684f51050d2754a6e"
+      }
+    },
+    {
+      "at": 1791061182816,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/marketing_team/marketing_content_creator",
+        "agentRunId": "marketing_content_creator_6d09655e28f843e4af8f503c50216e68"
+      }
+    },
+    {
+      "at": 1791061182816,
+      "operation": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706",
+        "memberAddress": "/marketing_team/computer_use_operator",
+        "agentRunId": "computer_use_operator_4efb66c109e24a1bbcfd9bc31f1787c5"
+      }
+    },
+    {
+      "at": 1791061182828,
+      "operation": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "autobyteus_org_174d3d741ffc4f5e9a0f4158f11fd706"
+      }
+    },
+    {
+      "at": 1791061183706,
+      "operation": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "at": 1791061183707,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": 1791061183708,
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": 1791061183710,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      }
+    },
+    {
+      "at": 1791061183711,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      }
+    },
+    {
+      "at": 1791061183712,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      }
+    },
+    {
+      "at": 1791061183713,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      }
+    },
+    {
+      "at": 1791061183713,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      }
+    },
+    {
+      "at": 1791061183715,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      }
+    },
+    {
+      "at": 1791061183716,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      }
+    },
+    {
+      "at": 1791061183717,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      }
+    },
+    {
+      "at": 1791061183719,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      }
+    },
+    {
+      "at": 1791061183726,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": 1791061183726,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "at": 1791061183727,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "at": 1791061183728,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      }
+    },
+    {
+      "at": 1791061183760,
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    }
+  ],
+  "sentFrames": [],
+  "errors": [],
+  "failure": "AssertionError [ERR_ASSERTION]: Unrelated verification remains outstanding\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:13:636\n    at async check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:8:99)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:13:2",
+  "failedDom": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nORGS\nAutoByteus Org\n(1)\nNew - AutoByteus Org\n1m\nproduct team\nsoftware engineering team\nmarketing team\nSettings\nAgent Org\nAutoByteus Org\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nGrok Build\n\nSelects the runtime used by this organization run.\n\nDefault LLM Model\nOpenAI / GPT-6.1-Sol (default reasoning: low)\n\nUsed across the organization unless a placement is customized.\n\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nAutomatically allows tool calls and access requests for this run.\n\nAuto approve tools\nMember overrides (10)\nRun Agent Org"
+}

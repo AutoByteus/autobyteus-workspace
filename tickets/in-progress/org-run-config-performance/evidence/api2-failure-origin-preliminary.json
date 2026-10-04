@@ -1,0 +1,29 @@
+{
+  "id": "F-API-002",
+  "case": "API-009",
+  "preliminaryClassification": "Stale test fixture / execution setup; not an IR002 production source regression",
+  "recommendedOwner": "/api_e2e_engineer subject to independent failure-origin review",
+  "command": "pnpm test:native-input-history",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "expected": "Both real native producer-to-web cases reach current collaborator admission and saved/live FIFO hydration",
+  "observed": "Boundary guard passes; Agent and hosted-Team cases throw TypeError createCollaboratorMentionAdmission is not a function at native-compaction-root-fixture.ts:82 before root setup completes",
+  "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-input-history.log",
+  "sourceProof": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+      "currentSha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+      "baseSha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+      "unchangedVsBase": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-definition-catalog.ts",
+      "currentSha256": "95866e2b826b6e06e48d8fd6173f394adde680253c23120341bff22ef198976b",
+      "baseSha256": "95866e2b826b6e06e48d8fd6173f394adde680253c23120341bff22ef198976b",
+      "unchangedVsBase": true
+    }
+  ],
+  "fixtureDecision": "Needs Update \u2014 intended assertions remain valid; obsolete factory import/call and setup cleanup need current API adaptation, no compatibility export",
+  "notChanged": "No source/test fixture edit performed pending review",
+  "currentFactory": "createCollaboratorAdmission(catalog, modelSelectionValidator)",
+  "confidenceConsequence": "No native-to-web harness Pass; live task/collaborator transport and comparative performance remain pending. Prior F-API-001 is independently resolved by current packaged API-011, not by this failure."
+}

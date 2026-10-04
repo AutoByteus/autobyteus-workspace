@@ -24,6 +24,7 @@ vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStor
 }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({
   fetchProvidersWithModels: vi.fn().mockResolvedValue([]), ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined), providerSnapshots: () => [],
+  catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
   providersWithModelsForSelection: () => [{ provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false }, models: ['model', 'replacement-model'].map(model => ({ modelIdentifier: model, name: model, value: model, canonicalName: model, providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api', configSchema: { type: 'object', properties: { budget: { type: 'integer', minimum: 0 }, enabled: { type: 'boolean' } } } })) }],
 }) }))
 let canonical: any

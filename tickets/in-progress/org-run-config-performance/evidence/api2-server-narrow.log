@@ -1,0 +1,181 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["pnpm", "-C", "autobyteus-server-ts", "exec", "vitest", "run", "tests/unit/agent-execution/agent-run-identity-allocator.test.ts", "tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts", "tests/unit/agent-org-execution/agent-org-run-config.test.ts", "tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts", "tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts", "tests/unit/run-history/services/collaboration-root-history-readiness.test.ts", "tests/unit/run-history/services/collaboration-root-history-scoped.test.ts", "tests/unit/runtime-management/runtime-availability-service.test.ts", "tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts", "tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts", "tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts", "--no-watch"]
+start=2026-10-03T22:33:23.188732+00:00
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-org-execution/agent-org-run-config.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-config.test.ts (18 tests) 771ms
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"]
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > orders an exact-ID Team restore after an in-flight Save and restores committed config
+[2026-10-03T22:33:29.624Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts (14 tests) 663ms
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > spawns a fresh task Agent through the only public tool and persists the delegator in one tree write
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > fails closed for a retired configured-Team recipient in a flat Team root
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-03T22:33:30.682Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+[2026-10-03T22:33:30.683Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > fails closed for a retired configured-Team recipient in a flat Team root
+[2026-10-03T22:33:30.705Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > fails closed for a retired configured-Team recipient in a flat Team root
+Agent definition cache populated with 44 items.
+
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (8 tests) 322ms
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+Published autobyteus agent run 'team-agent-tools-member-run'.
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+Published autobyteus agent run 'team-agent-tools-member-run'.
+
+ ✓ tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts (1 test) 104ms
+stdout | tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts (5 tests) 86ms
+stdout | tests/unit/run-history/services/collaboration-root-history-readiness.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/run-history/services/collaboration-root-history-readiness.test.ts (1 test) 85ms
+stdout | tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts (11 tests) 13ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts (2 tests) 6ms
+ ✓ tests/unit/run-history/services/collaboration-root-history-scoped.test.ts (3 tests) 5ms
+stdout | tests/unit/agent-execution/agent-run-identity-allocator.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/agent-run-identity-allocator.test.ts (3 tests) 4ms
+stdout | tests/unit/runtime-management/runtime-availability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/runtime-availability-service.test.ts (2 tests) 4ms
+
+ Test Files  11 passed (11)
+      Tests  68 passed (68)
+   Start at  00:33:24
+   Duration  11.68s (transform 2.56s, setup 45ms, import 8.32s, tests 2.06s, environment 1ms)
+
+
+exit=0 elapsed_seconds=12.590116917

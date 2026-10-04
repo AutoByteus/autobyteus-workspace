@@ -1,0 +1,6 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs"]
+start=2026-10-03T22:31:58.777243+00:00
+{"result":"Pass","variants":[{"retryAt":"root","schemas":14,"disabled":false},{"retryAt":"inherited-member","schemas":14,"disabled":false}],"pageErrors":[]}
+
+exit=0 elapsed_seconds=43.336436667

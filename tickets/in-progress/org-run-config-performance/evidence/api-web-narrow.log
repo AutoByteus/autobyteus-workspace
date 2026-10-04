@@ -1,0 +1,1102 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["pnpm", "-C", "autobyteus-web", "test:nuxt", "stores/__tests__/runtimeCapabilitiesStore.spec.ts", "stores/__tests__/agentOrgHistoryApollo.spec.ts", "stores/__tests__/runHistoryStore.spec.ts", "stores/__tests__/runHistoryNavigationProjection.spec.ts", "stores/__tests__/agentOrgContextsStore.spec.ts", "stores/__tests__/agentOrgInspection.spec.ts", "stores/__tests__/agentOrgRetainedRecovery.spec.ts", "stores/__tests__/agentOrgRunConfigPublication.spec.ts", "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts", "services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts", "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts", "services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts", "composables/__tests__/useRuntimeScopedModelSelection.spec.ts", "components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts", "components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts", "components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts", "components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts", "components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts", "components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts", "components/workspace/config/__tests__/AgentRunConfigForm.spec.ts", "components/workspace/config/__tests__/MemberOverrideItem.spec.ts", "components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts", "components/workspace/config/__tests__/TeamRunConfigForm.spec.ts", "components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts", "components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts", "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts", "components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts", "services/chat/__tests__/chatLaunchService.spec.ts", "stores/__tests__/chatDraftStore.spec.ts", "tests/integration/web-boundary-guard.integration.test.ts", "--run"]
+start=2026-10-03T20:38:13.417735+00:00
+
+> autobyteus@1.4.93 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/runtimeCapabilitiesStore.spec.ts stores/__tests__/agentOrgHistoryApollo.spec.ts stores/__tests__/runHistoryStore.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts stores/__tests__/agentOrgContextsStore.spec.ts stores/__tests__/agentOrgInspection.spec.ts stores/__tests__/agentOrgRetainedRecovery.spec.ts stores/__tests__/agentOrgRunConfigPublication.spec.ts services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts composables/__tests__/useRuntimeScopedModelSelection.spec.ts components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts components/workspace/config/__tests__/AgentRunConfigForm.spec.ts components/workspace/config/__tests__/MemberOverrideItem.spec.ts components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts services/chat/__tests__/chatLaunchService.spec.ts stores/__tests__/chatDraftStore.spec.ts tests/integration/web-boundary-guard.integration.test.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentOrgHistoryApollo.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryStore.spec.ts (43 tests) 370ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports upload failure without replay and preserves a newer real textarea draft
+Error uploading context file: Error: upload rejected
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:193:40
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'network' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports finalize failure without replay and preserves a newer real textarea draft
+Failed to send message via activeContextStore: Error: finalize rejected
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:205:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports finalize failure without replay and preserves a newer real textarea draft
+Error sending requirement: Error: finalize rejected
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:205:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > restores a finalized attachment after rejected Send and opens/removes it without deleting the retained file
+Failed to send message via activeContextStore: Error: Input rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > restores a finalized attachment after rejected Send and opens/removes it without deleting the retained file
+Error sending requirement: Error: Input rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts (9 tests) 425ms
+ ✓ components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts (12 tests) 301ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'graphql' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config (different member model=false) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (6 tests) 726ms
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > restores an untouched rejected draft/attachments and shows local error without history or replay
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves focus-switched drafts/attachments when ACK is rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config (different member model=false) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > commits newer textarea edits before rejection restoration
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > commits newer textarea edits before rejection restoration
+Error sending requirement: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'full' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Error sending requirement: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > rejects an already disconnected send without consuming its draft
+Failed to send message via activeContextStore: Error: AgentOrg send target is not ready or is stale.
+    at submit (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/agentOrgContextsStore.ts:192:40)
+    at Object.send (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/agentOrgContextsStore.ts:248:74)
+    at Proxy.send (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/activeContextStore.ts:247:18)
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:237:25
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header coalesces clicks and preserves screen/draft on failure; same action retries
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after selection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts (10 tests) 741ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after unmount
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after replacement
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after newer-intent
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves a newer attachment-only draft after rejection
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+ ✓ components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts (15 tests) 608ms
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > handles a synchronous transport failure and retires its pending command
+Failed to send message via activeContextStore: Error: transport failed
+    at Socket.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:258:67)
+    at Socket.mockCall (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+spy@3.2.4/node_modules/@vitest/spy/dist/index.js:96:15)
+    at Socket.send (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/tinyspy@4.0.4/node_modules/tinyspy/dist/index.js:47:80)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:256:16
+    at new Promise (<anonymous>)
+    at AgentOrgStreamingService.command (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:243:12)
+    at AgentOrgStreamingService.sendPrepared (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:205:17)
+    at submit (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/agentOrgContextsStore.ts:228:21)
+    at Object.send (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/agentOrgContextsStore.ts:248:74)
+    at Proxy.send (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/activeContextStore.ts:247:18)
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'network' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves the exact newer draft and focus through existing verified recovery after a pending disconnect
+Failed to send message via activeContextStore: Error: AgentOrg stream closed before command acknowledgement.
+    at AgentOrgStreamingService.rejectPending (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:507:22)
+    at Socket.socket.onclose (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:130:12)
+    at Socket.close (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:45:10)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:285:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'graphql' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (16 tests) 1459ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > defers view disposal until the exact pending submission finishes without touching another draft
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:390:10)
+    at AgentOrgStreamingService.handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:283:12)
+    at AgentOrgStreamingService.processFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:346:18)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores only on deliberate agent-director Send, preserves real input/identity through readiness and sends once
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+    at Proxy.send (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/activeContextStore.ts:245:59)
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:425:25
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores only on deliberate agent-team-worker-configured Send, preserves real input/identity through readiness and sends once
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+    at Proxy.send (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/activeContextStore.ts:245:59)
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:425:25
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'collection' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgRetainedRecovery.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > keeps stopped exact tasks read-only, not continuable configured lookalikes
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+    at Proxy.send (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/activeContextStore.ts:245:59)
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:448:25
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores untouched input on failed restore, keeps deliberate discard and releases the root guard
+Failed to send message via activeContextStore: Error: restore rejected
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:457:40
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores untouched input on failed restore, keeps deliberate discard and releases the root guard
+Failed to send message via activeContextStore: Error: restore rejected again
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:467:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'network' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'graphql' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | tests/integration/web-boundary-guard.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_subject_kind%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_run_id%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22created_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22archived_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22is_active%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22summary%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22org%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org strict candidate and terminal boundaries > renders truthful en recovery on the retained history route after Restore succeeds but readiness exhausts
+Failed to send message via activeContextStore: Error: socket unavailable
+    at AgentOrgStreamingService.scheduleTransparentRecovery (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:413:28)
+    at AgentOrgStreamingService.attemptTransparentRecovery (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:440:23)
+    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:422:17)
+    at callTimer (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/vi.bdSIJ99Y.js:2211:25)
+    at Object.next (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/vi.bdSIJ99Y.js:2934:18)
+    at Immediate.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/vi.bdSIJ99Y.js:3034:44)
+    at processImmediate (node:internal/timers:484:21)
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org strict candidate and terminal boundaries > renders truthful zh-CN recovery on the retained history route after Restore succeeds but readiness exhausts
+Failed to send message via activeContextStore: Error: socket unavailable
+    at AgentOrgStreamingService.scheduleTransparentRecovery (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:413:28)
+    at AgentOrgStreamingService.attemptTransparentRecovery (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:440:23)
+    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:422:17)
+    at callTimer (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/vi.bdSIJ99Y.js:2211:25)
+    at Object.next (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/vi.bdSIJ99Y.js:2934:18)
+    at Immediate.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/vi.bdSIJ99Y.js:3034:44)
+    at processImmediate (node:internal/timers:484:21)
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts (25 tests) 2066ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | stores/__tests__/agentOrgRetainedRecovery.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_subject_kind%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_run_id%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22created_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22archived_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22is_active%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22summary%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22org%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old full history > new 'root' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (15 tests) 241ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'network' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'graphql' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | tests/integration/web-boundary-guard.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/integration/web-boundary-guard.integration.test.ts (3 tests) 130ms
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ stores/__tests__/agentOrgRetainedRecovery.spec.ts (20 tests) 166ms
+ ✓ components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts (17 tests) 258ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts (14 tests) 136ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (12 tests) 113ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'full' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'network' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'graphql' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (9 tests) 148ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'collection' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'network' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'graphql' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts > AgentOrgRunConfigForm > renders and operates the real stopped hierarchy disclosure and direct-Agent row
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+Failed to fetch runtime availabilities: Error: Invalid runtime kind inventory.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts:92:109
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+ ✓ components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts (3 tests) 83ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_subject_kind%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_run_id%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22created_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22archived_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22is_active%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22summary%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22org%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts (49 tests) 57ms
+stdout | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_subject_kind%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_run_id%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22created_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22archived_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22is_active%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22summary%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22org%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old collection history > new 'root' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > keeps exact Codex/model selection pending, then ready while unrelated discovery and collection remain pending
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > keeps exact Codex/model selection pending, then ready while unrelated discovery and collection remain pending
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > keeps exact Codex/model selection pending, then ready while unrelated discovery and collection remain pending
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > keeps exact Codex/model selection pending, then ready while unrelated discovery and collection remain pending
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > shows selected verification failure and retries only that capability plus its catalog despite inventory failure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > shows selected verification failure and retries only that capability plus its catalog despite inventory failure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > does not optimistically enable native capability for a blank inherited/default runtime
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts > shared config fields with independently verified real capability store > does not optimistically enable native capability for a blank inherited/default runtime
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts (3 tests) 54ms
+stdout | stores/__tests__/runtimeCapabilitiesStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/chatDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > independent verified runtime publication through real Apollo > publishes Codex before an unrelated probe completes but preserves collection completion flags
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > independent verified runtime publication through real Apollo > publishes Codex before an unrelated probe completes but preserves collection completion flags
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > independent verified runtime publication through real Apollo > publishes Codex before an unrelated probe completes but preserves collection completion flags
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > independent verified runtime publication through real Apollo > checks selected Codex independently of failed inventory and retains it on unrelated failure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > independent verified runtime publication through real Apollo > shares same-kind work, rejects mismatched rows, retries only that kind, ignores late superseded responses
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > independent verified runtime publication through real Apollo > shares same-kind work, rejects mismatched rows, retries only that kind, ignores late superseded responses
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > independent verified runtime publication through real Apollo > shares same-kind work, rejects mismatched rows, retries only that kind, ignores late superseded responses
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > independent verified runtime publication through real Apollo > reset prevents a response from an earlier state incarnation publishing into a new request
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > independent verified runtime publication through real Apollo > reset prevents a response from an earlier state incarnation publishing into a new request
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > collection awaits a superseding selected-kind verification (success) rather than declaring old work complete
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > collection awaits a superseding selected-kind verification (success) rather than declaring old work complete
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > collection awaits a superseding selected-kind verification (success) rather than declaring old work complete
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > collection awaits a superseding selected-kind verification (failure) rather than declaring old work complete
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/runtimeCapabilitiesStore.spec.ts > collection awaits a superseding selected-kind verification (failure) rather than declaring old work complete
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ stores/__tests__/runtimeCapabilitiesStore.spec.ts (6 tests) 26ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'network' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts (2 tests) 19ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'graphql' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (7 tests) 30ms
+ ✓ components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts (10 tests) 67ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'full' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgRunConfigPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | stores/__tests__/chatDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'network' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ stores/__tests__/chatDraftStore.spec.ts (10 tests) 27ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'graphql' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgInspection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | services/chat/__tests__/chatLaunchService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentOrgRunConfigPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22__typename%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'collection' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ stores/__tests__/agentOrgRunConfigPublication.spec.ts (6 tests) 18ms
+stdout | stores/__tests__/agentOrgInspection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'inactive' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | stores/__tests__/agentOrgContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'network' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ stores/__tests__/agentOrgInspection.spec.ts (5 tests) 18ms
+stdout | services/chat/__tests__/chatLaunchService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'graphql' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stdout | composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentOrgContextsStore.spec.ts (2 tests) 16ms
+ ✓ composables/__tests__/useRuntimeScopedModelSelection.spec.ts (4 tests) 7ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'malformed' oldFirst=true preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_subject_kind%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_run_id%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22created_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22archived_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22is_active%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22summary%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22org%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A15%2C%22args%22%3A%5B%22getAgentOrgRootHistory%22%2C%22Query%22%2C%22either%20ensure%20all%20objects%20of%20type%20AgentOrgRootHistoryObject%20have%20an%20ID%20or%20a%20custom%20merge%20function%2C%20or%20%22%2C%22Query.getAgentOrgRootHistory%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentOrgRootHistoryObject%5C%22%2C%5Cn%20%20%5C%22root_subject_kind%5C%22%3A%20%5C%22agent_org%5C%22%2C%5Cn%20%20%5C%22root_run_id%5C%22%3A%20%5C%22org-run%5C%22%2C%5Cn%20%20%5C%22created_at%5C%22%3A%20%5C%222026-09-01T00%3A00%3A00.000Z%5C%22%2C%5Cn%20%20%5C%22archived_at%5C%22%3A%20null%2C%5Cn%20%20%5C%22is_active%5C%22%3A%20true%2C%5Cn%20%20%5C%22summary%5C%22%3A%20%5C%22Exact%20retained%20conversation%5C%22%2C%5Cn%20%20%5C%22org%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22subjectKind%5C%22%3A%20%5C%22agent_org%5C%22%2C%5Cn%20%20%20%20%5C%22createdAt%5C%22%3A%20%5C%222026-09-01T00%3A00%3A00.000Z%5C%22%2C%5Cn%20%20%20%20%5C%22archivedAt%5C%22%3A%20null%2C%5Cn%20%20%20%20%5C%22applicationBinding%5C%22%3A%20null%2C%5Cn%20%20%20%20%5C%22handoffs%5C%22%3A%20%5B%5D%2C%5Cn%20%20%20%20%5C%22rootOrg%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22address%5C%22%3A%20%5C%22%2F%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22orgDefinitionId%5C%22%3A%20%5C%22org-definition%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22orgDefinitionName%5C%22%3A%20%5C%22Restored%20Org%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22orgRunId%5C%22%3A%20%5C%22org-run%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22defaultLaunchConfiguration%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22runtimeKind%5C%22%3A%20%5C%22codex_app_server%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22llmModelIdentifier%5C%22%3A%20%5C%22gpt-5.6-sol%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22llmConfig%5C%22%3A%20null%2C%5Cn%20%20%20%20%20%20%20%20%5C%22autoExecuteTools%5C%22%3A%20false%2C%5Cn%20%20%20%20%20%20%20%20%5C%22workspaceRootPath%5C%22%3A%20null%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22members%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22address%5C%22%3A%20%5C%22%2Fdirector%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22agentDefinitionId%5C%22%3A%20%5C%22definition-agent-director%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22role%5C%22%3A%20null%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22description%5C%22%3A%20null%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22agentRunId%5C%22%3A%20%5C%22agent%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ services/chat/__tests__/chatLaunchService.spec.ts (7 tests) 8ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts (2 tests) 7ms
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'inactive' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'network' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'graphql' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_subject_kind%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22root_run_id%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22created_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22archived_at%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22is_active%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22summary%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22org%22%2C%22%7B%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > old root history > new 'root' 'malformed' oldFirst=false preserves confirmed inactive UI/error truth
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > scoped publication invalidates an older full collection regardless of response order
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > scoped publication invalidates an older full collection regardless of response order
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > scoped publication invalidates an older collection collection regardless of response order
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > scoped publication invalidates an older collection collection regardless of response order
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > pending root versus newer 'full' scopeFirst=true: first committed authority wins
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > pending root versus newer 'full' scopeFirst=true: first committed authority wins
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > pending root versus newer 'full' scopeFirst=false: first committed authority wins
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > pending root versus newer 'full' scopeFirst=false: first committed authority wins
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > pending root versus newer 'collection' scopeFirst=true: first committed authority wins
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > pending root versus newer 'collection' scopeFirst=true: first committed authority wins
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > pending root versus newer 'collection' scopeFirst=false: first committed authority wins
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > pending root versus newer 'collection' scopeFirst=false: first committed authority wins
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > same root overlapping requests are physically independent and late errors cannot overwrite the matching retry
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > different roots publish independently, retain unrelated references and remove only authoritative null
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > different roots publish independently, retain unrelated references and remove only authoritative null
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > different roots publish independently, retain unrelated references and remove only authoritative null
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > scoped failure/identity mismatch is not absence; successful root retry cannot clear collection or another root error
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > scoped failure/identity mismatch is not absence; successful root retry cannot clear collection or another root error
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > scoped failure/identity mismatch is not absence; successful root retry cannot clear collection or another root error
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > full failure does not commit a revision that rejects an independent root read
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > equal/absent confirmed activity performs no I/O/publication; changed activity invalidates only its own root
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > reset rejects responses from old logical requests even after counters restart
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > reset rejects responses from old logical requests even after counters restart
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/agentOrgHistoryApollo.spec.ts > publishes accepted families only, including real avatar enrichment, and retains workspace on independent failure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ stores/__tests__/agentOrgHistoryApollo.spec.ts (85 tests) 9815ms
+
+ Test Files  30 passed (30)
+      Tests  427 passed (427)
+   Start at  22:38:15
+   Duration  17.68s (transform 5.68s, setup 91.53s, collect 11.86s, tests 18.14s, environment 6.32s, prepare 4.33s)
+
+
+exit=0 elapsed_seconds=19.94855625

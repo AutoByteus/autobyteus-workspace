@@ -1,0 +1,76 @@
+{
+  "at": "2026-10-03T22:54:51.051358+00:00",
+  "stopReceipts": [
+    {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-50579-9dc7",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-51393-a503",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Z65Tno",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    }
+  ],
+  "ports": {
+    "50579": {
+      "exitCode": 1,
+      "stdout": ""
+    },
+    "50580": {
+      "exitCode": 1,
+      "stdout": ""
+    },
+    "51393": {
+      "exitCode": 1,
+      "stdout": ""
+    },
+    "51394": {
+      "exitCode": 1,
+      "stdout": ""
+    },
+    "51473": {
+      "exitCode": 1,
+      "stdout": ""
+    }
+  },
+  "generatedSdkCleanup": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "SDKPrebuildRequiredOnRerun": true,
+  "ownInstancesRemoved": true,
+  "otherInstanceIdsUntouched": [
+    "iso-60383-3d28",
+    "iso-62694-9b10",
+    "iso-61026-fa48",
+    "iso-52483-84f0",
+    "iso-51288-4c11"
+  ],
+  "nativeFailedFixtureCleanup": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-cleanup.json",
+  "originalAndCopied570FixturesUnchanged": true,
+  "logsAndOwnedPackageBytesSavedBeforeStop": true,
+  "noModelInferenceInOwnedPackagedApps": true,
+  "deterministicAgyOnlyExternalCLITestNoLiveModel": true,
+  "productionOrTestSourceEditsByApiRound2": false
+}

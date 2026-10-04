@@ -1,0 +1,10 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.mjs"]
+start=2026-10-03T20:49:01.572587+00:00
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByTestId('settings-nav-agent-packages')[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.mjs:15:124
+
+exit=1 elapsed_seconds=30.745683542000002

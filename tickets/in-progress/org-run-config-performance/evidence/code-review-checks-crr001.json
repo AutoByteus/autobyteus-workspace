@@ -1,0 +1,283 @@
+{
+  "revision": "CRR-001",
+  "date": "2026-10-03",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "branch": "codex/org-run-config-performance",
+  "head": "f2dc1fd392201844bf28fdfdec26c7424a7ea7b2",
+  "base": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "approvalHashMatch": true,
+  "implementationHashCount": 60,
+  "implementationHashMismatches": [],
+  "indexedReferenceCount": 198,
+  "missingIndexedReferences": [],
+  "sourceAudit": [
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.ts",
+      "nonEmptyLines": 89,
+      "added": 2,
+      "deleted": 8,
+      "changedLines": 10,
+      "generated": false,
+      "sha256": "5d927a68452c1a4e788d1c8f27fd388b4e9ae16ba63904bee15e2e96f6f1462a"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "nonEmptyLines": 407,
+      "added": 0,
+      "deleted": 5,
+      "changedLines": 5,
+      "generated": false,
+      "sha256": "85e6995c9a87ce1a22cfbd30712842c2fcebeaf2647a014332dfc1b947e52222"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      "nonEmptyLines": 30,
+      "added": 7,
+      "deleted": 96,
+      "changedLines": 103,
+      "generated": false,
+      "sha256": "4ab46ef55f056e48d82e9de1929303c8a65da7f769c86fc151b27ac7ca3001a3"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+      "nonEmptyLines": 249,
+      "added": 1,
+      "deleted": 5,
+      "changedLines": 6,
+      "generated": false,
+      "sha256": "6813c743382fb6cfd2034adb871555591c1d5dd3b069f46712d9344f419d77cc"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts",
+      "nonEmptyLines": 178,
+      "added": 1,
+      "deleted": 13,
+      "changedLines": 14,
+      "generated": false,
+      "sha256": "5ddee409413b606f10ea698406747d04f22c0fe1a2ca60e71ed5e460a161101c"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-location-service.ts",
+      "nonEmptyLines": 173,
+      "added": 0,
+      "deleted": 12,
+      "changedLines": 12,
+      "generated": false,
+      "sha256": "193d89632d88fae73c44e610d8a7059ef300bb3d8d63436b41b8919198d2c8f5"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
+      "nonEmptyLines": 270,
+      "added": 1,
+      "deleted": 3,
+      "changedLines": 4,
+      "generated": false,
+      "sha256": "d36ed0bc4c282c973a3a5c112e98d038492f57921d38ed434594be588041b04e"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/collaboration-root-history.ts",
+      "nonEmptyLines": 36,
+      "added": 4,
+      "deleted": 2,
+      "changedLines": 6,
+      "generated": false,
+      "sha256": "444bb2ca3f628b9ef70df2dae2662f7de06db41e8bc120b45dbf0895e2a0949e"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/runtime-availability.ts",
+      "nonEmptyLines": 36,
+      "added": 13,
+      "deleted": 6,
+      "changedLines": 19,
+      "generated": false,
+      "sha256": "957aa5fd4f4975c0f80ff72599a43a04d0222ebabf853056658b18c767025105"
+    },
+    {
+      "path": "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+      "nonEmptyLines": 322,
+      "added": 0,
+      "deleted": 4,
+      "changedLines": 4,
+      "generated": false,
+      "sha256": "2f69d845a679e1fa7e747812f25246049dc41914e7b9f6aa33fdb2f6263f464c"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "nonEmptyLines": 68,
+      "added": 28,
+      "deleted": 14,
+      "changedLines": 42,
+      "generated": false,
+      "sha256": "8ab1d2565f898d488ef16a9979d984762b87f0a1ef2d2ad523c7fba76622cafb"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts",
+      "nonEmptyLines": 224,
+      "added": 0,
+      "deleted": 14,
+      "changedLines": 14,
+      "generated": false,
+      "sha256": "7a8aaca8b77160e08b9203c43c7177ab1ec24ee83db7bade2bb14ed828eb4f9a"
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/runtime-availability-service.ts",
+      "nonEmptyLines": 137,
+      "added": 2,
+      "deleted": 4,
+      "changedLines": 6,
+      "generated": false,
+      "sha256": "49131529b072ff88b4e922a477d0c34e31b216c22d5d2ddfe1e2c63f310218af"
+    },
+    {
+      "path": "autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+      "nonEmptyLines": 375,
+      "added": 4,
+      "deleted": 2,
+      "changedLines": 6,
+      "generated": false,
+      "sha256": "4a4b0ba30bd9e8a39ec9a73511cfbfd6b966baa8d75ce6b7020f13eb225eb8a1"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "nonEmptyLines": 466,
+      "added": 1,
+      "deleted": 1,
+      "changedLines": 2,
+      "generated": false,
+      "sha256": "5d1555800a58d18289d442ad2cbae2540ccfedee1fa5f14cfd53f5b2b9ef1d46"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "nonEmptyLines": 499,
+      "added": 4,
+      "deleted": 1,
+      "changedLines": 5,
+      "generated": false,
+      "sha256": "b1dc1711bc4beeae0f052a458ad571bdd2958e485af7b6876bae55608b29067a"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "nonEmptyLines": 457,
+      "added": 2,
+      "deleted": 2,
+      "changedLines": 4,
+      "generated": false,
+      "sha256": "1d847877ea58b13edf3bfcb302c334d3c3747ed2e21a099ef224a6c5cd760dee"
+    },
+    {
+      "path": "autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "nonEmptyLines": 249,
+      "added": 19,
+      "deleted": 26,
+      "changedLines": 45,
+      "generated": false,
+      "sha256": "b6074447221c75b9e7ec9efb3e4fed801f08eb4c655f8a67fe38460dec8f00c5"
+    },
+    {
+      "path": "autobyteus-web/generated/graphql.ts",
+      "nonEmptyLines": 11174,
+      "added": 354,
+      "deleted": 32,
+      "changedLines": 386,
+      "generated": true,
+      "sha256": "db9df3112dc46b3947413c84e8dee4cb1e39a09a10abd8d415b440c2877b7cb8"
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/collaborationRootHistoryQueries.ts",
+      "nonEmptyLines": 28,
+      "added": 8,
+      "deleted": 0,
+      "changedLines": 8,
+      "generated": false,
+      "sha256": "ac402186d9f51c1bed3b9d36bfe61e3c8ce7308522c8f351a77bba1291c020b8"
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/runtime_availability_queries.ts",
+      "nonEmptyLines": 9,
+      "added": 8,
+      "deleted": 8,
+      "changedLines": 16,
+      "generated": false,
+      "sha256": "bc96ed05bc0bb5879d4b93de5918654ad6686d248fe9267c532091cc83e6e735"
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+      "nonEmptyLines": 478,
+      "added": 4,
+      "deleted": 0,
+      "changedLines": 4,
+      "generated": false,
+      "sha256": "6ebc3c459b87c5e901ffe72be8ff130f26e28684d39672a74308b9f90520ff90"
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "nonEmptyLines": 356,
+      "added": 5,
+      "deleted": 1,
+      "changedLines": 6,
+      "generated": false,
+      "sha256": "0891bbc3b108b1fd0fa3dbb65c38b1e8fc85fcabcf6c7a906fd19fe9bf39ca93"
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryLoadActions.ts",
+      "nonEmptyLines": 462,
+      "added": 69,
+      "deleted": 12,
+      "changedLines": 81,
+      "generated": false,
+      "sha256": "898fa3f4184d52ec24e2cda1ebd2af40563c8833f9710c021a5c2ff80fb4f3c9"
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryNavigationProjection.ts",
+      "nonEmptyLines": 251,
+      "added": 50,
+      "deleted": 3,
+      "changedLines": 53,
+      "generated": false,
+      "sha256": "5737c90b2f6a451a65a4c4c4b0146aed0715f4f80dc3f8b5059fc223fc895931"
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryStore.ts",
+      "nonEmptyLines": 496,
+      "added": 14,
+      "deleted": 5,
+      "changedLines": 19,
+      "generated": false,
+      "sha256": "b42a85707c44ccead15182776266647a4a9ee8844f6395e5380285df0fa9aa5a"
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryStoreSupport.ts",
+      "nonEmptyLines": 122,
+      "added": 25,
+      "deleted": 36,
+      "changedLines": 61,
+      "generated": false,
+      "sha256": "703540cfb0adef61114a6beeed32ed4ee5d05222a647dc22bb8bb72c4c2bc37e"
+    },
+    {
+      "path": "autobyteus-web/stores/runtimeAvailabilityStore.ts",
+      "nonEmptyLines": 117,
+      "added": 96,
+      "deleted": 40,
+      "changedLines": 136,
+      "generated": false,
+      "sha256": "a750fe796af8dedaf16d064c8826f0840ecf5dc2d9f474c8efcad598933a5477"
+    }
+  ],
+  "manualSourceThresholdsPass": true,
+  "productionTestGovernanceWhitespace": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "reviewerExecution": {
+    "scope": "Focused source-review Nuxt regression only; not API/E2E or packaged/performance proof",
+    "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/runtimeCapabilitiesStore.spec.ts components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts stores/__tests__/agentOrgHistoryApollo.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts --run",
+    "exitCode": 0,
+    "filesPassed": 6,
+    "testsPassed": 168,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/code-review-focused-web-crr001.log"
+  },
+  "noSourceOrTestChanges": true,
+  "noAppLaunchOrInference": true,
+  "observedStatusBeforeReport": "M tickets/in-progress/org-run-config-performance/implementation-handoff.md\n M tickets/in-progress/org-run-config-performance/implementation-revision-record.md\n?? tickets/in-progress/org-run-config-performance/evidence/code-review-focused-web-crr001.log\n?? tickets/in-progress/org-run-config-performance/evidence/implementation-handoff-receipt-ir001.json\n?? tickets/in-progress/org-run-config-performance/evidence/implementation-routing-commit.log"
+}

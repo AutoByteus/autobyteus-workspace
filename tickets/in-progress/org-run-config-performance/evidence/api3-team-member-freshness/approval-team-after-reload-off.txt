@@ -1,0 +1,42 @@
+Chat
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Team Definition
+Reload Proof Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+Grok Build
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Select a model
+
+This model will be used by all members unless overridden.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+Team Members Override (2)
+Run Team
+
+Team / needs a model before launch.

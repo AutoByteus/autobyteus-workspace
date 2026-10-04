@@ -1,0 +1,968 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["env", "RUN_AGY_FAILURE_E2E=1", "RUN_AGY_ERROR_BROWSER=1", "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs", "AGY_ERROR_EVIDENCE_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-agy-transport", "AGY_ERROR_LEDGER=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md", "AGY_ERROR_EXECUTION_LOG=api3-agy-real-transport-browser.log", "pnpm", "-C", "autobyteus-server-ts", "exec", "vitest", "run", "tests/e2e/runtime/agy-failure-transport.e2e.test.ts", "--no-watch"]
+start=2026-10-03T23:26:14.191924+00:00
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:37383) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-03T23:26:20.946Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Populating agent definition cache for the first time...
+[2026-10-03T23:26:21.402Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+[2026-10-03T23:26:21.408Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+In-memory cache: Added new agent definition with ID agy-runtime-error-08ef615a-0985-4108-b4d3-a33e45f66d7f.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent Definition created successfully with ID: agy-runtime-error-08ef615a-0985-4108-b4d3-a33e45f66d7f
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+[2026-10-03T23:26:21.483Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-error-team-9ed39d55-1808-4cfd-a674-c3078e5f0a34.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent Team Definition created successfully with ID: agy-error-team-9ed39d55-1808-4cfd-a674-c3078e5f0a34
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains native-image denial privacy without fabricating tool success
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains native-image denial privacy without fabricating tool success
+Created and registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains native-image denial privacy without fabricating tool success
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains native-image denial privacy without fabricating tool success
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains native-image denial privacy without fabricating tool success
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_76189f11f6964795a9794657295ef477'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains native-image denial privacy without fabricating tool success
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_76189f11f6964795a9794657295ef477
+Created agent session a1caded9-e386-4988-b92c-1559b4e2f029 for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_76189f11f6964795a9794657295ef477
+Agent WebSocket connected: session=a1caded9-e386-4988-b92c-1559b4e2f029, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_76189f11f6964795a9794657295ef477
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains the existing credential-only terminal-error negative without fabricated completion
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains the existing credential-only terminal-error negative without fabricated completion
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains the existing credential-only terminal-error negative without fabricated completion
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains the existing credential-only terminal-error negative without fabricated completion
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains the existing credential-only terminal-error negative without fabricated completion
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_25a2d36c9eaf4fd0b68b6cbe02bd2550'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > retains the existing credential-only terminal-error negative without fabricated completion
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_25a2d36c9eaf4fd0b68b6cbe02bd2550
+Created agent session a5ae832e-fa9b-4eeb-9f4b-7acc3eed6f3c for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_25a2d36c9eaf4fd0b68b6cbe02bd2550
+Agent WebSocket connected: session=a5ae832e-fa9b-4eeb-9f4b-7acc3eed6f3c, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_25a2d36c9eaf4fd0b68b6cbe02bd2550
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied quota error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied quota error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied quota error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied quota error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied quota error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_ae62cd0c71d04f6c828c6d241367ac1d'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied quota error survives actual public transport and normal next user turn
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_ae62cd0c71d04f6c828c6d241367ac1d
+Created agent session 09e0e228-8fb8-4145-839e-6a376005eff4 for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_ae62cd0c71d04f6c828c6d241367ac1d
+Agent WebSocket connected: session=09e0e228-8fb8-4145-839e-6a376005eff4, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_ae62cd0c71d04f6c828c6d241367ac1d
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied unfamiliar error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied unfamiliar error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied unfamiliar error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied unfamiliar error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied unfamiliar error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied unfamiliar error survives actual public transport and normal next user turn
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d
+Created agent session e773aab4-c97d-499c-a093-65da8940be82 for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d
+Agent WebSocket connected: session=e773aab4-c97d-499c-a093-65da8940be82, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied structured error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied structured error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied structured error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied structured error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied structured error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_d0550fcdcb304d34bdadbc270a3906ac'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied structured error survives actual public transport and normal next user turn
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_d0550fcdcb304d34bdadbc270a3906ac
+Created agent session 1ac5e6eb-cb2a-4e7d-907f-845930fb2d67 for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_d0550fcdcb304d34bdadbc270a3906ac
+Agent WebSocket connected: session=1ac5e6eb-cb2a-4e7d-907f-845930fb2d67, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_d0550fcdcb304d34bdadbc270a3906ac
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied missing error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied missing error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied missing error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied missing error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied missing error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_8b594f88e4b14e7fa48d6a4ebc74adc7'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied missing error survives actual public transport and normal next user turn
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_8b594f88e4b14e7fa48d6a4ebc74adc7
+Created agent session 576319d2-856a-4a8b-90d8-1e2584c5cc14 for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_8b594f88e4b14e7fa48d6a4ebc74adc7
+Agent WebSocket connected: session=576319d2-856a-4a8b-90d8-1e2584c5cc14, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_8b594f88e4b14e7fa48d6a4ebc74adc7
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied empty error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied empty error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied empty error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied empty error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied empty error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_8bef440d269a48beb7cfaddb40c2a7c8'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied empty error survives actual public transport and normal next user turn
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_8bef440d269a48beb7cfaddb40c2a7c8
+Created agent session 4b2a6c9b-8b9e-42e7-8b55-9e17b75b5e6a for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_8bef440d269a48beb7cfaddb40c2a7c8
+Agent WebSocket connected: session=4b2a6c9b-8b9e-42e7-8b55-9e17b75b5e6a, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_8bef440d269a48beb7cfaddb40c2a7c8
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied malformed error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied malformed error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied malformed error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied malformed error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied malformed error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_d25395f0988441e79e806178e9c0ce02'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied malformed error survives actual public transport and normal next user turn
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_d25395f0988441e79e806178e9c0ce02
+Created agent session b8530f3d-e437-41b4-812d-e05c047c7e01 for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_d25395f0988441e79e806178e9c0ce02
+Agent WebSocket connected: session=b8530f3d-e437-41b4-812d-e05c047c7e01, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_d25395f0988441e79e806178e9c0ce02
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied credential error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied credential error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied credential error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied credential error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied credential error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_59586121479f478daff78986f46a4ad5'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > agent: supplied credential error survives actual public transport and normal next user turn
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_59586121479f478daff78986f46a4ad5
+Created agent session 97466b19-3895-4690-99ca-44b62bc7bf6e for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_59586121479f478daff78986f46a4ad5
+Agent WebSocket connected: session=97466b19-3895-4690-99ca-44b62bc7bf6e, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_59586121479f478daff78986f46a4ad5
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied quota error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied quota error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied quota error survives actual public transport and normal next user turn
+Agent team websocket attached for team run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_39f5f51de0fc418aa993014f2ed63531
+Created agent session c14520ac-5cae-491b-9f8e-e247c93e3251 for run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_39f5f51de0fc418aa993014f2ed63531
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied quota error survives actual public transport and normal next user turn
+Agent Team WebSocket connected: session=c14520ac-5cae-491b-9f8e-e247c93e3251, run=agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_39f5f51de0fc418aa993014f2ed63531
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied quota error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied quota error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied quota error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_25bb6502ba944a8ab0ed35b1adfb6ffe'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied unfamiliar error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied unfamiliar error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied unfamiliar error survives actual public transport and normal next user turn
+Agent team websocket attached for team run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_814d2ddfe3d94c1797a993221050dd15
+Created agent session 1aad1918-e1f4-4133-96d0-700cbf8470aa for run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_814d2ddfe3d94c1797a993221050dd15
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied unfamiliar error survives actual public transport and normal next user turn
+Agent Team WebSocket connected: session=1aad1918-e1f4-4133-96d0-700cbf8470aa, run=agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_814d2ddfe3d94c1797a993221050dd15
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied unfamiliar error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied unfamiliar error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied unfamiliar error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_3d4447ccc4514228aa5408ccee947884'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied structured error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied structured error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied structured error survives actual public transport and normal next user turn
+Agent team websocket attached for team run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_128c53cfe585490cacde9e9af44dd31d
+Created agent session 148bed3c-8686-4f1b-acea-a6464d9c153c for run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_128c53cfe585490cacde9e9af44dd31d
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied structured error survives actual public transport and normal next user turn
+Agent Team WebSocket connected: session=148bed3c-8686-4f1b-acea-a6464d9c153c, run=agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_128c53cfe585490cacde9e9af44dd31d
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied structured error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied structured error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied structured error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_8a7e913b9d9f4a00af00282a4f23b660'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied missing error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied missing error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied missing error survives actual public transport and normal next user turn
+Agent team websocket attached for team run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_f44ca00fb9044fce8ea68cfa5d566d03
+Created agent session 3517ea60-515d-43e1-92fe-8eaf558e5566 for run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_f44ca00fb9044fce8ea68cfa5d566d03
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied missing error survives actual public transport and normal next user turn
+Agent Team WebSocket connected: session=3517ea60-515d-43e1-92fe-8eaf558e5566, run=agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_f44ca00fb9044fce8ea68cfa5d566d03
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied missing error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied missing error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied missing error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_b3e4060aff74469d9789ff92a3b8ff74'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied empty error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied empty error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied empty error survives actual public transport and normal next user turn
+Agent team websocket attached for team run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_50a0edc1415248e787eed4581b8c49da
+Created agent session f436a15d-6836-495c-b48b-3f178c58e6fb for run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_50a0edc1415248e787eed4581b8c49da
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied empty error survives actual public transport and normal next user turn
+Agent Team WebSocket connected: session=f436a15d-6836-495c-b48b-3f178c58e6fb, run=agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_50a0edc1415248e787eed4581b8c49da
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied empty error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied empty error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied empty error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_93343f4ed8c64705b538f672662d311e'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied malformed error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied malformed error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied malformed error survives actual public transport and normal next user turn
+Agent team websocket attached for team run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_704c072075a74820be5d8b67a79a9fb0
+Created agent session 3bb52fb1-f7a8-47dc-9dce-7102a797a00f for run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_704c072075a74820be5d8b67a79a9fb0
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied malformed error survives actual public transport and normal next user turn
+Agent Team WebSocket connected: session=3bb52fb1-f7a8-47dc-9dce-7102a797a00f, run=agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_704c072075a74820be5d8b67a79a9fb0
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied malformed error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied malformed error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied malformed error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_2beee3e40ddc44268d8b8a6672483c80'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied credential error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied credential error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied credential error survives actual public transport and normal next user turn
+Agent team websocket attached for team run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_76034da9f861438da5d0825c224199fa
+Created agent session ea071bfd-e132-4e15-a993-e66fc22f851f for run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_76034da9f861438da5d0825c224199fa
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied credential error survives actual public transport and normal next user turn
+Agent Team WebSocket connected: session=ea071bfd-e132-4e15-a993-e66fc22f851f, run=agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_76034da9f861438da5d0825c224199fa
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied credential error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied credential error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > team: supplied credential error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_0a2d9a7360604903b24ac4fbed8a0a63'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied quota error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied quota error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied quota error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied quota error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied quota error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_2874b06477c840f4b331bf9d1051449f'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied unfamiliar error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied unfamiliar error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied unfamiliar error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied unfamiliar error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied unfamiliar error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_1be151aab20b4a0eb25fbb7628ed99e9'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied structured error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied structured error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied structured error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied structured error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied structured error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c345fc110f40417f9b67ed4389ada871'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied missing error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied missing error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied missing error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied missing error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied missing error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_d2c473e19af74528af27bd2a394e75d1'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied empty error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied empty error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied empty error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied empty error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied empty error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_006ff4c1f8ff4dbcb9775469854b41b8'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied malformed error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied malformed error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied malformed error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied malformed error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied malformed error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_471f58a916a24e57821e6aeb09f5912c'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied credential error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied credential error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied credential error survives actual public transport and normal next user turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied credential error survives actual public transport and normal next user turn
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > org: supplied credential error survives actual public transport and normal next user turn
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_70dfcdc58ea4410fa826e448ea8dd927'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_a34a90e3a2394c2189b00a1be9ea4e35'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_a34a90e3a2394c2189b00a1be9ea4e35
+Created agent session a02a2037-f438-4cbd-a7ac-73fb4b8fb87c for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_a34a90e3a2394c2189b00a1be9ea4e35
+Agent WebSocket connected: session=a02a2037-f438-4cbd-a7ac-73fb4b8fb87c, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_a34a90e3a2394c2189b00a1be9ea4e35
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_a34a90e3a2394c2189b00a1be9ea4e35'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_a34a90e3a2394c2189b00a1be9ea4e35
+Created agent session 48dd8797-2d92-4401-a9a5-b99c4cc7d9c3 for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_a34a90e3a2394c2189b00a1be9ea4e35
+Agent WebSocket connected: session=48dd8797-2d92-4401-a9a5-b99c4cc7d9c3, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_a34a90e3a2394c2189b00a1be9ea4e35
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_f5e64e5e728a4992865b343fa8869039'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_f5e64e5e728a4992865b343fa8869039
+Created agent session 6880ff43-623b-4680-902e-6b7535cb3320 for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_f5e64e5e728a4992865b343fa8869039
+Agent WebSocket connected: session=6880ff43-623b-4680-902e-6b7535cb3320, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_f5e64e5e728a4992865b343fa8869039
+
+stderr | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/memory/agents/agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_f5e64e5e728a4992865b343fa8869039/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Agent websocket attached for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_f5e64e5e728a4992865b343fa8869039
+Created agent session 10a70df2-5d41-4201-9696-95e83ead42df for run agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_f5e64e5e728a4992865b343fa8869039
+Agent WebSocket connected: session=10a70df2-5d41-4201-9696-95e83ead42df, run=agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_f5e64e5e728a4992865b343fa8869039
+
+stderr | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/memory/agent_teams/agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_e361f4defc094b0bad3bbf71a78ce753/agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_fc19f38a4e7f47cebc30ccfb32f78b17/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Agent team websocket attached for team run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_e361f4defc094b0bad3bbf71a78ce753
+Created agent session 2c249fbb-d852-4977-ad1a-fc22c3295540 for run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_e361f4defc094b0bad3bbf71a78ce753
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Agent Team WebSocket connected: session=2c249fbb-d852-4977-ad1a-fc22c3295540, run=agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_e361f4defc094b0bad3bbf71a78ce753
+
+stderr | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/memory/agent_teams/agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_e361f4defc094b0bad3bbf71a78ce753/agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_fc19f38a4e7f47cebc30ccfb32f78b17/raw_traces_active.jsonl
+
+stderr | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/memory/agent_teams/agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_e361f4defc094b0bad3bbf71a78ce753/agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_fc19f38a4e7f47cebc30ccfb32f78b17/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Closed agent session 6880ff43-623b-4680-902e-6b7535cb3320
+Agent WebSocket disconnected: 6880ff43-623b-4680-902e-6b7535cb3320
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Agent team websocket attached for team run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_e361f4defc094b0bad3bbf71a78ce753
+Created agent session e42f2d20-06c9-430d-9423-ac399bd1b466 for run agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_e361f4defc094b0bad3bbf71a78ce753
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Agent Team WebSocket connected: session=e42f2d20-06c9-430d-9423-ac399bd1b466, run=agy_error_team_9ed39d55_1808_4cfd_a674_c3078e5f0_e361f4defc094b0bad3bbf71a78ce753
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-IqhG3H/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Reusing registered workspace ID: agent_ws_29e3703d92c0dc7123b2fdaef370283d3c80f866d9f9114183ece45d9c7737c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Published antigravity_cli agent run 'agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_fc19f38a4e7f47cebc30ccfb32f78b17'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Closed agent session 10a70df2-5d41-4201-9696-95e83ead42df
+Agent WebSocket disconnected: 10a70df2-5d41-4201-9696-95e83ead42df
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Closed agent session e42f2d20-06c9-430d-9423-ac399bd1b466
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > closes real Agent/Team transport→production streaming service→rendered card gap
+Closed agent session 2c249fbb-d852-4977-ad1a-fc22c3295540
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 48dd8797-2d92-4401-a9a5-b99c4cc7d9c3
+Agent WebSocket disconnected: 48dd8797-2d92-4401-a9a5-b99c4cc7d9c3
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session a02a2037-f438-4cbd-a7ac-73fb4b8fb87c
+Agent WebSocket disconnected: a02a2037-f438-4cbd-a7ac-73fb4b8fb87c
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session ea071bfd-e132-4e15-a993-e66fc22f851f
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 3bb52fb1-f7a8-47dc-9dce-7102a797a00f
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session f436a15d-6836-495c-b48b-3f178c58e6fb
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 3517ea60-515d-43e1-92fe-8eaf558e5566
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 148bed3c-8686-4f1b-acea-a6464d9c153c
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 1aad1918-e1f4-4133-96d0-700cbf8470aa
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session c14520ac-5cae-491b-9f8e-e247c93e3251
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 97466b19-3895-4690-99ca-44b62bc7bf6e
+Agent WebSocket disconnected: 97466b19-3895-4690-99ca-44b62bc7bf6e
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session b8530f3d-e437-41b4-812d-e05c047c7e01
+Agent WebSocket disconnected: b8530f3d-e437-41b4-812d-e05c047c7e01
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 4b2a6c9b-8b9e-42e7-8b55-9e17b75b5e6a
+Agent WebSocket disconnected: 4b2a6c9b-8b9e-42e7-8b55-9e17b75b5e6a
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 576319d2-856a-4a8b-90d8-1e2584c5cc14
+Agent WebSocket disconnected: 576319d2-856a-4a8b-90d8-1e2584c5cc14
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 1ac5e6eb-cb2a-4e7d-907f-845930fb2d67
+Agent WebSocket disconnected: 1ac5e6eb-cb2a-4e7d-907f-845930fb2d67
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session e773aab4-c97d-499c-a093-65da8940be82
+Agent WebSocket disconnected: e773aab4-c97d-499c-a093-65da8940be82
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 09e0e228-8fb8-4145-839e-6a376005eff4
+Agent WebSocket disconnected: 09e0e228-8fb8-4145-839e-6a376005eff4
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session a5ae832e-fa9b-4eeb-9f4b-7acc3eed6f3c
+Agent WebSocket disconnected: a5ae832e-fa9b-4eeb-9f4b-7acc3eed6f3c
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session a1caded9-e386-4988-b92c-1559b4e2f029
+Agent WebSocket disconnected: a1caded9-e386-4988-b92c-1559b4e2f029
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+[2026-10-03T23:26:50.207Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID agy-error-team-9ed39d55-1808-4cfd-a674-c3078e5f0a34.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent Team Definition with ID agy-error-team-9ed39d55-1808-4cfd-a674-c3078e5f0a34 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+In-memory cache: Removed agent definition with ID agy-runtime-error-08ef615a-0985-4108-b4d3-a33e45f66d7f.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent Definition with ID agy-runtime-error-08ef615a-0985-4108-b4d3-a33e45f66d7f deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests) 29302ms
+     ✓ retains native-image denial privacy without fabricating tool success  353ms
+     ✓ agent: supplied quota error survives actual public transport and normal next user turn  341ms
+     ✓ agent: supplied unfamiliar error survives actual public transport and normal next user turn  339ms
+     ✓ agent: supplied structured error survives actual public transport and normal next user turn  339ms
+     ✓ agent: supplied missing error survives actual public transport and normal next user turn  336ms
+     ✓ agent: supplied empty error survives actual public transport and normal next user turn  339ms
+     ✓ agent: supplied malformed error survives actual public transport and normal next user turn  342ms
+     ✓ agent: supplied credential error survives actual public transport and normal next user turn  344ms
+     ✓ team: supplied quota error survives actual public transport and normal next user turn  682ms
+     ✓ team: supplied unfamiliar error survives actual public transport and normal next user turn  651ms
+     ✓ team: supplied structured error survives actual public transport and normal next user turn  692ms
+     ✓ team: supplied missing error survives actual public transport and normal next user turn  602ms
+     ✓ team: supplied empty error survives actual public transport and normal next user turn  582ms
+     ✓ team: supplied malformed error survives actual public transport and normal next user turn  634ms
+     ✓ team: supplied credential error survives actual public transport and normal next user turn  644ms
+     ✓ org: supplied quota error survives actual public transport and normal next user turn  721ms
+     ✓ org: supplied unfamiliar error survives actual public transport and normal next user turn  722ms
+     ✓ org: supplied structured error survives actual public transport and normal next user turn  653ms
+     ✓ org: supplied missing error survives actual public transport and normal next user turn  723ms
+     ✓ org: supplied empty error survives actual public transport and normal next user turn  709ms
+     ✓ org: supplied malformed error survives actual public transport and normal next user turn  718ms
+     ✓ org: supplied credential error survives actual public transport and normal next user turn  711ms
+     ✓ restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work  514ms
+     ✓ closes real Agent/Team transport→production streaming service→rendered card gap  15716ms
+
+ Test Files  1 passed (1)
+      Tests  25 passed (25)
+   Start at  01:26:14
+   Duration  35.58s (transform 4.11s, setup 13ms, import 5.77s, tests 29.30s, environment 0ms)
+
+
+exit=0 elapsed_seconds=36.184774667

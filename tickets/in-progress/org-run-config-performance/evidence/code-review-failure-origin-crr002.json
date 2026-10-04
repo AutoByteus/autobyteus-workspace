@@ -1,0 +1,380 @@
+{
+  "revision": "CRR-002",
+  "at": "2026-10-03T21:27:20.197418+00:00",
+  "entryPoint": "API/E2E Failure-Origin Review",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "branch": "codex/org-run-config-performance",
+  "head": "f2dc1fd392201844bf28fdfdec26c7424a7ea7b2",
+  "base": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "upstreamRevisions": {
+    "requirements": "SR-006",
+    "design": "SR-010",
+    "architectureReview": "ARCH-REV-001",
+    "implementation": "IR-001",
+    "priorCodeReview": "CRR-001",
+    "apiE2e": "API-REV-001",
+    "delivery": "N/A"
+  },
+  "taskSize": "Medium",
+  "architecturalRisk": "High",
+  "result": "Fail",
+  "classification": "Local Fix",
+  "owner": "/implementation_engineer",
+  "finding": "CR-001",
+  "triggeringFailure": "F-API-001",
+  "scenarios": [
+    "SCN-001",
+    "SCN-004",
+    "API-007 PKG-02",
+    "API-011"
+  ],
+  "scenarioGate": {
+    "candidate": "CG-009",
+    "disposition": "Promote",
+    "scenarioValidity": "Supported Normal Scenario",
+    "reachability": "Reachable",
+    "independentAuthority": [
+      "requirements-doc.md REQ-002/AC-002; exact inherited configuration AC-003",
+      "design-spec.md design B / DS-001 selected retry and shared readiness",
+      "autobyteus-web/docs/agent_orgs.md readiness contract"
+    ],
+    "entry": "Org Library Run config, ordinary inherited same-runtime scope, selected catalog failure then visible root/Team Retry",
+    "path": "Org panel/form -> mounted shared fields/TeamMemberConfigTree/MemberOverrideItem -> scoped composable -> shared LLM catalog store -> per-consumer schema-state -> allModelSchemaScopesReady -> Run guard",
+    "consequence": "successful current same-kind catalog remains locally failed at inherited member, without actionable catalog retry; Run correctly blocks",
+    "excludedPremises": [
+      "No global heal of independently failed different runtimes required",
+      "No contradictory/concurrent artificial workflow",
+      "No admission bypass or blind clearing all schema states"
+    ]
+  },
+  "assertionValidity": {
+    "approvedExpectation": "usable same-kind catalog-error recovery preserving inherited exact choices",
+    "qualified": "final Run-enabled assertion alone does not prove all scopes should be ready: two other Team alerts were not retried; the source-backed stale inherited member with no actionable catalog Retry establishes the defect independently",
+    "testNotScenarioAuthority": true
+  },
+  "apiReportedExecution": {
+    "command": "python3 tickets/in-progress/org-run-config-performance/evidence/api-run-command.py API-011 api-packaged-retry-repro.log node tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.mjs",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "exitCode": 1,
+    "startedAt": "2026-10-03T21:05:22.731Z",
+    "completedAt": "2026-10-03T21:05:30.316Z",
+    "freshRenderer": "fresh app restart; NO passive init scripts/profiling/backend hooks",
+    "pageErrors": [],
+    "initial": {
+      "rootRuntime": "codex_app_server",
+      "disabled": true,
+      "diagnostic": "Model configuration for / is not ready: API/E2E owned selected-catalog outage"
+    },
+    "afterRootRetry": {
+      "disabled": true,
+      "modelButton": "OpenAI / GPT-6.1-Sol (default reasoning: low)",
+      "diagnostic": "Model configuration for /product_team is not ready: API/E2E owned selected-catalog outage"
+    },
+    "afterAffectedTeamRetry": {
+      "disabled": true,
+      "diagnostic": "Model configuration for /product_team/product_ui_ux_designer is not ready: API/E2E owned selected-catalog outage",
+      "catalogErrors": [
+        "Model options could not be loaded. Saved settings were not changed.Retry",
+        "Model options could not be loaded. Saved settings were not changed.Retry",
+        "Model configuration for /product_team/product_ui_ux_designer is not ready: API/E2E owned selected-catalog outage"
+      ]
+    },
+    "finalDiagnostic": "Model configuration for /product_team/product_ui_ux_designer is not ready: API/E2E owned selected-catalog outage",
+    "finalDisabled": true,
+    "responses": [
+      {
+        "at": "2026-10-03T21:05:22.925Z",
+        "operation": "GetProviderModelCatalogSnapshots",
+        "variables": {
+          "runtimeKind": "codex_app_server"
+        },
+        "httpStatus": 200,
+        "errors": [
+          {
+            "message": "API/E2E owned selected-catalog outage"
+          }
+        ],
+        "availability": null,
+        "exactModelCount": 0,
+        "exactModelSchema": null
+      },
+      {
+        "at": "2026-10-03T21:05:22.978Z",
+        "operation": "GetRuntimeAvailability",
+        "variables": {
+          "runtimeKind": "codex_app_server"
+        },
+        "httpStatus": 200,
+        "errors": [],
+        "availability": {
+          "runtimeKind": "codex_app_server",
+          "enabled": true,
+          "reason": null,
+          "__typename": "RuntimeAvailabilityObject"
+        },
+        "exactModelCount": 0,
+        "exactModelSchema": null
+      },
+      {
+        "at": "2026-10-03T21:05:23.439Z",
+        "operation": "GetProviderModelCatalogSnapshots",
+        "variables": {
+          "runtimeKind": "codex_app_server"
+        },
+        "httpStatus": 200,
+        "errors": [],
+        "availability": null,
+        "exactModelCount": 1,
+        "exactModelSchema": {
+          "parameters": [
+            {
+              "name": "reasoning_effort",
+              "type": "enum",
+              "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+              "required": false,
+              "default_value": "low",
+              "enum_values": [
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max",
+                "ultra"
+              ]
+            },
+            {
+              "name": "service_tier",
+              "label": "Fast mode",
+              "type": "enum",
+              "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+              "required": false,
+              "enum_values": [
+                "fast"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "at": "2026-10-03T21:05:26.116Z",
+        "operation": "GetRuntimeAvailability",
+        "variables": {
+          "runtimeKind": "codex_app_server"
+        },
+        "httpStatus": 200,
+        "errors": [],
+        "availability": {
+          "runtimeKind": "codex_app_server",
+          "enabled": true,
+          "reason": null,
+          "__typename": "RuntimeAvailabilityObject"
+        },
+        "exactModelCount": 0,
+        "exactModelSchema": null
+      },
+      {
+        "at": "2026-10-03T21:05:26.227Z",
+        "operation": "GetProviderModelCatalogSnapshots",
+        "variables": {
+          "runtimeKind": "codex_app_server"
+        },
+        "httpStatus": 200,
+        "errors": [],
+        "availability": null,
+        "exactModelCount": 1,
+        "exactModelSchema": {
+          "parameters": [
+            {
+              "name": "reasoning_effort",
+              "type": "enum",
+              "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+              "required": false,
+              "default_value": "low",
+              "enum_values": [
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max",
+                "ultra"
+              ]
+            },
+            {
+              "name": "service_tier",
+              "label": "Fast mode",
+              "type": "enum",
+              "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+              "required": false,
+              "enum_values": [
+                "fast"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "rawEvidenceIntegrity": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.json",
+      "sha256": "8a4490ea8ce9e15a27fe886814ec8a4c1a2e4bd1d7aa50db522d91c0d16275fe"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.mjs",
+      "sha256": "f3c9ac491733b1bd4e2a25b39523b28667c16b4ee9353975595dcb5df209d091"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.log",
+      "sha256": "1fda32a53063cb5d8cb276f5a998e08259247ad9f5a7ec7b88efbe707a5f3f9e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.png",
+      "sha256": "8814dd66c02b2f140622fd2c89fc0fbc2536eee76d2b6ae128a04659b4184caf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-restart.json",
+      "sha256": "e55576a26a25836d63d11c3af4b524773b0d81af46e7dd2a7cb2c971ac4c47f6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-build-provenance.json",
+      "sha256": "41a78774ba90e573dbac7bb1b8f2c0dc816a47628767e7685aa9ee05b8ee7f6c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-cleanup.json",
+      "sha256": "1534d8180f86d9d50f69a3c4f412a140029d54ea69f285eea4e9b0a00d20c071"
+    }
+  ],
+  "sourceComparisons": [
+    {
+      "path": "autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "currentSha256": "b6074447221c75b9e7ec9efb3e4fed801f08eb4c655f8a67fe38460dec8f00c5",
+      "baseSha256": "1662c2537679720f1aa5c936fa5bf869bad73f627341f2400b02f913e9bfb4c4",
+      "wholeFileUnchangedFromApprovedBase": false
+    },
+    {
+      "path": "autobyteus-web/stores/llmProviderConfig.ts",
+      "currentSha256": "a739365f08dde881b190d237941a2af01677f689e67ad98c4331dd889850475f",
+      "baseSha256": "a739365f08dde881b190d237941a2af01677f689e67ad98c4331dd889850475f",
+      "wholeFileUnchangedFromApprovedBase": true
+    },
+    {
+      "path": "autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+      "currentSha256": "4a4b0ba30bd9e8a39ec9a73511cfbfd6b966baa8d75ce6b7020f13eb225eb8a1",
+      "baseSha256": "a135c640fc8ed7da969407a298eeab64efe0143cf7cd73556667ad9b4903e390",
+      "wholeFileUnchangedFromApprovedBase": false
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "currentSha256": "b1dc1711bc4beeae0f052a458ad571bdd2958e485af7b6876bae55608b29067a",
+      "baseSha256": "0734057b7c3cdb9b4da3a2bacbdc85ae1989792c62cc8b24871ed47c02cae608",
+      "wholeFileUnchangedFromApprovedBase": false
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "currentSha256": "5d1555800a58d18289d442ad2cbae2540ccfedee1fa5f14cfd53f5b2b9ef1d46",
+      "baseSha256": "7a4accce83fcff68ea3b514b4f97255f115a820adfbfcbedf556c42f30238086",
+      "wholeFileUnchangedFromApprovedBase": false
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigForm.vue",
+      "currentSha256": "fe7dcf75e85b70f0e9290de54c4af24ce68a6cac4bbea12cfd02401c7afd0d8a",
+      "baseSha256": "fe7dcf75e85b70f0e9290de54c4af24ce68a6cac4bbea12cfd02401c7afd0d8a",
+      "wholeFileUnchangedFromApprovedBase": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue",
+      "currentSha256": "c1f08d4239c1b81e1f74c8951363009ec7a89209ba1ed1d1dacec4a905546361",
+      "baseSha256": "c1f08d4239c1b81e1f74c8951363009ec7a89209ba1ed1d1dacec4a905546361",
+      "wholeFileUnchangedFromApprovedBase": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue",
+      "currentSha256": "6b8ca888ece42651ebee8b941fb84ebd2ac9906973856a283c2046b9f91444ec",
+      "baseSha256": "6b8ca888ece42651ebee8b941fb84ebd2ac9906973856a283c2046b9f91444ec",
+      "wholeFileUnchangedFromApprovedBase": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/MemberOverridesDisclosure.vue",
+      "currentSha256": "0fc2fcbd71c525ce5af2a92ef5b100c9bb3b86a53fb96ab0bbeb1ca150335e32",
+      "baseSha256": "0fc2fcbd71c525ce5af2a92ef5b100c9bb3b86a53fb96ab0bbeb1ca150335e32",
+      "wholeFileUnchangedFromApprovedBase": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgRunConfigStore.ts",
+      "currentSha256": "c1cc9d981b5adbdb10b6dff7ccd9c398b38e14364f24e1a4d53f55053033d560",
+      "baseSha256": "c1cc9d981b5adbdb10b6dff7ccd9c398b38e14364f24e1a4d53f55053033d560",
+      "wholeFileUnchangedFromApprovedBase": true
+    },
+    {
+      "path": "autobyteus-web/docs/agent_orgs.md",
+      "currentSha256": "d6c5272021cf91dd463f7a005f6ed5a4d7d6dce4609048881657af611be58a34",
+      "baseSha256": "d6c5272021cf91dd463f7a005f6ed5a4d7d6dce4609048881657af611be58a34",
+      "wholeFileUnchangedFromApprovedBase": true
+    }
+  ],
+  "failureMechanismComparisons": [
+    {
+      "label": "perConsumerCatalogAndErrorRefs",
+      "path": "autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "currentNormalizedSha256": "4ebb04d5c8be2c57567d80579a2389b4dc1d72cc0b8b8be73396c6d4b94f190d",
+      "baseSha256": "4ebb04d5c8be2c57567d80579a2389b4dc1d72cc0b8b8be73396c6d4b94f190d",
+      "identical": true,
+      "normalization": "catalogLoading -> isLoadingModels only"
+    },
+    {
+      "label": "perConsumerEnsurePublicationAndError",
+      "path": "autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "currentNormalizedSha256": "e53cb156f3fb264e7a59f74450525c2af302ea6bbf52e9c7584b5e4d1a6a13e4",
+      "baseSha256": "e53cb156f3fb264e7a59f74450525c2af302ea6bbf52e9c7584b5e4d1a6a13e4",
+      "identical": true,
+      "normalization": "catalogLoading -> isLoadingModels only"
+    },
+    {
+      "label": "memberErrorPresentation",
+      "path": "autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "currentNormalizedSha256": "6fd60ba4961d11be3a55e2b6b6b961d8eec8b0d4e64afbb837de8fbee0c10f53",
+      "baseSha256": "6fd60ba4961d11be3a55e2b6b6b961d8eec8b0d4e64afbb837de8fbee0c10f53",
+      "identical": true,
+      "normalization": "none"
+    },
+    {
+      "label": "orgCatalogProjection",
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "currentNormalizedSha256": "d7e6f9aa0ad2b728851f3d46e6060e8ad4b77b0abbab7716806a964fc74d82b0",
+      "baseSha256": "d7e6f9aa0ad2b728851f3d46e6060e8ad4b77b0abbab7716806a964fc74d82b0",
+      "identical": true,
+      "normalization": "none"
+    }
+  ],
+  "composableBaseDiff": "diff --git a/autobyteus-web/composables/useRuntimeScopedModelSelection.ts b/autobyteus-web/composables/useRuntimeScopedModelSelection.ts\nindex e4932699b..59419c84f 100644\n--- a/autobyteus-web/composables/useRuntimeScopedModelSelection.ts\n+++ b/autobyteus-web/composables/useRuntimeScopedModelSelection.ts\n@@ -79,7 +79,7 @@ export const useRuntimeScopedModelSelection = (params: {\n   const runtimeAvailabilityStore = useRuntimeAvailabilityStore()\n   const providerGroupsByRuntime = ref<Record<string, ProviderWithModels[]>>({})\n   const providerSourceStatusesByRuntime = ref<Record<string, RuntimeProviderSourceStatus[]>>({})\n-  const isLoadingModels = ref(false)\n+  const catalogLoading = ref(false)\n   const modelLoadError = ref<string | null>(null)\n \n   void runtimeAvailabilityStore.fetchRuntimeAvailabilities().catch((error) => {\n@@ -102,7 +102,7 @@ export const useRuntimeScopedModelSelection = (params: {\n       return\n     }\n \n-    isLoadingModels.value = true\n+    catalogLoading.value = true\n     modelLoadError.value = null\n     try {\n       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)\n@@ -128,7 +128,7 @@ export const useRuntimeScopedModelSelection = (params: {\n       modelLoadError.value = error instanceof Error ? error.message : String(error)\n       throw error\n     } finally {\n-      isLoadingModels.value = false\n+      catalogLoading.value = false\n     }\n   }\n \n@@ -137,21 +137,25 @@ export const useRuntimeScopedModelSelection = (params: {\n     providerGroupsByRuntime.value = Object.fromEntries(\n       Object.entries(providerGroupsByRuntime.value).filter(([key]) => key !== normalizedRuntimeKind),\n     )\n-    isLoadingModels.value = true\n+    catalogLoading.value = true\n     modelLoadError.value = null\n     try {\n-      await llmStore.refreshLocalCatalog(normalizedRuntimeKind)\n+      await Promise.all([\n+        runtimeAvailabilityStore.fetchRuntimeAvailability(normalizedRuntimeKind, true),\n+        llmStore.refreshLocalCatalog(normalizedRuntimeKind),\n+      ])\n       await ensureModelsForRuntime(normalizedRuntimeKind)\n     } catch (error) {\n       modelLoadError.value = error instanceof Error ? error.message : String(error)\n     } finally {\n-      isLoadingModels.value = false\n+      catalogLoading.value = false\n     }\n   }\n \n   watch(\n     () => effectiveRuntimeKind.value,\n     (runtimeKind) => {\n+      if (runtimeKind) void runtimeAvailabilityStore.fetchRuntimeAvailability(runtimeKind).catch(() => undefined)\n       if (runtimeKind && params.loadCatalog !== false) void ensureModelsForRuntime(runtimeKind).catch(() => undefined)\n     },\n     { immediate: true },\n@@ -169,15 +173,7 @@ export const useRuntimeScopedModelSelection = (params: {\n       optionByKind.set(availability.runtimeKind, {\n         value: availability.runtimeKind,\n         label: runtimeKindToLabel(availability.runtimeKind),\n-        enabled: availability.enabled,\n-      })\n-    }\n-\n-    if (!optionByKind.has(DEFAULT_AGENT_RUNTIME_KIND)) {\n-      optionByKind.set(DEFAULT_AGENT_RUNTIME_KIND, {\n-        value: DEFAULT_AGENT_RUNTIME_KIND,\n-        label: runtimeKindToLabel(DEFAULT_AGENT_RUNTIME_KIND),\n-        enabled: true,\n+        enabled: runtimeAvailabilityStore.isRuntimeEnabled(availability.runtimeKind),\n       })\n     }\n \n@@ -194,18 +190,14 @@ export const useRuntimeScopedModelSelection = (params: {\n     )\n   })\n \n+  const isLoadingRuntime = computed(() => Boolean(effectiveRuntimeKind.value\n+    && runtimeAvailabilityStore.isRuntimePending(effectiveRuntimeKind.value)))\n+  const isLoadingModels = computed(() => catalogLoading.value || isLoadingRuntime.value)\n   const selectedRuntimeUnavailableReason = computed(() => {\n-    if (!effectiveRuntimeKind.value) return null\n-    const availability = runtimeAvailabilityStore.availabilityByKind(effectiveRuntimeKind.value)\n-    if (!availability) {\n-      return effectiveRuntimeKind.value === DEFAULT_AGENT_RUNTIME_KIND\n-        ? null\n-        : 'Runtime is not available in current capabilities.'\n-    }\n-    if (availability.enabled) {\n-      return null\n-    }\n-    return runtimeAvailabilityStore.runtimeReason(effectiveRuntimeKind.value)\n+    const kind = effectiveRuntimeKind.value\n+    if (!kind || isLoadingRuntime.value) return null\n+    if (runtimeAvailabilityStore.isRuntimeEnabled(kind)) return null\n+    return runtimeAvailabilityStore.runtimeReason(kind) || 'Runtime is not available in current capabilities.'\n   })\n \n   const availableProviderGroups = computed<ProviderWithModels[]>(() =>\n@@ -273,6 +265,7 @@ export const useRuntimeScopedModelSelection = (params: {\n     groupedModelOptions,\n     hasModelIdentifier,\n     isLoadingModels,\n+    isLoadingRuntime,\n     modelLoadError,\n     modelConfigSchemaByIdentifier,\n     modelIdentifiers,",
+  "noTrackedWebOrServerDifferenceFromReviewedHead": true,
+  "implementationHashCount": 60,
+  "implementationHashMismatches": [],
+  "approvedRequirementsSha256": "5444ff7b9069b37bd3cdf35aec3a3b3d732fb8a3bca3f31691f3a8af56841365",
+  "expectedApprovalSha256": "5444ff7b9069b37bd3cdf35aec3a3b3d732fb8a3bca3f31691f3a8af56841365",
+  "cumulativeApiReferenceCount": 323,
+  "originalUpstreamReferenceCount": 198,
+  "missingReferences": [],
+  "origin": {
+    "implementationDefect": true,
+    "introducedByThreeChangePatch": false,
+    "preExistingAtBase": "failure-producing consumer refs/error publication and hidden inherited-member presentation are present in baseline source",
+    "reviewGap": true,
+    "reviewGapInvariant": "same-kind successful shared catalog must not leave mounted inherited consumers publishing an obsolete locally retained failure with no usable recovery; prior review checked one-consumer capability retry but not full Org error/presentation/event path",
+    "runtimeOnly": false,
+    "postReviewImplementationChange": false,
+    "baselinePackagedReproductionPerformed": false,
+    "baselineQualification": "origin is source comparison, not a claim of baseline packaged runtime execution"
+  },
+  "reviewerActions": {
+    "sourceFixes": false,
+    "testEdits": false,
+    "testsRerun": false,
+    "appLaunch": false,
+    "modelInference": false,
+    "userDataAccess": false,
+    "commitMergePushRelease": false
+  },
+  "reviewerCheckNote": "Initial read-only helper used an incorrect source-section end marker and stopped before writing evidence; exact corrected marker yields four matched baseline blocks. Not a product failure.",
+  "remainingValidation": "API-REV-001 Fail remains authoritative; performance config clocks and actual Team/override/event-chain gates incomplete; new durable HTTP test review waits for successful API/E2E entry"
+}

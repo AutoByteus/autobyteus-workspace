@@ -163,6 +163,7 @@ describe('MemberOverrideItem', () => {
     llmStore = {
       providersWithModels: [],
       providerSnapshots: vi.fn(() => []),
+          catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
       providersWithModelsForSelection: vi.fn((runtimeKind: string) => runtimeProviders[runtimeKind] ?? []),
       fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
         const rows = runtimeProviders[runtimeKind] ?? []

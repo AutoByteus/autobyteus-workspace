@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-03T20:41:45.588274+00:00",
+  "originalReferences": 198,
+  "missing": [],
+  "approvedHash": "5444ff7b9069b37bd3cdf35aec3a3b3d732fb8a3bca3f31691f3a8af56841365",
+  "head": "f2dc1fd392201844bf28fdfdec26c7424a7ea7b2",
+  "node": "v22.23.1",
+  "pnpm": "10.28.2",
+  "uname": "Darwin MacBookPro 25.5.0 Darwin Kernel Version 25.5.0: Tue Jun  9 22:18:58 PDT 2026; root:xnu-12377.121.10~1/RELEASE_ARM64_T6000 arm64",
+  "sourceHash": "4ab46ef55f056e48d82e9de1929303c8a65da7f769c86fc151b27ac7ca3001a3"
+}

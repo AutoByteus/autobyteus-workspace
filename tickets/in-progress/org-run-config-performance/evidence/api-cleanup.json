@@ -1,0 +1,42 @@
+{
+  "at": "2026-10-03T21:08:24.778899+00:00",
+  "instanceId": "iso-64996-c89a",
+  "stopReceipt": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-64996-c89a",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7eqZ5e",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "dataRootExists": false,
+  "ports": {
+    "64996": {
+      "exitCode": 1,
+      "output": ""
+    },
+    "64997": {
+      "exitCode": 1,
+      "output": ""
+    },
+    "9229": {
+      "exitCode": 1,
+      "output": ""
+    }
+  },
+  "finalAppLogUnavailable": "CLI stop removed the external runtime log before final copying; retained first-stage pre-restart app log + fresh-repro actual HTTP/DOM evidence; no final log Pass claimed",
+  "generatedSdkCleanup": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "all570SourceHashesUnchanged": true,
+  "backendHooksRestoredBeforeRestart": true,
+  "userAppUntouched": "No user app or data commands issued; only owned instance id/PID/data root selected"
+}

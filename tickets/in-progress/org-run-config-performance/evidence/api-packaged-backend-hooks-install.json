@@ -1,0 +1,21 @@
+{
+  "labels": [
+    "AgentOrgRunService.create",
+    "AgentOrgRunService.validateCompleteConfiguration",
+    "DefinitionAdmissionService.requireAvailable",
+    "AgentOrgRunPlanner.resolveConfiguration",
+    "AgentOrgRunPlanner.build",
+    "AgentRunIdentityAllocator.allocateForAgentDefinition",
+    "RunModelSelectionService.validateMany",
+    "ModelCatalogService.runtimeModelSelectionCatalog",
+    "AgentOrgRunManager.create",
+    "AgentOrgRunManager.materialize",
+    "AgentOrgExecutionScopeBuilder.build",
+    "RootRunPackageReadinessIndex.admitCurrent",
+    "RootRunPackageReadinessIndex.rebuild",
+    "RootRunPackageCurrentValidator.scan",
+    "AgentOrgRunExecutionTreeStore.read",
+    "AgentOrgRunHistoryCatalogService.recordCreated"
+  ],
+  "enabled": false
+}

@@ -1,0 +1,346 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["pnpm", "-C", "autobyteus-web", "test:e2e:fresh-run-auto-approval", "--output-dir", "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-fresh-approval-warm", "--ledger-file", "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md"]
+start=2026-10-03T20:42:37.420244+00:00
+
+> autobyteus@1.4.93 test:e2e:fresh-run-auto-approval /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> node tests/e2e/fresh-run-auto-approval-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-fresh-approval-warm --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md
+
+{
+  "result": "Pass",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-fresh-approval-warm/fresh-run-auto-approval-evidence.json",
+  "scenarios": {
+    "B08": {
+      "status": "Pass",
+      "description": "Dedicated mobile Agent/Team setup defaults and helper agree",
+      "details": [
+        {
+          "target": "agent",
+          "freshChecked": true,
+          "optOutChecked": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        },
+        {
+          "target": "team",
+          "freshChecked": true,
+          "optOutChecked": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        }
+      ]
+    },
+    "B01": {
+      "status": "Pass",
+      "description": "Library Agent fresh true and first-send true",
+      "details": {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "approval-ws-two",
+        "workspaceRootPath": "/workspace/approval-two",
+        "llmModelIdentifier": "approval-model",
+        "autoExecuteTools": true,
+        "llmConfig": null,
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      }
+    },
+    "B02": {
+      "status": "Pass",
+      "description": "Narrow Agent opt-out survives model/workspace/permitted runtime edits",
+      "details": {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "approval-ws-two",
+        "workspaceRootPath": "/workspace/approval-two",
+        "llmModelIdentifier": "approval-model-two",
+        "autoExecuteTools": false,
+        "llmConfig": null,
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      }
+    },
+    "B03": {
+      "status": "Pass",
+      "description": "Library Team root and inherited members submit true",
+      "details": {
+        "teamDefinitionId": "approval-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/approval-two"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/approval-two"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/approval-two"
+          }
+        ]
+      }
+    },
+    "B04": {
+      "status": "Pass",
+      "description": "Team opt-out ordinary edits and explicit member false",
+      "details": {
+        "off": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model-two",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/approval-two"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model-two",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/approval-two"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model-two",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/approval-two"
+            }
+          ]
+        },
+        "explicit": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/approval-two"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/approval-two"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/approval-two"
+            }
+          ]
+        }
+      }
+    },
+    "B05": {
+      "status": "Pass",
+      "description": "Missing workspace blocks; Antigravity stays checked/locked",
+      "details": {
+        "missingWorkspaceBlocked": true,
+        "agentAndTeamAntigravityLocked": true
+      }
+    },
+    "B06": {
+      "status": "Pass",
+      "description": "Chat Agent/Team true defaults and deliberate opt-out reach launch boundaries",
+      "details": [
+        {
+          "target": "agent",
+          "expected": true,
+          "input": {
+            "agentDefinitionId": "approval-agent",
+            "workspaceId": "temp_ws_default",
+            "workspaceRootPath": "/workspace/temp",
+            "llmModelIdentifier": "approval-model",
+            "autoExecuteTools": true,
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "runtimeKind": "autobyteus",
+            "initialSummary": "Validate Chat approval"
+          }
+        },
+        {
+          "target": "agent",
+          "expected": false,
+          "input": {
+            "agentDefinitionId": "approval-agent",
+            "workspaceId": "temp_ws_default",
+            "workspaceRootPath": "/workspace/temp",
+            "llmModelIdentifier": "approval-model",
+            "autoExecuteTools": false,
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "runtimeKind": "autobyteus",
+            "initialSummary": "Validate Chat approval"
+          }
+        },
+        {
+          "target": "team",
+          "expected": true,
+          "input": {
+            "teamDefinitionId": "approval-team",
+            "teamConfigs": [
+              {
+                "teamAddress": "/",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/workspace/temp"
+              }
+            ],
+            "memberConfigs": [
+              {
+                "memberAddress": "/lead",
+                "agentDefinitionId": "approval-agent",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/workspace/temp"
+              },
+              {
+                "memberAddress": "/reviewer",
+                "agentDefinitionId": "approval-agent",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/workspace/temp"
+              }
+            ]
+          }
+        },
+        {
+          "target": "team",
+          "expected": false,
+          "input": {
+            "teamDefinitionId": "approval-team",
+            "teamConfigs": [
+              {
+                "teamAddress": "/",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/workspace/temp"
+              }
+            ],
+            "memberConfigs": [
+              {
+                "memberAddress": "/lead",
+                "agentDefinitionId": "approval-agent",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/workspace/temp"
+              },
+              {
+                "memberAddress": "/reviewer",
+                "agentDefinitionId": "approval-agent",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/workspace/temp"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "B07": {
+      "status": "Pass",
+      "description": "Existing draft false copied through RunningAgentsPanel; fresh session resets only fresh defaults",
+      "details": {
+        "copied": {
+          "agentDefinitionId": "approval-agent",
+          "workspaceId": "approval-ws-two",
+          "workspaceRootPath": "/workspace/approval-two",
+          "llmModelIdentifier": "approval-model",
+          "autoExecuteTools": false,
+          "llmConfig": null,
+          "runtimeKind": "autobyteus",
+          "initialSummary": "Validate approval boundary"
+        },
+        "freshPageReloadTrue": true,
+        "desktopRestartClaim": false
+      }
+    }
+  },
+  "cleanup": {
+    "browser": {
+      "status": "closed",
+      "pid": 84476
+    },
+    "devServer": {
+      "status": "terminated",
+      "pid": 84438,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "finalExitCode": 0,
+      "finalSignalCode": null,
+      "processGroupExited": true
+    },
+    "page": "removed"
+  }
+}
+
+exit=0 elapsed_seconds=18.740774292

@@ -1,0 +1,5 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["bash", "-c", "pnpm --silent isolated-app start --from-worktree --data-root /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42 > tickets/in-progress/org-run-config-performance/evidence/api3-transition-start.json"]
+start=2026-10-03T23:54:00.724332+00:00
+
+exit=0 elapsed_seconds=3.821925417

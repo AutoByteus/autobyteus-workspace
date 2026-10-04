@@ -1,0 +1,10 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["pnpm", "-C", "autobyteus-web", "test:e2e:agent-org-task-team-disclosure", "--output-dir", "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-task-team-disclosure", "--ledger", "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md"]
+start=2026-10-03T22:42:24.827477+00:00
+
+> autobyteus@1.4.93 test:e2e:agent-org-task-team-disclosure /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> node tests/e2e/agent-org-task-team-disclosure-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-task-team-disclosure --ledger /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md
+
+Agent Org delegated Team disclosure browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-task-team-disclosure/evidence.json
+
+exit=0 elapsed_seconds=16.976510542

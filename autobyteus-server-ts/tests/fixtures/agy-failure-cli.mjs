@@ -64,8 +64,11 @@ if (arg === "--version") {
   const linkedSkillsTurn = async (line) => {
     let content = "";
     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
+    const requestedTool = /CALL_TOOL:(\{.*\})/s.exec(content);
     const delegation = /DELEGATE:(\{.*\})/s.exec(content);
-    const text = content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
+    const call = requestedTool ? JSON.parse(requestedTool[1]) : null;
+    const text = call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`
+      : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
       : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
         : "OK";
     reply(turns * 10, text);

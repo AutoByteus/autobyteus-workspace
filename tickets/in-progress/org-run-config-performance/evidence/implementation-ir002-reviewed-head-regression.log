@@ -1,0 +1,167 @@
+NEGATIVE CONTROL: reviewed HEAD f2dc1fd, only two production files temporarily restored; current durable real-store test. Not packaged or approved-base rerun.
+
+> autobyteus@1.4.93 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts --run --maxWorkers=1 -t 'recovers the exact affected scopes'
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ❯ components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts (4 tests | 2 failed | 2 skipped) 139ms
+   × real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write 100ms
+     → expected { '/': 'loading', …(3) } to deeply equal { '/': 'loading', …(3) }
+   × real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write 38ms
+     → Unable to get [data-test="agent-runtime-catalog-error"] within: <div class="bg-white p-3" data-test="member-override-item">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">lead</span><span class="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-xs text-indigo-600">Coordinator</span></div>
+    <!--v-if-->
+  </div>
+  <p class="-mt-2 mb-3 truncate font-mono text-xs text-gray-500" title="/team/lead" data-test="member-override-breadcrumb">team / lead</p>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--team-lead" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="autobyteus">AutoByteus</option>
+    </select>
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button aria-haspopup="listbox" aria-expanded="false" aria-controls="v-4" type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--team-lead" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--team-lead" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+</div>
+   ↓ real shared catalog publication through mounted inherited Org scopes (CR-001) > does not heal a different-runtime outage, a missing selected model, or invalid inherited config
+   ↓ real shared catalog publication through mounted inherited Org scopes (CR-001) > retains a failed explicit runtime edit until that requested edit is explicitly retried
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+AssertionError: expected { '/': 'loading', …(3) } to deeply equal { '/': 'loading', …(3) }
+
+- Expected
++ Received
+
+  {
+    "/": "loading",
+-   "/director": "loading",
+-   "/team": "loading",
+-   "/team/lead": "loading",
++   "/director": "unavailable",
++   "/team": "unavailable",
++   "/team/lead": "unavailable",
+  }
+
+ ❯ components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts:106:22
+    104|     expect(wrapper.get('[data-test="run-agent-org"]').attributes('disa…
+    105|     await retry(source === 'root' ? rootFields() : member())
+    106|     expect(states()).toEqual({ '/': 'loading', '/director': 'loading',…
+       |                      ^
+    107|     expect(requests.filter(r => r.kind === kind)).toHaveLength(2)
+    108|     pending().succeed(); await settle()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+Error: Unable to get [data-test="agent-runtime-catalog-error"] within: <div class="bg-white p-3" data-test="member-override-item">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">lead</span><span class="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-xs text-indigo-600">Coordinator</span></div>
+    <!--v-if-->
+  </div>
+  <p class="-mt-2 mb-3 truncate font-mono text-xs text-gray-500" title="/team/lead" data-test="member-override-breadcrumb">team / lead</p>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--team-lead" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="autobyteus">AutoByteus</option>
+    </select>
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button aria-haspopup="listbox" aria-expanded="false" aria-controls="v-4" type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--team-lead" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--team-lead" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts:100:56
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 skipped (4)
+   Start at  23:52:05
+   Duration  4.84s (transform 2.94s, setup 4.05s, collect 300ms, tests 139ms, environment 114ms, prepare 96ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

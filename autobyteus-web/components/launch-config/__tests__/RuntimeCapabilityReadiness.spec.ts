@@ -9,6 +9,7 @@ vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({
   fetchProvidersWithModels: async () => undefined, refreshLocalCatalog: io.refresh,
   ensureMissingDynamicProviders: async () => undefined, providerSnapshots: () => [],
+  catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
   providersWithModelsForSelection: () => [{
     provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
     models: [{ modelIdentifier: 'gpt-6.1-sol', name: 'GPT-6.1 Sol', value: 'gpt-6.1-sol',

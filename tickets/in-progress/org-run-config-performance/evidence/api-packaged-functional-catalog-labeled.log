@@ -1,0 +1,12 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs"]
+start=2026-10-03T21:01:51.853028+00:00
+{"id":"PKG-01-unrelated-pending","expected":"PKG-01-unrelated-pending","observed":{"heldUnrelated":"antigravity_cli","codexReadyBeforeRelease":true,"exactSelected":true},"result":"Pass","at":"2026-10-03T21:01:53.517Z"}
+{"id":"PKG-02-selected-catalog-error-retry","expected":"PKG-02-selected-catalog-error-retry","result":"Fail","error":"page.waitForFunction: Timeout 15000ms exceeded.\n    at model (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:10:344)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:14:1322\n    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:8:99)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:14:2","at":"2026-10-03T21:02:09.940Z"}
+page.waitForFunction: Timeout 15000ms exceeded.
+    at model (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:10:344)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:14:1322
+    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:8:99)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:14:2
+
+exit=1 elapsed_seconds=18.158910416999998

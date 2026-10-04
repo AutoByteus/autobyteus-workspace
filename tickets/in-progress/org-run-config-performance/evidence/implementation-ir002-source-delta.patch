@@ -1,0 +1,445 @@
+diff --git a/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts b/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts
+index 7848a87f0..541a1b3ab 100644
+--- a/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts
++++ b/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts
+@@ -9,6 +9,7 @@ vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
+ vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({
+   fetchProvidersWithModels: async () => undefined, refreshLocalCatalog: io.refresh,
+   ensureMissingDynamicProviders: async () => undefined, providerSnapshots: () => [],
++  catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
+   providersWithModelsForSelection: () => [{
+     provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
+     models: [{ modelIdentifier: 'gpt-6.1-sol', name: 'GPT-6.1 Sol', value: 'gpt-6.1-sol',
+diff --git a/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts b/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+index 4414c693d..4169f3ad2 100644
+--- a/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
++++ b/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+@@ -34,6 +34,7 @@ describe('RuntimeModelConfigFields stored historical values', () => {
+       refreshLocalCatalog: vi.fn().mockResolvedValue([]),
+       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
+       providerSnapshots: vi.fn().mockReturnValue([]),
++          catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
+       providersWithModelsForSelection: vi.fn(() => providers),
+     })
+     ;(useRuntimeAvailabilityStore as any).mockReturnValue({
+diff --git a/autobyteus-web/components/workspace/config/MemberOverrideItem.vue b/autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+index c48829358..d913cc527 100644
+--- a/autobyteus-web/components/workspace/config/MemberOverrideItem.vue
++++ b/autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+@@ -163,7 +163,6 @@ import WorkspaceSelector from './WorkspaceSelector.vue'
+ import FixedWorkspacePath from './FixedWorkspacePath.vue'
+ import { useLocalization } from '~/composables/useLocalization'
+ import { effectiveAutoExecuteTools, isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
+-import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
+ import { loadRuntimeProviderGroupsForSelection, useRuntimeScopedModelSelection } from '~/composables/useRuntimeScopedModelSelection'
+ import {
+   buildUnavailableInheritedModelMessage,
+@@ -175,6 +174,7 @@ import {
+ } from '~/utils/teamRunConfigUtils'
+ import {
+   normalizeModelConfigSchema,
++  modelConfigSchemaFromProviderGroups,
+   validateUiModelConfig,
+   type UiModelConfigSchema,
+   type UiModelConfigValidationIssue,
+@@ -219,6 +219,7 @@ const {
+   hasModelIdentifier,
+   isLoadingModels,
+   modelLoadError,
++  reloadModelsForRuntime,
+   modelConfigSchemaByIdentifier,
+   runtimeOptions,
+   selectedRuntimeUnavailableReason,
+@@ -239,7 +240,8 @@ const runtimeCatalogPresentationState = computed(() => {
+   if (operation?.schemaState.status === 'unavailable') {
+     return { status: 'error' as const, error: operation.schemaState.message }
+   }
+-  if (operation) return { status: 'loading' as const, error: null }
++  if (operation || isLoadingModels.value) return { status: 'loading' as const, error: null }
++  if (modelLoadError.value) return { status: 'error' as const, error: modelLoadError.value }
+   return editableNode.value?.runtimeCatalogState ?? { status: 'idle' as const, error: null }
+ })
+ const explicitModelIdentifier = computed(() => editableOverride.value?.llmModelIdentifier || '')
+@@ -264,6 +266,8 @@ const unresolvedInheritedModelMessage = computed(() => buildUnavailableInherited
+   memberName: props.node.displayName,
+ }))
+ const effectiveModelIdentifier = computed(() => props.node.effectiveConfig.llmModelIdentifier || '')
++const isLoadingCurrentModel = computed(() => effectiveModelIdentifier.value === seedModelIdentifier.value
++  && !hasModelIdentifier(effectiveModelIdentifier.value) && currentModel.loading.value)
+ const selectedModelIdentifier = computed(() => existingNode.value ? effectiveModelIdentifier.value : explicitModelIdentifier.value)
+ const modelConfigSchema = computed(() => modelConfigSchemaByIdentifier(effectiveModelIdentifier.value)
+   || (effectiveModelIdentifier.value === seedModelIdentifier.value ? currentModel.schema.value : null))
+@@ -298,6 +302,7 @@ watch(
+     editableNode,
+     runtimeEditOperation,
+     isLoadingModels,
++    isLoadingCurrentModel,
+     modelLoadError,
+     selectedRuntimeUnavailableReason,
+     isUnresolvedInheritedModel,
+@@ -310,7 +315,7 @@ watch(
+     if (!editableNode.value) return
+     if (runtimeEditOperation.value) return
+     let state: RuntimeModelConfigSchemaState
+-    if (isLoadingModels.value || (effectiveModelIdentifier.value === seedModelIdentifier.value && currentModel.loading.value)) {
++    if (isLoadingModels.value || isLoadingCurrentModel.value) {
+       state = { status: 'loading', message: null }
+     } else if (modelLoadError.value || selectedRuntimeUnavailableReason.value) {
+       state = {
+@@ -389,17 +394,6 @@ const shouldOpenAdvancedForSchema = (
+   const state = getThinkingControlState(schema, config)
+   return state.supported && state.enabled
+ }
+-const modelConfigSchemaFromRows = (
+-  rows: ProviderWithModels[],
+-  modelIdentifier: string | null | undefined,
+-): UiModelConfigSchema | null => {
+-  const identifier = (modelIdentifier || '').trim()
+-  for (const row of rows) {
+-    const normalized = normalizeModelConfigSchema(row.models.find((model) => model.modelIdentifier === identifier)?.configSchema)
+-    if (normalized && Object.keys(normalized).length) return normalized
+-  }
+-  return null
+-}
+ const maybeOpenAdvanced = (schema: UiModelConfigSchema | null, config: Record<string, unknown> | null | undefined) => {
+   if (shouldOpenAdvancedForSchema(schema, config)) memberAdvancedExplicitlyExpanded.value = true
+ }
+@@ -464,7 +458,7 @@ const handleRuntimeChange = async (value: string) => {
+     effectiveRuntimeKind: nextEffectiveRuntimeKind,
+     schemaState: { status: 'loading', message: null },
+   }
+-  maybeOpenAdvanced(modelConfigSchemaFromRows(nextRows, effectiveModel)
++  maybeOpenAdvanced(modelConfigSchemaFromProviderGroups(nextRows, effectiveModel)
+     || (effectiveModel && exactCurrent[effectiveModel]?.configSchema
+       ? normalizeModelConfigSchema(exactCurrent[effectiveModel]!.configSchema) : null),
+     retainedConfig ?? editable.baselineConfig.llmConfig)
+@@ -509,7 +503,7 @@ const retryRuntimeCatalog = () => {
+     void handleRuntimeChange(failedOperation.requestedOverrideRuntimeKind ?? '')
+     return
+   }
+-  if (effectiveRuntimeKind.value) void useRuntimeAvailabilityStore().fetchRuntimeAvailability(effectiveRuntimeKind.value, true).catch(() => undefined)
++  if (effectiveRuntimeKind.value) void reloadModelsForRuntime(effectiveRuntimeKind.value)
+   emit('retry-runtime-catalog', effectiveRuntimeKind.value ?? '')
+ }
+ </script>
+diff --git a/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts b/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts
+index e46ea1872..b300630e8 100644
+--- a/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts
++++ b/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts
+@@ -16,12 +16,17 @@ import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agen
+ import { GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
+ import { GetAgentOrgReferencedAgent, GetAgentOrgReferencedTeam } from '~/graphql/queries/agentOrgDefinitionQueries'
+ import { CreateAgentOrgRun } from '~/graphql/mutations/agentOrgRunMutations'
+-const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), route: null as any, push: vi.fn(), replace: vi.fn(), models: vi.fn(), availability: vi.fn() }))
++const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), route: null as any, push: vi.fn(), replace: vi.fn(), models: vi.fn(), catalog: {} as any, availability: vi.fn() }))
+ vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
+ vi.mock('vue-router', () => ({ useRoute: () => io.route, useRouter: () => ({ push: io.push, replace: io.replace }) }))
+ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshAgentOrgHistoryItem: vi.fn(), applyAgentOrgActivity: vi.fn(), resolveWorkspaceMetadataByRootPath: () => null }) }))
+ vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({
+-  fetchProvidersWithModels: io.models, ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined), providerSnapshots: () => [],
++  fetchProvidersWithModels: async (runtimeKind: string) => {
++    io.catalog[runtimeKind] = { state: 'loading', errorMessage: null }
++    try { await io.models(runtimeKind); io.catalog[runtimeKind] = { state: 'ready', errorMessage: null } }
++    catch (error) { io.catalog[runtimeKind] = { state: 'error', errorMessage: (error as Error).message }; throw error }
++  }, ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined), providerSnapshots: () => [],
++  catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, ...io.catalog[runtimeKind] }),
+   providersWithModelsForSelection: () => [{ provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
+     models: ['root-model', 'direct-model', 'team-model', 'mounted-model', 'catalog-model'].map(id => ({ modelIdentifier: id, name: id, value: id, canonicalName: id,
+       providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api', configSchema: { type: 'object', properties: { budget: { type: 'integer', minimum: 0 }, enabled: { type: 'boolean' } } } })) }],
+@@ -38,7 +43,7 @@ const envelope = (view: typeof fixture.view) => ({ data: { getAgentOrgRunInspect
+ const panel = () => { const w = mount(Panel); wrappers.push(w); return w }
+ const disabled = (w: ReturnType<typeof mount>) => w.get('[data-test="run-agent-org"]').attributes('disabled') !== undefined
+ beforeEach(() => {
+-  vi.clearAllMocks(); setActivePinia(createPinia()); fixture = seedFixture()
++  vi.clearAllMocks(); io.catalog = reactive({}); setActivePinia(createPinia()); fixture = seedFixture()
+   io.route = reactive({ query: { definitionId: fixture.definition.id, sourceOrgRunId: 'org-run', mode: 'configuration' } })
+   io.push.mockImplementation(async ({ query }) => { io.route.query = query })
+   io.models.mockResolvedValue([]); io.availability.mockReturnValue({ enabled: true })
+diff --git a/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts b/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+index 2200c6f2e..e78096b87 100644
+--- a/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
++++ b/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+@@ -53,6 +53,7 @@ describe('AgentRunConfigForm', () => {
+     llmStore = {
+       providerRows: [],
+       providerSnapshots: vi.fn(() => []),
++          catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
+       providersWithModelsForSelection: vi.fn(() =>
+         llmStore.providerRows.filter((provider: any) => provider.models.length > 0),
+       ),
+diff --git a/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts b/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+index 6beec7227..ce19ba6b1 100644
+--- a/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
++++ b/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+@@ -163,6 +163,7 @@ describe('MemberOverrideItem', () => {
+     llmStore = {
+       providersWithModels: [],
+       providerSnapshots: vi.fn(() => []),
++          catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
+       providersWithModelsForSelection: vi.fn((runtimeKind: string) => runtimeProviders[runtimeKind] ?? []),
+       fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
+         const rows = runtimeProviders[runtimeKind] ?? []
+diff --git a/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts b/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+index 838a7fea4..78357ec3c 100644
+--- a/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
++++ b/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+@@ -24,6 +24,7 @@ vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStor
+ }) }))
+ vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({
+   fetchProvidersWithModels: vi.fn().mockResolvedValue([]), ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined), providerSnapshots: () => [],
++  catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
+   providersWithModelsForSelection: () => [{ provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false }, models: ['model', 'replacement-model'].map(model => ({ modelIdentifier: model, name: model, value: model, canonicalName: model, providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api', configSchema: { type: 'object', properties: { budget: { type: 'integer', minimum: 0 }, enabled: { type: 'boolean' } } } })) }],
+ }) }))
+ let canonical: any
+diff --git a/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts b/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+index a6932bb20..81e246563 100644
+--- a/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts
++++ b/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+@@ -7,6 +7,7 @@ const store = vi.hoisted(() => ({
+   ensureMissingDynamicProviders: vi.fn(),
+   providersWithModelsForSelection: vi.fn(),
+   providerSnapshots: vi.fn(),
++  catalogSnapshot: vi.fn(),
+ }))
+ const runtimeAvailabilityStore = vi.hoisted(() => ({
+   availabilities: [{ runtimeKind: 'autobyteus', enabled: true, reason: null }],
+@@ -65,9 +66,12 @@ const flush = async () => {
+   await Promise.resolve()
+ }
+ 
++const catalogPublication = ref({ runtimeKind: 'autobyteus', state: 'ready', errorMessage: null, currentRequestId: 1 })
+ describe('useRuntimeScopedModelSelection', () => {
+   beforeEach(() => {
+     vi.clearAllMocks()
++    catalogPublication.value = { runtimeKind: 'autobyteus', state: 'ready', errorMessage: null, currentRequestId: 1 }
++    store.catalogSnapshot.mockImplementation((runtimeKind: string) => ({ ...catalogPublication.value, runtimeKind }))
+     runtimeAvailabilityStore.fetchRuntimeAvailabilities.mockResolvedValue(undefined)
+     store.fetchProvidersWithModels.mockResolvedValue(undefined)
+     store.refreshLocalCatalog.mockResolvedValue(undefined)
+@@ -94,6 +98,7 @@ describe('useRuntimeScopedModelSelection', () => {
+     expect(selection.providerSourceStatuses.value[0]?.sources[0]?.state).toBe('READY')
+     expect(store.ensureMissingDynamicProviders).toHaveBeenCalledWith('autobyteus')
+ 
++    catalogPublication.value = { ...catalogPublication.value, currentRequestId: 2 }
+     dynamic.resolve()
+     await flush()
+     expect(selection.modelIdentifiers.value).toEqual(['gpt-4.1', 'gateway-model'])
+@@ -101,8 +106,6 @@ describe('useRuntimeScopedModelSelection', () => {
+       state: 'STALE_ERROR',
+       safeMessage: 'Discovery unavailable.',
+     })
+-    expect(store.providersWithModelsForSelection).toHaveBeenCalledTimes(2)
+-    expect(store.providerSnapshots).toHaveBeenCalledTimes(2)
+   })
+ 
+   it('uses inherited runtime when the sparse stored runtime is absent', async () => {
+@@ -144,6 +147,8 @@ describe('useRuntimeScopedModelSelection', () => {
+ 
+     const selection = useRuntimeScopedModelSelection({ runtimeKind: ref('autobyteus') })
+     await flush()
++    expect(selection.providerSourceStatuses.value[0]?.sources[0]?.state).toBe('READY')
++    catalogPublication.value = { ...catalogPublication.value, currentRequestId: 2 }
+     dynamic.reject(new Error('unexpected aggregate failure'))
+     await flush()
+ 
+@@ -153,7 +158,5 @@ describe('useRuntimeScopedModelSelection', () => {
+     )
+     expect(selection.modelIdentifiers.value).toEqual(['retained-static'])
+     expect(selection.providerSourceStatuses.value[0]?.sources[0]?.state).toBe('ERROR')
+-    expect(store.providersWithModelsForSelection).toHaveBeenCalledTimes(2)
+-    expect(store.providerSnapshots).toHaveBeenCalledTimes(2)
+   })
+ })
+diff --git a/autobyteus-web/composables/useRuntimeScopedModelSelection.ts b/autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+index 59419c84f..d5659cc93 100644
+--- a/autobyteus-web/composables/useRuntimeScopedModelSelection.ts
++++ b/autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+@@ -11,7 +11,7 @@ import {
+ } from '~/stores/llmProviderConfig'
+ import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
+ import { buildModelSelectionGroups } from '~/utils/modelSelectionOptions'
+-import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
++import { modelConfigSchemaFromProviderGroups, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
+ import type { GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue'
+ 
+ const cloneProviderRows = (rows: ProviderWithModels[]): ProviderWithModels[] =>
+@@ -77,10 +77,7 @@ export const useRuntimeScopedModelSelection = (params: {
+ }) => {
+   const llmStore = useLLMProviderConfigStore()
+   const runtimeAvailabilityStore = useRuntimeAvailabilityStore()
+-  const providerGroupsByRuntime = ref<Record<string, ProviderWithModels[]>>({})
+-  const providerSourceStatusesByRuntime = ref<Record<string, RuntimeProviderSourceStatus[]>>({})
+-  const catalogLoading = ref(false)
+-  const modelLoadError = ref<string | null>(null)
++  const requestedCatalogKinds = ref<Record<string, boolean>>({})
+ 
+   void runtimeAvailabilityStore.fetchRuntimeAvailabilities().catch((error) => {
+     console.error('Failed to fetch runtime availabilities:', error)
+@@ -96,59 +93,36 @@ export const useRuntimeScopedModelSelection = (params: {
+     return params.useDefaultRuntimeFallback === false ? null : DEFAULT_AGENT_RUNTIME_KIND
+   })
+ 
+-  const ensureModelsForRuntime = async (runtimeKind: AgentRuntimeKind): Promise<void> => {
+-    const normalizedRuntimeKind = resolveEffectiveScopedRuntimeKind(runtimeKind)
+-    if (providerGroupsByRuntime.value[normalizedRuntimeKind]) {
+-      return
+-    }
++  // Catalog acceptance/error ownership stays in the shared store. All consumers of
++  // the selected runtime observe its current publication, including another scope's Retry.
++  const selectedCatalog = computed(() => {
++    const kind = effectiveRuntimeKind.value
++    return kind && requestedCatalogKinds.value[kind] ? llmStore.catalogSnapshot(kind) : null
++  })
++  const modelLoadError = computed(() => selectedCatalog.value?.state === 'error'
++    ? selectedCatalog.value.errorMessage : null)
+ 
+-    catalogLoading.value = true
+-    modelLoadError.value = null
+-    try {
+-      await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+-      const publishRuntimeCatalogState = (): void => {
+-        providerGroupsByRuntime.value = {
+-          ...providerGroupsByRuntime.value,
+-          [normalizedRuntimeKind]: cloneProviderRows(
+-            llmStore.providersWithModelsForSelection(normalizedRuntimeKind),
+-          ),
+-        }
+-        providerSourceStatusesByRuntime.value = {
+-          ...providerSourceStatusesByRuntime.value,
+-          [normalizedRuntimeKind]: cloneProviderSourceStatuses(normalizedRuntimeKind, llmStore),
+-        }
+-      }
+-      publishRuntimeCatalogState()
+-      void llmStore.ensureMissingDynamicProviders(normalizedRuntimeKind)
+-        .then(() => publishRuntimeCatalogState(), (error) => {
+-          console.error(`Failed to discover dynamic models for '${normalizedRuntimeKind}'.`, error)
+-          publishRuntimeCatalogState()
+-        })
+-    } catch (error) {
+-      modelLoadError.value = error instanceof Error ? error.message : String(error)
+-      throw error
+-    } finally {
+-      catalogLoading.value = false
+-    }
++  const ensureModelsForRuntime = async (runtimeKind: AgentRuntimeKind): Promise<void> => {
++    const kind = resolveEffectiveScopedRuntimeKind(runtimeKind)
++    requestedCatalogKinds.value[kind] = true
++    await llmStore.fetchProvidersWithModels(kind)
++    void llmStore.ensureMissingDynamicProviders(kind).catch((error) => {
++      console.error(`Failed to discover dynamic models for '${kind}'.`, error)
++    })
+   }
+ 
+   const reloadModelsForRuntime = async (runtimeKind: AgentRuntimeKind): Promise<void> => {
+-    const normalizedRuntimeKind = resolveEffectiveScopedRuntimeKind(runtimeKind)
+-    providerGroupsByRuntime.value = Object.fromEntries(
+-      Object.entries(providerGroupsByRuntime.value).filter(([key]) => key !== normalizedRuntimeKind),
+-    )
+-    catalogLoading.value = true
+-    modelLoadError.value = null
++    const kind = resolveEffectiveScopedRuntimeKind(runtimeKind)
++    requestedCatalogKinds.value[kind] = true
+     try {
+       await Promise.all([
+-        runtimeAvailabilityStore.fetchRuntimeAvailability(normalizedRuntimeKind, true),
+-        llmStore.refreshLocalCatalog(normalizedRuntimeKind),
++        runtimeAvailabilityStore.fetchRuntimeAvailability(kind, true),
++        llmStore.refreshLocalCatalog(kind),
+       ])
+-      await ensureModelsForRuntime(normalizedRuntimeKind)
+-    } catch (error) {
+-      modelLoadError.value = error instanceof Error ? error.message : String(error)
+-    } finally {
+-      catalogLoading.value = false
++      await ensureModelsForRuntime(kind)
++    } catch {
++      // Each store publishes its own current failure; don't retain a caller-local
++      // error that a later accepted catalog or capability response cannot recover.
+     }
+   }
+ 
+@@ -192,7 +166,7 @@ export const useRuntimeScopedModelSelection = (params: {
+ 
+   const isLoadingRuntime = computed(() => Boolean(effectiveRuntimeKind.value
+     && runtimeAvailabilityStore.isRuntimePending(effectiveRuntimeKind.value)))
+-  const isLoadingModels = computed(() => catalogLoading.value || isLoadingRuntime.value)
++  const isLoadingModels = computed(() => selectedCatalog.value?.state === 'loading' || isLoadingRuntime.value)
+   const selectedRuntimeUnavailableReason = computed(() => {
+     const kind = effectiveRuntimeKind.value
+     if (!kind || isLoadingRuntime.value) return null
+@@ -201,14 +175,14 @@ export const useRuntimeScopedModelSelection = (params: {
+   })
+ 
+   const availableProviderGroups = computed<ProviderWithModels[]>(() =>
+-    effectiveRuntimeKind.value
+-      ? providerGroupsByRuntime.value[effectiveRuntimeKind.value] ?? []
++    selectedCatalog.value
++      ? cloneProviderRows(llmStore.providersWithModelsForSelection(selectedCatalog.value.runtimeKind))
+       : [],
+   )
+ 
+   const providerSourceStatuses = computed<RuntimeProviderSourceStatus[]>(() =>
+-    effectiveRuntimeKind.value
+-      ? providerSourceStatusesByRuntime.value[effectiveRuntimeKind.value] ?? []
++    selectedCatalog.value
++      ? cloneProviderSourceStatuses(selectedCatalog.value.runtimeKind, llmStore)
+       : [],
+   )
+ 
+@@ -235,28 +209,9 @@ export const useRuntimeScopedModelSelection = (params: {
+ 
+   const modelConfigSchemaByIdentifier = (
+     modelIdentifier: string | null | undefined,
+-  ): UiModelConfigSchema | null => {
+-    const normalizedIdentifier = (modelIdentifier || '').trim()
+-    if (!normalizedIdentifier) {
+-      return null
+-    }
+-
+-    for (const providerGroup of availableProviderGroups.value) {
+-      const model = providerGroup.models.find(
+-        (entry) => entry.modelIdentifier === normalizedIdentifier,
+-      )
+-      if (!model?.configSchema) {
+-        continue
+-      }
+-
+-      const normalizedSchema = normalizeModelConfigSchema(model.configSchema)
+-      if (normalizedSchema && Object.keys(normalizedSchema).length > 0) {
+-        return normalizedSchema
+-      }
+-    }
+-
+-    return null
+-  }
++  ): UiModelConfigSchema | null => modelConfigSchemaFromProviderGroups(
++    availableProviderGroups.value, modelIdentifier,
++  )
+ 
+   return {
+     availableProviderGroups,
+diff --git a/autobyteus-web/utils/llmConfigSchema.ts b/autobyteus-web/utils/llmConfigSchema.ts
+index 4600a0189..7500282af 100644
+--- a/autobyteus-web/utils/llmConfigSchema.ts
++++ b/autobyteus-web/utils/llmConfigSchema.ts
+@@ -1,3 +1,4 @@
++import type { ProviderWithModels } from '~/stores/llmProviderConfig'
+ // `llmThinkingConfigAdapter` imports this module too; neither calls the other at load time.
+ import { getThinkingParamKeys } from '~/utils/llmThinkingConfigAdapter';
+ 
+@@ -309,3 +310,15 @@ export const applyModelConfigSchemaDefaults = (
+   return changed ? nextConfig : config ?? null;
+ };
+ 
++
++export const modelConfigSchemaFromProviderGroups = (
++  rows: ProviderWithModels[],
++  modelIdentifier: string | null | undefined,
++): UiModelConfigSchema | null => {
++  const identifier = (modelIdentifier || '').trim()
++  for (const row of rows) {
++    const normalized = normalizeModelConfigSchema(row.models.find((model) => model.modelIdentifier === identifier)?.configSchema)
++    if (normalized && Object.keys(normalized).length) return normalized
++  }
++  return null
++}

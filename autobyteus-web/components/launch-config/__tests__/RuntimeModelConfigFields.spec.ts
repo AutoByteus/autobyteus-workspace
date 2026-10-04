@@ -34,6 +34,7 @@ describe('RuntimeModelConfigFields stored historical values', () => {
       refreshLocalCatalog: vi.fn().mockResolvedValue([]),
       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       providerSnapshots: vi.fn().mockReturnValue([]),
+          catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
       providersWithModelsForSelection: vi.fn(() => providers),
     })
     ;(useRuntimeAvailabilityStore as any).mockReturnValue({

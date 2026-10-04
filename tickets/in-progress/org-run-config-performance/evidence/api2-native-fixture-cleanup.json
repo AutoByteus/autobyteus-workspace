@@ -1,0 +1,79 @@
+{
+  "command": {
+    "case": "API-009",
+    "argv": [
+      "pnpm",
+      "test:native-input-history"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:42:10.485382+00:00",
+    "finishedAt": "2026-10-03T22:42:24.150239+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 13.663269041,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-input-history.log"
+  },
+  "candidates": [
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-uXUI4z",
+      "prefix": "server-recovery-",
+      "born": 1791067343.744618,
+      "files": [
+        "raw_traces_active.jsonl",
+        "working_context_snapshot.json"
+      ],
+      "agentId": "recovery_tester_3425",
+      "ownershipProof": "exact command creation window + two fixture prefixes + snapshot agent ID in raw run log + three exact controlled seed inputs",
+      "preservedFiles": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-uXUI4z/raw_traces_active.jsonl",
+          "sha256": "204080906a1fcd6955d08bd6e161102dc9b7a92b03b22f7470ad894ca468ba80"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-uXUI4z/working_context_snapshot.json",
+          "sha256": "8989d2b86eaf9a95cb063fb5935dcb647ce19f060429c2eecf542fc98bc3ae7c"
+        }
+      ],
+      "removed": true
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-1H46CH",
+      "prefix": "server-recovery-",
+      "born": 1791067343.8072424,
+      "files": [
+        "raw_traces_active.jsonl",
+        "working_context_snapshot.json"
+      ],
+      "agentId": "recovery_tester_7149",
+      "ownershipProof": "exact command creation window + two fixture prefixes + snapshot agent ID in raw run log + three exact controlled seed inputs",
+      "preservedFiles": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-1H46CH/raw_traces_active.jsonl",
+          "sha256": "eb742d6cb19ba1f0fb6720461bc59429270db1326f8d81b4af1027fd861093cd"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-1H46CH/working_context_snapshot.json",
+          "sha256": "2b7988935cae529fd3eb7abe49aac2d265c8f0d2740656724bf77c8a9015f808"
+        }
+      ],
+      "removed": true
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-root-compaction-SYAA7J",
+      "prefix": "native-root-compaction-",
+      "born": 1791067343.8538656,
+      "files": [],
+      "ownershipProof": "exact two empty native fixture dirs created inside failed two-case setup command; no other fixture run active",
+      "preservedFiles": [],
+      "removed": true
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-root-compaction-ooWGxc",
+      "prefix": "native-root-compaction-",
+      "born": 1791067343.8030112,
+      "files": [],
+      "ownershipProof": "exact two empty native fixture dirs created inside failed two-case setup command; no other fixture run active",
+      "preservedFiles": [],
+      "removed": true
+    }
+  ]
+}

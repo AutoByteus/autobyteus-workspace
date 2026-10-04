@@ -53,6 +53,7 @@ describe('AgentRunConfigForm', () => {
     llmStore = {
       providerRows: [],
       providerSnapshots: vi.fn(() => []),
+          catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
       providersWithModelsForSelection: vi.fn(() =>
         llmStore.providerRows.filter((provider: any) => provider.models.length > 0),
       ),

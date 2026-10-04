@@ -1,0 +1,5 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs"]
+start=2026-10-03T22:41:14.795439+00:00
+
+exit=0 elapsed_seconds=2.4021318750000002

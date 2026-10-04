@@ -1,0 +1,111 @@
+{
+  "revision": "IR-002",
+  "at": "2026-10-03T21:59:44.798966+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "branch": "codex/org-run-config-performance",
+  "head": "f2dc1fd392201844bf28fdfdec26c7424a7ea7b2",
+  "base": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "taskSize": "Medium",
+  "architecturalRisk": "High",
+  "commitAuthorization": "None on this rework; scoped delta uncommitted",
+  "finding": "CR-001 / F-API-001",
+  "sourceFiles": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+      "sha256": "cc14f3ca51835bd2b4bae9d4ad5c63e306d83b65907da4c6e6d6baa345ea66b7",
+      "test": true,
+      "effectiveNonemptyLines": 80
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "sha256": "d9d96954058f0b9a7c4dc8e3a0d344f2edf790ef53c5fc845432164f41538de4",
+      "test": true,
+      "effectiveNonemptyLines": 331
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "sha256": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "test": false,
+      "effectiveNonemptyLines": 493
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "sha256": "cdc8c0074c63300c7881a5f9b7761ebd8310aae9bbec2e8b57b5653c31e67885",
+      "test": true,
+      "effectiveNonemptyLines": 174
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+      "sha256": "0df1be36f1c6a4b2cccd511e3cdaec175408e83cab4f27517db19721be2a5431",
+      "test": true,
+      "effectiveNonemptyLines": 525
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "sha256": "939dea37db65a6cabb240a93cc08cbc38c6fa098a68dedd67dd3ca18e924f997",
+      "test": true,
+      "effectiveNonemptyLines": 433
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "sha256": "2d054ebf92d9c8b2349a9e641aa9455466ccd19070f54443ee93518c0eb7c5d2",
+      "test": true,
+      "effectiveNonemptyLines": 154
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "sha256": "644eedce01d5257993f8413ca6182a40b4e00fbceff37ad13e7b239898bd1bf0",
+      "test": true,
+      "effectiveNonemptyLines": 147
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "sha256": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "test": false,
+      "effectiveNonemptyLines": 207
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/utils/llmConfigSchema.ts",
+      "sha256": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "test": false,
+      "effectiveNonemptyLines": 286
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts",
+      "sha256": "26446d6105207b9a36904179ea7b568d5d119db2b24ece8499c901d37131aae5",
+      "test": true,
+      "effectiveNonemptyLines": 147
+    }
+  ],
+  "changedOfReviewed60": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts"
+  ],
+  "manualProductionChangedLineDeltas": "10\t16\tautobyteus-web/components/workspace/config/MemberOverrideItem.vue\n33\t78\tautobyteus-web/composables/useRuntimeScopedModelSelection.ts\n13\t0\tautobyteus-web/utils/llmConfigSchema.ts\n",
+  "executedApiE2e": false,
+  "packagedValidation": false,
+  "performanceValidation": false,
+  "localChecks": {
+    "finalWebRegression": "446 tests / 32 files pass",
+    "sharedConsumerRegression": "30 tests / 5 files pass",
+    "webProductionBuild": "Pass / 19 routes after prebuild",
+    "prerequisites": "Pass",
+    "sourceDiffWhitespace": "Pass",
+    "standaloneVueTypecheck": "Not run; no pass claimed"
+  },
+  "selectedRule": 2,
+  "selectedRecipient": "/code_reviewer",
+  "manualProductionWithin500And220": true,
+  "sourceWhitespaceCheck": "pass",
+  "warnings": "raw preliminary attempts and captured whitespace retained; no standalone Vue typecheck or zero-pageErrors claim",
+  "productionSourceChanged": 3,
+  "changedExistingUnitFiles": 7,
+  "newUnitFiles": 1
+}

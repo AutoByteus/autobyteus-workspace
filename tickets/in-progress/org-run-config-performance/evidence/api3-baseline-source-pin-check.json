@@ -1,0 +1,47 @@
+{
+  "at": "2026-10-03T23:29:17.713Z",
+  "renderer": {
+    "path": "dist/renderer/_nuxt/workspace.BtwlJi55.js",
+    "expected": "283067e1b242db3952d4d5468ffe9378b39b6a69ab4fee1cda0f2f2baf365aac",
+    "actual": "283067e1b242db3952d4d5468ffe9378b39b6a69ab4fee1cda0f2f2baf365aac",
+    "match": true
+  },
+  "backend": [
+    {
+      "file": "agent-org-execution/services/agent-org-run-service.js",
+      "sha256": "811347a3634ac2984ada3201a8dcdb4f109ce76ea15c3def94e33939d666f9e5",
+      "actual": "811347a3634ac2984ada3201a8dcdb4f109ce76ea15c3def94e33939d666f9e5"
+    },
+    {
+      "file": "agent-org-execution/services/agent-org-run-planner.js",
+      "sha256": "83106093c0cd0e8ef3c76eaa52a45335205e59dea7a34e82aa510878155f3024",
+      "actual": "83106093c0cd0e8ef3c76eaa52a45335205e59dea7a34e82aa510878155f3024"
+    },
+    {
+      "file": "agent-execution/services/agent-run-identity-allocator.js",
+      "sha256": "d792e779575f7ae4e9ffc1238440e0fc80791681b404837b4d880ecc79f2dc57",
+      "actual": "d792e779575f7ae4e9ffc1238440e0fc80791681b404837b4d880ecc79f2dc57"
+    },
+    {
+      "file": "agent-org-execution/services/agent-org-execution-tree-location-service.js",
+      "sha256": "8520092bfe4663cad48e5e0dae8727f4327b61fabc6a636a2aaa3facc67d9c9f",
+      "actual": "8520092bfe4663cad48e5e0dae8727f4327b61fabc6a636a2aaa3facc67d9c9f"
+    },
+    {
+      "file": "run-history/services/root-run-package-readiness-index.js",
+      "sha256": "07d27c61a279e26f24c51c9f468fb40f56c0ba9080daa5b9f84806dc29140c7f",
+      "actual": "07d27c61a279e26f24c51c9f468fb40f56c0ba9080daa5b9f84806dc29140c7f"
+    },
+    {
+      "file": "run-history/services/root-run-package-current-validator.js",
+      "sha256": "83290a2008b13a618719d1a4df8265a924f57e62bffe37b47cacef83b4ca25f9",
+      "actual": "83290a2008b13a618719d1a4df8265a924f57e62bffe37b47cacef83b4ca25f9"
+    },
+    {
+      "file": "run-history/services/collaboration-root-history-service.js",
+      "sha256": "82c0d40ece2c17a702e28e62ccc2dabcf1eb900700fd26e28c8ba5c36aea9632",
+      "actual": "82c0d40ece2c17a702e28e62ccc2dabcf1eb900700fd26e28c8ba5c36aea9632"
+    }
+  ],
+  "allMatch": true
+}

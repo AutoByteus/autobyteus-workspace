@@ -1,0 +1,15 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs"]
+start=2026-10-03T21:00:20.979482+00:00
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+route.continue: Route is already handled!
+    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:13:328) {
+  name: 'Error'
+}
+
+Node.js v22.23.1
+
+exit=1 elapsed_seconds=1.838869791
