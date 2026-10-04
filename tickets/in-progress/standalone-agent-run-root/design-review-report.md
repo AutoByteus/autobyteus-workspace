@@ -2,165 +2,164 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/requirements-doc.md` (Approved, SR-002)
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/investigation-notes.md` (E-01–E-14)
-- Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/design-spec.md` (SR-004)
-- Supplemental Task Artifacts Reviewed: predecessor UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/cross-scope-agent-mentions-sr008/ui-ux-spec.md` (VIS-013, RD-004).
-- Relevant Solution Revision IDs: SR-001, SR-002, SR-003, SR-004 (answers ARCH-REV-001)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/requirements-doc.md` (Approved, SR-002; SR-005 added factual workspace and terminology notes only)
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/investigation-notes.md` (E-01–E-21)
+- Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/solution-revision-record.md` (SR-001–SR-005)
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/design-spec.md` (SR-005)
+- Supplemental Task Artifacts Reviewed: predecessor UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/cross-scope-agent-mentions-sr008/ui-ux-spec.md` (VIS-013, RD-004). Unchanged.
+- Relevant Solution Revision IDs: SR-002 (requirements basis), SR-004 (design passed in ARCH-REV-002), SR-005 (base refresh, deltas D-R1–D-R7)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: SR-004 revised package answering ARCH-REV-001 (AR-001–AR-003).
-- Prior Review Round Reviewed: Round 1 (`ARCH-REV-001`, Fail)
-- Latest Authoritative Round: 2
-- Current-State Evidence Basis: worktree `codex/standalone-agent-run-root` @ `2d3b66005`. Code read:
-  - `standalone-agent-run-lifecycle-service.ts`: binding at 74–81; `resolveCommandReadyAgentRun`, `activatePreparedRun` and `restorePersistedRun` at 84–96; `onHostPublished` at 362; `buildConfig` pulling `buildHostMemberExecutionContext` at 422;
-  - `agent-run-command-coordinator.ts:66-73`: `resolveCommandReadyAgentRun`, then `onActiveRunReady`, then `postUserMessage` with `lifecycleObserver`;
-  - `agent-stream-handler.ts:381-383`: `onActiveRunReady` → `bindSessionToRun`;
-  - `agent-collaboration-stream-handler.ts:50-68`: `connect` → `resolveCommandReadyRoot` (restores the host), projects the view with `isActive: true`;
-  - `agent-run-service.ts`: `createAgentRun`, `activatePreparedRun`, `restoreAgentRun`, `resolveAgentRun` → lifecycle;
-  - their callers: GraphQL `agent-run.ts:199, 275`; application scopes; the skill improver; `skill-improvement-target-context-resolver.ts` (metadata read only);
-  - web `graphql/mutations/agentMutations.ts` (`CreateAgentRun` and `RestoreAgentRun` are defined, but no web call sites were found);
-  - `run-history/projection/event-monitor-active-trace-page-projection.ts` (the REQ-007 server owner exists);
-  - web `docs/chat.md:255-268`.
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3 (delta review)
+- Trigger: SR-005. The branch was rebased from `2d3b66005` onto `origin/personal` @ `b37d7a934`, and the design was revised with deltas D-R1–D-R7.
+- Prior Review Round Reviewed: Round 2 (`ARCH-REV-002`, Pass on SR-004)
+- Latest Authoritative Round: 3
+- Current-State Evidence Basis: worktree `codex/standalone-agent-run-root`, head `b26f6436c` on base `b37d7a934`. Code read this round:
+  - `agent-execution/services/agent-run-identity-allocator.ts`. Its options are now only `agentDefinitionService?` and `createToken?`.
+  - The allocator's construction sites: `application-execution-scope-kernel-builder.ts:146` and `general-process-run-supervisor.ts:212`. Both inject `agentDefinitionService` only.
+  - `tests/architecture/application-framework-boundaries.test.ts:356-364`. The AFB-004 obligation still requires `agentRunManager`, `agentRunMetadataService`, `teamRunExecutionTreeLocationService` and `memoryDir`.
+  - The same test at lines 2029–2121 (tool-registration readiness). The expected `agent-tool-loader.ts` spec list lacks `project_tasks`.
+  - `startup/agent-tool-loader.ts:46`. Upstream `560a51129` registers `registerProjectTaskTools` through the single readiness owner, as the first `serverOwnedSpecs` entry.
+  - `git diff -M origin/personal HEAD` over the four relocated integration files under `tests/integration/standalone-agent-run-root/`.
+  - `agent-execution/prompt/standalone-collaboration-instruction.ts`. It imports and renders `WORK_REQUEST_EXECUTION_LLM_INSTRUCTION` under "Work Requests and Outcomes".
+  - A search for `containsRunId` in server `src` and `tests` found no references.
 
 ## Routing Classification Review
 
-- Task size: `Large`. Architectural risk: `High`. Confirmed: runtime ownership for every eligible standalone run (including Daily Assistant), lock order, a shared delivery-text change on every runtime, and a module move.
-- Independent Architecture Review required: `Yes`.
+- Task size: `Large`. Architectural risk: `High`. Both unchanged and still justified: SR-005 alters neither the ownership refactor nor its blast radius.
+- Independent Architecture Review required: `Yes`. The selected gate is consistent.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed`. In Round 2 every path preserves Q-3, and the coordinator ↔ root contract is defined.
-- Approved intent:
-  - REQ-001: one owner for the standalone run, with no user-visible change (Q-3; AC-001 requires the predecessor suites to pass unchanged).
-  - REQ-002/REQ-003: invisible refactors.
-  - REQ-004–REQ-008: small listed behavior changes.
-  - REQ-009: test health.
-  - REQ-010: no change (principle 6).
-- Scope guardrail: as stated. The preserved boundary covers every user-visible standalone behavior, including Stop/reopen, crash recovery and the Team tab, except REQ-004–REQ-008.
+- Overall Basis Status: `Confirmed`.
+- The approved intent (SR-002) is unchanged. The SR-005 edits to `requirements-doc.md` are factual: the new base, and "Daily Assistant" now being "General Agent" (ID `autobyteus-daily-assistant`). Neither changes a REQ or AC.
+- Eligibility does not depend on the definition name (E-18). The REQ-001 blast radius is therefore the same set of runs.
+- The upstream changes in the new base do not alter any BEH path in the design's map:
+  - Identity allocation (E-16) sits before root ownership and never touched the binding, the root or the coordinator.
+  - The instruction's work-request section (E-17) is additive text that REQ-005 builds on.
+  - The web drift (E-19) does not touch the REQ-007 or REQ-008 owners. I relied on E-19 for this and did not re-read the web diff.
 
 | BEH | Alignment | Evidence | Target Path | Status | Action |
 | --- | --- | --- | --- | --- | --- |
-| BEH-001 Standalone command | Pass | Pass | Pass. `StandaloneRunCommandPort.postUserMessage`: `ensureReady` → `onActiveRunReady` → admission → post with `postOptions` (AR-002 resolved). | Confirmed | — |
-| BEH-002 Child → host | Pass | Pass | Pass. Uniform `ensureReady`; no special wake path. | Confirmed | — |
-| BEH-003 Stop/delete/archive/shutdown | Pass | Pass | Pass | Confirmed | — |
+| BEH-001 Standalone command | Pass | Pass | Pass (unchanged since ARCH-REV-002) | Confirmed | — |
+| BEH-002 Child → host | Pass | Pass | Pass | Confirmed | — |
+| BEH-003 Stop/delete/archive/shutdown | Pass | Pass | Pass. In the fixture, cleanup through `endRoot` and Stop through `stopRoot` match the design (D-R7). | Confirmed | — |
 | BEH-004 Team collaborator agent | Pass | Pass | Pass | Confirmed | — |
 | BEH-005 Self-delegation | Pass | Pass | Pass | Confirmed | — |
-| BEH-006 Delivery text | Pass | Pass | Pass. Non-blocking note on the parser tolerating old headers. | Confirmed | — |
+| BEH-006 Delivery text | Pass | Pass | Pass. REQ-005 is applied on top of the upstream work-request section (D-R2). | Confirmed | — |
 | BEH-007 Token totals | Pass | Pass | Pass | Confirmed | — |
-| BEH-008 Earlier events | Pass | Pass | Pass. The server owner is `event-monitor-active-trace-page-projection.ts`. | Confirmed | — |
+| BEH-008 Earlier events | Pass | Pass | Pass. The doc target moved to line 295 (D-R6). | Confirmed | — |
 | BEH-009 Host label | Pass | Pass | Pass | Confirmed | — |
-| BEH-010 Preserved | Pass | Pass | Pass. Connect → `resolveRoot` → `ensureHostReady` as today, with the real `isActive` (AR-001). Entry points are dispositioned and the bypass fails loudly (AR-003). | Confirmed | — |
+| BEH-010 Preserved | Pass | Pass | Pass | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose | Linked | Complete | Consistent | Status | Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| Predecessor UI/UX spec (VIS-013, RD-004) | Pass | Pass | Pass | Pass | Pass (Approved) | — |
+| Predecessor UI/UX spec (VIS-013, RD-004) | Pass | Pass | Pass | Pass | Pass (Approved, unchanged) | — |
 
 ## Task Design Health Assessment Verdict
 
-Pass. The root cause is a `Boundary Or Ownership Issue` (one run, two owners; collaborator agents in configured-member structures) plus `File Placement Or Responsibility Drift`, backed by E-01–E-03 and confirmed in the code. The user requested the refactor now, and sections 1–3 reflect it.
+Pass, unchanged:
+- The root cause is a `Boundary Or Ownership Issue` plus `File Placement Or Responsibility Drift`, as in E-01–E-03.
+- The refactor is required now.
+- SR-005 adds no new root cause. The guard drift is a stale test inventory, not production design drift (see D-R3 below).
 
 ## Spine Inventory Verdict
 
-| Spine | Verdict | Notes |
-| --- | --- | --- |
-| DS-001 Host command | Pass | The port is defined; interrupt and approval act on a live host only |
-| DS-002 Child → host | Pass | — |
-| DS-003 Stop/delete/archive/shutdown | Pass | `endRoot` is idempotent; the plain-run fallback is stated |
-| DS-004 Team collaborator agent | Pass | — |
-| DS-005 Token summary | Pass | Live tree, else stored; each record counted once |
-| DS-006 Earlier events | Pass | — |
-| Bounded: host readiness | Pass | One readiness attempt joined by concurrent callers |
-| Bounded: lock order | Pass | Gate → lane. The lifecycle never calls back into the root after the binding is removed. Delete and archive take `endRoot` before their catalog mutation. |
+All spines pass unchanged since ARCH-REV-002: DS-001–DS-006, plus the bounded host-readiness and lock-order spines. D-R1 removes nothing these spines used, because the design never called `containsRunId`.
 
 ## Boundary / Dependency / Interface Verdicts
 
-| Item | Verdict | Notes |
+Unchanged from ARCH-REV-002 (Pass). The SR-004 editorial note now names `AgentRunService`'s injected `StandaloneRunLifecyclePort`. This resolves the prior non-blocking dependency-rule note at the design level. Whether the code honors the rule is for code review to verify.
+
+## SR-005 Delta Verdicts
+
+| Delta | Verdict | Notes |
 | --- | --- | --- |
-| `StandaloneAgentRunRoot` as the single owner; lifecycle as the activation backend and sole metadata writer | Pass | — |
-| `StandaloneAgentRunRootManager` (`resolveRoot` / `stopRoot` / `endRoot` / `stopAll`); no statics | Pass | — |
-| `StandaloneRunCommandPort` (coordinator → root, injected; no import cycle) | Pass | Carries `postOptions` and `onActiveRunReady`; returns `{run, admission, post}` |
-| Forbidden bypass: "callers never use the lifecycle for eligible-run commands" | Pass | Entry-point table; `activateHost` throws without a member context for eligible metadata. Note: `AgentRunService` now reaches the root, so it also needs an injected port (see Residual). |
-| `TeamRootCollaboratorAgentRegistry` | Pass | — |
-| Delivery header | Pass | Note: the web RD-004 parser must accept headers with and without `sender address` (AC-010, existing history) |
-| `getStandaloneRunTokenUsageSummary` | Pass | — |
+| D-R1: no `containsRunId` | Pass | Verified absent from `src` and `tests`. Not reintroducing it is consistent with upstream's identity contract (E-16). No SR-004 decision depended on it. |
+| E-16 effect on REQ-010 | Pass | Run creation no longer reads standalone packages, which removes one more read path. The REQ-010 "no change" classification (Q-4) is reinforced, not reopened. |
+| D-R2: work-request section kept | Pass | Verified at the moved path. Because the shared contract's "return the result … to the requesting agent" relies on an addressable sender, REQ-005 is complementary. The prompt snapshots for REQ-005 must be layered on top of it. |
+| D-R3: guard drift handled as REQ-009 maintenance | Pass | See the analysis below. |
+| D-R4: 26 base failures out of scope | Pass (see residual risk) | Not fixing unrelated base failures is the right scope decision. The "same tests fail on a clean base" comparison must be by test identity, not count. |
+| D-R5: terminology | Pass | Naming only. Eligibility does not depend on the name or ID. |
+| D-R6: `chat.md` line 295 | Pass | — |
+| D-R7: fixture ownership | Pass | See the analysis below. |
+
+### D-R3 analysis: guard maintenance, not a boundary question
+
+- **AFB-004, `AgentRunIdentityAllocator`.**
+  - The guard's purpose (AFB-004) is "inject the named application-scoped dependency" at named construction sites.
+  - After upstream `b5715ea5b`, the allocator's constructor accepts only `agentDefinitionService` (plus the `createToken` test seam).
+  - Both production construction sites inject `agentDefinitionService`.
+  - The four other required inputs name options that no longer exist. The obligation therefore cannot be satisfied by any correct code, so it is stale rather than revealing a violation.
+  - Reducing `requiredInputs` to `["agentDefinitionService"]` keeps the rule at full strength for the allocator's only remaining application-scoped dependency.
+  - It does **not** weaken the rule, provided the obligation entry stays and keeps requiring that input. Deleting the obligation entry would weaken the rule.
+- **Tool-registration readiness, `registerProjectTaskTools`.**
+  - The test's rule is "required tool registration stays behind the single lifecycle readiness owner".
+  - Upstream `560a51129` registers project task tools *through* that owner (`agent-tool-loader.ts:46`), not around it. That is compliant, so the expected inventory is a stale snapshot.
+  - Add `{ key: "project_tasks", name: undefined, modulePath: "../agent-tools/project-tasks/project-task-native-tools.js", exportName: "registerProjectTaskTools" }` to the expected list.
+    - It goes in source order: after `core` and before `browser`.
+    - The comparison is a strict `toEqual` on an ordered array.
+  - The other assertions in that test (no direct `registerTools`, `registerProvisionedSearchTool`, or `loadAllAgentTools` callers) stay as they are.
+- **Scope basis.**
+  - REQ-009 already authorizes "the guard is updated deliberately with a recorded reason".
+  - AC-009 requires the suite to be green, and the suite cannot be green on the new base without these two updates.
+  - Neither update touches production code or the boundary model, so neither is a Requirement Gap or a new obligation.
+  - D-R3's escape clause (a real violation → Design Impact) is the right safeguard. I found no evidence it applies.
+
+### D-R7 analysis: fixture conflict resolution against the AC-001 gate
+
+- Upstream's owned-resource cleanup is preserved:
+  - the `close` aggregation and the setup-failure cleanup are kept;
+  - the cleanup test's assertions and structure are unchanged (4 lines changed: import and spy target).
+- The other changes are the API substitutions that AC-001 itself requires (`AgentRunCollaborationRootManager` must no longer exist):
+  - `terminateRoot` → `endRoot`, for idempotent final cleanup;
+  - `terminateRoot` → `stopRoot(...)` matched with `{ rootEnded: true }`, for user Stop;
+  - `ensureRoot(metadata)` → `resolveRoot(HOST)`;
+  - `resolveCommandReadyAgentRun` → `activateHost`/`terminateHost`;
+  - the `getInstance` spy → `bind`/`releaseProcessStandaloneAgentRunRootManager`.
+- The behavioral assertions are unchanged. This includes "dormant/stored reads never activate the host" (`restoreHost` not called), which is consistent with `resolveRoot` not starting the host.
+- I read "pass unchanged" in AC-001 as "assertions and observable outcomes unchanged". It cannot mean "zero API edits", because AC-001 mandates the removal. This is consistent with ARCH-REV-002.
+- Code review should still confirm that no assertion was relaxed in the other relocated predecessor tests. `native-root-termination` changed its wiring (17 lines), but not visibly its assertions.
 
 ## Existing Capability Reuse / Allocation / Structures / File Mapping / Placement
 
-Pass:
-- the handle follows `ConfiguredAgentExecutionHandle`;
-- the registries, task lifecycle, communication engine, admission and package store are reused;
-- the module move parallels `agent-org-execution`;
-- each file stays at or under 400 lines.
+Pass, unchanged. The file-size target is still required: `standalone-agent-run-root.ts` is 413 lines and `standalone-agent-run-lifecycle-service.ts` is 450. This is remaining implementation work (E-21), not a design change.
 
 ## Removal / Legacy Verdict
 
-Pass. Removed:
-- the binding;
-- the old manager and its statics;
-- `bindCollaboration`;
-- `onHostPublished`;
-- `resolveCommandReadyRoot`;
-- the wake branch;
-- the liveness special case;
-- the `addCollaborator`/`memberContexts.push` path;
-- the `getInstance()` calls.
-
-No aliases remain.
+Pass, unchanged. No `agent-run-collaboration/` or `containsRunId` references remain in server `src`/`tests` (E-15, verified).
 
 ## Persisted-Data Transition Verdict
 
-Pass: `Not Affected`. There are no format or semantic changes, and the token roll-up only reads.
+Pass: `Not Affected`. The rebase changes no format. Upstream's identity change does not alter stored package or metadata shapes that this design reads.
 
 ## Change / Refactor Safety Verdict
 
-Pass. The order is REQ-009 baseline first, then the Team registry, the Org extraction and the REQ-001 sub-steps. The predecessor suites passing unchanged is the gate, and the escalation triggers are explicit.
+Pass. A backup branch and a backup folder exist.
+
+Remaining implementation order:
+1. D-R3 guard maintenance, together with the model-save cause record, to get a green REQ-009 baseline;
+2. the REQ-003 size target;
+3. REQ-005–REQ-008;
+4. the docs and live checks.
+
+The escalation triggers are unchanged.
 
 ## Example Adequacy Verdict
 
-Pass.
+Pass. D-R3 names both concrete inventory edits.
 
 ## Material Premise Validation
 
-### `P-001` — A user messages a collaborator of a stopped standalone run
+There are no new material premises in SR-005. P-001–P-003 from ARCH-REV-002 remain resolved or dispositioned.
 
-- Requirement: Q-3 / REQ-001 ("no user-visible change"); predecessor AC-006/AC-012 (UXJ-002/UXJ-005).
-- Initiating basis: `User`. Surface: a stopped standalone run's collaborator row and its composer. Action: send.
-- Forward path:
-  - **Today:** the web connects `/ws/agent-collaboration/:hostRunId` → `connect` → `resolveCommandReadyRoot`, which restores the host (`agent-collaboration-stream-handler.ts:54`) → the view is projected with `isActive: true` (line 68) → child command.
-  - **SR-003:** `connect` → `resolveRoot`, which does not start the host (Key Tradeoffs, "Stream connect no longer restores the host").
-- Consequence:
-  - The host stays stopped until a child message reaches it.
-  - The run's active state (run row status, active-runs views, the projected `isActive`) differs from today after this action.
-  - Similarly, a failed mention admission on a stopped run no longer activates the host first.
-  - The design asserts this is unobservable, but the host's running state is shown to the user.
-- Reachability: `Reachable` → AR-001. Round 2: resolved by preserving connect → `ensureHostReady`.
+The one candidate premise considered this round, *"the AFB-004 failure hides a real production injection violation"*, is `Not Reachable`:
+- both construction sites inject the allocator's only application-scoped dependency;
+- the stale inputs do not exist on the constructor type.
 
-### `P-002` — A stopped eligible run receives its first host command after the refactor
-
-- Requirement: REQ-001/AC-001 (predecessor suites unchanged); AC-010.
-- Initiating basis: `User`. Action: send in a stopped standalone run's composer.
-- Forward path:
-  - **Today:** `AgentRunCommandCoordinator.postUserMessage` → `resolveCommandReadyAgentRun` → `input.onActiveRunReady(run)` (`agent-stream-handler.ts:381`: `bindSessionToRun`, which attaches the live stream) → `run.postUserMessage(msg, {lifecycleObserver})`, which updates the command record.
-  - **SR-003:** activation moves inside `root.executeHostCommand` (`host.ensureReady`). The port's shape (`post, interrupt or approve; plus mentions`) does not carry `onActiveRunReady` or `lifecycleObserver`.
-- Consequence: unless they are carried through, the live host stream is not bound to a newly activated run (no live output) and command-record lifecycle facts are lost.
-- Reachability: `Reachable` → AR-002. Round 2: resolved by the port contract.
-
-### `P-003` — An eligible host activated through `AgentRunService.createAgentRun` / `restoreAgentRun` / `resolveAgentRun`
-
-- Initiating basis:
-  - These are public GraphQL mutations (`createAgentRun`, `restoreAgentRun`).
-  - In-repo callers are application-owned or helper runs, which are ineligible.
-  - Web defines `CreateAgentRun` and `RestoreAgentRun`, but no web call sites were found.
-- Consequence if exercised:
-  - Today `buildConfig` pulls the host member context through the binding.
-  - After the binding is removed, these paths would start an eligible host without its member context or root. That host would have no `delegate_task`/`send_message_to` (predecessor REQ-012).
-  - A later root `ensureReady` would find it already live.
-- Reachability: `Unclear` (no supported UI surface found). The proportionate response is a stated disposition, not machinery → AR-003. Round 2: dispositioned.
+It drives no finding.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -172,11 +171,7 @@ None.
 
 ## Findings
 
-None open. The resolution of each finding is in `architecture-review-revision-record.md` under ARCH-REV-002.
-
-- AR-001: Resolved (option a, behavior preserved).
-- AR-002: Resolved (port contract).
-- AR-003: Resolved (entry-point dispositions, plus a loud failure on bypass).
+None open. The prior findings AR-001, AR-002 and AR-003 remain Resolved (ARCH-REV-002).
 
 ## Classification
 
@@ -184,18 +179,27 @@ N/A (Pass).
 
 ## Recommended Recipient
 
-`/software_engineering_team/implementation_engineer`
+`/implementation_engineer`
 
 ## Residual Risks
 
-- **Implementation note (dependency rule).** `AgentRunService` (in `agent-execution`) now reaches the root for eligible runs: `createAgentRun`, `activatePreparedRun`, `restoreAgentRun`, `resolveAgentRun` and `terminateAgentRun` → `stopRoot`. The design's dependency rule allows only the coordinator, through `StandaloneRunCommandPort`. Wire `AgentRunService` through an injected port as well (extend the port, or add a sibling port wired by the supervisor) rather than importing `standalone-agent-run-root/*`, and update the rule.
-- The REQ-001 blast radius covers Daily Assistant and every eligible run. Mitigated by the unchanged predecessor suites and live checks.
-- Host activation runs under the root gate for host commands and connects, so a slow restore briefly blocks child deliveries in that root. This matches the predecessor's DS-009.
-- The REQ-005 header change affects every runtime. The web RD-004 parser accepts both header forms (recorded in the design).
-- The REQ-009 model-save cause is unknown. A behavior-changing production defect returns as a Design Impact.
+- **Base-failure masking (D-R4).**
+  - `agent-run-manager` has 16 base failures and sits on the REQ-001 host lifecycle path.
+  - Downstream must compare failing *test names and failure messages* against the clean base, not counts.
+  - A base-failing test that now fails differently is this branch's responsibility.
+- **Upstream may fix the same guard drift.**
+  - If `origin/personal` corrects the AFB-004 or readiness inventories before this branch merges, there will be a trivial conflict. Take upstream's version if it is equivalent.
+  - Record the reason for each guard edit in the implementation handoff, as REQ-009 requires.
+- **Model-save root cause.** The suite now passes on the branch, but the cause is unrecorded. If the cause turns out to be a production defect that changes behavior, it still returns as a Design Impact.
+- **Unchanged since ARCH-REV-002:**
+  - the REQ-001 blast radius (General Agent and every eligible run);
+  - host activation under the root gate;
+  - the REQ-005 header change on every runtime, with the web parser accepting both header forms.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. P-001 and P-002 are resolved. P-003 is dispositioned.
-- Notes: the SR-004 package is ready for implementation from `2d3b66005`.
+- Material-Premise Gate: `Pass`. No new premises; one candidate is classified `Not Reachable`.
+- Notes:
+  - The SR-005 package, on base `b37d7a934`, is ready for the implementation engineer to finish the remaining E-21 work.
+  - D-R3 is sound guard maintenance under REQ-009, provided the obligation entry is narrowed rather than deleted and the registration spec is added in source order.

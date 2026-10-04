@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / initial review of SR-003 | SR-002, SR-003 | N/A | Fail | AR-001, AR-002, AR-003 |
 | ARCH-REV-002 | Round 2 / SR-004 answers ARCH-REV-001 | SR-004 | Fail | Pass | AR-001, AR-002, AR-003 (all resolved) |
+| ARCH-REV-003 | Round 3 / SR-005 base refresh (delta review) | SR-005 (requirements SR-002) | Pass | Pass | None (AR-001–AR-003 remain resolved) |
 
 ## Revision Entries
 
@@ -65,3 +66,37 @@ None.
   - host activation under the gate;
   - header parser tolerance;
   - the unknown model-save cause.
+
+### ARCH-REV-003 — SR-005 base refresh: deltas D-R1–D-R7 sound; D-R3 is valid REQ-009 guard maintenance; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/design-review-report.md`
+- Review round and trigger: Round 3 (delta review). The Solution Designer sent SR-005 as `Architecture Design Complete` (Large/High) after rebasing the branch onto `origin/personal` @ `b37d7a934`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `architecture-design-handoff.md`; N/A.
+- Relevant solution revision IDs: SR-005. Requirements basis SR-002, unchanged.
+- Prior authoritative decision: Pass (ARCH-REV-002, on SR-004 at base `2d3b66005`).
+- Current authoritative decision: Pass.
+- What changed: reviewed D-R1–D-R7 against the rebased code at `b26f6436c`.
+  - **D-R3, AFB-004.** The `AgentRunIdentityAllocator` constructor now accepts only `agentDefinitionService`, and both construction sites inject it. Narrow `requiredInputs` to that input; do not delete the obligation.
+  - **D-R3, tool registration.** `registerProjectTaskTools` is registered through the single readiness owner (`agent-tool-loader.ts:46`). Add it to the ordered expected list after `core`.
+  - **D-R1.** `containsRunId` is verified absent.
+  - **D-R2.** The work-request section is verified at the moved instruction path.
+  - **D-R7.** In the fixture and cleanup test diffs against upstream, only AC-001-mandated API substitutions changed; assertions are unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Resolved | SR-004/SR-005 | Design text unchanged; no rebase delta touches stream connect |
+| AR-002 | Resolved | Resolved | SR-004/SR-005 | Port contract unchanged |
+| AR-003 | Resolved | Resolved | SR-004/SR-005 | Entry-point dispositions unchanged. E-16 removes one package read from run creation; there is no new entry point |
+
+- New or remaining finding IDs: none.
+- Material classification changes: none. The classification stays Large/High.
+- Recommended recipient: `/implementation_engineer`, then an informational notice to `/solution_designer`.
+- Remaining risks or uncertainty:
+  - base-failure masking: compare failures by test identity and message, not by count (`agent-run-manager` is on the REQ-001 path);
+  - a possible upstream fix of the same guard inventories;
+  - the model-save cause is still unrecorded;
+  - the General Agent blast radius;
+  - host activation under the gate;
+  - header parser tolerance.

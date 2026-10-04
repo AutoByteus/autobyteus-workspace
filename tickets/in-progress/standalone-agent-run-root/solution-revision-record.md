@@ -79,3 +79,8 @@
 - Routing: the handoff rules route a revised Large/High package to `/architecture_reviewer`. ARCH-REV-002 covered SR-004
   on the old base. There is no rule from Solution Designer to code review. Code review follows the implementation
   engineer's handoff once implementation is complete (E-21 lists the remaining work).
+- 2026-10-04 note (no new SR round): ARCH-REV-003 gave **Pass** on SR-005 (requirements basis SR-002); report
+  `design-review-report.md`, record `architecture-review-revision-record.md`. D-R3 confirmed as REQ-009 guard
+  maintenance, with reviewer conditions: narrow the AFB-004 obligation to `agentDefinitionService` (do not delete it);
+  add `project_tasks` to the readiness list in source order. Residual: compare base failures by test identity and
+  message, not count. The reviewer delivered the implementation handoff to `/implementation_engineer`; not repeated here.

@@ -93,3 +93,4 @@
   Large/High" → `/architecture_reviewer`. No rule routes from Solution Designer to code review. Code review follows the
   implementation engineer's completed handoff.
 - SR-005 delivered to /architecture_reviewer on 2026-10-04 (target run `architecture_reviewer_2e6d87408aa4462c992aae977449ef6a`).
+- ARCH-REV-003 Pass on SR-005 recorded 2026-10-04; implementation handoff delivered by the reviewer to /implementation_engineer.
