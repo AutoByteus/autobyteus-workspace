@@ -3,6 +3,7 @@ import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { resolveTurnIdFromAppServerMessage } from "../thread/codex-thread-id-resolver.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
+import type { CodexCompactionAbandonReason } from "./codex-provider-compaction-status-projector.js";
 
 export type CodexTurnEventConverterContext = {
   createEvent: (
@@ -17,6 +18,20 @@ export type CodexTurnEventConverterContext = {
   closeAllReasoningBlocks: (codexEventName: string) => AgentRunEvent[];
   clearOrderedToolsForBoundary: (payload: JsonObject) => void;
   clearAllOrderedTools: () => void;
+  /** Failed closes for compactions still open when the turn ends (all open ones when the turn id is unknown). */
+  closeOpenCompactionsForTurn: (
+    codexEventName: string,
+    turnId: string | null,
+    reason: CodexCompactionAbandonReason,
+  ) => AgentRunEvent[];
+};
+
+const resolveTurnEndAbandonReason = (payload: JsonObject): CodexCompactionAbandonReason => {
+  const turn = payload.turn && typeof payload.turn === "object" && !Array.isArray(payload.turn)
+    ? payload.turn as Record<string, unknown>
+    : null;
+  const status = turn?.status ?? payload.status;
+  return status === "interrupted" ? "interrupted" : status === "failed" ? "turn_failed" : "turn_ended";
 };
 
 export const isCodexTurnEventName = (codexEventName: string): boolean =>
@@ -44,8 +59,14 @@ export const convertCodexTurnEvent = (
         payload,
       );
       context.clearOrderedToolsForBoundary(payload);
+      const abandonedCompactions = context.closeOpenCompactionsForTurn(
+        codexEventName,
+        turnId,
+        resolveTurnEndAbandonReason(payload),
+      );
       return [
         ...completionReasoningEnds,
+        ...abandonedCompactions,
         context.createEvent(codexEventName, AgentRunEventType.TURN_COMPLETED, {
           ...(turnId ? { turnId } : {}),
         }),

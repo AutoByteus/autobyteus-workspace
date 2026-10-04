@@ -2,6 +2,7 @@ import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
+import type { CodexCompactionAbandonReason } from "./codex-provider-compaction-status-projector.js";
 
 const asObject = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -22,6 +23,12 @@ export type CodexThreadLifecycleEventConverterContext = {
   closeAllReasoningBlocks: (codexEventName: string) => AgentRunEvent[];
   clearOrderedToolsForBoundary: (payload: JsonObject) => void;
   clearAllOrderedTools: () => void;
+  closeOpenCompactionsForTurn: (
+    codexEventName: string,
+    turnId: string | null,
+    reason: CodexCompactionAbandonReason,
+  ) => AgentRunEvent[];
+  closeAllOpenCompactions: (codexEventName: string, reason: CodexCompactionAbandonReason) => AgentRunEvent[];
 };
 
 export const isCodexThreadLifecycleEventName = (
@@ -54,6 +61,14 @@ export const convertCodexThreadLifecycleEvent = (
         payload.error_scope === "turn" &&
         payload.error_effect === "terminal" &&
         turnId !== null;
+      // A terminal error ends its turn (turn scope) or the whole runtime: started compactions cannot complete.
+      const abandonedCompactions = isTurnTerminal
+        ? context.closeOpenCompactionsForTurn(codexEventName, turnId, "turn_failed")
+        : payload.error_effect === "terminal"
+          ? context.closeAllOpenCompactions(codexEventName,
+            (asObject(payload.error)?.code ?? payload.code) === "CODEX_APP_SERVER_CLOSED"
+              ? "app_server_closed" : "runtime_error")
+          : [];
       let reasoningEnds: AgentRunEvent[] = [];
       if (isTurnTerminal) {
         reasoningEnds = context.closeReasoningBlocksForBoundary(codexEventName, payload);
@@ -84,7 +99,7 @@ export const convertCodexThreadLifecycleEvent = (
         AgentRunEventType.ERROR,
         errorPayload,
       );
-      return [...reasoningEnds, errorEvent];
+      return [...reasoningEnds, ...abandonedCompactions, errorEvent];
     }
     default:
       return [];
