@@ -13,6 +13,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 import { getApolloClient } from '~/utils/apolloClient';
+import { GET_STANDALONE_RUN_TOKEN_USAGE_SUMMARY } from '~/graphql/queries/token_usage_meter_queries';
 
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(),
@@ -170,10 +171,11 @@ const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsage
   ...overrides,
 });
 
-const upsertAgentSummary = (
+/** A standalone run's panel shows its roll-up (REQ-006); seed it as the roll-up query would. */
+const upsertStandaloneRunSummary = (
   store: ReturnType<typeof useTokenUsageMeterStore>,
   summary: TokenUsageRunSummary,
-) => store.upsertRecordBackedAgentRunSummary({ runId: summary.runId!, summary });
+) => store.upsertRecordBackedStandaloneRunSummary({ runId: summary.runId!, summary });
 
 const buildSummaryDto = (summary: TokenUsageRunSummary) => ({
   run_id: summary.runId,
@@ -287,7 +289,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Claude Agent'));
-    upsertAgentSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
+    upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
       latestModelProvider: 'ANTHROPIC', latestModelIdentifier: 'claude-opus-5-5',
       latestSelectedRawModelId: 'claude-opus-5-5[1m]', hasCacheWriteRateAssumption: true }));
     selectionStore.setRunSelection('run-1', 'agent');
@@ -305,7 +307,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    upsertAgentSummary(meterStore, buildSummary());
+    upsertStandaloneRunSummary(meterStore, buildSummary());
     selectionStore.setRunSelection('run-1', 'agent');
 
     const wrapper = mountPanel();
@@ -375,7 +377,7 @@ describe('TokenUsageMeterPanel', () => {
       usageReportCount: 199,
     });
     const queryMock = vi.fn().mockResolvedValue({
-      data: { getAgentRunTokenUsageSummary: durableSummary },
+      data: { getStandaloneRunTokenUsageSummary: durableSummary },
     });
     vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
     selectionStore.setRunSelection('run-1', 'agent');
@@ -385,6 +387,7 @@ describe('TokenUsageMeterPanel', () => {
     await nextTick();
 
     expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
+      query: GET_STANDALONE_RUN_TOKEN_USAGE_SUMMARY,
       variables: { runId: 'run-1' },
       fetchPolicy: 'network-only',
     }));
@@ -396,12 +399,42 @@ describe('TokenUsageMeterPanel', () => {
     expect(primary).not.toContain('2 reports');
   });
 
+  it('shows a standalone run total that includes its collaborators and refetches it when the host reports usage (REQ-006)', async () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Research Assistant'));
+    const rollup = (grossInputTokens: number, usageReportCount: number) => buildSummary({
+      grossInputTokens, outputTokens: 0, totalTokens: grossInputTokens, usageReportCount,
+    });
+    const queryMock = vi.fn()
+      .mockResolvedValueOnce({ data: { getStandaloneRunTokenUsageSummary: rollup(3_000_000, 3) } })
+      .mockResolvedValueOnce({ data: { getStandaloneRunTokenUsageSummary: rollup(4_000_000, 4) } });
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const wrapper = mountPanel();
+    await flushPromises();
+    expect(wrapper.get('[data-test="gross-input-card"]').text()).toContain('3M');
+    expect(wrapper.get('[data-test="token-usage-primary"]').text()).toContain('3 reports');
+
+    // The host's own live report (exact, host only) never replaces the roll-up; it triggers its refetch.
+    meterStore.applyTokenUsageUpdated({
+      usage_event_id: 'host-event', idempotency_key: 'host-key', run_id: 'run-1',
+      run_summary_after_event: buildSummaryDto(buildSummary({ grossInputTokens: 1_000_000, usageReportCount: 2 })),
+    } as any);
+    await flushPromises();
+    expect(queryMock).toHaveBeenCalledTimes(2);
+    expect(wrapper.get('[data-test="gross-input-card"]').text()).toContain('4M');
+    expect(wrapper.get('[data-test="token-usage-primary"]').text()).toContain('4 reports');
+  });
+
   it('renders the selected Claude known prompt/capacity and derived progress without changing cost', () => {
     const agentContextsStore = useAgentContextsStore();
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Claude Agent'));
-    upsertAgentSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
+    upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
       latestModelIdentifier: 'claude-opus-5-5', latestPromptTokens: 22_135,
       effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 2.2135 }));
     selectionStore.setRunSelection('run-1', 'agent');
@@ -421,7 +454,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    upsertAgentSummary(meterStore, buildSummary({
+    upsertStandaloneRunSummary(meterStore, buildSummary({
       effectiveContextWindowTokens: null,
       contextWindowUsagePercent: null,
       latestPromptTokens: 67_772,
@@ -442,7 +475,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    upsertAgentSummary(meterStore, buildSummary());
+    upsertStandaloneRunSummary(meterStore, buildSummary());
     selectionStore.setRunSelection('run-1', 'agent');
 
     const wrapper = mountPanel();
@@ -472,7 +505,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    upsertAgentSummary(meterStore, buildSummary({
+    upsertStandaloneRunSummary(meterStore, buildSummary({
       standardInputTokens: 0,
       cacheMissInputTokens: 0,
       cacheReadInputTokens: 0,
@@ -525,7 +558,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    upsertAgentSummary(meterStore, buildSummary({ reasoningOutputTokens: 0, estimatedApiReasoningOutputCost: null }));
+    upsertStandaloneRunSummary(meterStore, buildSummary({ reasoningOutputTokens: 0, estimatedApiReasoningOutputCost: null }));
     selectionStore.setRunSelection('run-1', 'agent');
 
     const wrapper = mountPanel();
@@ -538,7 +571,7 @@ describe('TokenUsageMeterPanel', () => {
     const selectionStore = useAgentSelectionStore();
     const meterStore = useTokenUsageMeterStore();
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
-    upsertAgentSummary(meterStore, buildSummary({
+    upsertStandaloneRunSummary(meterStore, buildSummary({
       apiCostStatus: 'mixed',
       cacheCreationInputTokens: 1000,
       cacheCreationInputTokenRate: 0.5,

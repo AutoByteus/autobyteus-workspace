@@ -1,4 +1,5 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { resolveActiveTracePageSenderAddresses } from "../../run-history/projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../../run-history/projection/run-projection-types.js";
 import { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
 import {
@@ -66,12 +67,14 @@ export class StandaloneRootMemberViewProjectionService {
 
   async getActiveTracePage(hostRunId: string, memberAddress: string, agentRunId: string, beforeCursor?: string | null): Promise<EventMonitorActiveTracePage> {
     const location = await this.requireLocation(hostRunId, memberAddress, agentRunId);
-    return this.agentViews.getActiveTracePageFromMetadata({
+    const page = await this.agentViews.getActiveTracePageFromMetadata({
       runId: location.agentRunId,
       metadata: metadataFor(location),
       beforeCursor,
       canonicalSubject: `agent:${location.rootRunId}:member:${location.memberAddress}:agent:${location.agentRunId}`,
     });
+    const index = new StandaloneRootExecutionIndex(location.tree);
+    return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
   }
 
   private async requireLocation(hostRunId: string, memberAddress: string, agentRunId: string) {

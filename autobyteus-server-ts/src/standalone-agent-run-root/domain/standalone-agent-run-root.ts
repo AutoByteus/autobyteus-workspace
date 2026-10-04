@@ -259,21 +259,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   executeAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
-      const agent = this.index.getAgent(agentRunId);
-      if (!agent) return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not in Agent root '${this.hostRunId}'.` };
-      if (agent.executionKind === "host") {
-        return { accepted: false, code: "AGENT_ROOT_HOST_COMMAND_REJECTED", message: "Commands for the run's own agent go through its Agent stream." };
-      }
-      const execute = () => agent.host.hostKind === "root"
-        ? this.options.rootAgents.executeCommand(agentRunId, command)
-        : this.options.teams.require(agent.host.hostRunId).executeDirectAgentCommand(agentRunId, command);
-      if (command.kind !== "post_message") {
-        return this.delivery.isLiveChild(agentRunId)
-          ? execute()
-          : { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in Agent root '${this.hostRunId}'.` };
-      }
-      // Operator input wakes a shut-down child exactly like send_message_to.
-      return this.delivery.withLiveLease(agentRunId, execute);
+      return this.delivery.executeChildCommand(agentRunId, command);
     });
   }
 

@@ -1,6 +1,6 @@
 import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler'
 import { reactive, shallowReactive } from 'vue'
-import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
+import { memberDisplayName, memberTitleName } from '~/utils/collaboration/memberDisplayName'
 import type {
   AgentRunCollaborationEventDto,
   AgentRunCollaborationViewDto,
@@ -281,7 +281,9 @@ export class AgentRunCollaborationContext {
 
   private identityOf(agentRunId: string): CollaborationMessageMemberIdentity {
     const address = this.index.addressOf(agentRunId)!
-    const common = { address, label: nameAt(address) }
+    // The run's own agent reads as its name ("Research Assistant", as in "From Research Assistant:",
+    // VIS-013); collaborators and members keep the shared lowercase row format (VIS-004/009/012).
+    const common = { address, label: agentRunId === this.hostRunId ? memberTitleName(address) : nameAt(address) }
     const child = this.index.agents.get(agentRunId)
     if (!child) return Object.freeze({ ...common, kind: 'configured' })
     return Object.freeze({ ...common, kind: 'delegated', hostRunId: child.teamRunId ?? this.hostRunId,

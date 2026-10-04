@@ -42,6 +42,17 @@ class UserVisualObject {
   @Field(() => String) text!: string;
   @Field(() => [EventMonitorActiveTraceAttachmentObject]) attachments!: EventMonitorActiveTraceAttachmentObject[];
 }
+@ObjectType("EventMonitorInterAgentVisual")
+class InterAgentVisualObject {
+  @Field(() => ID) visualId!: string;
+  @Field(() => ID) eventId!: string;
+  @Field(() => Int) kindOrdinal!: number;
+  @Field(() => String) kind!: string;
+  @Field(() => ID) senderAgentRunId!: string;
+  @Field(() => String, { nullable: true }) senderAddress!: string | null;
+  @Field(() => String) text!: string;
+  @Field(() => [EventMonitorActiveTraceAttachmentObject]) attachments!: EventMonitorActiveTraceAttachmentObject[];
+}
 @ObjectType("EventMonitorAssistantTextVisual")
 class AssistantTextVisualObject {
   @Field(() => ID) visualId!: string; @Field(() => ID) eventId!: string;
@@ -88,6 +99,7 @@ class CompactionVisualObject {
 
 const visualTypes = {
   user: UserVisualObject,
+  inter_agent: InterAgentVisualObject,
   assistant_text: AssistantTextVisualObject,
   thinking: ThinkingVisualObject,
   tool_card: ToolCardVisualObject,
@@ -98,7 +110,7 @@ const visualTypes = {
 export const EventMonitorActiveTracePageVisualUnion = createUnionType({
   name: "EventMonitorActiveTracePageVisual",
   types: () => Object.values(visualTypes) as [
-    typeof UserVisualObject, typeof AssistantTextVisualObject, typeof ThinkingVisualObject,
+    typeof UserVisualObject, typeof InterAgentVisualObject, typeof AssistantTextVisualObject, typeof ThinkingVisualObject,
     typeof ToolCardVisualObject, typeof MediaVisualObject, typeof CompactionVisualObject,
   ],
   resolveType: (value) => visualTypes[(value as { kind: keyof typeof visualTypes }).kind],

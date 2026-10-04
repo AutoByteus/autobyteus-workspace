@@ -261,7 +261,7 @@ or `team.md`. Standalone runs render neither Team Instruction nor either
 AgentTeam section. An eligible standalone run (not a server helper or
 application-owned run), and an Agent directly under its Agent root, instead get
 one short `## Collaboration` section
-(`src/agent-run-collaboration/prompt/standalone-collaboration-instruction.ts`).
+(`src/agent-execution/prompt/standalone-collaboration-instruction.ts`).
 Both renderers reuse the same `Work Requests and Outcomes` paragraph: assigned work
 follows the recipient’s instructions and applicable skills, without acknowledgement-only
 replies. Skill-defined intermediate handoffs and blockers remain valid. This guidance

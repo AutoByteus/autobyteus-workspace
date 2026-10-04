@@ -4,6 +4,7 @@ import { Buffer } from "node:buffer";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import type { EventMonitorReplayEvent, HistoricalReplayToolEvent } from "./historical-replay-event-types.js";
 import type {
+  EventMonitorActiveTracePage,
   EventMonitorActiveTraceAttachment,
   EventMonitorActiveTracePageEvent,
   EventMonitorActiveTracePageVisual,
@@ -97,7 +98,14 @@ export const buildEventMonitorActiveTracePageEvent = (
 ): EventMonitorActiveTracePageEvent => {
   const visuals: EventMonitorActiveTracePageVisual[] = [];
   if (event.kind === "message") {
-    if (event.role === "user") {
+    if (event.role === "user" && event.senderId) {
+      // RD-004: the same rule as the conversation replay (an agent-to-agent delivery is not user input).
+      visuals.push({
+        kind: "inter_agent", visualId: visualId(event.eventId, "inter-agent", 0), eventId: event.eventId,
+        kindOrdinal: 0, senderAgentRunId: event.senderId, senderAddress: null, text: event.content ?? "",
+        attachments: userAttachments(event.eventId, event.media, event.fileAttachments),
+      });
+    } else if (event.role === "user") {
       visuals.push({
         kind: "user", visualId: visualId(event.eventId, "user", 0), eventId: event.eventId,
         kindOrdinal: 0, text: event.content ?? "", attachments: userAttachments(event.eventId, event.media, event.fileAttachments),
@@ -144,6 +152,20 @@ export const buildEventMonitorActiveTracePageEvent = (
     visuals,
   };
 };
+
+/** Fills `senderAddress` on inter-agent visuals from the root's execution index (as for the replay). */
+export const resolveActiveTracePageSenderAddresses = (
+  page: EventMonitorActiveTracePage,
+  addressOf: (agentRunId: string) => string | null,
+): EventMonitorActiveTracePage => ({
+  ...page,
+  events: page.events.map((event) => ({
+    ...event,
+    visuals: event.visuals.map((visual) => visual.kind === "inter_agent"
+      ? { ...visual, senderAddress: addressOf(visual.senderAgentRunId) }
+      : visual),
+  })),
+});
 
 export const buildEventMonitorActiveTracePageEvents = (
   events: readonly EventMonitorReplayEvent[],

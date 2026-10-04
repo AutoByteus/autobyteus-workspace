@@ -24,6 +24,7 @@ import { buildMemberInputPresentationEvent } from "../../agent-collaboration/exe
 import { projectAgentPresentationMessage } from "../../agent-collaboration/execution/events/agent-presentation-message-projector.js";
 import type { CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
+import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import { buildDirectAgentRunInterAgentEvent } from "../../agent-communication/services/global-agent-run-message-runtime-builders.js";
 import type { StandaloneHostAgentHandle } from "../domain/standalone-host-agent-handle.js";
 import type { StandaloneRootEvent } from "../domain/standalone-root-event.js";
@@ -41,8 +42,8 @@ type DeliveryInput = Readonly<{
 }>;
 
 /**
- * The standalone root's message and delegation addressing, collaborator admission and input
- * routing. Every public method runs inside the root's operation gate, held by the caller, so a
+ * The standalone root's message and delegation addressing, collaborator admission, input
+ * routing and child commands. Every public method runs inside the root's operation gate, held by the caller, so a
  * catalog bring-in never re-enters it. The host is reached through its handle like any child:
  * a message to a host that is not running makes it ready first (no special wake path).
  */
@@ -185,6 +186,25 @@ export class StandaloneRootMessageDelivery {
     const identity = this.identityFor(receiver.agentRunId, receiver.address);
     const event = buildMemberInputPresentationEvent({ execution: identity, message: receiverInput, receivedAt: message.createdAt });
     this.options.publisher.publish({ kind: "agent_presentation", execution: identity, message: projectAgentPresentationMessage(event) });
+  }
+
+  /** Commands for children only; the host's commands come through its own Agent stream. */
+  executeChildCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+    const agent = this.options.getIndex().getAgent(agentRunId);
+    if (!agent) return Promise.resolve({ accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not in Agent root '${this.options.hostRunId}'.` });
+    if (agent.executionKind === "host") {
+      return Promise.resolve({ accepted: false, code: "AGENT_ROOT_HOST_COMMAND_REJECTED", message: "Commands for the run's own agent go through its Agent stream." });
+    }
+    const execute = () => agent.host.hostKind === "root"
+      ? this.options.rootAgents.executeCommand(agentRunId, command)
+      : this.options.teams.require(agent.host.hostRunId).executeDirectAgentCommand(agentRunId, command);
+    if (command.kind !== "post_message") {
+      return this.isLiveChild(agentRunId)
+        ? execute()
+        : Promise.resolve({ accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in Agent root '${this.options.hostRunId}'.` });
+    }
+    // Operator input wakes a shut-down child exactly like send_message_to.
+    return this.withLiveLease(agentRunId, execute);
   }
 
   async withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {

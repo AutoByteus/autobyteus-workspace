@@ -4,7 +4,10 @@ import type {
   TokenUsageUpdatedPayload,
 } from "../../agent-execution/domain/agent-run-token-usage.js";
 import type { TokenUsageRunRecord } from "../domain/token-usage-run-record.js";
-import { buildTokenUsageRunSummaryFromRecords } from "../projections/token-usage-run-aggregate.js";
+import {
+  buildStandaloneRunTokenUsageSummaryFromRecords,
+  buildTokenUsageRunSummaryFromRecords,
+} from "../projections/token-usage-run-aggregate.js";
 import { SqlTokenUsageRunRepository } from "../repositories/sql/token-usage-run-repository.js";
 import { TokenUsageRunAccumulator } from "../services/token-usage-run-accumulator.js";
 import { TokenUsageDisplayFieldCapturer } from "./token-usage-display-field-capturer.js";
@@ -48,6 +51,16 @@ export class TokenUsageRunStore {
     await this.readiness.assertHistoricalReadReady();
     const records = await this.repository.listByRootTeamRunId(rootTeamRunId);
     return buildTokenUsageRunSummaryFromRecords({ runId: rootTeamRunId, records });
+  }
+
+  /** A standalone run's roll-up over its host and the given child runs (each record once). */
+  async getStandaloneRunSummary(input: {
+    hostRunId: string;
+    childAgentRunIds: readonly string[];
+  }): Promise<TokenUsageRunSummaryPayload> {
+    await this.readiness.assertHistoricalReadReady();
+    const records = await this.repository.listByRunIds([input.hostRunId, ...input.childAgentRunIds]);
+    return buildStandaloneRunTokenUsageSummaryFromRecords({ hostRunId: input.hostRunId, records });
   }
 
   async getTeamMemberSummary(input: {

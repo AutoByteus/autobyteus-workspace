@@ -431,7 +431,7 @@ Standalone agent persisted files:
   `collaborators`, `taskExecutions`) and `communication_messages.json`; each
   child's runtime memory lives in `collaboration/<childRunId>/...` (task Team
   members below their task TeamRun IDs). See
-  [Agent Run Collaboration](./agent_run_collaboration.md).
+  [Standalone Agent Run Root](./standalone_agent_run_root.md).
 - runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
@@ -496,9 +496,9 @@ Important identity/storage rules:
 
 - Delete, archive and prepared-run cancel of a standalone run go through
   `StandaloneRunLiveness.releaseForHistory`: refused while the host runtime is active; when the host
-  is down but its Agent root lingers (every eligible run has one; it outlives a crashed host), the
-  root and its children are ended first, then history changes. Only a root that cannot be ended
-  refuses the change. See [Agent Run Collaboration](./agent_run_collaboration.md#root-lifetime).
+  is down but the run still has a `StandaloneAgentRunRoot` (a root outlives a crashed host), the
+  manager's `endRoot` ends the root and its children first, then history changes. Only a root that cannot be ended
+  refuses the change. See [Standalone Agent Run Root](./standalone_agent_run_root.md#root-lifetime).
 - `AgentRunHistoryCatalogService` is the normal semantic owner for standalone
   catalog mutations: prepare/create, first/explicit summary update,
   archive/unarchive, terminate, delete/cancel, and catalog flush

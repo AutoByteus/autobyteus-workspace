@@ -343,23 +343,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   }>> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
-      const agent = this.index.getAgent(agentRunId);
-      if (!agent) return Object.freeze({
-        result: { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not in AgentOrg '${this.orgRunId}'.` },
-        executionKind: null,
-      });
-      const execute = () => agent.host.hostKind === "root"
-        ? this.options.rootAgents.executeCommand(agentRunId, command)
-        : this.options.teams.require(agent.host.hostRunId).executeDirectAgentCommand(agentRunId, command);
-      if (command.kind !== "post_message") {
-        const result = this.delivery.isLiveAgent(agentRunId)
-          ? await execute()
-          : { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in AgentOrg '${this.orgRunId}'.` };
-        return Object.freeze({ result, executionKind: agent.executionKind });
-      }
-      // Operator input wakes a shut-down child exactly like send_message_to.
-      const result = await this.delivery.withLiveLease(agentRunId, execute);
-      return Object.freeze({ result, executionKind: agent.executionKind });
+      return this.delivery.executeAgentCommand(agentRunId, command);
     });
   }
 

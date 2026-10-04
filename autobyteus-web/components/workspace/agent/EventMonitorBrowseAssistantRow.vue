@@ -30,6 +30,12 @@
           @file-path-action="emit('file-path-action', $event)"
         />
         <ToolCallIndicator v-else-if="visual.kind === 'tool'" :presentation="visual.presentation" />
+        <InterAgentMessageSegment
+          v-else-if="visual.kind === 'inter_agent'"
+          :segment="visual.segment"
+          :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+          @file-path-action="emit('file-path-action', $event)"
+        />
         <MediaSegment v-else :segment="visual.segment" />
       </div>
     </div>
@@ -42,6 +48,7 @@ import TextSegment from '~/components/conversation/segments/TextSegment.vue';
 import ThinkSegment from '~/components/conversation/segments/ThinkSegment.vue';
 import MediaSegment from '~/components/conversation/segments/MediaSegment.vue';
 import ToolCallIndicator from '~/components/conversation/ToolCallIndicator.vue';
+import InterAgentMessageSegment from '~/components/conversation/segments/InterAgentMessageSegment.vue';
 import type { EventMonitorBrowseAssistantVisual } from '~/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 

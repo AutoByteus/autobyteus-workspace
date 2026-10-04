@@ -15,6 +15,7 @@ import {
   serializeAgentMd,
 } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { createStandaloneRunRootsFixture } from "../../fixtures/standalone-run-roots-fixture.js";
 
 const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
   createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
@@ -162,6 +163,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
       agentRunManager: manager,
       workspaceManager: workspaceManager as never,
       lifecycleService,
+      standaloneRuns: createStandaloneRunRootsFixture({ memoryDir, lifecycleService, agentRunManager: manager }),
       agentRunIdentityAllocator: {
         allocateForAgentDefinition: async (agentDefinitionId: string) =>
           `${agentDefinitionId}-run`,

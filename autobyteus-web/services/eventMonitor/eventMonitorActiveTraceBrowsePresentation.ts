@@ -1,5 +1,6 @@
 import type { ContextAttachment, UserMessage } from '~/types/conversation';
-import type { MediaSegment, ToolApprovalTarget } from '~/types/segments';
+import type { InterAgentMessageSegment, MediaSegment, ToolApprovalTarget } from '~/types/segments';
+import { parseInterAgentDelivery } from '~/utils/collaboration/interAgentDelivery';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
 import { isCompactionPhase, type CompactionStatusPhase } from '~/types/activity/compactionPhase';
 import type { ToolCardPresentation, ToolCardStatusPresentationKey } from '~/utils/toolCardPresentation';
@@ -14,7 +15,8 @@ export type EventMonitorBrowseAssistantVisual =
   | { kind: 'text'; visualId: string; content: string }
   | { kind: 'thinking'; visualId: string; content: string }
   | { kind: 'tool'; visualId: string; presentation: ToolCardPresentation }
-  | { kind: 'media'; visualId: string; segment: MediaSegment };
+  | { kind: 'media'; visualId: string; segment: MediaSegment }
+  | { kind: 'inter_agent'; visualId: string; segment: InterAgentMessageSegment };
 
 export type EventMonitorActiveTraceBrowsePresentationItem =
   | { kind: 'user'; key: string; visualId: string; message: UserMessage }
@@ -74,6 +76,22 @@ const toAssistantVisual = (
   return null;
 };
 
+/** An agent-to-agent delivery: "From <Sender>:" as in the live conversation and replay (RD-004). */
+const toInterAgentSegment = (
+  visual: Extract<EventMonitorActiveTracePageVisualDto, { __typename?: 'EventMonitorInterAgentVisual' }>,
+): InterAgentMessageSegment => {
+  const delivery = parseInterAgentDelivery(visual.text);
+  return {
+    type: 'inter_agent_message',
+    senderAgentRunId: visual.senderAgentRunId,
+    senderAddress: visual.senderAddress ?? null,
+    senderName: delivery.senderName,
+    recipientRoleName: '',
+    messageType: 'agent_message',
+    content: delivery.body,
+  };
+};
+
 const toCompaction = (
   visual: Extract<EventMonitorActiveTracePageVisualDto, { __typename?: 'EventMonitorCompactionVisual' }>,
   occurredAtMs: number | null | undefined,
@@ -110,6 +128,15 @@ export const buildEventMonitorActiveTraceBrowsePresentation = (
             type: 'user', text: visual.text, timestamp: new Date(event.occurredAtMs ?? 0),
             messageId: event.eventId, contextFilePaths: visual.attachments.map(toAttachment),
           },
+        });
+        continue;
+      }
+      if (visual.__typename === 'EventMonitorInterAgentVisual') {
+        // A delivery opens the receiving agent's message block; its reply joins it.
+        items.push({
+          kind: 'assistant', key: `browse-assistant-group:${event.turnGroupId}:${visual.visualId}`,
+          turnGroupId: event.turnGroupId,
+          visuals: [{ kind: 'inter_agent', visualId: visual.visualId, segment: toInterAgentSegment(visual) }],
         });
         continue;
       }

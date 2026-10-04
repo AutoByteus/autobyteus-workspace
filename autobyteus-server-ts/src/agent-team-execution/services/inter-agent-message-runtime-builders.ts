@@ -29,7 +29,7 @@ export const buildRecipientVisibleInterAgentMessageContent = (
   const sender = request.sender.participant;
   const files = references(request.referenceFiles);
   const fileBlock = files.length ? `\n\nReference files:\n${files.map((path) => `- ${path}`).join("\n")}` : "";
-  return `You received a message from sender name: ${sender.displayName}, sender id: ${sender.identity.agentRunId}\nmessage:\n${request.content}${fileBlock}`;
+  return `You received a message from sender name: ${sender.displayName}, sender address: ${sender.identity.memberAddress}, sender id: ${sender.identity.agentRunId}\nmessage:\n${request.content}${fileBlock}`;
 };
 
 export const buildInterAgentDeliveryInputMessage = (

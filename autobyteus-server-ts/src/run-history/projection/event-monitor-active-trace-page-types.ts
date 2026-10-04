@@ -39,6 +39,14 @@ interface VisualBase { visualId: string; eventId: string; kindOrdinal: number }
 export interface EventMonitorUserVisual extends VisualBase {
   kind: "user"; text: string; attachments: EventMonitorActiveTraceAttachment[];
 }
+/**
+ * An agent-to-agent delivery (a user trace with a recorded sender), shown as "From <Sender>:" as
+ * in the conversation replay (RD-004). `senderAddress` is filled when the root resolves it.
+ */
+export interface EventMonitorInterAgentVisual extends VisualBase {
+  kind: "inter_agent"; senderAgentRunId: string; senderAddress: string | null;
+  text: string; attachments: EventMonitorActiveTraceAttachment[];
+}
 export interface EventMonitorAssistantTextVisual extends VisualBase { kind: "assistant_text"; content: string }
 export interface EventMonitorThinkingVisual extends VisualBase { kind: "thinking"; content: string }
 export interface EventMonitorToolCardVisual extends VisualBase {
@@ -65,7 +73,7 @@ export interface EventMonitorCompactionVisual extends VisualBase {
   provider: string | null;
 }
 export type EventMonitorActiveTracePageVisual =
-  | EventMonitorUserVisual | EventMonitorAssistantTextVisual | EventMonitorThinkingVisual
+  | EventMonitorUserVisual | EventMonitorInterAgentVisual | EventMonitorAssistantTextVisual | EventMonitorThinkingVisual
   | EventMonitorToolCardVisual | EventMonitorMediaVisual | EventMonitorCompactionVisual;
 
 export interface EventMonitorActiveTracePageEvent {

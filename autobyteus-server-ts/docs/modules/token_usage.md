@@ -528,12 +528,33 @@ records:
   that exact `root_team_run_id` once each.
 - `getTeamMemberTokenUsageSummary(teamRunId, agentRunId)` requires both exact
   root and run identity.
+- `getStandaloneRunTokenUsageSummary(runId)` rolls a standalone run up over its
+  collaboration tree; see [Standalone Run Roll-Up](#standalone-run-roll-up).
 - `tokenUsageTaskStatisticsInPeriod(startTime, endTime)` returns standalone and
   root-Team rows with usage-derived member children.
 - `usageStatisticsInPeriod(startTime, endTime)` groups the same selected run
   records by runtime/model for diagnostics.
 - `totalCostInPeriod(startTime, endTime)` keeps its public name but follows the
   same run-selection rule.
+
+### Standalone Run Roll-Up
+
+A standalone run's usage includes its collaborators, the members of its
+collaborator Teams and its task copies (recursively), as a Team run's usage
+includes its members (REQ-006). `StandaloneRunTokenUsageSummaryService`
+(`token-usage/services/`) reads the run's collaboration tree (the live root's
+tree, else the stored package; see
+[Standalone Agent Run Root](./standalone_agent_run_root.md)) and
+`TokenUsageRunStore.getStandaloneRunSummary` sums the records of the host and
+every child run ID once each. Children carry no root attribution, and none is
+needed: the tree lists their run IDs, so existing runs roll up with no migration.
+A run without a package is its host alone (equal to the exact-run summary).
+
+Totals, costs, pricing and report count cover every record. The latest prompt,
+context window, latest model, runtime and run identity stay those of the host
+record, so the Token Meter's context card keeps describing the agent the user is
+talking to. `getAgentRunTokenUsageSummary` stays exact-run for children and other
+callers.
 
 Those Run details queries select runs whose `run_created_at` is in range,
 falling back to `first_observed_at` only when creation time is unavailable. Every
@@ -564,7 +585,10 @@ accounting, pricing, coverage, comparison, or provider quota facts.
 The live Token Meter remains record-backed: standalone and Team-member caches
 accept complete current-record GraphQL summaries or strict post-persist
 `run_summary_after_event` snapshots, while Team aggregation retains its existing
-single-flight refresh and exact identity rules.
+single-flight refresh and exact identity rules. A standalone run's panel shows its roll-up
+(`getStandaloneRunTokenUsageSummary`), kept apart from the host's exact live
+summary: each new host usage report refetches the roll-up. Usage reported only by
+children appears on the next host report or when the panel is opened again.
 
 Settings > Token Statistics has two sibling views:
 

@@ -17,7 +17,7 @@ export const buildRootCommunicationInputMessage = (input: {
 }): AgentInputUserMessage => {
   const files = references(input.message.referenceFiles);
   const fileBlock = files.length ? `\n\nReference files:\n${files.map((file) => `- ${file}`).join("\n")}` : "";
-  const content = `You received a message from sender name: ${input.delivery.senderDisplayName}, sender id: ${input.delivery.senderIdentity.agentRunId}\nmessage:\n${input.message.content}${fileBlock}`;
+  const content = `You received a message from sender name: ${input.delivery.senderDisplayName}, sender address: ${input.delivery.senderIdentity.memberAddress}, sender id: ${input.delivery.senderIdentity.agentRunId}\nmessage:\n${input.message.content}${fileBlock}`;
   const rootKey = rootExecutionIdentityKey(input.delivery.senderIdentity.root);
   const messageId = `memberinput_${hash([rootKey, input.delivery.receiverIdentity.agentRunId, input.message.messageId, content])}`;
   return new AgentInputUserMessage(content, SenderType.AGENT, null, {

@@ -4,6 +4,7 @@ import { getApolloClient } from '~/utils/apolloClient';
 import {
   GET_AGENT_RUN_TOKEN_USAGE_SUMMARY,
   GET_AGENT_ORG_MEMBER_TOKEN_USAGE_SUMMARY,
+  GET_STANDALONE_RUN_TOKEN_USAGE_SUMMARY,
   GET_TEAM_MEMBER_TOKEN_USAGE_SUMMARY,
   GET_TEAM_RUN_TOKEN_USAGE_SUMMARY,
 } from '~/graphql/queries/token_usage_meter_queries';
@@ -226,6 +227,9 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   const teamAggregateEntries = reactive<Record<string, TeamTokenUsageAggregateEntry>>({});
   const seenUsageKeys = new Set<string>();
   const teamAggregateRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
+  /** Standalone run roll-ups (host plus collaborators and copies), apart from the host's exact live summary. */
+  const standaloneRunSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
+  const standaloneRunRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
 
   function getRunSummary(runId: string | null | undefined): TokenUsageRunSummary | null {
     const id = normalizedId(runId);
@@ -366,6 +370,51 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return getRunSummary(runId);
   }
 
+  function getStandaloneRunSummary(runId: string | null | undefined): TokenUsageRunSummary | null {
+    const id = normalizedId(runId);
+    return id ? standaloneRunSummaries[id] ?? null : null;
+  }
+
+  /** A standalone run's roll-up; a refetch never moves it back to fewer usage reports. */
+  function upsertRecordBackedStandaloneRunSummary(input: {
+    runId: string;
+    summary: TokenUsageRunSummary;
+  }): boolean {
+    const runId = normalizedId(input.runId);
+    const summary = normalizeRecordBackedSummary(input.summary);
+    if (!runId || summary.runId !== runId) {
+      throw new Error('Standalone run token summary returned a different AgentRun ID.');
+    }
+    const current = standaloneRunSummaries[runId];
+    if (current && summary.usageReportCount < current.usageReportCount) return false;
+    standaloneRunSummaries[runId] = summary;
+    return true;
+  }
+
+  /** Refreshes a standalone run's roll-up; concurrent calls for one run share a request. */
+  function fetchStandaloneRunSummary(runIdValue: string): Promise<TokenUsageRunSummary | null> {
+    const runId = normalizedId(runIdValue);
+    if (!runId) return Promise.resolve(null);
+    const existing = standaloneRunRequests.get(runId);
+    if (existing) return existing;
+    const request = (async () => {
+      try {
+        const { data } = await getApolloClient().query({
+          query: GET_STANDALONE_RUN_TOKEN_USAGE_SUMMARY,
+          variables: { runId },
+          fetchPolicy: 'network-only',
+        });
+        const summary = data?.getStandaloneRunTokenUsageSummary as TokenUsageRunSummary | undefined;
+        if (summary) upsertRecordBackedStandaloneRunSummary({ runId, summary });
+        return getStandaloneRunSummary(runId);
+      } finally {
+        standaloneRunRequests.delete(runId);
+      }
+    })();
+    standaloneRunRequests.set(runId, request);
+    return request;
+  }
+
   async function refreshTeamRunSummaryUntilStable(teamRunId: string): Promise<TokenUsageRunSummary | null> {
     let result: TokenUsageRunSummary | null = null;
     let stable = false;
@@ -451,12 +500,14 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   }
 
   const hasAnyUsage = computed(() => Object.keys(runSummaries).length > 0
+    || Object.keys(standaloneRunSummaries).length > 0
     || Object.keys(teamAggregateEntries).length > 0
     || Object.keys(teamMemberSummaries).length > 0);
 
   return {
     hasAnyUsage,
     getRunSummary,
+    getStandaloneRunSummary,
     getTeamMemberSummary,
     getTeamSummary,
     getTeamRunSummaryState,
@@ -465,10 +516,12 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     needsTeamMemberSummaryHydration,
     needsTeamRunSummaryHydration,
     upsertRecordBackedAgentRunSummary,
+    upsertRecordBackedStandaloneRunSummary,
     upsertRecordBackedTeamMemberSummary,
     applyTokenUsageUpdated,
     applyTeamTokenUsage,
     fetchAgentRunSummary,
+    fetchStandaloneRunSummary,
     fetchTeamRunSummary,
     fetchTeamMemberSummary,
     fetchAgentOrgMemberSummary,

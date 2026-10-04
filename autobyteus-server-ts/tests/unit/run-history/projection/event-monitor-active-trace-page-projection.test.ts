@@ -6,6 +6,7 @@ import type {
 import {
   buildEventMonitorActiveTracePageEvent,
   buildEventMonitorActiveTracePageEvents,
+  resolveActiveTracePageSenderAddresses,
 } from "../../../../src/run-history/projection/event-monitor-active-trace-page-projection.js";
 
 const tool = (toolResult: unknown): HistoricalReplayToolEvent => ({
@@ -67,6 +68,23 @@ describe("event monitor active trace page projection", () => {
       kind: "user",
       attachments: [{ fileType: "image", locator: "image://attachment" }],
     });
+  });
+
+  it("projects an agent-to-agent delivery as an inter-agent visual, as the replay does (REQ-007, RD-004)", () => {
+    const content = "You received a message from sender name: lead, sender address: /eng/lead, sender id: lead-run\nmessage:\nStatus?";
+    const [delivery, user] = buildEventMonitorActiveTracePageEvents([
+      { kind: "message", eventId: "delivery", turnGroupId: "turn-1", role: "user", senderId: "lead-run", content, media: null, ts: 1 },
+      { kind: "message", eventId: "typed", turnGroupId: "turn-2", role: "user", content: "hello", media: null, ts: 2 },
+    ]);
+    expect(delivery!.visuals).toEqual([expect.objectContaining({
+      kind: "inter_agent", eventId: "delivery", senderAgentRunId: "lead-run", senderAddress: null, text: content, attachments: [],
+    })]);
+    expect(user!.visuals.map((visual) => visual.kind)).toEqual(["user"]);
+
+    const page = { events: [delivery!, user!], beforeCursor: null, hasEarlier: false, loadedEarlierCount: 0, activeGeneration: "g", cursorStatus: "VALID" as const };
+    const resolved = resolveActiveTracePageSenderAddresses(page, (runId) => runId === "lead-run" ? "/eng/lead" : null);
+    expect(resolved.events[0]!.visuals[0]).toMatchObject({ kind: "inter_agent", senderAddress: "/eng/lead" });
+    expect(resolved.events[1]!.visuals[0]).toEqual(user!.visuals[0]);
   });
 
   it("emits deterministic distinct visual identities for every central subvisual", () => {

@@ -22,7 +22,8 @@ import type { CollaboratorMention, RootCollaboratorAdmissionResult } from "../..
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
-import type { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
+import type { AgentOrgExecutionIndex, AgentOrgIndexedAgentExecution } from "./agent-org-execution-index.js";
+import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentOrgRecipientResolver } from "./agent-org-recipient-resolver.js";
 import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js";
 import type { ResolvedAgentOrgRecipient } from "./agent-org-task-execution-adapter.js";
@@ -136,6 +137,30 @@ export class AgentOrgRunMessageDelivery {
       kind: "agent_presentation", execution: identity,
       message: projectAgentPresentationMessage(event),
     });
+  }
+
+  /** An operator command for one agent; inside the root's gate, held by the caller. */
+  async executeAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<Readonly<{
+    result: AgentOperationResult;
+    executionKind: AgentOrgIndexedAgentExecution["executionKind"] | null;
+  }>> {
+    const agent = this.options.getIndex().getAgent(agentRunId);
+    if (!agent) return Object.freeze({
+      result: { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not in AgentOrg '${this.options.orgRunId}'.` },
+      executionKind: null,
+    });
+    const execute = () => agent.host.hostKind === "root"
+      ? this.options.rootAgents.executeCommand(agentRunId, command)
+      : this.options.teams.require(agent.host.hostRunId).executeDirectAgentCommand(agentRunId, command);
+    if (command.kind !== "post_message") {
+      const result = this.isLiveAgent(agentRunId)
+        ? await execute()
+        : { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in AgentOrg '${this.options.orgRunId}'.` };
+      return Object.freeze({ result, executionKind: agent.executionKind });
+    }
+    // Operator input wakes a shut-down child exactly like send_message_to.
+    const result = await this.withLiveLease(agentRunId, execute);
+    return Object.freeze({ result, executionKind: agent.executionKind });
   }
 
   async withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {

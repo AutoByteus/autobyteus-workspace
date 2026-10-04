@@ -142,6 +142,36 @@ export const buildTokenUsageRunSummaryFromRecords = (input: {
   };
 };
 
+/**
+ * A standalone run's roll-up (REQ-006): the totals cover every given record (the host and its
+ * collaborators, collaborator-Team members and task copies), while the latest prompt, context
+ * window, model and run identity stay those of the run's own agent (the host record), so the
+ * context meter keeps describing the agent the user is talking to.
+ */
+export const buildStandaloneRunTokenUsageSummaryFromRecords = (input: {
+  hostRunId: string;
+  records: readonly TokenUsageRunRecord[];
+}): TokenUsageRunSummaryPayload => {
+  const total = buildTokenUsageRunSummaryFromRecords({ runId: input.hostRunId, records: input.records });
+  const host = buildTokenUsageRunSummaryFromRecords({
+    runId: input.hostRunId,
+    records: input.records.filter((record) => record.runId === input.hostRunId),
+  });
+  return {
+    ...total,
+    root_team_run_id: host.root_team_run_id,
+    agent_definition_id: host.agent_definition_id,
+    workspace_id: host.workspace_id,
+    latest_prompt_tokens: host.latest_prompt_tokens,
+    effective_context_window_tokens: host.effective_context_window_tokens,
+    context_window_usage_percent: host.context_window_usage_percent,
+    latest_model_provider: host.latest_model_provider,
+    latest_model_identifier: host.latest_model_identifier,
+    latest_runtime_kind: host.latest_runtime_kind,
+    latest_selected_raw_model_id: host.latest_selected_raw_model_id,
+  };
+};
+
 export const mergePricingSummariesForRecords = (
   records: readonly TokenUsageRunRecord[],
 ): TokenUsagePricingSummary => records.reduce(

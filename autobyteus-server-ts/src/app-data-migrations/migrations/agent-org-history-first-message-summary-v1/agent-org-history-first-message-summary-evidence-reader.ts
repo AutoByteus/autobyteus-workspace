@@ -7,12 +7,26 @@ import {
   RAW_TRACES_MANIFEST_FILE_NAME,
 } from "autobyteus-ts/memory/store/raw-trace-archive-manifest.js";
 import { getAgentTeamAddressBasename } from "../../../agent-collaboration/domain/agent-team-address.js";
-import { createCollaborationMemberExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { buildRootCommunicationInputMessage } from "../../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
 import type { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
 import type { AgentOrgCommunicationMessagesFileV1 } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1.js";
 import type { AgentOrgTaskDelegationRecordsFileV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1.js";
 import type { AgentOrgInternalDeliveryEvidence } from "./agent-org-history-first-message-summary-classifier.js";
+
+/**
+ * The delivery envelope exactly as released versions wrote it into raw traces (before the
+ * header gained `sender address`). Frozen here: this migration matches historical traces, so
+ * it must not follow the current builder (`root-communication-runtime-builder.ts`).
+ */
+const releasedDeliveryEnvelopeContent = (input: Readonly<{
+  senderDisplayName: string;
+  senderAgentRunId: string;
+  content: string;
+  referenceFiles: readonly string[] | null | undefined;
+}>): string => {
+  const files = [...new Set((input.referenceFiles ?? []).map((value) => value.trim()).filter(Boolean))];
+  const fileBlock = files.length ? `\n\nReference files:\n${files.map((file) => `- ${file}`).join("\n")}` : "";
+  return `You received a message from sender name: ${input.senderDisplayName}, sender id: ${input.senderAgentRunId}\nmessage:\n${input.content}${fileBlock}`;
+};
 
 export const buildAgentOrgInternalDeliveryEvidence = (current: Readonly<{
   index: AgentOrgExecutionIndex;
@@ -26,22 +40,15 @@ export const buildAgentOrgInternalDeliveryEvidence = (current: Readonly<{
     if (!configured.has(message.receiverAgentRunId)) continue;
     const sender = current.index.requireAgent(message.senderAgentRunId);
     const receiver = current.index.requireAgent(message.receiverAgentRunId);
-    const envelope = buildRootCommunicationInputMessage({
-      delivery: {
-        senderIdentity: createCollaborationMemberExecutionIdentity({ root: current.index.root, memberAddress: sender.address, agentRunId: sender.agentRunId }),
-        senderDisplayName: getAgentTeamAddressBasename(sender.address) ?? sender.agentRunId,
-        receiverIdentity: createCollaborationMemberExecutionIdentity({ root: current.index.root, memberAddress: receiver.address, agentRunId: receiver.agentRunId }),
-        receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
-        content: message.content,
-        messageType: message.messageType,
-        referenceFiles: message.referenceFiles,
-      },
-      message,
-    });
     evidence.push(Object.freeze({
       receiverAgentRunId: receiver.agentRunId,
       timestamp: sidecarTimestamp(message.createdAt),
-      envelopeContent: envelope.content,
+      envelopeContent: releasedDeliveryEnvelopeContent({
+        senderDisplayName: getAgentTeamAddressBasename(sender.address) ?? sender.agentRunId,
+        senderAgentRunId: sender.agentRunId,
+        content: message.content,
+        referenceFiles: message.referenceFiles,
+      }),
     }));
   }
   for (const task of current.taskRecords.records) {

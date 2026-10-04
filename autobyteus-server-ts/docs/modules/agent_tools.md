@@ -51,7 +51,7 @@ These tools apply even when the agent definition omitted them. Every
 user-facing standalone run that can host collaborators (not a server helper
 run with `launchPurpose: "server_helper"`, not application-owned) gets a host
 member context from its Agent root (see
-[Agent Run Collaboration](./agent_run_collaboration.md)), so it has
+[Standalone Agent Run Root](./standalone_agent_run_root.md)), so it has
 `send_message_to` and `delegate_task` from its first turn. A task Agent directly
 under an Agent root is not Team-scoped and has no `get_handoff_rules`. Server
 helper runs and application-owned runs have no member context and keep their
