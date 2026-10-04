@@ -1,0 +1,175 @@
+{
+ "messageId": "collabmsg_DoKlKehPuRz6LJCxVPeShlyGGhS_fJ3D",
+ "referenceCount": 3136,
+ "checks": [
+  {
+   "name": "selected newest message shows count 3,136",
+   "pass": true,
+   "detail": {
+    "text": "3,136\n3,136 reference files",
+    "title": "3,136 reference files"
+   }
+  },
+  {
+   "name": "20 preview rows + Show all copy",
+   "pass": true,
+   "detail": {
+    "rows": 20,
+    "button": "Show all 3,136 files"
+   }
+  },
+  {
+   "name": "unselected messages render no reference rows",
+   "pass": true,
+   "detail": {
+    "lists": 1
+   }
+  },
+  {
+   "name": "first-reference: row label is the file name",
+   "pass": true,
+   "detail": {
+    "row": "dirty-work.tar.gz"
+   }
+  },
+  {
+   "name": "first-reference: request uses server identity sha256(messageId\\0path)",
+   "pass": true,
+   "detail": {
+    "url": "http://127.0.0.1:29811/rest/agent-org-runs/autobyteus_org_be52ac58c92a412e9f30b2260237c7cf/communication/messages/collabmsg_DoKlKehPuRz6LJCxVPeShlyGGhS_fJ3D/references/de21a20b70e55ecdf6dd6a51b3f73968c5b6bae23cde71f62653ce3b9ed9d550/content",
+    "expected": "de21a20b70e55ecdf6dd6a51b3f73968c5b6bae23cde71f62653ce3b9ed9d550"
+   }
+  },
+  {
+   "name": "first-reference: server serves the file's exact bytes at the UI-requested URL",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "servedBytes": 34448621,
+    "fileBytes": 34448621,
+    "browserBodies": [
+     {
+      "status": 200,
+      "bytes": 0,
+      "type": "application/gzip"
+     }
+    ]
+   }
+  },
+  {
+   "name": "first-reference: viewer shows the reference",
+   "pass": true,
+   "detail": {
+    "viewerHead": "dirty-work.tar.gz\n/Users/normy/autobyteus_org/autobyteus-worktrees/.task-safety-backups/project-task-manager-linked-delegation/sr-019-latest-base/dirty-work.tar"
+   }
+  },
+  {
+   "name": "Show all reveals 3,136 rows only under the selected message, each run <= 300 ms (QR-003)",
+   "pass": true,
+   "detail": [
+    {
+     "settledMs": 266,
+     "refRows": 3136,
+     "lists": 1
+    },
+    {
+     "settledMs": 231,
+     "refRows": 3136,
+     "lists": 1
+    },
+    {
+     "settledMs": 220,
+     "refRows": 3136,
+     "lists": 1
+    },
+    {
+     "settledMs": 213,
+     "refRows": 3136,
+     "lists": 1
+    },
+    {
+     "settledMs": 208,
+     "refRows": 3136,
+     "lists": 1
+    }
+   ]
+  },
+  {
+   "name": "last-reference: row label is the file name",
+   "pass": true,
+   "detail": {
+    "row": "solution-scope-clarification.md"
+   }
+  },
+  {
+   "name": "last-reference: request uses server identity sha256(messageId\\0path)",
+   "pass": true,
+   "detail": {
+    "url": "http://127.0.0.1:29811/rest/agent-org-runs/autobyteus_org_be52ac58c92a412e9f30b2260237c7cf/communication/messages/collabmsg_DoKlKehPuRz6LJCxVPeShlyGGhS_fJ3D/references/7f89969e1c738b562f986ae673cd0f3502717c14482f9d77a193b6e6492ffd34/content",
+    "expected": "7f89969e1c738b562f986ae673cd0f3502717c14482f9d77a193b6e6492ffd34"
+   }
+  },
+  {
+   "name": "last-reference: server serves the file's exact bytes at the UI-requested URL",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "servedBytes": 4822,
+    "fileBytes": 4822,
+    "browserBodies": [
+     {
+      "status": 200,
+      "bytes": 4842,
+      "type": "text/markdown"
+     }
+    ]
+   }
+  },
+  {
+   "name": "last-reference: viewer shows the reference",
+   "pass": true,
+   "detail": {
+    "viewerHead": "solution-scope-clarification.md\n/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager"
+   }
+  },
+  {
+   "name": "last-reference: rendered markdown contains the file heading",
+   "pass": true,
+   "detail": {
+    "firstLine": "Scope Confirmation — SR-015 / E-056"
+   }
+  },
+  {
+   "name": "no page errors",
+   "pass": true,
+   "detail": []
+  }
+ ],
+ "showAllTimes": [
+  {
+   "settledMs": 266,
+   "refRows": 3136,
+   "lists": 1
+  },
+  {
+   "settledMs": 231,
+   "refRows": 3136,
+   "lists": 1
+  },
+  {
+   "settledMs": 220,
+   "refRows": 3136,
+   "lists": 1
+  },
+  {
+   "settledMs": 213,
+   "refRows": 3136,
+   "lists": 1
+  },
+  {
+   "settledMs": 208,
+   "refRows": 3136,
+   "lists": 1
+  }
+ ]
+}

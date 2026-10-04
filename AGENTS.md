@@ -3,7 +3,7 @@
 ## Solution and architecture design
 
 Follow this project's
-[SOLUTION_DESIGN_BEST_PRACTICES.md](SOLUTION_DESIGN_BEST_PRACTICES.md). Read it
+[DESIGN.md](DESIGN.md). Read it
 before drafting or revising a solution, architecture, or refactor plan, and
 apply its Mandatory Design Rules, principles, and anti-pattern checks.
 

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { defineComponent } from 'vue';
@@ -17,8 +17,8 @@ const labels: Record<string, string> = {
 
 const CollaborationMessagesPanelStub = defineComponent({
   name: 'CollaborationMessagesPanel',
-  props: ['messages'],
-  template: '<div data-test="collaboration-messages-panel" />',
+  props: ['messages', 'rows'],
+  template: '<div data-test="collaboration-messages-panel" :data-row-count="rows.length" />',
 });
 
 const seedTeam = () => buildTestTeamContext({
@@ -40,10 +40,9 @@ const seedTeam = () => buildTestTeamContext({
   }],
 });
 
-const mountPanel = () => {
-  const team = seedTeam();
+const mountPanel = (messages = testCollaborationMessagesContextView(seedTeam())) => {
   return mount(CollaborationOverviewPanel, {
-    props: { messages: testCollaborationMessagesContextView(team) },
+    props: { messages },
     global: {
       stubs: { CollaborationMessagesPanel: CollaborationMessagesPanelStub },
       mocks: { $t: (key: string) => labels[key] ?? key },
@@ -62,5 +61,18 @@ describe('CollaborationOverviewPanel', () => {
     expect(wrapper.text()).toContain('1 Messages');
     expect(wrapper.text()).not.toMatch(/task/i);
     expect(wrapper.findAll('button')).toHaveLength(0);
+  });
+
+  it('computes the message perspective once per view and hands the rows to the panel', async () => {
+    const view = testCollaborationMessagesContextView(seedTeam());
+    const listMessages = vi.fn(view.listMessages);
+    const wrapper = mountPanel({ ...view, listMessages });
+    expect(listMessages).toHaveBeenCalledTimes(1);
+    expect(wrapper.get('[data-test="collaboration-messages-panel"]').attributes('data-row-count')).toBe('1');
+
+    const nextListMessages = vi.fn(view.listMessages);
+    await wrapper.setProps({ messages: { ...view, listMessages: nextListMessages } });
+    expect(nextListMessages).toHaveBeenCalledTimes(1);
+    expect(listMessages).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,0 +1,84 @@
+[
+ {
+  "name": "code reviewer",
+  "firstFrameMs": 2275,
+  "settledMs": 3155,
+  "longTasks": 3,
+  "longTaskMs": 3157,
+  "domNodes": 188589,
+  "refRows": 41965
+ },
+ {
+  "name": "api e2e engineer",
+  "firstFrameMs": 622,
+  "settledMs": 1078,
+  "longTasks": 3,
+  "longTaskMs": 1085,
+  "domNodes": 101664,
+  "refRows": 22476
+ },
+ {
+  "name": "code reviewer",
+  "firstFrameMs": 2338,
+  "settledMs": 3212,
+  "longTasks": 3,
+  "longTaskMs": 3216,
+  "domNodes": 188589,
+  "refRows": 41965
+ },
+ {
+  "name": "architecture reviewer",
+  "firstFrameMs": 312,
+  "settledMs": 312,
+  "longTasks": 1,
+  "longTaskMs": 309,
+  "domNodes": 4669,
+  "refRows": 604
+ },
+ {
+  "name": "solution designer",
+  "firstFrameMs": 879,
+  "settledMs": 1048,
+  "longTasks": 2,
+  "longTaskMs": 1012,
+  "domNodes": 37455,
+  "refRows": 8265
+ },
+ {
+  "name": "code reviewer",
+  "firstFrameMs": 3364,
+  "settledMs": 4232,
+  "longTasks": 3,
+  "longTaskMs": 4229,
+  "domNodes": 188589,
+  "refRows": 41965
+ },
+ {
+  "name": "implementation engineer",
+  "firstFrameMs": 483,
+  "settledMs": 730,
+  "longTasks": 2,
+  "longTaskMs": 706,
+  "domNodes": 54723,
+  "refRows": 11896
+ },
+ {
+  "name": "api e2e engineer",
+  "firstFrameMs": 2044,
+  "settledMs": 2507,
+  "longTasks": 3,
+  "longTaskMs": 2514,
+  "domNodes": 101664,
+  "refRows": 22476
+ },
+ {
+  "profiled": true,
+  "name": "code reviewer",
+  "firstFrameMs": 2377,
+  "settledMs": 3255,
+  "longTasks": 3,
+  "longTaskMs": 3258,
+  "domNodes": 188589,
+  "refRows": 41965
+ }
+]

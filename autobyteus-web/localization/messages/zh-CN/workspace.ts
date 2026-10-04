@@ -288,6 +288,10 @@ const messages = {
     "恢复视图",
   "workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam":
     "代表",
+  "workspace.components.workspace.team.TeamCommunicationPanel.reference_count_label":
+    "{{count}} 个引用文件",
+  "workspace.components.workspace.team.TeamCommunicationPanel.show_all_references":
+    "显示全部 {{count}} 个文件",
   "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
     "当前聚焦的子团队",
   "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":

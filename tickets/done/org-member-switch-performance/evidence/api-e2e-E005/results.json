@@ -1,0 +1,239 @@
+{
+ "cases": [
+  {
+   "name": "L1-preview",
+   "application": "applied",
+   "firstFrameMs": 28,
+   "settledMs": 28,
+   "longTaskMs": 0,
+   "refRowsBefore": 20,
+   "refRowsAfter": 20,
+   "reusedRefElements": 20,
+   "before": {
+    "header": "Messages 42 Messages",
+    "firstRow": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136 3,136 reference fil",
+    "selectedIndex": 0,
+    "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+    "refRows": 20,
+    "viewer": null
+   },
+   "after": {
+    "header": "Messages 43 Messages",
+    "firstRow": "Validation Status 4. Okt., 10:01 from api e2e engineer 3,186 3,186 reference fil",
+    "selectedIndex": 1,
+    "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+    "refRows": 20,
+    "viewer": null
+   }
+  },
+  {
+   "name": "L2-show-all-expanded",
+   "application": "applied",
+   "firstFrameMs": 89,
+   "settledMs": 89,
+   "longTaskMs": 81,
+   "refRowsBefore": 3136,
+   "refRowsAfter": 3136,
+   "reusedRefElements": 3136,
+   "before": {
+    "header": "Messages 43 Messages",
+    "firstRow": "Validation Status 4. Okt., 10:01 from api e2e engineer 3,186 3,186 reference fil",
+    "selectedIndex": 1,
+    "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+    "refRows": 3136,
+    "viewer": null
+   },
+   "after": {
+    "header": "Messages 44 Messages",
+    "firstRow": "Validation Status 4. Okt., 10:02 to api e2e engineer 3,186 3,186 reference files",
+    "selectedIndex": 2,
+    "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+    "refRows": 3136,
+    "viewer": null
+   }
+  },
+  {
+   "name": "L3-last-reference-open",
+   "application": "applied",
+   "firstFrameMs": 87,
+   "settledMs": 87,
+   "longTaskMs": 78,
+   "refRowsBefore": 3136,
+   "refRowsAfter": 3136,
+   "reusedRefElements": 3136,
+   "before": {
+    "header": "Messages 44 Messages",
+    "firstRow": "Validation Status 4. Okt., 10:02 to api e2e engineer 3,186 3,186 reference files",
+    "selectedIndex": 2,
+    "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+    "refRows": 3136,
+    "viewer": "solution-scope-clarification.md"
+   },
+   "after": {
+    "header": "Messages 45 Messages",
+    "firstRow": "Validation Status 4. Okt., 10:03 from api e2e engineer 3,186 3,186 reference fil",
+    "selectedIndex": 3,
+    "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+    "refRows": 3136,
+    "viewer": "solution-scope-clarification.md"
+   }
+  },
+  {
+   "name": "L4-unrelated-members",
+   "application": "applied",
+   "firstFrameMs": 78,
+   "settledMs": 78,
+   "longTaskMs": 77,
+   "refRowsBefore": 3136,
+   "refRowsAfter": 3136,
+   "reusedRefElements": 3136,
+   "before": {
+    "header": "Messages 45 Messages",
+    "firstRow": "Validation Status 4. Okt., 10:03 from api e2e engineer 3,186 3,186 reference fil",
+    "selectedIndex": 3,
+    "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+    "refRows": 3136,
+    "viewer": "solution-scope-clarification.md"
+   },
+   "after": {
+    "header": "Messages 45 Messages",
+    "firstRow": "Validation Status 4. Okt., 10:03 from api e2e engineer 3,186 3,186 reference fil",
+    "selectedIndex": 3,
+    "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+    "refRows": 3136,
+    "viewer": "solution-scope-clarification.md"
+   }
+  }
+ ],
+ "checks": [
+  {
+   "name": "L1 applied; new message on top with count; header +1; selection kept; 20 rows reused; <= 200 ms",
+   "pass": true,
+   "detail": {
+    "name": "L1-preview",
+    "application": "applied",
+    "firstFrameMs": 28,
+    "settledMs": 28,
+    "longTaskMs": 0,
+    "refRowsBefore": 20,
+    "refRowsAfter": 20,
+    "reusedRefElements": 20,
+    "before": {
+     "header": "Messages 42 Messages",
+     "firstRow": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136 3,136 reference fil",
+     "selectedIndex": 0,
+     "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+     "refRows": 20,
+     "viewer": null
+    },
+    "after": {
+     "header": "Messages 43 Messages",
+     "firstRow": "Validation Status 4. Okt., 10:01 from api e2e engineer 3,186 3,186 reference fil",
+     "selectedIndex": 1,
+     "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+     "refRows": 20,
+     "viewer": null
+    }
+   }
+  },
+  {
+   "name": "L2 Show all kept (3,136 rows, all DOM elements reused); selection kept; <= 200 ms",
+   "pass": true,
+   "detail": {
+    "name": "L2-show-all-expanded",
+    "application": "applied",
+    "firstFrameMs": 89,
+    "settledMs": 89,
+    "longTaskMs": 81,
+    "refRowsBefore": 3136,
+    "refRowsAfter": 3136,
+    "reusedRefElements": 3136,
+    "before": {
+     "header": "Messages 43 Messages",
+     "firstRow": "Validation Status 4. Okt., 10:01 from api e2e engineer 3,186 3,186 reference fil",
+     "selectedIndex": 1,
+     "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+     "refRows": 3136,
+     "viewer": null
+    },
+    "after": {
+     "header": "Messages 44 Messages",
+     "firstRow": "Validation Status 4. Okt., 10:02 to api e2e engineer 3,186 3,186 reference files",
+     "selectedIndex": 2,
+     "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+     "refRows": 3136,
+     "viewer": null
+    }
+   }
+  },
+  {
+   "name": "L3 viewer keeps the open reference; rows kept and reused; <= 200 ms",
+   "pass": true,
+   "detail": {
+    "name": "L3-last-reference-open",
+    "application": "applied",
+    "firstFrameMs": 87,
+    "settledMs": 87,
+    "longTaskMs": 78,
+    "refRowsBefore": 3136,
+    "refRowsAfter": 3136,
+    "reusedRefElements": 3136,
+    "before": {
+     "header": "Messages 44 Messages",
+     "firstRow": "Validation Status 4. Okt., 10:02 to api e2e engineer 3,186 3,186 reference files",
+     "selectedIndex": 2,
+     "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+     "refRows": 3136,
+     "viewer": "solution-scope-clarification.md"
+    },
+    "after": {
+     "header": "Messages 45 Messages",
+     "firstRow": "Validation Status 4. Okt., 10:03 from api e2e engineer 3,186 3,186 reference fil",
+     "selectedIndex": 3,
+     "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+     "refRows": 3136,
+     "viewer": "solution-scope-clarification.md"
+    }
+   }
+  },
+  {
+   "name": "L4 unrelated arrival: header unchanged, rows kept, <= 200 ms",
+   "pass": true,
+   "detail": {
+    "name": "L4-unrelated-members",
+    "application": "applied",
+    "firstFrameMs": 78,
+    "settledMs": 78,
+    "longTaskMs": 77,
+    "refRowsBefore": 3136,
+    "refRowsAfter": 3136,
+    "reusedRefElements": 3136,
+    "before": {
+     "header": "Messages 45 Messages",
+     "firstRow": "Validation Status 4. Okt., 10:03 from api e2e engineer 3,186 3,186 reference fil",
+     "selectedIndex": 3,
+     "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+     "refRows": 3136,
+     "viewer": "solution-scope-clarification.md"
+    },
+    "after": {
+     "header": "Messages 45 Messages",
+     "firstRow": "Validation Status 4. Okt., 10:03 from api e2e engineer 3,186 3,186 reference fil",
+     "selectedIndex": 3,
+     "selectedText": "Validation Status 4. Okt., 08:15 from api e2e engineer 3,136",
+     "refRows": 3136,
+     "viewer": "solution-scope-clarification.md"
+    }
+   }
+  },
+  {
+   "name": "no page errors",
+   "pass": true,
+   "detail": []
+  }
+ ],
+ "observations": {
+  "openReferenceRefetchesOnArrival": 1,
+  "distinctUrls": 1
+ }
+}
