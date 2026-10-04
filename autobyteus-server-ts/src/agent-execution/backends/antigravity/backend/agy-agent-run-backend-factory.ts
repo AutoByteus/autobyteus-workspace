@@ -7,7 +7,12 @@ import { AgyAgentRunContext } from "./agy-agent-run-context.js";
 import { AgyAgentRunBackend } from "./agy-agent-run-backend.js";
 import { AgyStreamProcess } from "../stream/agy-stream-process.js";
 import { createAgyRunCapsule, restoreAgyRunCapsule, type AgyRunCapsule } from "../capsule/agy-run-capsule.js";
-import { listAntigravityModels } from "../../../../runtime-management/antigravity-cli-capability.js";
+import {
+  AGY_COMPACTION_DETECTION_MIN_VERSION,
+  isAgyCompactionDetectionSupported,
+  listAntigravityModels,
+  readAntigravityCliVersion,
+} from "../../../../runtime-management/antigravity-cli-capability.js";
 import type { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../skills/services/skill-service.js";
 import type { ClaudeWorkspaceResolver } from "../../claude/claude-workspace-resolver.js";
@@ -64,6 +69,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
   }
 
   private async launch(config: AgentRunConfig, runId: string, capsule: AgyRunCapsule, expectedId: string | null): Promise<AgyAgentRunBackend> {
+    const compactionDetection = await this.resolveCompactionDetection(runId);
     const process = new AgyStreamProcess();
     try {
       const init = await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
@@ -77,8 +83,17 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
       // AGY always runs with auto-approve (skip-permissions), whatever the stored or submitted setting.
       if (init.init.permission_mode !== "always-proceed") throw new Error("AGY_PERMISSION_MODE_MISMATCH");
       return new AgyAgentRunBackend(new AgentRunContext({ runId, config,
-        runtimeContext: new AgyAgentRunContext(init.conversation_id) }), process);
+        runtimeContext: new AgyAgentRunContext(init.conversation_id) }), process, { compactionDetection });
     } catch (error) { process.stop(); throw error; }
+  }
+
+  /** Compaction checkpoints are mapped only on the AGY version proven to stream them. */
+  private async resolveCompactionDetection(runId: string): Promise<boolean> {
+    const version = await readAntigravityCliVersion();
+    const supported = isAgyCompactionDetectionSupported(version);
+    if (!supported) console.info(`AGY compaction detection off for run ${runId}: CLI version ` +
+      `${version ?? "unknown"} is below ${AGY_COMPACTION_DETECTION_MIN_VERSION} or unreadable.`);
+    return supported;
   }
 
   private activateMcp(runId: string, config: AgentRunConfig, workspacePath: string, definition: NonNullable<Awaited<ReturnType<AgentDefinitionService["getAgentDefinitionById"]>>>): AgentToolMcpDescriptor | null {

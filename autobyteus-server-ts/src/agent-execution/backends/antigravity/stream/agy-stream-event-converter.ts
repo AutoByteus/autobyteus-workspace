@@ -8,8 +8,11 @@ import type { AgyProviderFailureDiagnostic } from "./agy-provider-diagnostic-sin
 import type { AgyNativeImagePathResolution } from "./agy-step-output-reader.js";
 import type { AgyBackgroundToolStep } from "./agy-background-task-monitor.js";
 import type { AgyNativeToolArgumentLookup } from "./agy-native-tool-arguments-reader.js";
+import { buildAgyCompactionStatusPayload } from "./agy-compaction-status-payload.js";
 
 export type AgyNativeImagePathResolver = (stepIndex: number) => AgyNativeImagePathResolution;
+/** `compactionDetection`: the run's AGY CLI is proven to stream compactions as checkpoint steps. */
+export type AgyStreamEventConverterOptions = Readonly<{ compactionDetection: boolean }>;
 
 const number = (value: unknown): number | null => typeof value === "number" && Number.isFinite(value) ? value : null;
 const denial = (error: string): boolean => /permission|denied|not allowed|approval/i.test(error);
@@ -32,11 +35,14 @@ export class AgyStreamEventConverter {
   /** Started tool steps without DONE/ERROR yet (stepIndex -> start payload); AGY never finishes a daemon step. */
   private readonly openTools = new Map<number, Record<string, unknown>>();
   private textSeen = false;
+  /** Checkpoint steps already reported for this conversation; step indices never repeat across turns. */
+  private readonly checkpoints = new Set<number>();
 
   constructor(private readonly runId: string, private readonly conversationId: string, private readonly model: string,
     private readonly onProviderFailure?: (diagnostic: AgyProviderFailureDiagnostic) => void,
     private readonly resolveNativeImagePath?: AgyNativeImagePathResolver,
-    private readonly onBackgroundToolSteps?: (steps: readonly AgyBackgroundToolStep[]) => void) {}
+    private readonly onBackgroundToolSteps?: (steps: readonly AgyBackgroundToolStep[]) => void,
+    private readonly options: AgyStreamEventConverterOptions = { compactionDetection: false }) {}
 
   startTurn(turnId: string): AgentRunEvent[] {
     if (this.turnId) throw new Error("AGY_TURN_ALREADY_ACTIVE");
@@ -77,6 +83,7 @@ export class AgyStreamEventConverter {
     if (stepIndex === null || !stepType || !state) throw new Error("AGY_STREAM_INVALID_STEP");
     if (stepType === "agent_response") return this.agentResponse(payload, turnId, stepIndex, state);
     if (stepType === "tool") return this.tool(payload, turnId, stepIndex, state, nativeArguments);
+    if (stepType === "checkpoint") return this.checkpoint(payload, turnId, stepIndex, state);
     return [];
   }
 
@@ -88,6 +95,15 @@ export class AgyStreamEventConverter {
     events.push(this.event(AgentRunEventType.TURN_INTERRUPTED, { turn_id: turnId }));
     this.turnId = null;
     return events;
+  }
+
+  /** On AGY >= 1.2.16 a DONE checkpoint step is one completed automatic compaction. */
+  private checkpoint(payload: Record<string, unknown>, turnId: string, stepIndex: number, state: string): AgentRunEvent[] {
+    if (!this.options.compactionDetection || state !== "DONE" || this.checkpoints.has(stepIndex)) return [];
+    this.checkpoints.add(stepIndex);
+    return [this.event(AgentRunEventType.COMPACTION_STATUS, buildAgyCompactionStatusPayload({
+      conversationId: this.conversationId, turnId, stepIndex, durationSeconds: number(payload.duration_seconds),
+    }))];
   }
 
   private agentResponse(payload: Record<string, unknown>, turnId: string, stepIndex: number, state: string): AgentRunEvent[] {

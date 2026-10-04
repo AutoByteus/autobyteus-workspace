@@ -16,7 +16,9 @@ const mode = process.env.AGY_FAKE_MODE;
 const arg = process.argv[2];
 appendFileSync(process.env.AGY_FAKE_COMMAND_LOG, arg + '\\n');
 if (arg === '--version') {
-  throw new Error('Version probing must not be used for admission');
+  // Only the compaction-detection probe reads the version; admission (help + models) never does.
+  if (process.env.AGY_FAKE_VERSION_OUTPUT === undefined) throw new Error('Version probing must not be used for admission');
+  process.stdout.write(process.env.AGY_FAKE_VERSION_OUTPUT);
 } else if (arg === '--help') {
   if (mode === 'hang-help') { setInterval(() => {}, 1000); }
   else if (mode === 'oversized-help') process.stdout.write('x'.repeat(70 * 1024));
@@ -152,4 +154,37 @@ describe("bounded AGY CLI discovery", () => {
       await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
     }
   }, 8_000);
+});
+
+describe("AGY compaction detection version gate", () => {
+  it.each([
+    ["1.2.16", true], ["1.2.17", true], ["1.3.0", true], ["1.10.0", true], ["2.0.0", true], ["agy version 1.2.16\n", true],
+    ["1.2.15", false], ["1.1.99", false], ["0.9.30", false], ["", false], ["garbage", false], [null, false],
+  ] as const)("treats CLI version %j as supported=%s", async (version, expected) => {
+    const { isAgyCompactionDetectionSupported } = await capability("ok");
+    expect(isAgyCompactionDetectionSupported(version)).toBe(expected);
+  });
+
+  it("reads the trimmed `agy --version` output once per process", async () => {
+    vi.stubEnv("AGY_FAKE_VERSION_OUTPUT", "1.2.16\n");
+    const { readAntigravityCliVersion } = await capability("ok");
+    await expect(readAntigravityCliVersion()).resolves.toBe("1.2.16");
+    await expect(readAntigravityCliVersion()).resolves.toBe("1.2.16");
+    const commands = (await readFile(path.join(directory, "commands.log"), "utf8")).split("\n").filter(Boolean);
+    expect(commands).toEqual(["--version"]);
+  });
+
+  it("returns null for an unreadable version without caching the failure", async () => {
+    const { readAntigravityCliVersion } = await capability("ok");
+    await expect(readAntigravityCliVersion()).resolves.toBeNull();
+    vi.stubEnv("AGY_FAKE_VERSION_OUTPUT", "1.2.16");
+    await expect(readAntigravityCliVersion()).resolves.toBe("1.2.16");
+  });
+
+  it("returns null when the CLI is missing", async () => {
+    vi.stubEnv("ANTIGRAVITY_CLI_COMMAND", path.join(directory, "missing-cli"));
+    vi.resetModules();
+    const { readAntigravityCliVersion } = await import("../../../src/runtime-management/antigravity-cli-capability.js");
+    await expect(readAntigravityCliVersion()).resolves.toBeNull();
+  });
 });

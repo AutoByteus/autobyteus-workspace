@@ -5,20 +5,26 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgyAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.js";
-import { listAntigravityModels } from "../../../../../src/runtime-management/antigravity-cli-capability.js";
+import { listAntigravityModels, readAntigravityCliVersion } from "../../../../../src/runtime-management/antigravity-cli-capability.js";
+import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
+import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
 import { AgentCreationError } from "../../../../../src/agent-execution/errors.js";
-const { start, stop } = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn() }));
+const { start, stop, streamListeners } = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn(),
+  streamListeners: [] as Array<(message: unknown) => void> }));
 
-vi.mock("../../../../../src/runtime-management/antigravity-cli-capability.js", () => ({
+vi.mock("../../../../../src/runtime-management/antigravity-cli-capability.js", async (importOriginal) => ({
+  ...await importOriginal<typeof import("../../../../../src/runtime-management/antigravity-cli-capability.js")>(),
   listAntigravityModels: vi.fn(),
+  readAntigravityCliVersion: vi.fn(),
 }));
 vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-process.js", () => ({
   AgyStreamProcess: class {
     start = start;
     stop = stop;
-    subscribe = vi.fn();
+    subscribe = vi.fn((listener: (message: unknown) => void) => { streamListeners.push(listener); });
     onClose = vi.fn();
+    sendUserMessage = vi.fn(async () => undefined);
   },
 }));
 
@@ -41,6 +47,8 @@ describe("AGY backend capability admission and preserved bindings", () => {
     initOverride = {};
     conversationId = null;
     vi.mocked(listAntigravityModels).mockResolvedValue([{ id: "test-model", name: "Test Model" }]);
+    vi.mocked(readAntigravityCliVersion).mockResolvedValue("1.2.16");
+    streamListeners.length = 0;
     start.mockImplementation(async (input) => ({
       event: "init", conversation_id: conversationId ?? input.conversationId ?? "provider-conversation",
       init: { agent: input.agentName, model: input.model, cwd: input.capsulePath,
@@ -169,5 +177,40 @@ describe("AGY backend capability admission and preserved bindings", () => {
     vi.mocked(listAntigravityModels).mockResolvedValue([]);
     await expect(factory.restoreBackend(initial.getContext())).rejects.toThrow("AGY_MODEL_UNAVAILABLE");
     expect(start).toHaveBeenCalledTimes(1);
+  });
+
+  describe("compaction detection version gate (REQ-A04)", () => {
+    const checkpoint = (conversation: string): AgyStreamMessage => ({ event: "step_update", step_update: {
+      conversation_id: conversation, step_index: 9, state: "DONE", step_type: "checkpoint", duration_seconds: 7.293076 } });
+    /** Starts one turn on the created backend and replays a DONE checkpoint through its stream subscription. */
+    const replayCheckpoint = async (create: () => Promise<Awaited<ReturnType<typeof factory.createBackend>>>) => {
+      const backend = await create();
+      const events: AgentRunEvent[] = [];
+      backend.subscribeToSourceEventBatches(async (batch) => { events.push(...batch); });
+      await backend.dispatchUserInput({ kind: "start_turn", message: { content: "work" } } as never);
+      streamListeners.at(-1)!(checkpoint(backend.getPlatformAgentRunId()));
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      await backend.terminate();
+      return { context: backend.getContext(),
+        compactions: events.filter((event) => event.eventType === AgentRunEventType.COMPACTION_STATUS) };
+    };
+
+    it.each(["1.2.16", "1.2.17", "agy version 1.10.0"])("maps checkpoints on create and restore for CLI version %s", async (version) => {
+      vi.mocked(readAntigravityCliVersion).mockResolvedValue(version);
+      const created = await replayCheckpoint(() => factory.createBackend(config, "run"));
+      expect(created.compactions).toHaveLength(1);
+      expect(created.compactions[0]!.payload).toMatchObject({
+        boundary_key: "agy:provider-conversation:checkpoint:9", rotation_eligible: true });
+      const restored = await replayCheckpoint(() => factory.restoreBackend(created.context));
+      expect(restored.compactions).toHaveLength(1);
+    });
+
+    it.each([["1.2.15"], ["1.1.99"], [null], ["garbage"]])("ignores checkpoints and logs the reason for CLI version %j", async (version) => {
+      vi.mocked(readAntigravityCliVersion).mockResolvedValue(version);
+      const info = vi.spyOn(console, "info").mockImplementation(() => undefined);
+      expect((await replayCheckpoint(() => factory.createBackend(config, "run-old"))).compactions).toEqual([]);
+      expect(info).toHaveBeenCalledTimes(1);
+      expect(String(info.mock.calls[0]![0])).toContain(`AGY compaction detection off for run run-old: CLI version ${version ?? "unknown"}`);
+    });
   });
 });

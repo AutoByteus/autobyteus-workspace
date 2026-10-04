@@ -30,6 +30,13 @@ The capsule manifest's schema version remains `1`: it is not a CLI release
 number. Removing version admission does not regenerate saved Markdown,
 manifest hashes, or provider conversation bindings.
 
+Admission stays version-independent. The CLI version is read separately, and
+only to gate compaction detection (see [Automatic compaction](#automatic-compaction)):
+`readAntigravityCliVersion` runs a bounded `agy --version` when a backend is
+created or restored. A version it reads is cached for the server process, so a
+CLI update is picked up after a server restart. An unreadable version is not
+cached and never blocks the run; it only turns detection off.
+
 AGY feature and model discovery on backend request paths uses one
 bounded asynchronous child-process owner. A slow CLI can still delay the
 request that needs its answer, but it does not synchronously block unrelated
@@ -326,6 +333,35 @@ safe public wording and a bounded private diagnostic. A failed or unknown
 terminal provider result emits a safe turn error, not a successful turn or a
 raw provider response. Successful turns retain ordinary assistant text and
 completion ordering; no image-specific finalization barrier is used.
+
+## Automatic compaction
+
+AGY compacts its context automatically; AGY 1.2.16 has no usable manual
+trigger (`/compact` sent to an AGY run is answered by the model without
+compacting, a known limitation). In `stream-json` output, AGY 1.2.16 reports
+each automatic compaction as one step update inside the active turn, after
+`user_input` and before the reply:
+`{"event":"step_update","step_update":{"conversation_id":…,"step_index":9,"state":"DONE","step_type":"checkpoint","duration_seconds":7.29}}`.
+It sends no started phase, summary, or token figures in the stream.
+
+`AgyStreamEventConverter` maps a `checkpoint` step with state `DONE` to one
+`COMPACTION_STATUS` event (`buildAgyCompactionStatusPayload`): a
+rotation-eligible `provider_compaction_boundary` with runtime kind
+`ANTIGRAVITY`, provider `antigravity`, source surface `antigravity.checkpoint`,
+boundary key `agy:<conversation_id>:checkpoint:<step_index>`,
+`provider_event_id` `checkpoint:<step_index>`, status `compacted`, trigger
+`auto`, and `duration_ms` from `duration_seconds`. The shared memory recorder
+writes the marker and rotates the run's raw traces; the web shows one completed
+compaction. A step index is reported once per conversation, and the recorder
+also deduplicates by boundary key. Other checkpoint states are ignored.
+
+Detection is on only when the run's CLI version is at least
+`AGY_COMPACTION_DETECTION_MIN_VERSION` (1.2.16), the version on which the
+signal was proven. `AgyAgentRunBackendFactory` decides this per created or
+restored backend and logs one info line when it is off. Older AGY versions
+also stream early non-compaction checkpoint steps, so on an older or unreadable
+version checkpoint steps stay ignored. AutoByteus does not read AGY transcript
+files for compaction, and historical AGY raw traces are not rewritten.
 
 ## Terminal error messages
 
