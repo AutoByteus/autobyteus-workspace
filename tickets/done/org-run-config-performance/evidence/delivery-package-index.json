@@ -1142,9 +1142,16 @@
     "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/runtime-lifecycle-guide-custody-dr004/response-receipt.json",
     "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/runtime-lifecycle-guide-custody-dr004/custody-manifest.json",
     "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/handoff-rules.json",
-    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/rule-evaluation.json"
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/rule-evaluation.json",
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/terminal-record-push.log",
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/final-repository-state.json",
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/final-receipt-base-refresh.log",
+    "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/terminal-record-commit.log",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/terminal-record-push.log",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/final-receipt-base-refresh.log",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/terminal-record-commit.log"
   ],
-  "referenceCount": 1135,
+  "referenceCount": 1142,
   "successfulTerminalEligible": true,
   "dispatchedReferenceCount": 838,
   "postDispatchReceiptAppended": true,
@@ -1473,10 +1480,11 @@
   },
   "dispatchedReferenceCountForDR004": 1018,
   "cleanup": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/cleanup-result.json",
-  "finalRepositoryState": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/post-final-repository-audit.json",
+  "finalRepositoryState": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/final-repository-state.json",
   "blockedHandoffConfirmed": true,
   "postDispatchReceiptAppendedForDR004": true,
   "deliveryScope": "Only cleanup/final receipt resumed; publication unchanged",
   "finalArtifactVerification": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/final-artifact-verification.json",
-  "completeIncomingPriorReferenceCount": 1019
+  "completeIncomingPriorReferenceCount": 1019,
+  "finalPersonalReceiptCommit": "4907be3de42fb5b06c56277d56631c67933261c6"
 }
