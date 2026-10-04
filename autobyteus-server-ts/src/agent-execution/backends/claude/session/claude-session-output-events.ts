@@ -115,35 +115,3 @@ export const buildClaudeTurnTerminalErrorEvent = (
     turn_id: turnId,
   },
 });
-
-export const buildClaudeProviderCompactionEvent = (input: {
-  chunk: unknown;
-  turnId: string;
-  sessionId: string;
-}): ClaudeSessionEvent | null => {
-  const payload = asObject(input.chunk);
-  if (!payload) {
-    return null;
-  }
-  const nested = asObject(payload.message) ?? asObject(payload.event) ?? payload;
-  const type = asString(nested.type)?.toLowerCase() ?? asString(payload.type)?.toLowerCase();
-  const status = asString(nested.status)?.toLowerCase() ?? asString(payload.status)?.toLowerCase();
-  const baseParams = {
-    ...payload,
-    turnId: input.turnId,
-    sessionId: input.sessionId,
-  };
-  if (type === "compact_boundary" || Boolean(nested.compact_boundary) || Boolean(payload.compact_boundary)) {
-    return {
-      method: ClaudeSessionEventName.COMPACT_BOUNDARY,
-      params: baseParams,
-    };
-  }
-  if (status === "compacting") {
-    return {
-      method: ClaudeSessionEventName.STATUS_COMPACTING,
-      params: baseParams,
-    };
-  }
-  return null;
-};

@@ -1,0 +1,23 @@
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T08:54:46.8770820Z ** TEST SUCCEEDED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T08:58:55.3827040Z Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' started.
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T08:58:59.4779300Z     t =     4.06s     Launch org.autobyteus.mobile
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T08:59:22.0503080Z     t =    26.00s         Setting up automation session
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T08:59:27.1744590Z     t =    31.64s Type 'http://127.0.0.1:2...' into "connection.input" TextView
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T08:59:31.5979850Z     t =    36.13s Waiting 20.0s for WebView (First Match) to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T08:59:33.5647770Z     t =    38.18s Waiting 20.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T08:59:57.6042830Z /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:68: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected fake /mobile marker to be visible in WKWebView
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T08:59:58.4117860Z     t =    63.05s Added attachment named 'fake-mobile-opened'
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:00.0293140Z     t =    64.12s     Launch org.autobyteus.mobile
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:02.7963790Z     t =    67.25s         Setting up automation session
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:09.0092430Z     t =    72.22s Waiting 20.0s for WebView (First Match) to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:09.4201640Z     t =    73.84s Waiting 20.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:12.0403720Z     t =    76.53s Added attachment named 'fake-mobile-restored'
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:15.0067980Z Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' failed (79.662 seconds).
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:15.0174030Z Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' started.
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:15.1488820Z     t =     0.08s     Launch org.autobyteus.mobile
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:17.6541140Z     t =     2.26s         Setting up automation session
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:23.7124640Z     t =     8.60s Type 'http://127.0.0.1:9...' into "connection.input" TextView
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:29.5325850Z     t =    14.51s Added attachment named 'native-unreachable-diagnostic'
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:00:32.8440310Z Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' passed (17.819 seconds).
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:01:58.8267690Z ** TEST FAILED **
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T09:02:08.8282050Z ##[error]Process completed with exit code 65.

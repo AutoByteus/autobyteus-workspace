@@ -2,7 +2,8 @@
 
 ## Status
 
-- Delivery revision: `DR-001`. State: **awaiting explicit user verification**.
+- Delivery revision: `DR-002`. State: **Delivery Completed**. The user accepted (“finalize and release a beta version thanks”). Merged to `origin/personal` (`f2a490957`) and published beta `v1.4.94-beta.3` (release commit `b37d7a934`). The ticket worktree and local branch are removed. See `release-deployment-report.md`.
+- DR-001 state (historical): awaiting explicit user verification.
 - Classification: task_size `Small`, architectural_risk `Low`, route **direct** (no independent architecture, source or test-code review: `N/A — not applicable`).
 - Authoritative upstream: SR-003 (requirements and design approved), IR-001 (implementation `88bd41620`), API-REV-001 (Pass, 95% confidence).
 

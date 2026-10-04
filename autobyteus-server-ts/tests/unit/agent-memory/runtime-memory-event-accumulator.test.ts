@@ -824,6 +824,74 @@ describe("RuntimeMemoryEventAccumulator", () => {
     expect(new RunMemoryFileStore(memoryDir).getRawTraceArchiveRevisionInfo()).toBeNull();
   });
 
+  it("persists optional provider compaction details only when the provider reports them", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const base = {
+      kind: "provider_compaction_boundary",
+      semantic_compaction: false,
+      rotation_eligible: false,
+      turn_id: "turn-1",
+    };
+
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      ...base,
+      runtime_kind: "CODEX",
+      provider: "codex",
+      source_surface: "codex.context_compaction_started",
+      boundary_key: "codex:thread-1:compaction-1:compacting",
+      provider_event_id: "compaction-1",
+      status: "compacting",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      ...base,
+      runtime_kind: "CLAUDE",
+      provider: "claude",
+      source_surface: "claude.compaction_failed",
+      boundary_key: "claude:session-1:claude.compaction_failed:op-1:turn-1",
+      provider_session_id: "session-1",
+      provider_event_id: "op-1",
+      status: "failed",
+      error_message: "too_few_groups",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      ...base,
+      runtime_kind: "CLAUDE",
+      provider: "claude",
+      source_surface: "claude.compact_boundary",
+      boundary_key: "claude:session-1:claude.compact_boundary:boundary-1:turn-1",
+      provider_session_id: "session-1",
+      provider_event_id: "op-2",
+      status: "compacted",
+      trigger: "auto",
+      pre_tokens: 128715,
+      post_tokens: 1546,
+      duration_ms: 16593,
+      rotation_eligible: true,
+    }));
+
+    const store = new RunMemoryFileStore(memoryDir);
+    const markers = [...store.listArchiveTurnRawTracesOrdered(), ...store.listTurnRawTracesOrdered()]
+      .map((trace) => trace.toolResult as Record<string, unknown>);
+    expect(markers).toHaveLength(3);
+    expect(markers[0]).not.toHaveProperty("post_tokens");
+    expect(markers[0]).not.toHaveProperty("duration_ms");
+    expect(markers[0]).not.toHaveProperty("error_message");
+    expect(markers[1]).toMatchObject({ status: "failed", error_message: "too_few_groups", rotation_eligible: false });
+    expect(markers[1]).not.toHaveProperty("post_tokens");
+    expect(markers[2]).toMatchObject({
+      status: "compacted",
+      trigger: "auto",
+      pre_tokens: 128715,
+      post_tokens: 1546,
+      duration_ms: 16593,
+      rotation_eligible: true,
+    });
+    expect(markers[2]).not.toHaveProperty("error_message");
+    expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);
+    expect(store.listTurnRawTracesOrdered()).toHaveLength(1);
+  });
+
   it("writes provider compaction markers and rotates settled active traces into segmented archives", async () => {
     const memoryDir = await mkTempDir();
     const accumulator = createAccumulator(memoryDir);

@@ -1,0 +1,19 @@
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:15:30.9250280Z Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' started.
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:15:30.9714660Z     t =     1.53s     Launch org.autobyteus.mobile
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:15:55.8158720Z     t =    48.11s         Setting up automation session
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:05.1106940Z     t =    58.27s Type 'http://127.0.0.1:2...' into "connection.input" TextView
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:08.7529430Z     t =    62.24s Waiting 20.0s for WebView (First Match) to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:09.7736110Z     t =    63.27s Waiting 20.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:19.4822860Z     t =    72.98s Added attachment named 'fake-mobile-opened'
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:20.5205500Z     t =    74.00s     Launch org.autobyteus.mobile
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:22.1084260Z     t =    75.61s         Setting up automation session
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:25.5394140Z     t =    79.04s Waiting 20.0s for WebView (First Match) to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:26.6470100Z     t =    80.15s Waiting 20.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:27.8834800Z     t =    81.38s Added attachment named 'fake-mobile-restored'
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:28.8077550Z Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (82.269 seconds).
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:28.8079180Z Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' started.
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:29.1048360Z     t =     0.09s     Launch org.autobyteus.mobile
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:34.6548100Z     t =     5.86s         Setting up automation session
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:42.8831330Z     t =    13.99s Type 'http://127.0.0.1:9...' into "connection.input" TextView
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:48.0042390Z     t =    19.23s Added attachment named 'native-unreachable-diagnostic'
+Build And Test iOS App	Generate, build, and run implementation checks	2026-10-04T04:16:48.2393970Z Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' passed (19.458 seconds).

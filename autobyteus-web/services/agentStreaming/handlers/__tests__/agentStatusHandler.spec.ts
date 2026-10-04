@@ -335,6 +335,57 @@ describe('agentStatusHandler', () => {
       );
     });
 
+    it('ends a Claude compaction operation as failed with the provider error on the same row', () => {
+      // Payload shapes emitted by the server's Claude compaction tracker (status → failed).
+      const base = {
+        kind: 'provider_compaction_boundary',
+        runtime_kind: 'CLAUDE',
+        provider: 'claude',
+        provider_session_id: 'session-1',
+        provider_event_id: 'operation-2',
+        provider_timestamp: null,
+        turn_id: 'turn-claude',
+        semantic_compaction: false,
+      } as const;
+      handleCompactionStatus({
+        ...base,
+        status: 'compacting',
+        source_surface: 'claude.status_compacting',
+        boundary_key: 'claude:session-1:claude.status_compacting:operation-2:turn-claude',
+        rotation_eligible: false,
+      } as CompactionStatusPayload, mockContext);
+      handleCompactionStatus({
+        ...base,
+        status: 'failed',
+        source_surface: 'claude.compaction_failed',
+        boundary_key: 'claude:session-1:claude.compaction_failed:operation-2:turn-claude',
+        rotation_eligible: false,
+        error_message: 'API Error: Request was aborted.',
+      } as CompactionStatusPayload, mockContext);
+
+      const expectedActivityId = 'compaction:provider:claude:session-1:operation-2:turn-claude';
+      expect(mockContext.state.compactionStatus).toMatchObject({
+        activityId: expectedActivityId,
+        phase: 'failed',
+        errorMessage: 'API Error: Request was aborted.',
+      });
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenCalledTimes(2);
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        1,
+        mockContext.state.runId,
+        expect.objectContaining({ activityId: expectedActivityId, phase: 'started' }),
+      );
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        2,
+        mockContext.state.runId,
+        expect.objectContaining({
+          activityId: expectedActivityId,
+          phase: 'failed',
+          errorMessage: 'API Error: Request was aborted.',
+        }),
+      );
+    });
+
     it('reuses a previous active provider row before falling back to a new boundary key', () => {
       handleCompactionStatus({
         kind: 'provider_compaction_boundary',
