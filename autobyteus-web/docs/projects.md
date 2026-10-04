@@ -160,10 +160,26 @@ See [server Projects](../../autobyteus-server-ts/docs/modules/projects.md) for
 ## Optional Local Voice Destination
 
 `components/voiceInput/VoiceInputButton.vue` is generic: the initiating surface
-supplies a VoiceTranscriptTarget `{key, isCurrent, appendTranscript}`. A Task
-draft receives editable text; `useComposerVoiceTarget` adapts the actual composer
+supplies a VoiceTranscriptTarget `{key, isCurrent, appendTranscript}`. Project
+create/edit descriptions and Task drafts receive editable text; `useComposerVoiceTarget` adapts the actual composer
 context without looking up/inventing an active AgentContext. Voice never saves
-a Task, starts a run or stores recorded audio as Task context automatically.
+a Project or Task, starts a run or stores recorded audio as Task context automatically.
+
+ProjectEditor owns a stable target for each mounted editor and appends dictation
+to the latest description, including text typed during recording. Its own pending
+voice operation disables Save until it settles; Stop remains available. Cancel
+or leaving the editor invalidates that target, so delayed text cannot reach a
+new editor. Dictation never submits the form: review/edit, then explicitly Save.
+Project and workspace descriptions remain optional, including blank values;
+there is no migration or historical-description backfill.
+
+`ProjectVoiceStatus` replaces TaskDescriptionComposer's local status rendering
+and serves both Project and Task descriptions. It shows target-scoped starting,
+recording/transcribing, cancellation, error and no-speech feedback. Successful
+dictation leaves only editable text, with no success banner or reserved status
+gap. Its synchronous result snapshot retains useful terminal feedback before
+the voice store releases target ownership; it does not own text or saving.
+Task attachment controls and manual persistence are unchanged.
 
 The existing installed/enabled local Electron Voice Input extension and device/
 permission availability are prerequisites. Browser or unavailable capability
@@ -172,7 +188,7 @@ shared starting/recording/transcribing lifecycle blocks competing capture.
 Matching-target Cancel/unmount invalidates late delivery and disposes capture;
 uncancellable IPC remains busy until settlement. Late text/errors are ignored
 for an invalid destination. Settings tests use their own source without a
-Task/composer text sink. See [capture ownership](electron_packaging.md#capture-startup-and-ownership).
+Project/Task/composer text sink. See [capture ownership](electron_packaging.md#capture-startup-and-ownership).
 
 Repository capture/worker/IPC doubles prove contracts, **not** installed official
 extension, microphone/permission/device or live transcription capability.
@@ -208,6 +224,14 @@ performance certification. No obsolete overlay/focus-trap or injected same-windo
 switching journey. `--skip-server-build` requires a current built server;
 `--output-dir=<path>` retains evidence. Clear inherited ENABLE_* flags when
 running development servers; the probe owns isolated flags/profiles.
+
+Add `--voice-input` to exercise six additional Project create/edit and Task
+voice journeys, including quiet success, manual persistence, optional blank
+reload, retry, cancellation and late navigation response. This uses actual
+browser capture/AudioWorklet, voice store and HTTP/SQLite; extension discovery
+and transcription IPC are fixtures, with a synthetic microphone and test-granted
+permission. It does not certify physical devices, native Electron IPC/models or
+the packaged desktop shell.
 
 Composer mention probes are separate renderer fixtures with doubled candidate/
 upload/admission/scope boundaries, not live Team/Manager/full-product journeys.

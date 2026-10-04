@@ -54,7 +54,6 @@ const projectMessages = {
   'projects.ui.voiceRecording': 'Recording… Tap stop when you are done.',
   'projects.ui.voiceTranscribing': 'Transcribing voice input…',
   'projects.ui.cancelRecording': 'Cancel recording',
-  'projects.ui.voiceReady': 'Transcription added. Review or edit the text before saving.',
   'projects.ui.voiceNoSpeech': 'No speech detected. Try again or type the description.',
   'projects.ui.voiceFailed': 'Voice input could not be transcribed. Your description is unchanged. Try again or type instead.',
   'projects.ui.inputPolicy': 'Files are saved with this task on the selected node. Voice input requires the optional desktop extension.',

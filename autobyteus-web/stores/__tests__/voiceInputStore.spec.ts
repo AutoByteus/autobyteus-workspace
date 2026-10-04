@@ -718,6 +718,22 @@ describe('voiceInputStore', () => {
     store.recordingSource = 'project-task'
     return stop
   }
+  it.each(['project-task', 'project-description'] as const)('delivers %s only to its live target', async (source) => {
+    const store = useVoiceInputStore(), append = vi.fn()
+    const target = {key: 'owned-description', isCurrent: () => true, appendTranscript: append}
+    store.transcriptTarget = target
+    mockCapture(store)
+    store.recordingSource = source
+    window.electronAPI.transcribeVoiceInput = vi.fn().mockResolvedValue({
+      ok: true, text: 'dictated description', noSpeech: false, detectedLanguage: 'en',
+    }) as any
+    await store.cancelOperationForTarget('unrelated-target')
+    expect(store.isRecording).toBe(true)
+    await store.stopRecording()
+    expect(append).toHaveBeenCalledExactlyOnceWith('dictated description')
+    expect(store.latestResult).toMatchObject({source, outcome: 'transcript-ready'})
+    expect(store.transcriptTarget).toBeNull()
+  })
   it('settles a cancelled pending FLUSH, stops media and releases global busy without an IPC request', async () => {
     const store = useVoiceInputStore(), append = vi.fn()
     store.transcriptTarget = {key: 'task-local', isCurrent: () => true, appendTranscript: append}

@@ -21,6 +21,10 @@
           <div class="mt-4">
             <label for="project-editor-description" class="block text-sm font-medium text-slate-700">{{ t('projects.ui.description') }} <span class="font-normal text-slate-500">{{ t('projects.ui.optional') }}</span></label>
             <textarea id="project-editor-description" v-model="description" rows="2" :disabled="saving" :placeholder="t('projects.ui.projectDescriptionPlaceholder')" class="mt-2 block min-h-[104px] w-full resize-y rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base leading-6 text-slate-900 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:min-h-0 sm:text-sm" data-testid="project-description-input" />
+            <ProjectVoiceStatus :target="voiceTarget" class="mt-3" />
+            <div class="mt-2 flex justify-end">
+              <VoiceInputButton :target="voiceTarget" source="project-description" large :disabled="saving" data-testid="project-voice-button" />
+            </div>
           </div>
 
           <section class="mt-6 border-t border-slate-200 pt-5" aria-labelledby="project-workspaces-heading" data-testid="project-create-workspaces">
@@ -33,7 +37,7 @@
             <ProjectWorkspaceEntry v-for="(row, index) in rows" :key="row.key" v-model="rows[index]!" :index="index" :disabled="saving" :choices="availableChoices(row)" @remove="removeWorkspace(row)" />
           </section>
         </div>
-        <div class="flex justify-end gap-3 border-t border-slate-200 bg-slate-50/50 px-5 py-4 sm:px-6"><NuxtLink :to="backTarget" class="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium whitespace-nowrap text-slate-700 sm:px-5 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:flex-none" data-testid="project-editor-cancel">{{ t('projects.common.cancel') }}</NuxtLink><button type="submit" :disabled="saving" class="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg bg-blue-600 px-3 text-sm font-medium whitespace-nowrap text-white sm:px-5 hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-60 sm:flex-none" data-testid="project-form-submit">{{ saving ? t('projects.common.saving') : isEdit ? t('projects.ui.saveChanges') : t('projects.ui.createProject') }}</button></div>
+        <div class="flex justify-end gap-3 border-t border-slate-200 bg-slate-50/50 px-5 py-4 sm:px-6"><NuxtLink :to="backTarget" class="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium whitespace-nowrap text-slate-700 sm:px-5 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:flex-none" data-testid="project-editor-cancel">{{ t('projects.common.cancel') }}</NuxtLink><button type="submit" :disabled="saving || voicePending" class="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg bg-blue-600 px-3 text-sm font-medium whitespace-nowrap text-white sm:px-5 hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-60 sm:flex-none" data-testid="project-form-submit">{{ saving ? t('projects.common.saving') : isEdit ? t('projects.ui.saveChanges') : t('projects.ui.createProject') }}</button></div>
       </form>
     </div>
   </div>
@@ -47,6 +51,11 @@ import { useProjectStore } from '~/stores/projectStore'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useLocalization } from '~/composables/useLocalization'
+import VoiceInputButton from '~/components/voiceInput/VoiceInputButton.vue'
+import ProjectVoiceStatus from './ProjectVoiceStatus.vue'
+import { useVoiceInputStore } from '~/stores/voiceInputStore'
+import { mergeTranscriptWithDraft } from '~/utils/voiceInputCapture'
+import type { VoiceTranscriptTarget } from '~/types/voiceInput'
 import ProjectWorkspaceEntry from './ProjectWorkspaceEntry.vue'
 import type { ProjectWorkspaceDraft } from '~/types/projectWorkspaceDraft'
 import { projectErrorMessageKey } from '~/utils/projects/projectErrorMessageKey'
@@ -56,10 +65,24 @@ const {t} = useLocalization()
 const revision = node.bindingRevision
 let alive = true, nextKey = 0
 const current = () => alive && node.bindingRevision === revision
-onBeforeUnmount(() => {alive = false})
+
 const isEdit = computed(() => Boolean(props.projectId))
 const existing = computed(() => props.projectId ? projects.getProjectById(props.projectId) : null)
 const name = ref(''), description = ref(''), nameError = ref(''), saving = ref(false), saveError = ref(''), loadError = ref(''), loading = ref(true)
+const voice = useVoiceInputStore()
+const initialProjectId = props.projectId
+const voiceCurrent = () => current() && props.projectId === initialProjectId
+  && !loading.value && !loadError.value && !saving.value && (!isEdit.value || Boolean(existing.value))
+const voiceTarget: VoiceTranscriptTarget = {
+  key: `project-description-${Math.random().toString(36).slice(2)}`,
+  isCurrent: voiceCurrent,
+  appendTranscript: (transcript) => {
+    if (voiceCurrent()) description.value = mergeTranscriptWithDraft(description.value, transcript)
+  },
+}
+const voicePending = computed(() => voice.transcriptTarget?.key === voiceTarget.key
+  && (voice.isStarting || voice.isRecording || voice.isTranscribing))
+onBeforeUnmount(() => {alive = false; void voice.cancelOperationForTarget(voiceTarget.key)})
 const heading = ref<HTMLElement | null>(null)
 const rows = ref<ProjectWorkspaceDraft[]>([])
 const backTarget = computed(() => isEdit.value ? `/projects/${props.projectId}${route.query.tab === 'workspaces' ? '?tab=workspaces' : ''}` : '/projects')
@@ -95,7 +118,7 @@ const load = async () => {
   } catch (e) { if (current()) {loading.value = false; loadError.value = e instanceof Error ? e.message : t('projects.errors.requestFailed')} }
 }
 const submit = async () => {
-  if (saving.value || !current()) return
+  if (saving.value || voicePending.value || !current()) return
   nameError.value = name.value.trim() ? '' : t('projects.errors.nameRequired')
   if (nameError.value) { await nextTick(); document.getElementById('project-editor-name')?.focus(); return }
   for (const row of rows.value) row.error = row.mode === 'existing' && !row.workspaceId ? t('projects.ui.chooseWorkspace') : row.mode === 'new' && !row.path.trim() ? t('projects.ui.enterPath') : ''

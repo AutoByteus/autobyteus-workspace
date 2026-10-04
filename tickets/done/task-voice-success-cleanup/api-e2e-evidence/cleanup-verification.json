@@ -1,0 +1,27 @@
+{
+  "browser-1": {
+    "frontend": true,
+    "nodeA": true,
+    "nodeB": true,
+    "tempRootAbsent": true
+  },
+  "browser-2": {
+    "frontend": true,
+    "nodeA": true,
+    "nodeB": true,
+    "tempRootAbsent": true
+  },
+  "browser-3": {
+    "frontend": true,
+    "nodeA": true,
+    "nodeB": true,
+    "tempRootAbsent": true
+  },
+  "browser-final": {
+    "frontend": true,
+    "nodeA": true,
+    "nodeB": true,
+    "tempRootAbsent": true
+  },
+  "generatedUntrackedSdkDist": "removed; no production source removed"
+}
