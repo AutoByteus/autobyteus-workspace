@@ -374,6 +374,36 @@ pnpm test:e2e:workspace-responsive -- --base-url http://127.0.0.1:3000 --output-
 
 The probe uses Chrome/Chromium through Playwright Core. If automatic discovery does not find a browser, pass `--browser-executable <path>` or set `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
+### Projects Primary Navigation Browser Probe
+
+From the repository root, after installing workspace dependencies, building
+required workspace contracts and running `pnpm -C autobyteus-web exec nuxt prepare`:
+
+```bash
+pnpm -C autobyteus-web test:e2e:projects-navigation --output-dir <fresh-evidence-directory>
+```
+
+The durable `tests/e2e/projects-primary-navigation-probe.mjs` CLI uses a free-port
+Nuxt server, fresh headless Chrome and temporary fixture pages. It checks the
+real default layout and both navigation consumers: exact Applications on/off
+order, disabled Projects omission, Projects routing/new-subroute active state
+and folder icon, fitting compact redock, 390px transient drawer interaction, and
+existing mobile-prefix eligibility. See [Projects navigation](docs/projects.md#primary-navigation).
+
+Chrome must be available; use `--browser-executable <path>` or
+`PLAYWRIGHT_CHROME_EXECUTABLE_PATH` if automatic discovery fails. Relative output
+paths resolve from `autobyteus-web/`; the default is
+`test-results/projects-primary-navigation`. Existing `evidence.json` or temporary
+fixture pages are refused instead of overwritten. Optional `--ledger-file <path>`
+appends per-case results; use an initialized ticket-local ledger.
+
+Inspect `evidence.json` assertions, page errors and cleanup receipts, not just
+screenshots. The probe closes its browser, stops its exact Nuxt process
+group/listener and removes its temporary pages on success or failure. Capability
+inputs and backend reads are deterministic fixtures; no user's app/data,
+backend CRUD, model execution, packaged Electron or paired-phone full shell is
+certified. A narrow desktop viewport is not mobile Projects support.
+
 ### Diagram Zoom Viewer Browser Probe
 
 The shared Markdown Mermaid viewer has a self-starting browser probe covering inline sizing; fine-pointer rest/hover/focus chrome; no-hover, coarse-pointer, and hybrid fine-primary/coarse-secondary fallbacks; the four uniform icon-only viewer actions; open/fit/zoom/pan; keyboard and touch input; link routing; render lifecycle; localization; focus containment; narrow/200%-text layouts; and a diagram opened from an already-maximized artifact preview. The nested scenario checks viewer-over-host stacking and hit ownership, retained artifact path/content/Preview/maximize state, one-live-SVG restoration, layer-scoped close/backdrop/first-`Escape` dismissal, later host dismissal by a distinct `Escape`, and repeated-cycle cleanup. It installs a temporary Nuxt fixture route, starts an owned development server, runs Chrome through Playwright Core, and removes owned resources before returning:
