@@ -46,4 +46,6 @@ Unknowns are implementation/test verification, not unresolved product intent. No
 Independent architecture review of this cumulative package. On material requirement/design findings return precise findings through workflow rules. On pass follow Architecture Reviewer's configured primary route; notify Solution Designer informationally without asking it to duplicate forwarding.
 
 ## Routing Decision
-Pending get_handoff_rules evaluation after persistence of this file. Expected review due to Large/High; actual recipient must be copied from returned rules, not inferred.
+get_handoff_rules returned three routes. The single matching rule is Architecture Design Complete with task_size=Large or architectural_risk=High and approved cumulative package → **/architecture_reviewer**. Direct implementation rule does not match; no delivery receipt gap exists. Send only to /architecture_reviewer with this file attached.
+
+Authored package commit: ba24cd4ff (requirements, approval snapshot, investigation, design, history and full handoff). This routing record is a subsequent documentation commit; no production files or finalization changed.
