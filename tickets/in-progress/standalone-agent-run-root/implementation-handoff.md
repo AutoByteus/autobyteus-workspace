@@ -30,6 +30,7 @@
 - Delivery revision IDs: DR-001.
 - Triggering finding IDs: F-02 (API/E2E; CRR-005 Design Impact, resolved by SR-006). CR-002 was resolved in IR-003 and CR-001 in IR-002.
 - Code review status:
+  - CRR-008 Pass: IR-005 (DR-001 harness import) verified; `pnpm test:native-input-history` 2/2 in the reviewer's re-run. Routed to `/api_e2e_engineer` for a scoped rerun.
   - CRR-006 Pass: IR-004 (SR-006 § 11) verified against F-1 to F-4, score 9.3/10. Routed to `/api_e2e_engineer` for the N-1 live validation.
   - Reviewer note: `agent-run.ts` is at 498 effective lines; the next change to it should extract a concern.
   - CRR-004 Pass: CR-002 resolved by IR-003, score 9.3/10 (`code-review-report.md`). The reviewer routed the package to `/api_e2e_engineer` for the AE-10 rerun and the web suites.
