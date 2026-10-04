@@ -1,0 +1,21 @@
+Excerpt only: first 20 lines of the general tsconfig check; production build config succeeds.
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/tests/agent-work-traces/agent-work-trace-projection-service.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Matched by include pattern 'tests' in 'tsconfig.json'
+  File is ECMAScript module because '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/package.json' has field "type" with value "module"
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Matched by include pattern 'tests' in 'tsconfig.json'
+  File is ECMAScript module because '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/package.json' has field "type" with value "module"
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/tests/architecture/application-agent-addressing-boundaries.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Matched by include pattern 'tests' in 'tsconfig.json'
+  File is ECMAScript module because '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/package.json' has field "type" with value "module"
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Matched by include pattern 'tests' in 'tsconfig.json'
+  File is ECMAScript module because '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/package.json' has field "type" with value "module"
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/tests/architecture/projects-boundaries.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Matched by include pattern 'tests' in 'tsconfig.json'
+  File is ECMAScript module because '/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/package.json' has field "type" with value "module"
