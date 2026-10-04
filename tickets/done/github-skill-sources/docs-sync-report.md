@@ -1,0 +1,38 @@
+# Docs Sync Report — github-skill-sources
+
+## Scope and result
+- DR-001, 2026-10-04; trigger: CRR-002 proportional API/E2E Test Review Pass at `187cab01a`.
+- Classification preserved: **Large / High; independently reviewed route**.
+- Docs sync **Pass / Updated**. DR-002 user verification received; finalization/new beta in progress, not yet Delivery Completed.
+- Bootstrap base: `origin/personal` at `278fc7ee8eccf3fdcbdbbe9696f8689e8b1c89c0`.
+- Freshly fetched base: `1b9739cadba18125ac766b458fc2e4c0d392044e`.
+- Integrated by conflict-free merge `7bb0b639560924601af0298629d0c5202b755ff9` before delivery-owned edits. Candidate was clean; no safety checkpoint needed.
+- Post-integration evidence: [delivery checks](evidence/delivery-dr001-checks.md). Prebuild/server build + sanitized bootstrap Pass; 28 server files/321 tests, 6 web files/28 tests and 8 real web/backend journey cases Pass.
+
+## Long-lived docs reviewed
+| Path | Result | Why / delta |
+| --- | --- | --- |
+| `autobyteus-server-ts/docs/modules/skills.md` | Updated | Retained implementation-authored source contract; added storage/recovery, same-SHA preservation, committed-warning semantics, single-process boundary and extracted transport ownership. Replaced stale blanket different-target collision wording with the verified managed-generation exception. |
+| `autobyteus-web/docs/skills.md` | Updated | Retained source user guide; clarified REMOVING exclusion/retry, duplicate and same-revision behavior, registry diagnostics, source component/store ownership and required rootPath loader example/lifecycle. |
+| `TESTING.md` | Updated | Promoted durable source/API and real-stack browser invocation, prerequisites, mock boundaries and owned cleanup requirements. |
+| `README.md` | No change | Canonical `pnpm dev` worktree-local data/startup instructions remain correct; no new launch command required. |
+| `autobyteus-web/docs/agent_execution_architecture.md` | No change | Runtime launch architecture remains valid; skill-generation contract stays with the canonical skills module rather than duplicated here. |
+| `autobyteus-server-ts/docs/modules/agent_packages.md` | No change | Package imports remain package-owned; no change to supported package lifecycle/extraction behavior. |
+
+## Durable knowledge promoted
+- SR-008 DS-008 + actual shared materializer: source ID and exact name authorize current-generation transfer; old holders remain releasable, but old prompts/bytes are not snapshot-isolated. Server skills doc now removes contradictory older prose.
+- Actual source/store/repository owners + API-REV-002: ACTIVE registry selection, unpublished candidate exclusion, REMOVING recovery, local-data preservation and post-publication warning truthfulness. No migration or global cleanup protocol implied.
+- API durable probe + delivery rerun: real frontend/schema/files/socket/adapter boundaries versus controlled GitHub and external CLI; no live inference or exhaustive platform/crash claim. Root testing guide provides reproducible commands.
+
+## Removed / replaced components
+- `src/agent-packages/utils/github-repository-source.ts` moved to neutral `src/integrations/github/github-repository-source.ts`; package transport consumes shared code without a compatibility wrapper.
+- Physical-root-only collision description is replaced by the narrowly authorized managed-generation transition; unrelated/user-owned paths remain protected.
+- Local-folder registration was extended, not removed. Reload still scans installed files rather than checking remote revisions.
+
+## Continuation
+- No unresolved documentation or implementation finding.
+- Explicit user Windows/Electron-shell exclusion is preserved; neither is a delivery blocker or claimed pass.
+- Next: user verifies the integrated feature; then refresh target again and complete applicable finalization gates. No target merge, push, release, deployment or ticket archival performed.
+
+## DR-002 continuation
+User verification/new-beta authorization: USER-VERIFY-DR002. Post-verification target unchanged; no effective implementation/documentation change or rerun required. DR-001 docs remain accurate. Ticket archived before final commit; repository/release receipts will be in release-deployment-report.md.

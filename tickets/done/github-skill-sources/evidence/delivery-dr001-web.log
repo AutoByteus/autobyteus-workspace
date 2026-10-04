@@ -1,0 +1,65 @@
+
+> autobyteus@1.4.94-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-web
+
+stderr | stores/__tests__/skillStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillSourcesModal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/skillSourcesStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillsList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillNameConflictDialog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/skillSourcesStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/skillStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillNameConflictDialog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillsList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillSourcesModal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/skills/SkillDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/skillSourcesStore.spec.ts (4 tests) 8ms
+ ✓ components/skills/SkillNameConflictDialog.spec.ts (3 tests) 101ms
+ ✓ stores/__tests__/skillStore.spec.ts (5 tests) 10ms
+ ✓ components/skills/SkillSourcesModal.spec.ts (6 tests) 120ms
+ ✓ components/skills/SkillsList.spec.ts (6 tests) 124ms
+ ✓ components/skills/SkillDetail.spec.ts (4 tests) 103ms
+
+ Test Files  6 passed (6)
+      Tests  28 passed (28)
+   Start at  13:28:43
+   Duration  27.90s (transform 16.26s, setup 139.28s, collect 10.49s, tests 465ms, environment 4.20s, prepare 2.39s)

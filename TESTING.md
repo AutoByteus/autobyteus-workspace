@@ -225,6 +225,43 @@ underlying native fixture returns and preserve the original setup error. They
 are not an exhaustive infrastructure-failure guarantee; keep the workspace
 native-to-web and shared compaction/termination assertions intact.
 
+### GitHub Skill Sources Regression
+
+Run from the repository root with installed workspace dependencies and Chrome:
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts build
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/skills tests/integration/skills tests/unit/skills --no-watch
+pnpm -C autobyteus-web test:nuxt components/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts --run
+node autobyteus-web/tests/e2e/github-skill-sources-probe.mjs <fresh-output-directory>
+```
+
+The browser probe owns a real built backend, disposable SQLite/data/HOME,
+free-port Nuxt frontend and fresh Chrome. Its output path resolves from the
+current directory and must not exist. An optional second positional argument
+appends case results to a ledger; use a delivery-owned ledger for delivery
+reruns rather than modifying API-owner history. Normal prebuild regenerates
+cleaned SDK outputs; rebuild current server source before the browser check.
+
+Eight sequential cases cover Sources import, Files/socket lifecycle,
+check/cancel, failed update/retry, current files, actual header ＋/Send in the
+same workspace while an older run remains active, interrupted download, and
+permission-denied removal followed by restart/UI retry with local preservation.
+Outbound GitHub revisions/errors and an external Codex CLI are controlled;
+the CLI reads the real exposed skill bytes. Frontend stores, HTTP/GraphQL,
+archives, catalog, runtime adapter and filesystem are real. The 24-combination
+GraphQL adapter matrix separately covers Codex/Claude/Grok preparation, both
+skill scopes, retained/deleted old generation and both holder release orders.
+It is not three live-model browser journeys or paid inference proof.
+
+Inspect `result.json`, provider byte receipts, page errors and cleanup receipts.
+The probe closes Chrome, stops owned process groups, checks released ports and
+removes its private data even on failure. It never uses the installed app or
+user data. Controlled upstream fixtures do not replace a separately attributed
+public GitHub transport smoke. These are web/backend feature checks, not
+Windows or Electron-shell certification, nor exhaustive process-crash proof.
+
 ## Choosing the path
 
 Start with the smallest layer that directly proves the change, then add the

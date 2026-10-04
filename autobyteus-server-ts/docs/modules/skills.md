@@ -38,6 +38,40 @@ cleanup uses the entry's current root. Codex, Claude and Grok/ACP consume the ne
 migration, active-context refresh or user-owned-link takeover is performed.
 Transient skill file workspaces separately close/rebind when their root changes.
 
+### Operational state and recovery
+
+Storage is additive under `<app-data>/skill-sources/github/`: `registry.json`
+references `<sourceId>/generations/<generationId>/repository`. Unpublished
+candidates are not catalog sources. A same-revision Update keeps the installed
+files (including local edits); a changed-revision Update replaces the entire
+managed repository after confirmation. Retired-generation cleanup runs after
+publication. A cleanup or file-view refresh warning therefore means the new
+revision is committed, not that the update rolled back.
+
+`REMOVING` is persisted before deletion and excludes that source from the
+catalog. Correct the reported filesystem problem and use **Retry removal**;
+restarting does not turn it back into an active source. Do not erase the
+registry to dismiss an error: malformed/unsafe registry data is preserved and
+reported, while unrelated local skills remain available. There is no backup or
+undo promise for successful confirmed updates/removals. Use local-folder
+sources for edits you intend to maintain independently.
+
+The source owner serializes operations per repository in one process. Initial
+mutation preparation cleans abandoned unregistered import directories before
+new downloads begin; source operations clean retired generations. This is not
+a background garbage collector or a multi-server/shared-data coordination
+protocol. No conversion of local registrations, disabled names or run history
+is required.
+
+Shared metadata/revision transport now lives in `src/integrations/github/`,
+replacing the agent-package-specific `utils/github-repository-source.ts` owner.
+The agent package importer consumes that shared transport but retains its own
+package validation/extraction; the skill archive safety boundary does not
+retroactively change agent-package extraction.
+
+Reproducible source/API and real web-stack checks are documented in the root
+[testing guide](../../../TESTING.md#github-skill-sources-regression).
+
 ## TS Source
 
 - `src/skills`
@@ -267,9 +301,10 @@ The shared path-state policy is deliberately narrow and non-destructive:
 - a missing or newly unavailable optional source is warned about and omitted;
 - a same-source runtime link is reused, with path-keyed holder tracking and
   guarded cleanup after the final owner releases it;
-- a live different-target symlink, file, directory, or other non-symlink path is
-  a collision and is never overwritten or trusted (a fatal one for configured
-  requests; see the workspace collision policy below); and
+- a live different-target symlink is a collision unless it is the materializer's
+  own link for the same currently authorized managed source ID and exact skill
+  name; only that managed-generation transition may retarget it. A user-owned
+  file, directory or link is never overwritten (see the scope policy below); and
 - batch failure rolls back links acquired by that invocation without replacing
   the original failure.
 
@@ -283,9 +318,17 @@ replace those paths.
 The same materializer also serves ACP/Grok (`.grok/skills`). With one skill per
 name, runs that share a workspace ask for the same source for a name and share
 its link (one holder per acquisition; the link is removed once no holder
-remains, and only while it still points at the entry's source). A different
-source for a live path only follows an out-of-band catalog change and fails
-fast with the source collision error.
+remains, and only while it still points at the entry's current source).
+A confirmed managed-source update can change the physical root without changing
+logical identity: the next acquisition revalidates the current catalog winner,
+transfers the owned link and retains all existing occurrence holders. Either
+release order is safe; an old holder cannot delete a link still held by a newer
+run. A different source ID, unmanaged root change or different exact name is
+still a source collision, not permission to overwrite a link.
+
+This transfer does not hot-refresh old prompts or guarantee a snapshot of old
+skill bytes. An older run reading the shared workspace path later may see the
+new generation. The source owner does not enumerate or stop active runs.
 
 Every call carries one `workspaceCollisionPolicy` for the run, which the
 bootstrappers and factories (Codex, Claude, ACP/Grok, AGY) derive from

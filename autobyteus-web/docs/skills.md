@@ -37,7 +37,10 @@ A post-commit cleanup warning means the update succeeded; it is not a rollback.
 Use local folders if you want to maintain your own edits.
 
 **Remove** deletes only a GitHub source's managed copy after confirmation.
-**Retry removal** completes an interrupted/failed removal. Local removal only
+**Retry removal** completes an interrupted/failed removal after the reported
+filesystem problem is corrected. A source marked **Removal incomplete** is
+already excluded from the catalog, including after restart; retry does not
+remove unrelated local sources. Local removal only
 unlinks the folder, and the default source cannot be removed. Import only
 sources you trust; downloading a skill does not endorse its instructions.
 
@@ -46,6 +49,12 @@ A later agent run uses the current catalog generation, including in the same
 workspace while an older run remains open. Existing agent contexts are not
 hot-refreshed, and old-generation snapshot isolation is not promised.
 **Reload** remains an installed-files rescan, not a remote update check.
+
+A repeated equivalent repository URL returns the existing source row rather
+than downloading another copy. A same-revision Update preserves local edits;
+there is no force-reset action. A registry diagnostic is separate from an
+individual check/update failure: local skills remain usable, and corrupt
+managed metadata is not silently replaced with an empty registry.
 
 ## One Skill Per Name (D-19)
 
@@ -83,6 +92,8 @@ autobyteus-web/
 ├── components/skills/
 │   ├── SkillsList.vue                  # Skills listing with cards
 │   ├── SkillCard.vue                   # Individual skill card
+│   ├── SkillSourcesModal.vue           # Local/GitHub entry, checks and confirmations
+│   ├── SkillSourceRow.vue              # Source ownership, revisions, status and actions
 │   ├── SkillDetail.vue                 # Skill explorer & file viewer
 │   ├── SkillDescriptionSummary.vue     # Compact description summary + inline More/Less disclosure
 │   ├── SkillNameConflictDialog.vue     # "Duplicate skill names" pop-up (D-19)
@@ -90,6 +101,7 @@ autobyteus-web/
 │   └── SkillWorkspaceLoader.vue        # Transient workspace lifecycle manager
 ├── stores/
 │   ├── skillStore.ts                   # Skills CRUD operations
+│   ├── skillSourcesStore.ts            # Source operations, pending state and diagnostics
 │   ├── skillNamesStore.ts              # Ignored copies, conflict pop-up state, tier-4 notices
 │   └── workspace.ts                    # Workspace registration (incl. skill workspaces)
 └── graphql/
@@ -173,7 +185,7 @@ flowchart TD
 A lifecycle component that manages transient skill workspaces:
 
 ```vue
-<SkillWorkspaceLoader :skillId="skill.name">
+<SkillWorkspaceLoader :skillId="skill.name" :rootPath="skill.rootPath">
     <template #default="{ workspaceId }">
         <FileExplorer :workspaceId="workspaceId" />
         <FileContentViewer :workspaceId="workspaceId" />
@@ -185,7 +197,9 @@ A lifecycle component that manages transient skill workspaces:
 
 1. `onMounted`: Calls `workspaceStore.registerSkillWorkspace(skillId)` → returns `skill_ws_{skillId}`
 2. Provides `workspaceId` to child components via scoped slot
-3. `onBeforeUnmount`: Calls `workspaceStore.unregisterSkillWorkspace(workspaceId)` → cleans up
+3. A changed skill name or `rootPath` unregisters the old workspace and registers
+   the new one; a catalog root replacement also discards stale explorer state.
+4. `onBeforeUnmount`: Calls `workspaceStore.unregisterSkillWorkspace(workspaceId)` → cleans up
 
 ### Workspace ID Convention
 
