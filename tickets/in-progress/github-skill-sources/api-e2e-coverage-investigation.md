@@ -1,5 +1,7 @@
 # API/E2E Coverage Investigation — github-skill-sources
 
+> **Current: API-REV-002 Pass / 95%.** User excludes Windows and Electron-shell gates. Web/backend feature validation completed; see round-2 plan/checkpoint and conclusion below, and canonical execution report. Earlier Blocked/73.6% sections are retained **historical round-1 decisions**, superseded rather than erased. No current missing environment dependency.
+
 ## Scope and basis
 Initial investigation, API round 1; 2026-10-04. Assigned worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources; branch codex/github-skill-sources; incoming HEAD 0bfd39f46. Large / High; Reviewed route. SR-006 / USER-APPROVAL-006, SR-008, ARCH-REV-002 Pass, IR-001 and CRR-001 source Pass. Historical ARCH-REV-001 is not the current verdict. No prior API result. Delivery and proportional API test-review artifacts: N/A — not applicable yet.
 
@@ -143,3 +145,22 @@ Broader decision at round end: **Blocked**, exact unavailable dependency **an is
 The round stops at that external-platform blocker. This does **not** mean all feasible remaining cases were attempted: full E-005 production-adapter/header ＋/Send matrix, actual update-generation explorer reopen, process interruption before/after publication, REMOVING process-restart and cross-source admission beyond owner fixtures are **Not Tested at their required integrated surfaces**, not declared infeasible. They remain API-owned work on resumption; Windows access alone will not produce a Pass. No product failure has been established in executed cases.
 
 Final confidence 73.6% (515/7), authoritative scorecard in execution report; user-surface category increases from 50 to 75 with real packaged evidence, other anchors unchanged due still-material gaps. No critical-AC/95% waiver. Proportional test-code review required on eventual reviewed-route success, not requested on this Blocked result. No source or stale-test deletion; three durable test paths changed. No legacy/compatibility mechanism observed or protected by new tests.
+
+## API-REV-002 execution plan — user scope correction (in progress)
+User explicitly excludes native Windows testing and confirms this is a web-capable feature, not an Electron-shell feature. Windows and Electron-specific gates are **Out Of Scope**, not Blocked. Prior 73.6%/Blocked is historical, not the current execution status. No missing dependency currently prevents continued testing. No new product behavior requested; approved import/update/removal/current-reader guarantees remain.
+
+Continue through ordinary Nuxt frontend + real built backend + fresh Chrome on owned free ports/disposable data, following the existing Projects real-stack probe setup. Do not use installed/user Electron. Preserve prior live public GitHub evidence; deterministic upstream revisions/failures will be controlled at outbound GitHub fetch in an owned backend process, not by mocking GraphQL or mutating public repositories. Add durable browser coverage for import/check/cancel/update/failure/retry/Reload/removal and real Files open/update/reopen/socket teardown. Add integrated current-adapter bootstrap/source-update coverage with only external provider calls controlled where necessary; no paid/live model requirement for skill installation. Keep source safety/failure integrity and existing collision assertions; no all-platform or full-suite claim.
+
+Planned round-2 cases: E-006-web (real UI/API update and file freshness, owned browser/server), E-004-web (failed update preserves prior install, retry and removal), E-005-integrated (real source/current adapter preparation for later run; assess remaining browser new-chat evidence honestly), E-007-rerun (affected regression after durable changes). Record each attempt immediately; no final result/confidence until execution finishes. No external blocker at plan time.
+
+### Round-2 repository checkpoint
+`pnpm -C autobyteus-server-ts prebuild` Pass. Expanded GraphQL source suite 29/29 Pass: original five cases plus 24 actual adapter/source/file-lifetime combinations. Browser source harness and external GitHub/Codex fixtures are durable; no source changes. Full affected regression rerun follows. Final expanded web attempt will add process interruption during download and native host permission failure/removal restart retry to seven already-passing real web cases.
+Post-repository round-2 scores: requirement 90, directness 95, realism 90, environment 95, lifecycle 90, user 90, durable 95; overall 92.1% (645/7). Broader validation Required for remaining direct lifecycle evidence. Windows/shell checks out of scope by explicit user direction.
+
+## Round-2 final investigation conclusion
+- Reused current approved product behavior and corrected validation surfaces per explicit user instruction; Windows/shell Out Of Scope. Old blocker withdrawn, no delivery/user approval inferred.
+- Existing tests remain valid after the two narrow round-1 fixture repairs. Add Durable Coverage: actual source API→three adapters (24 combinations), and real Nuxt/backend/Chrome source/update/failure/new-chat/restart probe with external-only fixtures. No tests removed.
+- Repository: 321 affected server +28 web Pass. Final broader browser attempt 8/8 Pass, no page errors, all owned children/data/ports released. Prior live public Github proof remains valid because source did not change.
+- Actual header ＋/Send runs real Codex adapter/stdio with scripted external provider; Claude/Grok distinct preparation paths get direct integrated coverage, not falsely called live browser/model journeys. Process interruption and permission-failed removal/restart retry now directly proven. No exhaustive OS/crash/model matrix required for this feature.
+- Final scorecard: all seven categories95%, mean95%. Requirement/directness/realism/env/lifecycle/user/durable evidence reasoning and exact commands in canonical report. Broader Required work completed; no current blocker.
+- Proportional review required for all seven cumulative changed durable paths in report; send complete cumulative package via selected rule. No production source fixes.

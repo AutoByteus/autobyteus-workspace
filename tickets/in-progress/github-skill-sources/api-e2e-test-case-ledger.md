@@ -42,8 +42,85 @@ Round 1 / API-REV-001 pending; initialized 2026-10-04 before execution. Worktree
 | 23 | E-003-removal | Completed | public-http.mjs remove | Managed copies removed via real API | Pass; both source IDs absent and roots deleted | evidence/api-public-remove.txt | Stop owned process |
 | 24 | Cleanup | Completed | isolated-app stop iso-51956-8bc2; list; container --rm | Owned process/data/ports released | Pass, graceful, dataRootRemoved/controlPortReleased/serverPortReleased true; owned container absent; generated untracked SDK outputs removed after tracked-path check | evidence/api-isolated-stop.json; api-isolated-list-after.json | Preserve report and blocker |
 
-## Final reconciliation
+## Historical round-1 reconciliation
 - No cases/processes running. Last event 24, cleanup Pass. E-001/E-002/E-003/E-007 and described UI/restart/Linux subcases Pass; E-004/E-006 only partial; E-005 Not Tested; E-008 Windows Blocked.
 - Reconciled into api-e2e-execution-coverage-report.md round 1 / API-REV-001 Blocked, 73.6%.
 - Timing disclosures: prebuild setup ran before initial investigation write retry (python unavailable, retried python3) but no durable changes or assertion execution preceded investigation. E-003 terminal ledger row appended after initial UI inspection/probe launch; command logs retain actual chronology. No missing result inferred.
 - Next: native Windows target from user, then outstanding integrated cases in canonical investigation/report; reuse case IDs.
+
+## API-REV-002 execution plan — user scope correction (in progress)
+User explicitly excludes native Windows testing and confirms this is a web-capable feature, not an Electron-shell feature. Windows and Electron-specific gates are **Out Of Scope**, not Blocked. Prior 73.6%/Blocked is historical, not the current execution status. No missing dependency currently prevents continued testing. No new product behavior requested; approved import/update/removal/current-reader guarantees remain.
+
+Continue through ordinary Nuxt frontend + real built backend + fresh Chrome on owned free ports/disposable data, following the existing Projects real-stack probe setup. Do not use installed/user Electron. Preserve prior live public GitHub evidence; deterministic upstream revisions/failures will be controlled at outbound GitHub fetch in an owned backend process, not by mocking GraphQL or mutating public repositories. Add durable browser coverage for import/check/cancel/update/failure/retry/Reload/removal and real Files open/update/reopen/socket teardown. Add integrated current-adapter bootstrap/source-update coverage with only external provider calls controlled where necessary; no paid/live model requirement for skill installation. Keep source safety/failure integrity and existing collision assertions; no all-platform or full-suite claim.
+
+Planned round-2 cases: E-006-web (real UI/API update and file freshness, owned browser/server), E-004-web (failed update preserves prior install, retry and removal), E-005-integrated (real source/current adapter preparation for later run; assess remaining browser new-chat evidence honestly), E-007-rerun (affected regression after durable changes). Record each attempt immediately; no final result/confidence until execution finishes. No external blocker at plan time.
+
+- WEB-001-import-explorer: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-initial/result.json
+
+- WEB-002-check-cancel: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-initial/result.json
+
+- WEB-003-failed-update-retains-install: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-initial/result.json
+
+- WEB-004-retry-update-and-reopen: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-initial/result.json
+
+- WEB-005-reload-restart-remove: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-initial/result.json
+
+- WEB-001-import-explorer: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-chat/result.json
+
+- WEB-CHAT-A: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-chat/result.json
+
+- WEB-002-check-cancel: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-chat/result.json
+
+- WEB-003-failed-update-retains-install: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-chat/result.json
+
+- WEB-004-retry-update-and-reopen: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-chat/result.json
+
+- WEB-CHAT-B-header-plus-after-update: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-chat/result.json
+
+- WEB-005-reload-restart-remove: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-chat/result.json
+
+- WEB-001-import-explorer: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-complete/result.json
+
+- WEB-CHAT-A: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-complete/result.json
+
+- WEB-002-check-cancel: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-complete/result.json
+
+- WEB-003-failed-update-retains-install: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-complete/result.json
+
+- WEB-004-retry-update-and-reopen: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-complete/result.json
+
+- WEB-CHAT-B-header-plus-after-update: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-complete/result.json
+
+- WEB-INTERRUPT-download-restart: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-complete/result.json
+
+- WEB-005-reload-restart-remove: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-complete/result.json
+
+- E-005-integrated: Pass, actual GraphQL source import/update followed by Codex/Claude bootstrap or Grok ACP factory, real profile-owned links and provider-surrogate process for Grok; 24 combinations (three adapters × two scopes × old-tree retained/deleted × both release orders), plus five source cases = 29/29. Evidence: evidence/api-r2-adapters-initial.txt.
+- Round-2 post-repository decision: broader validation Required; 24 adapter cases substantially close preparation gaps, web source/update/chat evidence already passes; finishing interrupted-download and real permission-denied removal/restart/retry. No Windows/Electron gates.
+
+- E-007-rerun server: command exit 0; evidence/api-r2-regression.txt (counts reconciled in report).
+
+- E-001-web-rerun: command exit 0; evidence/api-r2-web-unit.txt.
+
+- WEB-001-import-explorer: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-final/result.json
+
+- WEB-CHAT-A: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-final/result.json
+
+- WEB-002-check-cancel: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-final/result.json
+
+- WEB-003-failed-update-retains-install: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-final/result.json
+
+- WEB-004-retry-update-and-reopen: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-final/result.json
+
+- WEB-CHAT-B-header-plus-after-update: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-final/result.json
+
+- WEB-INTERRUPT-download-restart: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-final/result.json
+
+- WEB-005-reload-restart-remove: Pass; /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/tickets/in-progress/github-skill-sources/evidence/web-r2-final/result.json
+
+## API-REV-002 final reconciliation
+- E-001/E-002/E-005-integrated/E-007: affected 28files321tests Pass; E-001-web6files28tests Pass. Counts include the29 GraphQL cases and are not additive.
+- E-004/E-005/E-006: web-r2-final8cases Pass, no page errors, current Files/socket/new-chat and real failure/restart checks complete. Earlier5/7/8case attempts retained.
+- E-008 Windows: **Out Of Scope per explicit user correction**, supersedes old Blocked status. Electron-specific testing also not a gate. Prior Linux/public/packaged evidence remains supplementary.
+- Cleanup: Chrome closed; all owned children stopped; frontend60317/backend60316 ports released; private data removed. No case/process running.
+- Canonical execution report API-REV-002 **Pass/95%**. No remaining testing blocker. Proportional test-code review next, not delivery approval.
