@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-04T05:01:44.678347+00:00",
+  "currentGuide": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/SOLUTION_DESIGN_BEST_PRACTICES.md",
+  "currentSha256": "34476762da34b5f06ea84f78e5972880b006e18535c330b5b76a8c5ec3a6089a",
+  "deliveryCopy": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr004/observed-unowned-design-guidance.md",
+  "deliveryCopySha256": "34476762da34b5f06ea84f78e5972880b006e18535c330b5b76a8c5ec3a6089a",
+  "ownerResult": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/analysis-result.md",
+  "ownerResultSha256": "2b7be78f46835392c0aa7ddcaf3052cc792db5d49cf590aad2860fe3bd008b15",
+  "ownerRunReceipt": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/implementation/ir-006/handoff-receipt.json",
+  "ownerRun": "solution_designer_fcfd4ac39f104bc984ab0cab13488b04",
+  "noSourceOrCleanupWork": true
+}

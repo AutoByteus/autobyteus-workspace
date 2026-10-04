@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-04T05:05:06.767329+00:00",
+  "custodyFiles": [
+    {
+      "role": "laterUserRequestedImprovement",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/SOLUTION_DESIGN_BEST_PRACTICES.md",
+      "sha256": "34476762da34b5f06ea84f78e5972880b006e18535c330b5b76a8c5ec3a6089a",
+      "matches": true,
+      "bytes": 18816
+    },
+    {
+      "role": "historicallyReviewedPublishedBaseline",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/published-baseline-guide.md",
+      "sha256": "ff6d2e1ecad2f475f79b9581ade6cbe53c96f3e414323e0266762ac999cc9342",
+      "matches": true,
+      "bytes": 17365
+    },
+    {
+      "role": "exactArchivedPatch",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/runtime-lifecycle-guide-improvement.patch",
+      "sha256": "96a0fe79c097295921db4d3eadb90646d0dacc31f8cb45fae9ee43060717b756",
+      "matches": true,
+      "bytes": 2019
+    }
+  ],
+  "originalGuideSha256": "34476762da34b5f06ea84f78e5972880b006e18535c330b5b76a8c5ec3a6089a",
+  "originalMatchesCustody": true,
+  "publishedBaselineSha256": "ff6d2e1ecad2f475f79b9581ade6cbe53c96f3e414323e0266762ac999cc9342",
+  "publishedBaselineMatchesCustody": true,
+  "archivedPatchSha256": "96a0fe79c097295921db4d3eadb90646d0dacc31f8cb45fae9ee43060717b756",
+  "archivedPatchMatchesCustody": true,
+  "archivedFullCopySha256": "34476762da34b5f06ea84f78e5972880b006e18535c330b5b76a8c5ec3a6089a",
+  "archivedFullCopyMatchesCustody": true,
+  "currentOldWorktreeStatus": " M SOLUTION_DESIGN_BEST_PRACTICES.md\n?? autobyteus-application-sdk-contracts/dist/\n",
+  "ownerConfirmsNoFurtherGuideWritesOrActiveDependency": true,
+  "ownerReferenceCount": 14,
+  "cumulativeDeliveryIndexReferenceCount": 1019,
+  "cleanupNotPerformedBySolutionDesigner": true
+}

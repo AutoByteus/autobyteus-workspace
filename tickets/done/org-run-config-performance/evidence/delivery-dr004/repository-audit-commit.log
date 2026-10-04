@@ -1,0 +1,19 @@
+[personal 86beba43c] docs(delivery): attach post-publication repository audit
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 5 files changed, 90 insertions(+), 3 deletions(-)
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/final-repository-state.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/publication-receipt-commit.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/publication-receipt-push.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/receipt-target-refresh.log

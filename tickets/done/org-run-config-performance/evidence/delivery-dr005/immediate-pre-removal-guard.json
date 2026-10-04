@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-04T05:15:50.831143+00:00",
+  "result": "Fresh guard Pass",
+  "guideHash": "34476762da34b5f06ea84f78e5972880b006e18535c330b5b76a8c5ec3a6089a",
+  "head": "2eb8732c7243aec7883a99107032f73e972d8b9a",
+  "status": " M SOLUTION_DESIGN_BEST_PRACTICES.md\n?? autobyteus-application-sdk-contracts/dist/",
+  "candidateReachable": true,
+  "metadataRows": 171344,
+  "metadataFingerprintMatches": true,
+  "all55PreservedGeneratedFilesMatch": true,
+  "ownerDispositionVerified": true,
+  "noProcessCwdOrCommandDependencyUnderOldWorktree": true,
+  "allPrior1019ArchiveReferencesStillExist": true,
+  "forceScope": "Only this exact registered old ticket worktree, with independently preserved owner-released guide and inventoried generated outputs; no blanket unknown removal"
+}

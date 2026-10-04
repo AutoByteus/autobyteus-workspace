@@ -1,8 +1,8 @@
 # Docs Sync Report
 
 ## Scope
-- Ticket: `org-run-config-performance`; delivery **DR-005** (DR-003 six-doc delta retained).
-- Trigger: resolved owner custody plus bounded cleanup/final receipt only. Explicit user acceptance/publication already complete in DR004; no source/doc behavior change or release replay.
+- Ticket: `org-run-config-performance`; delivery **DR-004** (DR-003 docs delta retained).
+- Trigger: user **“read the readme, and release a new beta”**; supersedes earlier local repository-authorization hold, adds beta publication authorization, not inferred delivery verification.
 - Approved **SR-006 / cumulative SR-010**, **Medium / High**, independent architecture/source → API/E2E → proportional test review route unchanged.
 - Bootstrap base: `origin/personal @ 1b976216da0cbd0cc84fef3fe22a2739325b8ad3`.
 - Integrated base: **63aac5939f1ebcfb691f796990739a3e94fd5f45**; candidate **ac287c446db7af52956680313f60b9309e151d2b** plus these docs/evidence changes.
@@ -32,8 +32,14 @@ The integrated code replaces historical candidate-ID membership scans, aggregate
 - Repeated full snapshots/whole-subtree JSON comparison for one Org update → authoritative scoped root query + freshness guards/displayed-field/row-reference comparison. Full resync/global structural admission remain.
 - Sources: approved requirements/design, current source and IR-002/CRR-003/API-REV-003/CRR-005. Review/failure reports remain separate; no historical failure scorecard presented as a current blocker.
 
-## Checks / Current DR-005 Outcome
-- Six changed docs/file links/headings/whitespace previously **Pass**; unchanged since integrated validation and published beta. [Doc checks](evidence/delivery-dr003/docs-checks.json).
-- Result **Updated / Pass**, no additional canonical docs delta for housekeeping. Current handoff/release records now **Delivery Completed**; user acceptance, finalization, all four pipelines/publication and bounded safe cleanup completed.
-- Later runtime-lifecycle guide addition is separately preserved with confirmed owner custody/14 hash aliases, **unmerged/not in this beta**. Released root guide baseline remains **ff6d2e1e…**; no inaccurate promotion into the published source.
-- [Cleanup/source-artifact verification](evidence/delivery-dr005/final-artifact-verification.json), [current release report](release-deployment-report.md), [handoff](handoff-summary.md). Prior DR004 hold report preserved in evidence/delivery-dr005/prior-dr004-docs-sync-report.md. No new solution/requirement/architecture revision.
+## Checks / Continuation
+- Six changed docs: file links and new headings reviewed; docs whitespace Pass. [Doc checks](evidence/delivery-dr003/docs-checks.json).
+- Result: **Updated / Pass**, not No impact.
+- Handoff: [handoff-summary.md](handoff-summary.md), now authored against integrated checked state.
+- Delivery overall: **Blocked — User Verification Prerequisite**. Existing acceptance question unanswered; no archive/push/final target merge/tag/release yet. No duplicate question or unchanged prerequisite reroute.
+
+## DR-004 Acceptance
+Explicit acceptance received through repeated beta publication instruction after displayed hold. Canonical documentation/source behavior unchanged from checked DR-003; no additional docs impact. Prior hold statements are historical and superseded.
+
+## DR-004 Publication / Current Boundary
+Beta v1.4.94-beta.2 publication and all four workflows completed. Canonical docs behavior remains the checked DR-003 implementation; no release source fix or new docs intent. Original ticket worktree acquired a later uncommitted runtime-lifecycle guidance addition of unknown ownership. It was not folded into the published tag or current canonical guide in this final checkout. Copy/patch preserved separately; safe cleanup remains Blocked, not a docs-sync/source accuracy finding. See release report/cleanup-result.json.

@@ -1,0 +1,54 @@
+{
+  "revision": "DR-005",
+  "at": "2026-10-04T05:16:11.793121+00:00",
+  "result": "Completed",
+  "worktreeRemoved": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "ownRegistrationRemoved": true,
+  "broadPrune": "Not required: git worktree remove already removes its registration; no other owner metadata pruned",
+  "localTicketBranchesRemovedFromSharedAndClone": true,
+  "remoteTicketBranch": "Not required to delete; finalized2eb8732 branch retained for provenance",
+  "forceJustification": "Only this exact registered old ticket worktree, with independently preserved owner-released guide and inventoried generated outputs; no blanket unknown removal",
+  "independentGuideAndGeneratedCustodyStillExists": true,
+  "sharedHeadAndDirtyTrackedHashesUnchanged": true,
+  "sharedCheckoutFilesIndexUntouched": true,
+  "durablePublishedCheckoutRetained": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta",
+  "guideLaterImprovementStillNotInPublishedTag": true,
+  "sourceOrRuntimeChanges": false,
+  "newReleaseAcceptanceOrValidationReplay": false,
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "worktree",
+        "remove",
+        "--force",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+      "exitCode": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/worktree-removal.log"
+    },
+    {
+      "argv": [
+        "git",
+        "branch",
+        "-D",
+        "codex/org-run-config-performance"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+      "exitCode": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/shared-local-branch-removal.log"
+    },
+    {
+      "argv": [
+        "git",
+        "branch",
+        "-d",
+        "codex/org-run-config-performance"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta",
+      "exitCode": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/clone-local-branch-removal.log"
+    }
+  ]
+}

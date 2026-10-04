@@ -9,6 +9,8 @@
 
 | DR-004 | User repeats release request after validation/acceptance hold | DR-003 user acceptance pending | Beta publication Completed; Blocked — new external guide edit prevents safe cleanup | docs-sync-report.md; handoff-summary.md; release-deployment-report.md; evidence/delivery-dr004/* |
 
+| DR-005 | Owner custody/disposition returned; resume cleanup/final receipt only | DR004 beta published, cleanup boundary Blocked | Delivery Completed — owner custody + bounded safe cleanup Pass | docs-sync-report.md; handoff-summary.md; release-deployment-report.md; evidence/delivery-dr005/* |
+
 ## Revision Entries
 ### DR-001 — Initial Latest-Base Refresh / Authorization Hold
 - Trigger: approved SR-006, cumulative SR-010, ARCH-REV-001 Pass, IR-002, CRR-003 source Pass, API-REV-003 Pass 95.00%, CRR-005 durable-test Pass. Medium / High reviewed route unchanged.
@@ -64,3 +66,16 @@
 - Terminal return **Not yet eligible / not sent**, cleanup unfinished. Fresh most-specific **rule2 selects only /solution_designer**, not successful rule3. Boundary handoff confirmed only by subsequent receipt; no duplicate informational forwarding.
 - Rationale: honor explicit publication direction rather than continuing the resolved approval hold, execute documented release, preserve newly appeared unknown-owner bytes at cleanup.
 - Next action: Solution Designer identifies owner/safe disposition; Delivery resumes only cleanup/final receipt. No reapproval/release replay/new runtime requirement implied. Remaining residuals/rollback are exactly the release report; prefer forward corrective beta, never move tag/reset user state.
+
+DR-004 single **Blocked boundary handoff confirmed accepted=true / DELIVERED**, recipient **/solution_designer**, run **solution_designer_9865a0578d7d4498814d966124534783**; [receipt](evidence/delivery-dr004/blocked-handoff-receipt.json), 1018 complete references dispatched, receipt appended afterward. No Delivery Completed/Terminal sent; beta remains successfully published. Post-dispatch receipt retained locally; no source change/release replay.
+
+### DR-005 — Custody Resolved / Safe Cleanup / Delivery Completed
+- Trigger: incoming Solution Designer owner-disposition result resolves DR004 narrow external prerequisite. Prior **DR004 Blocked — safe cleanup ownership**, beta already fully published. No revised app intent/approval, SR006/SR010 **Medium / High / reviewed** unchanged.
+- Owner runtime-lifecycle guide custody confirmed; improved guide/patch/published baseline hashes match independent versions;14 referencing runtime aliases/no further old-worktree dependency. Improvement remains unmerged/not in published beta. No source reset by Delivery or owner. Full incoming inputs copied/linked, no abridged-only handoff.
+- Fresh original HEAD2eb8732/status/guide exact hash, candidate ancestry and all generated resources checked.52 SDK-contract tsc outputs + testDB/journal2 + Nuxt test config1 independently copied/hashed; known generated/dependency roots171344 metadata rows unchanged immediately before deletion; packaged app proof match/no active old-worktree process dependency.
+- **Completed**: bounded exact worktree/registration removal and both local ticket branch removals with reachability guards. No global prune/other resources/symlink targets removed. Shared owner dirty files/HEAD unchanged. Remote branch/artifact-host deletion truthfully **Not required**.
+- Only unfinished gate resumed; no acceptance/finalization/merge/version/tag/release/API/source workflow replay. DR003 **526 automated cases +9 rebuilt packaged journeys/builds/smoke Pass** and DR004 all4 release pipelines/assets/registry proof retained. Frozen approval/source pins match; residual/live inference/vue-tsc/DOM/cold-backend/rollout limits unchanged.
+- Current result **Delivery Completed**, all applicable gates complete or Not required. [Docs](docs-sync-report.md), [handoff](handoff-summary.md), [release report](release-deployment-report.md), full [cumulative index](evidence/delivery-package-index.json) current; exact new custody/commands/guards/artifact verification in evidence/delivery-dr005. Prior rounds unchanged and snapshots preserved.
+- Terminal return **Eligible, not yet confirmed** until fresh-rule tool/actual send receipt. No duplicate reviewer/architecture forwarding.
+- Rationale: external owner preserved its exact late contribution and releases retention; original reviewed candidate already finalized/published, so finish bounded cleanup and authoritative receipt without replay.
+- Next action: fresh completed-delivery rule → exact recipient; Solution Designer verifies full cumulative terminal receipt and returns Terminal through applicable parent/caller path. Unresolved blockers **None**; rollback/residuals remain in release report.

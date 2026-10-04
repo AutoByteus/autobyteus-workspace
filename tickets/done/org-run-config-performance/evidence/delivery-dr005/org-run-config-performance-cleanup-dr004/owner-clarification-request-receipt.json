@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to solution_designer_fcfd4ac39f104bc984ab0cab13488b04.\",\"target_agent_run_id\":\"solution_designer_fcfd4ac39f104bc984ab0cab13488b04\"}"
+    }
+  ],
+  "structuredContent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to solution_designer_fcfd4ac39f104bc984ab0cab13488b04.",
+    "target_agent_run_id": "solution_designer_fcfd4ac39f104bc984ab0cab13488b04"
+  }
+}

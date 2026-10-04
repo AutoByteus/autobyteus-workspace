@@ -1,0 +1,105 @@
+{
+  "purpose": "Owner-confirmed guide custody/disposition only; not release/design/source/API certification",
+  "owner": "runtime-lifecycle-usability Solution Designer, responding existing run solution_designer_fcfd4ac39f104bc984ab0cab13488b04",
+  "at": "2026-10-04T05:03:55.541792+00:00",
+  "originalPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/SOLUTION_DESIGN_BEST_PRACTICES.md",
+  "versions": {
+    "laterUserRequestedImprovement": {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/SOLUTION_DESIGN_BEST_PRACTICES.md",
+      "sha256": "34476762da34b5f06ea84f78e5972880b006e18535c330b5b76a8c5ec3a6089a",
+      "bytes": 18816,
+      "publishedInBeta": false
+    },
+    "historicallyReviewedPublishedBaseline": {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/published-baseline-guide.md",
+      "publishedSourcePath": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/SOLUTION_DESIGN_BEST_PRACTICES.md",
+      "sha256": "ff6d2e1ecad2f475f79b9581ade6cbe53c96f3e414323e0266762ac999cc9342",
+      "bytes": 17365
+    },
+    "exactArchivedPatch": {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/runtime-lifecycle-guide-improvement.patch",
+      "sha256": "96a0fe79c097295921db4d3eadb90646d0dacc31f8cb45fae9ee43060717b756",
+      "bytes": 2019
+    }
+  },
+  "patchAppliedToCopiedBaselineReproducesExactImprovedBytes": true,
+  "scratchRemoved": true,
+  "oldAndReleaseFilesUnchanged": true,
+  "references": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/investigation-notes.md",
+      "sha256BeforeCustodyNote": "220e210bbbeb3b15676357fc0af6ac72f569b5c7e9582871fa58e768da499a10",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/analysis-result.md",
+      "sha256BeforeCustodyNote": "2b7be78f46835392c0aa7ddcaf3052cc792db5d49cf590aad2860fe3bd008b15",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/implementation-handoff.md",
+      "sha256BeforeCustodyNote": "08b356e4139b036c418842ae07005a80045b4f2903abb8bc74cd61d18460716b",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/workspace-reconciliation.md",
+      "sha256BeforeCustodyNote": "ce3c98716886fbc2053ed2b4ca50fd6ac6168fcc303408568cf39344f63adf55",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/design-spec.md",
+      "sha256BeforeCustodyNote": "4eaef8fd6b8ef2415399df4dd407d4db2d54e8de194694bda53b092ddee64586",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/code-review/crr-005/handoff-reference-files.json",
+      "sha256BeforeCustodyNote": "c46d91c80adcc8c43458f98a0d7ec37bf53d8e3531bd6cdac238218a94b149dc",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/code-review/crr-004/handoff-reference-files.json",
+      "sha256BeforeCustodyNote": "a11995028f90a0d616cd33d87e54e56a841e9e594ee04b9a6d739913fbaa7878",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/solution/sr-015/handoff-reference-files.json",
+      "sha256BeforeCustodyNote": "912479f8e4c377e028b7bb571823ea1fef6a2072f59edc1beec0855ed898cb3d",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/solution/sr-015/assessment-source-audit.json",
+      "sha256BeforeCustodyNote": "487d70dd3b6b55e6f569258cff47ef1d3204fed04bb0ed8a389dcb6446fb57c1",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/api-e2e/api-rev-003/before-hashes.json",
+      "sha256BeforeCustodyNote": "8faef4c7c666e02a84ae4c57ce4f3c080a341788282273a0daa1ad717303b951",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/api-e2e/api-rev-003/incoming-reference-files.json",
+      "sha256BeforeCustodyNote": "cbc451644788c620b1b49fbdfddab2dbd915fb69193a774e94e1422b34c8aa74",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/api-e2e/api-rev-003/cumulative-reference-files.json",
+      "sha256BeforeCustodyNote": "cbf2e1bd9a4eda14b1f8f79881ea0bf9902c2276641e8160d714265385e19279",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/implementation/ir-007/handoff-reference-files.json",
+      "sha256BeforeCustodyNote": "dc6696891d193bca780f078cbb20af86184214d951bd1184a333c75daccc5c99",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-usability/tickets/in-progress/runtime-lifecycle-usability/evidence/implementation/ir-007/implementation-handoff-at-dispatch.md",
+      "sha256BeforeCustodyNote": "08b356e4139b036c418842ae07005a80045b4f2903abb8bc74cd61d18460716b",
+      "disposition": "Historical path retained; resolve by expected hash through custody aliases, not rewrite reviewed source/observation hashes."
+    }
+  ],
+  "futureReads": "Use retained published source for baseline; use independent improved full-file/patch custody for the later unmerged documentation addition. Expected historical hash selects version.",
+  "noFurtherWritesOrActiveDependencyOnOldOrgWorktreeByThisOwner": true,
+  "oldWorktreeRetentionNeededForTheseGuideBytes": false,
+  "cleanupOwner": "Org Delivery Engineer only; this owner neither deletes nor resets old worktree",
+  "historicalHashesChanged": false
+}
