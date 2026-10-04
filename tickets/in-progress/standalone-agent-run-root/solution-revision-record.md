@@ -55,3 +55,27 @@
   Editorial alignment per the reviewer's non-blocking note: the dependency rule now names `AgentRunService`'s injected
   `StandaloneRunLifecyclePort` alongside the coordinator's `StandaloneRunCommandPort`. The design substance is unchanged
   (the AR-003 dispositions and `stopRoot` were already specified).
+
+## SR-005 — 2026-10-04 — Base refresh onto latest `origin/personal` (evidence and design deltas)
+- Trigger: the user's 2026-10-04 request to update this worktree branch onto the latest `origin/personal`, revise the
+  design as needed, then hand off. The user asked for it to go on to code review.
+- Prior status: SR-004 Ready (ARCH-REV-002 Pass); implementation in progress, uncommitted, with no implementation
+  handoff. Current status: design Ready (SR-005).
+- Workspace: backup at `/Users/normy/autobyteus_org/solution-designer-reports/standalone-agent-run-root-backup-20261004/`
+  and branch `backup/standalone-agent-run-root-pre-rebase-20261004`. Checkpoint commit rebased onto `b37d7a934`; head
+  `9c3080a20` before this record. Three conflicts resolved (E-15).
+- Evidence: E-15–E-21 added. E-10's failure mode no longer exists on the base (E-16); REQ-010 stands.
+- Design deltas D-R1–D-R7 ("Base Refresh Deltas (SR-005)" in `design-spec.md`):
+  - no `containsRunId`;
+  - the moved instruction keeps upstream's work-request section;
+  - REQ-009 includes two upstream guard drifts (AFB-004 allocator inventory; `registerProjectTaskTools`);
+  - 26 base failures are out of scope;
+  - General Agent terminology;
+  - `chat.md` reference moved to line 295;
+  - fixture ownership and the relocated cleanup test.
+- Requirements: unchanged. Only factual workspace and terminology notes were added to `requirements-doc.md`; no
+  REQ/AC edits. No renewed approval needed; the approval basis remains SR-002.
+- Classification: unchanged, `Large` / `High`.
+- Routing: the handoff rules route a revised Large/High package to `/architecture_reviewer`. ARCH-REV-002 covered SR-004
+  on the old base. There is no rule from Solution Designer to code review. Code review follows the implementation
+  engineer's handoff once implementation is complete (E-21 lists the remaining work).

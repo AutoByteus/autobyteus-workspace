@@ -4,7 +4,8 @@
 - **Package:** `standalone-agent-run-root`.
 - **Worktree:** `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`, branch
   `codex/standalone-agent-run-root`.
-- **Base:** `origin/personal` @ `2d3b66005` (fetched 2026-10-02). Includes the finalized `agent-initiated-collaborators`
+- **Base:** `origin/personal` @ `b37d7a934` since SR-005 (2026-10-04 rebase; E-15). Originally `2d3b66005` (fetched
+  2026-10-02). Includes the finalized `agent-initiated-collaborators`
   (merged and archived in `tickets/done/`) and `cross-scope-agent-mentions`. Finalization target: `personal`.
 - **Origin:** code reviewer request on 2026-10-02, stated as user-agreed scope and naming. The user directed: "continue
   please with the improvement". Intake record: `/Users/normy/autobyteus_org/solution-designer-reports/standalone-agent-run-root-intake.md`.
@@ -65,6 +66,75 @@
 - **E-14, display names.** `autobyteus-web/utils/collaboration/memberDisplayName.ts` (lowercase rows) and
   `memberTitleName` (title case for "From"). Agent-root contexts use `nameAt = memberDisplayName` for every address,
   including the host.
+
+## Base refresh (SR-005, 2026-10-04)
+- **E-15, rebase.** Requested by the user on 2026-10-04 ("update this branch on top of the latest origin personal").
+  - Before: branch at `2d3b66005` with 0 commits of its own. In-progress implementation (62 tracked files plus 7 new
+    source/test files) and this ticket folder were uncommitted.
+  - Safety copies: `/Users/normy/autobyteus_org/solution-designer-reports/standalone-agent-run-root-backup-20261004/`
+    (`tracked-changes.patch`, `untracked.tgz`, `status.txt`) and local branch
+    `backup/standalone-agent-run-root-pre-rebase-20261004` (@ `366922405`).
+  - The work was committed as one checkpoint and rebased onto `origin/personal` @ `b37d7a934` (181 upstream commits).
+    The result is `9c3080a20`, 1 ahead and 0 behind. Untracked build outputs `autobyteus-application-backend-sdk/dist/`
+    and `autobyteus-application-sdk-contracts/dist/` were left uncommitted.
+  - Files changed on both sides: 7. Auto-merged: `collaboration-execution-location-service.ts`,
+    `general-process-run-supervisor.ts`, `standalone-collaboration-instruction.ts` (moved path),
+    `task-delegation-tool-lifecycle.integration.test.ts`, `agent-stream-handler.test.ts`.
+  - Conflicts resolved:
+    - `standalone-root-location-service.ts`: took upstream's removal of `containsRunId` (see E-16).
+    - `tests/integration/standalone-agent-run-root/native-compaction-root-fixture.ts`: kept upstream's cleanup
+      structure (owned-resource `close`, setup-failure cleanup) and applied this branch's API
+      (`StandaloneAgentRunRootManager`, `activateHost`/`terminateHost`, `resolveRoot`, `endRoot`).
+    - Upstream's new `native-root-fixture-cleanup.integration.test.ts` moved into
+      `tests/integration/standalone-agent-run-root/`. Its import and spy now target
+      `StandaloneAgentRunRootManager.prototype.endRoot` (was `AgentRunCollaborationRootManager.prototype.terminateRoot`).
+  - No references remain to `agent-run-collaboration/`, `AgentRunCollaborationRootManager` or `containsRunId` in server
+    `src`/`tests`.
+- **E-16, run identity allocation (upstream `b5715ea5b`).** `AgentRunIdentityAllocator` now uses only the definition and a
+  new UUID. `containsRunId` was removed from `CollaborationExecutionLocationService`, the Agent-root location service and
+  the Team/Org location services. The design never relied on `containsRunId`. Consequence for E-10: run creation no longer
+  reads standalone packages for uniqueness, so the E-10 failure mode no longer exists on the base. REQ-010 "no change"
+  stands.
+- **E-17, standalone instruction (upstream `3baede153`, `8d8d6889c`).** `standalone-collaboration-instruction.ts` gained a
+  "Work Requests and Outcomes" section (`WORK_REQUEST_EXECUTION_LLM_INSTRUCTION`). The merge carried it to the moved path
+  `agent-execution/prompt/standalone-collaboration-instruction.ts`. The contract now tells agents to "return the result
+  or specific blocker to the requesting agent". REQ-005's sender address is what makes that reply addressable for
+  senders inside a team. No design change.
+- **E-18, General Agent (upstream `8a4177f5b`).** The built-in default chat agent is now named "General Agent". Its
+  definition ID is still `autobyteus-daily-assistant`. Eligibility (`isCollaborationEligibleStandaloneRun`) does not depend
+  on the ID or name. Terminology only.
+- **E-19, documentation and web drift.** The `autobyteus-web/docs/chat.md` "earlier events" limit (E-07) moved from line
+  262 to 295 and is unchanged. Upstream web changes to collaboration panels and mention composition
+  (`88bd41620`, `006fd6928`, `376b5d5c4`) do not touch the REQ-007/REQ-008 owners
+  (`eventMonitorActiveTraceBrowsePresentation.ts`, `services/agentCollaboration/*`, `memberDisplayName.ts`). The token
+  usage and run-history projection modules have no upstream changes.
+- **E-20, checks after rebase** (`autobyteus-server-ts`, after `pnpm install --frozen-lockfile`; upstream bumped
+  `@google/genai`).
+  - `pnpm typecheck`: 0 errors other than TS6059. TS6059 ("not under rootDir", from `tsconfig.json` including `tests`)
+    comes from repository configuration this branch does not touch.
+  - Ticket suites `tests/unit/standalone-agent-run-root`, `tests/integration/standalone-agent-run-root`, plus
+    `tests/unit/agent-collaboration`, `tests/unit/agent-execution`, `tests/unit/services/agent-streaming` and
+    `task-delegation-tool-lifecycle`: 1457 passed, 26 failed. The same 26 tests fail on a clean `origin/personal`
+    @ `b37d7a934` worktree (`agent-run-manager` 16, `agent-run-provisioning-service` 1, `agent-api-status-projectors` 2,
+    `autobyteus-status-projector` 1, `codex-tool-log-correlation` 4, `team-execution-view-projector` 2). These are
+    base failures, not caused by this branch.
+  - REQ-009 suites. On clean base: 14 failures (guard: SR-011 catalog, AFB-001–005 tree, tool-registration readiness;
+    model-save: 11). On this branch: 2 failures, both in the guard and both from upstream drift:
+    - AFB-004 `MISSING_REQUIRED_INJECTION` for `AgentRunIdentityAllocator.argument[0]`
+      (`agentRunManager`, `agentRunMetadataService`, `teamRunExecutionTreeLocationService`, `memoryDir`) at
+      `application-platform/execution/application-execution-scope-kernel-builder.ts:146`. The guard still requires
+      dependencies that `b5715ea5b` removed.
+    - The tool-registration readiness inventory lacks upstream's `registerProjectTaskTools` (`560a51129`).
+    - The original E-09 failures (SR-011 catalog guard; 11 model-save failures) pass on the branch. The model-save root
+      cause is not yet recorded (there is no implementation handoff yet).
+- **E-21, implementation progress at refresh** (from the branch diff; no implementation handoff exists).
+  - Present: the module move to `src/standalone-agent-run-root/`; root, manager, host handle and message delivery; the
+    binding removed; `standalone-run-ports.ts`; `TeamRootCollaboratorAgentRegistry` (REQ-002); Org delivery extraction
+    (REQ-003); the self-target rejection (REQ-004); catalog injection and model-save (REQ-009, original scope).
+  - Not yet present: REQ-005 sender address (both builders unchanged); REQ-006 token roll-up service/GraphQL;
+    REQ-007 and REQ-008 web changes (no `autobyteus-web` diff); the docs sync.
+  - Size: `standalone-agent-run-root.ts` 413 lines and `standalone-agent-run-lifecycle-service.ts` 450 lines, above the
+    REQ-003 target of 400.
 
 ## Supplement Inventory
 | Supplement | Purpose | Status |

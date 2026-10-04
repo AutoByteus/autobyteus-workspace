@@ -11,7 +11,9 @@
 - Workspace:
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`, branch
     `codex/standalone-agent-run-root`.
-  - Base `origin/personal` @ `2d3b66005`. Target `personal`.
+  - Base `origin/personal` @ `b37d7a934` (rebased 2026-10-04, SR-005; originally `2d3b66005`). Target `personal`.
+  - SR-005 note: the rebase changes no intended behavior. "Daily Assistant" here refers to the built-in default chat
+    agent, now named "General Agent" upstream (ID `autobyteus-daily-assistant` unchanged). The approval stands.
 
 ## Problem And Desired Outcome
 The collaboration features work, but they left structural debt and a few small gaps:

@@ -1,17 +1,54 @@
 # Design Spec — standalone-agent-run-root
 
 ## Solution And Approval Basis
-- **Current solution revision ID:** `SR-004`. It revises SR-003 for ARCH-REV-001 (AR-001–AR-003). The requirements
-  basis is `SR-002` (unchanged).
+- **Current solution revision ID:** `SR-005`. It refreshes the SR-004 design (ARCH-REV-002 Pass) onto the new base
+  `b37d7a934` (E-15–E-21). The design substance is unchanged. The deltas are in "Base Refresh Deltas (SR-005)" below.
+  The requirements basis is `SR-002` (unchanged).
+- **Previous revision:** `SR-004` revised SR-003 for ARCH-REV-001 (AR-001–AR-003).
 - **Approved requirements:** `requirements-doc.md`, Approved SR-002. The user said "no splitting. i think do it in this
   ticket. lets do it". Q-1–Q-4 were resolved as recommended.
 - **Supplement:** the predecessor UI/UX spec, VIS-001–015 (host label, RD-004 rendering). No new visuals.
 - **Design status:** `Ready`.
-- **Investigation notes:** `investigation-notes.md` (E-01–E-10).
+- **Investigation notes:** `investigation-notes.md` (E-01–E-21).
 - **Workspace:**
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`, branch
     `codex/standalone-agent-run-root`.
-  - Base `origin/personal` @ `2d3b66005`. Target `personal`.
+  - Base `origin/personal` @ `b37d7a934` (rebased 2026-10-04; originally `2d3b66005`). Target `personal`.
+  - Branch head `9c3080a20` holds one checkpoint commit with the in-progress implementation and this ticket folder.
+
+## Base Refresh Deltas (SR-005)
+These are the only design changes from the rebase. Everything else in this spec stands as reviewed in ARCH-REV-002.
+- **D-R1, no `containsRunId` (E-16).** Upstream removed run-ID uniqueness scanning. The standalone root's location
+  service, and `CollaborationExecutionLocationService`, do not expose `containsRunId`. Do not reintroduce it. The
+  location service keeps `findAgent`, `findAgentSync`, `listAgents` and `listHostRunIds`.
+- **D-R2, the moved instruction keeps upstream's work-request section (E-17).** `renderStandaloneCollaborationInstruction`
+  at its new path keeps the "Work Requests and Outcomes" section from the shared contract. Prompt snapshot updates for
+  REQ-005 must be made on top of it.
+- **D-R3, REQ-009 covers upstream guard drift (E-20).** AC-009 requires the guard suite to be green. On the new base it
+  has two additional failures that come from upstream, not from this branch. Fix them as deliberate guard maintenance,
+  each with a recorded reason (REQ-009 allows this). Do not weaken any rule.
+  - AFB-004: the required-injection inventory for `AgentRunIdentityAllocator` still lists `agentRunManager`,
+    `agentRunMetadataService`, `teamRunExecutionTreeLocationService` and `memoryDir`. `b5715ea5b` removed these options.
+    Update the inventory to the allocator's current options.
+  - Tool-registration readiness: add upstream's `registerProjectTaskTools` (`560a51129`) to the expected registration
+    list, or follow the guard's own convention for new registrations.
+  - If either cannot be resolved as maintenance (for example, the guard reveals a real production boundary violation),
+    return a Design Impact.
+- **D-R4, base failures outside scope (E-20).** 26 tests in `agent-run-manager`, `agent-run-provisioning-service`,
+  `agent-api-status-projectors`, `autobyteus-status-projector`, `codex-tool-log-correlation` and
+  `team-execution-view-projector` fail identically on clean `origin/personal` @ `b37d7a934`. They are not in this
+  ticket's scope and must not be "fixed" here. Report them as base failures. Any **new** failure in those files is
+  this branch's responsibility.
+- **D-R5, terminology (E-18).** Wherever this spec says "Daily Assistant", read "General Agent (definition ID
+  `autobyteus-daily-assistant`)". Live checks use General Agent.
+- **D-R6, doc reference (E-19).** The REQ-007 docs edit targets `autobyteus-web/docs/chat.md` around line 295 (the
+  "earlier events" limit), not line 262.
+- **D-R7, fixture ownership (E-15).** The native root fixture keeps upstream's owned-resource cleanup.
+  `native-root-fixture-cleanup.integration.test.ts` now lives under `tests/integration/standalone-agent-run-root/` and
+  spies on `StandaloneAgentRunRootManager.prototype.endRoot`. It counts as a predecessor suite under the AC-001 gate.
+- **Remaining implementation at refresh (E-21):** REQ-005, REQ-006, REQ-007, REQ-008, the REQ-003 size target
+  (`standalone-agent-run-root.ts` 413 and `standalone-agent-run-lifecycle-service.ts` 450 lines; both must be at or under
+  400), the D-R3 guard maintenance, the model-save root-cause record, the docs, and the live checks.
 
 ## Current-State Read
 - **Standalone runs: one run, two owners (E-01).**
@@ -54,7 +91,7 @@
 | Token API | `api/graphql/types/token-usage-stats.ts#getAgentRunTokenUsageSummary` (exact run) | New `getStandaloneRunTokenUsageSummary`; the exact-run query is unchanged |
 | Delivery text | `agent-collaboration/execution/communication/root-communication-runtime-builder.ts:20` | Add `sender address` |
 | Display names | `autobyteus-web/utils/collaboration/memberDisplayName.ts`, `services/agentCollaboration/*` | The host label uses the host agent's name |
-| Earlier events | `autobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowse*.ts`; `docs/chat.md:262` | Inter-agent rendering |
+| Earlier events | `autobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowse*.ts`; `docs/chat.md:295` (was 262 before SR-005) | Inter-agent rendering |
 
 ## Intended Change
 
@@ -211,6 +248,9 @@ derived (`nameAt` for `hostRunId`).
     likely drifted from current package or catalog admission (`TeamRunPackageCatalog`) or readiness.
   - Fix the cause: the production code if it is a real defect, otherwise the fixtures.
   - Record the cause in the implementation handoff. A production defect that changes behavior → return a Design Impact.
+  - SR-005: the suite passes on the branch (E-20). Only the cause record is outstanding.
+- **Guard drift since the base refresh (SR-005, D-R3).** The guard suite is green only after the AFB-004 allocator
+  inventory and the tool-registration list are brought in line with upstream.
 
 ### 10. Malformed package (REQ-010, Q-4)
 No change. The classification is recorded in the requirements.
