@@ -1,0 +1,162 @@
+{
+  "run": {
+    "scope": "agent",
+    "rootId": "agy_runtime_error_f7146b4d_896b_4ff7_8691_513e34_eb541824299249ed8406ca9401a07b29",
+    "runId": "agy_runtime_error_f7146b4d_896b_4ff7_8691_513e34_eb541824299249ed8406ca9401a07b29",
+    "address": "/"
+  },
+  "config": {
+    "runId": "agy_runtime_error_f7146b4d_896b_4ff7_8691_513e34_eb541824299249ed8406ca9401a07b29",
+    "metadataConfig": {
+      "runtimeKind": "antigravity_cli",
+      "llmModelIdentifier": "gemini-3.8-flash-low",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-heZxeU/workspace",
+      "runtimeReference": {
+        "runtimeKind": "antigravity_cli",
+        "sessionId": null,
+        "threadId": null,
+        "metadata": null
+      }
+    }
+  },
+  "before": {
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Report runtime case: quota",
+        "media": null,
+        "ts": 1791083340.871
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "PARTIAL_WORK_PRESERVED",
+        "media": null,
+        "ts": 1791083340.872
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "agy-tool-f1cd7a1c-9a3e-430f-94d2-f0ac7dec489b-11",
+        "role": null,
+        "content": "",
+        "toolName": "run_command",
+        "toolArgs": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "toolResult": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "toolError": null,
+        "media": null,
+        "ts": 1791083340.872
+      }
+    ],
+    "activities": [
+      {
+        "kind": "tool",
+        "invocationId": "agy-tool-f1cd7a1c-9a3e-430f-94d2-f0ac7dec489b-11",
+        "toolName": "run_command",
+        "type": "tool_call",
+        "status": "success",
+        "contextText": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "logs": [],
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "error": null,
+        "ts": 1791083340.872,
+        "detailLevel": "source_limited"
+      }
+    ]
+  },
+  "after": {
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Report runtime case: quota",
+        "media": null,
+        "ts": 1791083340.871
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "PARTIAL_WORK_PRESERVED",
+        "media": null,
+        "ts": 1791083340.872
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "agy-tool-f1cd7a1c-9a3e-430f-94d2-f0ac7dec489b-11",
+        "role": null,
+        "content": "",
+        "toolName": "run_command",
+        "toolArgs": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "toolResult": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "toolError": null,
+        "media": null,
+        "ts": 1791083340.872
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Continue the same work.",
+        "media": null,
+        "ts": 1791083341.103
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "NEXT_USER_TURN_OK",
+        "media": null,
+        "ts": 1791083341.104
+      }
+    ],
+    "activities": [
+      {
+        "kind": "tool",
+        "invocationId": "agy-tool-f1cd7a1c-9a3e-430f-94d2-f0ac7dec489b-11",
+        "toolName": "run_command",
+        "type": "tool_call",
+        "status": "success",
+        "contextText": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "logs": [],
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "error": null,
+        "ts": 1791083340.872,
+        "detailLevel": "source_limited"
+      }
+    ]
+  },
+  "audit": [
+    {
+      "conversation_id": "70684f14-9a0a-4cc3-903d-50af1753c66d",
+      "turns": 1,
+      "content": "Report runtime case: quota"
+    },
+    {
+      "conversation_id": "70684f14-9a0a-4cc3-903d-50af1753c66d",
+      "turns": 1,
+      "content": "Continue the same work."
+    }
+  ]
+}

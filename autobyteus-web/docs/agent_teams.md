@@ -78,6 +78,14 @@ existing direct-member override intent. Every exact configured Agent must be
 valid before launch; pending or failed runtime catalogs and invalid model
 configuration block launch with scoped feedback.
 
+The shared runtime selector verifies each runtime independently; an available
+Codex need not wait for unrelated runtime discovery. Model catalogs and exact
+schemas remain separate launch gates. Root/inherited member views use current
+shared selected-kind evidence and targeted Retry without silently changing
+choices or overrides. Different-kind failures and explicit failed edits retain
+their own scope. See [Org readiness](./agent_orgs.md#readiness-and-runtime-catalog-failure)
+for the shared contract; this does not change Team coordinator/focus semantics.
+
 Fresh definition-based standalone Team setup starts the root automatic-approval
 setting **on**, on desktop and mobile and after application restart. Members
 without an approval override inherit the root value; an explicit member false

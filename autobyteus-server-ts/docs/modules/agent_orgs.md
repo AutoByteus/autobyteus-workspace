@@ -349,6 +349,19 @@ both families into one persisted generic root. `listCollaborationRootHistory`
 exposes the two root kinds while family-specific loaders retain strict package
 validation.
 
+`getAgentOrgRootHistory(orgRunId)` exposes the same authoritative projection
+for one admitted Org. Creation and subsequent context/tree publication use this
+scoped read; initial/full history resynchronization remains available. Projection
+does not traverse every Org tree to publish one changed row, but global
+structural readiness/admission is still required. Scoped null/error and
+concurrent-publication handling are documented in [Run History](./run_history.md#scoped-org-publication-and-full-resynchronization).
+
+Fresh member identity allocation uses the current definition plus a new UUID,
+without saved-tree collision membership scans. Required owned-definition,
+workspace, model/schema and structural-admission checks are separate and remain
+mandatory. No stored identity or package format is rewritten. See
+[Runtime Identity Allocation](./agent_execution.md#runtime-identity-allocation).
+
 An AgentOrg history row starts with an empty `summary`, displayed by clients as
 `New - <AgentOrg name>`. The first successfully accepted external
 `SEND_MESSAGE` whose compacted content is non-empty and whose exact target is a

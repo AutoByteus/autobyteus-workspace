@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.94-beta.1 test:e2e:team-reload-member-freshness /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> node tests/e2e/team-reload-member-freshness-probe.mjs --check-fresh-approval --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/team-freshness
+
+Pass: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/team-freshness/evidence.json
