@@ -20,15 +20,42 @@ listed as normal rows on the Skills page when their package roots are available.
 Opening them uses the same Skill Detail and File Explorer flow as other skills;
 read/write behavior is determined by the underlying filesystem permissions.
 
+## Local and GitHub Sources
+
+Open **Sources** to add a local folder or a public HTTPS GitHub repository-root
+URL. GitHub imports use the default branch; private repositories, branch/tree
+URLs and subfolder selection are not supported. A root `SKILL.md` imports one
+skill. Otherwise, immediate skill folders and conventional nested `skills/`
+collections are discovered. Invalid collection candidates are reported as
+skipped; an empty or conflicting repository is rejected as a whole.
+
+The modal checks GitHub metadata on open, and **Check again** retries a source.
+Checking does not download or replace installed files. **Update** requires
+confirmation: the entire downloaded copy is replaced, including local edits
+and upstream deletions. Failed preparation retains the previous usable copy.
+A post-commit cleanup warning means the update succeeded; it is not a rollback.
+Use local folders if you want to maintain your own edits.
+
+**Remove** deletes only a GitHub source's managed copy after confirmation.
+**Retry removal** completes an interrupted/failed removal. Local removal only
+unlinks the folder, and the default source cannot be removed. Import only
+sources you trust; downloading a skill does not endorse its instructions.
+
+Source changes refresh cards, name-based selections and transient file views.
+A later agent run uses the current catalog generation, including in the same
+workspace while an older run remains open. Existing agent contexts are not
+hot-refreshed, and old-generation snapshot isolation is not promised.
+**Reload** remains an installed-files rescan, not a remote update check.
+
 ## One Skill Per Name (D-19)
 
 The server keeps exactly one copy of every skill name (its skills folder, then
-agent packages, then added folders, then runtime default folders such as
+agent packages, then added local/GitHub sources, then runtime default folders such as
 `~/.codex/skills`). The Skills page, `/` tags, agents and the General Agent
 all use that copy, and opening, editing or deleting a skill acts on it.
 
 - **Duplicates are rejected at import.** Adding a skill folder
-  (`SkillSourcesModal`), importing, updating or reloading an agent package
+  or GitHub source (`SkillSourcesModal`), importing, updating or reloading an agent package
   (`AgentPackagesManager`) and creating a skill (`SkillsList`) run through
   `skillNamesStore.runWithSkillNameChecks`. A `SKILL_NAME_CONFLICT` error
   (parsed from `extensions.conflicts` by the stores; `utils/skills/skillNames.ts`)

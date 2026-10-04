@@ -124,7 +124,7 @@ describe("Brief package team prompt authority", () => {
     const bootstrapper = new CodexThreadBootstrapper(
       { activateForRun } as never,
       {
-        materializeConfiguredWorkspaceSkills: vi.fn(async () => []),
+        materializeConfiguredWorkspaceSkills: vi.fn(async (input) => ({ materializedSkills: [], effectiveRequests: input.requests ?? [] })),
       } as never,
       {
         resolveWorkingDirectory: vi.fn(async () => workspaceRoot),

@@ -170,7 +170,7 @@ const createCodexFactory = (input: {
       activateForRun: () => ({ kind: "not_exposed" }),
     },
     {
-      materializeConfiguredWorkspaceSkills: async () => [],
+      materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }),
     } as never,
     {
       resolveWorkingDirectory: async () => input.workspaceRoot,

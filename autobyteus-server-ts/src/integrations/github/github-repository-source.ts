@@ -1,4 +1,4 @@
-import { GitHubRepositorySource } from "../types.js";
+import { GitHubRepositorySource } from "./types.js";
 
 const SUPPORTED_HOSTS = new Set(["github.com", "www.github.com"]);
 
@@ -103,3 +103,19 @@ export const buildGitHubRepositoryArchiveUrlForRef = (
   revision: string,
 ): string =>
   `https://codeload.github.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/tar.gz/${encodeURIComponent(revision)}`;
+
+export const isGitHubIdentitySegment = (value: unknown): value is string =>
+  typeof value === "string" && /^[A-Za-z0-9_.-]+$/.test(value) && value !== "." && value !== "..";
+
+/** The standalone skill contract accepts repository roots only, not the broader package input. */
+export const parseGitHubSkillRepository = (input: string): GitHubRepositorySource => {
+  const raw = input.trim();
+  const match = /^https:\/\/(github\.com|www\.github\.com)(?::443)?\/([^/?#]+)\/([^/?#]+)\/?$/i.exec(raw);
+  if (!match) throw new Error("Use a public HTTPS github.com repository-root URL (no branch or subfolder).");
+  const owner = match[2]!;
+  const repo = match[3]!.replace(/\.git$/i, "");
+  if (!isGitHubIdentitySegment(owner) || !isGitHubIdentitySegment(repo)) {
+    throw new Error("Invalid GitHub repository owner or name.");
+  }
+  return normalizeGitHubRepositorySource(`https://github.com/${owner}/${repo}`);
+};

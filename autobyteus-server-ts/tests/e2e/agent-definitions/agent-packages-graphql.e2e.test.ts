@@ -15,7 +15,7 @@ import { GitHubAgentPackageInstaller } from "../../../src/agent-packages/install
 import { AgentPackageService } from "../../../src/agent-packages/services/agent-package-service.js";
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
-import type { GitHubRepositorySource } from "../../../src/agent-packages/types.js";
+import type { GitHubRepositorySource } from "../../../src/integrations/github/types.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { buildGitHubPackageId } from "../../../src/agent-packages/utils/package-root-summary.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";

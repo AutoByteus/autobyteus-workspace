@@ -11,9 +11,6 @@ import {
 } from "../claude-workspace-skill-materializer.js";
 import type { WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
 import {
-  collectResolvedConfiguredSkills,
-} from "../../../../skills/domain/configured-agent-skill-binding.js";
-import {
   buildClaudeSessionConfig,
   DEFAULT_CLAUDE_PERMISSION_MODE,
 } from "../session/claude-session-config.js";
@@ -66,12 +63,11 @@ export class ClaudeSessionBootstrapper {
     }
     const configuredSkillBindings =
       this.skillService.resolveConfiguredSkillBindingsForAgent(agentDefinition);
-    const configuredSkills = collectResolvedConfiguredSkills(configuredSkillBindings);
     const runtimeToolExposure = resolveRuntimeAgentToolExposure(
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
-    const materializedConfiguredSkills =
+    const preparedSkills =
       await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
         runId: runContext.runId,
         workingDirectory,
@@ -82,6 +78,9 @@ export class ClaudeSessionBootstrapper {
         ),
         workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
       });
+    const materializedConfiguredSkills = preparedSkills.materializedSkills;
+    const configuredSkills = preparedSkills.effectiveRequests.flatMap((request) =>
+      request.kind === "reconcile-unresolved" ? [] : [request.skill]);
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,

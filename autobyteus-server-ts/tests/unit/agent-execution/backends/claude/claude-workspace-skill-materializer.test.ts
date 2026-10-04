@@ -31,7 +31,7 @@ describe("Claude workspace skill materializer composition", () => {
     const skill = new Skill({ name: "claude-profile", description: "test", content: "# Claude", rootPath: source });
     const materializer = getClaudeWorkspaceSkillMaterializer();
 
-    const descriptors = await materializer.materializeConfiguredWorkspaceSkills({
+    const { materializedSkills: descriptors } = await materializer.materializeConfiguredWorkspaceSkills({
       runId: "claude-profile-run",
       workingDirectory: workspace,
       requests: [{ kind: "expose-resolved", skill }],

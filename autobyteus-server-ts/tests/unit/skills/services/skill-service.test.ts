@@ -90,7 +90,7 @@ describe("SkillService", () => {
       "Removed content",
     );
 
-    expect(service.reloadSkillCatalog().skills.map((skill) => skill.name)).toEqual([
+    expect(service.reloadSkillCatalog().map((skill) => skill.name)).toEqual([
       "removed_skill",
       "stable_skill",
     ]);
@@ -101,9 +101,9 @@ describe("SkillService", () => {
     writeSkill(skillsDir, "added_skill", "Added skill", "Added content");
 
     const result = service.reloadSkillCatalog();
-    const stableSkill = result.skills.find((skill) => skill.name === "stable_skill");
+    const stableSkill = result.find((skill) => skill.name === "stable_skill");
 
-    expect(result.skills.map((skill) => skill.name)).toEqual(["added_skill", "stable_skill"]);
+    expect(result.map((skill) => skill.name)).toEqual(["added_skill", "stable_skill"]);
     expect(stableSkill).toEqual(
       expect.objectContaining({
         description: "Updated skill",
@@ -111,13 +111,7 @@ describe("SkillService", () => {
         isDisabled: true,
       }),
     );
-    expect(result.skillSources).toEqual([
-      expect.objectContaining({
-        path: skillsDir,
-        skillCount: 2,
-        isDefault: true,
-      }),
-    ]);
+
   });
 
   it("rejects invalid skill names", () => {

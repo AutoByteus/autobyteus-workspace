@@ -1,3 +1,4 @@
+import { SkillService } from "../skills/services/skill-service.js";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { FileSystemWorkspace } from "./filesystem-workspace.js";
 import { SkillWorkspace } from "./skill-workspace.js";
@@ -99,6 +100,7 @@ export class WorkspaceManager {
   }
 
   async getOrCreateWorkspace(workspaceId: string): Promise<FileSystemWorkspace> {
+    if (workspaceId.startsWith("skill_ws_")) await this.invalidateStaleSkillWorkspaces(workspaceId);
     const existing = this.activeWorkspaces.get(workspaceId);
     if (existing) {
       return existing;
@@ -130,6 +132,18 @@ export class WorkspaceManager {
     }
 
     throw new Error(`Workspace '${workspaceId}' not found`);
+  }
+
+  async invalidateStaleSkillWorkspaces(workspaceId?: string): Promise<void> {
+    const closing: Promise<void>[] = [];
+    for (const [id, workspace] of this.activeWorkspaces) {
+      if (!id.startsWith("skill_ws_") || (workspaceId && id !== workspaceId)) continue;
+      const skill = SkillService.getInstance().getSkill(id.slice("skill_ws_".length));
+      if (skill?.rootPath === workspace.getBasePath()) continue;
+      this.activeWorkspaces.delete(id);
+      closing.push(workspace.close());
+    }
+    await Promise.all(closing);
   }
 
   async listRegisteredFilesystemWorkspaces(): Promise<FileSystemWorkspace[]> {

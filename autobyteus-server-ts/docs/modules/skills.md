@@ -7,6 +7,37 @@ import, GraphQL CRUD/file workflows, and configured runtime skill resolution for
 agent definitions. It
 does not own an agent-facing skill-tool boundary.
 
+## Managed GitHub source lifecycle
+
+`SkillSourceService` owns local registration and managed import/check/update/remove.
+`SkillService` remains the catalog, content and name-validation authority.
+GraphQL exposes `skillSources`, `skillSourceRegistryError`, local path mutations,
+and `importGitHubSkillSource`, `checkGitHubSkillSourceUpdates`,
+`updateGitHubSkillSource`, `removeGitHubSkillSource`. GitHub mutations use stable
+source IDs, not client paths; results contain the current source rows and warnings.
+
+`skill-sources/github/registry.json` selects one ACTIVE generation per source.
+Prepared archives are off-catalog until synchronous current-name validation and
+atomic registry publication. Updates exclude only their prior source during
+validation. Metadata checks never download archives. Removal persists REMOVING
+before owned file deletion and remains retryable on failure. Invalid registry
+data is preserved and reported without disabling unrelated local skills.
+Existing local settings and disabled-name storage require no migration.
+
+GitHub transport lives in `integrations/github` and is shared with the agent
+package installer. Skills use a separate patched tar extraction boundary:
+effective paths and link graphs are validated before regular extraction;
+internal links are deferred, privileged bits are discarded, and scripts are
+never executed. Managed paths derive only from validated source/generation IDs.
+
+The catalog assigns internal managed provenance. Runtime materializers re-resolve
+the exact source ID/name and can transfer their own workspace link to the current
+generation. Old occurrence holders remain valid release tokens; last-holder
+cleanup uses the entry's current root. Codex, Claude and Grok/ACP consume the new
+`{ materializedSkills, effectiveRequests }` preparation result. No run metadata
+migration, active-context refresh or user-owned-link takeover is performed.
+Transient skill file workspaces separately close/rebind when their root changes.
+
 ## TS Source
 
 - `src/skills`
@@ -37,7 +68,7 @@ Precedence (tier, then order within the tier):
    agents). The app data dir's Orgs live in `config.getAgentOrgsDir()`; a
    package root's in `<packageRoot>/agent-orgs`.
 3. Added skill folders (`AUTOBYTEUS_SKILLS_PATHS`) that are not runtime default
-   folders, in Settings order.
+   folders, in Settings order, followed by ACTIVE managed GitHub sources.
 4. Runtime default folders, only if added: `$CODEX_HOME/skills` (default
    `~/.codex/skills`), `~/.claude/skills`, `~/.agents/skills`, `~/.grok/skills`.
    They are recognised by realpath (`runtime-default-skill-folders.ts`) and

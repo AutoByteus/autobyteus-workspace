@@ -1,3 +1,4 @@
+import { useWorkspaceStore } from "~/stores/workspace"
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
@@ -28,6 +29,21 @@ export const useSkillStore = defineStore('skill', () => {
   const loading = ref(false), reloading = ref(false)
   const error = ref('')
 
+  function replaceCatalog(next: Skill[]) {
+    const nextRoots = new Map(next.map(skill => [skill.name, skill.rootPath]))
+    for (const previous of skills.value) {
+      if (nextRoots.get(previous.name) !== previous.rootPath) {
+        useWorkspaceStore().unregisterSkillWorkspace(`skill_ws_${previous.name}`)
+      }
+    }
+    skills.value = next
+    if (currentSkill.value) {
+      const selected = next.find(skill => skill.name === currentSkill.value?.name) ?? null
+      if (selected?.rootPath !== currentSkill.value.rootPath) currentSkillTree.value = null
+      currentSkill.value = selected
+    }
+  }
+
   // Actions
   async function fetchAllSkills(): Promise<void> {
     loading.value = true
@@ -45,7 +61,7 @@ export const useSkillStore = defineStore('skill', () => {
       }
 
       if (data?.skills) {
-        skills.value = data.skills
+        replaceCatalog(data.skills)
       }
     } catch (e: any) {
       error.value = e.message
@@ -78,15 +94,11 @@ export const useSkillStore = defineStore('skill', () => {
         throw new Error('Failed to reload skills: No data returned')
       }
 
-      skills.value = reloadResult.skills
-
-      if (currentSkill.value) {
-        currentSkill.value =
-          reloadResult.skills.find((skill: Skill) => skill.name === currentSkill.value?.name) ?? null
-      }
+      replaceCatalog(reloadResult.skills)
 
       const skillSourcesStore = useSkillSourcesStore()
       skillSourcesStore.replaceSkillSources(reloadResult.skillSources)
+      skillSourcesStore.registryError = reloadResult.skillSourceRegistryError ?? ""
     } catch (e: any) {
       error.value = e.message
       throw e

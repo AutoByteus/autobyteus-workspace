@@ -30,7 +30,7 @@ const discoverable = (skill: Skill) => ({ kind: "reconcile-discoverable" as cons
 type TestRequest = ReturnType<typeof expose> | ReturnType<typeof discoverable> | { kind: "reconcile-unresolved"; name: string };
 const run = (materializer: WorkspaceSkillMaterializer, workspace: string, requests: TestRequest[],
   workspaceCollisionPolicy: WorkspaceCollisionPolicy = "fail", runId = "run-1") =>
-  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, workspaceCollisionPolicy });
+  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, workspaceCollisionPolicy }).then(result => result.materializedSkills);
 
 const isAbsent = async (target: string): Promise<boolean> => {
   try { await fs.lstat(target); return false; } catch (error) {

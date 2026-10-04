@@ -9,10 +9,7 @@ import {
 import { AgentPackageService } from "../../../src/agent-packages/services/agent-package-service.js";
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
-import type {
-  GitHubRepositoryRevisionMetadata,
-  GitHubRepositorySource,
-} from "../../../src/agent-packages/types.js";
+import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../../src/integrations/github/types.js";
 
 const parseAdditionalRoots = (): string[] => {
   const raw = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS ?? "";
@@ -414,8 +411,8 @@ describe("AgentPackageService", () => {
       },
     });
 
-    class MockInstaller extends GitHubAgentPackageInstaller {
-      override async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
+    const githubClient = {
+      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
         return {
           owner: "AutoByteus",
           repo: "autobyteus-agents",
@@ -424,6 +421,9 @@ describe("AgentPackageService", () => {
           latestRevision: "new-sha",
         };
       }
+    };
+    class MockInstaller extends GitHubAgentPackageInstaller {
+
     }
 
     const service = new AgentPackageService({
@@ -431,6 +431,7 @@ describe("AgentPackageService", () => {
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
+      githubClient,
       refreshAgentDefinitions: async () => undefined,
       refreshAgentTeams: async () => undefined,
     });
@@ -482,8 +483,8 @@ describe("AgentPackageService", () => {
       },
     });
 
-    class MockInstaller extends GitHubAgentPackageInstaller {
-      override async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
+    const githubClient = {
+      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
         return {
           owner: "AutoByteus",
           repo: "autobyteus-agents",
@@ -492,6 +493,9 @@ describe("AgentPackageService", () => {
           latestRevision: "new-sha",
         };
       }
+    };
+    class MockInstaller extends GitHubAgentPackageInstaller {
+
 
       override async stagePackageReplacement(
         source: GitHubRepositorySource,
@@ -516,6 +520,7 @@ describe("AgentPackageService", () => {
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
+      githubClient,
       refreshAgentDefinitions: async () => undefined,
       refreshAgentTeams: async () => undefined,
     });
@@ -571,8 +576,8 @@ describe("AgentPackageService", () => {
       },
     });
 
-    class MockInstaller extends GitHubAgentPackageInstaller {
-      override async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
+    const githubClient = {
+      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
         return {
           owner: "AutoByteus",
           repo: "autobyteus-agents",
@@ -581,6 +586,9 @@ describe("AgentPackageService", () => {
           latestRevision: "new-sha",
         };
       }
+    };
+    class MockInstaller extends GitHubAgentPackageInstaller {
+
 
       override async stagePackageReplacement(
         source: GitHubRepositorySource,
@@ -614,6 +622,7 @@ describe("AgentPackageService", () => {
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
+      githubClient,
       refreshAgentDefinitions: async () => {
         throw new Error("refresh failed");
       },
@@ -668,10 +677,13 @@ describe("AgentPackageService", () => {
       },
     });
 
-    class MockInstaller extends GitHubAgentPackageInstaller {
-      override async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
+    const githubClient = {
+      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
         throw new Error("metadata unavailable");
       }
+    };
+    class MockInstaller extends GitHubAgentPackageInstaller {
+
     }
 
     const service = new AgentPackageService({
@@ -679,6 +691,7 @@ describe("AgentPackageService", () => {
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
+      githubClient,
       refreshAgentDefinitions: async () => undefined,
       refreshAgentTeams: async () => undefined,
     });
@@ -742,8 +755,8 @@ describe("AgentPackageService", () => {
       },
     });
 
-    class MockInstaller extends GitHubAgentPackageInstaller {
-      override async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
+    const githubClient = {
+      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
         return {
           owner: "AutoByteus",
           repo: "autobyteus-agents",
@@ -752,6 +765,9 @@ describe("AgentPackageService", () => {
           latestRevision: "new-sha",
         };
       }
+    };
+    class MockInstaller extends GitHubAgentPackageInstaller {
+
 
       override async stagePackageReplacement(): Promise<ManagedGitHubPackageReplacement> {
         throw new Error("download failed");
@@ -763,6 +779,7 @@ describe("AgentPackageService", () => {
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
+      githubClient,
       refreshAgentDefinitions: async () => undefined,
       refreshAgentTeams: async () => undefined,
     });

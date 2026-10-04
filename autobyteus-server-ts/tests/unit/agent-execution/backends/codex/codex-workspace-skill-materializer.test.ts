@@ -31,7 +31,7 @@ describe("Codex workspace skill materializer composition", () => {
     const skill = new Skill({ name: "codex-profile", description: "test", content: "# Codex", rootPath: source });
     const materializer = getCodexWorkspaceSkillMaterializer();
 
-    const descriptors = await materializer.materializeConfiguredWorkspaceSkills({
+    const { materializedSkills: descriptors } = await materializer.materializeConfiguredWorkspaceSkills({
       runId: "codex-profile-run",
       workingDirectory: workspace,
       requests: [{ kind: "expose-resolved", skill }],

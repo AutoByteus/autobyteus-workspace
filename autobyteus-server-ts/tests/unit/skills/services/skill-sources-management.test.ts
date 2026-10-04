@@ -1,3 +1,4 @@
+import { SkillSourceService } from "../../../../src/skills/services/skill-source-service.js";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -30,6 +31,7 @@ describe("SkillService skill source management", () => {
   let extraDir: string;
   let additionalDirs: string[];
   let service: SkillService;
+  let sourcesService: SkillSourceService;
 
   beforeEach(() => {
     tempRoot = createTempRoot();
@@ -50,6 +52,7 @@ describe("SkillService skill source management", () => {
     };
 
     service = new SkillService({ config });
+    sourcesService = new SkillSourceService({ config, catalog: service });
   });
 
   afterEach(() => {
@@ -58,7 +61,7 @@ describe("SkillService skill source management", () => {
   });
 
   it("returns default source info", () => {
-    const sources = service.getSkillSources();
+    const sources = sourcesService.getSkillSources();
 
     expect(sources).toHaveLength(1);
     expect(sources[0]?.path).toBe(defaultDir);
@@ -74,7 +77,7 @@ describe("SkillService skill source management", () => {
     const newSource = path.join(tempRoot, "new_skills");
     fs.mkdirSync(newSource, { recursive: true });
 
-    service.addSkillSource(newSource);
+    sourcesService.addSkillSource(newSource);
 
     expect(updateSpy).toHaveBeenCalledWith("AUTOBYTEUS_SKILLS_PATHS", newSource);
   });
@@ -82,17 +85,17 @@ describe("SkillService skill source management", () => {
   it("rejects adding an existing skill source", () => {
     additionalDirs = [extraDir];
 
-    expect(() => service.addSkillSource(extraDir)).toThrow("Skill source already exists");
+    expect(() => sourcesService.addSkillSource(extraDir)).toThrow("Skill source already exists");
   });
 
   it("rejects adding default directory as source", () => {
-    expect(() => service.addSkillSource(defaultDir)).toThrow("default skill directory");
+    expect(() => sourcesService.addSkillSource(defaultDir)).toThrow("default skill directory");
   });
 
   it("rejects adding non-existent paths", () => {
     const invalidPath = path.join(tempRoot, "missing");
 
-    expect(() => service.addSkillSource(invalidPath)).toThrow("Directory not found");
+    expect(() => sourcesService.addSkillSource(invalidPath)).toThrow("Directory not found");
   });
 
   it("removes skill sources", () => {
@@ -103,7 +106,7 @@ describe("SkillService skill source management", () => {
       .spyOn(serverSettingsService, "updateSetting")
       .mockReturnValue([true, "Updated"]);
 
-    service.removeSkillSource(additionalDirs[0]);
+    sourcesService.removeSkillSource(additionalDirs[0]);
 
     expect(updateSpy).toHaveBeenCalledWith("AUTOBYTEUS_SKILLS_PATHS", additionalDirs[1]);
   });
@@ -111,12 +114,12 @@ describe("SkillService skill source management", () => {
   it("rejects removing unknown skill sources", () => {
     const updateSpy = vi.spyOn(serverSettingsService, "updateSetting");
 
-    expect(() => service.removeSkillSource(extraDir)).toThrow("Skill source not found");
+    expect(() => sourcesService.removeSkillSource(extraDir)).toThrow("Skill source not found");
     expect(updateSpy).not.toHaveBeenCalled();
   });
 
   it("rejects removing default skill directory", () => {
-    expect(() => service.removeSkillSource(defaultDir)).toThrow("Cannot remove default");
+    expect(() => sourcesService.removeSkillSource(defaultDir)).toThrow("Cannot remove default");
   });
 
   it("lists skills from multiple directories", () => {
@@ -196,7 +199,7 @@ describe("SkillService skill source management", () => {
     const skillDir = writeBundledAgentSkill(packageRoot, "requirements-engineer", "Bundled skill", "Bundled");
     additionalDirs = [packageRoot];
 
-    const sources = service.getSkillSources();
+    const sources = sourcesService.getSkillSources();
     const addedSource = sources.find((source) => source.path === packageRoot);
 
     expect(addedSource?.skillCount).toBe(1);

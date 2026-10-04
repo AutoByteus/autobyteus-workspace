@@ -1,3 +1,4 @@
+import { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import path from "node:path";
@@ -9,7 +10,7 @@ import {
   AgentPackage,
   AgentPackageImportInput,
 } from "../types.js";
-import { normalizeGitHubRepositorySource } from "../utils/github-repository-source.js";
+import { normalizeGitHubRepositorySource } from "../../integrations/github/github-repository-source.js";
 import {
   buildGitHubPackageId,
   buildLocalPackageId,
@@ -56,6 +57,7 @@ export class AgentPackageService {
 
   private readonly rootSettingsStore: AgentPackageRootSettingsStore;
   private readonly registryStore: AgentPackageRegistryStore;
+  private readonly githubClient: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
   private readonly installer: GitHubAgentPackageInstaller;
   private readonly refreshAgentDefinitions: RefreshCachesFn;
   private readonly refreshAgentTeams: RefreshCachesFn;
@@ -65,6 +67,7 @@ export class AgentPackageService {
     rootSettingsStore?: AgentPackageRootSettingsStore;
     registryStore?: AgentPackageRegistryStore;
     installer?: GitHubAgentPackageInstaller;
+    githubClient?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
     refreshAgentDefinitions?: RefreshCachesFn;
     refreshAgentTeams?: RefreshCachesFn;
     skillNames?: SkillNameGuard;
@@ -73,6 +76,7 @@ export class AgentPackageService {
       dependencies.rootSettingsStore ?? new AgentPackageRootSettingsStore();
     this.registryStore =
       dependencies.registryStore ?? new AgentPackageRegistryStore();
+    this.githubClient = dependencies.githubClient ?? new GitHubRepositoryClient();
     this.installer =
       dependencies.installer ?? new GitHubAgentPackageInstaller();
     this.refreshAgentDefinitions =
@@ -221,12 +225,12 @@ export class AgentPackageService {
     const checkedAt = new Date().toISOString();
     let repositorySource: ReturnType<typeof normalizeGitHubRepositorySource>;
     let metadata: Awaited<
-      ReturnType<GitHubAgentPackageInstaller["fetchRepositoryRevisionMetadata"]>
+      ReturnType<GitHubRepositoryClient["fetchRepositoryRevisionMetadata"]>
     >;
 
     try {
       repositorySource = normalizeGitHubRepositorySource(record.source);
-      metadata = await this.installer.fetchRepositoryRevisionMetadata(
+      metadata = await this.githubClient.fetchRepositoryRevisionMetadata(
         repositorySource,
       );
     } catch (error) {
@@ -410,7 +414,7 @@ export class AgentPackageService {
 
     try {
       const repositorySource = normalizeGitHubRepositorySource(record.source);
-      const revisionMetadata = await this.installer.fetchRepositoryRevisionMetadata(
+      const revisionMetadata = await this.githubClient.fetchRepositoryRevisionMetadata(
         repositorySource,
       );
       const installedRevision = previousMetadata?.installedRevision ?? null;

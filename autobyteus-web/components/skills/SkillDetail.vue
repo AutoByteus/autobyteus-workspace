@@ -27,7 +27,7 @@
     </header>
 
     <!-- Main Workspace -->
-    <SkillWorkspaceLoader :skillId="skill.name">
+    <SkillWorkspaceLoader :skillId="skill.name" :rootPath="skill.rootPath">
       <template #default="{ workspaceId }">
         <div class="workspace">
           <!-- Left: File Sidebar -->

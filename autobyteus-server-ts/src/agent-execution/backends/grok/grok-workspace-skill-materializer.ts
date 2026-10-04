@@ -1,3 +1,4 @@
+import { SkillService } from "../../../skills/services/skill-service.js";
 import {
   WorkspaceSkillMaterializer,
   type WorkspaceSkillMaterializationProfile,
@@ -12,6 +13,6 @@ export const GROK_WORKSPACE_SKILL_MATERIALIZATION_PROFILE: WorkspaceSkillMateria
 let cachedGrokWorkspaceSkillMaterializer: WorkspaceSkillMaterializer | null = null;
 
 export const getGrokWorkspaceSkillMaterializer = (): WorkspaceSkillMaterializer => {
-  cachedGrokWorkspaceSkillMaterializer ??= new WorkspaceSkillMaterializer(GROK_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
+  cachedGrokWorkspaceSkillMaterializer ??= new WorkspaceSkillMaterializer(GROK_WORKSPACE_SKILL_MATERIALIZATION_PROFILE, { resolveManagedSkill: (sourceId, name) => SkillService.getInstance().resolveManagedSkillForMaterialization(sourceId, name) });
   return cachedGrokWorkspaceSkillMaterializer;
 };

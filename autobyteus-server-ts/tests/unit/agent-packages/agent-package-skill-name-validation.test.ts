@@ -1,3 +1,4 @@
+import type { GitHubRepositoryClient } from "../../../src/integrations/github/github-repository-client.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -9,7 +10,7 @@ import {
 import { AgentPackageService } from "../../../src/agent-packages/services/agent-package-service.js";
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
-import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../../src/agent-packages/types.js";
+import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../../src/integrations/github/types.js";
 import { SkillNameConflictError } from "../../../src/skills/domain/skill-name-conflict-error.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { writeAgentOrg } from "../../fixtures/agent-org-skill-package.js";
@@ -42,7 +43,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
   let skillService: SkillService;
   const inheritedPackageRoots = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
 
-  const createService = (installer?: GitHubAgentPackageInstaller) => new AgentPackageService({
+  const createService = (installer?: GitHubAgentPackageInstaller, githubClient?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">) => new AgentPackageService({
     rootSettingsStore: new AgentPackageRootSettingsStore(
       { getAppDataDir: () => defaultRoot, getAdditionalAgentPackageRoots: parseAdditionalRoots,
         get: (key: string, defaultValue?: string) => process.env[key] ?? defaultValue },
@@ -52,7 +53,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
       } },
     ),
     registryStore,
-    installer,
+    installer, githubClient,
     refreshAgentDefinitions: async () => { refreshes += 1; },
     refreshAgentTeams: async () => undefined,
     skillNames: skillService,
@@ -178,11 +179,14 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
     });
     const rollback = vi.fn(async () => { await fs.rm(path.join(installDir, "agents", "desk-helper", "skills"), { recursive: true, force: true }); });
     const commit = vi.fn(async () => undefined);
-    class MockInstaller extends GitHubAgentPackageInstaller {
-      override async fetchRepositoryRevisionMetadata(): Promise<GitHubRepositoryRevisionMetadata> {
+    const githubClient = {
+      async fetchRepositoryRevisionMetadata(): Promise<GitHubRepositoryRevisionMetadata> {
         return { owner: "AutoByteus", repo: "desk-package", canonicalUrl: "https://github.com/AutoByteus/desk-package",
           defaultBranch: "main", latestRevision: "new-sha" };
       }
+    };
+    class MockInstaller extends GitHubAgentPackageInstaller {
+
       override async stagePackageReplacement(source: GitHubRepositorySource, metadata: GitHubRepositoryRevisionMetadata,
         targetInstallDir: string): Promise<ManagedGitHubPackageReplacement> {
         await writeSkill(path.join(targetInstallDir, "agents", "desk-helper", "skills", "desk-alpha"), "desk-alpha");
@@ -191,7 +195,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
       }
     }
 
-    await expect(createService(new MockInstaller()).updateAgentPackage(record.packageId))
+    await expect(createService(new MockInstaller(), githubClient).updateAgentPackage(record.packageId))
       .rejects.toMatchObject({ conflicts: [expect.objectContaining({ name: "desk-alpha", existingPath: existing })] });
 
     expect(rollback).toHaveBeenCalledTimes(1);
