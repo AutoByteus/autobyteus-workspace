@@ -1,0 +1,8 @@
+{
+  "all_current_cumulative_paths_exist": true,
+  "artifact_root": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order",
+  "historical_references_mapping": "cumulative-package.json",
+  "untracked_preexisting_outputs_preserved": true,
+  "worktree_cleanup_complete": true,
+  "eligible_for_terminal_handoff": true
+}

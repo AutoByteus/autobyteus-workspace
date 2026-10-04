@@ -4,7 +4,7 @@
 projects-primary-nav-order, 2026-10-03. Small / Low, direct low-risk route.
 Independent architecture/source/test review N/A — not applicable. API-REV-001 Pass/95%.
 Current delivery revision DR-002; docs-sync-report.md, handoff-summary.md and this
-report are authoritative. Handoff summary Updated; user accepted, finalization in progress.
+report are authoritative. Handoff summary Updated; Delivery Completed after UV-001, push and cleanup.
 Release/publication/deployment/version/tag explicitly excluded by UV-001; target is origin/personal
 per investigation-notes.md bootstrap context. A branch merge does not imply release.
 
@@ -36,44 +36,64 @@ per investigation-notes.md bootstrap context. A branch merge does not imply rele
 - Other current docs remain accurate; no ambiguous docs/state blocker.
 
 ## Ticket Transition / Version / Repository Finalization
-- Ticket moved to done: Yes; current `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order`.
-- Planned archive: tickets/done/projects-primary-nav-order.
-- Version bump/tag/release commit: Not required; no publication requested.
-- Ticket branch codex/projects-primary-nav-order; commit/push: Pending repository operations.
-- Finalization target origin/personal; target update/merge/push: Pending repository operations.
-- Target advanced after acceptance: No — remote base unchanged after acceptance.
+- Ticket moved to done: Yes, after UV-001 and before final ticket commit.
+- Archived durable path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/projects-primary-nav-order`.
+- Version bump/tag/release commit: Not required — explicitly no new version/release.
+- Package version remains 1.4.94-beta.1 (unchanged).
+- Bootstrap source: investigation-notes.md → origin/personal.
+- Ticket branch codex/projects-primary-nav-order; commit `7dba097dea553418216487f2d89d82bbd9245b02` Completed.
+- Ticket push Completed; remote ref independently checked in ticket-push-verification.json.
+- Finalization target remote origin / branch personal.
+- Target advanced after acceptance: No (checked twice before merge).
 - Edits protection/reintegration: Not needed — no new target commits.
-- Repository finalization: In progress; awaiting exact push/cleanup receipts.
-Archive performed after UV-001 and before final commit. No release performed.
+- Target branch update: Completed — already current with refreshed origin/personal.
+- Target no-ff merge: Completed, `e340f0cd2f8e4214154174eb4c540ac4b7aeeae1`.
+- Target push: Completed; confirmed remote contains accepted ticket commit.
+- Repository finalization: Completed. Evidence repository-finalization.json,
+  target-fetch.log, target-update.log, target-merge.log, target-push.log.
+- Delivery receipt-only follow-up commit/push persists final cleanup/completion
+  evidence on personal; exact final pushed head supplied in terminal handoff.
+- Shared dirty checkout preservation: all preexisting unrelated files hash-verified
+  unchanged before/after, disjoint from merged delta. No unrelated files staged.
 
 ## Release / Publication / Deployment / Rollout
-Applicable No. Result Not required. Documented helper reviewed via web AGENTS.md;
-not invoked because no release requested. No environment rollout or persisted-data
-transition. Persisted state Not Affected; delivery action None.
+Applicable No; Result Not required by explicit UV-001 instruction. Documented
+release helper reviewed but not invoked. No new version/tag/GitHub release,
+workflow dispatch, packaging, Docker publication or environment deployment.
+Release notes publication use Not required; archived release-notes.md is change
+summary only. Rollout Not required. Persisted state Not Affected, action None;
+no migration/discard/rebuild or data transition.
 
 ## Post-Finalization Cleanup
-- Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-primary-nav-order`.
-- Worktree removal/prune/local branch deletion: Pending finalization; not yet safe.
-- Remote ticket branch deletion: Not required unless project/user policy requests it;
-  remote ticket branch push is still pending.
-- Browser/services/temporary fixture pages from this stage: cleaned and verified.
-- Preexisting untracked SDK-contract dist: preserved, not staged. Preserve or
-  remove only task-owned disposable outputs safely before eventual worktree cleanup.
-- Unrelated dirty shared personal checkout: untouched; protect it during target update.
+- Dedicated task worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-primary-nav-order.
+- Worktree cleanup Completed; worktree prune Completed; local ticket branch cleanup Completed.
+- Remote ticket branch cleanup Not required — pushed branch retained for traceability.
+- Exact browser/service/page fixtures cleanup Completed earlier; receipts true.
+- Before worktree removal: all 71 tracked ticket artifacts identical in target;
+  52 preexisting untracked SDK contract files backed up and SHA256 verified at
+  /Users/normy/.codex/delivery-backups/projects-primary-nav-order-20261004/application-sdk-contracts-dist.
+- Task-only ignored dependency/build outputs disposed with worktree; no unrelated
+  user data/process/worktree affected.
+- Evidence cleanup-preservation.json, cleanup-final.json, worktree-remove.log,
+  worktree-prune.log, local-branch-delete.log and shared-checkout-after.json.
+- Blocker None.
 
 ## Escalation / Rollback / Untested Scope
-No Local Fix, Design Impact, Requirement Gap or Unclear finding. Acceptance received;
-no reroute. Terminal completion remains held until push/cleanup receipts exist.
-If navigation order/visibility/routes regress, stop and classify origin; scoped revert
-of reorder available without data migration or rollback of unrelated work.
-Scope limits: deterministic backend reads; not CRUD/server/model/packaged Electron/
-paired-phone full shell, comprehensive locale/accessibility or full app build certification.
+No Local Fix, Design Impact, Requirement Gap or Unclear finding; no reroute.
+If future in-scope order/visibility/routes regress, use a scoped revert of the
+source reorder and its expectation; do not reset unrelated history/data.
+Scope limits unchanged: deterministic backend reads, not CRUD/server/model/
+packaged Electron/paired-phone full shell, all locale/accessibility matrices or
+full app build certification. No material approved-scope residual or blocker.
 
 ## Final Status
-- Explicit user verification complete: Yes — UV-001.
-- Repository finalization complete: No.
-- Applicable release/deployment/rollout complete or not required: Yes — Not required.
-- Applicable safe task cleanup complete or not required: No — Pending finalization.
-- Blocker: Repository operations/cleanup in progress.
-- Successful terminal package eligible: No.
-- Terminal package sent to Solution Designer: No; must not send until gates pass.
+- Result Delivery Completed, DR-002.
+- Explicit user verification/acceptance complete Yes — UV-001.
+- Repository finalization complete Yes — ordered ticket push / personal merge/push.
+- Applicable release/deployment/rollout complete or not required Yes — Not required.
+- Applicable safe cleanup complete or not required Yes — Completed; remote branch deletion Not required.
+- Unresolved blocker None.
+- Successful terminal package eligible Yes.
+- Terminal package prepared for conditional handoff; exact sent confirmation and
+  final receipt commit/head belong to the successful send_message_to tool result.
+- Cumulative final paths: delivery-evidence/cumulative-package.json.
