@@ -3,44 +3,45 @@
 ## Review Round Meta
 
 - Upstream Requirements Doc: `requirements-doc.md` (Approved SR-006, USER-APPROVAL-006).
-- Upstream Investigation Notes: `investigation-notes.md` (cumulative through SR-007; earlier pending statements are historical).
+- Upstream Investigation Notes: `investigation-notes.md` (cumulative through SR-008; earlier pending statements are historical).
 - Upstream Solution Revision Record: `solution-revision-record.md`.
-- Reviewed Design Spec: `design-spec.md` SR-007.
+- Reviewed Design Spec: `design-spec.md` SR-008.
 - Supplemental Task Artifacts Reviewed: `approved-requirements-sr006.md`, `approval-request.md`, `architecture-handoff.md`, original screenshot E-001 (viewed).
-- Relevant Solution Revision IDs: SR-006 approval; SR-007 architecture; SR-002–005 preserved-policy clarification.
+- Relevant Solution Revision IDs: SR-006 approval; SR-008 correction of SR-007 architecture; SR-002–005 preserved-policy clarification.
 - Architecture Review Revision Record: `architecture-review-revision-record.md`.
-- Current Architecture Review Revision ID: **ARCH-REV-001**.
-- Current Review Round / Latest Authoritative Round: **1**, 2026-10-04.
-- Trigger: Solution Designer requests independent review of Large/High package.
-- Prior Review Round Reviewed: None; no prior result inferred.
-- Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources`, branch `codex/github-skill-sources`, reviewed HEAD `33cd78131` (authored package `ba24cd4ff`). Ticket-relative links in this report refer to `tickets/in-progress/github-skill-sources/`; source paths are workspace-relative.
+- Current Architecture Review Revision ID: **ARCH-REV-002**.
+- Current Review Round / Latest Authoritative Round: **2**, 2026-10-04.
+- Trigger: Solution Designer requests re-review of SR-008 addressing AR-001.
+- Prior Review Round Reviewed: ARCH-REV-001 Fail, AR-001; verified against current canonical design before closing.
+- Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources`, branch `codex/github-skill-sources`, reviewed HEAD `b91524d42` (initial authored package `ba24cd4ff`, prior review `56356b688`). Ticket-relative links in this report refer to `tickets/in-progress/github-skill-sources/`; source paths are workspace-relative.
 - Current-State Evidence Basis: independent static reads of catalog/discovery/service/loader, disabled settings, package installer/service, source and catalog frontend stores, transient workspaces, configured skill resolution, and the Codex runtime materializer/bootstrap/cleanup path. No implementation, tests, live import or production-data mutation performed.
+- Round 2 evidence: independently re-read complete shared materializer/link owner, Codex/Claude/Grok profile composition, Claude bootstrap, Grok-backed ACP preparation, existing holder/collision tests and header ＋. Source code and unchanged design sections remain at the prior baseline; prior valid evidence is reused. Only readiness metadata changed in requirements; approval snapshot hash rechecked unchanged. Tests were read, not executed.
 - Guidelines: architecture-reviewer shared design principles/template and Example 9; project `SOLUTION_DESIGN_BEST_PRACTICES.md`, root/package AGENTS.md, `TESTING.md`, and server `docs/design/data_migration_guideline.md`. No guideline conflict found.
 
 ## Routing Classification Review
 
 - Task size: **Large**; architectural risk: **High**.
-- Classification rationale reviewed: justified by new persisted source authority, publication, archive safety and API boundaries plus catalog/UI/workspace integration, not payload volume.
+- Classification rationale reviewed: justified by new persisted source authority, publication, archive safety and API boundaries plus catalog/UI/workspace and bounded runtime-holder integration, not payload volume.
 - Independent Architecture Review required by classification: **Yes**.
 - Classification evidence or correction required: none; preserve Large/High on return.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: **Contradicted — one target-path assumption**, not ambiguous approval.
+- Overall Basis Status: **Confirmed**. SR-008 repairs the target-path assumption without changing approved intent.
 - Approved intent: public root-URL/default-branch imports, bounded discovery, check-on-open/manual check, confirmed whole-source updates/removal, unchanged ordinary-conflict/runtime-default policy, existing local support and future-run consumption.
 - Existing behavior confirmed: synchronous catalog and local source publication; name-based disabled choices; ordinary conflicts versus runtime-default notices; package bundles and application-owned exception; cached file workspaces; runtime skill links have a separate lifecycle.
 - Scope guardrail: UC-001–004, exclusions, preserved boundary and technical-review authority confirmed. No request to add private auth, arbitrary layouts, migration, live-run refresh or new duplicate policy.
-- Every prospective blocking Design Impact finding traces approved authority: **Yes**, AR-001 → REQ-005/007, BEH-003/004, UC-004.
-- Remaining material intended-behavior ambiguity: none needed to demonstrate AR-001. Any proposed restriction on future-run/update availability must return for approval; this report does not authorize one.
+- Every prospective blocking Design Impact finding traces approved authority: **Yes**; no open blockers. Closed AR-001 protects REQ-005/007, BEH-003/004, UC-004.
+- Remaining material intended-behavior ambiguity: none. No stop-runs restriction, snapshot isolation, or active-context refresh promise introduced.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | Pass | Pass — Sources import, REQ-001/002/004/008 | Pass — DS-001 | Confirmed | None |
 | BEH-002 | System/User | Pass | Pass — Sources open/recheck, REQ-003 | Pass — DS-002 | Confirmed | None |
-| BEH-003 | User | Pass | Pass — confirmed update, REQ-005 | Fail — DS-003 changes roots without a complete DS-006 consumer transition | Needs Correction | AR-001 |
-| BEH-004 | User/Contract | Pass | Pass — existing local/selection/new-chat surfaces, REQ-004/006/007 | Fail — same-workspace future run can reject the new root | Needs Correction | AR-001 |
+| BEH-003 | User | Pass | Pass — confirmed update, REQ-005 | Pass — DS-003/006/008 cover both reference owners | Confirmed | None |
+| BEH-004 | User/Contract | Pass | Pass — existing local/selection/new-chat surfaces, REQ-004/006/007 | Pass — exact managed identity authorizes future-run transfer | Confirmed | None |
 
-The structural review below proceeds with approved intent/current behavior established; the contradictory target path is the finding, not an invented requirement.
+AR-001 was rechecked first: DS-008 now distinguishes logical managed identity from physical root, transfers only the owned link, carries occurrence holders, and returns effective preparation results. Current release uses entry.sourceRootPath rather than the historical descriptor root, supporting the proposed bounded extension. Prior-finding resolution is recorded in ARCH-REV-002. No new finding was identified.
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -57,7 +58,7 @@ The structural review below proceeds with approved intent/current behavior estab
 | Assessment is present for current posture | Pass | Feature with bounded refactor | None |
 | Root-cause classification explicit/evidence-backed | Pass | Source config in SkillService; HTTP in agent installer | None |
 | Refactor decision explicit | Pass | Separate source lifecycle; extract neutral metadata transport | None |
-| Decision reflected in concrete sections | Pass | Exact files, forbidden shortcuts and old-path removals | Extend consumer transition for AR-001, not a wholesale redesign |
+| Decision reflected in concrete sections | Pass | Exact files, forbidden shortcuts and old-path removals | None — DS-008 extends the existing owner |
 
 ## Spine Inventory Verdict
 
@@ -65,11 +66,12 @@ The structural review below proceeds with approved intent/current behavior estab
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 | Import, primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-002 | Check, primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Update, primary | Pass | Fail | Pass | Pass | Fail | Pass | Fail — incomplete runtime-root consequence, AR-001 |
+| DS-003 | Update, primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-004 | Remove, primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-005 | UI/file-workspace return | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-006 | Future run, primary | Pass | Fail | Pass | Pass | Fail | Pass | Fail — materializer is named but its source identity invariant is not addressed |
+| DS-006 | Future run, primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-007 | Publication, bounded local | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-008 | Managed runtime transfer, bounded local | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
@@ -78,7 +80,7 @@ The structural review below proceeds with approved intent/current behavior estab
 | Source lifecycle | Pass | Pass | Pass | Pass | Resolvers use source owner, not installer/store writes |
 | Catalog/content | Pass | Pass | Pass | Pass | One existing name validator; read-only installed-source projection is expressly public |
 | Transient WorkspaceManager | Pass | Pass | Pass | Pass | Public close/rebind, not internal map writes |
-| Runtime materialized skill links | Fail | Pass | Pass | Fail | No transition contract between generation publication and live source-root holders; AR-001 |
+| Runtime materialized skill links | Pass | Pass | Pass | Pass | Existing owner gains DS-008; source lifecycle cannot mutate runtime maps |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -86,7 +88,7 @@ The structural review below proceeds with approved intent/current behavior estab
 | --- | --- | --- | --- | --- | --- |
 | UI/API/source/catalog | Pass | Pass | Pass | Pass | Source mutation and catalog policy remain separate authorities |
 | GitHub integration | Pass | Pass | Pass | Pass | Neutral transport serves two real consumers, no skills → agent installer dependency |
-| Runtime consumer transition | Fail | Pass | Fail | Fail | Leaving bootstrap/materialization unchanged is not sufficient for changing source identities; AR-001 |
+| Runtime consumer transition | Pass | Pass | Pass | Pass | Catalog resolver injected through profile composition; effective results flow outward |
 
 ## Interface Boundary Verdict
 
@@ -97,7 +99,7 @@ The structural review below proceeds with approved intent/current behavior estab
 | GitHub import URL; check/update/remove IDs | Pass | Pass | Pass | Low | Pass |
 | inspectSkillSource / own-source exclusion | Pass | Pass | Pass | Low | Pass |
 | Active-source read projection | Pass | Pass | Pass | Low | Pass |
-| Catalog root → runtime materializer | Pass | Pass | Fail | Medium | Fail — generation identity differs from retained source identity, AR-001 |
+| Catalog root → runtime materializer | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -106,7 +108,7 @@ The structural review below proceeds with approved intent/current behavior estab
 | Discovery/name/permissions/disabled choices | Pass | Pass | Pass | Pass | New repository layout, same policy and loader |
 | Metadata/download | Pass | Pass | Pass | Pass | Reuse metadata only; agent extraction excluded |
 | Small atomic persistence | Pass | Pass | Pass | Pass | Sync commit fits current catalog, network remains async |
-| Runtime binding | Fail | Fail | N/A | Fail | A-001/A-006 do not cover live materializer source identity; independent reads expose AR-001 |
+| Runtime binding | Pass | Pass | Pass | Pass | A-012–014 independently checked; holder tokens reused, no second registry |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
@@ -114,7 +116,7 @@ The structural review below proceeds with approved intent/current behavior estab
 | --- | --- | --- | --- | --- | --- |
 | Skills lifecycle/catalog and filesystem adapter | Pass | Pass | Pass | Pass | Concrete concerns, no parallel precedence owner |
 | Integration/persistence/API/frontend/workspace | Pass | Pass | Pass | Pass | Narrow reusable boundaries |
-| Runtime transition | Fail | Fail | Fail | Fail | Needs explicit bounded disposition at existing owner or revised publication design; AR-001 |
+| Runtime transition | Pass | Pass | Pass | Pass | Existing materializer owns transfer and cleanup; SkillService owns selection |
 
 ## Reusable Owned Structures Verdict
 
@@ -131,6 +133,7 @@ The structural review below proceeds with approved intent/current behavior estab
 | Managed registry record | Pass | Pass | Pass | Pass | Pass | Installed revision distinct from latest observation; URL/root derived |
 | Source DTO | Pass | Pass | Pass | Pass | Pass | Nullable GitHub specialization, client in-flight state not persisted |
 | ACTIVE/REMOVING | Pass | Pass | Pass | Pass | Pass | Removed root not catalog-admitted; deletion retry does not claim success |
+| Managed provenance / effective requests / holder tokens | Pass | Pass | Pass | Pass | Pass | Exact source ID and name authorize; generation selects root; tokens retain occurrence identity, not cleanup authority |
 
 ## File Responsibility Mapping Verdict
 
@@ -140,21 +143,21 @@ The structural review below proceeds with approved intent/current behavior estab
 | skill-service/catalog/discovery | Pass | Pass | Pass | Pass | Source orchestration removed; no policy duplication |
 | integrations/github and atomic-json-sync | Pass | Pass | Pass | Pass | Two-consumer transport and small persistence primitive |
 | GraphQL, web stores/modal/loader/localization | Pass | Pass | Pass | Pass | Complete fragment and transient file-view refresh mapped |
-| Runtime consumer files | Fail | Fail | N/A | Fail | Missing change/disposition mapping for AR-001 |
+| Runtime consumer files | Pass | Pass | Pass | Pass | Shared owner/link adapter, profile wiring and all active bootstrap call sites mapped |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Proposed production file map | Pass | Pass | Low | Pass | Fits existing skills, integration, persistence, API and frontend folders |
-| Runtime transition response | Fail | Fail | Medium | Fail | Owner/file map must follow chosen AR-001 correction |
+| Runtime transition response | Pass | Pass | Low | Pass | Existing backend/shared boundary; no new coordinator |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Named? | Replacement Owner / Structure Clear? | Removal / Decommission Scope Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Source methods and old GitHub import locations | Pass | Pass | Pass | Pass | Move callers, no forwarding wrappers/re-exports |
-| Retired generations | Pass | Fail | Pass | Fail | Files retired explicitly, but runtime references omitted; AR-001 |
+| Retired generations | Pass | Pass | Pass | Pass | Retirement independent of holder invalidation; DS-008 works with old tree present or absent |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -170,21 +173,21 @@ The structural review below proceeds with approved intent/current behavior estab
 | Local paths/disabled names | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Same config meaning and string-name reader; A-004/A-009 |
 | Agent package/definition/history data | Not Affected | Pass | Pass | N/A | Pass | No rewrite or historical gate justified |
 | New GitHub registry | Additive current-only subject | Pass | Pass | N/A | Pass | Atomic metadata, exact writer and narrow error admission; no predecessor schema |
-| Generation-root references | Replacement, no stored-data migration proposed | Fail | Fail | N/A | Fail | Transient file workspace covered; live runtime references not covered, AR-001. Do not infer a migration requirement |
+| Generation-root references | Replacement, no stored-data migration | Pass | Pass | N/A | Pass | Transient workspace rebind plus runtime logical-identity transfer; provenance not persisted into runs |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
 | Transport/catalog/source/API/UI slices | Pass | Pass | Pass | Pass |
-| Update → future-run transition | Fail | Fail | Fail | Fail — add consumer decision and test slice, AR-001 |
+| Update → future-run transition | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Needed? | Example Present And Clear? | Avoided Shape Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Generation publication, conflicts, URL scope, transient workspace | Yes | Pass | Pass | Pass | Concrete examples 1–4 are useful |
-| Future run after source update | Yes | Fail | N/A | Fail | DS-006 hides source-holder incompatibility; AR-001 |
+| Future run after source update | Yes | Pass | Pass | Pass | Concrete A/g1 → update → B/g2 → both release sequence; generic different-source collision retained |
 
 ## Material Premise Validation (Only When Needed)
 
@@ -195,9 +198,9 @@ The structural review below proceeds with approved intent/current behavior estab
 - Independent supported trigger: user starts another conversation for the same project/agent after updating its skill source, leaving the prior run available. The existing run header **＋** explicitly starts New chat preset to that agent/workspace (`AgentWorkspaceView.vue:69–78`). `chatDraftStore.startNewChat:125–145` creates a draft, does not close the old server run. The ordinary workspace picker also exposes existing workspaces, not only unused ones. This is a coherent normal project workflow, not two artificially timed requests.
 - Forward production path: initial New chat Send → `chatLaunchService.ts:105–126` → `agentRunStore.sendUserInputAndSubscribe` → PrepareAgentRun then WebSocket SEND_MESSAGE → command coordinator / standalone run lifecycle → `AgentRunManager` → `CodexAgentRunBackendFactory.createBackend` → bootstrap configured-name resolution → `prepareWorkspaceSkills` → process-wide `WorkspaceSkillMaterializer`. For imported skill `writer`, run A holds workspace `.codex/skills/writer` with source g1. Approved Sources Update then commits g2 and retires g1. User presses ＋ and sends in new run B with Codex and the same configured skill/workspace. Bootstrap resolves g2; materializer uses the same workspace key but sees g1 in its existing holder record.
 - Lifecycle evidence: `codex-workspace-skill-materializer.ts` caches one process-wide owner; `workspace-skill-materializer.ts:143–155` throws whenever an existing entry's sourceRootPath differs, before filesystem reconciliation and regardless of collision policy. `CodexThreadCleanup` releases holders on thread resource cleanup; `codex-thread-manager.ts:80–101` closes those resources on thread closure, not on navigating to Sources/New chat. Transient `skill_ws_*` eviction cannot change this registry.
-- Preconditions/consequence: run A has not closed; the upstream update retains `writer` but changes the generation root. B's startup fails with source collision rather than using the updated skill. Deleting g1 successfully does **not** fix the in-memory mismatch. No cleanup failure, tampered files, parallel server writers or millisecond race is required.
+- Prior-design preconditions/consequence: run A has not closed; the upstream update retains `writer` but changes the generation root. B's startup fails with source collision rather than using the updated skill. Deleting g1 successfully does **not** fix the in-memory mismatch. No cleanup failure, tampered files, parallel server writers or millisecond race is required.
 - Scenario validity: **Supported Normal Scenario**. Reachability: **Reachable**, by static forward trace; not runtime-reproduced in this review.
-- Proportionate response: address the normal consumer transition in DS-003/006. Do not prescribe distributed locks, global history scans, live-run refresh or an unapproved “stop all runs first” policy.
+- Verified SR-008 response: DS-008 obtains current winning managed source/name through SkillService, gates the transfer on trusted exact identity and verified link ownership, and completes the link/entry update without an await gap. A retains h1, B receives h2; last-holder cleanup follows the current entry root. Effective requests prevent stale Claude configuration and stale Codex native-discovery decisions. Generic collisions stay intact. This resolves the prior-design consequence; implementation must prove it. No distributed locks, global history scans, live-run refresh or stop-runs restriction is required.
 
 ### MP-002 — Two server processes mutate the same data directory
 
@@ -212,46 +215,34 @@ Other guards are already tied to the approved basis: untrusted extraction to REQ
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-| Item | Why It Matters | Required Action | Status |
-| --- | --- | --- | --- |
-| DS-006 root-identity transition | New roots violate a current runtime-holder invariant on MP-001 | Revise design/consumer evidence and validation mapping | Open — AR-001 |
+None.
 
 ## Review Decision
 
-**Fail — Design Impact.** Most structural decisions are proportionate, but the generation-root transition is not implementation-ready across the complete approved future-run path.
+**Pass.** SR-008 is ready for implementation against Approved SR-006. AR-001 is resolved at the design boundary; this is not a claim of implemented or tested correctness.
 
 ## Findings
 
-### AR-001 — Managed generation changes conflict with retained runtime skill holders
-
-- Type / severity: **Design Impact / High (blocking)**.
-- Protected authority: **REQ-005, REQ-007; BEH-003/004; UC-004**, future-run use after a successful update without restart. AC-001/005/007 provide associated selection/integration regression coverage.
-- Scope status: **Within Approved Scope**.
-- Required update changes approved behavior: **No**. If the proposed resolution limits existing new-chat/update behavior, renewed approval is required; this review does not approve that alternative.
-- Evidence: design “Commit, interruption and removal” retires g1 after publishing g2; DS-006 and Dependency Rules retain runtime bootstrapping unchanged; file map addresses only transient WorkspaceManager/SkillWorkspaceLoader. Current materializer holds sourceRootPath across runs and rejects g2 against g1 (`workspace-skill-materializer.ts:143–155`). See MP-001 for the independent UI trigger and full forward witness.
-- Consequence: a future same-workspace Codex run fails to start after a valid source update while another run remains alive. This is **not** a request to live-refresh the prior run. The declared no-live-refresh exclusion does not resolve the new-run failure.
-- Required update: investigate the source-root/lifetime contract at the existing runtime owner, then revise publication/reference transition, DS-003/006, owner/file mapping and test plan so the approved future-run outcome is achievable. Document how retained holders and generation retirement interact. Recheck affected runtime consumers rather than assuming file-explorer eviction covers them. Preserve current collision/ownership guarantees; do not simply suppress the mismatch or rewrite unrelated workspace entries.
-- Verification expectation: normal product/API sequence import → start A with configured imported skill in workspace W → successful update retaining that name → start B in W while A is still live; verify chosen updated skill and successful B startup, plus unchanged current ownership behavior. Disposable fixtures/runtime doubles may reproduce this independently established path. No live provider call is necessary to prove the holder mismatch.
-- Proportionality: one concrete supported lifecycle crossing needs a design decision, not a general concurrency or recovery framework. No migration or active-run refresh is demanded.
-- Recommended recipient: **/solution_designer**.
+None open. AR-001 resolution and verification evidence are in ARCH-REV-002. No new finding IDs.
 
 ## Classification
 
-**Design Impact.** No requirement change requested by the reviewer. If resolving AR-001 requires a product restriction or new lifecycle promise, route that proposed behavior for approval before treating it as authoritative.
+**Pass — no failure classification.** Prior Design Impact AR-001 is resolved. Large/High retained; requirements and acceptance criteria unchanged.
 
 ## Recommended Recipient
 
-**/solution_designer** under the Fail/Blocked upstream-revision rule. Do not forward to implementation.
+Primary implementation-ready route: **/implementation_engineer**, using the exact returned handoff recipient after persisting this result. No duplicate implementation forwarding through Solution Designer.
 
 ## Residual Risks
 
-- Archive safety remains implementation evidence: strict effective-entry validation, deferred internal links, platform path behavior, and direct patched dependency. Maintainer documentation supports the extraction primitives; the [PAX NUL advisory](https://github.com/isaacs/node-tar/security/advisories/GHSA-gvwx-54wh-qm9j) confirms <=7.5.16 affected and 7.5.17 patched. This is not a blanket assertion that any dependency version is vulnerability-free. [node-tar documentation](https://github.com/isaacs/node-tar) and [GitHub archive endpoint](https://docs.github.com/en/rest/repos/contents#download-a-repository-archive-tar) rechecked during review.
+- Archive safety remains implementation evidence: strict effective-entry validation, deferred internal links, platform path behavior, and direct patched dependency. Maintainer documentation supports the extraction primitives; the [PAX NUL advisory](https://github.com/isaacs/node-tar/security/advisories/GHSA-gvwx-54wh-qm9j) confirms <=7.5.16 affected and 7.5.17 patched. This is not a blanket assertion that any dependency version is vulnerability-free. [node-tar documentation](https://github.com/isaacs/node-tar) and [GitHub archive endpoint](https://docs.github.com/en/rest/repos/contents#download-a-repository-archive-tar) rechecked during round 1; unchanged external contract reused in round 2.
+- DS-008 must prove trusted provenance, exact-name identity, current-catalog revalidation, link ownership, transfer failure/retry, waiting caller settlement, reverse release order and effective result propagation. Include all three active materialization call sites: Codex bootstrap, Claude bootstrap, and `acp/backend/acp-agent-run-backend-factory.ts` used by Grok. The design’s all-production-call-sites instruction includes this ACP adapter; updating profile factories alone is insufficient.
 - No-await publication, exact previous-source exclusion, operation serialization, before/after-commit results, and REMOVING retry need executable evidence. Existing agent-package transient replacement remains outside this ticket's rewrite scope; no generic concurrent package-update protocol is prescribed here.
 - UI source-row states, stale file-view clearing, shared transport regression and platform cleanup require implementation/API-E2E evidence; no tests claimed run.
-- Successful destructive update/removal does not promise old-generation availability to active runs. This review makes no additional preservation guarantee for those runs; AR-001 concerns a new run.
+- Successful destructive update/removal does not promise old-generation availability to active runs. A later acquisition can retarget the shared owned link, so an old run reading that path may see current bytes. Existing links already expose mutable source bytes; this is not an active prompt/context refresh or snapshot-isolation promise. AR-001 concerns successful preparation of the new run.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Fail**.
-- Material-Premise Gate: **Pass** — AR-001 has supported, independently initiated MP-001; MP-002 drives no machinery.
-- Notes: ARCH-REV-001 / SR-007; one open blocking finding AR-001. Requirements remain Approved SR-006; Large/High preserved. No implementation handoff.
+- Review Decision: **Pass**.
+- Material-Premise Gate: **Pass** — DS-008 addresses independently supported MP-001; MP-002 drives no machinery.
+- Notes: **ARCH-REV-002 / SR-008**; AR-001 resolved, no open findings. Requirements remain Approved SR-006; Large/High preserved. No executable tests or implementation performed by this review.
