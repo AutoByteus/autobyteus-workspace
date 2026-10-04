@@ -1,0 +1,82 @@
+
+> autobyteus@1.4.94-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/task-voice-success-cleanup/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/projects/__tests__ composables/projects/__tests__/useProjectTaskDraft.spec.ts stores/__tests__/voiceInputStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/task-voice-success-cleanup/autobyteus-web
+
+stderr | components/projects/__tests__/ProjectTaskBoard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectVoiceStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/voiceInputStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/TaskDescriptionComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectsList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/projects/__tests__/ProjectsList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/voiceInputStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectVoiceStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/TaskDescriptionComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskBoard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/projects/__tests__/useProjectTaskDraft.spec.ts (5 tests) 11ms
+ ✓ components/projects/__tests__/ProjectVoiceStatus.spec.ts (7 tests) 19ms
+ ✓ components/projects/__tests__/TaskDescriptionComposer.spec.ts (1 test) 15ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts (21 tests) 129ms
+ ✓ components/projects/__tests__/ProjectsList.spec.ts (6 tests) 53ms
+ ✓ components/projects/__tests__/ProjectEditor.spec.ts (9 tests) 122ms
+ ✓ components/projects/__tests__/ProjectTaskBoard.spec.ts (8 tests) 135ms
+ ✓ components/projects/__tests__/ProjectDetail.spec.ts (13 tests) 97ms
+
+ Test Files  8 passed (8)
+      Tests  70 passed (70)
+   Start at  08:18:17
+   Duration  6.50s (transform 3.90s, setup 41.56s, collect 2.28s, tests 580ms, environment 1.78s, prepare 1.39s)
+

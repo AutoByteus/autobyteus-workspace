@@ -54,7 +54,6 @@ const projectMessages = {
   'projects.ui.voiceRecording': '正在录音…完成后点击停止。',
   'projects.ui.voiceTranscribing': '正在转录语音输入…',
   'projects.ui.cancelRecording': '取消录音',
-  'projects.ui.voiceReady': '已添加转录文字。保存前可检查或编辑。',
   'projects.ui.voiceNoSpeech': '未检测到语音。请重试或直接输入描述。',
   'projects.ui.voiceFailed': '语音转录失败。描述未改变。请重试或直接输入。',
   'projects.ui.inputPolicy': '文件随任务保存在所选节点。语音输入需要可选的桌面扩展。',

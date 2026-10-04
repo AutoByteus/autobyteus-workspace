@@ -1,0 +1,38 @@
+<template>
+  <div>
+    <div class="p-3 flex gap-3"><button @click="edit = !edit">Toggle create/edit</button><button @click="fail">Simulate no speech</button></div>
+    <ProjectEditor :key="String(edit)" :project-id="edit ? 'preview' : undefined" />
+    <div class="p-6 max-w-3xl"><h2>Task description</h2><TaskDescriptionComposer v-model="text" :files="[]" :client="{} as any" :target="target" placeholder="Describe task" /></div>
+  </div>
+</template>
+<script setup lang="ts">
+import { ref } from 'vue'
+import ProjectEditor from '~/components/projects/ProjectEditor.vue'
+import TaskDescriptionComposer from '~/components/projects/TaskDescriptionComposer.vue'
+import { useVoiceInputStore } from '~/stores/voiceInputStore'
+import { useProjectStore } from '~/stores/projectStore'
+import { useWorkspaceStore } from '~/stores/workspace'
+definePageMeta({layout: false})
+const edit = ref(false), text = ref('Existing task')
+const projects = useProjectStore(), workspaces = useWorkspaceStore(), voice = useVoiceInputStore()
+projects.fetchProject = async () => null
+projects.projects = [{projectId: 'preview', name: 'Example project', description: 'Existing description', workspaces: []}] as any
+workspaces.fetchAllWorkspaces = async () => {}
+voice.initialize = async () => {}
+Object.defineProperty(voice, 'isAvailable', {get: () => true})
+voice.toggleRecording = async (request) => {
+  if (voice.isRecording) {
+    voice.transcriptTarget?.appendTranscript('dictated text')
+    voice.latestResult = {outcome: 'transcript-ready'} as any
+    voice.isRecording = false
+    voice.transcriptTarget = null
+  } else {
+    voice.transcriptTarget = request.target
+    voice.isRecording = true
+    voice.latestResult = {outcome: 'recording'} as any
+  }
+}
+voice.cancelOperationForTarget = async (key) => {if (voice.transcriptTarget?.key === key) {voice.isRecording = false; voice.transcriptTarget = null}}
+const target = {key: 'task-preview', isCurrent: () => true, appendTranscript: (v: string) => {text.value += ' ' + v}}
+const fail = () => {voice.latestResult = {outcome: 'no-speech'} as any; voice.isRecording = false; voice.transcriptTarget = null}
+</script>

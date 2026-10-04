@@ -22,11 +22,11 @@ import { computed, onMounted, onUnmounted, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useVoiceInputStore } from '~/stores/voiceInputStore';
-import type { VoiceTranscriptTarget } from '~/types/voiceInput';
+import type { VoiceTranscriptTarget, VoiceInputRecordingSource } from '~/types/voiceInput';
 
 const props = defineProps<{
   target: VoiceTranscriptTarget | null;
-  source?: 'composer' | 'project-task';
+  source?: Exclude<VoiceInputRecordingSource, 'settings-test'>;
   disabled?: boolean;
   large?: boolean;
   /** 32px circle (Chat footer) instead of the run-view 36px button. */
