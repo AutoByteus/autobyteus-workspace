@@ -126,6 +126,19 @@ Rules:
 - The focused member sees sent/received message perspectives in the Team tab.
   The left list hierarchy is `Sent` / `Received` -> counterpart address label ->
   message -> reference file, without repeated `To` / `From` group prefixes.
+- Reference rows are bounded. Every message with references shows a paperclip
+  file count (`reference_count_label`, formatted with the app locale), but only
+  the selected message lists its reference rows: the first 20
+  (`REFERENCE_PREVIEW_LIMIT` in `CollaborationMessagesPanel.vue`), then a
+  `Show all N files` control (`show_all_references`). The expanded state resets
+  when the selected message, focused member, or root changes, and survives
+  live updates to the same selected message. Agents can re-attach cumulative
+  file lists (thousands of references per message), so rendering every
+  reference for every message made member switches take seconds.
+- The Messages section computes the message rows once per view
+  (`CollaborationMessagesSection` passes the required `rows` prop to
+  `CollaborationMessagesPanel`); the panel does not call `listMessages()`
+  itself.
 - Team Communication rows are compact, email-like rows. The row shell is a
   non-interactive container; message summaries and reference-file rows are
   sibling buttons so reference controls are never nested inside a message
@@ -179,7 +192,8 @@ flowchart LR
 | Mobile focused-run identity | `autobyteus-web/composables/mobile/useMobileFocusedRunIdentity.ts` | Centralizes the mobile agent/team focused run-id guard shared by Activity and Artifacts so stale mobile selections do not leak artifacts or activity from another run. |
 | Team Communication store | `autobyteus-web/stores/teamCommunicationStore.ts` | Owns hydrated/live inter-agent messages and focused sent/received message perspectives. |
 | Team Communication hydration | `autobyteus-web/services/runHydration/teamCommunicationHydrationService.ts` | Loads `getTeamCommunicationMessages(teamRunId)`. |
-| Team Communication panel | `autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue` | Renders compact sent/received message rows, sibling reference-file controls, and Markdown message detail. |
+| Collaboration Messages section | `autobyteus-web/components/workspace/collaboration/CollaborationMessagesSection.vue` | Computes the focused member's message rows once per view and passes them to the panel. Shared by Team, AgentOrg, and standalone Messages. |
+| Collaboration Messages panel | `autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue` | Renders compact sent/received message rows with a reference count, the bounded reference list (first 20 + Show all) under the selected message only, and Markdown message detail. |
 | Team reference viewer | `autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue` | Opens a reference through the message-owned content route and owns local inline/maximized preview state. |
 | Mobile Team messages | `autobyteus-web/components/mobile/MobileTeamMessages.vue` | Renders the focused member's Team Communication messages in the mobile shell and exposes each structured reference file as a tappable phone row. |
 | Mobile Team reference wrapper | `autobyteus-web/components/mobile/MobileTeamReferenceViewer.vue` | Wraps `TeamCommunicationReferenceViewer` in a full-screen mobile surface, passes message-owned identity through, and disables rich HTML preview for mobile. |
