@@ -1,0 +1,20 @@
+diff --git a/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts b/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+index 285a03cea..1b95899ba 100644
+--- a/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
++++ b/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+@@ -318,12 +318,13 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+       teamScopes: this.options.teams.freezeForRootTermination(),
+     });
+     const fenced = await this.frozenTerminationScope.fenceAgentRunsForRootShutdown();
+-    if (!fenced.accepted) return fenced;
++    if (!fenced.accepted) { console.log("[TMP-O01] fence not accepted", this.orgRunId, JSON.stringify(fenced)); return fenced; } // TMP-O01
++
+     // Live children are terminated by the frozen scope; shut-down children own no runtime.
+     await this.taskExecutions.drain();
+     await this.options.persistence.drain();
+     const local = await this.frozenTerminationScope.finish();
+-    if (!local.accepted) errors.push(local.message ?? local.code ?? "AgentOrg local termination failed");
++    if (!local.accepted) { console.log("[TMP-O01] finish not accepted", this.orgRunId, JSON.stringify(local)); errors.push(local.message ?? local.code ?? "AgentOrg local termination failed"); } // TMP-O01
+     this.lifecycle = "terminated";
+     this.options.publisher.publish({ kind: "lifecycle", isActive: false });
+     this.options.publisher.clear();

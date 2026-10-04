@@ -1,0 +1,36 @@
+{
+ "rolled": {
+  "runId": "general_agent_9c7e1362169f406eb2ef6b7a3d6f0fc6",
+  "totalTokens": 445320,
+  "grossInputTokens": 434097,
+  "outputTokens": 11223,
+  "latestPromptTokens": 28902,
+  "effectiveContextWindowTokens": 200000,
+  "latestModelIdentifier": "claude-haiku-4-5",
+  "estimatedApiInputCost": null
+ },
+ "exact": [
+  {
+   "runId": "general_agent_9c7e1362169f406eb2ef6b7a3d6f0fc6",
+   "totalTokens": 256514,
+   "grossInputTokens": 250780,
+   "outputTokens": 5734,
+   "latestPromptTokens": 28902,
+   "effectiveContextWindowTokens": 200000,
+   "latestModelIdentifier": "claude-haiku-4-5",
+   "estimatedApiInputCost": null
+  },
+  {
+   "runId": "echo_helper_b7ea_166c56322a73408695b119648ac6b7a5",
+   "totalTokens": 188806,
+   "grossInputTokens": 183317,
+   "outputTokens": 5489,
+   "latestPromptTokens": 24058,
+   "effectiveContextWindowTokens": 200000,
+   "latestModelIdentifier": "claude-haiku-4-5",
+   "estimatedApiInputCost": null
+  }
+ ],
+ "sumOfExact": 445320,
+ "equal": true
+}

@@ -1,0 +1,81 @@
+{
+ "data": {
+  "agentRunCollaborationMemberEventMonitorActiveTracePage": {
+   "beforeCursor": null,
+   "hasEarlier": false,
+   "loadedEarlierCount": 0,
+   "activeGeneration": "7000da19b7667d2caa06af2fe6ddc24596e60543c4c0e4547182a6a6bff1425b",
+   "cursorStatus": "VALID",
+   "events": [
+    {
+     "eventId": "raw:v1:53:rt_1791113867024_15d77543-4ed9-4cba-8fbb-6d0a7c75dbaa",
+     "turnGroupId": "turn:v1:87:pg_lead_d438_af6c48256f2340afbd46cca8cc331cb3:turn:b3afbd46-2923-4e8a-9cca-92bb82556bde",
+     "occurredAtMs": 1791113867023,
+     "visuals": [
+      {
+       "kind": "inter_agent",
+       "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTM4NjcwMjRfMTVkNzc1NDMtNGVkOS00Y2JhLThmYmItNmQwYTdjNzVkYmFh:inter-agent:0",
+       "eventId": "raw:v1:53:rt_1791113867024_15d77543-4ed9-4cba-8fbb-6d0a7c75dbaa",
+       "kindOrdinal": 0,
+       "senderAgentRunId": "general_agent_2312995e919c4176b3979f3960acce32",
+       "senderAddress": "/general_agent",
+       "text": "You received a message from sender name: general_agent, sender address: /general_agent, sender id: general_agent_2312995e919c4176b3979f3960acce32\nmessage:\nHELLO-TEAM",
+       "attachments": []
+      }
+     ]
+    },
+    {
+     "eventId": "tool:v1:87:pg_lead_d438_af6c48256f2340afbd46cca8cc331cb3:turn:b3afbd46-2923-4e8a-9cca-92bb82556bde:30:toolu_018rZu34pjki5Em7k5ebv3Gt",
+     "turnGroupId": "turn:v1:87:pg_lead_d438_af6c48256f2340afbd46cca8cc331cb3:turn:b3afbd46-2923-4e8a-9cca-92bb82556bde",
+     "occurredAtMs": 1791113870940,
+     "visuals": [
+      {
+       "kind": "tool_card",
+       "visualId": "active-trace-visual:v1:dG9vbDp2MTo4NzpwZ19sZWFkX2Q0MzhfYWY2YzQ4MjU2ZjIzNDBhZmJkNDZjY2E4Y2MzMzFjYjM6dHVybjpiM2FmYmQ0Ni0yOTIzLTRlOGEtOWNjYS05MmJiODI1NTZiZGU6MzA6dG9vbHVfMDE4clp1MzRwamtpNUVtN2s1ZWJ2M0d0:tool-card:0",
+       "eventId": "tool:v1:87:pg_lead_d438_af6c48256f2340afbd46cca8cc331cb3:turn:b3afbd46-2923-4e8a-9cca-92bb82556bde:30:toolu_018rZu34pjki5Em7k5ebv3Gt",
+       "kindOrdinal": 0,
+       "invocationId": "toolu_018rZu34pjki5Em7k5ebv3Gt",
+       "cardKind": "tool_call",
+       "toolName": "send_message_to",
+       "statusKey": "success",
+       "errorMessage": null,
+       "summaryArgs": {
+        "path": null,
+        "file_path": null,
+        "filepath": null,
+        "filename": null,
+        "target_path": null,
+        "command": null,
+        "cmd": null,
+        "script": null,
+        "query": null,
+        "prompt": null,
+        "url": null,
+        "message": null,
+        "text": null,
+        "title": null,
+        "name": null,
+        "raw": null
+       },
+       "approvalTarget": null
+      }
+     ]
+    },
+    {
+     "eventId": "raw:v1:53:rt_1791113872000_6f6ce383-f71f-4dfc-acf2-3dcdacdaf002",
+     "turnGroupId": "turn:v1:87:pg_lead_d438_af6c48256f2340afbd46cca8cc331cb3:turn:b3afbd46-2923-4e8a-9cca-92bb82556bde",
+     "occurredAtMs": 1791113872000,
+     "visuals": [
+      {
+       "kind": "assistant_text",
+       "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTM4NzIwMDBfNmY2Y2UzODMtZjcxZi00ZGZjLWFjZjItM2RjZGFjZGFmMDAy:assistant-text:0",
+       "eventId": "raw:v1:53:rt_1791113872000_6f6ce383-f71f-4dfc-acf2-3dcdacdaf002",
+       "kindOrdinal": 0,
+       "content": "Message delivered to the team."
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
