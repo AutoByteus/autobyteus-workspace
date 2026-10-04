@@ -7,7 +7,6 @@ remain authoritative; no earlier delivery result inferred.
 | Revision | Entry point | Prior result | Current result | Canonical artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API-REV-001 direct Pass initial baseline | N/A | Integrated checks/docs Pass; explicit user verification hold; NOT Delivery Completed | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, release-notes.md, delivery-evidence/ |
-
 | DR-002 | UV-001 acceptance and no-release instruction | DR-001 verification hold | Delivery Completed — accepted, archive/finalization/cleanup complete; release Not required | handoff-summary.md, release-deployment-report.md, docs-sync-report.md, delivery-evidence/ |
 
 ## DR-001 — Integrated Projects navigation delivery preparation

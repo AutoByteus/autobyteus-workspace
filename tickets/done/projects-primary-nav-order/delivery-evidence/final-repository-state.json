@@ -1,0 +1,17 @@
+{
+  "package": "projects-primary-nav-order",
+  "result": "Delivery Completed",
+  "revision": "DR-002",
+  "ticket_remote_commit": "7dba097dea553418216487f2d89d82bbd9245b02",
+  "personal_application_merge": "e340f0cd2f8e4214154174eb4c540ac4b7aeeae1",
+  "personal_completion_receipt_commit": "82f246a5660b38a9fbed253051d92ad51dfd852d",
+  "personal_completion_receipt_push": "Confirmed \u2014 local HEAD == ls-remote origin personal",
+  "final_successor_note": "This receipt plus revision-table formatting is a docs-only successor commit; exact terminal HEAD supplied by confirmed terminal tool message. No production changes.",
+  "ticket_worktree_absent": true,
+  "local_ticket_branch_absent": true,
+  "unrelated_shared_files_unchanged": true,
+  "user_acceptance": "UV-001 user finalization/no-release instruction",
+  "release_version_tag_deployment": "Not required \u2014 no release/version created",
+  "version": "1.4.94-beta.1",
+  "complete_final_package": "cumulative-package.json"
+}
