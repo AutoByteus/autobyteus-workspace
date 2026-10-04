@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `/architecture_reviewer`, `design-review-report.md`, ARCH-REV-003 (round 3, Pass) | N/A | `Initial Baseline` | SR-005 (requirements SR-002); ARCH-REV-003; CRR N/A; API-REV N/A; DR N/A | Implementation complete for REQ-001–REQ-010; ready for code review |
 | IR-002 | `/code_reviewer`, `code-review-report.md`, CRR-001 (round 1, Fail) | CR-001 | `Local Fix` | SR-005; ARCH-REV-003; CRR-001; API-REV N/A; DR N/A | Child commands no longer restart a crashed host; back to code review |
+| IR-003 | `/code_reviewer`, `code-review-report.md`, CRR-003 (round 3, failure-origin review of API/E2E F-01) | CR-002 (API/E2E F-01, AE-10) | `Local Fix` | SR-005; ARCH-REV-003; CRR-003; API-REV-001; DR N/A | Standalone children's earlier-events pages use the member query; back to code review |
 
 ## Revision Entries
 
@@ -89,3 +90,47 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - Server tsc is clean.
 - Next recipient or routing: `get_handoff_rules`, Large/High Local Fix → `/code_reviewer`.
 - Remaining limitations or risks: unchanged from IR-001, except that the CR-001 host-crash child-command path is now covered by a unit test. It was not re-checked live.
+
+### IR-003 — Standalone children read earlier events from the host package (CR-002)
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` § "API/E2E Failure-Origin Review (Round 3, F-01)", CRR-003.
+  - It originates from API/E2E F-01 (AE-10, AC-007; API-REV-001).
+- Triggering finding IDs: CR-002 (API/E2E F-01).
+- Classification: `Local Fix` (implementation defect; no server change).
+- Prior authoritative result: IR-002. `agentRunCollaborationStore.childTargetFor` gave standalone children `browse: { kind: 'run', runId: childRunId }`, so the "earlier events" page called `getRunEventMonitorActiveTracePage(childRunId)`.
+  - The server rejects that ("Run package 'agent:<child>' is unavailable"), because a child is not a top-level run package.
+  - The page never loaded, and Retry repeated the failure.
+  - The defect predates this branch but was hidden behind the documented limit that IR-001 removed.
+- Current authoritative result: a `standaloneMember` browse subject (`hostRunId`, `memberAddress`, `agentRunId`) calls the existing server query `agentRunCollaborationMemberEventMonitorActiveTracePage`.
+  - Standalone task Agents, collaborators and collaborator-Team members use it.
+  - The host keeps `{ kind: 'run' }` (from `activeContextStore`).
+- Related solution revision IDs: SR-005.
+- Related architecture-review revision IDs: ARCH-REV-003.
+- Related code-review revision IDs: CRR-003.
+- Related API/E2E revision IDs: API-REV-001.
+- Related delivery revision IDs: N/A.
+- Why recorded: the reviewer's Local Fix for an AC-007 failure found by API/E2E.
+- Approved behavior or requirement IDs affected: REQ-007, AC-007, BEH-008, D-R6.
+- Implementation delta:
+  - New query `GetAgentRunCollaborationMemberEventMonitorActiveTracePage` (`graphql/queries/runHistoryQueries.ts`); `generated/graphql.ts` regenerated against the live server, additive only.
+  - `eventMonitorActiveTracePageService.ts`: adds the `standaloneMember` subject. The four subjects are routed by one exhaustive switch through a shared query helper. Variables and error handling are unchanged for the existing subjects.
+  - `eventMonitorActiveTraceBrowse.ts`: exhaustive `subjectKey`, with an `agent:<host>:member:<address>:run:<id>` key.
+  - `stores/agentRunCollaborationStore.ts#childTargetFor`: uses the new subject.
+- Changed files or areas:
+  - `autobyteus-web/graphql/queries/runHistoryQueries.ts`
+  - `autobyteus-web/generated/graphql.ts`
+  - `autobyteus-web/services/eventMonitor/eventMonitorActiveTracePageService.ts`
+  - `autobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowse.ts`
+  - `autobyteus-web/stores/agentRunCollaborationStore.ts`
+  - Tests: `stores/__tests__/agentRunCollaborationStore.spec.ts`, `services/eventMonitor/__tests__/eventMonitorActiveTracePageService.spec.ts` (new), `components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts`.
+  - Commit `782ec9f11`.
+- Local validation and result:
+  - Store test: both a task-Team member (`/product_team/prototyper`) and a collaborator Agent (`/computer_use_agent`) get the `standaloneMember` subject. It fails against the IR-002 wiring and passes now.
+  - Service test: the `standaloneMember` subject calls the member query with the exact variables; the run, Team-member and Org-member subjects keep their queries and variables; GraphQL errors surface.
+  - Row test: an `inter_agent` page visual for a standalone child renders "From General Agent:" with the delivery body and no raw header.
+  - Focused web specs: 64/64.
+  - Full web suite: 3708 passed. The 45 failures are the same set as the clean base (0 new).
+  - Web `tsc`: the 636 errors are identical to the base apart from absolute paths.
+  - The codegen run validated the new document against the live schema.
+- Next recipient or routing: `get_handoff_rules`, Large/High Local Fix → `/code_reviewer`. API/E2E then reruns AE-10.
+- Remaining limitations or risks: the live "earlier events" page of a standalone child was not re-driven in the UI here, because it needs a long trace. API/E2E's AE-10 rerun covers it.

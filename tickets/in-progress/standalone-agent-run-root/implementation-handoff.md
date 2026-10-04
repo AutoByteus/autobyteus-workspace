@@ -19,13 +19,13 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002, Local Fix for CRR-001 / CR-001; IR-001 was the initial baseline).
+- Implementation cycle: `Rework` (IR-003, Local Fix for CRR-003 / CR-002, from API/E2E F-01). Earlier rounds: IR-002 (CR-001), IR-001 (initial baseline).
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`.
+- Current implementation revision ID: `IR-003`.
 - Related solution revision IDs: SR-005 (requirements SR-002).
 - Related architecture-review revision IDs: ARCH-REV-003 (ARCH-REV-002 for the SR-004 substance).
-- Related code-review revision IDs: CRR-001. API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: CR-001.
+- Related code-review revision IDs: CRR-001, CRR-002 (Pass), CRR-003. API/E2E revision IDs: API-REV-001. Delivery revision IDs: N/A.
+- Triggering finding IDs: CR-002 (API/E2E F-01). CR-001 was resolved in IR-002.
 - Code review status: CRR-002 Pass (CR-001 resolved by IR-002, score 9.3/10; `code-review-report.md`). The reviewer routed the package to `/api_e2e_engineer`.
 - Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`, branch `codex/standalone-agent-run-root`.
   - Base: `b37d7a934`.
@@ -35,6 +35,7 @@
     - `bccb1c095`: the IR-001 implementation;
     - `7ef6f828a`: IR-001 handoff artifacts;
     - `c0e8ce7fd`: the IR-002 fix for CR-001;
+    - `782ec9f11`: the IR-003 fix for CR-002;
     - plus a commit with the updated artifacts.
 - What the code now does:
   - Every collaboration-eligible standalone run is owned by one `StandaloneAgentRunRoot`. A root-owned host handle makes the host ready on every root path, so host crash recovery is uniform. `StandaloneAgentRunRootManager` replaces the old root manager, binding, statics and wake path.
@@ -69,7 +70,7 @@
 | BEH-005 Self-delegation (REQ-004) | `COLLABORATION_SELF_TARGET_REJECTED` | `StandaloneRootMessageDelivery.delegateTask` | Done (checkpoint) |
 | BEH-006 Delivery text (REQ-005) | `sender name: …, sender address: …, sender id: …` | `root-communication-runtime-builder.ts` (Org and standalone roots); `inter-agent-message-runtime-builders.ts` (Team runs, see Assumptions); `global-agent-run-message-runtime-builders.ts` (when the sender has a member context); web `utils/collaboration/interAgentDelivery.ts` accepts both forms; released header frozen in the Org first-message summary migration | Done. Live: both directions carried the address; the web rendered "From Kid Story Teller:" |
 | BEH-007 Token totals (REQ-006) | A standalone total includes collaborators, collaborator-Team members and copies, each record once; existing runs too | `token-usage/services/standalone-run-token-usage-summary-service.ts` → `TokenUsageRunStore.getStandaloneRunSummary` → `SqlTokenUsageRunRepository.listByRunIds` → `buildStandaloneRunTokenUsageSummaryFromRecords`; GraphQL `getStandaloneRunTokenUsageSummary`; web `tokenUsageMeterStore` (`standaloneRunSummaries`) and `useTokenUsageWorkspaceScope` | Done. See Assumptions on the host-owned context fields and refresh |
-| BEH-008 Earlier events (REQ-007) | The page shows "From <Sender>:" | Server `event-monitor-active-trace-page-projection.ts` (`inter_agent` visual from a user trace with `senderId`, plus `resolveActiveTracePageSenderAddresses` in the Team, Org and standalone member page services); GraphQL `EventMonitorInterAgentVisual`; web `eventMonitorActiveTraceBrowsePresentation.ts` and `EventMonitorBrowseAssistantRow.vue` (`InterAgentMessageSegment`) | Done (unit level; see Frontend check) |
+| BEH-008 Earlier events (REQ-007) | The page shows "From <Sender>:" | Server `event-monitor-active-trace-page-projection.ts` (`inter_agent` visual from a user trace with `senderId`, plus `resolveActiveTracePageSenderAddresses` in the Team, Org and standalone member page services); GraphQL `EventMonitorInterAgentVisual`; web `eventMonitorActiveTraceBrowsePresentation.ts` and `EventMonitorBrowseAssistantRow.vue` (`InterAgentMessageSegment`). Standalone children's pages use the `standaloneMember` subject → `agentRunCollaborationMemberEventMonitorActiveTracePage` (IR-003, CR-002) | Done (unit level). API/E2E F-01 (child page used the run query) fixed in IR-003 |
 | BEH-009 Host label (REQ-008) | "Research Assistant" in a collaborator's Team tab | `services/agentCollaboration/agentRunCollaborationContext.ts#identityOf` (host → `memberTitleName`) | Done. Live: "from/to General Agent" in the collaborator's Team tab |
 | BEH-010 Preserved (AC-010) | No other visible change | All of the above | Predecessor unit and integration suites (standalone root, Agent-root fixtures, Team, Org) pass; full unit/integration comparison shows no new or changed failures. The predecessor runtime E2E suites are opt-in live-provider suites and skip locally (see the last section) |
 | REQ-003 File size | Each file ≤400 lines | `standalone-agent-run-root.ts` 399 lines (376 effective); `standalone-agent-run-lifecycle-service.ts` 347; `agent-org-run.ts` 392 | Done |
@@ -93,6 +94,13 @@
   - No Design Impact.
 
 ## Key Files Or Areas
+
+- **IR-003 (CR-002).**
+  - `autobyteus-web/stores/agentRunCollaborationStore.ts#childTargetFor`: standalone children use the `standaloneMember` browse subject.
+  - `services/eventMonitor/eventMonitorActiveTracePageService.ts`: new subject, exhaustive switch.
+  - `services/eventMonitor/eventMonitorActiveTraceBrowse.ts`: subject key.
+  - `graphql/queries/runHistoryQueries.ts`: `GetAgentRunCollaborationMemberEventMonitorActiveTracePage`.
+  - `generated/graphql.ts`: regenerated.
 
 - **IR-002 (CR-001).**
   - `autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-stream-handler.ts`: child commands use the active root without host readiness; `connect` is unchanged.
