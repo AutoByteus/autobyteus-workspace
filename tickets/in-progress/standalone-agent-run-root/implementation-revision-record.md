@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-001 | `/architecture_reviewer`, `design-review-report.md`, ARCH-REV-003 (round 3, Pass) | N/A | `Initial Baseline` | SR-005 (requirements SR-002); ARCH-REV-003; CRR N/A; API-REV N/A; DR N/A | Implementation complete for REQ-001–REQ-010; ready for code review |
 | IR-002 | `/code_reviewer`, `code-review-report.md`, CRR-001 (round 1, Fail) | CR-001 | `Local Fix` | SR-005; ARCH-REV-003; CRR-001; API-REV N/A; DR N/A | Child commands no longer restart a crashed host; back to code review |
 | IR-003 | `/code_reviewer`, `code-review-report.md`, CRR-003 (round 3, failure-origin review of API/E2E F-01) | CR-002 (API/E2E F-01, AE-10) | `Local Fix` | SR-005; ARCH-REV-003; CRR-003; API-REV-001; DR N/A | Standalone children's earlier-events pages use the member query; back to code review |
+| IR-004 | `/architecture_reviewer`, `design-review-report.md`, ARCH-REV-004 (round 4, Pass on SR-006, from CRR-005 / API/E2E F-02) | F-02 (no source finding) | `Design Impact` (implemented SR-006 § 11) | SR-006; ARCH-REV-004; CRR-005; API-REV-002; DR N/A | Root shutdown fence waits for quiescence after a rejected interrupt and retries per attempt; to code review |
 
 ## Revision Entries
 
@@ -134,3 +135,62 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - The codegen run validated the new document against the live schema.
 - Next recipient or routing: `get_handoff_rules`, Large/High Local Fix → `/code_reviewer`. API/E2E then reruns AE-10.
 - Remaining limitations or risks: the live "earlier events" page of a standalone child was not re-driven in the UI here, because it needs a long trace. API/E2E's AE-10 rerun covers it.
+
+### IR-004 — Root shutdown fence: rejected interrupt awaits quiescence; per-attempt retry (SR-006 § 11)
+
+- Triggering role, report path, and round: `/architecture_reviewer`, `design-review-report.md`, ARCH-REV-004 (round 4, Pass on SR-006).
+  - Chain: API/E2E F-02 (API-REV-002, `api-e2e-evidence/r2-o01-diag-le-o1-codex-4.log`) → CRR-005 failure-origin review (Design Impact) → SR-006 design § 11.
+- Triggering finding IDs: F-02 (no source finding).
+- Classification: `Design Impact`, resolved upstream by SR-006; this round implements it.
+- Prior authoritative result: IR-003. `AgentRunRootShutdownFence` was a single, irreversible latch per AgentRun.
+  - A rejected interrupt (for example Codex "no active turn" while the turn was finishing) settled the fence not-accepted at once, unless the run was already quiescent.
+  - The latch kept that result for the run's lifetime, so a second Stop could never reach the AgentRun, and a busy Org root on Codex could not be stopped.
+- Current authoritative result: rules F-1 to F-4 of design § 11.
+- Related solution revision IDs: SR-006 (requirements SR-002 unchanged).
+- Related architecture-review revision IDs: ARCH-REV-004 (non-blocking N-1, N-2).
+- Related code-review revision IDs: CRR-005.
+- Related API/E2E revision IDs: API-REV-002.
+- Related delivery revision IDs: N/A.
+- Why recorded: AC-001 (live gate) and AC-010 (preserved Stop) cannot pass reliably without it.
+- Approved behavior or requirement IDs affected: AC-001, AC-010; BEH-003 (Stop / delete / archive / shutdown) for Team, Org and standalone roots through the existing chain.
+- Implementation delta:
+  - `agent-execution/domain/agent-run-root-shutdown-fence.ts` is now one attempt (`pending → accepted | ended`).
+    - **F-1:** a rejected interrupt keeps the attempt open while the run is not quiescent. Every later `evaluate()` settles `{ accepted: true }` on quiescence. No second interrupt within the attempt. No error-text parsing; quiescence (`isRootShutdownQuiescent`, unchanged) is the only success signal.
+    - **F-2:** `ROOT_SHUTDOWN_REJECTED_INTERRUPT_QUIESCENCE_TIMEOUT_MS = 5000`, injectable through the constructor options (`quiescenceTimeoutMs`, `timers`, `warn`). At expiry it evaluates once more: accepted if quiescent, otherwise the original rejected result. The timer is cleared on every settle and fail path and is `unref`'d.
+    - **F-4:** warns at rejection and again at expiry, with the run ID, the local `activeTurn` (kind and turn ID), `hasPendingCommand`, and the interrupt code and message. The format lives in the fence; `AgentRun` supplies the state.
+  - `agent-execution/domain/agent-run.ts` changes only attempt selection and diagnostics (F-3):
+    - the fence field is `AgentRunRootShutdownFence | null`;
+    - inside the serialized dispatch-queue step of `fenceInputAndInterruptForRootShutdown()`, the current attempt is reused while pending or accepted, and replaced when it ended not-accepted or failed;
+    - concurrent callers share the pending attempt;
+    - input admission stays fenced across attempts;
+    - `createRootShutdownFence()` supplies the snapshot, interrupt and diagnostics callbacks.
+  - Unchanged: `isRootShutdownQuiescent`, input admission, every runtime backend, and root-specific code.
+  - `agent-run.ts` is 498 effective lines (was 490).
+- Changed files or areas:
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-run-root-shutdown-fence.ts`
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`
+  - Tests: `tests/unit/agent-execution/agent-run-root-shutdown-fence.test.ts` (new); `tests/unit/agent-execution/agent-run.test.ts` (new describe block appended; existing tests untouched); `tests/unit/agent-org-execution/agent-org-run-termination.test.ts` (one new case).
+  - Commit `eccea069b`.
+- Local validation and result:
+  - **Fence unit tests (7):**
+    - F-1: a rejected interrupt while the turn is still active waits, with no second interrupt, and settles accepted on quiescence with the timer cleared;
+    - F-2: the bound settles the original rejected result and the timer is gone;
+    - N-2: quiescent at expiry without any dispatch settles accepted;
+    - F-4: the exact warn text at rejection and at expiry, with the turn change visible;
+    - an already-quiescent rejection settles accepted with no wait;
+    - F-3: acceptance is latched; a throwing interrupt fails only its attempt;
+    - the default timer is unref'd.
+  - **AgentRun tests (4):**
+    - a turn completes after a rejected interrupt → accepted, one interrupt;
+    - with fake timers, a failed attempt at 5000 ms keeps input fenced, and the next call starts a new attempt that succeeds;
+    - concurrent callers share one attempt, and acceptance stays latched;
+    - an interrupt that throws fails only its attempt, and the next call interrupts again.
+  - **Org test:** a first Stop fails on a rejected interrupt of a finishing turn (real AgentRun behind the member handle, frozen scope); after the turn completes, a second Stop reaches the AgentRun again and succeeds.
+  - Three of the four AgentRun tests and the Org test fail against the IR-003 fence; the concurrency test passes on both (preserved behavior).
+  - The required unchanged suites pass unchanged: `agent-run.test.ts` (including 779-903), `agent-run-compaction-races`, `frozen-root-termination-scope`, `configured-agent-execution-handle`, `agent-org-run-termination`, `root-team-run-termination`. 79/79, together with the new tests.
+  - **Full server unit/integration/architecture suites:** 4597 passed. The 147 failures are identical by name and message to the clean base, with none new compared with the previous branch run.
+  - Server tsc is clean.
+- Next recipient or routing: `get_handoff_rules`, Large/High → `/code_reviewer`. Then API/E2E runs the N-1 live validation: LE-O1 on Codex at least 10 consecutive passes, plus the AC-001 suites on Claude and Codex.
+- Remaining limitations or risks:
+  - No live run was done in this round.
+  - Per ARCH-REV-004 N-1: an EXPIRY warning that shows a local `IDENTIFIED` turn means stale state or a new turn (P-005/P-006). That must be escalated as a Design Impact, not answered by raising the bound or adding error-text recognition. `reconcileRuntimeSnapshot` does not clear a local `IDENTIFIED` turn.

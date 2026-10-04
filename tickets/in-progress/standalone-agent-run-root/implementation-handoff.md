@@ -19,14 +19,18 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-003, Local Fix for CRR-003 / CR-002, from API/E2E F-01). Earlier rounds: IR-002 (CR-001), IR-001 (initial baseline).
+- Implementation cycle: `Rework` (IR-004: SR-006 § 11 root shutdown fence, after CRR-005 / API/E2E F-02 Design Impact and ARCH-REV-004 Pass). Earlier rounds: IR-003 (CR-002), IR-002 (CR-001), IR-001 (initial baseline).
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/tickets/in-progress/standalone-agent-run-root/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`.
+- Current implementation revision ID: `IR-004`.
 - Related solution revision IDs: SR-005 (requirements SR-002).
 - Related architecture-review revision IDs: ARCH-REV-003 (ARCH-REV-002 for the SR-004 substance).
-- Related code-review revision IDs: CRR-001, CRR-002 (Pass), CRR-003. API/E2E revision IDs: API-REV-001. Delivery revision IDs: N/A.
-- Triggering finding IDs: CR-002 (API/E2E F-01). CR-001 was resolved in IR-002.
+- Related solution and architecture-review revisions for this round: SR-006, ARCH-REV-004.
+- Related code-review revision IDs: CRR-001, CRR-002 (Pass), CRR-003, CRR-004 (Pass), CRR-005.
+- Related API/E2E revision IDs: API-REV-001, API-REV-002.
+- Delivery revision IDs: N/A.
+- Triggering finding IDs: F-02 (API/E2E; CRR-005 Design Impact, resolved by SR-006). CR-002 was resolved in IR-003 and CR-001 in IR-002.
 - Code review status:
+  - IR-004 is pending code review.
   - CRR-004 Pass: CR-002 resolved by IR-003, score 9.3/10 (`code-review-report.md`). The reviewer routed the package to `/api_e2e_engineer` for the AE-10 rerun and the web suites.
   - Earlier: CRR-002 Pass (CR-001 resolved by IR-002).
 - Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`, branch `codex/standalone-agent-run-root`.
@@ -38,6 +42,7 @@
     - `7ef6f828a`: IR-001 handoff artifacts;
     - `c0e8ce7fd`: the IR-002 fix for CR-001;
     - `782ec9f11`: the IR-003 fix for CR-002;
+    - `eccea069b`: the IR-004 SR-006 root shutdown fence;
     - plus a commit with the updated artifacts.
 - What the code now does:
   - Every collaboration-eligible standalone run is owned by one `StandaloneAgentRunRoot`. A root-owned host handle makes the host ready on every root path, so host crash recovery is uniform. `StandaloneAgentRunRootManager` replaces the old root manager, binding, statics and wake path.
@@ -68,6 +73,7 @@
 | BEH-001 Standalone command (REQ-001) | One root owns the eligible run; the host is made ready in the root gate | `AgentRunCommandCoordinator` → `StandaloneRunCommandPort` (`StandaloneAgentRunRootManager.postUserMessage`) → `StandaloneAgentRunRoot.postHostUserMessage` [gate] → `StandaloneRootMessageDelivery.postToHost` → `StandaloneHostAgentHandle.ensureReady` → `StandaloneAgentRunLifecycleService.activateHost` [lane] → `run.postUserMessage` | Done (checkpoint). Live: General Agent on Claude SDK and Codex; reopen after Stop restored the host |
 | BEH-002 Child → host (REQ-001) | Delivery to the host goes through `host.ensureReady`; no special wake. Child commands on the collaboration stream do not need the host (IR-002, CR-001) | `StandaloneRootMessageDelivery.deliverTo` (host branch); `AgentCollaborationStreamHandler.handleMessage` uses `manager.getActive ?? resolveRoot + ensureHostReady` | Done. Live: a collaborator `send_message_to` by sender address reached the host; after a killed Codex app-server, the next message restored the host |
 | BEH-003 Stop / delete / archive / shutdown | `stopRoot` (children, then host) / `endRoot` / `stopAll` | `AgentRunService.terminateAgentRun` → `StandaloneRunLifecyclePort.stopRoot`; `standalone-run-liveness.ts` → `manager.endRoot`; supervisor → `stopAll` | Done. Live: Stop, archive refused while active, archive and delete after Stop |
+| BEH-003a Root shutdown fence (SR-006 § 11; AC-001, AC-010) | A rejected interrupt is not a fence result; a bounded wait for quiescence; only acceptance is latched, and each Stop is a new attempt after a failure; F-4 diagnostics | `AgentRunRootShutdownFence` (one attempt) and `AgentRun.fenceInputAndInterruptForRootShutdown` (attempt selection), reached through `createFrozenRootTerminationScope` → `ConfiguredAgentExecutionHandle.fenceForRootShutdown` for Team, Org and standalone roots | Done (IR-004). Unit and Org tests; live LE-O1 on Codex is pending API/E2E (N-1) |
 | BEH-004 Team collaborator agent (REQ-002) | Collaborator Agents are held in a registry, not in configured-member structures | `agent-team-execution/local/registries/team-root-collaborator-agent-registry.ts`; `flat-team-execution-manager.ts` consults it; `FlatTeamMemberConfigResolver.addCollaborator` and `memberContexts.push` removed | Done (checkpoint) |
 | BEH-005 Self-delegation (REQ-004) | `COLLABORATION_SELF_TARGET_REJECTED` | `StandaloneRootMessageDelivery.delegateTask` | Done (checkpoint) |
 | BEH-006 Delivery text (REQ-005) | `sender name: …, sender address: …, sender id: …` | `root-communication-runtime-builder.ts` (Org and standalone roots); `inter-agent-message-runtime-builders.ts` (Team runs, see Assumptions); `global-agent-run-message-runtime-builders.ts` (when the sender has a member context); web `utils/collaboration/interAgentDelivery.ts` accepts both forms; released header frozen in the Org first-message summary migration | Done. Live: both directions carried the address; the web rendered "From Kid Story Teller:" |
@@ -96,6 +102,11 @@
   - No Design Impact.
 
 ## Key Files Or Areas
+
+- **IR-004 (SR-006 § 11).**
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-run-root-shutdown-fence.ts`: per-attempt fence (F-1, F-2, F-4).
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`: attempt selection (F-3) and the diagnostics callback.
+  - New and extended tests: `agent-run-root-shutdown-fence.test.ts`, `agent-run.test.ts` (an appended block), `agent-org-run-termination.test.ts`.
 
 - **IR-003 (CR-002).**
   - `autobyteus-web/stores/agentRunCollaborationStore.ts#childTargetFor`: standalone children use the `standaloneMember` browse subject.
@@ -163,6 +174,10 @@
   - With it, they fail exactly as on the base (`AgentCreationError … getCompactionRecovery is not a function`).
 
 ## Known Risks
+
+- **IR-004 live validation pending (ARCH-REV-004 N-1).**
+  - Needed: LE-O1 on Codex at least 10 consecutive passes, plus the AC-001 suites on Claude and Codex. Record any F-4 warning with its turn state.
+  - An EXPIRY warning showing a local `IDENTIFIED` turn means stale state or a new turn. Escalate it as a Design Impact; do not raise the bound or add error-text recognition.
 
 - **REQ-001 blast radius:** every eligible standalone run, including General Agent.
   - Mitigation: the predecessor unit and integration suites pass, the full-suite comparison is clean, and live checks on Claude SDK and Codex passed (chat, `@` bring-in, child ↔ host messages, Stop/reopen, host crash, archive/delete).
