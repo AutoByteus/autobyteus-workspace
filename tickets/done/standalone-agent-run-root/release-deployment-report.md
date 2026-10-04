@@ -94,3 +94,36 @@ The failure is a ticket regression, not a base-integration effect: the ticket re
 - Release/publication/deployment result: `Not required`
 - Release notes handoff result: `Not required` (`release-notes.md` is kept in the archived ticket for a later release)
 
+## Finalization Results
+
+- Ticket branch commit result: `Completed`, `0385996e3` (archive commit, on top of re-integration merge `3e8d4eeac`)
+- Ticket branch push result: `Completed`, `origin/codex/standalone-agent-run-root` → `0385996e3`
+- Target branch update result: `Completed`. `origin/personal` re-fetched just before the merge, still `852ea5327` and an ancestor of the ticket head.
+- Merge into target result: `Completed`, a fast-forward (the ticket branch already contained `origin/personal`). The shared superrepo checkout of `personal` holds unrelated uncommitted work, so it was not used. The merge was pushed as `codex/standalone-agent-run-root:personal`.
+- Push target branch result: `Completed`, `origin/personal` `852ea5327..0385996e3`
+- Repository finalization status: `Completed`
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`
+- Worktree cleanup result: `Completed`. `git worktree remove --force` was used because only untracked pnpm build output (`autobyteus-application-backend-sdk/dist/`, `autobyteus-application-sdk-contracts/dist/`) and ignored directories remained. All tracked work was pushed and merged first, and no process from the worktree was running (the API-REV-005 isolated app had already been stopped).
+- Clean-base worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root-cleanbase` (detached at `b37d7a934`): `Completed`, removed with `git worktree remove --force` (only untracked SDK `dist/`).
+- Worktree prune result: `Not required` (registrations removed by `worktree remove`).
+- Local ticket branch cleanup result: `Completed`, `git branch -d codex/standalone-agent-run-root` (was `0385996e3`). Git warned only because the shared checkout's local `personal` is stale; the commit is on `origin/personal`.
+- Remote branch cleanup result: `Not required`. The remote ticket branch is kept as provenance, consistent with prior deliveries.
+- Temporary finalization worktree `/tmp/finalize-standalone-agent-run-root`: removed after this record was pushed.
+- Blocker: none
+
+## Rollback Criteria
+
+- Revert the merge range `852ea5327..0385996e3` on `personal` if standalone runs with collaborators fail to start, restore or stop, or if Team/Org Stop regresses. No persisted-data migration was introduced. Existing standalone collaboration packages are read through the renamed persistence modules with the same on-disk layout (`memory/agents/<host>/collaboration/`).
+
+## Final Status
+
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (Not required)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this record is pushed (see `delivery-revision-record.md` DR-003)
