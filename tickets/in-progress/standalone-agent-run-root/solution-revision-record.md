@@ -109,3 +109,9 @@
 - Classification: unchanged, `Large` / `High` (shared, concurrency-critical owner).
 - Routing: Large/High revised package → `/architecture_reviewer`. After Pass: implementation, then code review, then
   API/E2E (LE-O1 on Codex ≥10 runs; AC-001 suites on Claude and Codex).
+- 2026-10-04 note (no new SR round): ARCH-REV-004 gave **Pass** on SR-006 (requirements basis SR-002); report
+  `design-review-report.md`, record `architecture-review-revision-record.md`. F-3 is confirmed consistent with the
+  retry contract above the fence; the 5000 ms bound applies only to the failure path; quiescence-only success holds on
+  every runtime. Factual correction per non-blocking N-1: the `design-spec.md` § Risks entry now says stale local state
+  is bounded and diagnosed, not handled, and that a live F-4 expiry with a local IDENTIFIED turn escalates as a Design
+  Impact. The reviewer delivered the implementation handoff to `/implementation_engineer`; not repeated here.

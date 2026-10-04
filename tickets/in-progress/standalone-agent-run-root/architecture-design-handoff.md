@@ -123,3 +123,4 @@
 - SR-005 delivered to /architecture_reviewer on 2026-10-04 (target run `architecture_reviewer_2e6d87408aa4462c992aae977449ef6a`).
 - ARCH-REV-003 Pass on SR-005 recorded 2026-10-04; implementation handoff delivered by the reviewer to /implementation_engineer.
 - SR-006 delivered to /architecture_reviewer on 2026-10-04 (target run `architecture_reviewer_2e6d87408aa4462c992aae977449ef6a`).
+- ARCH-REV-004 Pass on SR-006 recorded 2026-10-04 (N-1 wording corrected in design-spec § Risks); implementation handoff delivered by the reviewer to /implementation_engineer.

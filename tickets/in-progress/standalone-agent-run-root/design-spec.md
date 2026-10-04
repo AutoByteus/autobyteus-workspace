@@ -590,7 +590,10 @@ Unchanged.
     and F-4's diagnostics.
   - Risk: retrying after failure could re-interrupt a new turn. This is acceptable, because input stays fenced, so the
     only turn that can be active is one that was already in flight.
-  - Root cause not proven (race vs stale). Mitigation: F-1 and F-3 handle both, and F-4 records which one occurred.
+  - Root cause not proven (race vs stale). F-1 resolves the completion race. Stale local state is only **bounded and
+    diagnosed**, not resolved: `reconcileRuntimeSnapshot` keeps a local IDENTIFIED turn, so F-2 fails after the bound,
+    F-3 allows a retry, and F-4 records the state. A live F-4 expiry warning that shows a local IDENTIFIED turn is
+    escalated as a Design Impact (ARCH-REV-004 N-1).
 
 ## Guidance For Implementation
 - **AC-001 gate:** every predecessor standalone and Agent-root test passes **without behavior edits**. Only renames and
