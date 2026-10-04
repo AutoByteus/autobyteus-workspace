@@ -97,20 +97,6 @@ export class TeamRunExecutionTreeLocationService {
     return output;
   }
 
-  /** Project locations from an already validated root snapshot; no store or manager I/O. */
-  async containsRunId(runId: string): Promise<boolean> {
-    const normalized = runId.trim();
-    if (!normalized) throw new Error("runId is required.");
-    for (const rootTeamRunId of await this.listRootTeamRunIds()) {
-      if (!this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
-      const activeRoot = this.manager.getManagedTeamRun(rootTeamRunId);
-      const tree = activeRoot?.getExecutionTreeSnapshot() ?? await this.readStoredTree(rootTeamRunId);
-      if (!tree) continue;
-      const index = new TeamExecutionIndex(tree);
-      if (index.getTeam(normalized) || index.getAgent(normalized)) return true;
-    }
-    return false;
-  }
 
   async listRootTeamRunIds(): Promise<string[]> {
     await this.packageCatalog.awaitReady();

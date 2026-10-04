@@ -156,10 +156,13 @@ is readability metadata only; routing, task ownership, restore, and storage
 logic must treat the whole `agentRunId` as opaque and must not parse the slug or
 assume a runtime-specific prefix.
 
-The same allocation boundary is used for standalone prepared/created runs, team
-agent members, and delegated task-agent instances. It guards active runs,
-standalone metadata/directories, team-member metadata/directories, nested child
-team metadata, and in-flight reservations before approving a new id.
+The same stateless allocation boundary is used for standalone prepared/created
+runs, Team/Org members, collaborators, delegated task Agents, and application
+scopes. It loads the current definition and generates a fresh UUID; it does not
+scan active runs, saved execution trees, metadata/directories, or reservations
+to check candidate-ID collisions. UUID uniqueness is probabilistic, not a
+mathematical zero-collision guarantee. The old allocator membership readers and
+their constructor wiring are removed, not retained as compatibility APIs.
 `AgentRunManager` rejects duplicate active registrations instead of replacing an
 existing run. Runtime backend factories receive the canonical id from the
 manager/config and fail fast when production code omits it; provider/native
@@ -169,6 +172,32 @@ agent ids remain separate metadata.
 Historical restore paths continue to use stored run ids as data. Old readable,
 deterministic, or otherwise legacy ids are not rewritten and are not validated
 against the new generated shape.
+
+## Independent Runtime Readiness
+
+GraphQL `runtimeAvailabilityKinds` lists configured runtime kinds without
+probing their providers. `runtimeAvailability(runtimeKind)` verifies one kind
+and returns its `enabled` flag and unavailable `reason`; it replaces the old
+aggregate availability query. An unknown kind is unavailable, not implicitly
+enabled. Availability discovery is not model inference or model-weight loading.
+
+The renderer publishes each kind independently through
+`runtimeAvailabilityStore`. Verified Codex readiness need not await unrelated
+runtime discovery. The collection operation still waits for all inventoried
+kinds; its loading/error state is not the selected kind's readiness gate.
+Per-kind request sequence and state-incarnation checks reject superseded or
+reset-state responses. Existing synchronous provider probes and event-loop
+scheduling remain; this is not a new concurrency framework or absolute latency
+guarantee.
+
+Model catalogs and exact schemas remain separate requirements. Configuration
+consumers observe the current shared selected-runtime catalog publication, not
+a sticky consumer-local copy of its failure. Targeted Retry refreshes that
+kind's capability and catalog. Accepted same-kind evidence can recover inherited
+views without resetting model/configuration/override intent; it does not heal
+different runtimes or discard an explicit failed edit. Missing exact models,
+invalid schemas, required owned references and structural admission still block
+launch. See the [Org configuration contract](../../../autobyteus-web/docs/agent_orgs.md#readiness-and-runtime-catalog-failure).
 
 ## Activation Publication And Exact Continuation
 

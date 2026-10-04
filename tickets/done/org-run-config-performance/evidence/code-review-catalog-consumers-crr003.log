@@ -1,0 +1,68 @@
+CRR-003 real catalog store and preserved shared consumer regression. No API/E2E/packaged/inference.
+pnpm -C autobyteus-web test:nuxt tests/stores/llmProviderConfigStore.test.ts composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts components/workspace/config/__tests__/AgentRunConfigForm.spec.ts components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts components/settings/__tests__/CompactionModelSettings.spec.ts --run --maxWorkers=2
+
+> autobyteus@1.4.93 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/stores/llmProviderConfigStore.test.ts composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts components/workspace/config/__tests__/AgentRunConfigForm.spec.ts components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts components/settings/__tests__/CompactionModelSettings.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (4 tests) 29ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (12 tests) 86ms
+stderr | tests/stores/llmProviderConfigStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/stores/llmProviderConfigStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/stores/llmProviderConfigStore.test.ts (15 tests) 23ms
+stdout | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts (6 tests) 22ms
+stderr | composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CompactionModelSettings.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/CompactionModelSettings.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/CompactionModelSettings.spec.ts (3 tests) 13ms
+ ✓ composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts (2 tests) 160ms
+
+ Test Files  6 passed (6)
+      Tests  42 passed (42)
+   Start at  00:11:26
+   Duration  7.42s (transform 2.95s, setup 12.04s, collect 363ms, tests 332ms, environment 749ms, prepare 496ms)
+

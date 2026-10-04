@@ -1,0 +1,433 @@
+{
+  "subjectKind": "agent_org",
+  "createdAt": "2026-10-03T23:30:15.954Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [
+    {
+      "from": "/software_engineering_team/solution_designer",
+      "to": "/product_team/product_ui_ux_designer",
+      "rules": [
+        "When Solution Designer classifies the outcome as Product Design Requested because the user explicitly or after clarification asks Product Team to help understand or evolve an experience. Include the focused decision, relevant requirement and behavior IDs, established constraints, non-goals, canonical requirements paths, and supplied existing-product context when applicable."
+      ]
+    },
+    {
+      "from": "/product_team/product_ui_ux_designer",
+      "to": "/software_engineering_team/solution_designer",
+      "rules": [
+        "When the Product UI/UX Designer classifies the outcome as Requirements Visualization Ready because the interactive visualizer revision, review URL, evidence, and open clarification questions are ready for Solution Designer and user review.",
+        "When the Product UI/UX Designer classifies the outcome as Prototype Completed because the user-approved prototype and UI/UX package are ready for requirements integration.",
+        "When the Product UI/UX Designer classifies the outcome as Requirement Impact because user feedback or prototype evidence requires a material requirements revision.",
+        "When the Product UI/UX Designer classifies the outcome as Not Recommended because a prototype would not materially improve the decision and the rationale/evidence are ready.",
+        "When the Product UI/UX Designer classifies the outcome as Blocked because prototype work cannot safely or accurately continue and Solution Designer must decide the next requirements path."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/solution_designer",
+      "to": "/marketing_team/marketing_content_creator",
+      "rules": [
+        "When an approved product or delivery package requires product positioning, launch messaging, campaign planning, channel adaptation, or other marketing execution. Include verified product facts, supported scenarios, constraints, non-goals, approval state, relevant artifact paths, and any claims that still require confirmation."
+      ]
+    },
+    {
+      "from": "/marketing_team/marketing_content_creator",
+      "to": "/software_engineering_team/solution_designer",
+      "rules": [
+        "When Marketing Content Creator classifies the outcome as Claim Review Needed because a draft depends on product behavior, technical feasibility, release status, or a technical claim. Include the exact claim or decision, source material, open question, approval state, and the relevant campaign or draft artifact path."
+      ]
+    },
+    {
+      "from": "/product_team/product_ui_ux_designer",
+      "to": "/marketing_team/marketing_content_creator",
+      "rules": [
+        "When the user-approved product experience package, visual evidence, or launch-ready experience narrative is ready for marketing adaptation. Include the approved experience scope, supported user problem, visual or prototype artifact paths, constraints, and any wording that must remain accurate."
+      ]
+    },
+    {
+      "from": "/marketing_team/marketing_content_creator",
+      "to": "/product_team/product_ui_ux_designer",
+      "rules": [
+        "When Marketing Content Creator classifies the outcome as Product Evidence Needed because a draft needs product-experience clarification or visual product evidence. Include the campaign or draft context, exact experience question, source material, audience, approval state, and relevant artifact paths."
+      ]
+    },
+    {
+      "from": "/product_team/product_ui_ux_designer",
+      "to": "/product_team/ui_baseline_bootstrapper",
+      "rules": [
+        "When the Product UI/UX Designer classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-design-repository-management skill, without the requirements or Product ticket package."
+      ]
+    },
+    {
+      "from": "/product_team/ui_baseline_bootstrapper",
+      "to": "/product_team/product_ui_ux_designer",
+      "rules": [
+        "When the UI Baseline Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to the Product UI/UX Designer for acceptance or recovery."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/solution_designer",
+      "to": "/software_engineering_team/architecture_reviewer",
+      "rules": [
+        "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/solution_designer",
+      "to": "/software_engineering_team/implementation_engineer",
+      "rules": [
+        "When Solution Designer classifies the completed architecture package as Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low. Include the approved requirements, investigation notes, design spec, solution revision record, classification rationale and selected direct implementation route."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/architecture_reviewer",
+      "to": "/software_engineering_team/implementation_engineer",
+      "rules": [
+        "When the architecture review passes and the cumulative reviewed architecture package is ready for implementation."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/architecture_reviewer",
+      "to": "/software_engineering_team/solution_designer",
+      "rules": [
+        "When the architecture review is Fail or Blocked with a Design Impact, Requirement Gap, or Unclear finding that requires architecture revision or upstream requirements clarification before implementation.",
+        "When architecture review passes and Solution Designer needs the informational pass notification after the primary implementation handoff succeeds."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/implementation_engineer",
+      "to": "/software_engineering_team/code_reviewer",
+      "rules": [
+        "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+        "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/implementation_engineer",
+      "to": "/software_engineering_team/api_e2e_engineer",
+      "rules": [
+        "When implementation is complete, implementation-scoped validation and the lightweight implementation self-review are complete, the carried classification is task_size=Small or Medium and architectural_risk=Low, and the cumulative package is ready for direct API/E2E validation without Code Reviewer.",
+        "When a direct-route implementation-owned Local Fix requested by delivery engineer is complete, the rechecked classification remains task_size=Small or Medium and architectural_risk=Low, and the updated package is ready for direct API/E2E validation."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/implementation_engineer",
+      "to": "/software_engineering_team/solution_designer",
+      "rules": [
+        "When implementation identifies a Design Impact, Requirement Gap, or Unclear issue that must be resolved in the requirements or design before implementation continues."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/code_reviewer",
+      "to": "/software_engineering_team/api_e2e_engineer",
+      "rules": [
+        "When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.",
+        "When a test-code, stale-test, fixture, environment, execution, or reporting Local Fix is complete and API/E2E must rerun the affected validation.",
+        "When API/E2E failure-origin review confirms that the owning problem is in coverage, test code, fixtures, environment, execution, or reporting.",
+        "When post-API/E2E test-code review fails and an API/E2E-owned correction is required."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/code_reviewer",
+      "to": "/software_engineering_team/implementation_engineer",
+      "rules": [
+        "When source review identifies an implementation-owned Local Fix or packaging defect that must be corrected before executable coverage.",
+        "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+        "When implementation review passes and Implementation Engineer needs the informational pass notification after the primary API/E2E handoff succeeds."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/code_reviewer",
+      "to": "/software_engineering_team/solution_designer",
+      "rules": [
+        "When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/code_reviewer",
+      "to": "/software_engineering_team/delivery_engineer",
+      "rules": [
+        "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/api_e2e_engineer",
+      "to": "/software_engineering_team/code_reviewer",
+      "rules": [
+        "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+        "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/api_e2e_engineer",
+      "to": "/software_engineering_team/delivery_engineer",
+      "rules": [
+        "When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/delivery_engineer",
+      "to": "/software_engineering_team/implementation_engineer",
+      "rules": [
+        "When delivery discovers a code or packaging Local Fix that must be corrected by implementation before finalization can continue."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/delivery_engineer",
+      "to": "/software_engineering_team/solution_designer",
+      "rules": [
+        "When delivery discovers a Design Impact, Requirement Gap, or Unclear issue, or final handoff is blocked by a non-deployment issue that requires upstream classification.",
+        "When Delivery Engineer classifies the result as Delivery Completed after explicit user verification, repository finalization, and all applicable release, deployment and safe-cleanup gates are Completed or truthfully Not required. Include the same package identifier, complete cumulative artifacts and final evidence for Solution Designer to verify the terminal receipt."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/api_e2e_engineer",
+      "to": "/software_engineering_team/solution_designer",
+      "rules": [
+        "When coverage investigation or test-validity analysis establishes a Requirement Gap, Design Impact or Unclear upstream issue before executable validation can proceed. Include the supported scenario basis and concrete evidence. Execution failures still follow the Code Reviewer failure-origin route."
+      ]
+    },
+    {
+      "from": "/software_engineering_team/solution_designer",
+      "to": "/software_engineering_team/delivery_engineer",
+      "rules": [
+        "When Solution Designer checks a Delivery Completed receipt and finds missing or inconsistent delivery-owned completion evidence. Send only the specific receipt gap and cumulative package for correction; do not claim Terminal, reopen unchanged requirements or redo delivery work."
+      ]
+    },
+    {
+      "from": "/marketing_team/marketing_content_creator",
+      "to": "/marketing_team/computer_use_operator",
+      "rules": [
+        "When a publish-request.md for a user-approved channel package is saved and ready for publishing.",
+        "When a task-request.md for other computer work (site data, research, reply candidates, source capture, media download, screenshots, or tool work) is saved and ready."
+      ]
+    },
+    {
+      "from": "/marketing_team/computer_use_operator",
+      "to": "/marketing_team/marketing_content_creator",
+      "rules": [
+        "When task-result.md for a Marketing Content Creator request is saved with outcome Completed, Blocked, or Needs Decision."
+      ]
+    }
+  ],
+  "rootOrg": {
+    "address": "/",
+    "orgDefinitionId": "autobyteus-org",
+    "orgDefinitionName": "AutoByteus Org",
+    "orgRunId": "autobyteus_org_c1604c8f0036466bbbadd7b4c101d202",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+    },
+    "members": [
+      {
+        "address": "/product_team",
+        "teamDefinitionId": "product-team",
+        "role": null,
+        "description": null,
+        "teamRunId": "product_team_4942cf692bec47c4952c09e1c5b08f85",
+        "coordinatorAddress": "/product_team/product_ui_ux_designer",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/product_team/product_ui_ux_designer",
+            "agentDefinitionId": "team-local-agent:product-team:product-ui-ux-designer",
+            "role": null,
+            "description": null,
+            "agentRunId": "product_ui_ux_designer_6f634b9605a84debb7ea3425c7abe266",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          },
+          {
+            "address": "/product_team/ui_baseline_bootstrapper",
+            "agentDefinitionId": "team-local-agent:product-team:ui-baseline-bootstrapper",
+            "role": null,
+            "description": null,
+            "agentRunId": "ui_baseline_bootstrapper_2e0ce357d43b44ce8de843274f456fc2",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          }
+        ],
+        "taskExecutions": []
+      },
+      {
+        "address": "/software_engineering_team",
+        "teamDefinitionId": "software-engineering-team",
+        "role": null,
+        "description": null,
+        "teamRunId": "software_engineering_team_c9836f4fd2d849a592fd0566c86b7130",
+        "coordinatorAddress": "/software_engineering_team/solution_designer",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/software_engineering_team/solution_designer",
+            "agentDefinitionId": "team-local-agent:software-engineering-team:solution-designer",
+            "role": null,
+            "description": null,
+            "agentRunId": "solution_designer_84492589de6a4144b11a8d780fec8396",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          },
+          {
+            "address": "/software_engineering_team/architecture_reviewer",
+            "agentDefinitionId": "team-local-agent:software-engineering-team:architecture-reviewer",
+            "role": null,
+            "description": null,
+            "agentRunId": "architecture_reviewer_3986dbe0fe984ee5abf658d2c70fb55e",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          },
+          {
+            "address": "/software_engineering_team/implementation_engineer",
+            "agentDefinitionId": "team-local-agent:software-engineering-team:implementation-engineer",
+            "role": null,
+            "description": null,
+            "agentRunId": "implementation_engineer_f5966a30c29b4f5a969498118b84da79",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          },
+          {
+            "address": "/software_engineering_team/code_reviewer",
+            "agentDefinitionId": "team-local-agent:software-engineering-team:code-reviewer",
+            "role": null,
+            "description": null,
+            "agentRunId": "code_reviewer_31a582dd0a7f4255b34e5ac39a389e45",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          },
+          {
+            "address": "/software_engineering_team/api_e2e_engineer",
+            "agentDefinitionId": "team-local-agent:software-engineering-team:api-e2e-engineer",
+            "role": null,
+            "description": null,
+            "agentRunId": "api_e2e_engineer_63855fffe9cb46f18761ce0637b233eb",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          },
+          {
+            "address": "/software_engineering_team/delivery_engineer",
+            "agentDefinitionId": "team-local-agent:software-engineering-team:delivery-engineer",
+            "role": null,
+            "description": null,
+            "agentRunId": "delivery_engineer_a42720a9cee64708a93f0d9f445dbbb4",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          }
+        ],
+        "taskExecutions": []
+      },
+      {
+        "address": "/marketing_team",
+        "teamDefinitionId": "marketing-team",
+        "role": null,
+        "description": null,
+        "teamRunId": "marketing_team_b7af3151532945adaa5acfe3914ced87",
+        "coordinatorAddress": "/marketing_team/marketing_content_creator",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/marketing_team/marketing_content_creator",
+            "agentDefinitionId": "team-local-agent:marketing-team:marketing-content-creator",
+            "role": null,
+            "description": null,
+            "agentRunId": "marketing_content_creator_85c4e9a4c7fc4ed0a9a61576d0cc249a",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          },
+          {
+            "address": "/marketing_team/computer_use_operator",
+            "agentDefinitionId": "computer-use-operator",
+            "role": null,
+            "description": null,
+            "agentRunId": "computer_use_operator_6fa9ee375e344117a3f83bc2c9fff2b4",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data/temp_workspace"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    ],
+    "collaborators": [],
+    "taskExecutions": []
+  }
+}

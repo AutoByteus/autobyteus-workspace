@@ -1,0 +1,29 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api-packaged-populate.mjs"]
+start=2026-10-03T20:54:07.514304+00:00
+{"storedRoots":30,"lastSetupMs":362.3325419999992}
+{"storedRoots":50,"lastSetupMs":352.87495800000033}
+{"storedRoots":70,"lastSetupMs":350.63837499999863}
+{"storedRoots":90,"lastSetupMs":354.6542499999996}
+{"storedRoots":110,"lastSetupMs":382.48475000000326}
+{"storedRoots":130,"lastSetupMs":373.0430420000048}
+{"storedRoots":150,"lastSetupMs":387.3756250000006}
+{"storedRoots":170,"lastSetupMs":406.8627919999999}
+{"storedRoots":190,"lastSetupMs":397.73062500001106}
+{"storedRoots":210,"lastSetupMs":400.53537500000675}
+{"storedRoots":230,"lastSetupMs":422.2964579999971}
+{"storedRoots":250,"lastSetupMs":434.40437499999825}
+{"storedRoots":270,"lastSetupMs":531.2045829999988}
+{"storedRoots":290,"lastSetupMs":421.19233400000667}
+{"storedRoots":310,"lastSetupMs":445.10008400000515}
+{"storedRoots":330,"lastSetupMs":452.6220409999951}
+{"storedRoots":350,"lastSetupMs":463.27633300001617}
+{"storedRoots":370,"lastSetupMs":463.4804170000134}
+{"storedRoots":390,"lastSetupMs":463.8717089999991}
+{"storedRoots":410,"lastSetupMs":643.0541669999948}
+{"storedRoots":430,"lastSetupMs":473.1294170000183}
+{"storedRoots":450,"lastSetupMs":490.31145900001866}
+{"storedRoots":470,"lastSetupMs":525.3414160000102}
+{"storedRoots":490,"lastSetupMs":493.32466700000805}
+
+exit=0 elapsed_seconds=212.47040975000002

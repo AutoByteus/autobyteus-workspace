@@ -1,126 +1,36 @@
 import fs from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
-import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 
-const token = (suffix: number): string => String(suffix).padStart(32, "0");
-
-describe("AgentRunIdentityAllocator", () => {
-  let memoryDir: string;
-  let memoryLayout: AgentMemoryLayout;
-
-  beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-run-identity-allocator-"));
-    memoryLayout = new AgentMemoryLayout(memoryDir);
+const definitions = () => ({ getAgentDefinitionById: vi.fn(async (id: string) => ({ id, name: "Worker" }) as never) });
+describe("fresh AgentRunIdentityAllocator", () => {
+  it("normalizes the required definition and generates one formatted UUID", async () => {
+    const service = definitions();
+    const createToken = vi.fn(() => "12345678-1234-1234-1234-123456789abc");
+    const allocator = new AgentRunIdentityAllocator({ agentDefinitionService: service, createToken });
+    expect(await allocator.allocateForAgentDefinition(" worker-definition ")).toBe("worker_12345678123412341234123456789abc");
+    expect(service.getAgentDefinitionById).toHaveBeenCalledWith("worker-definition");
+    expect(createToken).toHaveBeenCalledTimes(1);
   });
-
-  afterEach(async () => {
-    await fs.rm(memoryDir, { recursive: true, force: true });
+  it("keeps required definition and token validation", async () => {
+    const createToken = vi.fn();
+    const allocator = new AgentRunIdentityAllocator({ agentDefinitionService: { getAgentDefinitionById: vi.fn(async () => null) }, createToken });
+    await expect(allocator.allocateForAgentDefinition(" ")).rejects.toThrow("agentDefinitionId is required");
+    await expect(allocator.allocateForAgentDefinition("missing")).rejects.toThrow("cannot be loaded");
+    expect(createToken).not.toHaveBeenCalled();
+    const invalid = new AgentRunIdentityAllocator({ agentDefinitionService: definitions(), createToken: () => "not-a-token" });
+    await expect(invalid.allocateForAgentDefinition("worker")).rejects.toThrow();
   });
-
-  it("reserves candidates before async collision scans so concurrent allocations cannot return the same ID", async () => {
-    let releaseFirstCollisionScan!: () => void;
-    let resolveFirstCollisionScanStarted!: () => void;
-    const firstScanStarted = new Promise<void>((resolve) => {
-      resolveFirstCollisionScanStarted = resolve;
-    });
-    const releaseFirstScan = new Promise<void>((resolve) => {
-      releaseFirstCollisionScan = resolve;
-    });
-    let metadataReadCount = 0;
-    const allocator = new AgentRunIdentityAllocator({
-      agentDefinitionService: {
-        getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Worker" }),
-      },
-      agentRunManager: {
-        hasActiveRun: vi.fn().mockReturnValue(false),
-      },
-      agentRunMetadataService: {
-        readMetadata: vi.fn(async () => {
-          metadataReadCount += 1;
-          if (metadataReadCount === 1) {
-            resolveFirstCollisionScanStarted();
-            await releaseFirstScan;
-          }
-          return null;
-        }),
-      },
-      teamRunExecutionTreeLocationService: {
-        containsRunId: vi.fn().mockResolvedValue(false),
-      },
-      memoryDir,
-      createToken: vi.fn()
-        .mockReturnValueOnce(token(1))
-        .mockReturnValueOnce(token(1))
-        .mockReturnValueOnce(token(2)),
-    });
-
-    const firstAllocation = allocator.allocateForAgentDefinition("agent-worker");
-    await firstScanStarted;
-    const secondAllocation = allocator.allocateForAgentDefinition("agent-worker");
-    releaseFirstCollisionScan();
-
-    await expect(Promise.all([firstAllocation, secondAllocation])).resolves.toEqual([
-      "worker_00000000000000000000000000000001",
-      "worker_00000000000000000000000000000002",
-    ]);
-  });
-
-  it("skips candidates that already have a standalone memory directory", async () => {
-    await fs.mkdir(
-      memoryLayout.getStandaloneRunDirPath("worker_00000000000000000000000000000001"),
-      { recursive: true },
-    );
-    const allocator = new AgentRunIdentityAllocator({
-      agentDefinitionService: {
-        getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Worker" }),
-      },
-      agentRunManager: {
-        hasActiveRun: vi.fn().mockReturnValue(false),
-      },
-      agentRunMetadataService: {
-        readMetadata: vi.fn().mockResolvedValue(null),
-      },
-      teamRunExecutionTreeLocationService: {
-        containsRunId: vi.fn().mockResolvedValue(false),
-      },
-      memoryDir,
-      createToken: vi.fn()
-        .mockReturnValueOnce(token(1))
-        .mockReturnValueOnce(token(2)),
-    });
-
-    await expect(allocator.allocateForAgentDefinition("agent-worker")).resolves.toBe(
-      "worker_00000000000000000000000000000002",
-    );
-  });
-
-  it("skips candidates found in the team execution-tree index", async () => {
-    const allocator = new AgentRunIdentityAllocator({
-      agentDefinitionService: {
-        getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Worker" }),
-      },
-      agentRunManager: {
-        hasActiveRun: vi.fn().mockReturnValue(false),
-      },
-      agentRunMetadataService: {
-        readMetadata: vi.fn().mockResolvedValue(null),
-      },
-      teamRunExecutionTreeLocationService: {
-        containsRunId: vi.fn()
-          .mockResolvedValueOnce(true)
-          .mockResolvedValueOnce(false),
-      },
-      memoryDir,
-      createToken: vi.fn()
-        .mockReturnValueOnce(token(1))
-        .mockReturnValueOnce(token(2)),
-    });
-
-    await expect(allocator.allocateForAgentDefinition("agent-worker")).resolves.toBe(
-      "worker_00000000000000000000000000000002",
-    );
+  it("produces independent default UUIDs concurrently without any stored-tree or filesystem reads", async () => {
+    const reads = vi.spyOn(AgentOrgRunExecutionTreeStore.prototype, "read");
+    const fileReads = vi.spyOn(fs, "readFile");
+    try {
+      const allocator = new AgentRunIdentityAllocator({ agentDefinitionService: definitions() });
+      const ids = await Promise.all(Array.from({ length: 10 }, () => allocator.allocateForAgentDefinition("worker")));
+      expect(new Set(ids).size).toBe(10);
+      ids.forEach(id => expect(id).toMatch(/^worker_[0-9a-f]{32}$/));
+      expect(reads).not.toHaveBeenCalled(); expect(fileReads).not.toHaveBeenCalled();
+    } finally { reads.mockRestore(); fileReads.mockRestore(); }
   });
 });

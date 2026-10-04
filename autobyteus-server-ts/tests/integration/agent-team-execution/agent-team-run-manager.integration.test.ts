@@ -40,16 +40,11 @@ const modelSelectionValidator = Object.freeze({
 const memberExecutionContextBuilder = Object.freeze({ build: vi.fn() });
 const isolatedRootDirectory = (): ActiveCollaborationRootDirectory => new ActiveCollaborationRootDirectory();
 
-const initializeTaskIdentityAllocator = (memoryDir: string): AgentRunIdentityAllocator =>
-  AgentRunIdentityAllocator.getInstance({
-    memoryDir,
+const initializeTaskIdentityAllocator = (): AgentRunIdentityAllocator =>
+  new AgentRunIdentityAllocator({
     agentDefinitionService: {
       getAgentDefinitionById: async (id: string) => ({ id, name: id }) as never,
     },
-    agentRunManager: { hasActiveRun: () => false },
-    agentRunMetadataService: { readMetadata: async () => null },
-    teamRunExecutionTreeLocationService: { containsRunId: async () => false },
-    createToken: () => "00000000000000000000000000000000",
   });
 
 afterEach(async () => {
@@ -181,7 +176,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   ] as const)("creates exactly one admitted root and the two-file current package (tree V3 + messages) for %j", async (runtimeKinds) => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      initializeTaskIdentityAllocator(memoryDir),
+      initializeTaskIdentityAllocator(),
     );
     const config = createConfig(runtimeKinds);
     const factory = createFactory();
@@ -240,7 +235,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   it("supplies only root-neutral local Team callbacks during materialization", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      initializeTaskIdentityAllocator(memoryDir),
+      initializeTaskIdentityAllocator(),
     );
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const beforeBackendReturn = vi.fn(async (callbacks: FlatTeamExecutionCallbacks) => {
@@ -262,7 +257,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   it("restores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      initializeTaskIdentityAllocator(memoryDir),
+      initializeTaskIdentityAllocator(),
     );
     const config = createConfig([RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]);
     const initialFactory = createFactory();
@@ -299,7 +294,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   it("emits root lifecycle transitions and unregisters only after accepted termination", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      initializeTaskIdentityAllocator(memoryDir),
+      initializeTaskIdentityAllocator(),
     );
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
@@ -321,7 +316,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   it("holds one exact-ID transition lane across unmanaged deletion and restore registration", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      initializeTaskIdentityAllocator(memoryDir),
+      initializeTaskIdentityAllocator(),
     );
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
@@ -360,7 +355,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   it("refuses Team archive and unarchive after Restore owns the exact-root lane", async () => {
     const memoryDir = await createMemoryDir();
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
-    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(initializeTaskIdentityAllocator(memoryDir));
+    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(initializeTaskIdentityAllocator());
     let materializations = 0;
     let reportRestoreEntered!: () => void;
     let releaseRestore!: () => void;
@@ -393,7 +388,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   it.each(["archive", "unarchive"] as const)("holds Team %s's manager lane through tree/index commit before Restore", async (operation) => {
     const memoryDir = await createMemoryDir();
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
-    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(initializeTaskIdentityAllocator(memoryDir));
+    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(initializeTaskIdentityAllocator());
     const factory = createFactory();
     const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: factory.factory,
       memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity,
@@ -432,7 +427,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   it("rejects active updates, then persists a stopped narrow patch for the next restore", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      initializeTaskIdentityAllocator(memoryDir),
+      initializeTaskIdentityAllocator(),
     );
     const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
     const factory = createFactory();
@@ -513,7 +508,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   it("orders an exact-ID Team restore after an in-flight Save and restores committed config", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      initializeTaskIdentityAllocator(memoryDir),
+      initializeTaskIdentityAllocator(),
     );
     const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
     const factory = createFactory();
@@ -578,7 +573,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
   it("returns RUN_ACTIVE when an exact-ID Team restore completes before Save", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      initializeTaskIdentityAllocator(memoryDir),
+      initializeTaskIdentityAllocator(),
     );
     const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
     const factory = createFactory();

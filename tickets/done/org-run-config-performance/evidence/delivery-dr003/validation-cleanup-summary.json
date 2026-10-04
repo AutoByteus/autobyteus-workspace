@@ -1,0 +1,78 @@
+{
+  "head": "ac287c446db7af52956680313f60b9309e151d2b",
+  "integratedBase": "63aac5939f1ebcfb691f796990739a3e94fd5f45",
+  "latestCheckedOriginPersonal": "63aac5939f1ebcfb691f796990739a3e94fd5f45",
+  "relevantSourceHashesStillMatchIntegratedInputs": true,
+  "packagedJourneysPassed": 9,
+  "totalDefinedChecks": 535,
+  "prebuildAndServerBuild": "Exit0, server sanitized bootstrap smoke Pass; raw logs retained",
+  "currentPackagedArtifact": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+    "sha256": "0c75dc34e21b057f95419e41c74e81f1e01abc25fa0294674320cbf6698a6e0b",
+    "basis": "Rebuilt from integrated worktree by freshness probe, not pre-integration binary",
+    "version": "1.4.94-beta.1 inherited base version; requested new beta not yet bumped/tagged"
+  },
+  "testMockLimits": "Native/provider actor controlled where stated; no paid/live inference; prior exact Codex performance evidence remains pre-integration pinned artifact proof, not relabeled as this rebuild",
+  "packagedCleanup": {
+    "stop": {
+      "instanceId": "iso-56771-4afb",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-lIAAsn",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "list": {
+      "instances": [
+        {
+          "instanceId": "iso-52483-84f0",
+          "pid": 64222,
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "backendUrl": "http://127.0.0.1:52484",
+          "graphqlUrl": "http://127.0.0.1:52484/graphql",
+          "controlEndpoint": "http://127.0.0.1:52483",
+          "controlPort": 52483,
+          "serverPort": 52484,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5bvwnO",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5bvwnO/server-data/db/production.db",
+          "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52483-84f0.log",
+          "startedAt": "2026-09-30T10:40:07.537Z",
+          "running": false
+        }
+      ]
+    },
+    "fixtureRemoved": true
+  },
+  "publicTransportCleanup": [
+    {
+      "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-meDRrN",
+      "dataRemoved": true,
+      "serverClosed": true,
+      "socketsClosed": true,
+      "remainingOwnedRoots": 0,
+      "cleanupErrors": [],
+      "userNode8001Accessed": false
+    },
+    {
+      "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-heZxeU",
+      "dataRemoved": true,
+      "serverClosed": true,
+      "socketsClosed": true,
+      "remainingOwnedRoots": 0,
+      "cleanupErrors": [],
+      "userNode8001Accessed": false
+    }
+  ],
+  "sdk2DistRemoved": true,
+  "serverPrebuildRequiredBeforeFurtherServerChecks": true,
+  "userAcceptance": "Question displayed; no response in current context; no verification inferred",
+  "releaseAttempted": false,
+  "finalizationAttempted": false,
+  "userSharedCheckoutTouched": false,
+  "repositoryTestsPassed": 526,
+  "countQualification": "526 Vitest test cases + 9 packaged journeys; number of individual expect/assert calls is not counted."
+}

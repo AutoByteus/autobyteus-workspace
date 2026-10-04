@@ -1,0 +1,810 @@
+[
+  {
+    "name": "orgs",
+    "durationMs": 258.251416,
+    "status": 200,
+    "body": {
+      "data": {
+        "agentOrgDefinitions": [
+          {
+            "id": "autobyteus-org",
+            "name": "AutoByteus Org",
+            "members": [
+              {
+                "memberName": "product_team",
+                "ref": "product-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED"
+              },
+              {
+                "memberName": "software_engineering_team",
+                "ref": "software-engineering-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED"
+              },
+              {
+                "memberName": "marketing_team",
+                "ref": "marketing-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED"
+              }
+            ]
+          },
+          {
+            "id": "northstar-operating-company",
+            "name": "Northstar Operating Company",
+            "members": [
+              {
+                "memberName": "ceo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:ceo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "chief_of_staff",
+                "ref": "agent-org-owned-agent:northstar-operating-company:chief-of-staff",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "cto",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cto",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "cpo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cpo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "cmo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cmo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "cro",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cro",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "coo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:coo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "cfo",
+                "ref": "agent-org-owned-agent:northstar-operating-company:cfo",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "chief_people_officer",
+                "ref": "agent-org-owned-agent:northstar-operating-company:chief-people-officer",
+                "refType": "AGENT",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "engineering_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:engineering-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "product_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:product-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "marketing_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:marketing-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "revenue_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:revenue-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "operations_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:operations-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED"
+              },
+              {
+                "memberName": "finance_people_org",
+                "ref": "agent-org-owned-team:northstar-operating-company:finance-people-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "AGENT_ORG_OWNED"
+              }
+            ]
+          },
+          {
+            "id": "software-development-department",
+            "name": "Software Development Department",
+            "members": [
+              {
+                "memberName": "product_team",
+                "ref": "product-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED"
+              },
+              {
+                "memberName": "software_engineering_team",
+                "ref": "software-engineering-team",
+                "refType": "AGENT_TEAM",
+                "refScope": "SHARED"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "teams",
+    "durationMs": 210.50595900000002,
+    "status": 200,
+    "body": {
+      "data": {
+        "agentTeamDefinitions": [
+          {
+            "id": "article-writing-team",
+            "name": "Article Writing Team",
+            "coordinatorMemberName": "article_writer",
+            "nodes": [
+              {
+                "memberName": "article_writer",
+                "ref": "article-writer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "article_reviewer",
+                "ref": "article-reviewer",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "classroom-simulation-team",
+            "name": "Classroom Simulation Team",
+            "coordinatorMemberName": "professor",
+            "nodes": [
+              {
+                "memberName": "professor",
+                "ref": "professor",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "student",
+                "ref": "student",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "english-bridge-team",
+            "name": "English Bridge Team",
+            "coordinatorMemberName": "english_translator",
+            "nodes": [
+              {
+                "memberName": "english_translator",
+                "ref": "english-translator",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "worker",
+                "ref": "worker",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "evidence-driven-delivery-team",
+            "name": "Evidence-Driven Delivery Team",
+            "coordinatorMemberName": "planner",
+            "nodes": [
+              {
+                "memberName": "investigator",
+                "ref": "investigator",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "planner",
+                "ref": "planner",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "implementer",
+                "ref": "implementer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "validator",
+                "ref": "validator",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "kids-coloring-story-team",
+            "name": "Kids Coloring Story Team",
+            "coordinatorMemberName": "story_activity_designer",
+            "nodes": [
+              {
+                "memberName": "story_activity_designer",
+                "ref": "story-activity-designer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "coloring_page_illustrator",
+                "ref": "coloring-page-illustrator",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "child_experience_reviewer",
+                "ref": "child-experience-reviewer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "printable_pack_producer",
+                "ref": "printable-pack-producer",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "kids-picture-story-team",
+            "name": "Kids Picture Story Team",
+            "coordinatorMemberName": "story_picture_book_author",
+            "nodes": [
+              {
+                "memberName": "story_picture_book_author",
+                "ref": "story-picture-book-author",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "picture_book_illustrator",
+                "ref": "picture-book-illustrator",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "picture_book_reviewer",
+                "ref": "picture-book-reviewer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "book_production_editor",
+                "ref": "book-production-editor",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "manga-video-studio-team",
+            "name": "Manga Video Studio Team",
+            "coordinatorMemberName": "manga_showrunner",
+            "nodes": [
+              {
+                "memberName": "manga_showrunner",
+                "ref": "manga-showrunner",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "storyboard_director",
+                "ref": "storyboard-director",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "manga_illustrator",
+                "ref": "manga-illustrator",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "voice_video_producer",
+                "ref": "voice-video-producer",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "marketing-team",
+            "name": "Marketing Team",
+            "coordinatorMemberName": "marketing_content_creator",
+            "nodes": [
+              {
+                "memberName": "marketing_content_creator",
+                "ref": "marketing-content-creator",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "computer_use_operator",
+                "ref": "computer-use-operator",
+                "refScope": "SHARED"
+              }
+            ]
+          },
+          {
+            "id": "narrated-presentation-video-team",
+            "name": "Narrated Presentation Video Team",
+            "coordinatorMemberName": "presentation_director",
+            "nodes": [
+              {
+                "memberName": "presentation_director",
+                "ref": "presentation-director",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "narration_script_reviewer",
+                "ref": "narration-script-reviewer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "slide_video_producer",
+                "ref": "slide-video-producer",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "product-team",
+            "name": "Product Team",
+            "coordinatorMemberName": "product_ui_ux_designer",
+            "nodes": [
+              {
+                "memberName": "product_ui_ux_designer",
+                "ref": "product-ui-ux-designer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "ui_baseline_bootstrapper",
+                "ref": "ui-baseline-bootstrapper",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "research-to-deck-team",
+            "name": "Research To Deck Team",
+            "coordinatorMemberName": "deep_researcher",
+            "nodes": [
+              {
+                "memberName": "deep_researcher",
+                "ref": "deep-researcher",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "infographic_powerpoint_designer",
+                "ref": "infographic-powerpoint-designer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "deck_reviewer",
+                "ref": "deck-reviewer",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "software-engineering-team",
+            "name": "Software Engineering Team",
+            "coordinatorMemberName": "solution_designer",
+            "nodes": [
+              {
+                "memberName": "solution_designer",
+                "ref": "solution-designer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "architecture_reviewer",
+                "ref": "architecture-reviewer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "implementation_engineer",
+                "ref": "implementation-engineer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "code_reviewer",
+                "ref": "code-reviewer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "api_e2e_engineer",
+                "ref": "api-e2e-engineer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "delivery_engineer",
+                "ref": "delivery-engineer",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "software-product-promo-video-team",
+            "name": "Software Product Promo Video Team",
+            "coordinatorMemberName": "promo_director",
+            "nodes": [
+              {
+                "memberName": "promo_director",
+                "ref": "promo-director",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "visual_director",
+                "ref": "visual-director",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "visual_reviewer",
+                "ref": "visual-reviewer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "promo_video_producer",
+                "ref": "promo-video-producer",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "storm-team",
+            "name": "STORM Team",
+            "coordinatorMemberName": "topic_research_coordinator",
+            "nodes": [
+              {
+                "memberName": "topic_research_coordinator",
+                "ref": "topic-research-coordinator",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "perspective_miner",
+                "ref": "perspective-miner",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "expert_interviewer",
+                "ref": "expert-interviewer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "outline_architect",
+                "ref": "outline-architect",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "cited_article_writer",
+                "ref": "cited-article-writer",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "article_polisher_verifier",
+                "ref": "article-polisher-verifier",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "agents",
+    "durationMs": 22.882875000000013,
+    "status": 200,
+    "body": {
+      "data": {
+        "agentDefinitions": [
+          {
+            "id": "autobyteus-daily-assistant",
+            "name": "General Agent",
+            "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams."
+          },
+          {
+            "id": "autobyteus-retrospective-skill-improver",
+            "name": "Retrospective Skill Improver",
+            "description": "Improves configured durable skill packages from target run work-trace evidence."
+          },
+          {
+            "id": "agent-package-creator",
+            "name": "Agent Package Creator",
+            "description": "Creates or updates standalone skills, Agents, Agent Teams, and Agent Orgs, including skills their roles need."
+          },
+          {
+            "id": "computer-use-operator",
+            "name": "Computer Use Operator",
+            "description": "Completes user tasks on the computer (operating websites through their visible UI, and using command-line tools, installed software, downloads, and media files) and keeps reusable site and tool knowledge in the current workspace."
+          },
+          {
+            "id": "daily-assistant",
+            "name": "Daily Assistant",
+            "description": "General Agent"
+          },
+          {
+            "id": "product-prototyper",
+            "name": "Product Prototyper",
+            "description": "Builds and evolves runnable product prototypes with precise requirements, realistic mocked behavior, and a deliberate visual-quality gate."
+          },
+          {
+            "id": "research-engineer",
+            "name": "research engineer",
+            "description": "Standalone research engineer that owns investigation, source discovery, continuous notes, implementation when needed, validation, analysis, and next-loop decisions."
+          },
+          {
+            "id": "resume-designer",
+            "name": "Resume Designer",
+            "description": "Creates frontend-based resume packages from user input or supplied resume sources, renders them, and exports print-ready PDFs."
+          },
+          {
+            "id": "software-tutorial-video-maker",
+            "name": "Software Tutorial Video Maker",
+            "description": "Turns supplied software screenshots and rough teaching notes into a short narrated tutorial video package using TTS narration and ffmpeg."
+          },
+          {
+            "id": "team-local-agent:article-writing-team:article-reviewer",
+            "name": "article reviewer",
+            "description": "Critically reviews understanding packages, outlines, and article drafts for evidence support, structure, style fit, fidelity, and publication readiness."
+          },
+          {
+            "id": "team-local-agent:article-writing-team:article-writer",
+            "name": "article writer",
+            "description": "Builds an investigation-led, style-aware article package from understanding through outline, draft, and revision handoff."
+          },
+          {
+            "id": "team-local-agent:classroom-simulation-team:professor",
+            "name": "Professor",
+            "description": "Simulated professor for a classroom communication demo with a student agent."
+          },
+          {
+            "id": "team-local-agent:classroom-simulation-team:student",
+            "name": "Student",
+            "description": "Simulated student for a classroom communication demo who must reply to professor messages."
+          },
+          {
+            "id": "team-local-agent:english-bridge-team:english-translator",
+            "name": "English Translator",
+            "description": "Faithfully translates user messages into English and forwards the complete translation for execution."
+          },
+          {
+            "id": "team-local-agent:english-bridge-team:worker",
+            "name": "Worker",
+            "description": "Works on received requests."
+          },
+          {
+            "id": "team-local-agent:evidence-driven-delivery-team:implementer",
+            "name": "implementer",
+            "description": "Executes one dependency-ready micro-task against the planner's expectation and records the actual implementation result."
+          },
+          {
+            "id": "team-local-agent:evidence-driven-delivery-team:investigator",
+            "name": "investigator",
+            "description": "Establishes current-state evidence, constraints, unknowns, and investigation results for the delivery loop."
+          },
+          {
+            "id": "team-local-agent:evidence-driven-delivery-team:planner",
+            "name": "planner",
+            "description": "Converts current evidence and feedback into the next small executable task and coordinates the delivery loop."
+          },
+          {
+            "id": "team-local-agent:evidence-driven-delivery-team:validator",
+            "name": "validator",
+            "description": "Compares implementation results with planned expectations and produces evidence-backed validation feedback."
+          },
+          {
+            "id": "team-local-agent:kids-coloring-story-team:child-experience-reviewer",
+            "name": "child-experience-reviewer",
+            "description": "Independently reviews kids coloring character references, visuals, and colored references for story or activity correspondence, recurring character consistency, approved text, and readiness for packaging."
+          },
+          {
+            "id": "team-local-agent:kids-coloring-story-team:coloring-page-illustrator",
+            "name": "coloring-page-illustrator",
+            "description": "Produces cute black-and-white printable line-art coloring assets and paired colored reference assets from an approved child-facing story package."
+          },
+          {
+            "id": "team-local-agent:kids-coloring-story-team:printable-pack-producer",
+            "name": "printable-pack-producer",
+            "description": "Assembles reviewer-approved coloring story assets into print-ready black-and-white packages and separate colored reference packages with final QA."
+          },
+          {
+            "id": "team-local-agent:kids-coloring-story-team:story-activity-designer",
+            "name": "story-activity-designer",
+            "description": "Coordinates kids coloring story and activity projects, owning age fit, theme, short story sequence, child-facing activity prompts, source text, color-reference direction, and user approval before image production."
+          },
+          {
+            "id": "team-local-agent:kids-picture-story-team:book-production-editor",
+            "name": "book-production-editor",
+            "description": "Assembles reviewer-approved picture-book pages into ordered digital and optional print exports with final mechanical QA."
+          },
+          {
+            "id": "team-local-agent:kids-picture-story-team:picture-book-illustrator",
+            "name": "picture-book-illustrator",
+            "description": "Produces cohesive full-color picture-book page art with recurring-character continuity and exact text-safe composition."
+          },
+          {
+            "id": "team-local-agent:kids-picture-story-team:picture-book-reviewer",
+            "name": "picture-book-reviewer",
+            "description": "Independently reviews picture-book pages for story correspondence, continuity, child safety, exact words, readability, and export readiness."
+          },
+          {
+            "id": "team-local-agent:kids-picture-story-team:story-picture-book-author",
+            "name": "story-picture-book-author",
+            "description": "Coordinates child-friendly picture-book concepts, page-turning story arcs, exact page text, and approval before illustration."
+          },
+          {
+            "id": "team-local-agent:manga-video-studio-team:manga-illustrator",
+            "name": "manga illustrator",
+            "description": "Locks the visual language, creates character reference sheets, and generates video-frame imagery by default, with page/panel imagery only when explicitly requested."
+          },
+          {
+            "id": "team-local-agent:manga-video-studio-team:manga-showrunner",
+            "name": "manga showrunner",
+            "description": "Creates the canonical story and character package for an original manga project and coordinates upstream creative direction."
+          },
+          {
+            "id": "team-local-agent:manga-video-studio-team:storyboard-director",
+            "name": "storyboard director",
+            "description": "Turns the approved manga canon package into a production-ready storyboard and continuity ledger."
+          },
+          {
+            "id": "team-local-agent:manga-video-studio-team:voice-video-producer",
+            "name": "voice and video producer",
+            "description": "Adapts the approved manga visual package into speech assets, subtitles, and a motion-comic style final video."
+          },
+          {
+            "id": "team-local-agent:marketing-team:marketing-content-creator",
+            "name": "Marketing Content Creator",
+            "description": "Creates channel-native marketing content with the user through a draft-feedback-approval loop, keeps the voice and channel style library current, and hands approved packages to the Computer Use Operator for publishing."
+          },
+          {
+            "id": "team-local-agent:narrated-presentation-video-team:narration-script-reviewer",
+            "name": "narration-script-reviewer",
+            "description": "Performs full review of narrated presentation scripts and slide storyboards for logic, support, redundancy, spoken clarity, and readiness for slide production."
+          },
+          {
+            "id": "team-local-agent:narrated-presentation-video-team:presentation-director",
+            "name": "presentation-director",
+            "description": "Coordinates narrated presentation video projects and owns research, explanation structure, narration script, slide storyboard, and final explanation coherence."
+          },
+          {
+            "id": "team-local-agent:narrated-presentation-video-team:slide-video-producer",
+            "name": "slide-video-producer",
+            "description": "Produces still-slide visuals, narration audio, subtitles when needed, and final simple narrated presentation video exports."
+          },
+          {
+            "id": "team-local-agent:product-team:product-ui-ux-designer",
+            "name": "Product UI/UX Designer",
+            "description": "Explores product-independent requirements visually or evolves product experiences into production-ready UI/UX specifications and interactive reference models."
+          },
+          {
+            "id": "team-local-agent:product-team:ui-baseline-bootstrapper",
+            "name": "UI Baseline Bootstrapper",
+            "description": "Establishes or refreshes a browser-runnable baseline with UI parity to a selected product frontend."
+          },
+          {
+            "id": "team-local-agent:research-to-deck-team:deck-reviewer",
+            "name": "deck reviewer",
+            "description": "Reviews image-only pitch/research deck slides for research fidelity, readability, prompt-output quality, and readiness before final deck assembly."
+          },
+          {
+            "id": "team-local-agent:research-to-deck-team:deep-researcher",
+            "name": "deep researcher",
+            "description": "Performs deep research, writes the reasoning artifact, and prepares the evidence-backed handoff for deck planning."
+          },
+          {
+            "id": "team-local-agent:research-to-deck-team:infographic-powerpoint-designer",
+            "name": "infographic PowerPoint designer",
+            "description": "Turns an evidence-backed research handoff into an infographic-style slide deck and images-only PowerPoint package."
+          },
+          {
+            "id": "team-local-agent:software-engineering-team:api-e2e-engineer",
+            "name": "api e2e engineer",
+            "description": "Owns API/E2E coverage investigation for reviewed or direct low-risk implementation packages, durable coverage changes, repository and realistic-system execution through project-defined validation surfaces, percentage confidence scoring, environment setup, and evidence across actual system boundaries."
+          },
+          {
+            "id": "team-local-agent:software-engineering-team:architecture-reviewer",
+            "name": "architecture reviewer",
+            "description": "Reviews selected large or high-risk architecture packages before implementation and checks cross-artifact coherence, spine inventory, ownership, naming, interface boundaries, decoupling, and persisted-data transition reasoning."
+          },
+          {
+            "id": "team-local-agent:software-engineering-team:code-reviewer",
+            "name": "code reviewer",
+            "description": "Reviews selected large or high-risk implementation source before API/E2E, reviews successful API/E2E test-code changes proportionately, and performs focused failure-origin review when API/E2E fails."
+          },
+          {
+            "id": "team-local-agent:software-engineering-team:delivery-engineer",
+            "name": "delivery engineer",
+            "description": "Owns verified delivery, repository finalization, release/deployment work, and the successful terminal return to Solution Designer after all applicable completion gates pass."
+          },
+          {
+            "id": "team-local-agent:software-engineering-team:implementation-engineer",
+            "name": "implementation engineer",
+            "description": "Executes a completed design against approved requirements, validates implementation-scoped behavior and rendered frontend quality when applicable, preserves task-size and architectural-risk classification, and prepares the selected downstream handoff."
+          },
+          {
+            "id": "team-local-agent:software-engineering-team:solution-designer",
+            "name": "solution designer",
+            "description": "Owns investigation, requirements engineering, explicit user approval, architecture design and solution refinement."
+          },
+          {
+            "id": "team-local-agent:software-product-promo-video-team:promo-director",
+            "name": "promo-director",
+            "description": "Coordinates software product promo video projects and owns product positioning, script, voiceover, measured timing, storyboard, CTA, and final message alignment."
+          },
+          {
+            "id": "team-local-agent:software-product-promo-video-team:promo-video-producer",
+            "name": "promo-video-producer",
+            "description": "Produces optional captions, audio-led segments, motion graphics, edit assembly, final export, and QA for software product promotional videos."
+          },
+          {
+            "id": "team-local-agent:software-product-promo-video-team:visual-director",
+            "name": "visual-director",
+            "description": "Plans, generates, edits, polishes, and logs truthful promo visuals for software product promotional videos."
+          },
+          {
+            "id": "team-local-agent:software-product-promo-video-team:visual-reviewer",
+            "name": "visual-reviewer",
+            "description": "Reviews produced promo visuals for truthfulness, non-text callout/highlight accuracy, UI readability, no-added-text discipline, aspect ratio, sensitive data, and readiness before video assembly."
+          },
+          {
+            "id": "team-local-agent:storm-team:article-polisher-verifier",
+            "name": "article polisher verifier",
+            "description": "Polishes the article, removes duplicate or weakly linked material, verifies citation coverage, and prepares the final handoff."
+          },
+          {
+            "id": "team-local-agent:storm-team:cited-article-writer",
+            "name": "cited article writer",
+            "description": "Populates the reviewed outline into a grounded long-form article with inline citations and source-aware prose."
+          },
+          {
+            "id": "team-local-agent:storm-team:expert-interviewer",
+            "name": "expert interviewer",
+            "description": "Runs perspective-guided question asking and retrieval-grounded simulated expert interviews to curate source-backed knowledge."
+          },
+          {
+            "id": "team-local-agent:storm-team:outline-architect",
+            "name": "outline architect",
+            "description": "Synthesizes curated interview evidence into a hierarchical, balanced, Wikipedia-like article outline."
+          },
+          {
+            "id": "team-local-agent:storm-team:perspective-miner",
+            "name": "perspective miner",
+            "description": "Discovers diverse research perspectives for a topic by surveying related high-quality sources and adjacent articles."
+          },
+          {
+            "id": "team-local-agent:storm-team:topic-research-coordinator",
+            "name": "topic research coordinator",
+            "description": "Bootstraps a STORM-style knowledge curation run, resolves topic goals, creates the workspace, and coordinates the artifact chain."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "workspaces",
+    "durationMs": 3.8857920000000377,
+    "status": 400,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Cannot query field \"id\" on type \"WorkspaceMetadata\".",
+          "locations": [
+            {
+              "line": 1,
+              "column": 13
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

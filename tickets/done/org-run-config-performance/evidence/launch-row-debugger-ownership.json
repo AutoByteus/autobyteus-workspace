@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-03T15:59:09.572491+00:00",
+  "backendPid": 45446,
+  "ownerMainPid": 44468,
+  "verifiedCommand": "44468 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 54640 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-3grOik/server-data",
+  "port9229WasFree": true,
+  "nonTerminatingProbeSignal": "SIGUSR1",
+  "purpose": "Disposable timing-only instrumentation of exact test-owned backend; no source edits"
+}

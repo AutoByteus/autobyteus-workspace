@@ -1,0 +1,6 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["env", "COMPARATOR=1", "START_RECEIPT=api3-baseline-start.json", "OUT_PREFIX=api3-baseline", "node", "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-setup.mjs"]
+start=2026-10-03T23:29:56.637548+00:00
+{"fixture":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/fixture-agent-package","capability":{"runtimeAvailabilities":[{"runtimeKind":"autobyteus","enabled":true,"reason":null},{"runtimeKind":"codex_app_server","enabled":true,"reason":null},{"runtimeKind":"claude_agent_sdk","enabled":true,"reason":null},{"runtimeKind":"antigravity_cli","enabled":true,"reason":null},{"runtimeKind":"grok_build","enabled":true,"reason":null}]},"cases":{"import":"Pass","exactCatalog":"Pass","sourceBytes":"Pass"},"errors":[]}
+
+exit=0 elapsed_seconds=4.409195625

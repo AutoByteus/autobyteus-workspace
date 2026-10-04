@@ -1,0 +1,19 @@
+{
+  "docsReviewed": [
+    "TESTING.md",
+    "autobyteus-server-ts/docs/modules/agent_execution.md",
+    "autobyteus-server-ts/docs/modules/agent_orgs.md",
+    "autobyteus-server-ts/docs/modules/run_history.md",
+    "autobyteus-web/docs/agent_orgs.md",
+    "autobyteus-web/docs/agent_teams.md"
+  ],
+  "relativeFileLinksExist": true,
+  "newLinkAnchorsReviewed": [
+    "runtime-identity-allocation",
+    "independent-runtime-readiness",
+    "scoped-org-publication-and-full-resynchronization",
+    "readiness-and-runtime-catalog-failure"
+  ],
+  "sourceChecked": "Integrated ac287c446db7af52956680313f60b9309e151d2b; no production/test edits beyond clean base merge",
+  "whitespace": "git diff --check for six changed docs exited 0"
+}

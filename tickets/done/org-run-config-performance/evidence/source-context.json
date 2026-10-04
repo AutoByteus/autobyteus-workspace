@@ -1,0 +1,17 @@
+{
+  "investigatedBase": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "installedVersion": "1.4.92",
+  "sourceUiVersion": "1.4.93",
+  "baselinePurpose": "Requirements investigation, no source-change validation",
+  "definitionSource": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "definitionSourceRevision": "cc54b541491523df41840e7fec02d0f26e9f5d79",
+  "org": "autobyteus-org",
+  "runtime": "codex_app_server",
+  "model": "gpt-6.1-sol",
+  "orgTeams": 3,
+  "configuredAgents": 10,
+  "packageSharedAgents": 7,
+  "packageTeamLocalAgents": 47,
+  "packageTeams": 14,
+  "definitionProvenanceCaveat": "Source working tree observed dirty; revision alone does not pin copied fixture content. No complete fixture hash retained."
+}

@@ -1,0 +1,8 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["env", "START_RECEIPT=api3-baseline-start.json", "OUT_PREFIX=api3-baseline", "TRACE_MODE=trace", "node", "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-backend-trace.mjs"]
+start=2026-10-03T23:38:25.300524+00:00
+{"n":1,"elapsedMs":1321.418334,"spans":25,"root":{"id":0,"parentId":null,"label":"AgentOrgRunService.create","start":546238.716667,"end":547556.574542,"durationMs":1317.8518330000807,"failed":false,"ancestors":[]}}
+{"n":2,"elapsedMs":980.2528340000001,"spans":25,"root":{"id":0,"parentId":null,"label":"AgentOrgRunService.create","start":547577.117958,"end":548554.471792,"durationMs":977.3533339999849,"failed":false,"ancestors":[]}}
+{"n":3,"elapsedMs":983.0302919999999,"spans":25,"root":{"id":0,"parentId":null,"label":"AgentOrgRunService.create","start":548572.8335,"end":549552.9245,"durationMs":980.0903750000289,"failed":false,"ancestors":[]}}
+
+exit=0 elapsed_seconds=3.390642833

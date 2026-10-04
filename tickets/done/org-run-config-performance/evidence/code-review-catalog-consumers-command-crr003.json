@@ -1,0 +1,26 @@
+{
+  "revision": "CRR-003",
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "tests/stores/llmProviderConfigStore.test.ts",
+    "composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts",
+    "components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+    "components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts",
+    "components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts",
+    "components/settings/__tests__/CompactionModelSettings.spec.ts",
+    "--run",
+    "--maxWorkers=2"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "startedAt": "2026-10-03T22:11:24.928109+00:00",
+  "completedAt": "2026-10-03T22:11:34.106241+00:00",
+  "exitCode": 0,
+  "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/code-review-catalog-consumers-crr003.log",
+  "scope": "shared real catalog publication/store and Team/application/Agent consumer boundary",
+  "note": "First focused run passed 8 actual files/77 tests; requested stores/__tests__/llmProviderConfig.spec.ts had no match. This second command names the actual tests/stores/llmProviderConfigStore.test.ts; no phantom store test pass inferred.",
+  "filesPassed": 6,
+  "testsPassed": 42
+}

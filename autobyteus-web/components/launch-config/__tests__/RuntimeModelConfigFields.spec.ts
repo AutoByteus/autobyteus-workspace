@@ -34,11 +34,12 @@ describe('RuntimeModelConfigFields stored historical values', () => {
       refreshLocalCatalog: vi.fn().mockResolvedValue([]),
       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       providerSnapshots: vi.fn().mockReturnValue([]),
+          catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
       providersWithModelsForSelection: vi.fn(() => providers),
     })
     ;(useRuntimeAvailabilityStore as any).mockReturnValue({
       availabilities: [],
-      fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
+      fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
       availabilityByKind: vi.fn((kind: string) => kind === 'removed-runtime' ? null : { enabled: true }),
       isRuntimeEnabled: vi.fn((runtimeKind: string) => runtimeKind !== 'removed-runtime'),
       runtimeReason: vi.fn().mockReturnValue(null),

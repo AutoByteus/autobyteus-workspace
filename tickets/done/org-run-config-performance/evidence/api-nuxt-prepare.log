@@ -1,0 +1,9 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["pnpm", "-C", "autobyteus-web", "exec", "nuxt", "prepare"]
+start=2026-10-03T20:37:53.931578+00:00
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+
+exit=0 elapsed_seconds=2.0466935410000002

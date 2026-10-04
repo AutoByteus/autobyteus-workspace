@@ -105,43 +105,32 @@ const nullableStringField = (value: unknown, label: string): string | null => {
   return stringField(value, label);
 };
 
-/** Strictly decodes only the AgentOrg branch. The Team union branch is
- * deliberately ignored because standalone Teams are sourced by the existing
- * workspace-history query and must not be duplicated. */
+/** One strict row decoder shared by collection and scoped observations. */
+export const parseAgentOrgHistoryItem = (value: unknown, requestedId?: string): AgentOrgRunHistoryItem => {
+  const item = record(value, 'AgentOrg history row');
+  if (item.root_subject_kind !== 'agent_org') throw new Error('Expected an AgentOrg history row.');
+  const rootRunId = stringField(item.root_run_id, 'AgentOrg root_run_id').trim();
+  const createdAt = stringField(item.created_at, 'AgentOrg created_at');
+  const archivedAt = nullableStringField(item.archived_at, 'AgentOrg archived_at');
+  const summary = stringField(item.summary, 'AgentOrg summary');
+  if (typeof item.is_active !== 'boolean') throw new Error('AgentOrg is_active must be a boolean.');
+  if (!rootRunId || (requestedId !== undefined && rootRunId !== requestedId)) throw new Error('AgentOrg history root identity mismatch.');
+  const executionTree = parseAgentOrgExecutionTree(item.org);
+  if (executionTree.rootOrg.orgRunId !== rootRunId) throw new Error(`AgentOrg history row '${rootRunId}' does not match its execution tree root.`);
+  return Object.freeze({
+    stableKey: `agent_org_run:${rootRunId}`, rootSubjectKind: 'agent_org', rootRunId,
+    createdAt, archivedAt, isActive: item.is_active, summary, executionTree,
+  });
+};
+
+/** Teams remain sourced by workspace history, not duplicated from this union. */
 export const parseAgentOrgHistoryItems = (value: unknown): AgentOrgRunHistoryItem[] => {
   if (!Array.isArray(value)) throw new Error('Collaboration root history must be an array.');
-  const result: AgentOrgRunHistoryItem[] = [];
-
-  for (const [index, candidate] of value.entries()) {
-    const item = record(candidate, `Collaboration history row ${index}`);
-    const kind = stringField(item.root_subject_kind, `Collaboration history row ${index} root_subject_kind`);
-    if (kind === 'agent_team') continue;
+  return value.flatMap(candidate => {
+    const item = record(candidate, 'Collaboration history row');
+    const kind = stringField(item.root_subject_kind, 'Collaboration history root_subject_kind');
+    if (kind === 'agent_team') return [];
     if (kind !== 'agent_org') throw new Error(`Unsupported collaboration root kind '${kind}'.`);
-
-    const rootRunId = stringField(item.root_run_id, `AgentOrg history row ${index} root_run_id`).trim();
-    const createdAt = stringField(item.created_at, `AgentOrg history row ${index} created_at`);
-    const archivedAt = nullableStringField(item.archived_at, `AgentOrg history row ${index} archived_at`);
-    const summary = stringField(item.summary, `AgentOrg history row ${index} summary`);
-    if (typeof item.is_active !== 'boolean') {
-      throw new Error(`AgentOrg history row ${index} is_active must be a boolean.`);
-    }
-    if (!rootRunId) throw new Error(`AgentOrg history row ${index} has an empty root_run_id.`);
-
-    const executionTree = parseAgentOrgExecutionTree(item.org);
-    if (executionTree.rootOrg.orgRunId !== rootRunId) {
-      throw new Error(`AgentOrg history row '${rootRunId}' does not match its execution tree root.`);
-    }
-    result.push(Object.freeze({
-      stableKey: `agent_org_run:${rootRunId}`,
-      rootSubjectKind: 'agent_org' as const,
-      rootRunId,
-      createdAt,
-      archivedAt,
-      isActive: item.is_active,
-      summary,
-      executionTree,
-    }));
-  }
-
-  return result;
+    return [parseAgentOrgHistoryItem(item)];
+  });
 };

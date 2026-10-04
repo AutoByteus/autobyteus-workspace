@@ -70,6 +70,29 @@ Collaboration-root operations:
 
 - `listCollaborationRootHistory`, which returns explicit `agent_team` or
   `agent_org` roots through family-specific strict loaders.
+- `getAgentOrgRootHistory(orgRunId)`, a nullable, subject-explicit read of one
+  current Org history row. It shares the collection's family projection:
+  an active root supplies its native snapshot, otherwise the stored tree is
+  read. Blank IDs and invalid/unreadable packages are errors, not empty success;
+  an absent row or inactive archived root is null.
+
+### Scoped Org Publication And Full Resynchronization
+
+After launch or an Org context/execution-tree/accepted-external-message update,
+the renderer reads the affected Org through `getAgentOrgRootHistory` instead
+of requesting a complete mixed history snapshot for that publication. Accepted
+results replace/remove only that row; unrelated rows and their identity remain.
+Per-root request sequences, store-state identity and the accepted full-snapshot
+revision prevent superseded scoped results from overwriting newer full state.
+Accepted scoped publication also invalidates older overlapping full reads.
+Scoped read errors remain attached to that root and do not erase good history.
+
+Initial loading and full resynchronization remain authoritative. Scoped
+publication does not remove global strict package readiness/structural
+admission, introduce a persistent index, or promise zero global history I/O.
+Navigation compares the displayed fields and Org row references rather than
+serializing complete workspace/Org subtrees for equality; it preserves normal
+selection, expansion and mounted-Team/task hierarchy.
 
 AgentOrg stored-run operations (owned by the AgentOrg run resolver rather than
 the mixed collaboration-root reader):

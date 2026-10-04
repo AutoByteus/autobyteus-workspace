@@ -1,0 +1,232 @@
+[
+  {
+    "name": "frontend-sdk-build",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-application-frontend-sdk",
+      "build"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "envOverrides": {},
+    "start": "2026-10-04T03:07:22.768951+00:00",
+    "elapsedSeconds": 1.164,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/frontend-sdk-build.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  },
+  {
+    "name": "nuxt-prepare",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "exec",
+      "nuxt",
+      "prepare"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "envOverrides": {},
+    "start": "2026-10-04T03:07:23.960710+00:00",
+    "elapsedSeconds": 1.863,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/nuxt-prepare.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  },
+  {
+    "name": "server-narrow",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/agent-execution/agent-run-identity-allocator.test.ts",
+      "tests/unit/runtime-management/runtime-availability-service.test.ts",
+      "tests/unit/run-history/services/collaboration-root-history-scoped.test.ts",
+      "tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+      "tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts",
+      "tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts",
+      "tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+      "tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-native-argument-converter.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-native-argument-persistence.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-native-tool-arguments-reader.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-native-tool-policy.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-brain-file.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "envOverrides": {},
+    "start": "2026-10-04T03:07:25.836750+00:00",
+    "elapsedSeconds": 17.277,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/server-narrow.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  },
+  {
+    "name": "web-narrow",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+      "components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+      "components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+      "stores/__tests__/agentOrgContextsStore.spec.ts",
+      "stores/__tests__/agentOrgHistoryApollo.spec.ts",
+      "stores/__tests__/agentOrgInspection.spec.ts",
+      "stores/__tests__/agentOrgRetainedRecovery.spec.ts",
+      "stores/__tests__/agentOrgRunConfigPublication.spec.ts",
+      "stores/__tests__/runHistoryNavigationProjection.spec.ts",
+      "stores/__tests__/runHistoryStore.spec.ts",
+      "stores/__tests__/runtimeCapabilitiesStore.spec.ts",
+      "components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+      "components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts",
+      "--run"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "envOverrides": {},
+    "start": "2026-10-04T03:07:43.127985+00:00",
+    "elapsedSeconds": 18.972,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/web-narrow.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  },
+  {
+    "name": "native-input-history",
+    "argv": [
+      "pnpm",
+      "test:native-input-history"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "envOverrides": {},
+    "start": "2026-10-04T03:08:02.115387+00:00",
+    "elapsedSeconds": 11.785,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/native-input-history.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  },
+  {
+    "name": "scoped-history-http",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "envOverrides": {},
+    "start": "2026-10-04T03:08:13.916771+00:00",
+    "elapsedSeconds": 4.181,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/scoped-history-http.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  },
+  {
+    "name": "org-publication-http",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "envOverrides": {
+      "RUN_AGY_FAILURE_E2E": "1",
+      "ANTIGRAVITY_CLI_COMMAND": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "AGY_ERROR_EVIDENCE_DIR": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/org-publication"
+    },
+    "start": "2026-10-04T03:08:18.111920+00:00",
+    "elapsedSeconds": 9.925,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/org-publication-http.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  },
+  {
+    "name": "native-arguments-http",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "envOverrides": {
+      "RUN_AGY_FAILURE_E2E": "1",
+      "ANTIGRAVITY_CLI_COMMAND": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs"
+    },
+    "start": "2026-10-04T03:08:28.051333+00:00",
+    "elapsedSeconds": 12.571,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/native-arguments-http.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  },
+  {
+    "name": "agy-transport-browser",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/agy-failure-transport.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "envOverrides": {
+      "RUN_AGY_FAILURE_E2E": "1",
+      "ANTIGRAVITY_CLI_COMMAND": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "RUN_AGY_ERROR_BROWSER": "1",
+      "AGY_ERROR_EVIDENCE_DIR": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/agy-transport"
+    },
+    "start": "2026-10-04T03:08:40.636839+00:00",
+    "elapsedSeconds": 34.391,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/agy-transport-browser.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  },
+  {
+    "name": "packaged-freshness",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:e2e:team-reload-member-freshness",
+      "--check-fresh-approval",
+      "--output-dir",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/team-freshness"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "elapsedSeconds": 302.586,
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/delivery-dr003/packaged-freshness.log",
+    "head": "ac287c446db7af52956680313f60b9309e151d2b"
+  }
+]

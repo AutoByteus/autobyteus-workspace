@@ -1,0 +1,10 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs"]
+start=2026-10-03T20:59:42.236831+00:00
+{"id":"PKG-01-unrelated-pending","expected":"PKG-01-unrelated-pending","result":"Fail","error":"AssertionError [ERR_ASSERTION]: Unrelated verification remains outstanding\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:13:636\n    at async check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:8:99)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:13:2","at":"2026-10-03T20:59:43.999Z"}
+AssertionError [ERR_ASSERTION]: Unrelated verification remains outstanding
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:13:636
+    at async check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:8:99)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:13:2
+
+exit=1 elapsed_seconds=1.8604768749999998

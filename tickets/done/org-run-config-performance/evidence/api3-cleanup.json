@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-03T23:58:41.732400+00:00",
+  "result": "Pass",
+  "ownedInstances": [
+    "iso-52493-c46a",
+    "iso-52965-ef9d",
+    "iso-53675-ad40"
+  ],
+  "retainedBaselineRootRemoved": true,
+  "currentRootRemoved": true,
+  "portsReleased": {
+    "52493": true,
+    "52494": true,
+    "52965": true,
+    "52966": true,
+    "53196": true,
+    "53197": true,
+    "53675": true,
+    "53676": true,
+    "9229": true
+  },
+  "removedOwnedSdkDist": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-application-backend-sdk/dist",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-application-sdk-contracts/dist"
+  ],
+  "reviewed11Hashes": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+      "sha256": "cc14f3ca51835bd2b4bae9d4ad5c63e306d83b65907da4c6e6d6baa345ea66b7",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "sha256": "d9d96954058f0b9a7c4dc8e3a0d344f2edf790ef53c5fc845432164f41538de4",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "sha256": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "sha256": "cdc8c0074c63300c7881a5f9b7761ebd8310aae9bbec2e8b57b5653c31e67885",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+      "sha256": "0df1be36f1c6a4b2cccd511e3cdaec175408e83cab4f27517db19721be2a5431",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "sha256": "939dea37db65a6cabb240a93cc08cbc38c6fa098a68dedd67dd3ca18e924f997",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "sha256": "2d054ebf92d9c8b2349a9e641aa9455466ccd19070f54443ee93518c0eb7c5d2",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "sha256": "644eedce01d5257993f8413ca6182a40b4e00fbceff37ad13e7b239898bd1bf0",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "sha256": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/utils/llmConfigSchema.ts",
+      "sha256": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts",
+      "sha256": "26446d6105207b9a36904179ea7b568d5d119db2b24ece8499c901d37131aae5",
+      "matches": true
+    }
+  ],
+  "approvalHash": "5444ff7b9069b37bd3cdf35aec3a3b3d732fb8a3bca3f31691f3a8af56841365",
+  "previousHttpTestUnchanged": true,
+  "primaryPreCleanup": "api3-pre-cleanup-verification.json",
+  "oldTransition": "api3-approved-base-current-reader.json",
+  "freshnessCleanup": "api3-team-member-freshness/evidence.json",
+  "agyCleanup": [
+    "api3-agy-transport/cleanup.json",
+    "api3-final-agy-transport/cleanup.json",
+    "api3-org-publication/cleanup.json"
+  ],
+  "othersLeftUntouched": true,
+  "noStageCommitMergePushReleaseInference": true
+}

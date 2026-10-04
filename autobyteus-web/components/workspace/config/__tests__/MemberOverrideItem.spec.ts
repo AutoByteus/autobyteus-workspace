@@ -163,6 +163,7 @@ describe('MemberOverrideItem', () => {
     llmStore = {
       providersWithModels: [],
       providerSnapshots: vi.fn(() => []),
+          catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
       providersWithModelsForSelection: vi.fn((runtimeKind: string) => runtimeProviders[runtimeKind] ?? []),
       fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
         const rows = runtimeProviders[runtimeKind] ?? []
@@ -174,7 +175,7 @@ describe('MemberOverrideItem', () => {
     runtimeAvailabilityStore = {
       availabilities: ['autobyteus', 'codex_app_server', 'claude_agent_sdk']
         .map((runtimeKind) => ({ runtimeKind, enabled: true, reason: null })),
-      fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
+      fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
       availabilityByKind: vi.fn((runtimeKind: string) =>
         runtimeAvailabilityStore.availabilities.find((row: any) => row.runtimeKind === runtimeKind) ?? null),
       isRuntimeEnabled: vi.fn(() => true),

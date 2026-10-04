@@ -88,19 +88,7 @@ export class AgentOrgExecutionTreeLocationService {
     }
     return output;
   }
-  async containsRunId(runIdInput: string): Promise<boolean> {
-    const runId = required(runIdInput, "runId");
-    for (const id of await this.listRootRunIds()) {
-      if (id === runId) return true;
-      if (!this.packageCatalog.isAdmitted(id)) continue;
-      const active = this.manager.getActive(id);
-      const tree = active?.getExecutionTreeSnapshot() ?? await this.readStoredTree(id);
-      if (!tree) continue;
-      const index = new AgentOrgExecutionIndex(tree);
-      if (index.getAgent(runId) || index.getTeam(runId)) return true;
-    }
-    return false;
-  }
+
   /** Active and admitted stored Org root run IDs, sorted. */
   async listRootRunIds(): Promise<string[]> {
     await this.packageCatalog.awaitReady();

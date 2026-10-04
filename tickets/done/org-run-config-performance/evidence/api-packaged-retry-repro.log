@@ -1,0 +1,10 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.mjs"]
+start=2026-10-03T21:05:22.490526+00:00
+AssertionError [ERR_ASSERTION]: Expected inherited configuration recovery after supported root and affected-Team retries
+
+true !== false
+
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-retry-repro.mjs:20:9
+
+exit=1 elapsed_seconds=7.831899542

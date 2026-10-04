@@ -68,6 +68,7 @@ beforeEach(() => {
   mocks.query.mockImplementation(async ({ query, variables }: any) => {
     const name = query.definitions[0].name.value
     if (name === 'ListCollaborationRootHistory') return historyResponse()
+    if (name === 'GetAgentOrgRootHistory') return { data: { getAgentOrgRootHistory: { ...historyResponse().data.listCollaborationRootHistory[0], is_active: !stopped } } }
     if (name === 'GetAgentOrgRunInspection') {
       if (stopped && !stoppedInspectionAvailable) throw new Error('Stopped inspection unavailable')
       const view = taskBearingView()
@@ -147,9 +148,16 @@ describe.each(['/director', '/team/lead'])('Org activity publication with select
     const before = history.getTreeNodes().flatMap((node) => node.agentOrgDefinitions).flatMap((group) => group.runs)[0]!
     const old = deferred<any>(), fresh = deferred<any>(), stop = deferred<any>()
     const fallback = mocks.query.getMockImplementation()!
-    let refreshes = 0
-    mocks.query.mockImplementation((input: any) => input.query.definitions[0].name.value === 'ListCollaborationRootHistory'
-      ? (++refreshes === 1 ? old.promise : fresh.promise) : fallback(input))
+    let refreshes = 0, scopedReads = 0
+    mocks.query.mockImplementation((input: any) => {
+      const name = input.query.definitions[0].name.value
+      if (name === 'ListCollaborationRootHistory') { ++refreshes; return old.promise }
+      if (name === 'GetAgentOrgRootHistory') {
+        expect(input.variables).toEqual({ orgRunId: 'org-run' })
+        ++scopedReads; return fresh.promise
+      }
+      return fallback(input)
+    })
     const pending = history.refreshAgentOrgHistory()
     await vi.waitFor(() => expect(refreshes).toBe(1))
     mocks.mutate.mockReturnValueOnce(stop.promise)
@@ -159,7 +167,8 @@ describe.each(['/director', '/team/lead'])('Org activity publication with select
     stopped = true
     stop.resolve({ data: { terminateAgentOrgRun: { success: true } } })
     await stopResult; await flushPromises()
-    expect(refreshes).toBe(inspectionAvailable ? 3 : 2)
+    expect(refreshes).toBe(1)
+    expect(scopedReads).toBe(inspectionAvailable ? 2 : 1)
     const assertStopped = () => {
       expect(wrapper!.find('[aria-label="Running"]').exists()).toBe(false)
       expect(wrapper!.find('[aria-label="Stopped"]').exists()).toBe(true)
@@ -180,7 +189,8 @@ describe.each(['/director', '/team/lead'])('Org activity publication with select
     assertStopped()
     old.resolve(historyResponse()); await pending; await flushPromises(); assertStopped()
     fresh.reject(new Error('Follow-up history unavailable')); await flushPromises(); assertStopped()
-    expect(history.historyFamilyErrors.agentOrg).toBe('Follow-up history unavailable')
+    expect(history.agentOrgHistoryItemErrors['org-run']).toBe('Follow-up history unavailable')
+    expect(history.historyFamilyErrors.agentOrg).toBeNull()
     expect(orgs.errorFor('org-run')).toBe(inspectionAvailable ? null : 'Stopped inspection unavailable')
     if (inspectionAvailable) expect(stopError).toBeNull()
     else expect(stopError).toBeInstanceOf(Error)

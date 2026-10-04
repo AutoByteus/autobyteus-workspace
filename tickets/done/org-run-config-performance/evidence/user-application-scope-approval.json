@@ -1,0 +1,22 @@
+{
+  "userMessages": [
+    "confirm. you are the solution designer you know more than me how to make our architecture good",
+    "good and clean. thanks lets go"
+  ],
+  "scopeQuestion": "Before I move this ticket into architecture design, do you approve the combined scope: remove historical collision scans from fresh UUID allocation, simplify Org history/new-row publication, and make verified Codex readiness independent of unrelated discovery\u2014while preserving required validation, exact model choices, and fresh/correct history?",
+  "approvedRequirementsBaseline": "SR-006",
+  "approvedRequirementIds": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-003",
+    "REQ-004",
+    "REQ-005",
+    "REQ-006",
+    "REQ-007"
+  ],
+  "approvedAcceptanceCriteria": "AC-001\u2013007",
+  "presentedRequirementsSha256": "5444ff7b9069b37bd3cdf35aec3a3b3d732fb8a3bca3f31691f3a8af56841365",
+  "frozenPresentedRequirements": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/approved-requirements-sr006.md",
+  "behaviorDefiningSupplements": "None; factual findings and root governance guide remain their own authorities.",
+  "limits": "Approval authorizes this requirements basis and architecture design; not release/deployment, review bypass, unrelated refactors, changed intended behavior, or user-data cleanup."
+}

@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-03T21:01:31.672859+00:00",
+  "backendPid": 674,
+  "ownerMainPid": 99493,
+  "verifiedCommand": "674 99493 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 64997 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7eqZ5e/server-data",
+  "port9229WasFree": true,
+  "nonTerminatingProbeSignal": "SIGUSR1",
+  "purpose": "Separate owned work-count instrumentation after primary low-observer UI samples"
+}

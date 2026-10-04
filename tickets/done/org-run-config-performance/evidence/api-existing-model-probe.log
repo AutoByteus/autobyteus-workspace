@@ -1,0 +1,10 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["pnpm", "-C", "autobyteus-web", "test:e2e:existing-run-model-config", "--output-dir", "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-existing-model", "--ledger-file", "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md"]
+start=2026-10-03T20:40:33.495823+00:00
+
+> autobyteus@1.4.93 test:e2e:existing-run-model-config /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> node tests/e2e/existing-run-model-config-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-existing-model --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md
+
+Existing run model-config probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-existing-model/existing-run-model-config-evidence.json
+
+exit=0 elapsed_seconds=19.15393425

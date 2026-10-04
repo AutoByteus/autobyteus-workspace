@@ -1,0 +1,27 @@
+{
+  "revision": "DR-002",
+  "result": "Blocked \u2014 User/External Prerequisite",
+  "matchingRules": [],
+  "rulesEvaluated": [
+    {
+      "rule": 1,
+      "matches": false,
+      "reason": "No code or packaging Local Fix discovered"
+    },
+    {
+      "rule": 2,
+      "matches": false,
+      "reason": "Upstream classification resolved as User/External Prerequisite; no Design Impact, Requirement Gap, Unclear issue, or outstanding upstream-classification work"
+    },
+    {
+      "rule": 3,
+      "matches": false,
+      "reason": "No user verification, integrated checks, repository finalization or safe cleanup; not Delivery Completed"
+    }
+  ],
+  "sendMessagePerformed": false,
+  "noMatchOutcome": "Incoming message is a returned boundary result, not a new work request; stop at existing user decision hold, avoid acknowledgement/reroute loop",
+  "questionRepeated": false,
+  "repositoryOrRuntimeOperationPerformed": false,
+  "terminalEligible": false
+}

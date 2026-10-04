@@ -1,0 +1,6 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["env", "RECEIPT=api2-packaged-restart.json", "AFTER_RESTART=1", "OUTPUT=api2-packaged-continuity-after-restart.json", "node", "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs"]
+start=2026-10-03T22:53:14.862659+00:00
+{"result":"Pass","oldFiles":10,"frames":[],"teamIdentity":"Pass"}
+
+exit=0 elapsed_seconds=0.578734042

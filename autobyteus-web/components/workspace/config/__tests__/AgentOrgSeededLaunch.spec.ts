@@ -16,19 +16,24 @@ import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agen
 import { GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
 import { GetAgentOrgReferencedAgent, GetAgentOrgReferencedTeam } from '~/graphql/queries/agentOrgDefinitionQueries'
 import { CreateAgentOrgRun } from '~/graphql/mutations/agentOrgRunMutations'
-const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), route: null as any, push: vi.fn(), replace: vi.fn(), models: vi.fn(), availability: vi.fn() }))
+const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), route: null as any, push: vi.fn(), replace: vi.fn(), models: vi.fn(), catalog: {} as any, availability: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
 vi.mock('vue-router', () => ({ useRoute: () => io.route, useRouter: () => ({ push: io.push, replace: io.replace }) }))
-vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshTreeQuietly: vi.fn(), applyAgentOrgActivity: vi.fn(), resolveWorkspaceMetadataByRootPath: () => null }) }))
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshAgentOrgHistoryItem: vi.fn(), applyAgentOrgActivity: vi.fn(), resolveWorkspaceMetadataByRootPath: () => null }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({
-  fetchProvidersWithModels: io.models, ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined), providerSnapshots: () => [],
+  fetchProvidersWithModels: async (runtimeKind: string) => {
+    io.catalog[runtimeKind] = { state: 'loading', errorMessage: null }
+    try { await io.models(runtimeKind); io.catalog[runtimeKind] = { state: 'ready', errorMessage: null } }
+    catch (error) { io.catalog[runtimeKind] = { state: 'error', errorMessage: (error as Error).message }; throw error }
+  }, ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined), providerSnapshots: () => [],
+  catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, ...io.catalog[runtimeKind] }),
   providersWithModelsForSelection: () => [{ provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
     models: ['root-model', 'direct-model', 'team-model', 'mounted-model', 'catalog-model'].map(id => ({ modelIdentifier: id, name: id, value: id, canonicalName: id,
       providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api', configSchema: { type: 'object', properties: { budget: { type: 'integer', minimum: 0 }, enabled: { type: 'boolean' } } } })) }],
 }) }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: () => ({
   availabilities: [{ runtimeKind: 'autobyteus', enabled: true }, { runtimeKind: 'codex_app_server', enabled: true }],
-  fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: io.availability,
+  fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: io.availability,
   isRuntimeEnabled: () => true, runtimeReason: () => null,
 }) }))
 const wrappers: ReturnType<typeof mount>[] = []
@@ -38,7 +43,7 @@ const envelope = (view: typeof fixture.view) => ({ data: { getAgentOrgRunInspect
 const panel = () => { const w = mount(Panel); wrappers.push(w); return w }
 const disabled = (w: ReturnType<typeof mount>) => w.get('[data-test="run-agent-org"]').attributes('disabled') !== undefined
 beforeEach(() => {
-  vi.clearAllMocks(); setActivePinia(createPinia()); fixture = seedFixture()
+  vi.clearAllMocks(); io.catalog = reactive({}); setActivePinia(createPinia()); fixture = seedFixture()
   io.route = reactive({ query: { definitionId: fixture.definition.id, sourceOrgRunId: 'org-run', mode: 'configuration' } })
   io.push.mockImplementation(async ({ query }) => { io.route.query = query })
   io.models.mockResolvedValue([]); io.availability.mockReturnValue({ enabled: true })

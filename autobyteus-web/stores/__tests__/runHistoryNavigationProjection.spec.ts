@@ -1,4 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { buildAgentOrgHistoryRow } from '~/test-support/historyFamilyPublicationFixture';
+import { parseAgentOrgHistoryItem } from '../runHistoryStoreSupport';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
 import {
@@ -258,4 +260,52 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
     expect(changed.state.teamNodes.find((team) => team.teamRunId === 'team-b'))
       .toBe(state.teamNodes.find((team) => team.teamRunId === 'team-b'));
   });
+});
+
+// Every typed presentation field must invalidate a changed Team branch, while
+// unrelated Team/bucket references remain stable. Domain trees are not compared.
+describe('typed navigation presentation equality', () => {
+  const changed = (value: unknown): unknown => typeof value === 'boolean' ? !value
+    : typeof value === 'number' ? value + 1 : `${value ?? ''}-changed`
+  it.each([
+    ...['teamDefinitionId', 'teamDefinitionName', 'workspaceRootPath', 'summary', 'lastActivityAt',
+      'isActive', 'deleteLifecycle', 'focusedAgentRunId'].map(field => ['team', field]),
+    ...['teamRunId', 'kind', 'memberAddress', 'displayName', 'agentRunId', 'teamDefinitionId',
+      'teamRunIdForNode', 'coordinatorAddress', 'workspaceRootPath', 'summary', 'lastActivityAt',
+      'currentStatus', 'isActive', 'deleteLifecycle'].map(field => ['root', field]),
+    ...['memberAddress', 'displayName', 'summary', 'currentStatus', 'isActive', 'deleteLifecycle']
+      .map(field => ['member', field]),
+    ...['teamRunId', 'memberAddress', 'agentRunId', 'teamRunIdForNode', 'rowKey', 'memberKind',
+      'displayName', 'depth', 'hasChildren'].map(field => ['execution', field]),
+    ...['transientKind', 'currentStatus', 'delegatedBy', 'opensOnAppear'].map(field => ['transient', field]),
+  ])('does not retain a previous %s with changed %s', (area, field) => {
+    const first = buildProjection()
+    const old = first.teamNodes.find(team => team.teamRunId === 'team-a')!
+    const other = first.teamNodes.find(team => team.teamRunId === 'team-b')!
+    const target = area === 'team' ? old : area === 'root' ? old.rootTeam
+      : area === 'member' ? old.members[0]!
+      : area === 'transient' ? old.executionRows.find(row => row.kind === 'transient_execution')!
+      : old.executionRows.find(row => row.kind === 'stable_member')!
+    expect(target).toBeDefined()
+    ;(target as any)[field!] = changed((target as any)[field!])
+    const next = buildProjection(AgentStatus.Running, first)
+    expect(next.teamNodes.find(team => team.teamRunId === 'team-a')).not.toBe(old)
+    expect(next.teamNodes.find(team => team.teamRunId === 'team-b')).toBe(other)
+    expect(next.teamNodesByWorkspaceRoot['/workspace-b']).toBe(first.teamNodesByWorkspaceRoot['/workspace-b'])
+  })
+})
+
+ it('retains unchanged authoritative Org rows by reference without serializing execution trees', () => {
+  const row = parseAgentOrgHistoryItem(buildAgentOrgHistoryRow({rootRunId:'org-row', workspaceRootPath:'/workspace-a'}));
+  const input = { workspaceGroups: [], agentAvatarByDefinitionId: {}, allWorkspaces: [], workspacesById: {},
+    agentContexts: new Map(), teamContexts: [], agentOrgHistory: [row] };
+  const first = buildRunHistoryNavigationProjection(input);
+  const serialization = vi.spyOn(JSON, 'stringify').mockImplementation(() => { throw new Error('Navigation serialized a domain tree'); });
+  try {
+    const same = buildRunHistoryNavigationProjection(input, first);
+    expect(same.workspaceNodes).toBe(first.workspaceNodes);
+    const replaced = buildRunHistoryNavigationProjection({...input,agentOrgHistory:[{...row,summary:'Updated'}]}, first);
+    expect(replaced.workspaceNodes).not.toBe(first.workspaceNodes);
+    expect(replaced.workspaceNodes[0]?.agentOrgDefinitions[0]?.runs[0]?.summary).toBe('Updated');
+  } finally { serialization.mockRestore(); }
 });

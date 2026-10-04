@@ -7,10 +7,11 @@ const store = vi.hoisted(() => ({
   ensureMissingDynamicProviders: vi.fn(),
   providersWithModelsForSelection: vi.fn(),
   providerSnapshots: vi.fn(),
+  catalogSnapshot: vi.fn(),
 }))
 const runtimeAvailabilityStore = vi.hoisted(() => ({
   availabilities: [{ runtimeKind: 'autobyteus', enabled: true, reason: null }],
-  fetchRuntimeAvailabilities: vi.fn(),
+  fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn(),
   isRuntimeEnabled: vi.fn(() => true),
   availabilityByKind: vi.fn(() => ({ runtimeKind: 'autobyteus', enabled: true, reason: null })),
   runtimeReason: vi.fn(() => null),
@@ -65,9 +66,12 @@ const flush = async () => {
   await Promise.resolve()
 }
 
+const catalogPublication = ref({ runtimeKind: 'autobyteus', state: 'ready', errorMessage: null, currentRequestId: 1 })
 describe('useRuntimeScopedModelSelection', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    catalogPublication.value = { runtimeKind: 'autobyteus', state: 'ready', errorMessage: null, currentRequestId: 1 }
+    store.catalogSnapshot.mockImplementation((runtimeKind: string) => ({ ...catalogPublication.value, runtimeKind }))
     runtimeAvailabilityStore.fetchRuntimeAvailabilities.mockResolvedValue(undefined)
     store.fetchProvidersWithModels.mockResolvedValue(undefined)
     store.refreshLocalCatalog.mockResolvedValue(undefined)
@@ -94,6 +98,7 @@ describe('useRuntimeScopedModelSelection', () => {
     expect(selection.providerSourceStatuses.value[0]?.sources[0]?.state).toBe('READY')
     expect(store.ensureMissingDynamicProviders).toHaveBeenCalledWith('autobyteus')
 
+    catalogPublication.value = { ...catalogPublication.value, currentRequestId: 2 }
     dynamic.resolve()
     await flush()
     expect(selection.modelIdentifiers.value).toEqual(['gpt-4.1', 'gateway-model'])
@@ -101,8 +106,6 @@ describe('useRuntimeScopedModelSelection', () => {
       state: 'STALE_ERROR',
       safeMessage: 'Discovery unavailable.',
     })
-    expect(store.providersWithModelsForSelection).toHaveBeenCalledTimes(2)
-    expect(store.providerSnapshots).toHaveBeenCalledTimes(2)
   })
 
   it('uses inherited runtime when the sparse stored runtime is absent', async () => {
@@ -144,6 +147,8 @@ describe('useRuntimeScopedModelSelection', () => {
 
     const selection = useRuntimeScopedModelSelection({ runtimeKind: ref('autobyteus') })
     await flush()
+    expect(selection.providerSourceStatuses.value[0]?.sources[0]?.state).toBe('READY')
+    catalogPublication.value = { ...catalogPublication.value, currentRequestId: 2 }
     dynamic.reject(new Error('unexpected aggregate failure'))
     await flush()
 
@@ -153,7 +158,5 @@ describe('useRuntimeScopedModelSelection', () => {
     )
     expect(selection.modelIdentifiers.value).toEqual(['retained-static'])
     expect(selection.providerSourceStatuses.value[0]?.sources[0]?.state).toBe('ERROR')
-    expect(store.providersWithModelsForSelection).toHaveBeenCalledTimes(2)
-    expect(store.providerSnapshots).toHaveBeenCalledTimes(2)
   })
 })

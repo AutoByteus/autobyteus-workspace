@@ -1,0 +1,426 @@
+{
+  "at": "2026-10-03T16:16:54.280193+00:00",
+  "primaryStressSeries": "launch-row-stored-history-500-light.json",
+  "primaryControlSeries": "launch-row-small-history.json",
+  "measurement": "Actual captured click -> exact new root row DOM/viewport bounds; not controller latency or compositor paint. Network duration measured separately; cross-process absolute timestamp offsets are approximate. Installed packaged1.4.93, no inference.",
+  "groups": [
+    {
+      "file": "launch-row-history-100.json",
+      "phase": "history-100",
+      "responseObservation": "full response observer in original series",
+      "failure": null,
+      "errors": [],
+      "consoleErrors": [],
+      "kinds": {
+        "warm": {
+          "count": 5,
+          "createMs": {
+            "minMs": 495.863,
+            "medianMs": 502.814,
+            "maxMs": 598.378
+          },
+          "rowVisibleMs": {
+            "minMs": 546.1999999880791,
+            "medianMs": 552.6000000238419,
+            "maxMs": 650.1000000238419
+          },
+          "workspaceMs": {
+            "minMs": 584.3999999761581,
+            "medianMs": 589.9000000357628,
+            "maxMs": 686
+          },
+          "historyResponses": {
+            "count": 16,
+            "maxBytes": 2082928,
+            "medianDurationMs": 6.489000000000001
+          },
+          "longTasks": []
+        },
+        "cold-renderer": {
+          "count": 1,
+          "createMs": {
+            "minMs": 510.094,
+            "medianMs": 510.094,
+            "maxMs": 510.094
+          },
+          "rowVisibleMs": {
+            "minMs": 569.1000000238419,
+            "medianMs": 569.1000000238419,
+            "maxMs": 569.1000000238419
+          },
+          "workspaceMs": {
+            "minMs": 604,
+            "medianMs": 604,
+            "maxMs": 604
+          },
+          "historyResponses": {
+            "count": 3,
+            "maxBytes": 2102765,
+            "medianDurationMs": 7.551
+          },
+          "longTasks": []
+        }
+      }
+    },
+    {
+      "file": "launch-row-renderer-profile.json",
+      "phase": "renderer-profile",
+      "responseObservation": "metadata-only except tiny create response; no history body cloning",
+      "failure": null,
+      "errors": [],
+      "consoleErrors": [],
+      "kinds": {
+        "warm": {
+          "count": 1,
+          "createMs": {
+            "minMs": 1165.253,
+            "medianMs": 1165.253,
+            "maxMs": 1165.253
+          },
+          "rowVisibleMs": {
+            "minMs": 1831.0999999642372,
+            "medianMs": 1831.0999999642372,
+            "maxMs": 1831.0999999642372
+          },
+          "workspaceMs": {
+            "minMs": 1269.7999999523163,
+            "medianMs": 1269.7999999523163,
+            "maxMs": 1269.7999999523163
+          },
+          "historyResponses": {
+            "count": 4,
+            "maxBytes": 10395134,
+            "medianDurationMs": 140.235
+          },
+          "longTasks": [
+            {
+              "start": 95674.20000004768,
+              "duration": 170
+            }
+          ]
+        }
+      }
+    },
+    {
+      "file": "launch-row-small-history.json",
+      "phase": "small-history",
+      "responseObservation": "full response observer in original series",
+      "failure": null,
+      "errors": [],
+      "consoleErrors": [],
+      "kinds": {
+        "warm": {
+          "count": 5,
+          "createMs": {
+            "minMs": 351.43,
+            "medianMs": 357.85,
+            "maxMs": 418.05
+          },
+          "rowVisibleMs": {
+            "minMs": 361.19999998807907,
+            "medianMs": 370.19999998807907,
+            "maxMs": 434.10000002384186
+          },
+          "workspaceMs": {
+            "minMs": 371.89999997615814,
+            "medianMs": 380.5,
+            "maxMs": 449
+          },
+          "historyResponses": {
+            "count": 16,
+            "maxBytes": 99228,
+            "medianDurationMs": 1.3695
+          },
+          "longTasks": []
+        },
+        "cold-renderer": {
+          "count": 5,
+          "createMs": {
+            "minMs": 379.039,
+            "medianMs": 458.092,
+            "maxMs": 512.193
+          },
+          "rowVisibleMs": {
+            "minMs": 388.4000000357628,
+            "medianMs": 468.19999998807907,
+            "maxMs": 530.7999999523163
+          },
+          "workspaceMs": {
+            "minMs": 403,
+            "medianMs": 485.80000001192093,
+            "maxMs": 538.3999999761581
+          },
+          "historyResponses": {
+            "count": 15,
+            "maxBytes": 198413,
+            "medianDurationMs": 1.654
+          },
+          "longTasks": []
+        }
+      }
+    },
+    {
+      "file": "launch-row-stored-history-100.json",
+      "phase": "stored-history-100",
+      "responseObservation": "full response observer in original series",
+      "failure": null,
+      "errors": [],
+      "consoleErrors": [],
+      "kinds": {
+        "warm": {
+          "count": 5,
+          "createMs": {
+            "minMs": 500.73,
+            "medianMs": 509.354,
+            "maxMs": 534.312
+          },
+          "rowVisibleMs": {
+            "minMs": 569.5999999642372,
+            "medianMs": 573.6999999880791,
+            "maxMs": 601.6999999880791
+          },
+          "workspaceMs": {
+            "minMs": 609.5999999642372,
+            "medianMs": 612.1999999880791,
+            "maxMs": 641.3999999761581
+          },
+          "historyResponses": {
+            "count": 16,
+            "maxBytes": 2202056,
+            "medianDurationMs": 31.3525
+          },
+          "longTasks": []
+        },
+        "cold-renderer": {
+          "count": 1,
+          "createMs": {
+            "minMs": 527.042,
+            "medianMs": 527.042,
+            "maxMs": 527.042
+          },
+          "rowVisibleMs": {
+            "minMs": 700.3000000119209,
+            "medianMs": 700.3000000119209,
+            "maxMs": 700.3000000119209
+          },
+          "workspaceMs": {
+            "minMs": 553.8000000119209,
+            "medianMs": 553.8000000119209,
+            "maxMs": 553.8000000119209
+          },
+          "historyResponses": {
+            "count": 3,
+            "maxBytes": 2221893,
+            "medianDurationMs": 49.976
+          },
+          "longTasks": [
+            {
+              "start": 3562.800000011921,
+              "duration": 50
+            }
+          ]
+        }
+      }
+    },
+    {
+      "file": "launch-row-stored-history-500-light.json",
+      "phase": "stored-history-500-light",
+      "responseObservation": "metadata-only except tiny create response; no history body cloning",
+      "failure": null,
+      "errors": [],
+      "consoleErrors": [],
+      "kinds": {
+        "warm": {
+          "count": 5,
+          "createMs": {
+            "minMs": 1116.96,
+            "medianMs": 1255.543,
+            "maxMs": 1345.628
+          },
+          "rowVisibleMs": {
+            "minMs": 1723.699999988079,
+            "medianMs": 1765.800000011921,
+            "maxMs": 1990.800000011921
+          },
+          "workspaceMs": {
+            "minMs": 1214.5,
+            "medianMs": 1360.6000000238419,
+            "maxMs": 1455.5
+          },
+          "historyResponses": {
+            "count": 15,
+            "maxBytes": 10276112,
+            "medianDurationMs": 186.482
+          },
+          "longTasks": [
+            {
+              "start": 153249.09999996424,
+              "duration": 158
+            },
+            {
+              "start": 155686,
+              "duration": 151
+            },
+            {
+              "start": 158307.09999996424,
+              "duration": 160
+            },
+            {
+              "start": 160958.5,
+              "duration": 162
+            },
+            {
+              "start": 163739.69999998808,
+              "duration": 183
+            }
+          ]
+        },
+        "cold-renderer": {
+          "count": 5,
+          "createMs": {
+            "minMs": 1046.062,
+            "medianMs": 1054.911,
+            "maxMs": 1281.176
+          },
+          "rowVisibleMs": {
+            "minMs": 1689.199999988079,
+            "medianMs": 1734.5,
+            "maxMs": 2046.5
+          },
+          "workspaceMs": {
+            "minMs": 1112.699999988079,
+            "medianMs": 1121.300000011921,
+            "maxMs": 1356.300000011921
+          },
+          "historyResponses": {
+            "count": 15,
+            "maxBytes": 10375297,
+            "medianDurationMs": 207.221
+          },
+          "longTasks": [
+            {
+              "start": 5067.099999964237,
+              "duration": 223
+            },
+            {
+              "start": 5194.600000023842,
+              "duration": 226
+            },
+            {
+              "start": 4851.5,
+              "duration": 224
+            },
+            {
+              "start": 4824.700000047684,
+              "duration": 218
+            },
+            {
+              "start": 4814.800000011921,
+              "duration": 230
+            }
+          ]
+        }
+      }
+    },
+    {
+      "file": "launch-row-stored-history-500.json",
+      "phase": "stored-history-500",
+      "responseObservation": "full response observer in original series",
+      "failure": null,
+      "errors": [],
+      "consoleErrors": [],
+      "kinds": {
+        "warm": {
+          "count": 5,
+          "createMs": {
+            "minMs": 1057.218,
+            "medianMs": 1081.461,
+            "maxMs": 1207.657
+          },
+          "rowVisibleMs": {
+            "minMs": 1862,
+            "medianMs": 1878.3999999761581,
+            "maxMs": 1978.5
+          },
+          "workspaceMs": {
+            "minMs": 1165.5,
+            "medianMs": 1186.699999988079,
+            "maxMs": 1318.300000011921
+          },
+          "historyResponses": {
+            "count": 18,
+            "maxBytes": 10077742,
+            "medianDurationMs": 117.80199999999999
+          },
+          "longTasks": [
+            {
+              "start": 551672.0999999642,
+              "duration": 158
+            },
+            {
+              "start": 554387.6999999881,
+              "duration": 160
+            },
+            {
+              "start": 557029.3999999762,
+              "duration": 159
+            },
+            {
+              "start": 559732.8000000119,
+              "duration": 163
+            },
+            {
+              "start": 562710.1999999881,
+              "duration": 159
+            }
+          ]
+        },
+        "cold-renderer": {
+          "count": 5,
+          "createMs": {
+            "minMs": 1063.649,
+            "medianMs": 1077.311,
+            "maxMs": 1186.413
+          },
+          "rowVisibleMs": {
+            "minMs": 1760.4000000357628,
+            "medianMs": 1784.199999988079,
+            "maxMs": 2280.699999988079
+          },
+          "workspaceMs": {
+            "minMs": 1133.699999988079,
+            "medianMs": 1148.0999999642372,
+            "maxMs": 1252.5999999642372
+          },
+          "historyResponses": {
+            "count": 16,
+            "maxBytes": 10176927,
+            "medianDurationMs": 256.9315
+          },
+          "longTasks": [
+            {
+              "start": 5263.400000035763,
+              "duration": 222
+            },
+            {
+              "start": 5934.599999964237,
+              "duration": 214
+            },
+            {
+              "start": 5557.099999964237,
+              "duration": 222
+            },
+            {
+              "start": 5414.600000023842,
+              "duration": 219
+            },
+            {
+              "start": 6654.699999988079,
+              "duration": 263
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -5,6 +5,8 @@ import type {
   AgentOrgRunHistoryItem,
   RunHistoryWorkspaceGroup,
   TeamTreeNode,
+  TeamMemberTreeRow,
+  RunHistoryTeamExecutionRow,
   WorkspaceHistoryWorkspaceNode,
 } from './runHistoryTypes';
 import {
@@ -78,16 +80,61 @@ const retainEqualNodes = <T extends object>(
   previous: readonly T[],
   next: readonly T[],
   keyOf: (node: T) => string,
+  equals: (left: T, right: T) => boolean,
 ): T[] => {
   const previousByKey = new Map(previous.map((node) => [keyOf(node), node]));
   const reconciled = next.map((node) => {
     const prior = previousByKey.get(keyOf(node));
-    return prior && JSON.stringify(prior) === JSON.stringify(node) ? prior : node;
+    return prior && equals(prior, node) ? prior : node;
   });
   return previous.length === reconciled.length && previous.every(
     (node, index) => node === reconciled[index],
   ) ? previous as T[] : reconciled;
 };
+
+const equalRows = <T>(left: readonly T[], right: readonly T[], equals: (a: T, b: T) => boolean): boolean =>
+  left.length === right.length && left.every((row, index) => equals(row, right[index]!));
+
+const equalWorkspace = (a: WorkspaceHistoryWorkspaceNode, b: WorkspaceHistoryWorkspaceNode): boolean =>
+  a.stableKey === b.stableKey && a.workspaceId === b.workspaceId && a.workspaceRootPath === b.workspaceRootPath
+  && a.workspaceName === b.workspaceName && a.workspaceKind === b.workspaceKind
+  && a.canRemoveFromWorkspaces === b.canRemoveFromWorkspaces
+  && equalRows(a.agents, b.agents, (a, b) => a.agentDefinitionId === b.agentDefinitionId
+    && a.agentName === b.agentName && a.agentAvatarUrl === b.agentAvatarUrl
+    && equalRows(a.runs, b.runs, (a, b) => a.runId === b.runId && a.summary === b.summary
+      && a.lastActivityAt === b.lastActivityAt && a.currentStatus === b.currentStatus
+      && a.lastKnownStatus === b.lastKnownStatus && a.isActive === b.isActive
+      && a.hasCollaboration === b.hasCollaboration && a.source === b.source && a.isDraft === b.isDraft))
+  && equalRows(a.agentOrgDefinitions, b.agentOrgDefinitions, (a, b) => a.stableKey === b.stableKey
+    && a.definitionId === b.definitionId && a.name === b.name && equalRows(a.runs, b.runs, (a, b) => a === b));
+
+const equalTeamMember = (a: TeamMemberTreeRow, b: TeamMemberTreeRow): boolean =>
+  a.teamRunId === b.teamRunId && a.kind === b.kind && a.memberAddress === b.memberAddress
+  && a.displayName === b.displayName && a.agentRunId === b.agentRunId && a.teamDefinitionId === b.teamDefinitionId
+  && a.teamRunIdForNode === b.teamRunIdForNode && a.coordinatorAddress === b.coordinatorAddress
+  && a.workspaceRootPath === b.workspaceRootPath && a.summary === b.summary
+  && a.lastActivityAt === b.lastActivityAt && a.currentStatus === b.currentStatus
+  && a.isActive === b.isActive && a.deleteLifecycle === b.deleteLifecycle
+  && equalRows(a.children, b.children, equalTeamMember);
+
+const equalTeamExecution = (a: RunHistoryTeamExecutionRow, b: RunHistoryTeamExecutionRow): boolean => {
+  if (a.kind !== b.kind || a.teamRunId !== b.teamRunId || a.memberAddress !== b.memberAddress
+    || a.agentRunId !== b.agentRunId || a.teamRunIdForNode !== b.teamRunIdForNode
+    || a.rowKey !== b.rowKey || a.memberKind !== b.memberKind || a.displayName !== b.displayName
+    || a.depth !== b.depth || a.hasChildren !== b.hasChildren) return false;
+  if (a.kind === 'stable_member' && b.kind === 'stable_member') return equalTeamMember(a.row, b.row);
+  return a.kind === 'transient_execution' && b.kind === 'transient_execution'
+    && a.transientKind === b.transientKind && a.currentStatus === b.currentStatus
+    && a.delegatedBy === b.delegatedBy && a.opensOnAppear === b.opensOnAppear;
+};
+
+const equalTeam = (a: TeamTreeNode, b: TeamTreeNode): boolean =>
+  a.teamRunId === b.teamRunId && a.teamDefinitionId === b.teamDefinitionId
+  && a.teamDefinitionName === b.teamDefinitionName && a.workspaceRootPath === b.workspaceRootPath
+  && a.summary === b.summary && a.lastActivityAt === b.lastActivityAt && a.isActive === b.isActive
+  && a.deleteLifecycle === b.deleteLifecycle && a.focusedAgentRunId === b.focusedAgentRunId
+  && equalTeamMember(a.rootTeam, b.rootTeam) && equalRows(a.members, b.members, equalTeamMember)
+  && equalRows(a.executionRows, b.executionRows, equalTeamExecution);
 
 const retainEqualWorkspaceTeamBuckets = (
   previous: Readonly<Record<string, TeamTreeNode[]>> | null | undefined,
@@ -139,10 +186,10 @@ export const buildRunHistoryNavigationProjection = (
     return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context) };
   });
   const workspaceNodes = previous
-    ? retainEqualNodes(previous.workspaceNodes, builtWorkspaceNodes, (node) => node.workspaceId)
+    ? retainEqualNodes(previous.workspaceNodes, builtWorkspaceNodes, (node) => node.workspaceId, equalWorkspace)
     : builtWorkspaceNodes;
   const teamNodes = previous
-    ? retainEqualNodes(previous.teamNodes, completedTeamNodes, (node) => node.teamRunId)
+    ? retainEqualNodes(previous.teamNodes, completedTeamNodes, (node) => node.teamRunId, equalTeam)
     : completedTeamNodes;
   const runIndexById: RunHistoryNavigationProjectionState['runIndexById'] = {};
   const runAncestryById: RunHistoryNavigationProjectionState['runAncestryById'] = {};

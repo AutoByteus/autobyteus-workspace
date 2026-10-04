@@ -1,0 +1,278 @@
+{
+  "at": "2026-10-03T20:35:37.926492+00:00",
+  "head": "f2dc1fd392201844bf28fdfdec26c7424a7ea7b2",
+  "branch": "codex/org-run-config-performance",
+  "statusBefore": " M tickets/in-progress/org-run-config-performance/implementation-handoff.md\n M tickets/in-progress/org-run-config-performance/implementation-revision-record.md\n?? tickets/in-progress/org-run-config-performance/code-review-report.md\n?? tickets/in-progress/org-run-config-performance/code-review-revision-record.md\n?? tickets/in-progress/org-run-config-performance/evidence/code-review-checks-crr001.json\n?? tickets/in-progress/org-run-config-performance/evidence/code-review-focused-web-crr001.log\n?? tickets/in-progress/org-run-config-performance/evidence/code-review-primary-handoff-receipt-crr001.json\n?? tickets/in-progress/org-run-config-performance/evidence/handoff-rules-crr001.json\n?? tickets/in-progress/org-run-config-performance/evidence/implementation-handoff-receipt-ir001.json\n?? tickets/in-progress/org-run-config-performance/evidence/implementation-routing-commit.log\n",
+  "coverage": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts",
+      "sha256": "d681c1f31a91b52c6a9f710b189f9d90bf2a137fbd0386c4cf85ec798f41ce76",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts",
+      "sha256": "a33eca48d60b4244ea5ea456ea89949915866c0d3470d7cf6e5a05a12852f07d",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts",
+      "sha256": "845bf40eb1ab83ce7f221a8dfaea20e8fcd0a58831239bdcb4425740051da740",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "sha256": "5a65ca09a4ea3a4919e7a53d580ba240fbb13b4067fd333a778cf6063def6f9e",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts",
+      "sha256": "7334589146db066d64f2ae3fafcc6ccfc49a09e40a7334509999b4bfc2ef8846",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/agent-execution/agent-run-identity-allocator.test.ts",
+      "sha256": "873b487dc3479b740f1b2c235593033d7dd4da9d935634f6324d984bfd8e2815",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+      "sha256": "daebf09e9d239162d890a79a3493a2d29ed6a99ecae15bc13f2ca90dd8bd15a3",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-config.test.ts",
+      "sha256": "91dd7cf16675c903fc288fc0502a88cdb25733f3102f760dfd0fd5df1a9b5eba",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts",
+      "sha256": "74c03e268e7e4aefefe70b0885d67add780767f70b2c37e015d71260de21632e",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts",
+      "sha256": "c78a79192066bcd82d70139e21b42344db322e84c6654c1a19c49e4ee31afa7b",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-readiness.test.ts",
+      "sha256": "1edc7145e674ded69809b506b7bee3f0f20117ddc3841215026541391f20f98b",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-scoped.test.ts",
+      "sha256": "0292f984ce5321bc5bc505ef85d14cd3af36a7bf888c5a0e3fd224b681c46c01",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/runtime-management/runtime-availability-service.test.ts",
+      "sha256": "93d2880cac139d9db42ca645286159d6933a4bb4fa502bc0f223a6b8291ee76d",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+      "sha256": "8e351b4258cfb1893f1fd20ba62de12c8a10d2785ad29db1ea3f7e9c08419675",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "sha256": "140ec2a6df1f0124e7785a29e27a653ab71caf541dc1c7913fc0d67bd918bd30",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts",
+      "sha256": "951f53fc2f85376f90188e02a514a065d8c1be93c10ac08ba8097ab9829f1b4b",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts",
+      "sha256": "7002a18edbd58f44e5a4babfd991638817a8b0b00e3dadacfea8ada2a411a52e",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts",
+      "sha256": "5cd26aa455d2c0e91308141418ab3807171b0265a26e0337450d171fda5ef5f3",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "sha256": "c25bde53cc5953f4b98f258dc009b62a2af64db2c85cd1bcaaca680631bd477c",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+      "sha256": "5a9fb7735d7b2339630d3c0810d8c22f9351fac3f73568fc76a2a8c9ed63c95d",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "sha256": "f3fa225222358df9b6671a0dcdf8e7b9dbff73b4bc72510f8e5c2e856b423007",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts",
+      "sha256": "f02a6a00abc7002414133736381cccdd9840b6bfbdb696ffe3644b7241fe4d4d",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts",
+      "sha256": "0fd062d64bf150fd8bea42cb59a72932d9578ca951353e54718bdd4f47742f5c",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts",
+      "sha256": "c05824eab16168220887f07464f88f89c99a72bf157ffe7dc1c2301e5b3d5da0",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "sha256": "d321e910b12d365926ac41d1e2f22ebbdf3ff6e4ed715d4e05a13ab7d20a6c2f",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+      "sha256": "10cc06f8193fd587b998ae6ea63124824a5426c59e6e789408700551f0cd9fb6",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "sha256": "25a86a71e5dd0c64cdfeee7a4e1d6e7d8b43a3dde57df374c337aa82a00013fe",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "sha256": "870ff50ee0d4a6aad8fa2c333e9fab14d62fd6d0c4e86afe3d8bbaed50df49ec",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "sha256": "f6d3af69faf1113a00f97b2fb544872b77349a2c96e014d2eda89939b27d9912",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts",
+      "sha256": "bb3843cecece0a9af9e84e8b2ce7efac495de3b2e656bb3386092b829490b2c5",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts",
+      "sha256": "f675f3228498d757af5d3d326e31f7ee7f11cf49eec933680df690175dc1520f",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+      "sha256": "3cb5bf9677b95839f3e24ac710a24a07dcf778ce43ed9302e60823937bd50359",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/chat/__tests__/chatLaunchService.spec.ts",
+      "sha256": "92c10dd54e59d980301f902dde1caecb804a9254a5d7ed639537f81998ab580c",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgContextsStore.spec.ts",
+      "sha256": "a15e3d5825d995409504484ccbeef6e488dd90a4ad1273ce4fd0c32d5f7cfa56",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgHistoryApollo.spec.ts",
+      "sha256": "4cf86b70aa1c74edf3fb22ac34fd570933ae480d759d215421b7c1e12824e0f5",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgInspection.spec.ts",
+      "sha256": "f7c8c6f813aecf2df5af65accc509cf7f21c557ae431f50b4ba6647b669a3d43",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgRetainedRecovery.spec.ts",
+      "sha256": "5ce1a6be05c7e8600691228a2203877cd46c2fe4655ccb056313c6f19d869a1b",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgRunConfigPublication.spec.ts",
+      "sha256": "d6e74758a8d9648585ae284d5baaa2f8bb05f4a107667c47ee7635fa6ed5f0a6",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/chatDraftStore.spec.ts",
+      "sha256": "8a96cd7ee99f1f9615c98aa6771e228ae30600900d4177b92660af77639b250d",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts",
+      "sha256": "c74f49b9af613b8acd80aa99f340179e58eb66b9f54bf5a9e96a9b638c7ca3b2",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+      "sha256": "5ea14fc33347a8e363c72e4ccc4f5af03253b02cd938661750335b5800b95642",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/runtimeCapabilitiesStore.spec.ts",
+      "sha256": "3e0fa16504521b82ca6d86a333a34d9a219fb2db148ef913d98b81ef9f2c9b45",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs",
+      "sha256": "ff56e3761fd8c90f4e3d47693b87325ba8197fbcb2889332543840a97b75c83a",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs",
+      "sha256": "a24229250065d97842f65ced43cc68ffb0f493273446c06d64861cc9860e2804",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts",
+      "sha256": "8d9e33338dcf8e9d1d78e491f24d91ae41d4abde58fef2853e1bd5771c049630",
+      "decision": "Still Valid",
+      "reason": "Current reviewed contract; repository controlled proof only; does not close HTTP/packaged gap."
+    }
+  ]
+}

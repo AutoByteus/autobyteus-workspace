@@ -1,0 +1,278 @@
+[
+  {
+    "runtime": "codex",
+    "iteration": 1,
+    "durationMs": 9.217084,
+    "steps": [
+      {
+        "command": "which",
+        "args": [
+          "codex"
+        ],
+        "code": 0,
+        "outputBytes": 30,
+        "durationMs": 9.204250000000002
+      }
+    ]
+  },
+  {
+    "runtime": "claude",
+    "iteration": 1,
+    "durationMs": 16.765249999999998,
+    "steps": [
+      {
+        "command": "which",
+        "args": [
+          "claude"
+        ],
+        "code": 0,
+        "outputBytes": 31,
+        "durationMs": 4.719584000000001
+      },
+      {
+        "command": "claude",
+        "args": [
+          "--version"
+        ],
+        "code": 0,
+        "outputBytes": 22,
+        "durationMs": 12.029708
+      }
+    ]
+  },
+  {
+    "runtime": "agy",
+    "iteration": 1,
+    "durationMs": 1498.4872500000001,
+    "steps": [
+      {
+        "command": "agy",
+        "args": [
+          "--help"
+        ],
+        "code": 0,
+        "outputBytes": 2901,
+        "durationMs": 62.130083
+      },
+      {
+        "command": "agy",
+        "args": [
+          "models"
+        ],
+        "code": 0,
+        "outputBytes": 853,
+        "durationMs": 1436.3315
+      }
+    ]
+  },
+  {
+    "runtime": "grok",
+    "iteration": 1,
+    "durationMs": 24.293250000000004,
+    "steps": [
+      {
+        "command": "grok",
+        "args": [
+          "--version"
+        ],
+        "code": 0,
+        "outputBytes": 36,
+        "durationMs": 12.299167
+      },
+      {
+        "command": "grok",
+        "args": [
+          "agent",
+          "--help"
+        ],
+        "code": 0,
+        "outputBytes": 2096,
+        "durationMs": 11.958999999999996
+      }
+    ]
+  },
+  {
+    "runtime": "codex",
+    "iteration": 2,
+    "durationMs": 8.724582999999939,
+    "steps": [
+      {
+        "command": "which",
+        "args": [
+          "codex"
+        ],
+        "code": 0,
+        "outputBytes": 30,
+        "durationMs": 8.60354099999995
+      }
+    ]
+  },
+  {
+    "runtime": "claude",
+    "iteration": 2,
+    "durationMs": 20.262707999999975,
+    "steps": [
+      {
+        "command": "which",
+        "args": [
+          "claude"
+        ],
+        "code": 0,
+        "outputBytes": 31,
+        "durationMs": 5.082458000000088
+      },
+      {
+        "command": "claude",
+        "args": [
+          "--version"
+        ],
+        "code": 0,
+        "outputBytes": 22,
+        "durationMs": 15.158458999999993
+      }
+    ]
+  },
+  {
+    "runtime": "agy",
+    "iteration": 2,
+    "durationMs": 1458.976333,
+    "steps": [
+      {
+        "command": "agy",
+        "args": [
+          "--help"
+        ],
+        "code": 0,
+        "outputBytes": 2901,
+        "durationMs": 67.44462500000009
+      },
+      {
+        "command": "agy",
+        "args": [
+          "models"
+        ],
+        "code": 0,
+        "outputBytes": 853,
+        "durationMs": 1391.508375
+      }
+    ]
+  },
+  {
+    "runtime": "grok",
+    "iteration": 2,
+    "durationMs": 27.711166999999932,
+    "steps": [
+      {
+        "command": "grok",
+        "args": [
+          "--version"
+        ],
+        "code": 0,
+        "outputBytes": 36,
+        "durationMs": 14.89975000000004
+      },
+      {
+        "command": "grok",
+        "args": [
+          "agent",
+          "--help"
+        ],
+        "code": 0,
+        "outputBytes": 2096,
+        "durationMs": 12.772249999999985
+      }
+    ]
+  },
+  {
+    "runtime": "codex",
+    "iteration": 3,
+    "durationMs": 7.117749999999887,
+    "steps": [
+      {
+        "command": "which",
+        "args": [
+          "codex"
+        ],
+        "code": 0,
+        "outputBytes": 30,
+        "durationMs": 7.112749999999778
+      }
+    ]
+  },
+  {
+    "runtime": "claude",
+    "iteration": 3,
+    "durationMs": 16.460000000000036,
+    "steps": [
+      {
+        "command": "which",
+        "args": [
+          "claude"
+        ],
+        "code": 0,
+        "outputBytes": 31,
+        "durationMs": 4.186666999999943
+      },
+      {
+        "command": "claude",
+        "args": [
+          "--version"
+        ],
+        "code": 0,
+        "outputBytes": 22,
+        "durationMs": 12.261041000000205
+      }
+    ]
+  },
+  {
+    "runtime": "agy",
+    "iteration": 3,
+    "durationMs": 1485.3481249999995,
+    "steps": [
+      {
+        "command": "agy",
+        "args": [
+          "--help"
+        ],
+        "code": 0,
+        "outputBytes": 2901,
+        "durationMs": 63.28708299999971
+      },
+      {
+        "command": "agy",
+        "args": [
+          "models"
+        ],
+        "code": 0,
+        "outputBytes": 853,
+        "durationMs": 1422.0251249999997
+      }
+    ]
+  },
+  {
+    "runtime": "grok",
+    "iteration": 3,
+    "durationMs": 23.378416000000016,
+    "steps": [
+      {
+        "command": "grok",
+        "args": [
+          "--version"
+        ],
+        "code": 0,
+        "outputBytes": 36,
+        "durationMs": 11.982625000000098
+      },
+      {
+        "command": "grok",
+        "args": [
+          "agent",
+          "--help"
+        ],
+        "code": 0,
+        "outputBytes": 2096,
+        "durationMs": 11.380040999999892
+      }
+    ]
+  }
+]

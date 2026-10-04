@@ -68,6 +68,7 @@ const createAgentBackend = (input: {
     runtimeKind: RuntimeKind.AUTOBYTEUS,
     getContext: () => context,
     isActive: () => active,
+    compactionRecovery: { kind: "unsupported" },
     getPlatformAgentRunId: () => null,
     getLifecycleSnapshot: () => ({
       availability: active ? "active" : "offline",
@@ -180,15 +181,10 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
         },
       });
       const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-        AgentRunIdentityAllocator.getInstance({
-          memoryDir,
+        new AgentRunIdentityAllocator({
           agentDefinitionService: {
             getAgentDefinitionById: async (id: string) => ({ id, name: id }) as never,
           },
-          agentRunManager: { hasActiveRun: () => false },
-          agentRunMetadataService: { readMetadata: async () => null },
-          teamRunExecutionTreeLocationService: { containsRunId: async () => false },
-          createToken: () => "00000000000000000000000000000000",
         }),
       );
       const teamRunManager = new AgentTeamRunManager({

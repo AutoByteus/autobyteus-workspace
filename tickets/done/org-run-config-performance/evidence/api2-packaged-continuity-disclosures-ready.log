@@ -1,0 +1,6 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-continuity.mjs"]
+start=2026-10-03T22:52:02.612260+00:00
+{"result":"Pass","oldFiles":10,"frames":["CONNECTED","ROOT_EXECUTION_VIEW_SNAPSHOT","ROOT_LIFECYCLE","ROOT_LIFECYCLE"],"teamIdentity":"Pass"}
+
+exit=0 elapsed_seconds=0.845473

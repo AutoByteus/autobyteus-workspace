@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-03T23:38:25.145838+00:00",
+  "backendPid": 45455,
+  "ownerMainPid": 44478,
+  "verifiedCommand": "45455 44478 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 52494 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8G8x42/server-data",
+  "port9229WasFree": true,
+  "nonTerminatingProbeSignal": "SIGUSR1",
+  "primaryCompleteBeforeHooks": true
+}

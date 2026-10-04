@@ -1,0 +1,9 @@
+// Synthetic, test-owned idle histories through public API. Not a product journey and no model turns.
+import fs from 'node:fs/promises';import path from 'node:path';import {performance} from 'node:perf_hooks';
+const out=path.join(process.cwd(),'tickets/in-progress/org-run-config-performance/evidence');const info=JSON.parse(await fs.readFile(path.join(out,'launch-row-isolated-start.json'),'utf8')).result;
+const input=JSON.parse(await fs.readFile(path.join(out,'launch-row-small-history.json'),'utf8')).samples[0].sample.postData;
+const n=Number(process.env.COUNT??90), phase=process.env.POPULATION??'to-100';const results=[];
+const query='mutation CreateAgentOrgRun($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}';
+const concurrency=Number(process.env.CONCURRENCY??1);let next=1,done=0;
+async function worker(){while(next<=n){const k=next++;const t=performance.now();const response=await fetch(info.graphqlUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({operationName:'CreateAgentOrgRun',query,variables:{input}})});const data=await response.json();const result={k,durationMs:performance.now()-t,status:response.status,body:data};results.push(result);done++;if(!data.data?.createAgentOrgRun?.success)throw Error(JSON.stringify(result));if(done%10===0||done===n){await fs.writeFile(path.join(out,`launch-row-populate-${phase}.json`),JSON.stringify({phase,input,concurrency,results:[...results].sort((a,b)=>a.k-b.k)},null,2)+'\n');console.log(JSON.stringify({phase,done,durationMs:result.durationMs}));}}}
+await Promise.all(Array.from({length:concurrency},()=>worker()));await fs.writeFile(path.join(out,`launch-row-populate-${phase}.json`),JSON.stringify({phase,input,concurrency,results:results.sort((a,b)=>a.k-b.k)},null,2)+'\n');

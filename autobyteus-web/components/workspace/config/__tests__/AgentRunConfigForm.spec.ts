@@ -53,6 +53,7 @@ describe('AgentRunConfigForm', () => {
     llmStore = {
       providerRows: [],
       providerSnapshots: vi.fn(() => []),
+          catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
       providersWithModelsForSelection: vi.fn(() =>
         llmStore.providerRows.filter((provider: any) => provider.models.length > 0),
       ),
@@ -74,7 +75,7 @@ describe('AgentRunConfigForm', () => {
         { runtimeKind: 'autobyteus', enabled: true, reason: null },
         { runtimeKind: 'codex_app_server', enabled: true, reason: null },
       ],
-      fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
+      fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
       availabilityByKind: vi.fn((runtimeKind: string) =>
         runtimeAvailabilityStore.availabilities.find((availability: any) => availability.runtimeKind === runtimeKind) ?? null,
       ),

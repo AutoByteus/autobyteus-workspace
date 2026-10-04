@@ -1,0 +1,4 @@
+{
+  "userMessage": "See, this is an anti-pattern, right? Definitely the anti-pattern, which it should be mentioned in the solution design best practices, right? Or do you think it's better to be called architecture design best practices? I think it's better to, yeah. I think this is better to be put, for example, this kind of, it's very typical. I think I experienced this problem many times now, over engineering. You can put this, you already put it as anti-pattern in the solution design best practices now, right?",
+  "scope": "Confirm concrete anti-patterns exist and make the broader premature-complexity lesson explicit; naming remains a question, no rename instruction inferred."
+}

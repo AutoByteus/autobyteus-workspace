@@ -1,0 +1,10 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader.mjs"]
+start=2026-10-03T23:55:25.483672+00:00
+locator.click: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'Open runs/history', exact: true })[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader.mjs:27:157
+
+exit=1 elapsed_seconds=21.226206666

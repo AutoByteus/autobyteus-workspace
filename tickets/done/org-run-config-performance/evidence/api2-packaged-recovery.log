@@ -1,0 +1,28 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs"]
+start=2026-10-03T22:29:41.805632+00:00
+AssertionError [ERR_ASSERTION]: [{"message":"Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/fixture-agent-package/agent-orgs/autobyteus-org' is external_read_only and cannot be written by the server runtime.","locations":[{"line":1,"column":49}],"path":["updateAgentOrgDefinition"],"extensions":{"code":"AGENT_ORG_DEFINITION_INVALID"}}]
+    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs:10:198)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async updateDefault (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs:13:89)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs:24:72
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: [{"message":"Definition source '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/fixture-agent-package/agent-orgs/autobyteus-org' is external_read_only and cannot be written by the server runtime.","locations":[{"line":1,"column":49}],"path":["updateAgentOrgDefinition"],"extensions":{"code":"AGENT_ORG_DEFINITION_INVALID"}}]
+    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs:10:198)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async updateDefault (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs:13:89)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs:44:142 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.1
+
+exit=1 elapsed_seconds=1.084866667

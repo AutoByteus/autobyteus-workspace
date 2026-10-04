@@ -1,0 +1,6 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+App data directory: /tmp/org-perf-implementation-server.9d34Vd
+ERROR: Configuration file not found: Error: Configuration file not found: /tmp/org-perf-implementation-server.9d34Vd/.env
+Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /tmp/org-perf-implementation-server.9d34Vd/.env
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_CONFIG_INITIALIZATION_FAILED","summary":"Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /tmp/org-perf-implementation-server.9d34Vd/.env","logPath":null}

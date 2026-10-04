@@ -90,9 +90,7 @@ export class TeamRunService {
     this.definitions = options.teamDefinitionService ?? AgentTeamDefinitionService.getInstance();
     this.catalog = options.teamRunHistoryCatalogService ?? getTeamRunHistoryCatalogService();
     this.workspaces = options.workspaceManager ?? getWorkspaceManager();
-    this.agentIdentityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
-      memoryDir: options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
-    });
+    this.agentIdentityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator();
     this.teamIdentityAllocator = options.teamRunIdentityAllocator ?? new TeamRunIdentityAllocator();
     this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
     this.admission = options.definitionAdmissionService ?? DefinitionAdmissionService.getInstance();

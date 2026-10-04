@@ -1,0 +1,6 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["env", "START_RECEIPT=api3-packaged-start.json", "OUT_PREFIX=api3-packaged", "TRACE_MODE=install", "node", "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-backend-trace.mjs"]
+start=2026-10-03T23:47:14.441623+00:00
+{"labels":["AgentOrgRunService.create","AgentOrgRunService.validateCompleteConfiguration","DefinitionAdmissionService.requireAvailable","AgentOrgRunPlanner.resolveConfiguration","AgentOrgRunPlanner.build","AgentRunIdentityAllocator.allocateForAgentDefinition","RunModelSelectionService.validateMany","ModelCatalogService.runtimeModelSelectionCatalog","AgentOrgRunManager.create","AgentOrgRunManager.materialize","AgentOrgExecutionScopeBuilder.build","RootRunPackageReadinessIndex.admitCurrent","RootRunPackageReadinessIndex.rebuild","RootRunPackageCurrentValidator.scan","AgentOrgRunExecutionTreeStore.read","AgentOrgRunHistoryCatalogService.recordCreated"],"enabled":false}
+
+exit=0 elapsed_seconds=0.06267575

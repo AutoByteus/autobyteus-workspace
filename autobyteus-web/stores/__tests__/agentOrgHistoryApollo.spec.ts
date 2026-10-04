@@ -12,110 +12,150 @@ const io = vi.hoisted(() => ({ client: null as any }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => true }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ agentDefinitions: [], fetchAllAgentDefinitions: async () => undefined }) }))
-let recovery: ReturnType<typeof vi.spyOn>
-let wrapper: ReturnType<typeof mount>
-const HISTORY = 'ListCollaborationRootHistory', WORKSPACE = 'ListWorkspaceRunHistory'
+let recovery: ReturnType<typeof vi.spyOn>, wrapper: ReturnType<typeof mount>
 let transport: ControlledOrgApollo, store: ReturnType<typeof useRunHistoryStore>
-const row = () => store.getTreeNodes().flatMap(w => w.agentOrgDefinitions).flatMap(d => d.runs)[0]!
-const load = (kind: string) => kind === 'full' ? store.fetchTree() : store.refreshAgentOrgHistory()
+const HISTORY = 'ListCollaborationRootHistory', ROOT = 'GetAgentOrgRootHistory', WORKSPACE = 'ListWorkspaceRunHistory'
+const row = (id = 'org-run') => store.agentOrgHistory.find(r => r.rootRunId === id)!
+const rawRow = (active: boolean, id = 'org-run') => {
+  const result = historyData(active).listCollaborationRootHistory[0]!
+  result.root_run_id = id; result.org.rootOrg.orgRunId = id
+  return result
+}
+const response = (kind: string, active: boolean, id = 'org-run') => kind === 'root'
+  ? { getAgentOrgRootHistory: rawRow(active, id) } : { listCollaborationRootHistory: [rawRow(active, id)] }
+const load = (kind: string, id = 'org-run') => kind === 'full' ? store.fetchTree()
+  : kind === 'collection' ? store.refreshAgentOrgHistory() : store.refreshAgentOrgHistoryItem(id)
 const workspace = { workspaceRootPath: '/workspace', workspaceName: 'Independent workspace', agentDefinitions: [], teamDefinitions: [] }
-function releaseWorkspace() { transport.pending(WORKSPACE).forEach(r => r.respond({ listWorkspaceRunHistory: [workspace] })) }
-async function count(n: number) { await vi.waitFor(() => expect(transport.named(HISTORY)).toHaveLength(n)); return transport.named(HISTORY) }
+const releaseWorkspace = () => transport.pending(WORKSPACE).forEach(r => r.respond({ listWorkspaceRunHistory: [workspace] }))
+async function call(kind: string, n: number) {
+  const name = kind === 'root' ? ROOT : HISTORY
+  await vi.waitFor(() => expect(transport.named(name)).toHaveLength(n))
+  return transport.named(name)[n - 1]!
+}
 beforeEach(() => {
   setActivePinia(createPinia()); transport = new ControlledOrgApollo(); io.client = transport.client
   recovery = vi.spyOn(useAgentOrgContextsStore(), 'reconcileRetainedHistory')
   store = useRunHistoryStore(); store.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true).listCollaborationRootHistory)
-  expect(row().isActive).toBe(true)
   wrapper = mount(defineComponent({ setup: () => () => h(WorkspaceAgentOrgHistoryCollection, {
-      avatars: { getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {} }, workspaceId: 'history', groups: store.getTreeNodes().flatMap(w => w.agentOrgDefinitions), state: { isAgentOrgDefinitionExpanded: () => true } as WorkspaceHistorySectionState, actions: {} }) }), { global: { stubs: { Icon: true } } })
+    avatars: { getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {} },
+    workspaceId: 'history', groups: store.getTreeNodes().flatMap(w => w.agentOrgDefinitions),
+    state: { isAgentOrgDefinitionExpanded: () => true } as WorkspaceHistorySectionState, actions: {},
+  }) }), { global: { stubs: { Icon: true } } })
   expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(true)
 })
 afterEach(() => { wrapper.unmount(); transport.client.stop(); vi.restoreAllMocks() })
 
-describe.each(['full', 'focused'])('old %s history', older => {
-  it.each(['full', 'focused'].flatMap(newer => [true, false].flatMap(oldFirst => ['inactive', 'network', 'graphql', 'malformed'].map(result => ({ newer, oldFirst, result })))))(
-    'new $newer $result oldFirst=$oldFirst', async ({ newer, oldFirst, result }) => {
-      const old = load(older)
-      const first = (await count(1))[0]!
-      const original = row()
+describe.each(['full', 'collection', 'root'])('old %s history', older => {
+  it.each(['full', 'collection', 'root'].flatMap(newer => [true, false].flatMap(oldFirst =>
+    ['inactive', 'network', 'graphql', 'malformed'].map(result => ({ newer, oldFirst, result })))))(
+    'new $newer $result oldFirst=$oldFirst preserves confirmed inactive UI/error truth', async ({ newer, oldFirst, result }) => {
+      const old = load(older); const first = await call(older, 1); const original = row()
       store.applyAgentOrgActivity('org-run', false)
       expect(row()).toEqual({ ...original, isActive: false })
-      // applyActivity starts its normal focused refresh; full refresh may also overlap.
-      await count(2)
-      await flushPromises()
-      expect(wrapper.find('[aria-label="Stopped"]').exists()).toBe(true)
-      expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(false)
-      const current = newer === 'full' ? load('full') : null
-      const calls = await count(newer === 'full' ? 3 : 2)
-      const latest = calls.at(-1)!
-      calls.forEach(r => expect(r.operation.getContext().queryDeduplication).toBe(false))
-      const finishOld = () => {
-        first.respond(historyData(true))
-        if (calls.length === 3) calls[1]!.respond(historyData(true))
-        releaseWorkspace()
-      }
+      await flushPromises(); expect(wrapper.find('[aria-label="Stopped"]').exists()).toBe(true)
+      const fresh = load(newer)
+      const latest = await call(newer, (newer === 'root') === (older === 'root') ? 2 : 1)
+      expect(first).not.toBe(latest)
+      ;[first, latest].forEach(r => expect(r.operation.getContext().queryDeduplication).toBe(false))
+      const finishOld = () => { first.respond(response(older, true)); releaseWorkspace() }
       if (oldFirst) { finishOld(); await old; expect(row().isActive).toBe(false) }
-      if (result === 'inactive') latest.respond(historyData(false))
+      if (result === 'inactive') latest.respond(response(newer, false))
       else if (result === 'network') latest.fail('new history failed')
       else if (result === 'graphql') latest.graphqlError('new GraphQL failure')
-      else latest.respond({ listCollaborationRootHistory: [{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: null, archived_at: null, is_active: false, summary: '', org: {} }] })
-      releaseWorkspace(); await current; await flushPromises()
+      else latest.respond(newer === 'root' ? { getAgentOrgRootHistory: {} } : { listCollaborationRootHistory: [{}] })
+      releaseWorkspace(); await fresh
+      const error = store.agentOrgHistoryError
+      expect(Boolean(error)).toBe(result !== 'inactive')
       expect(recovery).toHaveBeenCalledTimes(result === 'inactive' ? 1 : 0)
       if (result === 'inactive') expect(recovery).toHaveBeenCalledWith(['org-run'])
-      const error = store.historyFamilyErrors.agentOrg
-      if (result === 'inactive') expect(error).toBeNull()
-      else expect(error).toBeTruthy()
-      if (!oldFirst) { finishOld(); await old; await flushPromises() }
+      if (!oldFirst) { finishOld(); await old }
       expect(row()).toEqual({ ...original, isActive: false })
-      expect(recovery).toHaveBeenCalledTimes(result === 'inactive' ? 1 : 0)
-      expect(store.historyFamilyErrors.agentOrg).toBe(error)
-      expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(false)
-      if (older === 'full' || newer === 'full') {
-        expect(store.workspaceGroups).toEqual([workspace])
-        expect(store.historyFamilyErrors.workspace).toBeNull()
-      }
+      expect(store.agentOrgHistoryError).toBe(error)
+      await flushPromises(); expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(false)
+      if (older === 'full' || newer === 'full') expect(store.workspaceGroups).toEqual([workspace])
     },
   )
 })
-it.each(['full', 'focused'].flatMap(kind => [true, false].map(success => ({ kind, success }))))('obsolete $kind error cannot overwrite newer success=$success', async ({ kind, success }) => {
-  const old = load(kind); const first = (await count(1))[0]!
-  const fresh = store.refreshAgentOrgHistory(); const second = (await count(2))[1]!
-  if (success) second.respond(historyData(false)); else second.fail('latest failure')
-  await fresh
-  first.graphqlError('obsolete failure'); releaseWorkspace(); await old
-  expect(store.historyFamilyErrors.agentOrg).toBe(success ? null : 'latest failure')
-  expect(row().isActive).toBe(!success)
-  await flushPromises()
-  expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(!success)
+it.each(['full', 'collection'])('scoped publication invalidates an older %s collection regardless of response order', async kind => {
+  const old = load(kind); const first = await call(kind, 1)
+  const scope = load('root'); const latest = await call('root', 1)
+  latest.respond(response('root', false)); await scope
+  const retained = row(); first.respond(response(kind, true)); releaseWorkspace(); await old
+  expect(row()).toBe(retained); expect(row().isActive).toBe(false)
 })
-it('later independent active truth is not masked by a stopped overlay', async () => {
-  store.applyAgentOrgActivity('org-run', false); expect(row().isActive).toBe(false)
-  ;(await count(1))[0]!.respond(historyData(false)); await flushPromises()
-  const next = store.refreshAgentOrgHistory(); (await count(2))[1]!.respond(historyData(true)); await next
-  expect(row().isActive).toBe(true)
-  expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(true)
+it.each(['full', 'collection'].flatMap(kind => [true, false].map(scopeFirst => ({ kind, scopeFirst }))))(
+  'pending root versus newer $kind scopeFirst=$scopeFirst: first committed authority wins', async ({ kind, scopeFirst }) => {
+    const scoped = load('root'); const scope = await call('root', 1)
+    const full = load(kind); const snapshot = await call(kind, 1)
+    if (scopeFirst) {
+      scope.respond(response('root', false)); await scoped
+      snapshot.respond(response(kind, true)); releaseWorkspace(); await full
+      expect(row().isActive).toBe(false)
+    } else {
+      snapshot.respond(response(kind, false)); releaseWorkspace(); await full
+      scope.respond(response('root', true)); await scoped
+      expect(row().isActive).toBe(false)
+    }
+    expect(recovery).toHaveBeenCalledTimes(1)
+  },
+)
+it('same root overlapping requests are physically independent and late errors cannot overwrite the matching retry', async () => {
+  const old = load('root'); const first = await call('root', 1)
+  const fresh = load('root'); const second = await call('root', 2)
+  second.respond(response('root', false)); await fresh
+  first.graphqlError('obsolete failure'); await old
+  expect(store.agentOrgHistoryError).toBeNull(); expect(row().isActive).toBe(false)
 })
-it('preserves an unrelated exact root when publishing the confirmed inactive fact', async () => {
-  const other = structuredClone(store.agentOrgHistory[0]!)
-  other.rootRunId = 'other-root'; other.stableKey = 'agent_org:other-root'
-  other.executionTree.rootOrg.orgRunId = 'other-root'; other.summary = 'Unrelated conversation'
-  store.agentOrgHistory.push(other); store.refreshRunNavigationTopology('fixture')
-  const retainedOther = store.agentOrgHistory[1]
+it('different roots publish independently, retain unrelated references and remove only authoritative null', async () => {
+  store.agentOrgHistory.push(parseAgentOrgHistoryItems([rawRow(true, 'other-root')])[0]!)
+  const a = load('root'); const first = await call('root', 1)
+  const b = load('root', 'other-root'); const second = await call('root', 2)
+  second.respond(response('root', false, 'other-root')); await b
+  const other = row('other-root'); first.respond(response('root', false)); await a
+  expect(row('other-root')).toBe(other); expect(row().isActive).toBe(false)
+  const absent = load('root'); const third = await call('root', 3)
+  third.respond({ getAgentOrgRootHistory: null }); await absent
+  expect(row()).toBeUndefined(); expect(row('other-root')).toBe(other)
+})
+it('scoped failure/identity mismatch is not absence; successful root retry cannot clear collection or another root error', async () => {
+  const collection = load('collection'); const first = await call('collection', 1)
+  first.fail('collection failed'); await collection
+  const scoped = load('root'); const second = await call('root', 1); const retained = row()
+  second.respond(response('root', false, 'wrong-root')); await scoped
+  expect(row()).toBe(retained); expect(store.agentOrgHistoryItemErrors['org-run']).toContain('identity mismatch')
+  store.agentOrgHistoryItemErrors['other-root'] = 'other error'
+  const retry = load('root'); (await call('root', 2)).respond(response('root', false)); await retry
+  expect(store.historyFamilyErrors.agentOrg).toBe('collection failed')
+  expect(store.agentOrgHistoryItemErrors).toEqual({ 'other-root': 'other error' })
+  const resync = load('collection'); (await call('collection', 2)).respond(response('collection', true)); await resync
+  expect(store.agentOrgHistoryError).toBeNull()
+})
+it('full failure does not commit a revision that rejects an independent root read', async () => {
+  const scope = load('root'); const first = await call('root', 1)
+  const full = load('collection'); (await call('collection', 1)).fail('collection failed'); await full
+  first.respond(response('root', false)); await scope
+  expect(row().isActive).toBe(false); expect(store.historyFamilyErrors.agentOrg).toBe('collection failed')
+})
+it('equal/absent confirmed activity performs no I/O/publication; changed activity invalidates only its own root', async () => {
+  const topology = vi.spyOn(store, 'refreshRunNavigationTopology');
+  store.applyAgentOrgActivity('org-run', true); store.applyAgentOrgActivity('absent', false)
+  expect(topology).not.toHaveBeenCalled(); expect(transport.requests).toEqual([])
   store.applyAgentOrgActivity('org-run', false)
-  expect(store.agentOrgHistory[1]).toBe(retainedOther)
-  expect(store.agentOrgHistory[1]?.isActive).toBe(true)
-  expect(store.agentOrgHistory[1]?.summary).toBe('Unrelated conversation')
-  const call = (await count(1))[0]!
-  call.fail('unavailable'); await flushPromises()
-  expect(store.agentOrgHistory[1]).toBe(retainedOther)
+  expect(topology).toHaveBeenCalledTimes(1); expect(transport.requests).toEqual([])
+  const refresh = load('root'); (await call('root', 1)).respond(response('root', true)); await refresh
+  expect(row().isActive).toBe(true)
 })
-it('does not erase a workspace family on independent Org failure, or an Org family on workspace failure', async () => {
+it('reset rejects responses from old logical requests even after counters restart', async () => {
+  const old = load('root'); const first = await call('root', 1); store.$reset()
+  const current = load('root'); const second = await call('root', 2)
+  second.respond(response('root', false)); await current
+  first.respond(response('root', true)); await old; expect(row().isActive).toBe(false)
+})
+it('publishes accepted families only, including real avatar enrichment, and retains workspace on independent failure', async () => {
   store.workspaceGroups = [workspace]
-  const loading = store.fetchTree(); const org = (await count(1))[0]!
-  transport.pending(WORKSPACE)[0]!.fail('workspace unavailable')
-  org.respond(historyData(false)); await loading
-  expect(store.workspaceGroups).toEqual([workspace])
-  expect(store.historyFamilyErrors.workspace).toBe('workspace unavailable')
-  expect(store.historyFamilyErrors.agentOrg).toBeNull()
-  expect(row().isActive).toBe(false)
+  const topology = vi.spyOn(store, 'refreshRunNavigationTopology')
+  const loading = store.fetchTree(); const org = await call('full', 1)
+  transport.pending(WORKSPACE)[0]!.fail('workspace unavailable'); org.respond(response('full', false)); await loading
+  expect(store.workspaceGroups).toEqual([workspace]); expect(store.historyFamilyErrors.workspace).toBe('workspace unavailable')
+  expect(topology).toHaveBeenCalledTimes(1); expect(topology).toHaveBeenCalledWith('agent-org-history-ready')
 })

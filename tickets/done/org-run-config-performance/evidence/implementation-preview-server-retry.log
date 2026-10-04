@@ -1,0 +1,200 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+App data directory: /tmp/org-perf-implementation-server.9d34Vd
+Config file path: /tmp/org-perf-implementation-server.9d34Vd/.env
+Loading environment from: /tmp/org-perf-implementation-server.9d34Vd/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/org-perf-implementation-server.9d34Vd/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/org-perf-implementation-server.9d34Vd
+DB DIRECTORY: /tmp/org-perf-implementation-server.9d34Vd/db
+LOGS DIRECTORY: /tmp/org-perf-implementation-server.9d34Vd/logs
+DOWNLOAD DIRECTORY: /tmp/org-perf-implementation-server.9d34Vd/download
+MEMORY DIRECTORY: /tmp/org-perf-implementation-server.9d34Vd/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:72921) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-03T19:45:33.902Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/org-perf-implementation-server.9d34Vd/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/org-perf-implementation-server.9d34Vd/temp_workspace.
+Initialized TempWorkspace at /tmp/org-perf-implementation-server.9d34Vd/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 46 items.
+Populating agent definition cache for the first time...
+[2026-10-03T19:45:34.668Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-03T19:45:34.677Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+Agent definition cache populated with 46 items.
+{"level":30,"time":1791056734686,"pid":72921,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62324"}
+{"level":30,"time":1791056734713,"pid":72921,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62297"}
+[2026-10-03T19:45:34.713Z] [INFO] [server.runtime] Server listening on 127.0.0.1:62297
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1791056882557,"pid":72921,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.44199997186660767,"msg":"http request completed"}
+Created terminal session cfbd6536-1ac2-47dc-9f08-6c106a2316a4 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: cfbd6536-1ac2-47dc-9f08-6c106a2316a4
+Terminal websocket attached for cwd /Users/normy
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to LM Studio at http://127.0.0.1:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+[CodexAppServerClient] stderr: 2026-10-03T19:48:42.694817Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed PTY session cfbd6536-1ac2-47dc-9f08-6c106a2316a4
+Terminal WebSocket disconnected: cfbd6536-1ac2-47dc-9f08-6c106a2316a4
+Created terminal session c1408d36-4602-4121-948a-290acbc285d6 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c1408d36-4602-4121-948a-290acbc285d6
+Terminal websocket attached for cwd /Users/normy
+{"level":40,"time":1791056971722,"pid":72921,"hostname":"MacBookPro","reqId":"req-4d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6080420017242432,"msg":"http request completed"}
+Closed PTY session c1408d36-4602-4121-948a-290acbc285d6
+Terminal WebSocket disconnected: c1408d36-4602-4121-948a-290acbc285d6
+Created terminal session b82a34c5-4b57-4e76-9647-829d243b0669 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b82a34c5-4b57-4e76-9647-829d243b0669
+Terminal websocket attached for cwd /Users/normy
+{"level":40,"time":1791056990876,"pid":72921,"hostname":"MacBookPro","reqId":"req-61","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21525001525878906,"msg":"http request completed"}
+Closed PTY session b82a34c5-4b57-4e76-9647-829d243b0669
+Terminal WebSocket disconnected: b82a34c5-4b57-4e76-9647-829d243b0669
+Created terminal session 694d663a-61fa-439a-8d31-328a598b381b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 694d663a-61fa-439a-8d31-328a598b381b
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 694d663a-61fa-439a-8d31-328a598b381b
+Terminal WebSocket disconnected: 694d663a-61fa-439a-8d31-328a598b381b
+Created terminal session fcaee124-6a24-48b4-8001-8cfab70b16ca using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: fcaee124-6a24-48b4-8001-8cfab70b16ca
+Terminal websocket attached for cwd /Users/normy
+{"level":40,"time":1791057455350,"pid":72921,"hostname":"MacBookPro","reqId":"req-ih","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7735829949378967,"msg":"http request completed"}
+Closed PTY session fcaee124-6a24-48b4-8001-8cfab70b16ca
+Terminal WebSocket disconnected: fcaee124-6a24-48b4-8001-8cfab70b16ca
+Created terminal session 0046bbb0-4679-4e54-b9e7-10e140ad2f0f using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 0046bbb0-4679-4e54-b9e7-10e140ad2f0f
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 0046bbb0-4679-4e54-b9e7-10e140ad2f0f
+Terminal WebSocket disconnected: 0046bbb0-4679-4e54-b9e7-10e140ad2f0f
+Created terminal session c18efc8b-3750-4fe3-8854-3049dbcc8f17 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c18efc8b-3750-4fe3-8854-3049dbcc8f17
+Terminal websocket attached for cwd /Users/normy
+[CodexAppServerClient] stderr: 2026-10-03T19:59:06.482336Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: 2026-10-03T19:59:42.334368Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed PTY session c18efc8b-3750-4fe3-8854-3049dbcc8f17
+Terminal WebSocket disconnected: c18efc8b-3750-4fe3-8854-3049dbcc8f17
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/tmp/org-perf-implementation-server.9d34Vd/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /tmp/org-perf-implementation-server.9d34Vd/temp_workspace
+Acquired file watcher lease for /tmp/org-perf-implementation-server.9d34Vd/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: fd65f73d-59fc-41fb-8fa0-5416bca6ba2f for workspace temp_ws_default
+Created file explorer session fd65f73d-59fc-41fb-8fa0-5416bca6ba2f for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: fd65f73d-59fc-41fb-8fa0-5416bca6ba2f for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+[CodexAppServerClient] stderr: 2026-10-03T20:00:06.153894Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Released file watcher lease for /tmp/org-perf-implementation-server.9d34Vd/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /tmp/org-perf-implementation-server.9d34Vd/temp_workspace
+FileExplorerSession closed: fd65f73d-59fc-41fb-8fa0-5416bca6ba2f
+Closed file explorer session fd65f73d-59fc-41fb-8fa0-5416bca6ba2f. Active sessions: 0
+File explorer WebSocket disconnected: fd65f73d-59fc-41fb-8fa0-5416bca6ba2f
+[2026-10-03T20:04:34.800Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+[2026-10-03T20:04:34.814Z] [INFO] [server.runtime] Server closed cleanly.

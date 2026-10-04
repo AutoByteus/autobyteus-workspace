@@ -1,0 +1,10 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["pnpm", "-C", "autobyteus-web", "test:e2e:team-reload-member-freshness", "--skip-build", "--check-fresh-approval", "--output-dir", "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-team-member-freshness", "--ledger-file", "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md"]
+start=2026-10-03T23:43:01.387060+00:00
+
+> autobyteus@1.4.93 test:e2e:team-reload-member-freshness /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> node tests/e2e/team-reload-member-freshness-probe.mjs --skip-build --check-fresh-approval --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-team-member-freshness --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/api-e2e-test-case-ledger.md
+
+Pass: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api3-team-member-freshness/evidence.json
+
+exit=0 elapsed_seconds=15.853642417000001

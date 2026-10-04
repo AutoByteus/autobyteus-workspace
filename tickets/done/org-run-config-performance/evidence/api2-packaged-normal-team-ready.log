@@ -1,0 +1,12 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs"]
+start=2026-10-03T22:39:37.310498+00:00
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(await run.isEnabled())
+
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs:24:44
+    at async check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs:8:73)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs:22:2
+
+exit=1 elapsed_seconds=2.643542333

@@ -1,0 +1,5 @@
+{
+  "userMessage": "What I mean is that when we start a new agent organization, when we run new agent organization, why do we need to scan those execution tree? It's kind of really strange to me. Why? What's the reason?",
+  "followup": "continue",
+  "classification": "Clarify necessity of old-tree scans during fresh creation; neither message explicitly approves requirements or design."
+}

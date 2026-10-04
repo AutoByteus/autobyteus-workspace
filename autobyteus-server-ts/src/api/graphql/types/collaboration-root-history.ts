@@ -1,4 +1,4 @@
-import { Field, ObjectType, Query, Resolver, createUnionType } from "type-graphql";
+import { Arg, Field, ObjectType, Query, Resolver, createUnionType } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { getStudioCollaborationRootHistoryService } from "../studio-application-api-services.js";
 
@@ -14,7 +14,7 @@ class AgentTeamRootHistoryObject {
 }
 
 @ObjectType()
-class AgentOrgRootHistoryObject {
+export class AgentOrgRootHistoryObject {
   @Field(() => String) root_subject_kind!: "agent_org";
   @Field(() => String) root_run_id!: string;
   @Field(() => String) created_at!: string;
@@ -35,4 +35,6 @@ export class CollaborationRootHistoryResolver {
   private readonly service = getStudioCollaborationRootHistoryService();
   @Query(() => [CollaborationRootHistoryUnion])
   listCollaborationRootHistory() { return this.service.list(); }
+  @Query(() => AgentOrgRootHistoryObject, { nullable: true })
+  getAgentOrgRootHistory(@Arg("orgRunId", () => String) orgRunId: string) { return this.service.getAgentOrg(orgRunId); }
 }

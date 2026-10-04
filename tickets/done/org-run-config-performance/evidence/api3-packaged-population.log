@@ -1,0 +1,29 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["env", "START_RECEIPT=api3-packaged-start.json", "OUT_PREFIX=api3-packaged", "node", "tickets/in-progress/org-run-config-performance/evidence/api3-packaged-populate.mjs"]
+start=2026-10-03T23:41:36.979820+00:00
+{"storedRoots":30,"lastSetupMs":334.80312499999945}
+{"storedRoots":50,"lastSetupMs":339.0123330000006}
+{"storedRoots":70,"lastSetupMs":343.04562499999884}
+{"storedRoots":90,"lastSetupMs":348.9738749999997}
+{"storedRoots":110,"lastSetupMs":391.721458}
+{"storedRoots":130,"lastSetupMs":364.3848749999961}
+{"storedRoots":150,"lastSetupMs":368.18541600000026}
+{"storedRoots":170,"lastSetupMs":380.33725000000413}
+{"storedRoots":190,"lastSetupMs":389.8368749999936}
+{"storedRoots":210,"lastSetupMs":448.50100000000384}
+{"storedRoots":230,"lastSetupMs":391.3448749999952}
+{"storedRoots":250,"lastSetupMs":490.32050000000163}
+{"storedRoots":270,"lastSetupMs":397.3548329999903}
+{"storedRoots":290,"lastSetupMs":412.40829200000735}
+{"storedRoots":310,"lastSetupMs":420.1428339999984}
+{"storedRoots":330,"lastSetupMs":420.50741699998616}
+{"storedRoots":350,"lastSetupMs":424.6604159999988}
+{"storedRoots":370,"lastSetupMs":427.7103750000242}
+{"storedRoots":390,"lastSetupMs":438.5919579999754}
+{"storedRoots":410,"lastSetupMs":537.8615839999984}
+{"storedRoots":430,"lastSetupMs":449.673833000008}
+{"storedRoots":450,"lastSetupMs":451.47375000000466}
+{"storedRoots":470,"lastSetupMs":456.1907920000085}
+{"storedRoots":490,"lastSetupMs":463.06858299998567}
+
+exit=0 elapsed_seconds=209.98436270800002

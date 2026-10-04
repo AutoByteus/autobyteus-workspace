@@ -54,9 +54,9 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
     url = started.mainUrl;
-    const availability = await graphql<{ runtimeAvailabilities: Array<{ runtimeKind: string; enabled: boolean; reason: string | null }> }>(
-      "{ runtimeAvailabilities { runtimeKind enabled reason } }");
-    expect(availability.runtimeAvailabilities.find((row) => row.runtimeKind === "grok_build"))
+    const availability = await graphql<{ runtimeAvailability: { runtimeKind: string; enabled: boolean; reason: string | null } }>(
+      "{ runtimeAvailability(runtimeKind: \"grok_build\") { runtimeKind enabled reason } }");
+    expect(availability.runtimeAvailability)
       .toEqual({ runtimeKind: "grok_build", enabled: true, reason: null });
     const catalog = await graphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
       "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }",

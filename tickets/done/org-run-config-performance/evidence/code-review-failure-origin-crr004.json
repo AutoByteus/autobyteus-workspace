@@ -1,0 +1,273 @@
+{
+  "revision": "CRR-004",
+  "entryPoint": "API/E2E Failure-Origin Review",
+  "at": "2026-10-03T23:12:32.090148+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "branch": "codex/org-run-config-performance",
+  "head": "f2dc1fd392201844bf28fdfdec26c7424a7ea7b2",
+  "base": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "sourceHashBasis": "Current uncommitted IR002, not HEAD alone; no source/test edit by reviewer",
+  "taskSize": "Medium",
+  "architecturalRisk": "High",
+  "trigger": {
+    "apiRevision": "API-REV-002",
+    "failure": "F-API-002",
+    "case": "API-009",
+    "command": {
+      "case": "API-009",
+      "argv": [
+        "pnpm",
+        "test:native-input-history"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+      "startedAt": "2026-10-03T22:42:10.485382+00:00",
+      "finishedAt": "2026-10-03T22:42:24.150239+00:00",
+      "exitCode": 1,
+      "elapsedSeconds": 13.663269041,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-input-history.log"
+    }
+  },
+  "decision": "Fail",
+  "classification": "Local Fix — API/E2E-owned stale test fixture / setup cleanup",
+  "finding": "CR-002",
+  "scenarioContract": {
+    "id": "CON-CR-002",
+    "actor": "API/E2E validation engineer",
+    "goal": "Run documented native-to-web supplemental validation and release only its owned disposable resources on setup rejection",
+    "independentAuthority": [
+      "TESTING.md:17,35–46",
+      "TESTING.md:201–202",
+      "requirements-doc.md:71–72,81",
+      "package.json:5"
+    ],
+    "entry": "pnpm test:native-input-history from assigned worktree",
+    "scenarioValidity": "Supported Normal Scenario (Operational / Contract)",
+    "reachability": "Reachable",
+    "forwardPath": "root script -> unchanged web boundary guard -> workspace Nuxt harness -> shared native fixture -> native producer + memory directory acquired -> obsolete catalog factory call -> constructor rejects before root admission -> caller has no returned close handle",
+    "consequence": "Both documented cases fail before FIFO/history assertions; acquired fixture cleanup is skipped and four owned directories remain until explicit API cleanup"
+  },
+  "candidateGate": {
+    "id": "CG-012",
+    "disposition": "Promote",
+    "proportionateResponse": "Adapt only shared test fixture to current createCollaboratorAdmission(catalog, modelSelectionValidator); release acquired owned resources if setup rejects; preserve the original error, native assertions and web/core boundary. No runtime compatibility alias or product-design expansion."
+  },
+  "factoryOriginProof": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+      "sha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+      "baseSha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+      "headSha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+      "byteIdenticalToBase": true,
+      "byteIdenticalToReviewedHead": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-definition-catalog.ts",
+      "sha256": "95866e2b826b6e06e48d8fd6173f394adde680253c23120341bff22ef198976b",
+      "baseSha256": "95866e2b826b6e06e48d8fd6173f394adde680253c23120341bff22ef198976b",
+      "headSha256": "95866e2b826b6e06e48d8fd6173f394adde680253c23120341bff22ef198976b",
+      "byteIdenticalToBase": true,
+      "byteIdenticalToReviewedHead": true
+    }
+  ],
+  "currentReworkHashChecks": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+      "reviewedSha256": "cc14f3ca51835bd2b4bae9d4ad5c63e306d83b65907da4c6e6d6baa345ea66b7",
+      "actualSha256": "cc14f3ca51835bd2b4bae9d4ad5c63e306d83b65907da4c6e6d6baa345ea66b7",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "reviewedSha256": "d9d96954058f0b9a7c4dc8e3a0d344f2edf790ef53c5fc845432164f41538de4",
+      "actualSha256": "d9d96954058f0b9a7c4dc8e3a0d344f2edf790ef53c5fc845432164f41538de4",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "reviewedSha256": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "actualSha256": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "reviewedSha256": "cdc8c0074c63300c7881a5f9b7761ebd8310aae9bbec2e8b57b5653c31e67885",
+      "actualSha256": "cdc8c0074c63300c7881a5f9b7761ebd8310aae9bbec2e8b57b5653c31e67885",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+      "reviewedSha256": "0df1be36f1c6a4b2cccd511e3cdaec175408e83cab4f27517db19721be2a5431",
+      "actualSha256": "0df1be36f1c6a4b2cccd511e3cdaec175408e83cab4f27517db19721be2a5431",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "reviewedSha256": "939dea37db65a6cabb240a93cc08cbc38c6fa098a68dedd67dd3ca18e924f997",
+      "actualSha256": "939dea37db65a6cabb240a93cc08cbc38c6fa098a68dedd67dd3ca18e924f997",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "reviewedSha256": "2d054ebf92d9c8b2349a9e641aa9455466ccd19070f54443ee93518c0eb7c5d2",
+      "actualSha256": "2d054ebf92d9c8b2349a9e641aa9455466ccd19070f54443ee93518c0eb7c5d2",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "reviewedSha256": "644eedce01d5257993f8413ca6182a40b4e00fbceff37ad13e7b239898bd1bf0",
+      "actualSha256": "644eedce01d5257993f8413ca6182a40b4e00fbceff37ad13e7b239898bd1bf0",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "reviewedSha256": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "actualSha256": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/utils/llmConfigSchema.ts",
+      "reviewedSha256": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "actualSha256": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts",
+      "reviewedSha256": "26446d6105207b9a36904179ea7b568d5d119db2b24ece8499c901d37131aae5",
+      "actualSha256": "26446d6105207b9a36904179ea7b568d5d119db2b24ece8499c901d37131aae5",
+      "matches": true
+    }
+  ],
+  "sourceContinuityCheck": [
+    {
+      "expectedSourceTestPathCount": 62,
+      "mismatches": [],
+      "basis": "IR001 60-path hashes overridden by the 11 current CRR003 repair hashes; continuity check only, not repeated structural review"
+    }
+  ],
+  "reviewedWebDeltaUnchanged": true,
+  "apiDurableTest": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts",
+    "sha256": "aff7553d61ced2d0c67d8e0ff88fa64d90716605f6aaf20c2ad7cc504265ef04",
+    "matchesReviewed": true,
+    "successfulTestCodeReview": "Pending — not this failed entry"
+  },
+  "frozenApprovalSha256": "5444ff7b9069b37bd3cdf35aec3a3b3d732fb8a3bca3f31691f3a8af56841365",
+  "cumulativePackageChecks": {
+    "apiIndexedReferenceCount": 483,
+    "missing": [],
+    "priorReviewerReferencesRetained": 376,
+    "originalUpstreamReferencesRetained": 198
+  },
+  "ownedFailureCaptureHashChecks": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-uXUI4z/raw_traces_active.jsonl",
+      "sha256": "204080906a1fcd6955d08bd6e161102dc9b7a92b03b22f7470ad894ca468ba80",
+      "matchesCleanupReceipt": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-uXUI4z/working_context_snapshot.json",
+      "sha256": "8989d2b86eaf9a95cb063fb5935dcb647ce19f060429c2eecf542fc98bc3ae7c",
+      "matchesCleanupReceipt": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-1H46CH/raw_traces_active.jsonl",
+      "sha256": "eb742d6cb19ba1f0fb6720461bc59429270db1326f8d81b4af1027fd861093cd",
+      "matchesCleanupReceipt": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-1H46CH/working_context_snapshot.json",
+      "sha256": "2b7988935cae529fd3eb7abe49aac2d265c8f0d2740656724bf77c8a9015f808",
+      "matchesCleanupReceipt": true
+    }
+  ],
+  "ownedFailureCleanup": {
+    "reportedRemovedDirectoryCount": 4,
+    "agentIdsMatchRawCommandLog": true,
+    "reviewerRemovedResources": false,
+    "scope": "API receipts and retained copies inspected; no claim of a native worker persisting after Vitest process exit"
+  },
+  "priorFindingResolution": {
+    "finding": "CR-001",
+    "apiFailure": "F-API-001",
+    "status": "Resolved — qualified current rebuilt packaged same-kind recovery",
+    "sourceReview": "CRR-003",
+    "apiExecution": "API-REV-002 / API-011",
+    "variants": [
+      {
+        "retryAt": "root",
+        "result": "Pass",
+        "initialRunDisabled": true,
+        "loadingRunDisabled": true,
+        "finalRuntime": "codex_app_server",
+        "finalRootModel": "OpenAI / GPT-6.1-Sol (default reasoning: low)",
+        "finalSchemaCount": 14,
+        "allReasoningEnabledLow": true,
+        "finalAlerts": [],
+        "finalRunDisabled": false,
+        "allMembersInherited": true
+      },
+      {
+        "retryAt": "inherited-member",
+        "result": "Pass",
+        "initialRunDisabled": true,
+        "loadingRunDisabled": true,
+        "finalRuntime": "codex_app_server",
+        "finalRootModel": "OpenAI / GPT-6.1-Sol (default reasoning: low)",
+        "finalSchemaCount": 14,
+        "allReasoningEnabledLow": true,
+        "finalAlerts": [],
+        "finalRunDisabled": false,
+        "allMembersInherited": true
+      }
+    ],
+    "pageErrors": [],
+    "definitionBeforeAfterEqual": true,
+    "noUpdateOrCreateOrgRunRequests": true,
+    "qualification": "Normal imported definition had no selected model at outage; exact GPT-6.1-Sol was explicitly selected after genuine response release. No claim of high config/draft epoch preservation from packaged probe or global different-runtime healing. Earlier unused authoring helper and stale observer text are not executed writes."
+  },
+  "earlierReviewAttribution": {
+    "productionReviewGapForFAPI002": false,
+    "reason": "Stale fixture and missing setup cleanup are statically observable when this shared native fixture is examined. It was unchanged and outside the prior selected implementation/rework test changes; CRR003 did not claim a whole-suite native-harness Pass. Current production callers already use getCollaboratorAdmission -> current factory. This is not a solely runtime-only issue or IR002 regression. CRR002 earlier recovery review gap remains historical."
+  },
+  "reviewerTestsOrAppExecuted": false,
+  "reviewerSourceOrTestEdits": false,
+  "baselineHarnessRerun": false,
+  "fullSourceAuditOrScorecardRepeated": false,
+  "sourceResultEffect": "CRR003 historical source-gate Pass unchanged; latest review Fail is test/setup-owned and APIREV002 Fail80/broader Required remains authoritative",
+  "evidenceHashes": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-input-history.log",
+      "sha256": "051af1a7bf9daf432e4094de3423ae19c3d5d2ca4126d570f1b0dead2406f08d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-fixture-cleanup.json",
+      "sha256": "125e1dfa823fe9aef018fff165d4ca3d67e588b1bb5f6a96b56bcb3e61b57b1a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-failure-origin-preliminary.json",
+      "sha256": "3497a17c2aacf114daf72cba5da95733a5e88d4aad3ede36d9dc8ddb01e47bbc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.json",
+      "sha256": "a12ae1ae200db000192a3f96b897ecc6a83a9b4ce9801f4eb03f7f99da71bed5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery.mjs",
+      "sha256": "54c3a66062990d06690d45d0c5fc9933bf45b663b5099b2d7a12d6b79a39f0bf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-recovery-qualified.log",
+      "sha256": "913e00fa37914cf003a11da20eb35457e0c2d9c25c4997f0f1701000ca24dc1f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-build-provenance.json",
+      "sha256": "d3657bc410154b084ff39882d3dc8db8315e344f7cd85910965fe58d48a3df68"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/code-review-source-result-crr003.md",
+      "sha256": "0aa6d3ab612a245d0ec7d581134a54691468e624483fe5fc63e7651112b38345"
+    }
+  ],
+  "nextGate": "Recheck FAPI002 first with current fixture and cleanup assertions/shared callers, then resume incomplete actual event/reference chains and current comparative phase/work-count proof; successful API/E2E later requires proportional durable test review",
+  "noCommitMergePushRelease": true
+}

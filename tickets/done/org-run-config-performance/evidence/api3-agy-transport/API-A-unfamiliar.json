@@ -1,0 +1,678 @@
+{
+  "run": {
+    "scope": "agent",
+    "rootId": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d",
+    "runId": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d",
+    "address": "/"
+  },
+  "expected": "Workspace service temporarily unavailable. Reference W-771; try again later.",
+  "frames": [
+    {
+      "type": "CONNECTED",
+      "payload": {
+        "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d",
+        "session_id": "e773aab4-c97d-499c-a093-65da8940be82"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 1,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 2,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "dedupe_key": "agent_run_input:e2e:e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "turn_id": null,
+            "state": "queued",
+            "content": "Report runtime case: unfamiliar",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "command_type": "SEND_MESSAGE",
+        "run_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d",
+        "message_id": "e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+        "dedupe_key": "agent_run_input:e2e:e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+        "state": "accepted",
+        "accepted": true,
+        "duplicate": false,
+        "status": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+        }
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+      }
+    },
+    {
+      "type": "TURN_STARTED",
+      "payload": {
+        "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "dedupe_key": "agent_run_input:e2e:e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+            "state": "queued",
+            "content": "Report runtime case: unfamiliar",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "dedupe_key": "agent_run_input:e2e:e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+            "state": "forwarded",
+            "content": "Report runtime case: unfamiliar",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "agy-text-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-10",
+        "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+        "segment_type": "text",
+        "metadata": null
+      }
+    },
+    {
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "agy-text-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-10",
+        "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+        "segment_type": "text",
+        "delta": "PARTIAL_WORK_PRESERVED"
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "agy-text-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-10",
+        "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+        "metadata": null,
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "dedupe_key": "agent_run_input:e2e:e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+            "state": "forwarded",
+            "content": "Report runtime case: unfamiliar",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "payload": {
+        "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+        "invocation_id": "agy-tool-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-11",
+        "tool_name": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "dedupe_key": "agent_run_input:e2e:e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+            "state": "forwarded",
+            "content": "Report runtime case: unfamiliar",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payload": {
+        "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+        "invocation_id": "agy-tool-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-11",
+        "tool_name": "run_command",
+        "arguments": {},
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "provider_state": "DONE"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "dedupe_key": "agent_run_input:e2e:e2e-1e2d80e2-4b1c-4155-9cb2-c09f657f5830",
+            "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa",
+            "state": "forwarded",
+            "content": "Report runtime case: unfamiliar",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGY_TURN_ERROR",
+        "message": "Workspace service temporarily unavailable. Reference W-771; try again later.",
+        "error_scope": "turn",
+        "error_effect": "terminal",
+        "turn_id": "fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "error",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 5,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 6,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+            "dedupe_key": "agent_run_input:e2e:e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+            "turn_id": null,
+            "state": "queued",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "command_type": "SEND_MESSAGE",
+        "run_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d",
+        "message_id": "e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+        "dedupe_key": "agent_run_input:e2e:e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+        "state": "accepted",
+        "accepted": true,
+        "duplicate": false,
+        "status": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+        }
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+      }
+    },
+    {
+      "type": "TURN_STARTED",
+      "payload": {
+        "turn_id": "4960dc00-8b6a-450d-9d45-f46ce94bf51c"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 7,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+            "dedupe_key": "agent_run_input:e2e:e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+            "turn_id": "4960dc00-8b6a-450d-9d45-f46ce94bf51c",
+            "state": "queued",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 8,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+            "dedupe_key": "agent_run_input:e2e:e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+            "turn_id": "4960dc00-8b6a-450d-9d45-f46ce94bf51c",
+            "state": "forwarded",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "agy-text-4960dc00-8b6a-450d-9d45-f46ce94bf51c-20",
+        "turn_id": "4960dc00-8b6a-450d-9d45-f46ce94bf51c",
+        "segment_type": "text",
+        "metadata": null
+      }
+    },
+    {
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "agy-text-4960dc00-8b6a-450d-9d45-f46ce94bf51c-20",
+        "turn_id": "4960dc00-8b6a-450d-9d45-f46ce94bf51c",
+        "segment_type": "text",
+        "delta": "NEXT_USER_TURN_OK"
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "agy-text-4960dc00-8b6a-450d-9d45-f46ce94bf51c-20",
+        "turn_id": "4960dc00-8b6a-450d-9d45-f46ce94bf51c",
+        "metadata": null,
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 8,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+            "dedupe_key": "agent_run_input:e2e:e2e-8ef6e247-6233-4bfe-97f9-33928f4e0059",
+            "turn_id": "4960dc00-8b6a-450d-9d45-f46ce94bf51c",
+            "state": "forwarded",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "payload": {
+        "turn_id": "4960dc00-8b6a-450d-9d45-f46ce94bf51c",
+        "provider_status": "SUCCESS"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 9,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "2eca982c-0b19-4a09-a4be-2f0feecc665c",
+        "revision": 9,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "offline",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_08ef615a_0985_4108_b4d3_a33e45_c8ca61358ca74c84b5a5038b05e1741d"
+      }
+    }
+  ],
+  "before": {
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Report runtime case: unfamiliar",
+        "media": null,
+        "ts": 1791069982.652
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "PARTIAL_WORK_PRESERVED",
+        "media": null,
+        "ts": 1791069982.653
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "agy-tool-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-11",
+        "role": null,
+        "content": "",
+        "toolName": "run_command",
+        "toolArgs": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "toolResult": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "toolError": null,
+        "media": null,
+        "ts": 1791069982.654
+      }
+    ],
+    "activities": [
+      {
+        "kind": "tool",
+        "invocationId": "agy-tool-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-11",
+        "toolName": "run_command",
+        "type": "tool_call",
+        "status": "success",
+        "contextText": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "logs": [],
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "error": null,
+        "ts": 1791069982.654,
+        "detailLevel": "source_limited"
+      }
+    ]
+  },
+  "after": {
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Report runtime case: unfamiliar",
+        "media": null,
+        "ts": 1791069982.652
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "PARTIAL_WORK_PRESERVED",
+        "media": null,
+        "ts": 1791069982.653
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "agy-tool-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-11",
+        "role": null,
+        "content": "",
+        "toolName": "run_command",
+        "toolArgs": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "toolResult": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "toolError": null,
+        "media": null,
+        "ts": 1791069982.654
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Continue the same work.",
+        "media": null,
+        "ts": 1791069982.71
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "NEXT_USER_TURN_OK",
+        "media": null,
+        "ts": 1791069982.71
+      }
+    ],
+    "activities": [
+      {
+        "kind": "tool",
+        "invocationId": "agy-tool-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-11",
+        "toolName": "run_command",
+        "type": "tool_call",
+        "status": "success",
+        "contextText": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "logs": [],
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "error": null,
+        "ts": 1791069982.654,
+        "detailLevel": "source_limited"
+      }
+    ]
+  },
+  "saved": {
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Report runtime case: unfamiliar",
+        "media": null,
+        "ts": 1791069982.652
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "PARTIAL_WORK_PRESERVED",
+        "media": null,
+        "ts": 1791069982.653
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "agy-tool-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-11",
+        "role": null,
+        "content": "",
+        "toolName": "run_command",
+        "toolArgs": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "toolResult": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "toolError": null,
+        "media": null,
+        "ts": 1791069982.654
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Continue the same work.",
+        "media": null,
+        "ts": 1791069982.71
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "NEXT_USER_TURN_OK",
+        "media": null,
+        "ts": 1791069982.71
+      }
+    ],
+    "activities": [
+      {
+        "kind": "tool",
+        "invocationId": "agy-tool-fc4fc983-c986-4a5e-a5a4-e92f72e1a4fa-11",
+        "toolName": "run_command",
+        "type": "tool_call",
+        "status": "success",
+        "contextText": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "logs": [],
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "error": null,
+        "ts": 1791069982.654,
+        "detailLevel": "source_limited"
+      }
+    ]
+  },
+  "audit": [
+    {
+      "conversation_id": "07e13328-bb25-4959-b557-21bee3f6dc2b",
+      "turns": 1,
+      "content": "Report runtime case: unfamiliar"
+    },
+    {
+      "conversation_id": "07e13328-bb25-4959-b557-21bee3f6dc2b",
+      "turns": 2,
+      "content": "Continue the same work."
+    }
+  ],
+  "privateDiagnostic": {
+    "retained": true,
+    "mode": 384
+  }
+}

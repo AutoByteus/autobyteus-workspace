@@ -1,0 +1,58 @@
+{
+  "kind": "Read-only current-behavior/feasibility mapping before explicit scope approval; no architecture decision or new runtime samples",
+  "base": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      "sha256": "0d0b3f14d877da4b8fb5ae19a555451e4064903be51e7205af6b5b023c20730d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "sha256": "692fe53516726f02c3e2404854481f45a417b00e5e0696ef184cc1c956dffca3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+      "sha256": "6d07e1ffdc39d6b249a6f0b1c66b066f159eab66f06ad5fb25fc5156c18b1bb2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/agent-execution/agent-run-identity-allocator.test.ts",
+      "sha256": "530b28db8b59a1f0554c02d1fe5b30331020f1c14ec40d7c81005dda8b91d66c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/runtime-management/runtime-availability-service.ts",
+      "sha256": "6a2917826798ed32148893a022e1bed6a4dd8e3871932d54ed52adb996617fc6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/api/graphql/types/runtime-availability.ts",
+      "sha256": "4508c360114b344fecd4d1c2d669458de583ee7e589ab856a57a452979286bad"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "sha256": "7a4accce83fcff68ea3b514b4f97255f115a820adfbfcbedf556c42f30238086"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "sha256": "fbffbd9b5f44aad4bd668b7f33d0aeaafabdb7b35915b414ba3134d759cda1bb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryStore.ts",
+      "sha256": "492290eef62a42b6080859d384f1372fbde2b5867fda93b3af5ba38f9e72ec0a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryLoadActions.ts",
+      "sha256": "e0be3a84b1d435366f74a7609f24ff33a873eda613872893c6441fa797cb6514"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/agentOrgContextsStore.ts",
+      "sha256": "d93adbd2426aad8e1fdeb351d1dab5663afa0386fd1c3128acd0c32b1fc9c0c5"
+    }
+  ],
+  "findings": {
+    "sharedAllocator": "AgentRunIdentityAllocator is shared across Org, Team, standalone provision, task/collaborator allocation and application execution scope. Historical membership-check changes are not isolated to a single UI button.",
+    "testSemantics": "Existing unit tests inject repeated tokens and assert collision scans/reservation/memory-path behavior. These assert current machinery; do not independently establish an approved product obligation to retain exhaustive historical scans. No tests executed this round.",
+    "refreshCallers": "Normal launch explicitly refreshes history; panel mounts/fetches and refreshes every 5000 ms; Org context/activity updates applyAgentOrgActivity, which locally projects activity then calls refreshAgentOrgHistory. Source caller map is not a measured attribution of each captured request.",
+    "publication": "Full history fetch independently publishes workspace and Org branches with request-generation guards, followed by another fetch-complete navigation refresh. These guards have explicit freshness semantics; preserved outcomes must not be mistaken for preserving all repeated work.",
+    "runtimeSurfaces": "RuntimeAvailabilityService already has getRuntimeAvailability(runtimeKind); inspected GraphQL query currently calls listRuntimeAvailabilities. This is a feasibility fact, not a selected API design."
+  },
+  "setupCaveats": "First guessed identity-test/capability-store paths did not exist; actual identity test found. No missing-coverage or application failure inferred."
+}

@@ -1,0 +1,678 @@
+{
+  "run": {
+    "scope": "agent",
+    "rootId": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c",
+    "runId": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c",
+    "address": "/"
+  },
+  "expected": "Antigravity could not complete this turn.",
+  "frames": [
+    {
+      "type": "CONNECTED",
+      "payload": {
+        "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c",
+        "session_id": "61918e7c-9dc2-46a3-abf6-2256f844bac9"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 1,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 2,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "dedupe_key": "agent_run_input:e2e:e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "turn_id": null,
+            "state": "queued",
+            "content": "Report runtime case: malformed",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "command_type": "SEND_MESSAGE",
+        "run_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c",
+        "message_id": "e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+        "dedupe_key": "agent_run_input:e2e:e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+        "state": "accepted",
+        "accepted": true,
+        "duplicate": false,
+        "status": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+        }
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+      }
+    },
+    {
+      "type": "TURN_STARTED",
+      "payload": {
+        "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "dedupe_key": "agent_run_input:e2e:e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+            "state": "queued",
+            "content": "Report runtime case: malformed",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "dedupe_key": "agent_run_input:e2e:e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+            "state": "forwarded",
+            "content": "Report runtime case: malformed",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "agy-text-905478df-e9da-4fab-a48c-a0eedbe390f2-10",
+        "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+        "segment_type": "text",
+        "metadata": null
+      }
+    },
+    {
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "agy-text-905478df-e9da-4fab-a48c-a0eedbe390f2-10",
+        "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+        "segment_type": "text",
+        "delta": "PARTIAL_WORK_PRESERVED"
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "agy-text-905478df-e9da-4fab-a48c-a0eedbe390f2-10",
+        "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+        "metadata": null,
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "dedupe_key": "agent_run_input:e2e:e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+            "state": "forwarded",
+            "content": "Report runtime case: malformed",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "payload": {
+        "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+        "invocation_id": "agy-tool-905478df-e9da-4fab-a48c-a0eedbe390f2-11",
+        "tool_name": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "dedupe_key": "agent_run_input:e2e:e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+            "state": "forwarded",
+            "content": "Report runtime case: malformed",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payload": {
+        "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+        "invocation_id": "agy-tool-905478df-e9da-4fab-a48c-a0eedbe390f2-11",
+        "tool_name": "run_command",
+        "arguments": {},
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "provider_state": "DONE"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "dedupe_key": "agent_run_input:e2e:e2e-70b803ba-a4ce-4621-a24d-5435992e48de",
+            "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2",
+            "state": "forwarded",
+            "content": "Report runtime case: malformed",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGY_TURN_ERROR",
+        "message": "Antigravity could not complete this turn.",
+        "error_scope": "turn",
+        "error_effect": "terminal",
+        "turn_id": "905478df-e9da-4fab-a48c-a0eedbe390f2"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "error",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 5,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 6,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-b866534d-7103-416d-92f7-a848a030da3a",
+            "dedupe_key": "agent_run_input:e2e:e2e-b866534d-7103-416d-92f7-a848a030da3a",
+            "turn_id": null,
+            "state": "queued",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "command_type": "SEND_MESSAGE",
+        "run_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c",
+        "message_id": "e2e-b866534d-7103-416d-92f7-a848a030da3a",
+        "dedupe_key": "agent_run_input:e2e:e2e-b866534d-7103-416d-92f7-a848a030da3a",
+        "state": "accepted",
+        "accepted": true,
+        "duplicate": false,
+        "status": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+        }
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+      }
+    },
+    {
+      "type": "TURN_STARTED",
+      "payload": {
+        "turn_id": "24a6c513-8430-4a97-8973-5293504a9993"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 7,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-b866534d-7103-416d-92f7-a848a030da3a",
+            "dedupe_key": "agent_run_input:e2e:e2e-b866534d-7103-416d-92f7-a848a030da3a",
+            "turn_id": "24a6c513-8430-4a97-8973-5293504a9993",
+            "state": "queued",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 8,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-b866534d-7103-416d-92f7-a848a030da3a",
+            "dedupe_key": "agent_run_input:e2e:e2e-b866534d-7103-416d-92f7-a848a030da3a",
+            "turn_id": "24a6c513-8430-4a97-8973-5293504a9993",
+            "state": "forwarded",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "agy-text-24a6c513-8430-4a97-8973-5293504a9993-20",
+        "turn_id": "24a6c513-8430-4a97-8973-5293504a9993",
+        "segment_type": "text",
+        "metadata": null
+      }
+    },
+    {
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "agy-text-24a6c513-8430-4a97-8973-5293504a9993-20",
+        "turn_id": "24a6c513-8430-4a97-8973-5293504a9993",
+        "segment_type": "text",
+        "delta": "NEXT_USER_TURN_OK"
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "agy-text-24a6c513-8430-4a97-8973-5293504a9993-20",
+        "turn_id": "24a6c513-8430-4a97-8973-5293504a9993",
+        "metadata": null,
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 8,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-b866534d-7103-416d-92f7-a848a030da3a",
+            "dedupe_key": "agent_run_input:e2e:e2e-b866534d-7103-416d-92f7-a848a030da3a",
+            "turn_id": "24a6c513-8430-4a97-8973-5293504a9993",
+            "state": "forwarded",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "payload": {
+        "turn_id": "24a6c513-8430-4a97-8973-5293504a9993",
+        "provider_status": "SUCCESS"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 9,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "5daea07c-ea7d-4fb4-add7-cecc09840069",
+        "revision": 9,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "offline",
+        "recoverableBlock": null,
+        "agent_id": "agy_runtime_error_321bd317_888e_467f_b6f5_0e5b2d_fd0c42ba37764a928951f615dc25469c"
+      }
+    }
+  ],
+  "before": {
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Report runtime case: malformed",
+        "media": null,
+        "ts": 1791071763.081
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "PARTIAL_WORK_PRESERVED",
+        "media": null,
+        "ts": 1791071763.082
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "agy-tool-905478df-e9da-4fab-a48c-a0eedbe390f2-11",
+        "role": null,
+        "content": "",
+        "toolName": "run_command",
+        "toolArgs": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "toolResult": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "toolError": null,
+        "media": null,
+        "ts": 1791071763.087
+      }
+    ],
+    "activities": [
+      {
+        "kind": "tool",
+        "invocationId": "agy-tool-905478df-e9da-4fab-a48c-a0eedbe390f2-11",
+        "toolName": "run_command",
+        "type": "tool_call",
+        "status": "success",
+        "contextText": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "logs": [],
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "error": null,
+        "ts": 1791071763.087,
+        "detailLevel": "source_limited"
+      }
+    ]
+  },
+  "after": {
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Report runtime case: malformed",
+        "media": null,
+        "ts": 1791071763.081
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "PARTIAL_WORK_PRESERVED",
+        "media": null,
+        "ts": 1791071763.082
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "agy-tool-905478df-e9da-4fab-a48c-a0eedbe390f2-11",
+        "role": null,
+        "content": "",
+        "toolName": "run_command",
+        "toolArgs": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "toolResult": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "toolError": null,
+        "media": null,
+        "ts": 1791071763.087
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Continue the same work.",
+        "media": null,
+        "ts": 1791071763.139
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "NEXT_USER_TURN_OK",
+        "media": null,
+        "ts": 1791071763.14
+      }
+    ],
+    "activities": [
+      {
+        "kind": "tool",
+        "invocationId": "agy-tool-905478df-e9da-4fab-a48c-a0eedbe390f2-11",
+        "toolName": "run_command",
+        "type": "tool_call",
+        "status": "success",
+        "contextText": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "logs": [],
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "error": null,
+        "ts": 1791071763.087,
+        "detailLevel": "source_limited"
+      }
+    ]
+  },
+  "saved": {
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Report runtime case: malformed",
+        "media": null,
+        "ts": 1791071763.081
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "PARTIAL_WORK_PRESERVED",
+        "media": null,
+        "ts": 1791071763.082
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "agy-tool-905478df-e9da-4fab-a48c-a0eedbe390f2-11",
+        "role": null,
+        "content": "",
+        "toolName": "run_command",
+        "toolArgs": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "toolResult": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "toolError": null,
+        "media": null,
+        "ts": 1791071763.087
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Continue the same work.",
+        "media": null,
+        "ts": 1791071763.139
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "NEXT_USER_TURN_OK",
+        "media": null,
+        "ts": 1791071763.14
+      }
+    ],
+    "activities": [
+      {
+        "kind": "tool",
+        "invocationId": "agy-tool-905478df-e9da-4fab-a48c-a0eedbe390f2-11",
+        "toolName": "run_command",
+        "type": "tool_call",
+        "status": "success",
+        "contextText": "run_command",
+        "arguments": {
+          "CommandLine": "echo COMPLETED_WORK_PRESERVED"
+        },
+        "logs": [],
+        "result": {
+          "provider_state": "DONE",
+          "output": "COMPLETED_WORK_PRESERVED"
+        },
+        "error": null,
+        "ts": 1791071763.087,
+        "detailLevel": "source_limited"
+      }
+    ]
+  },
+  "audit": [
+    {
+      "conversation_id": "db19e1d4-4227-4432-b6b5-5e44ce603712",
+      "turns": 1,
+      "content": "Report runtime case: malformed"
+    },
+    {
+      "conversation_id": "db19e1d4-4227-4432-b6b5-5e44ce603712",
+      "turns": 2,
+      "content": "Continue the same work."
+    }
+  ],
+  "privateDiagnostic": {
+    "retained": true,
+    "mode": 384
+  }
+}

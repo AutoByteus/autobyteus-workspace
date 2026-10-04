@@ -1,0 +1,1114 @@
+{
+  "startedAt": "2026-10-03T23:47:25.201Z",
+  "instanceId": "iso-52965-ef9d",
+  "cases": [
+    {
+      "kind": "error",
+      "result": "Pass",
+      "target": "team-local-agent:software-engineering-team:api-e2e-engineer",
+      "blocked": "Unable to load organization members: team-local-agent:software-engineering-team:api-e2e-engineer",
+      "freshReadCount": 1,
+      "initialReads": 9,
+      "recoveryExact": "codex_app_server/gpt-6.1-sol"
+    },
+    {
+      "kind": "null",
+      "result": "Pass",
+      "target": "team-local-agent:software-engineering-team:api-e2e-engineer",
+      "blocked": "Unable to load organization members: team-local-agent:software-engineering-team:api-e2e-engineer",
+      "freshReadCount": 1,
+      "initialReads": 9,
+      "recoveryExact": "codex_app_server/gpt-6.1-sol"
+    },
+    {
+      "kind": "wrong-ownership",
+      "result": "Pass",
+      "target": "team-local-agent:software-engineering-team:api-e2e-engineer",
+      "blocked": "Unable to load organization members: team-local-agent:software-engineering-team:api-e2e-engineer",
+      "freshReadCount": 1,
+      "initialReads": 9,
+      "recoveryExact": "codex_app_server/gpt-6.1-sol"
+    }
+  ],
+  "requests": [
+    {
+      "operationName": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7"
+      },
+      "query": "query GetAgentOrgRunInspection($orgRunId: String!) {\n  getAgentOrgRunInspection(orgRunId: $orgRunId)\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetProjectsCapability",
+      "variables": {},
+      "query": "query GetProjectsCapability {\n  projectsCapability {\n    ...ProjectsCapabilityFields\n    __typename\n  }\n}\n\nfragment ProjectsCapabilityFields on ProjectsCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {},
+      "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+    },
+    {
+      "operationName": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-GaqUPr/server-data/temp_workspace"
+      },
+      "query": "query GetWorkspaceMetadata($rootPath: String!) {\n  workspaceMetadata(rootPath: $rootPath) {\n    __typename\n    workspaceId\n    workspaceRootPath\n    displayName\n    kind\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/product_team/product_ui_ux_designer",
+        "agentRunId": "product_ui_ux_designer_9f97d3a9cd3f428cb243f26488a6b3ab"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/product_team/ui_baseline_bootstrapper",
+        "agentRunId": "ui_baseline_bootstrapper_24811848d62043e7b4854fffd035d9f6"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/software_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_62e7619a4dbf463bb21b4f0afdf36892"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/software_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_0755388771364d90a6521cfe396f06f5"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/software_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_5673dd7a0fd7408e9c6799a70cee3451"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/software_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_0de21abee967441f89d1a15d56205c57"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/software_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_9e0d9a632ef643f4b9278e8e5e6c9b42"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/software_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_7243c8f175064256b400a2d2833857a1"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/marketing_team/marketing_content_creator",
+        "agentRunId": "marketing_content_creator_79ff9814e54343c3a5895f41c2a9bd4d"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7",
+        "memberAddress": "/marketing_team/computer_use_operator",
+        "agentRunId": "computer_use_operator_1243b1944ccc4de8ac7f1c7c65a714ea"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "autobyteus_org_ec06209cd2b042b385bdaa5cbc0c21c7"
+      },
+      "query": "query GetAgentOrgRootHistory($orgRunId: String!) {\n  getAgentOrgRootHistory(orgRunId: $orgRunId) {\n    root_subject_kind\n    root_run_id\n    created_at\n    archived_at\n    is_active\n    summary\n    org\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetProjectsCapability",
+      "variables": {},
+      "query": "query GetProjectsCapability {\n  projectsCapability {\n    ...ProjectsCapabilityFields\n    __typename\n  }\n}\n\nfragment ProjectsCapabilityFields on ProjectsCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {},
+      "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetProjectsCapability",
+      "variables": {},
+      "query": "query GetProjectsCapability {\n  projectsCapability {\n    ...ProjectsCapabilityFields\n    __typename\n  }\n}\n\nfragment ProjectsCapabilityFields on ProjectsCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {},
+      "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetProjectsCapability",
+      "variables": {},
+      "query": "query GetProjectsCapability {\n  projectsCapability {\n    ...ProjectsCapabilityFields\n    __typename\n  }\n}\n\nfragment ProjectsCapabilityFields on ProjectsCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {},
+      "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetProjectsCapability",
+      "variables": {},
+      "query": "query GetProjectsCapability {\n  projectsCapability {\n    ...ProjectsCapabilityFields\n    __typename\n  }\n}\n\nfragment ProjectsCapabilityFields on ProjectsCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {},
+      "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetProjectsCapability",
+      "variables": {},
+      "query": "query GetProjectsCapability {\n  projectsCapability {\n    ...ProjectsCapabilityFields\n    __typename\n  }\n}\n\nfragment ProjectsCapabilityFields on ProjectsCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {},
+      "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    }
+  ],
+  "pageErrors": [],
+  "sentFrames": [],
+  "fixtureFilesChecked": 570,
+  "result": "Pass",
+  "completedAt": "2026-10-03T23:47:32.353Z"
+}

@@ -6,7 +6,6 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputReservationResult } from "../../../src/agent-execution/input/agent-run-input-contract.js";
-import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../src/agent-team-execution/local/flat-team-execution-context.js";
 import type { PreparedLocalExecutionTermination } from "../../../src/agent-collaboration/execution/domain/prepared-local-execution-termination.js";
@@ -235,13 +234,6 @@ const manualTimers = () => {
 const createHarness = async () => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "task-delegation-current-integration-"));
   tempDirs.push(memoryDir);
-  AgentRunIdentityAllocator.getInstance({
-    memoryDir,
-    agentDefinitionService: { getAgentDefinitionById: async (id: string) => ({ id, name: id }) as never },
-    agentRunManager: { hasActiveRun: () => false },
-    agentRunMetadataService: { readMetadata: async () => null },
-    teamRunExecutionTreeLocationService: { containsRunId: async () => false },
-  });
   const currentConfig = config();
   const tree = buildInitialTeamRunExecutionTree({ config: currentConfig, teamDefinitionName: "Task Integration Team" });
   const messages = Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) });

@@ -1,0 +1,43 @@
+{
+  "web": [
+    "components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+    "components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts",
+    "components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+    "components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+    "components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+    "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+    "components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+    "components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+    "composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+    "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+    "services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts",
+    "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+    "stores/__tests__/agentOrgContextsStore.spec.ts",
+    "stores/__tests__/agentOrgHistoryApollo.spec.ts",
+    "stores/__tests__/agentOrgInspection.spec.ts",
+    "stores/__tests__/agentOrgRetainedRecovery.spec.ts",
+    "stores/__tests__/agentOrgRunConfigPublication.spec.ts",
+    "stores/__tests__/runHistoryNavigationProjection.spec.ts",
+    "stores/__tests__/runHistoryStore.spec.ts",
+    "stores/__tests__/runtimeCapabilitiesStore.spec.ts",
+    "components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+    "components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts"
+  ],
+  "server": [
+    "tests/unit/agent-execution/agent-run-identity-allocator.test.ts",
+    "tests/unit/runtime-management/runtime-availability-service.test.ts",
+    "tests/unit/run-history/services/collaboration-root-history-scoped.test.ts",
+    "tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+    "tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts",
+    "tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts",
+    "tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+    "tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-native-argument-converter.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-native-argument-persistence.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-native-tool-arguments-reader.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-native-tool-policy.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-brain-file.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts"
+  ]
+}

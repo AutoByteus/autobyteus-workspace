@@ -1,0 +1,8 @@
+{
+  "messages": [
+    "In the agents.md, you can mention this, follow solution design best practices for the project solution design best practices. In architecture design, especially for a big ticket, in order to normally we want to get rid of over-engineering, meaning that you don't want to, for example, you don't want to in the first place, you even think about performance. No, you don't do that or think about concurrency, right? You don't really like, for example, you know, normally in the first place, you don't want to consider quite a lot of edge cases. You want to focus on the clean architecture. That's either first step normally. And later, after the first phase, a clean architecture is set up and after it's done, and then you come to the second, when the functionality is working, then you start to use it, then you start to find out more problems. That's normally how architecture solution design will work.",
+    "Look, in the current while we experience this performance issue, the obvious reason is over-engineering, right?"
+  ],
+  "requestedDocumentationChange": "Make AGENTS.md explicitly require the project guide and clean functional architecture first, followed by real-usage/evidence-led refinement rather than speculative performance/concurrency/edge-case machinery.",
+  "interpretationLimits": "Do not defer already-established correctness/security/data-integrity requirements or ignore a performance/concurrency requirement already explicitly in scope. No application-refactor approval inferred."
+}

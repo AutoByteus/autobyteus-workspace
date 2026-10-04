@@ -1,0 +1,120 @@
+
+> autobyteus@1.4.93 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts composables/__tests__/useRuntimeScopedModelSelection.spec.ts components/workspace/config/__tests__/MemberOverrideItem.spec.ts --run --maxWorkers=1
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via root Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > recovers the exact affected scopes via inherited-member Retry without an override/model/config write
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > does not heal a different-runtime outage, a missing selected model, or invalid inherited config
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > does not heal a different-runtime outage, a missing selected model, or invalid inherited config
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > does not heal a different-runtime outage, a missing selected model, or invalid inherited config
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > does not heal a different-runtime outage, a missing selected model, or invalid inherited config
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > does not heal a different-runtime outage, a missing selected model, or invalid inherited config
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > does not heal a different-runtime outage, a missing selected model, or invalid inherited config
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > retains a failed explicit runtime edit until that requested edit is explicitly retried
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > retains a failed explicit runtime edit until that requested edit is explicitly retried
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > retains a failed explicit runtime edit until that requested edit is explicitly retried
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > retains a failed explicit runtime edit until that requested edit is explicitly retried
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > retains a failed explicit runtime edit until that requested edit is explicitly retried
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > retains a failed explicit runtime edit until that requested edit is explicitly retried
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > retains a failed explicit runtime edit until that requested edit is explicitly retried
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts > real shared catalog publication through mounted inherited Org scopes (CR-001) > retains a failed explicit runtime edit until that requested edit is explicitly retried
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts (4 tests) 320ms
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (15 tests) 142ms
+stderr | composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useRuntimeScopedModelSelection.spec.ts (4 tests) 5ms
+
+ Test Files  3 passed (3)
+      Tests  23 passed (23)
+   Start at  23:49:41
+   Duration  7.96s (transform 3.16s, setup 6.12s, collect 432ms, tests 467ms, environment 361ms, prepare 237ms)
+

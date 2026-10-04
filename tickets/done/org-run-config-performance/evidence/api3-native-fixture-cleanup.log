@@ -1,0 +1,1205 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["pnpm", "-C", "autobyteus-server-ts", "exec", "vitest", "run", "tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts", "--no-watch"]
+start=2026-10-03T23:24:37.848075+00:00
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentRuntimeState initialized for agent_id 'recovery_tester_8068'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_8068': No tools provided in config.
+Agent 'recovery_tester_8068': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_8068'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_8068' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_8068'.
+Registered AgentContext for agent_id 'recovery_tester_8068'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_8068'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_8068'.
+Agent 'recovery_tester_8068' created and stored successfully.
+Agent 'recovery_tester_8068' requesting runtime to start.
+AgentRuntime for 'recovery_tester_8068': Starting worker.
+AgentWorker 'recovery_tester_8068': Starting...
+AgentWorker 'recovery_tester_8068' asyncRun(): Starting.
+Agent 'recovery_tester_8068': Runtime init completed (event store initialized).
+Agent 'recovery_tester_8068': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_8068': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_8068': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+Agent 'recovery_tester_8068': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+Agent 'recovery_tester_8068': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_8068': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_8068': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+Agent 'recovery_tester_8068': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_8068': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_8068': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_8068': Final processed system prompt configured and captured. Trace ID: rt_1791069881485_836712b1-e231-4bdb-af93-b1dec4962451. Final length: 28.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+Agent 'recovery_tester_8068': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentWorker 'recovery_tester_8068' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentEventStream (ID: de2a1fe7-5f6b-4fb1-b6c2-f72fb2e3f3a4) initialized for agent_id 'recovery_tester_8068'. Subscribed to notifier.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8068',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8068',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8068',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+Agent 'recovery_tester_8068' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentWorker 'recovery_tester_8068': Stop requested.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: 38893bf9-497d-4e19-902c-11b02200f4af, AgentID: recovery_tester_8068) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_8068' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_8068': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentWorker 'recovery_tester_8068': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_8068': Shutdown sequence completed.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+Unregistered AgentContext for agent_id 'recovery_tester_8068'.
+AgentRuntime for 'recovery_tester_8068': Context unregistered.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent: successful close stops native and removes both owned directories
+AgentRuntime for 'recovery_tester_8068' stop() method completed.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentRuntimeState initialized for agent_id 'recovery_tester_1332'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_1332': No tools provided in config.
+Agent 'recovery_tester_1332': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_1332'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_1332' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_1332'.
+Registered AgentContext for agent_id 'recovery_tester_1332'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_1332'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_1332'.
+Agent 'recovery_tester_1332' created and stored successfully.
+Agent 'recovery_tester_1332' requesting runtime to start.
+AgentRuntime for 'recovery_tester_1332': Starting worker.
+AgentWorker 'recovery_tester_1332': Starting...
+AgentWorker 'recovery_tester_1332' asyncRun(): Starting.
+Agent 'recovery_tester_1332': Runtime init completed (event store initialized).
+Agent 'recovery_tester_1332': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_1332': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_1332': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+Agent 'recovery_tester_1332': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+Agent 'recovery_tester_1332': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_1332': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_1332': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+Agent 'recovery_tester_1332': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_1332': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_1332': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_1332': Final processed system prompt configured and captured. Trace ID: rt_1791069882021_79cb033c-48b7-4aae-95d6-a9f4eae9b2a8. Final length: 28.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+Agent 'recovery_tester_1332': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentWorker 'recovery_tester_1332' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentEventStream (ID: 8a3bdd42-481d-4f54-b7a7-0883387a9cb6) initialized for agent_id 'recovery_tester_1332'. Subscribed to notifier.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_1332',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_1332',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_1332',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+Agent 'recovery_tester_1332' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentWorker 'recovery_tester_1332': Stop requested.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentExternalEventNotifier (NotifierID: f13e3956-b220-4e31-a7d5-4a99fb918993, AgentID: recovery_tester_1332) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_1332' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_1332': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentWorker 'recovery_tester_1332': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_1332': Shutdown sequence completed.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+Unregistered AgentContext for agent_id 'recovery_tester_1332'.
+AgentRuntime for 'recovery_tester_1332': Context unregistered.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > agent_team: successful close stops native and removes both owned directories
+AgentRuntime for 'recovery_tester_1332' stop() method completed.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentRuntimeState initialized for agent_id 'recovery_tester_6598'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_6598': No tools provided in config.
+Agent 'recovery_tester_6598': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_6598'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_6598' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_6598'.
+Registered AgentContext for agent_id 'recovery_tester_6598'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_6598'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_6598'.
+Agent 'recovery_tester_6598' created and stored successfully.
+Agent 'recovery_tester_6598' requesting runtime to start.
+AgentRuntime for 'recovery_tester_6598': Starting worker.
+AgentWorker 'recovery_tester_6598': Starting...
+AgentWorker 'recovery_tester_6598' asyncRun(): Starting.
+Agent 'recovery_tester_6598': Runtime init completed (event store initialized).
+Agent 'recovery_tester_6598': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_6598': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_6598': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+Agent 'recovery_tester_6598': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+Agent 'recovery_tester_6598': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_6598': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_6598': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+Agent 'recovery_tester_6598': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_6598': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_6598': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_6598': Final processed system prompt configured and captured. Trace ID: rt_1791069882126_2d06432b-e3f8-4ad7-b04c-f4a11af35b87. Final length: 28.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+Agent 'recovery_tester_6598': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentWorker 'recovery_tester_6598' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentEventStream (ID: b16d3b1f-4059-4cf9-93a5-634466d5e0af) initialized for agent_id 'recovery_tester_6598'. Subscribed to notifier.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6598',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6598',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6598',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+Agent 'recovery_tester_6598' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentWorker 'recovery_tester_6598': Stop requested.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentExternalEventNotifier (NotifierID: 86cd1f0a-082b-45b8-83f4-a033a05dea05, AgentID: recovery_tester_6598) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_6598' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_6598': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentWorker 'recovery_tester_6598': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_6598': Shutdown sequence completed.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+Unregistered AgentContext for agent_id 'recovery_tester_6598'.
+AgentRuntime for 'recovery_tester_6598': Context unregistered.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root-directory acquisition rejection still closes the acquired native fixture
+AgentRuntime for 'recovery_tester_6598' stop() method completed.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentRuntimeState initialized for agent_id 'recovery_tester_7758'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_7758': No tools provided in config.
+Agent 'recovery_tester_7758': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_7758'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_7758' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_7758'.
+Registered AgentContext for agent_id 'recovery_tester_7758'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_7758'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_7758'.
+Agent 'recovery_tester_7758' created and stored successfully.
+Agent 'recovery_tester_7758' requesting runtime to start.
+AgentRuntime for 'recovery_tester_7758': Starting worker.
+AgentWorker 'recovery_tester_7758': Starting...
+AgentWorker 'recovery_tester_7758' asyncRun(): Starting.
+Agent 'recovery_tester_7758': Runtime init completed (event store initialized).
+Agent 'recovery_tester_7758': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_7758': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_7758': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+Agent 'recovery_tester_7758': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+Agent 'recovery_tester_7758': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_7758': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_7758': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+Agent 'recovery_tester_7758': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_7758': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_7758': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_7758': Final processed system prompt configured and captured. Trace ID: rt_1791069882204_c5e9e9f3-59e1-4f76-a09b-3d44c7d9022e. Final length: 28.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+Agent 'recovery_tester_7758': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentWorker 'recovery_tester_7758' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentEventStream (ID: c61fe555-e7dc-411e-b72b-2b9b84bc1139) initialized for agent_id 'recovery_tester_7758'. Subscribed to notifier.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7758',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7758',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7758',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+Agent 'recovery_tester_7758' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentWorker 'recovery_tester_7758': Stop requested.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentExternalEventNotifier (NotifierID: 6c64dffa-61c4-4921-a493-e5dd36ecf701, AgentID: recovery_tester_7758) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_7758' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_7758': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentWorker 'recovery_tester_7758': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_7758': Shutdown sequence completed.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+Unregistered AgentContext for agent_id 'recovery_tester_7758'.
+AgentRuntime for 'recovery_tester_7758': Context unregistered.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=false)
+AgentRuntime for 'recovery_tester_7758' stop() method completed.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentRuntimeState initialized for agent_id 'recovery_tester_8796'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_8796': No tools provided in config.
+Agent 'recovery_tester_8796': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_8796'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_8796' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_8796'.
+Registered AgentContext for agent_id 'recovery_tester_8796'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_8796'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_8796'.
+Agent 'recovery_tester_8796' created and stored successfully.
+Agent 'recovery_tester_8796' requesting runtime to start.
+AgentRuntime for 'recovery_tester_8796': Starting worker.
+AgentWorker 'recovery_tester_8796': Starting...
+AgentWorker 'recovery_tester_8796' asyncRun(): Starting.
+Agent 'recovery_tester_8796': Runtime init completed (event store initialized).
+Agent 'recovery_tester_8796': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_8796': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_8796': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+Agent 'recovery_tester_8796': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+Agent 'recovery_tester_8796': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_8796': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_8796': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+Agent 'recovery_tester_8796': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_8796': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_8796': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_8796': Final processed system prompt configured and captured. Trace ID: rt_1791069882272_5067caa1-1175-456f-98f3-0acbcfcca9e1. Final length: 28.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+Agent 'recovery_tester_8796': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentWorker 'recovery_tester_8796' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentEventStream (ID: 98f5824f-3dbf-47d5-b0d5-3b57dbcbd685) initialized for agent_id 'recovery_tester_8796'. Subscribed to notifier.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8796',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8796',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8796',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+Agent 'recovery_tester_8796' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentWorker 'recovery_tester_8796': Stop requested.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentExternalEventNotifier (NotifierID: 510bcd92-1b36-4e47-9079-5eb7816528e9, AgentID: recovery_tester_8796) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_8796' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_8796': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentWorker 'recovery_tester_8796': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_8796': Shutdown sequence completed.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+Unregistered AgentContext for agent_id 'recovery_tester_8796'.
+AgentRuntime for 'recovery_tester_8796': Context unregistered.
+
+stdout | tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=true)
+AgentRuntime for 'recovery_tester_8796' stop() method completed.
+
+ ✓ tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts (5 tests) 863ms
+     ✓ agent: successful close stops native and removes both owned directories  539ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  01:24:38
+   Duration  4.10s (transform 2.01s, setup 13ms, import 2.79s, tests 863ms, environment 0ms)
+
+
+exit=0 elapsed_seconds=4.5445597090000005

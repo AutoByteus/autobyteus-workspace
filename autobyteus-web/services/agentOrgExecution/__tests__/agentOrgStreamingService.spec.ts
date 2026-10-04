@@ -608,3 +608,23 @@ describe('AgentOrgStreamingService', () => {
     expect(reportError).not.toHaveBeenCalled()
   })
 })
+
+it('notifies scoped history only after a current-generation collaborator change is successfully applied', async () => {
+  setActivePinia(createPinia()); TestWebSocket.instances = []; vi.stubGlobal('WebSocket', TestWebSocket)
+  const context = candidate(); vi.mocked(context.applyEvent).mockReturnValue('applied')
+  mocks.hydrate.mockResolvedValue(context)
+  const changed = vi.fn(), reportError = vi.fn()
+  const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish: vi.fn(), reportError, onExecutionTreeChanged: changed })
+  service.connect(); const socket = TestWebSocket.instances[0]!
+  socket.emit(connected); socket.emit(snapshot); await service.whenReady()
+  const event = { type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
+    event: { kind: 'collaborator_added', collaborator: { kind: 'agent', address: '/new_agent', agentDefinitionId: 'new-definition',
+      agentRunId: 'new-run', platformAgentRunId: null, launchConfiguration: launch, addedAt: '2026-09-01T00:00:01.000Z', addedViaAgentRunId: 'agent-run' } } } }
+  socket.emit(event); await vi.waitFor(() => expect(changed).toHaveBeenCalledOnce())
+  expect(context.applyEvent).toHaveBeenCalledWith(5, event.payload.event)
+  socket.emit({ ...event, payload: { ...event.payload, change_sequence: 6, event: { kind: 'agent_presentation', agent_run_id: 'agent-run', member_address: '/direct',
+    message: { type: 'AGENT_STATUS', payload: { status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } } } } })
+  await vi.waitFor(() => expect(context.applyEvent).toHaveBeenCalledTimes(2)); expect(changed).toHaveBeenCalledOnce()
+  service.disconnect(); socket.emit(event); await new Promise(resolve => setTimeout(resolve, 0))
+  expect(changed).toHaveBeenCalledOnce(); expect(reportError).not.toHaveBeenCalled(); vi.unstubAllGlobals()
+})

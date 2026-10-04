@@ -1,0 +1,6 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api3-approved-base-current-reader.mjs"]
+start=2026-10-03T23:57:39.846351+00:00
+{"result":"Pass","checks":{"beforeBytes":1026,"currentFullReaderRoots":513,"scopedOldRoot":"Pass","checkpoint":{"orgRunId":"autobyteus_org_c1604c8f0036466bbbadd7b4c101d202","changeSequence":0,"hasOpenExecutionWork":false},"normalRecipientFreeOldHistory":"Pass","teamFocus":{"teamRunId":"product_team_4942cf692bec47c4952c09e1c5b08f85","coordinatorAddress":"/product_team/product_ui_ux_designer"},"agentFocus":{"agentRunId":"product_ui_ux_designer_6f634b9605a84debb7ea3425c7abe266","address":"/product_team/product_ui_ux_designer"},"afterBytes":1026,"fixtureFiles":570},"pageErrors":[]}
+
+exit=0 elapsed_seconds=2.16867675

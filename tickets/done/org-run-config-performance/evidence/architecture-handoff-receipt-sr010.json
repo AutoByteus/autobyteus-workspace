@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /architecture_reviewer.\",\"target_agent_run_id\":\"architecture_reviewer_d487fafcde3b44508362bcc4caa08580\"}"
+    }
+  ],
+  "structuredContent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /architecture_reviewer.",
+    "target_agent_run_id": "architecture_reviewer_d487fafcde3b44508362bcc4caa08580"
+  }
+}

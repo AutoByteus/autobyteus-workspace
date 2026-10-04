@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-03T15:10:42.095771+00:00",
+  "savedArtifactsRecovered": true,
+  "priorCleanupReceipt": "cleanup-receipt.json",
+  "listenerChecks": {
+    "50886": {
+      "stdout": "",
+      "returnCode": 1
+    },
+    "50887": {
+      "stdout": "",
+      "returnCode": 1
+    },
+    "50910": {
+      "stdout": "",
+      "returnCode": 1
+    },
+    "50911": {
+      "stdout": "",
+      "returnCode": 1
+    }
+  },
+  "oldPidTerminated": false,
+  "approvalReceived": false
+}

@@ -68,6 +68,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     contexts.value = { ...contexts.value, [id]: candidate }
     errors.value = { ...errors.value, [id]: null }
     useRunHistoryStore().applyAgentOrgActivity(id, candidate.isActive)
+    void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
   }
 
   const retireStream = (id: string) => {
@@ -80,6 +81,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     contexts.value[id]?.setActive(false)
     retainSubmissionExclusion(id, contexts.value[id])
     useRunHistoryStore().applyAgentOrgActivity(id, false)
+    void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
     retireStream(id)
   }
 
@@ -94,7 +96,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       publish: (candidate, commitActivities) => publish(id, candidate, commitActivities),
       reportError: (message) => report(id, message),
       onInactive: () => markHistorical(id),
-      onAcceptedExternalUserMessage: () => { void useRunHistoryStore().refreshAgentOrgHistory() },
+      onExecutionTreeChanged: () => { void useRunHistoryStore().refreshAgentOrgHistoryItem(id) },
+      onAcceptedExternalUserMessage: () => { void useRunHistoryStore().refreshAgentOrgHistoryItem(id) },
     })
     services.set(id, service)
     service.connect()
@@ -205,6 +208,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
         // Restore acceptance is not a ready stream; retain unknown truth on failure.
         org.requireReopen('AgentOrg restored; stream is synchronizing.')
         useRunHistoryStore().applyAgentOrgActivity(id, true)
+        void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
         const service = attach(id)
         await service.whenReady()
       }

@@ -12,7 +12,7 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import {
   ListWorkspaceRunHistory,
 } from '~/graphql/queries/runHistoryQueries';
-import { ListCollaborationRootHistory } from '~/graphql/queries/collaborationRootHistoryQueries';
+import { GetAgentOrgRootHistory, ListCollaborationRootHistory } from '~/graphql/queries/collaborationRootHistoryQueries';
 import type {
   AgentOrgRunHistoryItem,
   ListWorkspaceRunHistoryQueryData,
@@ -26,6 +26,7 @@ import {
   buildNextAgentAvatarIndex,
   flattenWorkspaceTeamRuns,
   parseAgentOrgHistoryItems,
+  parseAgentOrgHistoryItem,
 } from '~/stores/runHistoryStoreSupport';
 import {
   findAgentNameByRunId,
@@ -65,6 +66,10 @@ export interface RunHistoryFetchStoreLike {
   agentOrgHistory: AgentOrgRunHistoryItem[];
   historyFamilyErrors: RunHistoryFamilyErrors;
   agentOrgRequestGeneration: number;
+  agentOrgSnapshotRevision: number;
+  agentOrgRequestSequenceById: Record<string, number>;
+  agentOrgHistoryItemErrors: Record<string, string>;
+
   workspaceRequestGeneration: number;
   refreshRunNavigationTopology(reason: string): void;
   findAgentNameByRunId(runId: string): string | null;
@@ -92,6 +97,7 @@ export const fetchRunHistoryTree = async (
   options: { quiet?: boolean } = {},
 ): Promise<void> => {
   const quiet = options.quiet === true;
+  const requests = store.agentOrgRequestSequenceById;
   const agentOrgGeneration = ++store.agentOrgRequestGeneration;
   // An older workspace snapshot must not be applied (or reconciled) after a newer one.
   const workspaceGeneration = ++store.workspaceRequestGeneration;
@@ -118,19 +124,25 @@ export const fetchRunHistoryTree = async (
         if (result.errors?.length) {
           throw new Error(result.errors.map((error: { message: string }) => error.message).join(', '));
         }
-        if (workspaceGeneration !== store.workspaceRequestGeneration) return;
+        if (workspaceGeneration !== store.workspaceRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
         store.workspaceGroups = result.data?.listWorkspaceRunHistory || [];
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: null };
         store.error = null;
         store.refreshRunNavigationTopology('workspace-history-ready');
-        store.agentAvatarByDefinitionId = await buildNextAgentAvatarIndex(
+        const nextAvatars = await buildNextAgentAvatarIndex(
           store.agentAvatarByDefinitionId,
           { loadDefinitionsIfNeeded: true },
         );
-        if (workspaceGeneration !== store.workspaceRequestGeneration) return;
+        if (workspaceGeneration !== store.workspaceRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
+        const priorAvatars = store.agentAvatarByDefinitionId;
+        if (Object.keys(priorAvatars).length !== Object.keys(nextAvatars).length
+          || Object.keys(nextAvatars).some(id => nextAvatars[id] !== priorAvatars[id])) {
+          store.agentAvatarByDefinitionId = nextAvatars;
+          store.refreshRunNavigationTopology('workspace-history-enriched');
+        }
         await reconcileDiscoveredActiveRuns(store);
       } catch (error) {
-        if (workspaceGeneration !== store.workspaceRequestGeneration) return;
+        if (workspaceGeneration !== store.workspaceRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
         const detail = error instanceof Error ? error.message : String(error);
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: detail };
         if (!quiet) store.error = detail;
@@ -140,13 +152,15 @@ export const fetchRunHistoryTree = async (
     const agentOrgBranch = (async () => {
       try {
         const rows = await readAgentOrgHistory(client);
-        if (agentOrgGeneration !== store.agentOrgRequestGeneration) return;
+        if (agentOrgGeneration !== store.agentOrgRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
         store.agentOrgHistory = rows;
+        store.agentOrgSnapshotRevision += 1;
+        store.agentOrgHistoryItemErrors = {};
         store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: null };
         store.refreshRunNavigationTopology('agent-org-history-ready');
         useAgentOrgContextsStore().reconcileRetainedHistory(rows.map((row) => row.rootRunId));
       } catch (error) {
-        if (agentOrgGeneration !== store.agentOrgRequestGeneration) return;
+        if (agentOrgGeneration !== store.agentOrgRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
         const detail = error instanceof Error ? error.message : String(error);
         store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: detail };
       }
@@ -156,17 +170,18 @@ export const fetchRunHistoryTree = async (
     await Promise.all([workspaceBranch, agentOrgBranch]);
   } catch (error: any) {
     const detail = error?.message || 'Failed to load run history.';
+    if (requests !== store.agentOrgRequestSequenceById) return;
     store.historyFamilyErrors = {
-      workspace: detail,
+      workspace: workspaceGeneration === store.workspaceRequestGeneration ? detail : store.historyFamilyErrors.workspace,
       agentOrg: agentOrgGeneration === store.agentOrgRequestGeneration
         ? detail
         : store.historyFamilyErrors.agentOrg,
     };
-    if (!quiet) {
+    if (!quiet && workspaceGeneration === store.workspaceRequestGeneration) {
       store.error = detail;
     }
   } finally {
-    if (!quiet) {
+    if (!quiet && workspaceGeneration === store.workspaceRequestGeneration && requests === store.agentOrgRequestSequenceById) {
       store.loading = false;
     }
   }
@@ -175,20 +190,62 @@ export const fetchRunHistoryTree = async (
 export const refreshAgentOrgHistoryForStore = async (
   store: RunHistoryFetchStoreLike,
 ): Promise<void> => {
+  const requests = store.agentOrgRequestSequenceById;
   const generation = ++store.agentOrgRequestGeneration;
   try {
     const windowNodeContextStore = useWindowNodeContextStore();
     const isReady = await windowNodeContextStore.waitForBoundBackendReady();
     if (!isReady) throw new Error(windowNodeContextStore.lastReadyError || 'Bound backend is not ready');
     const rows = await readAgentOrgHistory(getApolloClient());
-    if (generation !== store.agentOrgRequestGeneration) return;
+    if (generation !== store.agentOrgRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
     store.agentOrgHistory = rows;
+    store.agentOrgSnapshotRevision += 1;
+    store.agentOrgHistoryItemErrors = {};
+    store.refreshRunNavigationTopology('agent-org-history-refresh');
     useAgentOrgContextsStore().reconcileRetainedHistory(rows.map((row) => row.rootRunId));
     store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: null };
   } catch (error) {
-    if (generation !== store.agentOrgRequestGeneration) return;
+    if (generation !== store.agentOrgRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
     const detail = error instanceof Error ? error.message : String(error);
     store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: detail };
+  }
+};
+
+export const refreshAgentOrgHistoryItemForStore = async (
+  store: RunHistoryFetchStoreLike,
+  orgRunId: string,
+): Promise<void> => {
+  const id = orgRunId.trim();
+  if (!id) throw new Error('orgRunId is required.');
+  const requests = store.agentOrgRequestSequenceById;
+  const sequence = requests[id] = (requests[id] ?? 0) + 1;
+  const snapshotRevision = store.agentOrgSnapshotRevision;
+  ++store.agentOrgRequestGeneration;
+  const current = () => requests === store.agentOrgRequestSequenceById
+    && requests[id] === sequence && snapshotRevision === store.agentOrgSnapshotRevision;
+  try {
+    const backend = useWindowNodeContextStore();
+    if (!await backend.waitForBoundBackendReady()) throw new Error(backend.lastReadyError || 'Bound backend is not ready');
+    if (!current()) return;
+    const result = await getApolloClient().query<{ getAgentOrgRootHistory: unknown }>({
+      query: GetAgentOrgRootHistory, variables: { orgRunId: id },
+      fetchPolicy: 'network-only', context: { queryDeduplication: false },
+    });
+    if (result.errors?.length) throw new Error(result.errors.map(error => error.message).join(', '));
+    const value = result.data?.getAgentOrgRootHistory;
+    const row = value === null ? null : parseAgentOrgHistoryItem(value, id);
+    if (!current()) return;
+    ++store.agentOrgRequestGeneration; // A full read started during this request cannot erase its accepted result.
+    const otherRows = store.agentOrgHistory.filter(item => item.rootRunId !== id);
+    store.agentOrgHistory = row
+      ? [...otherRows, row].sort((a, b) => b.createdAt.localeCompare(a.createdAt)) : otherRows;
+    const errors = { ...store.agentOrgHistoryItemErrors }; delete errors[id]; store.agentOrgHistoryItemErrors = errors;
+    store.refreshRunNavigationTopology('agent-org-history-item-ready');
+    if (row) useAgentOrgContextsStore().reconcileRetainedHistory([id]);
+  } catch (cause) {
+    if (!current()) return;
+    store.agentOrgHistoryItemErrors = { ...store.agentOrgHistoryItemErrors,
+      [id]: cause instanceof Error ? cause.message : String(cause) };
   }
 };
 

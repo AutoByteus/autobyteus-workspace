@@ -63,8 +63,8 @@
       <div v-if="runHistoryStore.historyFamilyErrors?.workspace" class="px-3 py-2 text-xs text-red-600">
         {{ runHistoryStore.historyFamilyErrors?.workspace }}
       </div>
-      <div v-if="runHistoryStore.historyFamilyErrors?.agentOrg" class="px-3 py-2 text-xs text-red-600">
-        {{ runHistoryStore.historyFamilyErrors?.agentOrg }}
+      <div v-if="runHistoryStore.agentOrgHistoryError" class="px-3 py-2 text-xs text-red-600">
+        {{ runHistoryStore.agentOrgHistoryError }}
       </div>
 
       <div

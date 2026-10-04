@@ -1,0 +1,514 @@
+{
+  "revision": "CRR-003",
+  "at": "2026-10-03T22:10:26.175810+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "branch": "codex/org-run-config-performance",
+  "head": "f2dc1fd392201844bf28fdfdec26c7424a7ea7b2",
+  "base": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "sourceHashBasis": "IR-002 current uncommitted production/test delta, not HEAD alone",
+  "taskSize": "Medium",
+  "architecturalRisk": "High",
+  "reworkHashChecks": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+      "sha256": "cc14f3ca51835bd2b4bae9d4ad5c63e306d83b65907da4c6e6d6baa345ea66b7",
+      "test": true,
+      "effectiveNonemptyLines": 80,
+      "actualSha256": "cc14f3ca51835bd2b4bae9d4ad5c63e306d83b65907da4c6e6d6baa345ea66b7",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "sha256": "d9d96954058f0b9a7c4dc8e3a0d344f2edf790ef53c5fc845432164f41538de4",
+      "test": true,
+      "effectiveNonemptyLines": 331,
+      "actualSha256": "d9d96954058f0b9a7c4dc8e3a0d344f2edf790ef53c5fc845432164f41538de4",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "sha256": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "test": false,
+      "effectiveNonemptyLines": 493,
+      "actualSha256": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "sha256": "cdc8c0074c63300c7881a5f9b7761ebd8310aae9bbec2e8b57b5653c31e67885",
+      "test": true,
+      "effectiveNonemptyLines": 174,
+      "actualSha256": "cdc8c0074c63300c7881a5f9b7761ebd8310aae9bbec2e8b57b5653c31e67885",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+      "sha256": "0df1be36f1c6a4b2cccd511e3cdaec175408e83cab4f27517db19721be2a5431",
+      "test": true,
+      "effectiveNonemptyLines": 525,
+      "actualSha256": "0df1be36f1c6a4b2cccd511e3cdaec175408e83cab4f27517db19721be2a5431",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "sha256": "939dea37db65a6cabb240a93cc08cbc38c6fa098a68dedd67dd3ca18e924f997",
+      "test": true,
+      "effectiveNonemptyLines": 433,
+      "actualSha256": "939dea37db65a6cabb240a93cc08cbc38c6fa098a68dedd67dd3ca18e924f997",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "sha256": "2d054ebf92d9c8b2349a9e641aa9455466ccd19070f54443ee93518c0eb7c5d2",
+      "test": true,
+      "effectiveNonemptyLines": 154,
+      "actualSha256": "2d054ebf92d9c8b2349a9e641aa9455466ccd19070f54443ee93518c0eb7c5d2",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "sha256": "644eedce01d5257993f8413ca6182a40b4e00fbceff37ad13e7b239898bd1bf0",
+      "test": true,
+      "effectiveNonemptyLines": 147,
+      "actualSha256": "644eedce01d5257993f8413ca6182a40b4e00fbceff37ad13e7b239898bd1bf0",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "sha256": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "test": false,
+      "effectiveNonemptyLines": 207,
+      "actualSha256": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/utils/llmConfigSchema.ts",
+      "sha256": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "test": false,
+      "effectiveNonemptyLines": 286,
+      "actualSha256": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts",
+      "sha256": "26446d6105207b9a36904179ea7b568d5d119db2b24ece8499c901d37131aae5",
+      "test": true,
+      "effectiveNonemptyLines": 147,
+      "actualSha256": "26446d6105207b9a36904179ea7b568d5d119db2b24ece8499c901d37131aae5",
+      "matches": true
+    }
+  ],
+  "reviewed60ChangedPaths": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts"
+  ],
+  "reviewed60ChangesExactlyExpected": true,
+  "unchangedReviewed60Count": 51,
+  "cumulativeSourceAudit": [
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.ts",
+      "sha256": "5d927a68452c1a4e788d1c8f27fd388b4e9ae16ba63904bee15e2e96f6f1462a",
+      "nonEmptyLines": 89,
+      "added": 2,
+      "deleted": 8,
+      "changedLines": 10,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "sha256": "85e6995c9a87ce1a22cfbd30712842c2fcebeaf2647a014332dfc1b947e52222",
+      "nonEmptyLines": 407,
+      "added": 0,
+      "deleted": 5,
+      "changedLines": 5,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      "sha256": "4ab46ef55f056e48d82e9de1929303c8a65da7f769c86fc151b27ac7ca3001a3",
+      "nonEmptyLines": 30,
+      "added": 7,
+      "deleted": 96,
+      "changedLines": 103,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+      "sha256": "6813c743382fb6cfd2034adb871555591c1d5dd3b069f46712d9344f419d77cc",
+      "nonEmptyLines": 249,
+      "added": 1,
+      "deleted": 5,
+      "changedLines": 6,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts",
+      "sha256": "5ddee409413b606f10ea698406747d04f22c0fe1a2ca60e71ed5e460a161101c",
+      "nonEmptyLines": 178,
+      "added": 1,
+      "deleted": 13,
+      "changedLines": 14,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-location-service.ts",
+      "sha256": "193d89632d88fae73c44e610d8a7059ef300bb3d8d63436b41b8919198d2c8f5",
+      "nonEmptyLines": 173,
+      "added": 0,
+      "deleted": 12,
+      "changedLines": 12,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
+      "sha256": "d36ed0bc4c282c973a3a5c112e98d038492f57921d38ed434594be588041b04e",
+      "nonEmptyLines": 270,
+      "added": 1,
+      "deleted": 3,
+      "changedLines": 4,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/collaboration-root-history.ts",
+      "sha256": "444bb2ca3f628b9ef70df2dae2662f7de06db41e8bc120b45dbf0895e2a0949e",
+      "nonEmptyLines": 36,
+      "added": 4,
+      "deleted": 2,
+      "changedLines": 6,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/runtime-availability.ts",
+      "sha256": "957aa5fd4f4975c0f80ff72599a43a04d0222ebabf853056658b18c767025105",
+      "nonEmptyLines": 36,
+      "added": 13,
+      "deleted": 6,
+      "changedLines": 19,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+      "sha256": "2f69d845a679e1fa7e747812f25246049dc41914e7b9f6aa33fdb2f6263f464c",
+      "nonEmptyLines": 322,
+      "added": 0,
+      "deleted": 4,
+      "changedLines": 4,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "sha256": "8ab1d2565f898d488ef16a9979d984762b87f0a1ef2d2ad523c7fba76622cafb",
+      "nonEmptyLines": 68,
+      "added": 28,
+      "deleted": 14,
+      "changedLines": 42,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts",
+      "sha256": "7a8aaca8b77160e08b9203c43c7177ab1ec24ee83db7bade2bb14ed828eb4f9a",
+      "nonEmptyLines": 224,
+      "added": 0,
+      "deleted": 14,
+      "changedLines": 14,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/runtime-availability-service.ts",
+      "sha256": "49131529b072ff88b4e922a477d0c34e31b216c22d5d2ddfe1e2c63f310218af",
+      "nonEmptyLines": 137,
+      "added": 2,
+      "deleted": 4,
+      "changedLines": 6,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+      "sha256": "4a4b0ba30bd9e8a39ec9a73511cfbfd6b966baa8d75ce6b7020f13eb225eb8a1",
+      "nonEmptyLines": 375,
+      "added": 4,
+      "deleted": 2,
+      "changedLines": 6,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "sha256": "5d1555800a58d18289d442ad2cbae2540ccfedee1fa5f14cfd53f5b2b9ef1d46",
+      "nonEmptyLines": 466,
+      "added": 1,
+      "deleted": 1,
+      "changedLines": 2,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "sha256": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "nonEmptyLines": 493,
+      "added": 12,
+      "deleted": 15,
+      "changedLines": 27,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "sha256": "1d847877ea58b13edf3bfcb302c334d3c3747ed2e21a099ef224a6c5cd760dee",
+      "nonEmptyLines": 457,
+      "added": 2,
+      "deleted": 2,
+      "changedLines": 4,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "sha256": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "nonEmptyLines": 207,
+      "added": 44,
+      "deleted": 96,
+      "changedLines": 140,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/generated/graphql.ts",
+      "sha256": "db9df3112dc46b3947413c84e8dee4cb1e39a09a10abd8d415b440c2877b7cb8",
+      "nonEmptyLines": 11174,
+      "added": 354,
+      "deleted": 32,
+      "changedLines": 386,
+      "generated": true,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/collaborationRootHistoryQueries.ts",
+      "sha256": "ac402186d9f51c1bed3b9d36bfe61e3c8ce7308522c8f351a77bba1291c020b8",
+      "nonEmptyLines": 28,
+      "added": 8,
+      "deleted": 0,
+      "changedLines": 8,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/runtime_availability_queries.ts",
+      "sha256": "bc96ed05bc0bb5879d4b93de5918654ad6686d248fe9267c532091cc83e6e735",
+      "nonEmptyLines": 9,
+      "added": 8,
+      "deleted": 8,
+      "changedLines": 16,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+      "sha256": "6ebc3c459b87c5e901ffe72be8ff130f26e28684d39672a74308b9f90520ff90",
+      "nonEmptyLines": 478,
+      "added": 4,
+      "deleted": 0,
+      "changedLines": 4,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "sha256": "0891bbc3b108b1fd0fa3dbb65c38b1e8fc85fcabcf6c7a906fd19fe9bf39ca93",
+      "nonEmptyLines": 356,
+      "added": 5,
+      "deleted": 1,
+      "changedLines": 6,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryLoadActions.ts",
+      "sha256": "898fa3f4184d52ec24e2cda1ebd2af40563c8833f9710c021a5c2ff80fb4f3c9",
+      "nonEmptyLines": 462,
+      "added": 69,
+      "deleted": 12,
+      "changedLines": 81,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryNavigationProjection.ts",
+      "sha256": "5737c90b2f6a451a65a4c4c4b0146aed0715f4f80dc3f8b5059fc223fc895931",
+      "nonEmptyLines": 251,
+      "added": 50,
+      "deleted": 3,
+      "changedLines": 53,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryStore.ts",
+      "sha256": "b42a85707c44ccead15182776266647a4a9ee8844f6395e5380285df0fa9aa5a",
+      "nonEmptyLines": 496,
+      "added": 14,
+      "deleted": 5,
+      "changedLines": 19,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryStoreSupport.ts",
+      "sha256": "703540cfb0adef61114a6beeed32ed4ee5d05222a647dc22bb8bb72c4c2bc37e",
+      "nonEmptyLines": 122,
+      "added": 25,
+      "deleted": 36,
+      "changedLines": 61,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/stores/runtimeAvailabilityStore.ts",
+      "sha256": "a750fe796af8dedaf16d064c8826f0840ecf5dc2d9f474c8efcad598933a5477",
+      "nonEmptyLines": 117,
+      "added": 96,
+      "deleted": 40,
+      "changedLines": 136,
+      "generated": false,
+      "withinThreshold": true
+    },
+    {
+      "path": "autobyteus-web/utils/llmConfigSchema.ts",
+      "sha256": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "nonEmptyLines": 286,
+      "added": 13,
+      "deleted": 0,
+      "changedLines": 13,
+      "generated": false,
+      "withinThreshold": true
+    }
+  ],
+  "manualSourceCount": 28,
+  "manualSourceThresholdsPass": true,
+  "reworkSourceAudit": [
+    {
+      "path": "autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "added": 10,
+      "deleted": 16,
+      "changedLines": 26,
+      "nonEmptyLines": 493
+    },
+    {
+      "path": "autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "added": 33,
+      "deleted": 78,
+      "changedLines": 111,
+      "nonEmptyLines": 207
+    },
+    {
+      "path": "autobyteus-web/utils/llmConfigSchema.ts",
+      "added": 13,
+      "deleted": 0,
+      "changedLines": 13,
+      "nonEmptyLines": 286
+    }
+  ],
+  "whitespaceCheck": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "indexedReferenceCount": 368,
+  "missingIndexedReferences": [],
+  "frozenApprovalSha256": "5444ff7b9069b37bd3cdf35aec3a3b3d732fb8a3bca3f31691f3a8af56841365",
+  "originalApiDurableTest": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts",
+  "apiDurableTestSha256": "aff7553d61ced2d0c67d8e0ff88fa64d90716605f6aaf20c2ad7cc504265ef04",
+  "apiPackageDurableSha256": "aff7553d61ced2d0c67d8e0ff88fa64d90716605f6aaf20c2ad7cc504265ef04",
+  "apiExecutionStateUnchanged": "API-REV-001 Fail77.14%, broader validation Required until independent current packaged rerun",
+  "reviewerSourceOrTestEdits": false,
+  "reviewerAppLaunchInference": false,
+  "noCommitMergePushRelease": true,
+  "retainedEvidence": [
+    "code-review-checks-crr001.json",
+    "code-review-failure-origin-crr002.json",
+    "implementation-ir002-checks.json",
+    "implementation-ir002-reviewed-head-regression.log"
+  ],
+  "sourceDeltaArtifactSha256": "674b9faff71a49948171816c8543d99900f3758738aae87e836ddbfa70c32be8",
+  "apiDurableHashMatch": true,
+  "sourceDeltaArtifactExactlyMatchesCurrentWebDiff": true,
+  "reviewerExecution": [
+    {
+      "revision": "CRR-003",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts",
+        "composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+        "components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+        "components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+        "components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+        "components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+        "stores/__tests__/llmProviderConfig.spec.ts",
+        "utils/__tests__/llmConfigSchema.spec.ts",
+        "components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+      "startedAt": "2026-10-03T22:09:31.832456+00:00",
+      "completedAt": "2026-10-03T22:09:44.731910+00:00",
+      "exitCode": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/code-review-focused-web-crr003.log",
+      "scope": "focused implementation source re-review unit/component tests only; no API/E2E, packaged, model inference or performance run",
+      "filesPassed": 8,
+      "testsPassed": 77
+    },
+    {
+      "revision": "CRR-003",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "tests/stores/llmProviderConfigStore.test.ts",
+        "composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts",
+        "components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+        "components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts",
+        "components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts",
+        "components/settings/__tests__/CompactionModelSettings.spec.ts",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+      "startedAt": "2026-10-03T22:11:24.928109+00:00",
+      "completedAt": "2026-10-03T22:11:34.106241+00:00",
+      "exitCode": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/code-review-catalog-consumers-crr003.log",
+      "scope": "shared real catalog publication/store and Team/application/Agent consumer boundary",
+      "note": "First focused run passed 8 actual files/77 tests; requested stores/__tests__/llmProviderConfig.spec.ts had no match. This second command names the actual tests/stores/llmProviderConfigStore.test.ts; no phantom store test pass inferred.",
+      "filesPassed": 6,
+      "testsPassed": 42
+    }
+  ],
+  "filesPassed": 14,
+  "testsPassed": 119,
+  "reviewerResult": "Pass \u2014 source gate only",
+  "findingResolution": "CR-001 source/component resolved; F-API-001 API recheck required"
+}

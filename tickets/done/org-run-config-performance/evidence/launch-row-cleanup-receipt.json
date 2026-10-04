@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-03T16:11:17.483635+00:00",
+  "isolatedStop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-54639-13b7",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-3grOik",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "listenerChecks": {
+    "54639": {
+      "stdout": "",
+      "returnCode": 1
+    },
+    "54640": {
+      "stdout": "",
+      "returnCode": 1
+    },
+    "9229": {
+      "stdout": "",
+      "returnCode": 1
+    }
+  },
+  "backendHooksRestored": true,
+  "passiveInstrumentation": "in-page only; disposed with exact owned renderer; no production source file modified",
+  "userApp": "No actions, requests, process signals or data mutations",
+  "fixture": "private copy removed with owned data root; content-hash manifest retained"
+}

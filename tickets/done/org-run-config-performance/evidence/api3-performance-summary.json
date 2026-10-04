@@ -1,0 +1,986 @@
+{
+  "at": "2026-10-03T23:49:14.950080+00:00",
+  "classification": "Completed current IR002 comparative configuration/row/work proof, not live-user workload or inference-speed claim",
+  "series": {
+    "api3-baseline-small-history": {
+      "raw": "api3-baseline-small-history.json",
+      "instanceId": "iso-52493-c46a",
+      "source": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "sampleCount": 10,
+      "groups": {
+        "warm": {
+          "createMs": {
+            "count": 5,
+            "median": 388.058,
+            "min": 349.054,
+            "max": 396.403
+          },
+          "rowDomMs": {
+            "count": 5,
+            "median": 398,
+            "min": 357.69999998807907,
+            "max": 404.19999998807907
+          },
+          "rowVisibleMs": {
+            "count": 5,
+            "median": 398.5999999642372,
+            "min": 358.80000001192093,
+            "max": 404.69999998807907
+          },
+          "workspaceMs": {
+            "count": 5,
+            "median": 408.30000001192093,
+            "min": 374.30000001192093,
+            "max": 419
+          },
+          "nextAnimationFrameMs": {
+            "count": 5,
+            "median": 399.5999999642372,
+            "min": 359.69999998807907,
+            "max": 405.39999997615814
+          },
+          "configuration": {
+            "configDomMs": {
+              "count": 5,
+              "median": 10.600000023841858,
+              "min": 10.300000011920929,
+              "max": 14.899999976158142
+            },
+            "codexOfferedMs": {
+              "count": 5,
+              "median": 10.600000023841858,
+              "min": 10.300000011920929,
+              "max": 14.899999976158142
+            },
+            "selectedConfigReadyMs": {
+              "count": 5,
+              "median": 116.40000003576279,
+              "min": 101.89999997615814,
+              "max": 315
+            },
+            "automationPreparationMs": {
+              "count": 5,
+              "median": 328.28745800000024,
+              "min": 308.43112500000007,
+              "max": 522.0973749999999
+            }
+          },
+          "configCapabilityCatalogHttpMs": {
+            "EnsureProviderModelCatalog {'providerId': 'AUTOBYTEUS', 'runtimeKind': 'autobyteus'}": {
+              "count": 1,
+              "median": 5.938,
+              "min": 5.938,
+              "max": 5.938
+            },
+            "EnsureProviderModelCatalog {'providerId': 'OLLAMA', 'runtimeKind': 'autobyteus'}": {
+              "count": 1,
+              "median": 16.647,
+              "min": 16.647,
+              "max": 16.647
+            },
+            "EnsureProviderModelCatalog {'providerId': 'LMSTUDIO', 'runtimeKind': 'autobyteus'}": {
+              "count": 1,
+              "median": 17.372,
+              "min": 17.372,
+              "max": 17.372
+            },
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'codex_app_server'}": {
+              "count": 1,
+              "median": 96.371,
+              "min": 96.371,
+              "max": 96.371
+            }
+          },
+          "publicationWork": {
+            "fullHistoryRequests": {
+              "count": 5,
+              "median": 3,
+              "min": 3,
+              "max": 3
+            },
+            "scopedOrgHistoryRequests": {
+              "count": 5,
+              "median": 0,
+              "min": 0,
+              "max": 0
+            },
+            "historyEncodedBytes": {
+              "count": 5,
+              "median": 179226,
+              "min": 60204,
+              "max": 298248
+            },
+            "allGraphqlRequests": {
+              "count": 5,
+              "median": 26,
+              "min": 26,
+              "max": 26
+            }
+          }
+        },
+        "cold-renderer": {
+          "createMs": {
+            "count": 5,
+            "median": 353.917,
+            "min": 350.915,
+            "max": 358.14
+          },
+          "rowDomMs": {
+            "count": 5,
+            "median": 366.5,
+            "min": 364,
+            "max": 372
+          },
+          "rowVisibleMs": {
+            "count": 5,
+            "median": 367.30000001192093,
+            "min": 364.5,
+            "max": 372.69999998807907
+          },
+          "workspaceMs": {
+            "count": 5,
+            "median": 379.5999999642372,
+            "min": 372.5,
+            "max": 382.30000001192093
+          },
+          "nextAnimationFrameMs": {
+            "count": 5,
+            "median": 369,
+            "min": 365.5,
+            "max": 373.89999997615814
+          },
+          "configuration": {
+            "configDomMs": {
+              "count": 5,
+              "median": 16.5,
+              "min": 16,
+              "max": 18.80000001192093
+            },
+            "codexOfferedMs": {
+              "count": 5,
+              "median": 1427.5,
+              "min": 1339.300000011921,
+              "max": 1431.5
+            },
+            "selectedConfigReadyMs": {
+              "count": 5,
+              "median": 2093.300000011921,
+              "min": 2084.5,
+              "max": 2102.599999964237
+            },
+            "automationPreparationMs": {
+              "count": 5,
+              "median": 2771.4072499999984,
+              "min": 2745.0936660000007,
+              "max": 2795.8944169999995
+            }
+          },
+          "configCapabilityCatalogHttpMs": {
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'autobyteus'}": {
+              "count": 5,
+              "median": 17.66,
+              "min": 17.486,
+              "max": 19.109
+            },
+            "GetRuntimeAvailabilities {}": {
+              "count": 5,
+              "median": 1412.791,
+              "min": 1327.098,
+              "max": 1416.142
+            },
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'codex_app_server'}": {
+              "count": 5,
+              "median": 100.666,
+              "min": 99.234,
+              "max": 103.934
+            }
+          },
+          "publicationWork": {
+            "fullHistoryRequests": {
+              "count": 5,
+              "median": 3,
+              "min": 3,
+              "max": 3
+            },
+            "scopedOrgHistoryRequests": {
+              "count": 5,
+              "median": 0,
+              "min": 0,
+              "max": 0
+            },
+            "historyEncodedBytes": {
+              "count": 5,
+              "median": 476784,
+              "min": 357762,
+              "max": 595806
+            },
+            "allGraphqlRequests": {
+              "count": 5,
+              "median": 26,
+              "min": 26,
+              "max": 26
+            }
+          }
+        }
+      },
+      "pageErrors": [],
+      "consoleErrors": [],
+      "viewportPixels": [
+        2400,
+        1536
+      ]
+    },
+    "api3-baseline-stored-history-500": {
+      "raw": "api3-baseline-stored-history-500.json",
+      "instanceId": "iso-52493-c46a",
+      "source": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+      "sampleCount": 10,
+      "groups": {
+        "warm": {
+          "createMs": {
+            "count": 5,
+            "median": 1002.735,
+            "min": 999.139,
+            "max": 1013.458
+          },
+          "rowDomMs": {
+            "count": 5,
+            "median": 1682,
+            "min": 1428.199999988079,
+            "max": 1857.300000011921
+          },
+          "rowVisibleMs": {
+            "count": 5,
+            "median": 1699.800000011921,
+            "min": 1446,
+            "max": 1875.5
+          },
+          "workspaceMs": {
+            "count": 5,
+            "median": 1107.3999999761581,
+            "min": 1102.300000011921,
+            "max": 1120
+          },
+          "nextAnimationFrameMs": {
+            "count": 5,
+            "median": 1704.300000011921,
+            "min": 1450.3999999761581,
+            "max": 1904.699999988079
+          },
+          "configuration": {
+            "configDomMs": {
+              "count": 5,
+              "median": 20.099999964237213,
+              "min": 19.69999998807907,
+              "max": 27.100000023841858
+            },
+            "codexOfferedMs": {
+              "count": 5,
+              "median": 20.099999964237213,
+              "min": 19.69999998807907,
+              "max": 27.100000023841858
+            },
+            "selectedConfigReadyMs": {
+              "count": 5,
+              "median": 297.30000001192093,
+              "min": 283.9000000357628,
+              "max": 320.10000002384186
+            },
+            "automationPreparationMs": {
+              "count": 5,
+              "median": 577.109917,
+              "min": 548.0960829999985,
+              "max": 893.2122920000002
+            }
+          },
+          "configCapabilityCatalogHttpMs": {},
+          "publicationWork": {
+            "fullHistoryRequests": {
+              "count": 5,
+              "median": 3,
+              "min": 2,
+              "max": 4
+            },
+            "scopedOrgHistoryRequests": {
+              "count": 5,
+              "median": 0,
+              "min": 0,
+              "max": 0
+            },
+            "historyEncodedBytes": {
+              "count": 5,
+              "median": 29995743,
+              "min": 19878140,
+              "max": 40073676
+            },
+            "allGraphqlRequests": {
+              "count": 5,
+              "median": 26,
+              "min": 26,
+              "max": 28
+            }
+          }
+        },
+        "cold-renderer": {
+          "createMs": {
+            "count": 5,
+            "median": 980.665,
+            "min": 970.574,
+            "max": 994.421
+          },
+          "rowDomMs": {
+            "count": 5,
+            "median": 1573.699999988079,
+            "min": 1549.300000011921,
+            "max": 1578.699999988079
+          },
+          "rowVisibleMs": {
+            "count": 5,
+            "median": 1594.5,
+            "min": 1570.199999988079,
+            "max": 1599.699999988079
+          },
+          "workspaceMs": {
+            "count": 5,
+            "median": 1042.4000000357628,
+            "min": 1034.9000000357628,
+            "max": 1058.7999999523163
+          },
+          "nextAnimationFrameMs": {
+            "count": 5,
+            "median": 1599.2999999523163,
+            "min": 1575.199999988079,
+            "max": 1604.6000000238419
+          },
+          "configuration": {
+            "configDomMs": {
+              "count": 5,
+              "median": 20.100000023841858,
+              "min": 15.800000011920929,
+              "max": 21.700000047683716
+            },
+            "codexOfferedMs": {
+              "count": 5,
+              "median": 1344.699999988079,
+              "min": 1274,
+              "max": 1709
+            },
+            "selectedConfigReadyMs": {
+              "count": 5,
+              "median": 1608.6000000238419,
+              "min": 1563.5,
+              "max": 2106.5
+            },
+            "automationPreparationMs": {
+              "count": 5,
+              "median": 2991.311249999999,
+              "min": 2826.390457999998,
+              "max": 3619.201416
+            }
+          },
+          "configCapabilityCatalogHttpMs": {
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'autobyteus'}": {
+              "count": 5,
+              "median": 22.874,
+              "min": 16.56,
+              "max": 128.491
+            },
+            "GetRuntimeAvailabilities {}": {
+              "count": 5,
+              "median": 1330.317,
+              "min": 1260.274,
+              "max": 1693.299
+            },
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'codex_app_server'}": {
+              "count": 5,
+              "median": 99.822,
+              "min": 95.819,
+              "max": 102.735
+            }
+          },
+          "publicationWork": {
+            "fullHistoryRequests": {
+              "count": 5,
+              "median": 3,
+              "min": 3,
+              "max": 3
+            },
+            "scopedOrgHistoryRequests": {
+              "count": 5,
+              "median": 0,
+              "min": 0,
+              "max": 0
+            },
+            "historyEncodedBytes": {
+              "count": 5,
+              "median": 30233790,
+              "min": 30114768,
+              "max": 30352812
+            },
+            "allGraphqlRequests": {
+              "count": 5,
+              "median": 26,
+              "min": 26,
+              "max": 26
+            }
+          }
+        }
+      },
+      "pageErrors": [],
+      "consoleErrors": [],
+      "viewportPixels": [
+        2400,
+        1536
+      ]
+    },
+    "api3-packaged-small-history": {
+      "raw": "api3-packaged-small-history.json",
+      "instanceId": "iso-52965-ef9d",
+      "source": "f2dc1fd392201844bf28fdfdec26c7424a7ea7b2 + actual reviewed unstaged IR002 hashes",
+      "sampleCount": 10,
+      "groups": {
+        "warm": {
+          "createMs": {
+            "count": 5,
+            "median": 340.015,
+            "min": 336.186,
+            "max": 389.309
+          },
+          "rowDomMs": {
+            "count": 5,
+            "median": 347.30000001192093,
+            "min": 342.5,
+            "max": 404.30000001192093
+          },
+          "rowVisibleMs": {
+            "count": 5,
+            "median": 348,
+            "min": 343.0999999642372,
+            "max": 405.7000000476837
+          },
+          "workspaceMs": {
+            "count": 5,
+            "median": 360.5,
+            "min": 355.39999997615814,
+            "max": 418.80000001192093
+          },
+          "nextAnimationFrameMs": {
+            "count": 5,
+            "median": 355.39999997615814,
+            "min": 345.5999999642372,
+            "max": 406.2000000476837
+          },
+          "configuration": {
+            "configDomMs": {
+              "count": 5,
+              "median": 12.199999988079071,
+              "min": 11.899999976158142,
+              "max": 16.799999952316284
+            },
+            "codexOfferedMs": {
+              "count": 5,
+              "median": 12.199999988079071,
+              "min": 11.899999976158142,
+              "max": 16.799999952316284
+            },
+            "selectedConfigReadyMs": {
+              "count": 5,
+              "median": 90.89999997615814,
+              "min": 82.30000001192093,
+              "max": 312
+            },
+            "automationPreparationMs": {
+              "count": 5,
+              "median": 304.24237500000004,
+              "min": 291.4177920000002,
+              "max": 517.1949999999999
+            }
+          },
+          "configCapabilityCatalogHttpMs": {
+            "EnsureProviderModelCatalog {'providerId': 'AUTOBYTEUS', 'runtimeKind': 'autobyteus'}": {
+              "count": 1,
+              "median": 4.574,
+              "min": 4.574,
+              "max": 4.574
+            },
+            "EnsureProviderModelCatalog {'providerId': 'OLLAMA', 'runtimeKind': 'autobyteus'}": {
+              "count": 1,
+              "median": 14.003,
+              "min": 14.003,
+              "max": 14.003
+            },
+            "EnsureProviderModelCatalog {'providerId': 'LMSTUDIO', 'runtimeKind': 'autobyteus'}": {
+              "count": 1,
+              "median": 15.205,
+              "min": 15.205,
+              "max": 15.205
+            },
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'codex_app_server'}": {
+              "count": 1,
+              "median": 101.584,
+              "min": 101.584,
+              "max": 101.584
+            }
+          },
+          "publicationWork": {
+            "fullHistoryRequests": {
+              "count": 5,
+              "median": 0,
+              "min": 0,
+              "max": 1
+            },
+            "scopedOrgHistoryRequests": {
+              "count": 5,
+              "median": 3,
+              "min": 3,
+              "max": 3
+            },
+            "historyEncodedBytes": {
+              "count": 5,
+              "median": 60180,
+              "min": 60180,
+              "max": 139759
+            },
+            "allGraphqlRequests": {
+              "count": 5,
+              "median": 25,
+              "min": 25,
+              "max": 27
+            }
+          }
+        },
+        "cold-renderer": {
+          "createMs": {
+            "count": 5,
+            "median": 346.076,
+            "min": 330.091,
+            "max": 431.396
+          },
+          "rowDomMs": {
+            "count": 5,
+            "median": 359.2000000476837,
+            "min": 336.10000002384186,
+            "max": 437.39999997615814
+          },
+          "rowVisibleMs": {
+            "count": 5,
+            "median": 360,
+            "min": 336.60000002384186,
+            "max": 437.89999997615814
+          },
+          "workspaceMs": {
+            "count": 5,
+            "median": 363.4000000357628,
+            "min": 351.89999997615814,
+            "max": 453.89999997615814
+          },
+          "nextAnimationFrameMs": {
+            "count": 5,
+            "median": 363.9000000357628,
+            "min": 339.19999998807907,
+            "max": 440.5999999642372
+          },
+          "configuration": {
+            "configDomMs": {
+              "count": 5,
+              "median": 17.69999998807907,
+              "min": 16.5,
+              "max": 18.19999998807907
+            },
+            "codexOfferedMs": {
+              "count": 5,
+              "median": 31.19999998807907,
+              "min": 30.600000023841858,
+              "max": 32.30000001192093
+            },
+            "selectedConfigReadyMs": {
+              "count": 5,
+              "median": 284.60000002384186,
+              "min": 277.4000000357628,
+              "max": 301.4000000357628
+            },
+            "automationPreparationMs": {
+              "count": 5,
+              "median": 948.9230000000007,
+              "min": 943.6543330000004,
+              "max": 976.9169580000007
+            }
+          },
+          "configCapabilityCatalogHttpMs": {
+            "GetRuntimeAvailabilityKinds {}": {
+              "count": 5,
+              "median": 1.627,
+              "min": 1.579,
+              "max": 1.72
+            },
+            "GetRuntimeAvailability {'runtimeKind': 'autobyteus'}": {
+              "count": 5,
+              "median": 1.234,
+              "min": 1.128,
+              "max": 1.548
+            },
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'autobyteus'}": {
+              "count": 5,
+              "median": 1.96,
+              "min": 1.816,
+              "max": 2.52
+            },
+            "GetRuntimeAvailability {'runtimeKind': 'codex_app_server'}": {
+              "count": 5,
+              "median": 6.078,
+              "min": 5.952,
+              "max": 10.596
+            },
+            "GetRuntimeAvailability {'runtimeKind': 'claude_agent_sdk'}": {
+              "count": 5,
+              "median": 16.25,
+              "min": 15.5,
+              "max": 22.841
+            },
+            "GetRuntimeAvailability {'runtimeKind': 'grok_build'}": {
+              "count": 5,
+              "median": 39.132,
+              "min": 37.725,
+              "max": 49.937
+            },
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'codex_app_server'}": {
+              "count": 5,
+              "median": 100.826,
+              "min": 99.013,
+              "max": 115.401
+            }
+          },
+          "publicationWork": {
+            "fullHistoryRequests": {
+              "count": 5,
+              "median": 0,
+              "min": 0,
+              "max": 0
+            },
+            "scopedOrgHistoryRequests": {
+              "count": 5,
+              "median": 3,
+              "min": 3,
+              "max": 3
+            },
+            "historyEncodedBytes": {
+              "count": 5,
+              "median": 60180,
+              "min": 60180,
+              "max": 60180
+            },
+            "allGraphqlRequests": {
+              "count": 5,
+              "median": 25,
+              "min": 25,
+              "max": 25
+            }
+          }
+        }
+      },
+      "pageErrors": [],
+      "consoleErrors": [],
+      "viewportPixels": [
+        2400,
+        1536
+      ]
+    },
+    "api3-packaged-stored-history-500": {
+      "raw": "api3-packaged-stored-history-500.json",
+      "instanceId": "iso-52965-ef9d",
+      "source": "f2dc1fd392201844bf28fdfdec26c7424a7ea7b2 + actual reviewed unstaged IR002 hashes",
+      "sampleCount": 10,
+      "groups": {
+        "warm": {
+          "createMs": {
+            "count": 5,
+            "median": 486.764,
+            "min": 474.859,
+            "max": 546.216
+          },
+          "rowDomMs": {
+            "count": 5,
+            "median": 526.8000000119209,
+            "min": 500.39999997615814,
+            "max": 593.1000000238419
+          },
+          "rowVisibleMs": {
+            "count": 5,
+            "median": 545.3999999761581,
+            "min": 520,
+            "max": 611.1999999880791
+          },
+          "workspaceMs": {
+            "count": 5,
+            "median": 588.7999999523163,
+            "min": 573.3000000119209,
+            "max": 640.8999999761581
+          },
+          "nextAnimationFrameMs": {
+            "count": 5,
+            "median": 553.6999999880791,
+            "min": 524.5,
+            "max": 619.1999999880791
+          },
+          "configuration": {
+            "configDomMs": {
+              "count": 5,
+              "median": 20.30000001192093,
+              "min": 19.899999976158142,
+              "max": 21.5
+            },
+            "codexOfferedMs": {
+              "count": 5,
+              "median": 20.30000001192093,
+              "min": 19.899999976158142,
+              "max": 21.5
+            },
+            "selectedConfigReadyMs": {
+              "count": 5,
+              "median": 287.39999997615814,
+              "min": 256.10000002384186,
+              "max": 364.30000001192093
+            },
+            "automationPreparationMs": {
+              "count": 5,
+              "median": 566.7673749999999,
+              "min": 504.80816700000014,
+              "max": 641.1315
+            }
+          },
+          "configCapabilityCatalogHttpMs": {},
+          "publicationWork": {
+            "fullHistoryRequests": {
+              "count": 5,
+              "median": 0,
+              "min": 0,
+              "max": 1
+            },
+            "scopedOrgHistoryRequests": {
+              "count": 5,
+              "median": 3,
+              "min": 3,
+              "max": 3
+            },
+            "historyEncodedBytes": {
+              "count": 5,
+              "median": 60180,
+              "min": 60180,
+              "max": 9979413
+            },
+            "allGraphqlRequests": {
+              "count": 5,
+              "median": 25,
+              "min": 25,
+              "max": 27
+            }
+          }
+        },
+        "cold-renderer": {
+          "createMs": {
+            "count": 5,
+            "median": 480.102,
+            "min": 475.131,
+            "max": 481.846
+          },
+          "rowDomMs": {
+            "count": 5,
+            "median": 487,
+            "min": 481.10000002384186,
+            "max": 491.5999999642372
+          },
+          "rowVisibleMs": {
+            "count": 5,
+            "median": 487.39999997615814,
+            "min": 481.5,
+            "max": 492.2999999523163
+          },
+          "workspaceMs": {
+            "count": 5,
+            "median": 500.60000002384186,
+            "min": 494.4000000357628,
+            "max": 502.80000001192093
+          },
+          "nextAnimationFrameMs": {
+            "count": 5,
+            "median": 489.19999998807907,
+            "min": 481.9000000357628,
+            "max": 496.2999999523163
+          },
+          "configuration": {
+            "configDomMs": {
+              "count": 5,
+              "median": 19.900000035762787,
+              "min": 17.899999976158142,
+              "max": 21.19999998807907
+            },
+            "codexOfferedMs": {
+              "count": 5,
+              "median": 36.5,
+              "min": 32.30000001192093,
+              "max": 39.19999998807907
+            },
+            "selectedConfigReadyMs": {
+              "count": 5,
+              "median": 293.30000001192093,
+              "min": 288.5,
+              "max": 300.60000002384186
+            },
+            "automationPreparationMs": {
+              "count": 5,
+              "median": 1479.5887920000005,
+              "min": 1049.0259999999998,
+              "max": 1518.8819160000003
+            }
+          },
+          "configCapabilityCatalogHttpMs": {
+            "GetRuntimeAvailabilityKinds {}": {
+              "count": 5,
+              "median": 2.266,
+              "min": 1.749,
+              "max": 2.669
+            },
+            "GetRuntimeAvailability {'runtimeKind': 'autobyteus'}": {
+              "count": 5,
+              "median": 1.919,
+              "min": 1.271,
+              "max": 2.088
+            },
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'autobyteus'}": {
+              "count": 5,
+              "median": 2.288,
+              "min": 1.704,
+              "max": 2.771
+            },
+            "GetRuntimeAvailability {'runtimeKind': 'codex_app_server'}": {
+              "count": 5,
+              "median": 6.035,
+              "min": 5.831,
+              "max": 6.961
+            },
+            "GetRuntimeAvailability {'runtimeKind': 'claude_agent_sdk'}": {
+              "count": 5,
+              "median": 17.705,
+              "min": 16.378,
+              "max": 18.347
+            },
+            "GetRuntimeAvailability {'runtimeKind': 'grok_build'}": {
+              "count": 5,
+              "median": 40.441,
+              "min": 38.903,
+              "max": 41.311
+            },
+            "GetProviderModelCatalogSnapshots {'runtimeKind': 'codex_app_server'}": {
+              "count": 5,
+              "median": 100.899,
+              "min": 99.136,
+              "max": 102.467
+            }
+          },
+          "publicationWork": {
+            "fullHistoryRequests": {
+              "count": 5,
+              "median": 0,
+              "min": 0,
+              "max": 0
+            },
+            "scopedOrgHistoryRequests": {
+              "count": 5,
+              "median": 3,
+              "min": 3,
+              "max": 3
+            },
+            "historyEncodedBytes": {
+              "count": 5,
+              "median": 60180,
+              "min": 60180,
+              "max": 60180
+            },
+            "allGraphqlRequests": {
+              "count": 5,
+              "median": 25,
+              "min": 25,
+              "max": 25
+            }
+          }
+        }
+      },
+      "pageErrors": [],
+      "consoleErrors": [],
+      "viewportPixels": [
+        2400,
+        1536
+      ]
+    }
+  },
+  "workCounts": {
+    "api3-baseline": [
+      {
+        "n": 1,
+        "allocationCalls": 10,
+        "collisionPurposeStoredOrgReads": 5100,
+        "retainedStructuralAdmissionOrgReads": 511
+      },
+      {
+        "n": 2,
+        "allocationCalls": 10,
+        "collisionPurposeStoredOrgReads": 5110,
+        "retainedStructuralAdmissionOrgReads": 512
+      },
+      {
+        "n": 3,
+        "allocationCalls": 10,
+        "collisionPurposeStoredOrgReads": 5120,
+        "retainedStructuralAdmissionOrgReads": 513
+      }
+    ],
+    "api3-packaged": [
+      {
+        "n": 1,
+        "allocationCalls": 10,
+        "collisionPurposeStoredOrgReads": 0,
+        "retainedStructuralAdmissionOrgReads": 511
+      },
+      {
+        "n": 2,
+        "allocationCalls": 10,
+        "collisionPurposeStoredOrgReads": 0,
+        "retainedStructuralAdmissionOrgReads": 512
+      },
+      {
+        "n": 3,
+        "allocationCalls": 10,
+        "collisionPurposeStoredOrgReads": 0,
+        "retainedStructuralAdmissionOrgReads": 513
+      }
+    ]
+  },
+  "normalizedComparableInput": {
+    "agentOrgDefinitionId": "autobyteus-org",
+    "rootConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "workspaceRootPath": "<test-owned Temp Workspace>"
+    },
+    "teamOverrides": [],
+    "agentOverrides": []
+  },
+  "environment": {
+    "node": "v22.23.1",
+    "pnpm": "10.28.2",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5.2\nBuildVersion:\t\t25F84",
+    "arch": "arm64",
+    "processor": "Apple M1 Max"
+  },
+  "caveats": [
+    "Warm vs cold renderer reload/cache, NOT cold backend/OS/provider; independent verified Codex offer clock and capability/catalog physical HTTP timings distinguished.",
+    "Selected-config-ready includes normal automated runtime/model choice reaction; automation preparation separately reported; DOM/layout/rAF are not compositor paint.",
+    "Same low-observer DOM/longtask + metadata-only HTTP/CDP encoded byte collection on both builds; no large history response-body clone or CPU profiling in primary samples.",
+    "Installed approved-base artifact source/renderer hashes pinned; current artifact all production/app.asar SHA matched API2 fresh IR002 build; API3 edits test/fixtures only.",
+    "Primary stress starts500 inactive roots, then grows500..509 as ten ordinary UI creates proceed identically. Separate trace starts510 stored roots, grows511..513; retained admission reads intentionally remain.",
+    "Model weights/inference speed/exact live-user data and active workload not measured. Other owners processes left running; timing order sequential, not randomized; range and raw errors retained.",
+    "Backend prototype counts use AsyncLocalStorage timing hooks only after primary collection, restored in finally; spans include nested/parallel work and cannot be summed as wall time."
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "instance": "iso-64996-c89a",
+  "packagedModules": [
+    {
+      "module": "agent-execution/services/agent-run-identity-allocator.js",
+      "builtDist": "09b0dd0eaae813820fde1c155f01fe1407abfa31fcc15e1aac8c933c1650d3c2",
+      "packaged": "09b0dd0eaae813820fde1c155f01fe1407abfa31fcc15e1aac8c933c1650d3c2",
+      "match": true
+    },
+    {
+      "module": "runtime-management/runtime-availability-service.js",
+      "builtDist": "d458390db5ec0f55271498b05ec0471ecd6e7b519642b18810f54639a3d22a2f",
+      "packaged": "d458390db5ec0f55271498b05ec0471ecd6e7b519642b18810f54639a3d22a2f",
+      "match": true
+    },
+    {
+      "module": "run-history/services/collaboration-root-history-service.js",
+      "builtDist": "1adfa4df5bfc9f8a9757edefa1445af9fcdbedb6a2d67d1b66257c83957cbc30",
+      "packaged": "1adfa4df5bfc9f8a9757edefa1445af9fcdbedb6a2d67d1b66257c83957cbc30",
+      "match": true
+    },
+    {
+      "module": "api/graphql/types/collaboration-root-history.js",
+      "builtDist": "ba66f1a52345890d576cee955bfe176b5ca54bd07f89e958f108a86898b67e37",
+      "packaged": "ba66f1a52345890d576cee955bfe176b5ca54bd07f89e958f108a86898b67e37",
+      "match": true
+    }
+  ],
+  "appAsarSha256": "3703b584bd092d9e6080aaad604c59704f2376583bb6f970b9fbe030b23b76fb",
+  "isolationMarker": {
+    "isolatedLaunchContract": 1
+  }
+}

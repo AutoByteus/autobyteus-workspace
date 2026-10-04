@@ -1,0 +1,1277 @@
+{
+  "phase": "to-100",
+  "input": {
+    "agentOrgDefinitionId": "autobyteus-org",
+    "rootConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-3grOik/server-data/temp_workspace"
+    },
+    "teamOverrides": [],
+    "agentOverrides": []
+  },
+  "results": [
+    {
+      "k": 1,
+      "durationMs": 431.861958,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_de150b0d50294c8086896041de703d48"
+          }
+        }
+      }
+    },
+    {
+      "k": 2,
+      "durationMs": 369.970459,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_82be32082f494d75a6cd6f8c4b5bf11e"
+          }
+        }
+      }
+    },
+    {
+      "k": 3,
+      "durationMs": 379.42829200000006,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_43e343ef592742b2812510ed345e783f"
+          }
+        }
+      }
+    },
+    {
+      "k": 4,
+      "durationMs": 358.28216599999996,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_71ff6f6cffb04094938538f779bcd90f"
+          }
+        }
+      }
+    },
+    {
+      "k": 5,
+      "durationMs": 374.474917,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_d9f51fb585684ac28d9e21b11c4c3290"
+          }
+        }
+      }
+    },
+    {
+      "k": 6,
+      "durationMs": 359.6274590000003,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_fd05a5572be443ab9055b55c4f0a1afb"
+          }
+        }
+      }
+    },
+    {
+      "k": 7,
+      "durationMs": 354.401875,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_b30386bddd8640a39a2009f0387f4dae"
+          }
+        }
+      }
+    },
+    {
+      "k": 8,
+      "durationMs": 346.5358749999996,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_a803c62d20cc4e0c973eab8987a7e36d"
+          }
+        }
+      }
+    },
+    {
+      "k": 9,
+      "durationMs": 351.9741670000003,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_d818cff8834f494483d925b88bd71881"
+          }
+        }
+      }
+    },
+    {
+      "k": 10,
+      "durationMs": 360.14075,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_5fdc5dfafebd4be699663a687e2c08d2"
+          }
+        }
+      }
+    },
+    {
+      "k": 11,
+      "durationMs": 363.8782500000002,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_94cc6ad2d8394f518c45f9576167712e"
+          }
+        }
+      }
+    },
+    {
+      "k": 12,
+      "durationMs": 360.7647500000003,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_f65bee3c48324b43a37a906692c2a44f"
+          }
+        }
+      }
+    },
+    {
+      "k": 13,
+      "durationMs": 354.53191699999934,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_91686fd5848e45629779984544c7eaf7"
+          }
+        }
+      }
+    },
+    {
+      "k": 14,
+      "durationMs": 357.9092500000006,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_e26d9b71b52a40d1bc4b1e38de2130a9"
+          }
+        }
+      }
+    },
+    {
+      "k": 15,
+      "durationMs": 366.36470800000006,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_7b27abeca1fe48c8aaa7233a5c665298"
+          }
+        }
+      }
+    },
+    {
+      "k": 16,
+      "durationMs": 359.4357910000008,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_b7b4c1af9e0d435d9b057dc778ab3dc1"
+          }
+        }
+      }
+    },
+    {
+      "k": 17,
+      "durationMs": 360.54362500000025,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_ff883b9127a6445ca64b073e7135408e"
+          }
+        }
+      }
+    },
+    {
+      "k": 18,
+      "durationMs": 355.44479200000023,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_6b0ddd021fcf4bed9ac44622cccc9108"
+          }
+        }
+      }
+    },
+    {
+      "k": 19,
+      "durationMs": 379.74062500000036,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_d54a9845f50546799ebaf6a9b58c0a18"
+          }
+        }
+      }
+    },
+    {
+      "k": 20,
+      "durationMs": 361.5790420000003,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_3b7368627e2c4bf59c7fac4eae57d9c2"
+          }
+        }
+      }
+    },
+    {
+      "k": 21,
+      "durationMs": 373.2026249999999,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_62a0c83c5fa84ad5aec13834d63e7057"
+          }
+        }
+      }
+    },
+    {
+      "k": 22,
+      "durationMs": 369.1090830000003,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_c492c4270f3849739d16559d4c244109"
+          }
+        }
+      }
+    },
+    {
+      "k": 23,
+      "durationMs": 371.2892499999998,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_5a69569f318e4804afd1a4f771327458"
+          }
+        }
+      }
+    },
+    {
+      "k": 24,
+      "durationMs": 380.48975000000064,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_922cc734ece6479fa1f2ddeb75a7566f"
+          }
+        }
+      }
+    },
+    {
+      "k": 25,
+      "durationMs": 365.0211249999993,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_2245f30a40e84becb3eea1f09de1ea54"
+          }
+        }
+      }
+    },
+    {
+      "k": 26,
+      "durationMs": 370.4830840000013,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_a5253a819c1f45e3a8639e27ef845204"
+          }
+        }
+      }
+    },
+    {
+      "k": 27,
+      "durationMs": 369.12029099999927,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_408ad7ee173348708a1b02825a88dc56"
+          }
+        }
+      }
+    },
+    {
+      "k": 28,
+      "durationMs": 376.51354100000026,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_be50fce2e30d45e5bf39adab53245288"
+          }
+        }
+      }
+    },
+    {
+      "k": 29,
+      "durationMs": 389.0990419999998,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_b7dbaecaea2a40bea8416483860efa2e"
+          }
+        }
+      }
+    },
+    {
+      "k": 30,
+      "durationMs": 371.0206249999992,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_e4e4720ede7c44f8a0513a55482023d1"
+          }
+        }
+      }
+    },
+    {
+      "k": 31,
+      "durationMs": 403.20429200000035,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_c02072d7c079419aba9002b20263ea23"
+          }
+        }
+      }
+    },
+    {
+      "k": 32,
+      "durationMs": 410.59429199999977,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_2a2c7d2e1e4448048e3ff9ce613000f1"
+          }
+        }
+      }
+    },
+    {
+      "k": 33,
+      "durationMs": 373.35412499999984,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_29184f73fc72460b80796a33127a20ef"
+          }
+        }
+      }
+    },
+    {
+      "k": 34,
+      "durationMs": 401.6912080000002,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_da865b24613e4351a7f3edf326e54746"
+          }
+        }
+      }
+    },
+    {
+      "k": 35,
+      "durationMs": 384.72249999999985,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_195f6667f94642eaa188625ae8ddb9e0"
+          }
+        }
+      }
+    },
+    {
+      "k": 36,
+      "durationMs": 375.97137499999917,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_7a24cd1cfb36440cb7dcbfe5937736c9"
+          }
+        }
+      }
+    },
+    {
+      "k": 37,
+      "durationMs": 383.9849580000009,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_348bc17337364b12a43fe3b576ca97e2"
+          }
+        }
+      }
+    },
+    {
+      "k": 38,
+      "durationMs": 384.3222079999996,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_0b5525c66db647d8a251bad9f5c444a7"
+          }
+        }
+      }
+    },
+    {
+      "k": 39,
+      "durationMs": 386.43691599999875,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_a85c77f2a96c4f1d864c164436c48d6e"
+          }
+        }
+      }
+    },
+    {
+      "k": 40,
+      "durationMs": 385.3232909999988,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_a90ebef7516345bf84bf0e6811d18366"
+          }
+        }
+      }
+    },
+    {
+      "k": 41,
+      "durationMs": 387.59620800000084,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_7efa40e806264984b30390c441025f33"
+          }
+        }
+      }
+    },
+    {
+      "k": 42,
+      "durationMs": 392.0945839999986,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_d0f9fe15ea554b42a4f11c6af9e5eef3"
+          }
+        }
+      }
+    },
+    {
+      "k": 43,
+      "durationMs": 397.1753750000007,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_48e01cb9ea7b49d0bcfd99ae00a868d8"
+          }
+        }
+      }
+    },
+    {
+      "k": 44,
+      "durationMs": 387.4886669999996,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_99270d8ffa534b4a9df8792b58944f3d"
+          }
+        }
+      }
+    },
+    {
+      "k": 45,
+      "durationMs": 406.3572920000006,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_3b818cd1d91a405b800249f98f273bd8"
+          }
+        }
+      }
+    },
+    {
+      "k": 46,
+      "durationMs": 392.5606669999979,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_545fd553937d4f33a6fa4078926abd29"
+          }
+        }
+      }
+    },
+    {
+      "k": 47,
+      "durationMs": 417.05733300000065,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_c92eed6fd3ca4889a71475469e6a7f08"
+          }
+        }
+      }
+    },
+    {
+      "k": 48,
+      "durationMs": 397.4836670000004,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_81b9bcf4d5704bf6a433032b0f7c4bb6"
+          }
+        }
+      }
+    },
+    {
+      "k": 49,
+      "durationMs": 392.31674999999814,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_c62103ffe1ad474c968489c456cb2818"
+          }
+        }
+      }
+    },
+    {
+      "k": 50,
+      "durationMs": 406.8417079999999,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_4110aad670bf42c4b7bcb792f9d7548f"
+          }
+        }
+      }
+    },
+    {
+      "k": 51,
+      "durationMs": 401.9775410000002,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_9b5137317f7f406b855fc4c82b6428d7"
+          }
+        }
+      }
+    },
+    {
+      "k": 52,
+      "durationMs": 398.2223750000012,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_02cd70fe39c4457d9034da2f64745b2f"
+          }
+        }
+      }
+    },
+    {
+      "k": 53,
+      "durationMs": 393.3143749999981,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_9e4880a939644be398a3e3dea1277ff5"
+          }
+        }
+      }
+    },
+    {
+      "k": 54,
+      "durationMs": 401.953125,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_71e3e9452cd24885983aa2538eed409e"
+          }
+        }
+      }
+    },
+    {
+      "k": 55,
+      "durationMs": 401.3892500000002,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_807833c73dd24c00bd02a1874c94b9e9"
+          }
+        }
+      }
+    },
+    {
+      "k": 56,
+      "durationMs": 432.72149999999965,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_365d701075474039b5ec291800e4b6f3"
+          }
+        }
+      }
+    },
+    {
+      "k": 57,
+      "durationMs": 463.7860839999994,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_3cc09c27f0cb47b39557f4c29bd31ac4"
+          }
+        }
+      }
+    },
+    {
+      "k": 58,
+      "durationMs": 411.05145800000173,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_e21c592ca76241e98fe6d1533fbbf591"
+          }
+        }
+      }
+    },
+    {
+      "k": 59,
+      "durationMs": 410.49774999999863,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_ced68ef8145f45c9badcc727d67589b6"
+          }
+        }
+      }
+    },
+    {
+      "k": 60,
+      "durationMs": 402.52349999999933,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_2a7e5ccc619f4718ace86f16efab588e"
+          }
+        }
+      }
+    },
+    {
+      "k": 61,
+      "durationMs": 407.30816699999923,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_476d7e5be3a641368e7fac38cb027cac"
+          }
+        }
+      }
+    },
+    {
+      "k": 62,
+      "durationMs": 421.1068750000013,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_6017cc2964414ef4a925bf69921dda58"
+          }
+        }
+      }
+    },
+    {
+      "k": 63,
+      "durationMs": 416.1239999999998,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_2fb217369d0e49e0a916ee144c5cfe96"
+          }
+        }
+      }
+    },
+    {
+      "k": 64,
+      "durationMs": 423.375208999998,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_5da9b1f3936d4bc6973c49d277c68210"
+          }
+        }
+      }
+    },
+    {
+      "k": 65,
+      "durationMs": 422.2163330000003,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_3c0de2b7354946eeae32e548240e50d7"
+          }
+        }
+      }
+    },
+    {
+      "k": 66,
+      "durationMs": 421.20766699999876,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_4020754021cf4ba98ff8dbb3176a2960"
+          }
+        }
+      }
+    },
+    {
+      "k": 67,
+      "durationMs": 423.4130839999998,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_14c6787c2b704594944f16b7137346b2"
+          }
+        }
+      }
+    },
+    {
+      "k": 68,
+      "durationMs": 425.231667,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_01da7366168e4908870138428e20d8ba"
+          }
+        }
+      }
+    },
+    {
+      "k": 69,
+      "durationMs": 461.22550000000047,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_2b145c6f29a144f3bd22835ceb136f37"
+          }
+        }
+      }
+    },
+    {
+      "k": 70,
+      "durationMs": 431.3364159999983,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_3c208ef0c35b4c8f9244b8fa136aba03"
+          }
+        }
+      }
+    },
+    {
+      "k": 71,
+      "durationMs": 434.7719169999982,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_bc977883fb71446aa8b57b705fc9dad5"
+          }
+        }
+      }
+    },
+    {
+      "k": 72,
+      "durationMs": 428.24104200000147,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_e55431dbf3fd4077a51b881ead9ab232"
+          }
+        }
+      }
+    },
+    {
+      "k": 73,
+      "durationMs": 431.2697499999995,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_fdb5035390e14f0390de32c9f9d65a8b"
+          }
+        }
+      }
+    },
+    {
+      "k": 74,
+      "durationMs": 460.3248339999991,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_b68f8ecc442f42faaa8e6680917b5a98"
+          }
+        }
+      }
+    },
+    {
+      "k": 75,
+      "durationMs": 434.14487499999814,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_ec9f928c270049ee9b4031e7ccae211e"
+          }
+        }
+      }
+    },
+    {
+      "k": 76,
+      "durationMs": 439.71949999999924,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_c7721da842f1456ab0bf757b4c87b24c"
+          }
+        }
+      }
+    },
+    {
+      "k": 77,
+      "durationMs": 434.1263749999998,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_bf9999b029d741518c1ad1a257278288"
+          }
+        }
+      }
+    },
+    {
+      "k": 78,
+      "durationMs": 437.88908300000185,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_1ddc7ee1024f4f65bb487010e439c105"
+          }
+        }
+      }
+    },
+    {
+      "k": 79,
+      "durationMs": 443.07012499999837,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_4a6bd738829a4e56b16ceb158d46b772"
+          }
+        }
+      }
+    },
+    {
+      "k": 80,
+      "durationMs": 470.5404589999998,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_9ff7c5c344234b63954eba8c18e8cce9"
+          }
+        }
+      }
+    },
+    {
+      "k": 81,
+      "durationMs": 459.18279200000325,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_a7e46c5bb041464eb52ea7f01252b0b9"
+          }
+        }
+      }
+    },
+    {
+      "k": 82,
+      "durationMs": 448.08250000000044,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_6c6d91f830754ebe8d4ede95e241b81d"
+          }
+        }
+      }
+    },
+    {
+      "k": 83,
+      "durationMs": 449.07183299999815,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_9b5b1ce525b34a74b69714f0d2270a2a"
+          }
+        }
+      }
+    },
+    {
+      "k": 84,
+      "durationMs": 438.5096659999981,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_43b279aa41b34004b5f6f916b9fc0ff2"
+          }
+        }
+      }
+    },
+    {
+      "k": 85,
+      "durationMs": 446.7385839999988,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_a756720b9f1047f59304215d3df0796b"
+          }
+        }
+      }
+    },
+    {
+      "k": 86,
+      "durationMs": 446.278542,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_2621359794c848f9913f825fd3895b91"
+          }
+        }
+      }
+    },
+    {
+      "k": 87,
+      "durationMs": 449.3286670000016,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_e159083abb9544f5aa8ccd5589f301ee"
+          }
+        }
+      }
+    },
+    {
+      "k": 88,
+      "durationMs": 451.6647920000032,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_fdee9adf0f5f435c9fadee47d609c8aa"
+          }
+        }
+      }
+    },
+    {
+      "k": 89,
+      "durationMs": 452.30862499999785,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_79acf1d82e6c4236b5bc6b0156223188"
+          }
+        }
+      }
+    },
+    {
+      "k": 90,
+      "durationMs": 458.4268329999977,
+      "status": 200,
+      "body": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "autobyteus_org_15dc9c1d157d42ceaa2bb0db4ad9942e"
+          }
+        }
+      }
+    }
+  ]
+}

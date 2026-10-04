@@ -1,0 +1,238 @@
+{
+  "measurement": "PerformanceObserver and actual click/change -> DOM MutationObserver, passive; dev renderer, isolated installed 1.4.92 backend; not packaged-renderer certification",
+  "phases": [
+    {
+      "receivedAt": "2026-10-03T14:45:31.726Z",
+      "at": 39274.80000001192,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "org-config-visible",
+      "durationMs": 13.300000011920929
+    },
+    {
+      "receivedAt": "2026-10-03T14:45:31.727Z",
+      "at": 39274.90000003576,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "codex-runtime-offered",
+      "durationMs": 13.200000047683716
+    },
+    {
+      "receivedAt": "2026-10-03T14:45:31.767Z",
+      "at": 39320.19999998808,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "org-members-ready",
+      "durationMs": 58.59999996423721
+    },
+    {
+      "receivedAt": "2026-10-03T14:45:31.984Z",
+      "at": 39537.69999998808,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "codex-catalog-ready",
+      "durationMs": 167.89999997615814
+    },
+    {
+      "receivedAt": "2026-10-03T14:45:40.316Z",
+      "at": 47869.69999998808,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "org-launch",
+      "durationMs": 598.5999999642372
+    },
+    {
+      "receivedAt": "2026-10-03T14:46:31.607Z",
+      "at": 8461.700000047684,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "org-config-visible",
+      "durationMs": 307.2000000476837
+    },
+    {
+      "receivedAt": "2026-10-03T14:46:31.696Z",
+      "at": 8557.600000023842,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "org-members-ready",
+      "durationMs": 402.89999997615814
+    },
+    {
+      "receivedAt": "2026-10-03T14:46:33.563Z",
+      "at": 10425.200000047684,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "codex-runtime-offered",
+      "durationMs": 2270.400000035763
+    },
+    {
+      "receivedAt": "2026-10-03T14:46:33.721Z",
+      "at": 10583.5,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "codex-catalog-ready",
+      "durationMs": 155.5999999642372
+    },
+    {
+      "receivedAt": "2026-10-03T14:47:10.474Z",
+      "at": 20804.099999964237,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "team-config-visible",
+      "durationMs": 368.5
+    },
+    {
+      "receivedAt": "2026-10-03T14:47:12.432Z",
+      "at": 22763.30000001192,
+      "page": "/workspace",
+      "type": "phase-end",
+      "phase": "codex-catalog-ready",
+      "durationMs": 197.70000004768372
+    }
+  ],
+  "queries": [
+    {
+      "operation": "GetApplicationsCapability",
+      "runtimeKind": "",
+      "count": 3,
+      "minMs": 6.899999976158142,
+      "maxMs": 12.400000035762787,
+      "medianMs": 8.600000023841858
+    },
+    {
+      "operation": "GetProjectsCapability",
+      "runtimeKind": "",
+      "count": 3,
+      "minMs": 6.5,
+      "maxMs": 20.100000023841858,
+      "medianMs": 8.400000035762787
+    },
+    {
+      "operation": "GetAllWorkspaces",
+      "runtimeKind": "",
+      "count": 3,
+      "minMs": 4.699999988079071,
+      "maxMs": 15.699999988079071,
+      "medianMs": 6
+    },
+    {
+      "operation": "GetServerSettings",
+      "runtimeKind": "",
+      "count": 3,
+      "minMs": 4.399999976158142,
+      "maxMs": 15.900000035762787,
+      "medianMs": 14.899999976158142
+    },
+    {
+      "operation": "ListWorkspaceRunHistory",
+      "runtimeKind": "",
+      "count": 53,
+      "minMs": 1.699999988079071,
+      "maxMs": 25.599999964237213,
+      "medianMs": 3
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "runtimeKind": "",
+      "count": 56,
+      "minMs": 3.400000035762787,
+      "maxMs": 25.30000001192093,
+      "medianMs": 7.999999970197678
+    },
+    {
+      "operation": "GetAgentDefinitions",
+      "runtimeKind": "",
+      "count": 3,
+      "minMs": 51.700000047683716,
+      "maxMs": 137.5,
+      "medianMs": 85.60000002384186
+    },
+    {
+      "operation": "GetAgentTeamDefinitions",
+      "runtimeKind": "",
+      "count": 3,
+      "minMs": 346.5,
+      "maxMs": 606.3999999761581,
+      "medianMs": 369.30000001192093
+    },
+    {
+      "operation": "GetAgentOrgDefinitions",
+      "runtimeKind": "",
+      "count": 3,
+      "minMs": 355.80000001192093,
+      "maxMs": 590.3999999761581,
+      "medianMs": 371.9000000357628
+    },
+    {
+      "operation": "GetProviderModelCatalogSnapshots",
+      "runtimeKind": "autobyteus",
+      "count": 3,
+      "minMs": 21.799999952316284,
+      "maxMs": 67.59999996423721,
+      "medianMs": 54
+    },
+    {
+      "operation": "GetAgentOrgReferencedAgent",
+      "runtimeKind": "",
+      "count": 27,
+      "minMs": 24.30000001192093,
+      "maxMs": 78.69999998807907,
+      "medianMs": 30.19999998807907
+    },
+    {
+      "operation": "GetRuntimeAvailabilities",
+      "runtimeKind": "",
+      "count": 3,
+      "minMs": 1640.5,
+      "maxMs": 1931.5,
+      "medianMs": 1716.8999999761581
+    },
+    {
+      "operation": "GetProviderModelCatalogSnapshots",
+      "runtimeKind": "codex_app_server",
+      "count": 3,
+      "minMs": 141.69999998807907,
+      "maxMs": 190.69999998807907,
+      "medianMs": 154.19999998807907
+    },
+    {
+      "operation": "CreateAgentOrgRun",
+      "runtimeKind": "",
+      "count": 1,
+      "minMs": 531.2000000476837,
+      "maxMs": 531.2000000476837,
+      "medianMs": 531.2000000476837
+    },
+    {
+      "operation": "GetAgentOrgRunInspection",
+      "runtimeKind": "",
+      "count": 1,
+      "minMs": 5.199999988079071,
+      "maxMs": 5.199999988079071,
+      "medianMs": 5.199999988079071
+    },
+    {
+      "operation": "GetAgentOrgMemberRunProjection",
+      "runtimeKind": "",
+      "count": 20,
+      "minMs": 16.600000023841858,
+      "maxMs": 28.5,
+      "medianMs": 23.25
+    },
+    {
+      "operation": "GetFolderChildren",
+      "runtimeKind": "",
+      "count": 1,
+      "minMs": 49.30000001192093,
+      "maxMs": 49.30000001192093,
+      "medianMs": 49.30000001192093
+    }
+  ],
+  "limitations": [
+    "No model turn sent; inference latency not tested.",
+    "21 test-owned idle Orgs; no real transcript/streaming load.",
+    "Early dev optimization reloads and browser-control timeout are not application-performance measurements.",
+    "Warm-state 3.857 s host/control Team library snapshot was confounded by concurrent synthetic run creation; do not attribute to history scale.",
+    "Initial rejected GraphQL field probes are errors, excluded from timing claims."
+  ]
+}

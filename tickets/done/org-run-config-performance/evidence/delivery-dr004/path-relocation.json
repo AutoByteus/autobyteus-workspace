@@ -1,0 +1,7 @@
+{
+  "historicalWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "historicalTicket": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance",
+  "archivedTicket": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/done/org-run-config-performance",
+  "durableFinalCheckout": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta",
+  "policy": "Raw upstream logs/indices and historical execution paths retained as provenance. Current cumulative delivery index resolves refs to archive/source in durable final checkout."
+}

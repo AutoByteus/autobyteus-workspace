@@ -1,0 +1,5 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["bash", "-c", "pnpm --silent isolated-app stop iso-53675-ad40 > tickets/in-progress/org-run-config-performance/evidence/api3-transition-stop.json"]
+start=2026-10-03T23:58:40.251722+00:00
+
+exit=0 elapsed_seconds=0.942506584

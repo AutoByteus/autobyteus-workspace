@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /code_reviewer.\",\"target_agent_run_id\":\"code_reviewer_1cd9559332904949b3253e46b21014ac\"}"
+    }
+  ],
+  "structuredContent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /code_reviewer.",
+    "target_agent_run_id": "code_reviewer_1cd9559332904949b3253e46b21014ac"
+  }
+}

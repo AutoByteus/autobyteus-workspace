@@ -1,0 +1,408 @@
+{
+  "startedAt": "2026-10-03T21:01:52.100Z",
+  "instanceId": "iso-64996-c89a",
+  "cases": [
+    {
+      "id": "PKG-01-unrelated-pending",
+      "expected": "PKG-01-unrelated-pending",
+      "observed": {
+        "heldUnrelated": "antigravity_cli",
+        "codexReadyBeforeRelease": true,
+        "exactSelected": true
+      },
+      "result": "Pass",
+      "at": "2026-10-03T21:01:53.517Z"
+    },
+    {
+      "id": "PKG-02-selected-catalog-error-retry",
+      "expected": "PKG-02-selected-catalog-error-retry",
+      "result": "Fail",
+      "error": "page.waitForFunction: Timeout 15000ms exceeded.\n    at model (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:10:344)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:14:1322\n    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:8:99)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:14:2",
+      "at": "2026-10-03T21:02:09.940Z"
+    }
+  ],
+  "requests": [
+    {
+      "at": 1791061312277,
+      "operation": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "at": 1791061312279,
+      "operation": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "at": 1791061312280,
+      "operation": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "at": 1791061312280,
+      "operation": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "at": 1791061312281,
+      "operation": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1791061312282,
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "at": 1791061312283,
+      "operation": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "at": 1791061312284,
+      "operation": "GetProjectsCapability",
+      "variables": {}
+    },
+    {
+      "at": 1791061312285,
+      "operation": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "at": 1791061313217,
+      "operation": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "at": 1791061313219,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": 1791061313220,
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": 1791061313223,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      }
+    },
+    {
+      "at": 1791061313225,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      }
+    },
+    {
+      "at": 1791061313226,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      }
+    },
+    {
+      "at": 1791061313228,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      }
+    },
+    {
+      "at": 1791061313228,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      }
+    },
+    {
+      "at": 1791061313229,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      }
+    },
+    {
+      "at": 1791061313230,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      }
+    },
+    {
+      "at": 1791061313231,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      }
+    },
+    {
+      "at": 1791061313231,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      }
+    },
+    {
+      "at": 1791061313236,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": 1791061313237,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "at": 1791061313237,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "at": 1791061313238,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      }
+    },
+    {
+      "at": 1791061313287,
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": 1791061313670,
+      "operation": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "at": 1791061313671,
+      "operation": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "at": 1791061313671,
+      "operation": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "at": 1791061313671,
+      "operation": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "at": 1791061313672,
+      "operation": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1791061313673,
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "at": 1791061313673,
+      "operation": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "at": 1791061313675,
+      "operation": "GetProjectsCapability",
+      "variables": {}
+    },
+    {
+      "at": 1791061313676,
+      "operation": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "at": 1791061314573,
+      "operation": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "at": 1791061314574,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": 1791061314576,
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": 1791061314579,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      }
+    },
+    {
+      "at": 1791061314580,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      }
+    },
+    {
+      "at": 1791061314581,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      }
+    },
+    {
+      "at": 1791061314582,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      }
+    },
+    {
+      "at": 1791061314583,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      }
+    },
+    {
+      "at": 1791061314584,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      }
+    },
+    {
+      "at": 1791061314584,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      }
+    },
+    {
+      "at": 1791061314585,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      }
+    },
+    {
+      "at": 1791061314586,
+      "operation": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      }
+    },
+    {
+      "at": 1791061314591,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": 1791061314592,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "at": 1791061314593,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "at": 1791061314594,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      }
+    },
+    {
+      "at": 1791061314640,
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": 1791061314682,
+      "operation": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": 1791061314683,
+      "operation": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "at": 1791061319081,
+      "operation": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1791061319083,
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "at": 1791061324086,
+      "operation": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1791061324088,
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "at": 1791061329085,
+      "operation": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1791061329086,
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    }
+  ],
+  "sentFrames": [],
+  "errors": [],
+  "failure": "page.waitForFunction: Timeout 15000ms exceeded.\n    at model (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:10:344)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:14:1322\n    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:8:99)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api-packaged-functional.mjs:14:2",
+  "failedDom": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nAgent Org\nAutoByteus Org\nRuntime\nAutoByteus\nClaude Agent SDK\nGrok Build\nCodex App Server\nAntigravity CLI\n\nSelects the runtime used by this organization run.\n\nDefault LLM Model\nOpenAI / GPT-6.1-Sol (default reasoning: low)\n\nUsed across the organization unless a placement is customized.\n\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nAutomatically allows tool calls and access requests for this run.\n\nAuto approve tools\nMember overrides (10)\n\nModel configuration for /product_team is not ready: API/E2E owned selected-catalog outage\n\nRun Agent Org"
+}

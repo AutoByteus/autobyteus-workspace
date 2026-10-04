@@ -1,0 +1,987 @@
+{
+  "id": "API-007",
+  "at": "2026-10-03T22:39:37.578Z",
+  "info": {
+    "instanceId": "iso-50579-9dc7",
+    "pid": 78818,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:50580",
+    "graphqlUrl": "http://127.0.0.1:50580/graphql",
+    "controlEndpoint": "http://127.0.0.1:50579",
+    "controlPort": 50579,
+    "serverPort": 50580,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-50579-9dc7.log"
+  },
+  "cases": [
+    {
+      "id": "PKG-03-org-real-inheritance-and-overrides",
+      "observed": {
+        "orgId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "exactIds": 10,
+        "recipientFree": true,
+        "root": "high",
+        "team": "medium",
+        "agent": "low",
+        "otherMembers": "high/medium",
+        "checkpoint": {
+          "getAgentOrgExecutionCheckpoint": {
+            "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+            "changeSequence": 0,
+            "hasOpenExecutionWork": false
+          }
+        }
+      },
+      "result": "Pass"
+    },
+    {
+      "id": "PKG-04-standalone-team-real-schema-overrides",
+      "result": "Fail",
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(await run.isEnabled())\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs:24:44\n    at async check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs:8:73)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs:22:2"
+    }
+  ],
+  "requests": [
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetProjectsCapability",
+      "variables": {},
+      "query": "query GetProjectsCapability {\n  projectsCapability {\n    ...ProjectsCapabilityFields\n    __typename\n  }\n}\n\nfragment ProjectsCapabilityFields on ProjectsCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {},
+      "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:product-ui-ux-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:product-team:ui-baseline-bootstrapper"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:solution-designer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:code-reviewer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgReferencedAgent",
+      "variables": {
+        "id": "team-local-agent:marketing-team:marketing-content-creator"
+      },
+      "query": "query GetAgentOrgReferencedAgent($id: String!) {\n  agentDefinition(id: $id) {\n    id\n    name\n    description\n    ownershipScope\n    ownerOrgId\n    ownerTeamId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "CreateAgentOrgRun",
+      "variables": {
+        "input": {
+          "agentOrgDefinitionId": "autobyteus-org",
+          "rootConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+          },
+          "teamOverrides": [
+            {
+              "address": "/product_team",
+              "configuration": {
+                "llmConfig": {
+                  "reasoning_effort": "medium"
+                }
+              }
+            }
+          ],
+          "agentOverrides": [
+            {
+              "address": "/product_team/product_ui_ux_designer",
+              "configuration": {
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "query": "mutation CreateAgentOrgRun($input: CreateAgentOrgRunInput!) {\n  createAgentOrgRun(input: $input) {\n    success\n    message\n    agentOrgRunId\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036"
+      },
+      "query": "query GetAgentOrgRunInspection($orgRunId: String!) {\n  getAgentOrgRunInspection(orgRunId: $orgRunId)\n}"
+    },
+    {
+      "operationName": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036"
+      },
+      "query": "query GetAgentOrgRootHistory($orgRunId: String!) {\n  getAgentOrgRootHistory(orgRunId: $orgRunId) {\n    root_subject_kind\n    root_run_id\n    created_at\n    archived_at\n    is_active\n    summary\n    org\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/product_team/product_ui_ux_designer",
+        "agentRunId": "product_ui_ux_designer_ada3f75581614717bafbdb97ab600628"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/product_team/ui_baseline_bootstrapper",
+        "agentRunId": "ui_baseline_bootstrapper_bdf2fd8f2df54a6e812b09fe855fbc5b"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_0d8ac8c119134bf3974e8ba7559a6dbe"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_7ef28d5d5f214e6cb078ee8114308dd4"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3d2b937e786044f4bbce89cfad424441"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_d69ce46d02914c4290d5209e39e2ca27"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_a1569c8f41ae4843b2f98464f5f50728"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_48767328d3454146a26154374811f393"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/marketing_team/marketing_content_creator",
+        "agentRunId": "marketing_content_creator_ab1a6681cbdd40749e7f6543d9576fda"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/marketing_team/computer_use_operator",
+        "agentRunId": "computer_use_operator_182a7d6fffc8471e93fc8b2b42e1ac41"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036"
+      },
+      "query": "query GetAgentOrgRootHistory($orgRunId: String!) {\n  getAgentOrgRootHistory(orgRunId: $orgRunId) {\n    root_subject_kind\n    root_run_id\n    created_at\n    archived_at\n    is_active\n    summary\n    org\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/product_team/product_ui_ux_designer",
+        "agentRunId": "product_ui_ux_designer_ada3f75581614717bafbdb97ab600628"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/product_team/ui_baseline_bootstrapper",
+        "agentRunId": "ui_baseline_bootstrapper_bdf2fd8f2df54a6e812b09fe855fbc5b"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_0d8ac8c119134bf3974e8ba7559a6dbe"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_7ef28d5d5f214e6cb078ee8114308dd4"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3d2b937e786044f4bbce89cfad424441"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_d69ce46d02914c4290d5209e39e2ca27"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_a1569c8f41ae4843b2f98464f5f50728"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/software_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_48767328d3454146a26154374811f393"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/marketing_team/marketing_content_creator",
+        "agentRunId": "marketing_content_creator_ab1a6681cbdd40749e7f6543d9576fda"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+        "memberAddress": "/marketing_team/computer_use_operator",
+        "agentRunId": "computer_use_operator_182a7d6fffc8471e93fc8b2b42e1ac41"
+      },
+      "query": "query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  getAgentOrgMemberRunProjection(\n    orgRunId: $orgRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    summary\n    lastActivityAt\n    conversation\n    activities\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036"
+      },
+      "query": "query GetAgentOrgRootHistory($orgRunId: String!) {\n  getAgentOrgRootHistory(orgRunId: $orgRunId) {\n    root_subject_kind\n    root_run_id\n    created_at\n    archived_at\n    is_active\n    summary\n    org\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "codex_app_server",
+        "identifiers": [
+          "gpt-6.1-sol"
+        ]
+      },
+      "query": "query RuntimeCurrentModelDescriptors($runtimeKind: String!, $identifiers: [String!]!) {\n  runtimeCurrentModelDescriptors(\n    runtimeKind: $runtimeKind\n    identifiers: $identifiers\n  ) {\n    identifier\n    model {\n      modelIdentifier\n      name\n      canonicalName\n      providerName\n      providerType\n      description\n      configSchema\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036"
+      },
+      "query": "query GetAgentOrgRootHistory($orgRunId: String!) {\n  getAgentOrgRootHistory(orgRunId: $orgRunId) {\n    root_subject_kind\n    root_run_id\n    created_at\n    archived_at\n    is_active\n    summary\n    org\n    __typename\n  }\n}"
+    }
+  ],
+  "sentFrames": [],
+  "errors": [],
+  "orgInput": {
+    "agentOrgDefinitionId": "autobyteus-org",
+    "rootConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": {
+        "reasoning_effort": "high"
+      },
+      "autoExecuteTools": false,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+    },
+    "teamOverrides": [
+      {
+        "address": "/product_team",
+        "configuration": {
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          }
+        }
+      }
+    ],
+    "agentOverrides": [
+      {
+        "address": "/product_team/product_ui_ux_designer",
+        "configuration": {
+          "llmConfig": {
+            "reasoning_effort": "low"
+          }
+        }
+      }
+    ]
+  },
+  "orgTree": {
+    "subjectKind": "agent_org",
+    "createdAt": "2026-10-03T22:39:39.524Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/software_engineering_team/solution_designer",
+        "to": "/product_team/product_ui_ux_designer",
+        "rules": [
+          "When Solution Designer classifies the outcome as Product Design Requested because the user explicitly or after clarification asks Product Team to help understand or evolve an experience. Include the focused decision, relevant requirement and behavior IDs, established constraints, non-goals, canonical requirements paths, and supplied existing-product context when applicable."
+        ]
+      },
+      {
+        "from": "/product_team/product_ui_ux_designer",
+        "to": "/software_engineering_team/solution_designer",
+        "rules": [
+          "When the Product UI/UX Designer classifies the outcome as Requirements Visualization Ready because the interactive visualizer revision, review URL, evidence, and open clarification questions are ready for Solution Designer and user review.",
+          "When the Product UI/UX Designer classifies the outcome as Prototype Completed because the user-approved prototype and UI/UX package are ready for requirements integration.",
+          "When the Product UI/UX Designer classifies the outcome as Requirement Impact because user feedback or prototype evidence requires a material requirements revision.",
+          "When the Product UI/UX Designer classifies the outcome as Not Recommended because a prototype would not materially improve the decision and the rationale/evidence are ready.",
+          "When the Product UI/UX Designer classifies the outcome as Blocked because prototype work cannot safely or accurately continue and Solution Designer must decide the next requirements path."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/solution_designer",
+        "to": "/marketing_team/marketing_content_creator",
+        "rules": [
+          "When an approved product or delivery package requires product positioning, launch messaging, campaign planning, channel adaptation, or other marketing execution. Include verified product facts, supported scenarios, constraints, non-goals, approval state, relevant artifact paths, and any claims that still require confirmation."
+        ]
+      },
+      {
+        "from": "/marketing_team/marketing_content_creator",
+        "to": "/software_engineering_team/solution_designer",
+        "rules": [
+          "When Marketing Content Creator classifies the outcome as Claim Review Needed because a draft depends on product behavior, technical feasibility, release status, or a technical claim. Include the exact claim or decision, source material, open question, approval state, and the relevant campaign or draft artifact path."
+        ]
+      },
+      {
+        "from": "/product_team/product_ui_ux_designer",
+        "to": "/marketing_team/marketing_content_creator",
+        "rules": [
+          "When the user-approved product experience package, visual evidence, or launch-ready experience narrative is ready for marketing adaptation. Include the approved experience scope, supported user problem, visual or prototype artifact paths, constraints, and any wording that must remain accurate."
+        ]
+      },
+      {
+        "from": "/marketing_team/marketing_content_creator",
+        "to": "/product_team/product_ui_ux_designer",
+        "rules": [
+          "When Marketing Content Creator classifies the outcome as Product Evidence Needed because a draft needs product-experience clarification or visual product evidence. Include the campaign or draft context, exact experience question, source material, audience, approval state, and relevant artifact paths."
+        ]
+      },
+      {
+        "from": "/product_team/product_ui_ux_designer",
+        "to": "/product_team/ui_baseline_bootstrapper",
+        "rules": [
+          "When the Product UI/UX Designer classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-design-repository-management skill, without the requirements or Product ticket package."
+        ]
+      },
+      {
+        "from": "/product_team/ui_baseline_bootstrapper",
+        "to": "/product_team/product_ui_ux_designer",
+        "rules": [
+          "When the UI Baseline Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to the Product UI/UX Designer for acceptance or recovery."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/solution_designer",
+        "to": "/software_engineering_team/architecture_reviewer",
+        "rules": [
+          "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/solution_designer",
+        "to": "/software_engineering_team/implementation_engineer",
+        "rules": [
+          "When Solution Designer classifies the completed architecture package as Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low. Include the approved requirements, investigation notes, design spec, solution revision record, classification rationale and selected direct implementation route."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/architecture_reviewer",
+        "to": "/software_engineering_team/implementation_engineer",
+        "rules": [
+          "When the architecture review passes and the cumulative reviewed architecture package is ready for implementation."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/architecture_reviewer",
+        "to": "/software_engineering_team/solution_designer",
+        "rules": [
+          "When the architecture review is Fail or Blocked with a Design Impact, Requirement Gap, or Unclear finding that requires architecture revision or upstream requirements clarification before implementation.",
+          "When architecture review passes and Solution Designer needs the informational pass notification after the primary implementation handoff succeeds."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/implementation_engineer",
+        "to": "/software_engineering_team/code_reviewer",
+        "rules": [
+          "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+          "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/implementation_engineer",
+        "to": "/software_engineering_team/api_e2e_engineer",
+        "rules": [
+          "When implementation is complete, implementation-scoped validation and the lightweight implementation self-review are complete, the carried classification is task_size=Small or Medium and architectural_risk=Low, and the cumulative package is ready for direct API/E2E validation without Code Reviewer.",
+          "When a direct-route implementation-owned Local Fix requested by delivery engineer is complete, the rechecked classification remains task_size=Small or Medium and architectural_risk=Low, and the updated package is ready for direct API/E2E validation."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/implementation_engineer",
+        "to": "/software_engineering_team/solution_designer",
+        "rules": [
+          "When implementation identifies a Design Impact, Requirement Gap, or Unclear issue that must be resolved in the requirements or design before implementation continues."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/code_reviewer",
+        "to": "/software_engineering_team/api_e2e_engineer",
+        "rules": [
+          "When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.",
+          "When a test-code, stale-test, fixture, environment, execution, or reporting Local Fix is complete and API/E2E must rerun the affected validation.",
+          "When API/E2E failure-origin review confirms that the owning problem is in coverage, test code, fixtures, environment, execution, or reporting.",
+          "When post-API/E2E test-code review fails and an API/E2E-owned correction is required."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/code_reviewer",
+        "to": "/software_engineering_team/implementation_engineer",
+        "rules": [
+          "When source review identifies an implementation-owned Local Fix or packaging defect that must be corrected before executable coverage.",
+          "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+          "When implementation review passes and Implementation Engineer needs the informational pass notification after the primary API/E2E handoff succeeds."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/code_reviewer",
+        "to": "/software_engineering_team/solution_designer",
+        "rules": [
+          "When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/code_reviewer",
+        "to": "/software_engineering_team/delivery_engineer",
+        "rules": [
+          "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/api_e2e_engineer",
+        "to": "/software_engineering_team/code_reviewer",
+        "rules": [
+          "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+          "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/api_e2e_engineer",
+        "to": "/software_engineering_team/delivery_engineer",
+        "rules": [
+          "When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/delivery_engineer",
+        "to": "/software_engineering_team/implementation_engineer",
+        "rules": [
+          "When delivery discovers a code or packaging Local Fix that must be corrected by implementation before finalization can continue."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/delivery_engineer",
+        "to": "/software_engineering_team/solution_designer",
+        "rules": [
+          "When delivery discovers a Design Impact, Requirement Gap, or Unclear issue, or final handoff is blocked by a non-deployment issue that requires upstream classification.",
+          "When Delivery Engineer classifies the result as Delivery Completed after explicit user verification, repository finalization, and all applicable release, deployment and safe-cleanup gates are Completed or truthfully Not required. Include the same package identifier, complete cumulative artifacts and final evidence for Solution Designer to verify the terminal receipt."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/api_e2e_engineer",
+        "to": "/software_engineering_team/solution_designer",
+        "rules": [
+          "When coverage investigation or test-validity analysis establishes a Requirement Gap, Design Impact or Unclear upstream issue before executable validation can proceed. Include the supported scenario basis and concrete evidence. Execution failures still follow the Code Reviewer failure-origin route."
+        ]
+      },
+      {
+        "from": "/software_engineering_team/solution_designer",
+        "to": "/software_engineering_team/delivery_engineer",
+        "rules": [
+          "When Solution Designer checks a Delivery Completed receipt and finds missing or inconsistent delivery-owned completion evidence. Send only the specific receipt gap and cumulative package for correction; do not claim Terminal, reopen unchanged requirements or redo delivery work."
+        ]
+      },
+      {
+        "from": "/marketing_team/marketing_content_creator",
+        "to": "/marketing_team/computer_use_operator",
+        "rules": [
+          "When a publish-request.md for a user-approved channel package is saved and ready for publishing.",
+          "When a task-request.md for other computer work (site data, research, reply candidates, source capture, media download, screenshots, or tool work) is saved and ready."
+        ]
+      },
+      {
+        "from": "/marketing_team/computer_use_operator",
+        "to": "/marketing_team/marketing_content_creator",
+        "rules": [
+          "When task-result.md for a Marketing Content Creator request is saved with outcome Completed, Blocked, or Needs Decision."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "autobyteus-org",
+      "orgDefinitionName": "AutoByteus Org",
+      "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-6.1-sol",
+        "llmConfig": {
+          "reasoning_effort": "high"
+        },
+        "autoExecuteTools": false,
+        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+      },
+      "members": [
+        {
+          "address": "/product_team",
+          "teamDefinitionId": "product-team",
+          "role": null,
+          "description": null,
+          "teamRunId": "product_team_57a94e97ab00467e955e69194d7753b2",
+          "coordinatorAddress": "/product_team/product_ui_ux_designer",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "medium"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+          },
+          "members": [
+            {
+              "address": "/product_team/product_ui_ux_designer",
+              "agentDefinitionId": "team-local-agent:product-team:product-ui-ux-designer",
+              "role": null,
+              "description": null,
+              "agentRunId": "product_ui_ux_designer_ada3f75581614717bafbdb97ab600628",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            },
+            {
+              "address": "/product_team/ui_baseline_bootstrapper",
+              "agentDefinitionId": "team-local-agent:product-team:ui-baseline-bootstrapper",
+              "role": null,
+              "description": null,
+              "agentRunId": "ui_baseline_bootstrapper_bdf2fd8f2df54a6e812b09fe855fbc5b",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "medium"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            }
+          ],
+          "taskExecutions": []
+        },
+        {
+          "address": "/software_engineering_team",
+          "teamDefinitionId": "software-engineering-team",
+          "role": null,
+          "description": null,
+          "teamRunId": "software_engineering_team_e7e088c66f2347af94b7b94fe842c718",
+          "coordinatorAddress": "/software_engineering_team/solution_designer",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+          },
+          "members": [
+            {
+              "address": "/software_engineering_team/solution_designer",
+              "agentDefinitionId": "team-local-agent:software-engineering-team:solution-designer",
+              "role": null,
+              "description": null,
+              "agentRunId": "solution_designer_0d8ac8c119134bf3974e8ba7559a6dbe",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            },
+            {
+              "address": "/software_engineering_team/architecture_reviewer",
+              "agentDefinitionId": "team-local-agent:software-engineering-team:architecture-reviewer",
+              "role": null,
+              "description": null,
+              "agentRunId": "architecture_reviewer_7ef28d5d5f214e6cb078ee8114308dd4",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            },
+            {
+              "address": "/software_engineering_team/implementation_engineer",
+              "agentDefinitionId": "team-local-agent:software-engineering-team:implementation-engineer",
+              "role": null,
+              "description": null,
+              "agentRunId": "implementation_engineer_3d2b937e786044f4bbce89cfad424441",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            },
+            {
+              "address": "/software_engineering_team/code_reviewer",
+              "agentDefinitionId": "team-local-agent:software-engineering-team:code-reviewer",
+              "role": null,
+              "description": null,
+              "agentRunId": "code_reviewer_d69ce46d02914c4290d5209e39e2ca27",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            },
+            {
+              "address": "/software_engineering_team/api_e2e_engineer",
+              "agentDefinitionId": "team-local-agent:software-engineering-team:api-e2e-engineer",
+              "role": null,
+              "description": null,
+              "agentRunId": "api_e2e_engineer_a1569c8f41ae4843b2f98464f5f50728",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            },
+            {
+              "address": "/software_engineering_team/delivery_engineer",
+              "agentDefinitionId": "team-local-agent:software-engineering-team:delivery-engineer",
+              "role": null,
+              "description": null,
+              "agentRunId": "delivery_engineer_48767328d3454146a26154374811f393",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            }
+          ],
+          "taskExecutions": []
+        },
+        {
+          "address": "/marketing_team",
+          "teamDefinitionId": "marketing-team",
+          "role": null,
+          "description": null,
+          "teamRunId": "marketing_team_99024bf50f5a4ded950925e936a13ec4",
+          "coordinatorAddress": "/marketing_team/marketing_content_creator",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+          },
+          "members": [
+            {
+              "address": "/marketing_team/marketing_content_creator",
+              "agentDefinitionId": "team-local-agent:marketing-team:marketing-content-creator",
+              "role": null,
+              "description": null,
+              "agentRunId": "marketing_content_creator_ab1a6681cbdd40749e7f6543d9576fda",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            },
+            {
+              "address": "/marketing_team/computer_use_operator",
+              "agentDefinitionId": "computer-use-operator",
+              "role": null,
+              "description": null,
+              "agentRunId": "computer_use_operator_182a7d6fffc8471e93fc8b2b42e1ac41",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Mm5j1D/server-data/temp_workspace"
+              }
+            }
+          ],
+          "taskExecutions": []
+        }
+      ],
+      "collaborators": [],
+      "taskExecutions": []
+    }
+  },
+  "orgCheckpoint": {
+    "getAgentOrgExecutionCheckpoint": {
+      "orgRunId": "autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036",
+      "changeSequence": 0,
+      "hasOpenExecutionWork": false
+    }
+  },
+  "result": "Fail",
+  "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(await run.isEnabled())\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs:24:44\n    at async check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs:8:73)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-normal.mjs:22:2",
+  "dom": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nORGS\nAutoByteus Org\n(3)\nNew - AutoByteus Org\nnow\nproduct team\nsoftware engineering team\nmarketing team\nNew - AutoByteus Org\nnow\nNew - AutoByteus Org\n2m\nSettings\nTeam Definition\nSoftware Engineering Team\nLoading models for /…\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nGrok Build\nAntigravity CLI\n\nSelects the runtime backend used by this team run.\n\nDefault LLM Model (Global)\nOpenAI / GPT-6.1-Sol (default reasoning: low)\n\nThis model will be used by all members unless overridden.\n\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nTeam Members Override (6)\nsolution_designer\nCoordinator\nRuntime\nGlobal default\nAutoByteus\nCodex App Server\nClaude Agent SDK\nGrok Build\nAntigravity CLI\n\nLoading models for /solution_designer…\n\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\narchitecture_reviewer\nRuntime\nGlobal default\nAutoByteus\nCodex App Server\nClaude Agent SDK\nGrok Build\nAntigravity CLI\n\nLoading models for /architecture_reviewer…\n\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nimplementation_engineer\nRuntime\nGlobal default\nAutoByteus\nCodex App Server\nClaude Agent SDK\nGrok Build\nAntigravity CLI\n\nLoading models for /implementation_engineer…\n\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\ncode_reviewer\nRuntime\nGlobal default\nAutoByteus\nCodex App Server\nClaude Agent SDK\nGrok Build\nAntigravity CLI\n\nLoading models for /code_reviewer…\n\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\napi_e2e_engineer\nOverridden\nRuntime\nGlobal default\nAutoByteus\nCodex App Server\nClaude Agent SDK\nGrok Build\nAntigravity CLI\n\nLoading models for /api_e2e_engineer…\n\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\ndelivery_engineer\nRuntime\nGlobal default\nAutoByteus\nCodex App Server\nClaude Agent SDK\nGrok Build\nAntigravity CLI\n\nLoading models for /delivery_engineer…\n\nLLM Model\nGlobal default\nAuto approve\nGlobal default\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nRun Team\n\nModels for Codex App Server are still loading (/).",
+  "orgStop": {
+    "terminateAgentOrgRun": {
+      "success": true,
+      "message": "Agent organization run terminated successfully."
+    }
+  },
+  "completedAt": "2026-10-03T22:39:39.949Z"
+}

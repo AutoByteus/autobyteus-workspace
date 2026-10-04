@@ -1,0 +1,47 @@
+{
+  "command": {
+    "case": "API-009",
+    "argv": [
+      "pnpm",
+      "test:native-input-history"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+    "startedAt": "2026-10-03T22:42:10.485382+00:00",
+    "finishedAt": "2026-10-03T22:42:24.150239+00:00",
+    "exitCode": 1,
+    "elapsedSeconds": 13.663269041,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-native-input-history.log"
+  },
+  "candidates": [
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-uXUI4z",
+      "prefix": "server-recovery-",
+      "born": 1791067343.744618,
+      "files": [
+        "raw_traces_active.jsonl",
+        "working_context_snapshot.json"
+      ]
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-1H46CH",
+      "prefix": "server-recovery-",
+      "born": 1791067343.8072424,
+      "files": [
+        "raw_traces_active.jsonl",
+        "working_context_snapshot.json"
+      ]
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-root-compaction-SYAA7J",
+      "prefix": "native-root-compaction-",
+      "born": 1791067343.8538656,
+      "files": []
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-root-compaction-ooWGxc",
+      "prefix": "native-root-compaction-",
+      "born": 1791067343.8030112,
+      "files": []
+    }
+  ]
+}

@@ -149,6 +149,21 @@ Run is disabled until every root, Team, and Agent scope is ready. Loading,
 invalid, or unavailable runtime/model schema state is shown at the exact scope
 and blocks admission.
 
+Runtime kinds are inventoried separately from per-kind capability verification.
+Verified Codex can be selected while another runtime is still being discovered;
+aggregate loading does not imply that Codex is unavailable. This does not bypass
+Codex model-catalog or exact schema readiness, change defaults, or make another
+runtime available without its own verification.
+
+Root and inherited member views observe current shared evidence for their
+effective runtime. An inherited member shows its catalog failure and a targeted
+**Retry** even when it has no override. Same-kind accepted catalog publication
+can recover those views without changing exact model/configuration choices or
+creating overrides. Another runtime's outage or a retained explicit failed edit
+is not silently cleared. Missing models, invalid configuration and unresolved
+or wrong-owner member references continue to block Run. See
+[Independent Runtime Readiness](../../autobyteus-server-ts/docs/modules/agent_execution.md#independent-runtime-readiness).
+
 When an exact Agent runtime catalog request fails:
 
 - the requested runtime remains visible;
@@ -157,6 +172,20 @@ When an exact Agent runtime catalog request fails:
 - Retry replays the retained request through the same bounded path;
 - selecting the real committed or Global default abandons the failed request,
   clears its error, restores readiness, and produces no stale launch override.
+
+### Authoritative New-Row Publication
+
+After Run returns the new Org ID, history reads that exact Org row. Later
+context, execution-tree and accepted external-message updates refresh the
+affected row through the same scoped query. Freshness guards keep older scoped
+or full responses from replacing newer accepted state; unrelated mixed history
+and normal selection/expansion remain intact. Navigation compares displayed
+fields and Org row references instead of whole-subtree JSON equality.
+
+Full loading/resynchronization and backend structural admission remain. Launch
+still opens a recipient-free workspace and does not submit inference. Faster
+configuration/publication is not a provider inference-speed, model-quality or
+absolute latency guarantee, and does not require a persisted-data migration.
 
 Server launch validation remains authoritative after the UI readiness check.
 

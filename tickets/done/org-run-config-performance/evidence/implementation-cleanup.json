@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-03",
+  "ownedBackendSession": 22430,
+  "ownedWebSessions": [
+    27145,
+    35237
+  ],
+  "previewTab": "1211485227",
+  "previewTabClosed": true,
+  "sessionsStopped": true,
+  "privateDataDir": "/tmp/org-perf-implementation-server.9d34Vd",
+  "privateDataDirRemoved": true,
+  "ports": [
+    {
+      "port": 62297,
+      "listenerPresent": false
+    },
+    {
+      "port": 62478,
+      "listenerPresent": false
+    }
+  ],
+  "isolatedPackagedInstancesStarted": 0,
+  "runsCreated": 0,
+  "modelMessagesSent": 0,
+  "credentialsImported": false,
+  "userAppAndDataTouched": false,
+  "scope": "normal implementation preview only; not packaged/API/E2E validation",
+  "ownedUntrackedSdkBuildOutputsRemoved": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-application-backend-sdk/dist",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-application-sdk-contracts/dist"
+  ],
+  "downstreamPrerequisite": "Run server prebuild / workspace SDK build before subsequent typecheck/build/runtime execution."
+}

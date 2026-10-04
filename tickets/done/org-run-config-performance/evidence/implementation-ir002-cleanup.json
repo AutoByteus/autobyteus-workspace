@@ -1,0 +1,33 @@
+{
+  "revision": "IR-002",
+  "at": "2026-10-03T22:00:50.733537+00:00",
+  "ownedPreviewPort": 62591,
+  "backendNotStarted": "62592 deliberately unbound; controlled in-renderer Apollo transport only",
+  "tab": "1211485234 closed through CUA",
+  "ownedNuxtProcessesStopped": [
+    24792,
+    24768,
+    24800,
+    24801,
+    26047,
+    26023,
+    26055,
+    26056
+  ],
+  "listenerChecks": {
+    "62591": "",
+    "62592": ""
+  },
+  "temporaryPageRemoved": true,
+  "removedOwnedBuildOutputs": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-application-backend-sdk/dist",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-application-sdk-contracts/dist"
+  ],
+  "userAppDataOrInferenceTouched": false,
+  "packagedAppStarted": false,
+  "notes": [
+    "No final Run clicked, HTTP/API/E2E probe executed or provider message sent",
+    "No original fixture/package bytes were written; API cleanup/hashes remain upstream evidence, not rehashed here",
+    "SDK build outputs removed to preserve pre-rework ownership state; downstream run server prebuild before builds/runtime"
+  ]
+}

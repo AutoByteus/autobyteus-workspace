@@ -1,0 +1,580 @@
+diff --git a/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs b/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs
+index be38d0a8c..5d2e29ccc 100755
+--- a/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs
++++ b/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs
+@@ -64,8 +64,11 @@ if (arg === "--version") {
+   const linkedSkillsTurn = async (line) => {
+     let content = "";
+     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
++    const requestedTool = /CALL_TOOL:(\{.*\})/s.exec(content);
+     const delegation = /DELEGATE:(\{.*\})/s.exec(content);
+-    const text = content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
++    const call = requestedTool ? JSON.parse(requestedTool[1]) : null;
++    const text = call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`
++      : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
+       : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
+         : "OK";
+     reply(turns * 10, text);
+diff --git a/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts b/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
+index 550ac7e03..9f7d4c892 100644
+--- a/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
++++ b/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
+@@ -4,7 +4,7 @@ import path from 'node:path';
+ import { expect, vi } from 'vitest';
+ import { AgentDefinition } from '../../../src/agent-definition/domain/models.js';
+ import { AgentTeamDefinition, TeamMember } from '../../../src/agent-team-definition/domain/agent-team-definition.js';
+-import { createCollaboratorMentionAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js';
++import { createCollaboratorAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js';
+ import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
+ import { RootedAgentMemoryLocator } from '../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js';
+ import { AgentRunCollaborationRootManager } from '../../../src/agent-run-collaboration/services/agent-run-collaboration-root-manager.js';
+@@ -26,96 +26,117 @@ export const HOST = 'native-compaction-host';
+  */
+ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', postResponse: boolean) {
+   const native = await createRecoveryFixture(postResponse);
+-  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'native-root-compaction-'));
+-  const agents = ['host', 'reviewer', 'lead', 'peer'].map(id =>
+-    new AgentDefinition({ id, name: id, description: id, instructions: 'Keep scope.' }));
+-  const team = new AgentTeamDefinition({
+-    id: 'team', name: 'team', description: 'team', instructions: 'Work together.',
+-    nodes: ['lead', 'peer'].map(id => new TeamMember({ memberName: id, ref: id, refScope: 'shared' })),
+-    coordinatorMemberName: 'lead', handoffs: [],
+-  });
+-  const catalog = {
+-    listAgentDefinitions: async () => agents,
+-    listTeamDefinitions: async () => [team],
+-    getAgentDefinition: async (id: string) => agents.find(a => a.id === id) ?? null,
+-    getTeamDefinition: async (id: string) => id === 'team' ? team : null,
+-  };
+-  const active = new Map<string, AgentRun>();
+-  const prepare = vi.fn(async ({ runId }: { runId: string }) => {
+-    expect(runId).toBe(native.run.runId);
+-    return { runId, runtimeKind: 'autobyteus', platformAgentRunId: null,
+-      commitPublication: () => { active.set(runId, native.run); return native.run; },
+-      abort: async () => ({ kind: 'aborted' }) };
+-  });
+-  const runManager = {
+-    prepareNewAgentRun: prepare,
+-    getActiveRun: (id: string) => active.get(id) ?? null,
+-    prepareAgentRunTermination: (run: AgentRun) => run.prepareTermination(),
+-  };
+-  const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+-  const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
+-  const restoreHost = vi.fn(async () => hostRun);
+-  const metadata = {
+-    runId: HOST, agentDefinitionId: 'host', memoryDir: path.join(memoryDir, 'agents', HOST),
+-    workspaceRootPath: null, llmModelIdentifier: 'parent', llmConfig: null,
+-    autoExecuteTools: false, runtimeKind: 'autobyteus', platformAgentRunId: null,
+-    startedAt: '2026-10-01T00:00:00.000Z',
+-  };
+-  const manager = new AgentRunCollaborationRootManager({
+-    memoryDir, activeRootDirectory: new ActiveCollaborationRootDirectory(),
+-    definitions: { getAgentDefinitionById: catalog.getAgentDefinition },
+-    host: {
+-      getActiveRun: () => hostRun as unknown as AgentRun,
+-      resolveCommandReadyAgentRun: restoreHost as never,
+-      readMetadata: async () => metadata as never,
+-      recordCollaborationPackageCreated: async () => {},
+-    },
+-    rootDependencies: {
+-      agentRunManager: runManager as never,
+-      memoryLocator,
+-      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ agentRunManager: runManager as never, memoryLocator }),
+-      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
+-        allocateForAgentDefinition: async id =>
+-          id === (kind === 'agent' ? 'reviewer' : 'lead') ? native.run.runId : 'dormant-' + id,
+-      }),
+-      teamDefinitions: { getDefinitionById: catalog.getTeamDefinition },
+-      collaboratorAdmission: createCollaboratorMentionAdmission(catalog, {
+-        validateMany: async (inputs: unknown[]) => inputs.map(() => ({
+-          kind: 'valid', selection: { llmModelIdentifier: 'parent', llmConfig: null },
+-        })),
+-      } as never),
+-    },
+-  });
+-  const root = (await manager.ensureRoot(metadata as never))!;
+-  expect((await root.admitCollaboratorMentions({
+-    focusedAgentRunId: HOST, content: 'Please help',
+-    mentions: [{ kind, definitionId: kind === 'agent' ? 'reviewer' : 'team' }],
+-  })).admitted).toBe(true);
+-  const handler = new AgentCollaborationStreamHandler(manager);
++  let memoryDir: string | undefined;
++  let manager: AgentRunCollaborationRootManager | undefined;
++  let handler: AgentCollaborationStreamHandler | undefined;
+   const sessions = new Set<string>();
+-  const connect = async () => {
+-    const frames: ReturnType<typeof CollaborationStreamServerMessageSchema.parse>[] = [];
+-    const session = await handler.connect({
+-      send: value => { frames.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(value))); },
+-      close: vi.fn(),
+-    }, HOST);
+-    expect(session, JSON.stringify(frames)).toBeTruthy();
+-    sessions.add(session!);
+-    return { session: session!, frames };
+-  };
+-  const send = (session: string, text: string) => handler.handleMessage(session, JSON.stringify({
+-    type: 'SEND_MESSAGE', payload: {
+-      root_subject_kind: 'agent', root_run_id: HOST, target_agent_run_id: native.run.runId,
+-      command_id: 'command-' + text, content: text, message_id: text, dedupe_key: 'input:' + text,
+-      context_file_paths: [], image_urls: [],
+-    },
+-  }));
+-  return { ...native, manager, root, prepare, runManager, restoreHost, connect, send,
+-    disconnect: (session: string) => { handler.disconnect(session); sessions.delete(session); },
+-    close: async () => {
+-      for (const session of sessions) handler.disconnect(session);
+-      try { await manager.terminateRoot(HOST); }
+-      finally { await native.close(); await fs.rm(memoryDir, { recursive: true, force: true }); }
+-    },
++  const close = async () => {
++    const errors: unknown[] = [];
++    for (const session of sessions) {
++      try { handler?.disconnect(session); } catch (error) { errors.push(error); }
++    }
++    sessions.clear();
++    try { await manager?.terminateRoot(HOST); } catch (error) { errors.push(error); }
++    try { await native.close(); } catch (error) { errors.push(error); }
++    if (memoryDir) {
++      try { await fs.rm(memoryDir, { recursive: true, force: true }); } catch (error) { errors.push(error); }
++    }
++    if (errors.length) throw new AggregateError(errors, 'Native root fixture cleanup failed');
+   };
++  try {
++    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'native-root-compaction-'));
++    const agents = ['host', 'reviewer', 'lead', 'peer'].map(id =>
++      new AgentDefinition({ id, name: id, description: id, instructions: 'Keep scope.' }));
++    const team = new AgentTeamDefinition({
++      id: 'team', name: 'team', description: 'team', instructions: 'Work together.',
++      nodes: ['lead', 'peer'].map(id => new TeamMember({ memberName: id, ref: id, refScope: 'shared' })),
++      coordinatorMemberName: 'lead', handoffs: [],
++    });
++    const catalog = {
++      listAgentDefinitions: async () => agents,
++      listTeamDefinitions: async () => [team],
++      getAgentDefinition: async (id: string) => agents.find(a => a.id === id) ?? null,
++      getTeamDefinition: async (id: string) => id === 'team' ? team : null,
++    };
++    const active = new Map<string, AgentRun>();
++    const prepare = vi.fn(async ({ runId }: { runId: string }) => {
++      expect(runId).toBe(native.run.runId);
++      return { runId, runtimeKind: 'autobyteus', platformAgentRunId: null,
++        commitPublication: () => { active.set(runId, native.run); return native.run; },
++        abort: async () => ({ kind: 'aborted' }) };
++    });
++    const runManager = {
++      prepareNewAgentRun: prepare,
++      getActiveRun: (id: string) => active.get(id) ?? null,
++      prepareAgentRunTermination: (run: AgentRun) => run.prepareTermination(),
++    };
++    const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
++    const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
++    const restoreHost = vi.fn(async () => hostRun);
++    const metadata = {
++      runId: HOST, agentDefinitionId: 'host', memoryDir: path.join(memoryDir, 'agents', HOST),
++      workspaceRootPath: null, llmModelIdentifier: 'parent', llmConfig: null,
++      autoExecuteTools: false, runtimeKind: 'autobyteus', platformAgentRunId: null,
++      startedAt: '2026-10-01T00:00:00.000Z',
++    };
++    manager = new AgentRunCollaborationRootManager({
++      memoryDir, activeRootDirectory: new ActiveCollaborationRootDirectory(),
++      definitions: { getAgentDefinitionById: catalog.getAgentDefinition },
++      host: {
++        getActiveRun: () => hostRun as unknown as AgentRun,
++        resolveCommandReadyAgentRun: restoreHost as never,
++        readMetadata: async () => metadata as never,
++        recordCollaborationPackageCreated: async () => {},
++      },
++      rootDependencies: {
++        agentRunManager: runManager as never,
++        memoryLocator,
++        flatTeamExecutionFactory: new FlatTeamExecutionFactory({ agentRunManager: runManager as never, memoryLocator }),
++        taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
++          allocateForAgentDefinition: async id =>
++            id === (kind === 'agent' ? 'reviewer' : 'lead') ? native.run.runId : 'dormant-' + id,
++        }),
++        teamDefinitions: { getDefinitionById: catalog.getTeamDefinition },
++        collaboratorAdmission: createCollaboratorAdmission(catalog, {
++          validateMany: async (inputs: unknown[]) => inputs.map(() => ({
++            kind: 'valid', selection: { llmModelIdentifier: 'parent', llmConfig: null },
++          })),
++        } as never),
++      },
++    });
++    const root = (await manager.ensureRoot(metadata as never))!;
++    expect((await root.admitCollaboratorMentions({
++      focusedAgentRunId: HOST, content: 'Please help',
++      mentions: [{ kind, definitionId: kind === 'agent' ? 'reviewer' : 'team' }],
++    })).admitted).toBe(true);
++    handler = new AgentCollaborationStreamHandler(manager);
++    const streamHandler = handler;
++    const rootManager = manager;
++    const connect = async () => {
++      const frames: ReturnType<typeof CollaborationStreamServerMessageSchema.parse>[] = [];
++      const session = await streamHandler.connect({
++        send: value => { frames.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(value))); },
++        close: vi.fn(),
++      }, HOST);
++      expect(session, JSON.stringify(frames)).toBeTruthy();
++      sessions.add(session!);
++      return { session: session!, frames };
++    };
++    const send = (session: string, text: string) => streamHandler.handleMessage(session, JSON.stringify({
++      type: 'SEND_MESSAGE', payload: {
++        root_subject_kind: 'agent', root_run_id: HOST, target_agent_run_id: native.run.runId,
++        command_id: 'command-' + text, content: text, message_id: text, dedupe_key: 'input:' + text,
++        context_file_paths: [], image_urls: [],
++      },
++    }));
++    return { ...native, manager: rootManager, root, prepare, runManager, restoreHost, connect, send,
++      rootMemoryDir: memoryDir,
++      disconnect: (session: string) => { streamHandler.disconnect(session); sessions.delete(session); },
++      close,
++    };
++  } catch (error) {
++    try { await close(); }
++    catch (cleanupError) { console.error('Native root fixture setup cleanup failed; preserving setup error', cleanupError); }
++    throw error;
++  }
+ }
+
+--- /dev/null
++++ b/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts
++import fs from 'node:fs/promises';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import { AgentFactory } from 'autobyteus-ts';
++import { CollaboratorAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-admission.js';
++import { AgentRunCollaborationRootManager } from '../../../src/agent-run-collaboration/services/agent-run-collaboration-root-manager.js';
++import { createNativeRootFixture, HOST } from './native-compaction-root-fixture.js';
++
++afterEach(() => vi.restoreAllMocks());
++
++// The normal cases use real native setup/admission. Faults only reject setup;
++// they never replace admission with a successful mock or weaken native assertions.
++describe('native root fixture owns acquired resources even before returning close', () => {
++  it.each(['agent', 'agent_team'] as const)('%s: successful close stops native and removes both owned directories', async kind => {
++    const f = await createNativeRootFixture(kind, false);
++    const nativeDir = f.native.context.config.memoryDir!;
++    try {
++      await f.connect();
++      expect(f.manager.getActive(HOST)).not.toBeNull();
++      expect(f.native.isRunning).toBe(true);
++      await fs.access(nativeDir);
++      await fs.access(f.rootMemoryDir);
++    } finally { await f.close(); }
++    expect(f.manager.getActive(HOST)).toBeNull();
++    expect(f.native.isRunning).toBe(false);
++    await expect(fs.access(nativeDir)).rejects.toMatchObject({ code: 'ENOENT' });
++    await expect(fs.access(f.rootMemoryDir)).rejects.toMatchObject({ code: 'ENOENT' });
++  }, 20000);
++
++  it('root-directory acquisition rejection still closes the acquired native fixture', async () => {
++    const created = vi.spyOn(AgentFactory.prototype, 'createAgent'); // call-through
++    const failure = new Error('controlled root-directory failure');
++    vi.spyOn(fs, 'mkdtemp').mockRejectedValueOnce(failure);
++    await expect(createNativeRootFixture('agent', false)).rejects.toBe(failure);
++    const native = created.mock.results[0]!.value;
++    expect(native.isRunning).toBe(false);
++    await expect(fs.access(native.context.config.memoryDir)).rejects.toMatchObject({ code: 'ENOENT' });
++  }, 20000);
++
++  it.each([false, true])('post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=%s)', async cleanupReportsFailure => {
++    const created = vi.spyOn(AgentFactory.prototype, 'createAgent'); // call-through
++    const directory = vi.spyOn(fs, 'mkdtemp'); // call-through, exact owned path
++    const terminate = vi.spyOn(AgentRunCollaborationRootManager.prototype, 'terminateRoot');
++    const failure = new Error('controlled admission setup failure');
++    vi.spyOn(CollaboratorAdmission.prototype, 'ensure').mockRejectedValueOnce(failure);
++    const report = vi.spyOn(console, 'error').mockImplementation(() => {});
++    const cleanupFailure = new Error('controlled cleanup uncertainty after actual removal');
++    if (cleanupReportsFailure) {
++      const remove = fs.rm.bind(fs);
++      vi.spyOn(fs, 'rm').mockImplementationOnce(async (...args) => {
++        await remove(...args);
++        throw cleanupFailure;
++      });
++    }
++    await expect(createNativeRootFixture('agent_team', false)).rejects.toBe(failure);
++    const native = created.mock.results[0]!.value;
++    const rootDir = await directory.mock.results[0]!.value;
++    expect(terminate).toHaveBeenCalledWith(HOST);
++    expect(native.isRunning).toBe(false);
++    await expect(fs.access(native.context.config.memoryDir)).rejects.toMatchObject({ code: 'ENOENT' });
++    await expect(fs.access(rootDir)).rejects.toMatchObject({ code: 'ENOENT' });
++    if (cleanupReportsFailure) {
++      expect(report).toHaveBeenCalledWith(
++        'Native root fixture setup cleanup failed; preserving setup error',
++        expect.objectContaining({ errors: [cleanupFailure] }),
++      );
++    } else expect(report).not.toHaveBeenCalled();
++  }, 20000);
++});
+
+--- /dev/null
++++ b/autobyteus-server-ts/tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts
++import 'reflect-metadata';
++import fs from 'node:fs/promises';
++import path from 'node:path';
++import { createHash, randomUUID } from 'node:crypto';
++import { spawnSync } from 'node:child_process';
++import { afterAll, beforeAll, describe, expect, it } from 'vitest';
++import { AgyRuntimeErrorFixture, until } from '../helpers/agy-runtime-error-fixture.js';
++
++// TESTING.md's real HTTP/WS server with a scripted CLI; no paid/provider inference.
++// The CLI calls actual scoped MCP tools, not fabricated successful tool events.
++// This is NOT the exact Codex/GPT-6.1 Sol packaged or performance proof.
++const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? '';
++const enabled = process.env.RUN_AGY_FAILURE_E2E === '1'
++  && spawnSync(cli, ['--version'], { stdio: 'ignore' }).status === 0;
++const suite = enabled ? describe : describe.skip;
++
++suite('controlled agent drives Org publication through real public boundaries', () => {
++  const fixture = new AgyRuntimeErrorFixture();
++  beforeAll(() => fixture.start(), 60000);
++  afterAll(() => fixture.close(), 60000);
++
++  it('keeps collaborator/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore', async () => {
++    const run = await fixture.create('org', 'linked_skills');
++    const other = await fixture.create('org', 'linked_skills');
++    const helperId = (await fixture.graphql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
++      { input: { name: 'publication-helper-' + randomUUID(), description: 'Owned publication helper',
++        instructions: 'Reply OK to ordinary requests.', toolNames: [] } })).createAgentDefinition.id;
++    const read = async () => (await fixture.graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){root_run_id is_active org}}`,
++      { id: run.rootId })).getAgentOrgRootHistory;
++    const checkpoint = async () => (await fixture.graphql(`query($id:String!){getAgentOrgExecutionCheckpoint(orgRunId:$id){changeSequence hasOpenExecutionWork}}`,
++      { id: run.rootId })).getAgentOrgExecutionCheckpoint;
++    const stream = await fixture.connect(run);
++    const send = async (content: string, extra = {}) => {
++      const commandId = randomUUID();
++      const before = stream.projected().filter(f => f.type === 'TURN_COMPLETED').length;
++      stream.socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: {
++        root_subject_kind: 'agent_org', root_run_id: run.rootId, target_agent_run_id: run.runId,
++        command_id: commandId, message_id: randomUUID(), dedupe_key: randomUUID(), content,
++        context_file_paths: [], image_urls: [], ...extra,
++      } }));
++      await until(() => stream.frames.some(f => f.type === 'AGENT_COMMAND_ACK' && f.payload.command_id === commandId), 'correlated command ACK');
++      const ack = stream.frames.find(f => f.type === 'AGENT_COMMAND_ACK' && f.payload.command_id === commandId)!;
++      expect(ack.payload.state, JSON.stringify(ack)).toBe('accepted');
++      await until(() => stream.projected().filter(f => f.type === 'TURN_COMPLETED').length > before, 'emulated actor turn completed');
++      return ack;
++    };
++    const call = (name: string, args: object) => send('CALL_TOOL:' + JSON.stringify({ name, arguments: args }));
++    const baseline = await checkpoint();
++    const candidates = (await fixture.graphql(`query($id:String!){collaboratorMentionCandidates(rootSubjectKind:"agent_org",rootRunId:$id){availability candidates{kind definitionId}}}`,
++      { id: run.rootId })).collaboratorMentionCandidates;
++    expect(candidates.availability).toBe('AVAILABLE');
++    expect(candidates.candidates).toContainEqual({ kind: 'agent', definitionId: helperId });
++    await send('Please include the helper.', { mentions: [{ kind: 'agent', definition_id: helperId }] });
++    const admitted = await read();
++    const collaborator = admitted.org.rootOrg.collaborators.find((c: any) => c.agentDefinitionId === helperId);
++    expect(collaborator).toMatchObject({ kind: 'agent', addedViaAgentRunId: run.runId,
++      launchConfiguration: { runtimeKind: 'antigravity_cli', llmModelIdentifier: 'gemini-3.8-flash-low' } });
++    expect(collaborator.agentRunId).toMatch(/_[0-9a-f]{32}$/);
++    expect(stream.frames.some(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'collaborator_added'
++      && f.payload.event.collaborator.agentRunId === collaborator.agentRunId)).toBe(true);
++    const afterAdmission = await checkpoint();
++    expect(afterAdmission.changeSequence).toBeGreaterThan(baseline.changeSequence);
++    const remaining = (await fixture.graphql(`query($id:String!){collaboratorMentionCandidates(rootSubjectKind:"agent_org",rootRunId:$id){candidates{definitionId}}}`,
++      { id: run.rootId })).collaboratorMentionCandidates.candidates;
++    expect(remaining.some((c: any) => c.definitionId === helperId)).toBe(false);
++
++    const reference = path.join(fixture.workspace, 'publication-reference.txt');
++    await fs.writeFile(reference, 'REFERENCE-BYTES-7719\n');
++    await call('send_message_to', { target_agent_run_id: collaborator.agentRunId, content: 'Please read this owned reference.', reference_files: [reference] });
++    await until(() => stream.frames.some(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'communication'), 'real communication publication');
++    const communication = stream.frames.find(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'communication')!.payload.event.message;
++    expect(communication).toMatchObject({ senderAgentRunId: run.runId, receiverAgentRunId: collaborator.agentRunId });
++    expect(communication.referenceFiles).toEqual([reference]);
++    const referenceId = createHash('sha256').update(`${communication.messageId}\0${reference}`).digest('hex');
++    const referenceUrl = `/rest/agent-org-runs/${run.rootId}/communication/messages/${communication.messageId}/references/${referenceId}/content`;
++    const referenceResponse = await fetch(new URL(referenceUrl, fixture.url));
++    expect(referenceResponse.status).toBe(200);
++    expect(await referenceResponse.text()).toBe('REFERENCE-BYTES-7719\n');
++    const wrongReference = await fetch(new URL(referenceUrl.replace(run.rootId, other.rootId), fixture.url));
++    expect(wrongReference.status).toBe(404);
++
++    await call('delegate_task', { recipient_address: '/direct', description: 'Reply OK as a separate copy.' });
++    await call('delegate_task', { recipient_address: '/team', description: 'Reply OK as a separate Team copy.' });
++    const tasks = (await read()).org.rootOrg.taskExecutions;
++    expect(tasks).toHaveLength(2);
++    expect(tasks[0]).toHaveProperty('agentRunId');
++    expect(tasks[1]).toHaveProperty('teamRunId');
++    expect(tasks[1].members).toHaveLength(1);
++    const started = stream.frames.filter(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'task_execution_started');
++    expect(started).toHaveLength(2);
++    for (const task of tasks) {
++      expect(task.delegatorAgentRunId).toBe(run.runId);
++      expect(started.some(f => JSON.stringify(f.payload.event.execution).includes(task.agentRunId ?? task.teamRunId))).toBe(true);
++    }
++    expect(tasks[0].agentRunId).not.toBe(run.tree.rootOrg.members.find((m: any) => m.address === '/direct').agentRunId);
++    expect(tasks[1].teamRunId).not.toBe(run.tree.rootOrg.members.find((m: any) => m.address === '/team').teamRunId);
++    const sequence = (await checkpoint()).changeSequence;
++    expect(sequence).toBeGreaterThanOrEqual(Math.max(...started.map(f => f.payload.change_sequence)));
++
++    const foreignCommand = randomUUID();
++    stream.socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: {
++      root_subject_kind: 'agent_org', root_run_id: run.rootId, target_agent_run_id: other.runId,
++      command_id: foreignCommand, message_id: randomUUID(), dedupe_key: randomUUID(), content: 'Must not cross roots.',
++      context_file_paths: [], image_urls: [],
++    } }));
++    await until(() => stream.frames.some(f => f.type === 'AGENT_COMMAND_ACK' && f.payload.command_id === foreignCommand), 'foreign-target negative ACK');
++    expect(stream.frames.find(f => f.type === 'AGENT_COMMAND_ACK' && f.payload.command_id === foreignCommand)!.payload.state).not.toBe('accepted');
++    expect((await read()).org.rootOrg.taskExecutions).toEqual(tasks);
++    expect((await fixture.graphql(`query{getAgentOrgRootHistory(orgRunId:"unknown-owned-root"){root_run_id}}`)).getAgentOrgRootHistory).toBeNull();
++
++    stream.socket.close();
++    const reconnected = await fixture.connect(run);
++    const snapshot = reconnected.frames.find(f => f.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT')!.payload.root_org;
++    expect(snapshot.execution_tree.rootOrg.collaborators.map((c: any) => c.agentRunId)).toContain(collaborator.agentRunId);
++    expect(snapshot.execution_tree.rootOrg.taskExecutions).toEqual(tasks);
++    expect(snapshot.communication_messages.messages).toContainEqual(communication);
++    const beforeStop = await fixture.projection({ ...run, runId: collaborator.agentRunId, address: collaborator.address });
++    expect(JSON.stringify(beforeStop.conversation)).toContain('Please read this owned reference.');
++    await fixture.terminate(run);
++    const stopped = await read();
++    expect(stopped.is_active).toBe(false);
++    const treePath = path.join(fixture.dataDir, 'memory', 'agent_orgs', run.rootId, 'agent_org_run_execution_tree.json');
++    const bytes = await fs.readFile(treePath);
++    const restore = (await fixture.graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success agentOrgRunId}}`,
++      { id: run.rootId })).restoreAgentOrgRun;
++    expect(restore).toMatchObject({ success: true, agentOrgRunId: run.rootId });
++    fixture.runs.push(run);
++    expect(await fs.readFile(treePath)).toEqual(bytes);
++    expect((await read()).org.rootOrg.taskExecutions).toEqual(stopped.org.rootOrg.taskExecutions);
++    expect((await fixture.projection({ ...run, runId: collaborator.agentRunId, address: collaborator.address })).conversation).toEqual(beforeStop.conversation);
++    await fixture.save('org-publication-chain.json', { run, other, collaborator, tasks, communication, referenceUrl,
++      baseline, afterAdmission, sequence, frames: stream.frames, reconnectFrames: reconnected.frames, beforeStop, stopped, restore });
++    await fixture.terminate(run);
++    await fixture.terminate(other);
++  }, 90000);
++});
+
+--- /dev/null
++++ b/autobyteus-server-ts/tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts
++import fs from "node:fs/promises";
++import path from "node:path";
++import { afterEach, describe, expect, it } from "vitest";
++import {
++  createSanitizedTestEnvironment,
++  executeGraphql,
++  removeOwnedTestRuntime,
++  resolveTestDatabaseLocation,
++  startBuiltTestServer,
++  testRuntimeRoot,
++} from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
++
++type Json = Record<string, any>;
++type Server = Awaited<ReturnType<typeof startBuiltTestServer>>;
++const servers = new Set<Server>();
++const targets: Array<{ runtimeRoot: string; database: ReturnType<typeof resolveTestDatabaseLocation> }> = [];
++afterEach(async () => {
++  try { for (const server of servers) await server.stop(); }
++  finally {
++    servers.clear();
++    for (const target of targets.splice(0)) await removeOwnedTestRuntime(target.runtimeRoot, target.database);
++  }
++});
++
++const fields = "root_subject_kind root_run_id created_at archived_at is_active summary org";
++const readRoot = async (server: Server, id: string) =>
++  (await executeGraphql<Json>(server.serverUrl,
++    `query($id: String!) { getAgentOrgRootHistory(orgRunId: $id) { ${fields} } }`, { id })).getAgentOrgRootHistory;
++const readRoots = async (server: Server) =>
++  (await executeGraphql<Json>(server.serverUrl,
++    `query { listCollaborationRootHistory { ... on AgentOrgRootHistoryObject { ${fields} } } }`)).listCollaborationRootHistory;
++
++// Real current built process, HTTP, admission, persisted packages and restart.
++// The native repository model is deterministic domain-contract setup only: this is NOT
++// Codex/GPT-6.1 Sol product/performance proof. No inference/message is submitted.
++describe("scoped Org history real HTTP lifecycle", () => {
++  it("reads one admitted root with collection parity, distinguishes null from errors, and preserves unrelated stored bytes and identities across Stop/restore/restart", async () => {
++    const suffix = `scoped-org-history-${process.pid}-${Date.now()}`;
++    const target = { runtimeRoot: path.join(testRuntimeRoot, suffix),
++      database: resolveTestDatabaseLocation(`file:./db/${suffix}.db`) };
++    targets.push(target);
++    const home = path.join(target.runtimeRoot, "home");
++    const workspace = path.join(target.runtimeRoot, "workspace");
++    await Promise.all([home, workspace].map(dir => fs.mkdir(dir, { recursive: true, mode: 0o700 })));
++    const start = async () => {
++      const server = await startBuiltTestServer({ runtimeRoot: target.runtimeRoot,
++        databaseUrlOverride: target.database.databaseUrl,
++        environment: createSanitizedTestEnvironment({ HOME: home }) });
++      servers.add(server); return server;
++    };
++    const first = await start();
++    const gql = (query: string, variables = {}) => executeGraphql<Json>(first.serverUrl, query, variables);
++    const catalog = await gql(`query { providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
++      llmModels { modelIdentifier canonicalName configSchema }
++    } }`);
++    const model = catalog.providerModelCatalogSnapshots.flatMap((s: Json) => s.llmModels)
++      .find((m: Json) => m.canonicalName === "gpt-5.6-luna" && m.configSchema?.properties?.reasoning_effort);
++    expect(model, "deterministic repository model/schema prerequisite").toBeTruthy();
++    const agent = (await gql(`mutation($input: CreateAgentDefinitionInput!) {
++      createAgentDefinition(input: $input) { id }
++    }`, { input: { name: suffix, role: "Owned fixture", description: "Scoped HTTP history regression",
++      instructions: "Wait for explicit input.", category: "api-e2e" } })).createAgentDefinition;
++    const org = (await gql(`mutation($input: CreateAgentOrgDefinitionInput!) {
++      createAgentOrgDefinition(input: $input) { id }
++    }`, { input: { name: suffix, description: "Owned Org", instructions: "Wait for explicit input.",
++      members: ["lead", "worker"].map(memberName => ({ memberName, ref: agent.id,
++        refType: "AGENT", refScope: "SHARED" })), handoffs: [] } })).createAgentOrgDefinition;
++    const input = { agentOrgDefinitionId: org.id,
++      rootConfiguration: { runtimeKind: "autobyteus", llmModelIdentifier: model.modelIdentifier,
++        llmConfig: { reasoning_effort: "low" }, autoExecuteTools: false, workspaceRootPath: workspace },
++      agentOverrides: [{ address: "/worker", configuration: { llmConfig: { reasoning_effort: "high" } } }] };
++    const create = async (value = input) => (await gql(`mutation($input: CreateAgentOrgRunInput!) {
++      createAgentOrgRun(input: $input) { success message agentOrgRunId }
++    }`, { input: value })).createAgentOrgRun;
++    const a = await create(); expect(a).toMatchObject({ success: true });
++    const aId = a.agentOrgRunId;
++    const activeA = await readRoot(first, aId);
++    expect(activeA).toMatchObject({ root_subject_kind: "agent_org", root_run_id: aId, is_active: true });
++    expect((await readRoots(first)).find((r: Json) => r.root_run_id === aId)).toEqual(activeA);
++    const members = activeA.org.rootOrg.members;
++    expect(members).toHaveLength(2);
++    expect(new Set(members.map((m: Json) => m.agentRunId)).size).toBe(2);
++    for (const member of members) {
++      expect(member.agentRunId).toMatch(/_[0-9a-f]{32}$/);
++      expect(member.platformAgentRunId).toBeNull(); // Launch did not activate a model.
++      expect(member.launchConfiguration).toMatchObject({ runtimeKind: "autobyteus",
++        llmModelIdentifier: model.modelIdentifier, autoExecuteTools: false, workspaceRootPath: workspace,
++        llmConfig: { reasoning_effort: member.address === "/worker" ? "high" : "low" } });
++    }
++    const stop = async (id: string) => expect((await gql(`mutation($id: String!) {
++      terminateAgentOrgRun(agentOrgRunId: $id) { success }
++    }`, { id })).terminateAgentOrgRun.success).toBe(true);
++    await stop(aId);
++    const storedA = await readRoot(first, aId);
++    expect(storedA).toMatchObject({ root_run_id: aId, is_active: false });
++    const treeFile = path.join(target.runtimeRoot, "memory", "agent_orgs", aId, "agent_org_run_execution_tree.json");
++    const bytes = await fs.readFile(treeFile);
++    const b = await create(); expect(b).toMatchObject({ success: true });
++    expect(b.agentOrgRunId).not.toBe(aId);
++    expect(await readRoot(first, aId)).toEqual(storedA);
++    expect(await fs.readFile(treeFile)).toEqual(bytes);
++    expect(await readRoot(first, "unknown-owned-fixture")).toBeNull();
++    const invalid = await fetch(`${first.serverUrl}/graphql`, { method: "POST",
++      headers: { "content-type": "application/json" },
++      body: JSON.stringify({ query: `query { getAgentOrgRootHistory(orgRunId: " ") { root_run_id } }` }) });
++    const invalidPayload = await invalid.json();
++    expect(invalidPayload.errors?.[0].message).toContain("orgRunId is required");
++    expect(await readRoot(first, aId)).toEqual(storedA);
++    const badConfig = await create({ ...input, rootConfiguration: { ...input.rootConfiguration,
++      llmConfig: { unsupported_setting: true } } });
++    expect(badConfig).toMatchObject({ success: false, agentOrgRunId: null });
++    expect(await fs.readFile(treeFile)).toEqual(bytes);
++    const restored = await gql(`mutation($id: String!) {
++      restoreAgentOrgRun(agentOrgRunId: $id) { success message agentOrgRunId }
++    }`, { id: aId });
++    expect(restored.restoreAgentOrgRun).toMatchObject({ success: true, agentOrgRunId: aId });
++    expect(await readRoot(first, aId)).toMatchObject({ is_active: true });
++    await stop(aId); await stop(b.agentOrgRunId);
++    const beforeRestart = await readRoots(first);
++    const settledBytes = await fs.readFile(treeFile);
++    await first.stop(); servers.delete(first);
++    const second = await start();
++    expect(await readRoots(second)).toEqual(beforeRestart);
++    expect(await readRoot(second, aId)).toEqual(beforeRestart.find((r: Json) => r.root_run_id === aId));
++    expect(await fs.readFile(treeFile)).toEqual(settledBytes);
++    expect((await readRoot(second, aId)).org.rootOrg.members.map((m: Json) => m.agentRunId))
++      .toEqual(members.map((m: Json) => m.agentRunId));
++  }, 180_000);
++});

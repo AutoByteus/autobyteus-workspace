@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-03T23:29:17.643389+00:00",
+  "basis": "API2 freshly rebuilt current IR002 artifact, all production unchanged; API3 changes fixture/tests only; --from-worktree permitted by TESTING.md",
+  "buildProvenance": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/api2-packaged-build-provenance.json",
+  "checks": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "expected": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "actual": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "matches": true,
+      "finalActual": "c4809a614edd8c11677094442b06796e5b536e13fe4aac1b8adf7e488cd7c8e1",
+      "finalMatches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "expected": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "actual": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "matches": true,
+      "finalActual": "0b573b8e9f03c30c138c114d6348a00a3c6cb66343a865fbe15ff91a727d4713",
+      "finalMatches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/utils/llmConfigSchema.ts",
+      "expected": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "actual": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "matches": true,
+      "finalActual": "433265e6eb9ec22ba09c94de802a200388e2b77cf341d47a7cb75b13c4838cdf",
+      "finalMatches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+      "expected": "26f93db6ea81de51a8e87fe02b32d17c7029486fbe546bbc679b2c873bf02c5d",
+      "actual": "26f93db6ea81de51a8e87fe02b32d17c7029486fbe546bbc679b2c873bf02c5d",
+      "matches": true,
+      "finalActual": "26f93db6ea81de51a8e87fe02b32d17c7029486fbe546bbc679b2c873bf02c5d",
+      "finalMatches": true
+    }
+  ],
+  "finalRecheckAt": "2026-10-04T00:04:12.524380+00:00"
+}

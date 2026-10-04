@@ -1,0 +1,410 @@
+{
+  "date": "2026-10-03",
+  "revision": "IR-001",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "branch": "codex/org-run-config-performance",
+  "base": "1b976216da0cbd0cc84fef3fe22a2739325b8ad3",
+  "sourceHashBasis": "working tree before development commit; hashes remain source-authoritative",
+  "taskSize": "Medium",
+  "architecturalRisk": "High",
+  "sourceFiles": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.ts",
+      "sha256": "5d927a68452c1a4e788d1c8f27fd388b4e9ae16ba63904bee15e2e96f6f1462a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "sha256": "85e6995c9a87ce1a22cfbd30712842c2fcebeaf2647a014332dfc1b947e52222"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      "sha256": "4ab46ef55f056e48d82e9de1929303c8a65da7f769c86fc151b27ac7ca3001a3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+      "sha256": "6813c743382fb6cfd2034adb871555591c1d5dd3b069f46712d9344f419d77cc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts",
+      "sha256": "5ddee409413b606f10ea698406747d04f22c0fe1a2ca60e71ed5e460a161101c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-location-service.ts",
+      "sha256": "193d89632d88fae73c44e610d8a7059ef300bb3d8d63436b41b8919198d2c8f5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
+      "sha256": "d36ed0bc4c282c973a3a5c112e98d038492f57921d38ed434594be588041b04e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/api/graphql/types/collaboration-root-history.ts",
+      "sha256": "444bb2ca3f628b9ef70df2dae2662f7de06db41e8bc120b45dbf0895e2a0949e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/api/graphql/types/runtime-availability.ts",
+      "sha256": "957aa5fd4f4975c0f80ff72599a43a04d0222ebabf853056658b18c767025105"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+      "sha256": "2f69d845a679e1fa7e747812f25246049dc41914e7b9f6aa33fdb2f6263f464c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "sha256": "8ab1d2565f898d488ef16a9979d984762b87f0a1ef2d2ad523c7fba76622cafb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts",
+      "sha256": "7a8aaca8b77160e08b9203c43c7177ab1ec24ee83db7bade2bb14ed828eb4f9a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/runtime-management/runtime-availability-service.ts",
+      "sha256": "49131529b072ff88b4e922a477d0c34e31b216c22d5d2ddfe1e2c63f310218af"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts",
+      "sha256": "9cd5083d90f03231b5806d377c00decd6d8a746c5c591c70591a75e7c82d5068"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts",
+      "sha256": "a33eca48d60b4244ea5ea456ea89949915866c0d3470d7cf6e5a05a12852f07d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts",
+      "sha256": "845bf40eb1ab83ce7f221a8dfaea20e8fcd0a58831239bdcb4425740051da740"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "sha256": "5a65ca09a4ea3a4919e7a53d580ba240fbb13b4067fd333a778cf6063def6f9e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts",
+      "sha256": "7334589146db066d64f2ae3fafcc6ccfc49a09e40a7334509999b4bfc2ef8846"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/agent-execution/agent-run-identity-allocator.test.ts",
+      "sha256": "873b487dc3479b740f1b2c235593033d7dd4da9d935634f6324d984bfd8e2815"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+      "sha256": "daebf09e9d239162d890a79a3493a2d29ed6a99ecae15bc13f2ca90dd8bd15a3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+      "sha256": "4a4b0ba30bd9e8a39ec9a73511cfbfd6b966baa8d75ce6b7020f13eb225eb8a1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts",
+      "sha256": "140ec2a6df1f0124e7785a29e27a653ab71caf541dc1c7913fc0d67bd918bd30"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "sha256": "5d1555800a58d18289d442ad2cbae2540ccfedee1fa5f14cfd53f5b2b9ef1d46"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "sha256": "b1dc1711bc4beeae0f052a458ad571bdd2958e485af7b6876bae55608b29067a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts",
+      "sha256": "951f53fc2f85376f90188e02a514a065d8c1be93c10ac08ba8097ab9829f1b4b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts",
+      "sha256": "c25bde53cc5953f4b98f258dc009b62a2af64db2c85cd1bcaaca680631bd477c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts",
+      "sha256": "5a9fb7735d7b2339630d3c0810d8c22f9351fac3f73568fc76a2a8c9ed63c95d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts",
+      "sha256": "f3fa225222358df9b6671a0dcdf8e7b9dbff73b4bc72510f8e5c2e856b423007"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "sha256": "1d847877ea58b13edf3bfcb302c334d3c3747ed2e21a099ef224a6c5cd760dee"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "sha256": "d321e910b12d365926ac41d1e2f22ebbdf3ff6e4ed715d4e05a13ab7d20a6c2f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts",
+      "sha256": "10cc06f8193fd587b998ae6ea63124824a5426c59e6e789408700551f0cd9fb6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts",
+      "sha256": "25a86a71e5dd0c64cdfeee7a4e1d6e7d8b43a3dde57df374c337aa82a00013fe"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts",
+      "sha256": "870ff50ee0d4a6aad8fa2c333e9fab14d62fd6d0c4e86afe3d8bbaed50df49ec"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "sha256": "b6074447221c75b9e7ec9efb3e4fed801f08eb4c655f8a67fe38460dec8f00c5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/generated/graphql.ts",
+      "sha256": "db9df3112dc46b3947413c84e8dee4cb1e39a09a10abd8d415b440c2877b7cb8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/graphql/queries/collaborationRootHistoryQueries.ts",
+      "sha256": "ac402186d9f51c1bed3b9d36bfe61e3c8ce7308522c8f351a77bba1291c020b8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/graphql/queries/runtime_availability_queries.ts",
+      "sha256": "bc96ed05bc0bb5879d4b93de5918654ad6686d248fe9267c532091cc83e6e735"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "sha256": "f6d3af69faf1113a00f97b2fb544872b77349a2c96e014d2eda89939b27d9912"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts",
+      "sha256": "bb3843cecece0a9af9e84e8b2ce7efac495de3b2e656bb3386092b829490b2c5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+      "sha256": "3cb5bf9677b95839f3e24ac710a24a07dcf778ce43ed9302e60823937bd50359"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+      "sha256": "6ebc3c459b87c5e901ffe72be8ff130f26e28684d39672a74308b9f90520ff90"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgContextsStore.spec.ts",
+      "sha256": "a15e3d5825d995409504484ccbeef6e488dd90a4ad1273ce4fd0c32d5f7cfa56"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgHistoryApollo.spec.ts",
+      "sha256": "4cf86b70aa1c74edf3fb22ac34fd570933ae480d759d215421b7c1e12824e0f5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgInspection.spec.ts",
+      "sha256": "f7c8c6f813aecf2df5af65accc509cf7f21c557ae431f50b4ba6647b669a3d43"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgRetainedRecovery.spec.ts",
+      "sha256": "5ce1a6be05c7e8600691228a2203877cd46c2fe4655ccb056313c6f19d869a1b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/agentOrgRunConfigPublication.spec.ts",
+      "sha256": "d6e74758a8d9648585ae284d5baaa2f8bb05f4a107667c47ee7635fa6ed5f0a6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts",
+      "sha256": "c74f49b9af613b8acd80aa99f340179e58eb66b9f54bf5a9e96a9b638c7ca3b2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+      "sha256": "5ea14fc33347a8e363c72e4ccc4f5af03253b02cd938661750335b5800b95642"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/__tests__/runtimeCapabilitiesStore.spec.ts",
+      "sha256": "3e0fa16504521b82ca6d86a333a34d9a219fb2db148ef913d98b81ef9f2c9b45"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/agentOrgContextsStore.ts",
+      "sha256": "0891bbc3b108b1fd0fa3dbb65c38b1e8fc85fcabcf6c7a906fd19fe9bf39ca93"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryLoadActions.ts",
+      "sha256": "898fa3f4184d52ec24e2cda1ebd2af40563c8833f9710c021a5c2ff80fb4f3c9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryNavigationProjection.ts",
+      "sha256": "5737c90b2f6a451a65a4c4c4b0146aed0715f4f80dc3f8b5059fc223fc895931"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryStore.ts",
+      "sha256": "b42a85707c44ccead15182776266647a4a9ee8844f6395e5380285df0fa9aa5a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryStoreSupport.ts",
+      "sha256": "703540cfb0adef61114a6beeed32ed4ee5d05222a647dc22bb8bb72c4c2bc37e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts",
+      "sha256": "a750fe796af8dedaf16d064c8826f0840ecf5dc2d9f474c8efcad598933a5477"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs",
+      "sha256": "ff56e3761fd8c90f4e3d47693b87325ba8197fbcb2889332543840a97b75c83a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs",
+      "sha256": "a24229250065d97842f65ced43cc68ffb0f493273446c06d64861cc9860e2804"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-scoped.test.ts",
+      "sha256": "0292f984ce5321bc5bc505ef85d14cd3af36a7bf888c5a0e3fd224b681c46c01"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/tests/unit/runtime-management/runtime-availability-service.test.ts",
+      "sha256": "93d2880cac139d9db42ca645286159d6933a4bb4fa502bc0f223a6b8291ee76d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts",
+      "sha256": "8e351b4258cfb1893f1fd20ba62de12c8a10d2785ad29db1ea3f7e9c08419675"
+    }
+  ],
+  "sourceGuardrails": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.ts",
+      "effectiveNonEmptyLines": 89,
+      "changedLines": 10
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "effectiveNonEmptyLines": 407,
+      "changedLines": 5
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      "effectiveNonEmptyLines": 30,
+      "changedLines": 103
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+      "effectiveNonEmptyLines": 249,
+      "changedLines": 6
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts",
+      "effectiveNonEmptyLines": 178,
+      "changedLines": 14
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-location-service.ts",
+      "effectiveNonEmptyLines": 173,
+      "changedLines": 12
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
+      "effectiveNonEmptyLines": 270,
+      "changedLines": 4
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/api/graphql/types/collaboration-root-history.ts",
+      "effectiveNonEmptyLines": 36,
+      "changedLines": 6
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/api/graphql/types/runtime-availability.ts",
+      "effectiveNonEmptyLines": 36,
+      "changedLines": 19
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+      "effectiveNonEmptyLines": 322,
+      "changedLines": 4
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "effectiveNonEmptyLines": 68,
+      "changedLines": 42
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts",
+      "effectiveNonEmptyLines": 224,
+      "changedLines": 14
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-server-ts/src/runtime-management/runtime-availability-service.ts",
+      "effectiveNonEmptyLines": 137,
+      "changedLines": 6
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue",
+      "effectiveNonEmptyLines": 375,
+      "changedLines": 6
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/AgentOrgRunConfigPanel.vue",
+      "effectiveNonEmptyLines": 466,
+      "changedLines": 2
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/config/MemberOverrideItem.vue",
+      "effectiveNonEmptyLines": 499,
+      "changedLines": 5
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "effectiveNonEmptyLines": 457,
+      "changedLines": 4
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/composables/useRuntimeScopedModelSelection.ts",
+      "effectiveNonEmptyLines": 249,
+      "changedLines": 45
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/graphql/queries/collaborationRootHistoryQueries.ts",
+      "effectiveNonEmptyLines": 28,
+      "changedLines": 8
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/graphql/queries/runtime_availability_queries.ts",
+      "effectiveNonEmptyLines": 9,
+      "changedLines": 16
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+      "effectiveNonEmptyLines": 478,
+      "changedLines": 4
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/agentOrgContextsStore.ts",
+      "effectiveNonEmptyLines": 356,
+      "changedLines": 6
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryLoadActions.ts",
+      "effectiveNonEmptyLines": 462,
+      "changedLines": 81
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryNavigationProjection.ts",
+      "effectiveNonEmptyLines": 251,
+      "changedLines": 53
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryStore.ts",
+      "effectiveNonEmptyLines": 496,
+      "changedLines": 19
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runHistoryStoreSupport.ts",
+      "effectiveNonEmptyLines": 122,
+      "changedLines": 61
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/stores/runtimeAvailabilityStore.ts",
+      "effectiveNonEmptyLines": 117,
+      "changedLines": 136
+    }
+  ],
+  "generatedException": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/autobyteus-web/generated/graphql.ts",
+    "reason": "Repository GraphQL Code Generator output; >220 delta and >500 file are machine generated, not hand-edited implementation. Full current schema/docs regeneration also corrects pre-existing generated drift."
+  },
+  "whitespaceCheck": "pass for production/tests/root governance against base; raw captured ticket logs contain emitted whitespace/EOF warnings, preserved verbatim",
+  "localChecks": {
+    "serverTests": "11 files / 68 tests pass",
+    "webTests": "30 files / 427 tests pass",
+    "serverProductionTypecheck": "pass",
+    "serverBuildFullAndSanitizedBootstrap": "pass",
+    "webProductionBuild": "pass \u2014 implementation-web-build-complete.log, 19 routes generated",
+    "webStandaloneVueTypecheck": "not run: vue-tsc command unavailable; failed attempt retained",
+    "codegen": "pass against current-worktree built test-owned backend"
+  },
+  "executedApiE2e": false,
+  "packagedValidation": "not executed \u2014 downstream owned",
+  "performanceValidation": "not executed \u2014 downstream owned",
+  "sourceRemovalScan": "No collision machinery/dead containsRunId/singleton or aggregate capability operation remains in actual source/test/GraphQL/generated/probe consumers",
+  "ownershipCleanup": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-cleanup.json",
+  "developmentCommit": "b5715ea5ba1e999a544da751141ad2f8ed933089",
+  "rawPackageWhitespaceLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance/tickets/in-progress/org-run-config-performance/evidence/implementation-package-whitespace.log"
+}

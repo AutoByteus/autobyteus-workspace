@@ -169,6 +169,38 @@ using owned services and data. Web-equivalent browser evidence is not packaged
 Electron navigation/restart or explicit user verification. See the
 [AGY runtime contract](autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md).
 
+### Scoped Org History And Publication Regressions
+
+Build the current server and its shared dependencies before built-process
+history checks (cleaned SDK outputs must be recreated):
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts build
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts --no-watch
+RUN_AGY_FAILURE_E2E=1 \
+ANTIGRAVITY_CLI_COMMAND="$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs" \
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts --no-watch
+```
+
+The first suite exercises public scoped/list history, guards, stored identities
+and bytes through Stop/restore/restart with a controlled native model. The
+second uses actual HTTP/WebSocket/scoped MCP admission, owned references,
+Agent/Team task publication, ACKs, reconnect and persisted conversation/tree
+continuity; only the external actor is scripted. Both own their server/data and
+cleanup. Neither substitutes for exact Codex/GPT model configuration or
+packaged performance proof, or proves paid/live inference. The shared AGY
+fixture's native-argument and scoped-MCP CALL_TOOL modes must coexist; run the
+native-argument regression above when integrating changes to that fixture.
+
+The native outer fixture's current admission factory and acquired-resource
+cleanup are checked separately with
+`tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts`.
+Its five cases cover defined successful/rejected setup paths after the
+underlying native fixture returns and preserve the original setup error. They
+are not an exhaustive infrastructure-failure guarantee; keep the workspace
+native-to-web and shared compaction/termination assertions intact.
+
 ## Choosing the path
 
 Start with the smallest layer that directly proves the change, then add the

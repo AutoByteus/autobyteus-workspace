@@ -1,0 +1,6 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance
+argv=["node", "tickets/in-progress/org-run-config-performance/evidence/api-packaged-setup.mjs", "--already-imported"]
+start=2026-10-03T20:52:13.956028+00:00
+{"fixture":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7eqZ5e/fixture-agent-package","capability":{"runtimeAvailability":{"runtimeKind":"codex_app_server","enabled":true,"reason":null}},"cases":{"import":"Pass — prior exact owned import retained","exactCatalog":"Pass","sourceBytes":"Pass"},"errors":[]}
+
+exit=0 elapsed_seconds=1.6789861670000001

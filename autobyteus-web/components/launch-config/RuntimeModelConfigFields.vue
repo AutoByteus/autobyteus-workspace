@@ -27,6 +27,7 @@
       <p v-if="runtimeHelpText" class="mt-1 text-xs text-gray-500">{{ runtimeHelpText }}</p>
       <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">
         {{ selectedRuntimeUnavailableReason }}
+        <button type="button" class="ml-1 font-semibold underline" :disabled="disabledComputed" @click="retryModelCatalog">{{ t('workspace.runModelConfig.retry') }}</button>
       </p>
     </div>
 
@@ -186,6 +187,7 @@ const {
   groupedModelOptions,
   hasModelIdentifier,
   isLoadingModels: catalogLoading,
+  isLoadingRuntime,
   modelLoadError: catalogLoadError,
   modelConfigSchemaByIdentifier,
   normalizedStoredRuntimeKind,
@@ -201,10 +203,10 @@ const currentSeed = useRuntimeCurrentModelDescriptor(
   effectiveRuntimeKind,
   computed(() => props.originalModelIdentifier === undefined ? props.seedModelIdentifier : null),
 )
-const isLoadingModels = computed(() => props.originalModelIdentifier !== undefined
+const isLoadingModels = computed(() => isLoadingRuntime.value || (props.originalModelIdentifier !== undefined
   ? !props.modelOptions || props.modelOptions.status === 'loading'
   : catalogLoading.value || Boolean(props.llmModelIdentifier === props.seedModelIdentifier
-    && !hasModelIdentifier(props.llmModelIdentifier) && currentSeed.loading.value))
+    && !hasModelIdentifier(props.llmModelIdentifier) && currentSeed.loading.value)))
 const modelLoadError = computed(() => props.originalModelIdentifier !== undefined
   ? props.modelOptions?.status === 'unavailable' ? t('workspace.runModelConfig.optionsUnavailable') : null
   : catalogLoadError.value)
