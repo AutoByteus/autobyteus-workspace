@@ -1,0 +1,11 @@
+{
+  "revision": "DR-004",
+  "result": "Blocked \u2014 Unclear external cleanup ownership; publication Completed",
+  "rule1": "No source/packaging fix, all workflows successful",
+  "rule2": "Matches most specifically: new non-deployment cleanup ownership issue requires upstream classification",
+  "rule3": "No: safe cleanup blocked; not Delivery Completed",
+  "selectedRule": 2,
+  "recipient_address": "/solution_designer",
+  "publicationMustNotBeReplayed": true,
+  "userAcceptanceComplete": true
+}

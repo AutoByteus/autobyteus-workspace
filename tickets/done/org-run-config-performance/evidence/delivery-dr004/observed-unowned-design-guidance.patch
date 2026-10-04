@@ -1,0 +1,35 @@
+diff --git a/SOLUTION_DESIGN_BEST_PRACTICES.md b/SOLUTION_DESIGN_BEST_PRACTICES.md
+index a2c8ea76b..17d3b92be 100644
+--- a/SOLUTION_DESIGN_BEST_PRACTICES.md
++++ b/SOLUTION_DESIGN_BEST_PRACTICES.md
+@@ -198,6 +198,30 @@ workload or create a new capacity promise. Use [TESTING.md](TESTING.md) for safe
+ test-owned validation and changed-build proof. A baseline installed app cannot
+ validate a source change it does not contain.
+ 
++### 8. Resolve cross-boundary contracts early
++
++Lessons from the runtime-lifecycle ticket:
++
++- **Trace new authority through existing paths.** Before handing off a design,
++  inspect actual startup, child launches, restart and recovery callers. A
++  control secret filtered from provider launches can still leak through an
++  ordinary terminal child; avoid inheritable secrets for private parent control.
++- **Separate execution from management permission.** A remote/image-managed
++  runtime may remain usable without desktop installation authority. Specify
++  both branches behind the existing owner; neither disable preserved execution
++  nor silently downgrade a failed managed boundary.
++- **Match new state to its lifetime.** Check whether existing Reset/recovery
++  deletes a proposed store. Keep independently owned runtime state outside
++  server-data reset scope rather than silently changing destructive recovery.
++- **Fix cleanup at the resource owner.** Temporary discovery must close its
++  owned resources. Where replacement needs closure, use the relevant actual
++  handles—not UI status or parent exit alone; do not turn a local cleanup
++  obligation into a global process scanner.
++- **Make revision impact explicit.** State the evidence, exact technical delta
++  and whether intended behavior changes. Reapprove changed intent, not every
++  technical clarification; preserve settled decisions instead of redesigning
++  the whole feature each round.
++
+ ## Anti-patterns from this repository
+ 
+ These are observed pre-refactor examples, not endorsements of the current

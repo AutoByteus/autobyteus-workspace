@@ -1,7 +1,7 @@
 # Docs Sync Report
 
 ## Scope
-- Ticket: `org-run-config-performance`; delivery **DR-003**.
+- Ticket: `org-run-config-performance`; delivery **DR-004** (DR-003 docs delta retained).
 - Trigger: user **“read the readme, and release a new beta”**; supersedes earlier local repository-authorization hold, adds beta publication authorization, not inferred delivery verification.
 - Approved **SR-006 / cumulative SR-010**, **Medium / High**, independent architecture/source → API/E2E → proportional test review route unchanged.
 - Bootstrap base: `origin/personal @ 1b976216da0cbd0cc84fef3fe22a2739325b8ad3`.
@@ -40,3 +40,6 @@ The integrated code replaces historical candidate-ID membership scans, aggregate
 
 ## DR-004 Acceptance
 Explicit acceptance received through repeated beta publication instruction after displayed hold. Canonical documentation/source behavior unchanged from checked DR-003; no additional docs impact. Prior hold statements are historical and superseded.
+
+## DR-004 Publication / Current Boundary
+Beta v1.4.94-beta.2 publication and all four workflows completed. Canonical docs behavior remains the checked DR-003 implementation; no release source fix or new docs intent. Original ticket worktree acquired a later uncommitted runtime-lifecycle guidance addition of unknown ownership. It was not folded into the published tag or current canonical guide in this final checkout. Copy/patch preserved separately; safe cleanup remains Blocked, not a docs-sync/source accuracy finding. See release report/cleanup-result.json.

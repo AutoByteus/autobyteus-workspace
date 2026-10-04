@@ -7,6 +7,8 @@
 | DR-002 | Solution Designer authorization boundary result returned | DR-001 Blocked — initially Unclear boundary | Blocked — User/External Prerequisite; hold unchanged | docs-sync-report.md; release-deployment-report.md; delivery-authorization-result.md; evidence/delivery-package-index.json |
 | DR-003 | User reads README / requests new beta | DR-002 local authorization hold | Integration/checks/docs Pass; Blocked — explicit user acceptance pending | docs-sync-report.md; handoff-summary.md; release-notes.md; release-deployment-report.md; evidence/delivery-dr003/* |
 
+| DR-004 | User repeats release request after validation/acceptance hold | DR-003 user acceptance pending | Beta publication Completed; Blocked — new external guide edit prevents safe cleanup | docs-sync-report.md; handoff-summary.md; release-deployment-report.md; evidence/delivery-dr004/* |
+
 ## Revision Entries
 ### DR-001 — Initial Latest-Base Refresh / Authorization Hold
 - Trigger: approved SR-006, cumulative SR-010, ARCH-REV-001 Pass, IR-002, CRR-003 source Pass, API-REV-003 Pass 95.00%, CRR-005 durable-test Pass. Medium / High reviewed route unchanged.
@@ -50,3 +52,15 @@
 - Terminal return: **Not yet eligible / not sent**. Fresh rules **no match**, [evaluation](evidence/delivery-dr003/rule-evaluation.json); direct user result at existing acceptance hold, no duplicate teammate blocker send. No completed-delivery receipt implied.
 - Rationale: delivery authorization changed, so resumed only unfinished local integration/check/docs gates. Preserve upstream raw/approval/review/failure history and residuals, and wait at the still-distinct verification/finalization boundary.
 - Next action: explicit user acceptance; then fresh target check, required re-integration/verification if material, archive/finalize, documented beta helper and publication/rollout/safe-cleanup gates.
+
+### DR-004 — Accepted / Beta Published / New Cleanup Ownership Boundary
+- Trigger: **“please release  a new beta thanks”**, after displayed hold and integrated validation; explicit acceptance/go-ahead captured, no personal hands-on testing invented. Prior **DR-003 Blocked — acceptance prerequisite**, now lifted. SR006/SR010 **Medium / High / reviewed** unchanged.
+- Current result: **Blocked — Unclear non-deployment cleanup ownership**, while **beta publication Completed**, all four tag workflows/public artifact/registry gates Pass. No release/source/packaging failure.
+- Fresh post-acceptance target unchanged/already integrated; all relevant hashes match; no extra rerun needed. DR003 **526 automated cases +9 rebuilt packaged journeys Pass**, original API95%/40samples qualifiers unchanged.
+- Archived before final ticket commit **2eb8732c7243aec7883a99107032f73e972d8b9a**, ticket push, personal merge **20a165b8d001696ad806d28186cb1e436ca4589c** + target push Completed. Clean independent target checkout leaves shared owner dirty checkout untouched.
+- README helper **exit0**, **v1.4.94-beta.2**, version/release SHA **a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2**, annotated tag + branch pushed. All four workflows success, 17 public assets, public APK/updater bytes verified; Docker version/:beta multiarch digest match; stable Latest unchanged; iOS signed IPA UPLOAD SUCCEEDED, processing/public review not asserted. No duplicate dispatch/tag replay, live inference or user deployment.
+- Authoritative [docs](docs-sync-report.md), [handoff](handoff-summary.md), [release report](release-deployment-report.md), [all cumulative refs](evidence/delivery-package-index.json); exact operations/outcomes in evidence/delivery-dr004. Prior rounds/raw evidence preserved, relocation map supplies durable final paths.
+- Owned test cleanup Completed. Ticket worktree cleanup guard stopped on new uncommitted root guide section (24-line runtime-lifecycle lessons, appeared during CI). Delivery did not edit it; not in published beta. Original bytes/worktree/branches preserved plus separate copy/patch; no destructive cleanup executed. Shared dirty hashes/HEAD unchanged.
+- Terminal return **Not yet eligible / not sent**, cleanup unfinished. Fresh most-specific **rule2 selects only /solution_designer**, not successful rule3. Boundary handoff confirmed only by subsequent receipt; no duplicate informational forwarding.
+- Rationale: honor explicit publication direction rather than continuing the resolved approval hold, execute documented release, preserve newly appeared unknown-owner bytes at cleanup.
+- Next action: Solution Designer identifies owner/safe disposition; Delivery resumes only cleanup/final receipt. No reapproval/release replay/new runtime requirement implied. Remaining residuals/rollback are exactly the release report; prefer forward corrective beta, never move tag/reset user state.

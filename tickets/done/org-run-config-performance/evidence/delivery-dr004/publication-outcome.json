@@ -1,0 +1,210 @@
+{
+  "at": "2026-10-04T04:45:35.077578+00:00",
+  "result": "All four workflows success",
+  "tag": "v1.4.94-beta.2",
+  "sha": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "workflows": [
+    {
+      "name": "Desktop Release",
+      "id": 37176016117,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37176016117",
+      "jobConclusions": [
+        {
+          "name": "Resolve Release Metadata",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build Linux x64",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build Linux ARM64",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build Windows x64",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build macOS ARM64",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build macOS Intel x64",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish GitHub Release",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "Android APK Release",
+      "id": 37176016118,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37176016118",
+      "jobConclusions": [
+        {
+          "name": "Resolve Android Release Metadata",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build Android APK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish Android APK To GitHub Release",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "iOS App Store Connect Release",
+      "id": 37176016120,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37176016120",
+      "jobConclusions": [
+        {
+          "name": "Resolve iOS Release Metadata",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build And Test iOS App",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate iOS Publish Secrets",
+          "conclusion": "success"
+        },
+        {
+          "name": "Archive And Upload To App Store Connect",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "Server Docker Release",
+      "id": 37176016125,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37176016125",
+      "jobConclusions": [
+        {
+          "name": "Resolve Release Metadata",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build And Push Server Image",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "ios": [
+    {
+      "job": "Archive And Upload To App Store Connect",
+      "step": "Upload IPA to App Store Connect/TestFlight",
+      "conclusion": "success"
+    }
+  ],
+  "desktopNotes": [
+    {
+      "job": "Publish GitHub Release",
+      "step": "Publish release assets with generated notes fallback",
+      "conclusion": "success"
+    }
+  ],
+  "androidNotes": [
+    {
+      "job": "Publish Android APK To GitHub Release",
+      "step": "Publish Android APK asset with generated notes fallback",
+      "conclusion": "success"
+    }
+  ],
+  "dockerBetaMove": [
+    {
+      "job": "Build And Push Server Image",
+      "step": "Move beta tag",
+      "conclusion": "success"
+    }
+  ],
+  "iosLimit": "Signed IPA upload accepted by App Store Connect (UPLOAD SUCCEEDED with no errors); Apple processing/tester availability/public App Store review not asserted",
+  "largeDesktopBinaryLimit": "Required CI package verification + public asset metadata/digests; no second local download of large installers",
+  "requiredDesktopPackagingGates": [
+    {
+      "job": "Build macOS ARM64",
+      "step": "Verify packaged terminal runtime ARM64",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build macOS Intel x64",
+      "step": "Verify packaged terminal runtime x64",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build macOS ARM64",
+      "step": "Verify macOS signing policy ARM64",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build macOS Intel x64",
+      "step": "Verify macOS signing policy x64",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build macOS ARM64",
+      "step": "Verify bundled Prisma ARM64 engine target",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build macOS Intel x64",
+      "step": "Verify bundled Prisma x64 engine target",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build Linux x64",
+      "step": "Verify Linux x64 AppImage and updater metadata",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build Linux x64",
+      "step": "Verify Linux x64 Prisma engines",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build Linux x64",
+      "step": "Verify Linux x64 packaged server startup",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build Linux ARM64",
+      "step": "Verify Linux ARM64 AppImage and updater metadata",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build Linux ARM64",
+      "step": "Verify Linux ARM64 Prisma engines",
+      "conclusion": "success"
+    },
+    {
+      "job": "Build Linux ARM64",
+      "step": "Verify Linux ARM64 packaged server startup",
+      "conclusion": "success"
+    },
+    {
+      "job": "Publish GitHub Release",
+      "step": "Validate merged macOS updater metadata",
+      "conclusion": "success"
+    },
+    {
+      "job": "Publish GitHub Release",
+      "step": "Validate Linux updater metadata",
+      "conclusion": "success"
+    }
+  ]
+}
