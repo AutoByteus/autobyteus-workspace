@@ -84,3 +84,28 @@
   maintenance, with reviewer conditions: narrow the AFB-004 obligation to `agentDefinitionService` (do not delete it);
   add `project_tasks` to the readiness list in source order. Residual: compare base failures by test identity and
   message, not count. The reviewer delivered the implementation handoff to `/implementation_engineer`; not repeated here.
+
+## SR-006 — 2026-10-04 — Root shutdown fence completion race (Design Impact, CRR-005 / API/E2E F-02)
+- Trigger: code reviewer CRR-005 (round 5), failure-origin review of API/E2E F-02, classified Design Impact. Report:
+  `code-review-report.md` § "API/E2E Failure-Origin Review (Round 5, F-02)"; record `code-review-revision-record.md`.
+  Branch @ `f2c32a2cc`.
+- Prior status: SR-005 Ready (ARCH-REV-003 Pass); implementation passed code review (CRR-004); API/E2E passing except
+  F-02. Current status: design Ready (SR-006), pending architecture review.
+- Evidence: E-22. The shared `AgentRunRootShutdownFence` permanently latches a rejected interrupt ("no active turn")
+  while the turn's completion is still being dispatched. The root-level frozen scope already retries, but the
+  AgentRun latch defeats it. Branch 3/10, base 0/12. The likely exposure is REQ-005's extra in-flight turns (unproven).
+- Decisions:
+  - Scope: fixed in this ticket. AC-001 and AC-010 are approved and need it. An AC-001 exception would change approved
+    acceptance, so it is rejected. No requirement edit is needed.
+  - Semantics, `design-spec.md` § 11:
+    - F-1: a rejected interrupt leaves the attempt open until quiescence;
+    - F-2: bounded wait (5000 ms, named constant), then settle the original result;
+    - F-3: only acceptance is irreversible, and a failed attempt can be retried by the next fence call;
+    - F-4: warn-level diagnostics.
+  - No runtime error-text parsing.
+- Affected: AC-001, AC-010, SC-03 (Org/Team/standalone Stop). Design sections: § 11, task size and risk note, escalation
+  trigger, file map, risks.
+- Requirements: unchanged (basis SR-002); no renewed approval needed.
+- Classification: unchanged, `Large` / `High` (shared, concurrency-critical owner).
+- Routing: Large/High revised package → `/architecture_reviewer`. After Pass: implementation, then code review, then
+  API/E2E (LE-O1 on Codex ≥10 runs; AC-001 suites on Claude and Codex).

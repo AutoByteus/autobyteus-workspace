@@ -1,7 +1,9 @@
 # Design Spec — standalone-agent-run-root
 
 ## Solution And Approval Basis
-- **Current solution revision ID:** `SR-005`. It refreshes the SR-004 design (ARCH-REV-002 Pass) onto the new base
+- **Current solution revision ID:** `SR-006`. It adds § 11 "Root shutdown fence completion race" for the CRR-005
+  Design Impact (API/E2E F-02; E-22). Everything else is as in SR-005. The requirements basis is `SR-002` (unchanged).
+- **SR-005** refreshes the SR-004 design (ARCH-REV-002 Pass) onto the new base
   `b37d7a934` (E-15–E-21). The design substance is unchanged. The deltas are in "Base Refresh Deltas (SR-005)" below.
   The requirements basis is `SR-002` (unchanged).
 - **Previous revision:** `SR-004` revised SR-003 for ARCH-REV-001 (AR-001–AR-003).
@@ -9,7 +11,7 @@
   ticket. lets do it". Q-1–Q-4 were resolved as recommended.
 - **Supplement:** the predecessor UI/UX spec, VIS-001–015 (host label, RD-004 rendering). No new visuals.
 - **Design status:** `Ready`.
-- **Investigation notes:** `investigation-notes.md` (E-01–E-21).
+- **Investigation notes:** `investigation-notes.md` (E-01–E-22).
 - **Workspace:**
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root`, branch
     `codex/standalone-agent-run-root`.
@@ -76,7 +78,11 @@ These are the only design changes from the rebase. Everything else in this spec 
   small behavior fixes across server, web and contracts, and two test fixes.
 - **Architectural risk:** `High`. Runtime ownership and lifecycle change for every eligible standalone run, including
   Daily Assistant. Concurrency (root gate and host activation). A shared delivery text change on every runtime.
+- **SR-006:** still `Large`/`High`. § 11 changes the shared root-shutdown fence semantics used by every root on every
+  runtime. It is small in code, but it sits in a concurrency-critical shared owner.
 - **Escalation triggers:**
+  - (SR-006) the fence cannot meet F-1–F-3 without changing `isRootShutdownQuiescent`, input admission or a runtime
+    backend;
   - any predecessor standalone E2E needs a behavior change to pass;
   - host activation cannot run inside the root's command path without reversing the lock order;
   - a runtime cannot carry the new sender-address line.
@@ -251,6 +257,59 @@ derived (`nameAt` for `hostRunId`).
   - SR-005: the suite passes on the branch (E-20). Only the cause record is outstanding.
 - **Guard drift since the base refresh (SR-005, D-R3).** The guard suite is green only after the AFB-004 allocator
   inventory and the tool-registration list are brought in line with upstream.
+
+### 11. Root shutdown fence completion race (SR-006; AC-001, AC-010; E-22)
+- **Scope decision.** Fixed in this ticket. AC-001 (live gate) and AC-010 (preserved Stop) are approved acceptance
+  criteria, and they cannot pass reliably without the fix. Fixing it keeps approved intent unchanged. The alternative, an
+  AC-001 exception, would change approved acceptance and is rejected. No requirement edit is needed.
+- **Owner.** `agent-execution/domain/agent-run-root-shutdown-fence.ts`, plus its use in `agent-run.ts`. No root-specific or
+  runtime-specific code changes. Team, Org and standalone roots all benefit through the existing chain.
+- **Rule F-1: a rejected interrupt is not a fence result.**
+  - When `interruptActiveTurn()` resolves with `accepted: false`:
+    - if the run is quiescent, settle `{ accepted: true }` (as today);
+    - otherwise keep the attempt **open, awaiting quiescence**. Every later `evaluate()` (already scheduled after each
+      dispatched event batch) settles `{ accepted: true }` once the run is quiescent.
+  - Quiescence (`isRootShutdownQuiescent`) remains the only success signal. Do not parse runtime error text
+    ("no active turn") to tell outcomes apart; the texts are runtime-specific (E-22), and the local turn-completion
+    dispatch is authoritative.
+  - Do not send a second interrupt within the same attempt.
+- **Rule F-2: bounded wait.**
+  - Starting from the rejection, the attempt waits at most `ROOT_SHUTDOWN_REJECTED_INTERRUPT_QUIESCENCE_TIMEOUT_MS`.
+    Default 5000 ms; a named constant, injectable through the fence's constructor callbacks or options for tests.
+  - When the wait expires, evaluate once more. If quiescent, settle accepted; otherwise settle the **original rejected
+    interrupt result** (same code and message as today).
+  - The timer is cleared whenever the attempt settles or fails. It is `unref`'d so it never holds the process open.
+- **Rule F-3: only acceptance is irreversible.**
+  - `{ accepted: true }` stays latched for the AgentRun's lifetime (unchanged).
+  - A not-accepted result, or a rejected promise from an interrupt that throws, ends **that attempt only**. The next
+    `fenceInputAndInterruptForRootShutdown()` call starts a new attempt: it reconciles the runtime snapshot and re-fences
+    input idempotently (as today), then evaluates afresh, and may interrupt again if a turn is still active.
+  - Concurrent callers during one attempt share that attempt's promise.
+  - Input admission stays fenced across attempts. There is no reopening; root shutdown remains one-way for input.
+  - This brings the AgentRun layer in line with `createFrozenRootTerminationScope`, which already clears its memo when a
+    result is not accepted. The root-level retry (a second Stop; teardown `stopAll`) therefore reaches the AgentRun.
+- **Rule F-4: diagnostics.** On a rejected interrupt, and again when the wait expires, log at warn level: the run ID, the
+  local `activeTurn` (kind and turn ID), `hasPendingCommand`, and the interrupt result code and message. This settles
+  race versus stale state and identifies the agent in future live failures.
+- **Shape guidance (non-binding).** One way to do it is to make `AgentRunRootShutdownFence` a per-attempt latch with
+  `begin()` returning the attempt's promise. `AgentRun` then holds the current attempt and replaces it only when the
+  previous attempt settled not-accepted or failed. Keep `agent-run.ts` changes limited to attempt selection and
+  diagnostics.
+- **Tests (deterministic, unit):**
+  - an interrupt rejected while the turn is still locally active, with the turn-completed dispatch arriving afterwards,
+    settles `{ accepted: true }` with no second interrupt;
+  - a rejected interrupt with no quiescence settles the original rejected result after the bound (fake timers), and the
+    timer is cleared on every settle path;
+  - after a failed attempt, a second `fenceInputAndInterruptForRootShutdown()` starts a new attempt and succeeds once
+    the run is quiescent. Input stays fenced in between;
+  - an accepted fence stays latched; concurrent callers share one attempt;
+  - an interrupt that throws fails only that attempt;
+  - Org: `agent-org-run-termination` covers a first Stop that fails, then a second Stop that succeeds (the frozen scope
+    plus AgentRun retry).
+  - The existing `agent-run.test.ts:779-903`, `agent-run-compaction-races`, `frozen-root-termination-scope`,
+    `configured-agent-execution-handle` and Team/Org termination suites pass unchanged.
+- **Live validation:** LE-O1 on Codex passes at least 10 times in a row; the AC-001 suites pass on Claude and Codex. Any
+  F-4 warning seen in those runs is recorded with its turn state.
 
 ### 10. Malformed package (REQ-010, Q-4)
 No change. The classification is recorded in the requirements.
@@ -461,6 +520,9 @@ Not affected.
 | web standalone token view (the store or component calling `getAgentRunTokenUsageSummary` for a standalone run) | Use the new query |
 | `agent-collaboration/collaborators/collaborator-definition-catalog.ts` and its composition | REQ-009 injection |
 | `tests/unit/agent-team-execution/team-run-model-selection-save.test.ts` and/or production cause | REQ-009 |
+| `agent-execution/domain/agent-run-root-shutdown-fence.ts` | SR-006 § 11: F-1 open on rejected interrupt, F-2 bounded wait, F-3 per-attempt latch (only acceptance irreversible) |
+| `agent-execution/domain/agent-run.ts` (`fenceInputAndInterruptForRootShutdown`, fence wiring) | SR-006 § 11: attempt selection, F-4 diagnostics |
+| `tests/unit/agent-execution/agent-run-root-shutdown-fence.test.ts` (new), `agent-run.test.ts`, `agent-org-run-termination.test.ts` | SR-006 § 11 tests |
 | Docs | `agent_run_collaboration.md` → `standalone_agent_run_root.md`; `agent_communication.md` (header, root ownership); `agent_team_execution.md` (registry); `token_usage.md` (roll-up); web `chat.md` (removes the earlier-events limitation) |
 
 ## Applied Patterns
@@ -523,6 +585,12 @@ Unchanged.
 - The delivery header change affects every runtime. Snapshot and live checks are required.
 - **Web parser:** any web parsing of the delivery header (RD-004 rendering) accepts headers both with and without
   `sender address`, so stored history keeps rendering.
+- **(SR-006) Shared fence semantics.** The change affects Stop for every root on every runtime.
+  - Risk: a stale local turn delays Stop by up to the bound (5 s) before failing. Mitigation: F-2's bound, F-3's retry
+    and F-4's diagnostics.
+  - Risk: retrying after failure could re-interrupt a new turn. This is acceptable, because input stays fenced, so the
+    only turn that can be active is one that was already in flight.
+  - Root cause not proven (race vs stale). Mitigation: F-1 and F-3 handle both, and F-4 records which one occurred.
 
 ## Guidance For Implementation
 - **AC-001 gate:** every predecessor standalone and Agent-root test passes **without behavior edits**. Only renames and

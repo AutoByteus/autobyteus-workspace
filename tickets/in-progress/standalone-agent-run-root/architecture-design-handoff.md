@@ -1,4 +1,32 @@
-# Architecture Design Complete — standalone-agent-run-root (SR-005 base refresh)
+# Architecture Design Complete — standalone-agent-run-root (SR-006 root shutdown fence; previously SR-005 base refresh)
+
+## SR-006 round (2026-10-04) — current
+- Result: `Architecture Design Complete`, revision **SR-006** (requirements basis SR-002 unchanged; no renewed approval
+  needed). Classification: **Large / High** (unchanged).
+- Trigger: the code reviewer's CRR-005 failure-origin review of API/E2E F-02 (Design Impact). A busy Org root on Codex
+  cannot be stopped: branch 3 of 10, base 0 of 12. The cause is the shared `AgentRunRootShutdownFence`, which latches
+  a rejected "no active turn" interrupt permanently while the turn's completion is still being dispatched.
+- Decision: fixed in this ticket (AC-001 and AC-010 are approved and need it; an AC-001 exception is rejected).
+- Design: `design-spec.md` § 11.
+  - F-1: a rejected interrupt keeps the attempt open until quiescence.
+  - F-2: bounded wait (5000 ms), then the original result.
+  - F-3: only acceptance is irreversible; a failed attempt is retryable, matching `createFrozenRootTerminationScope`.
+  - F-4: diagnostics (run ID, local active turn, interrupt result).
+  - No runtime error-text parsing.
+  - Deterministic unit tests are listed; live: LE-O1 on Codex ≥10 runs, AC-001 suites on Claude and Codex.
+- Evidence: `investigation-notes.md` E-22. Revision: `solution-revision-record.md` SR-006.
+- Review focus:
+  - F-3 retryability versus the original "irreversible latch" intent;
+  - the 5 s bound;
+  - whether quiescence-only success (no error-text recognition) is sufficient on all runtimes.
+- Code-review and API/E2E artifacts (in this ticket folder): `code-review-report.md`, `code-review-revision-record.md`,
+  `api-e2e-execution-coverage-report.md`, `api-e2e-coverage-investigation.md`, `api-e2e-revision-record.md`,
+  `api-e2e-test-case-ledger.md`, `api-e2e-evidence/`. Implementation: `implementation-handoff.md`,
+  `implementation-revision-record.md`.
+- Branch `codex/standalone-agent-run-root` @ `f2c32a2cc` + review docs; base `origin/personal` @ `b37d7a934`.
+
+---
+# Earlier round: SR-005 base refresh
 
 - Result: `Architecture Design Complete`. Package `standalone-agent-run-root`, current revision **SR-005** (requirements
   basis SR-002, unchanged).

@@ -136,6 +136,39 @@
   - Size: `standalone-agent-run-root.ts` 413 lines and `standalone-agent-run-lifecycle-service.ts` 450 lines, above the
     REQ-003 target of 400.
 
+## Root shutdown fence (SR-006, 2026-10-04)
+- **E-22, F-02: a busy Org cannot be stopped on Codex (CRR-005, Design Impact).**
+  - Source: code review `code-review-report.md` § "API/E2E Failure-Origin Review (Round 5, F-02)"; evidence
+    `api-e2e-evidence/r2-o01-diag-le-o1-codex-4.log`, `r2-o01-le-o1-codex-3.log`, `r2-o01-base-le-o1-codex-{1..10}.log`,
+    `probes/tmp-o01-diagnostic.diff`. Branch @ `f2c32a2cc`.
+  - Frequency: LE-O1 on Codex fails on the branch in 3 of 10 runs and on the base in 0 of 12. The suite is unchanged.
+  - Mechanism (code read on the branch; the files are identical to base `b37d7a934`):
+    - `AgentRun.fenceInputAndInterruptForRootShutdown` (`agent-run.ts:257-270`) fences input, calls
+      `rootShutdownFence.begin()`, schedules `evaluate()` and returns `rootShutdownFence.result`.
+    - `AgentRunRootShutdownFence.evaluate` (`agent-run-root-shutdown-fence.ts:33-47`): if the run is not quiescent but has
+      a local active turn, it calls `interrupt()` once. If the result is not accepted and the run is still not quiescent,
+      it calls `settle(result)` immediately.
+    - `settle` is irreversible for the AgentRun's lifetime (`settled = true`, one completion promise). Every later call
+      returns the same failed result.
+    - `evaluate()` already re-runs after every dispatched canonical event batch
+      (`onCanonicalEventsDispatched → scheduleRootShutdownFenceEvaluation`, `agent-run.ts:290`, `:453-455`). So if the
+      fence were still open, the turn-completion dispatch that follows a "no active turn" rejection would settle it as
+      accepted.
+    - The layer above already retries: `createFrozenRootTerminationScope.fenceAgentRunsForRootShutdown`
+      (`frozen-root-termination-scope.ts:18-31`) clears its memo when a result is not accepted, so a later Stop
+      re-invokes the handles. The irreversible failure latch in `AgentRunRootShutdownFence` defeats that retry.
+    - Runtime rejection texts differ: Codex `RPC error -32600: no active turn to interrupt`; Claude `has no active turn
+      '<id>' to interrupt` (`claude-session.ts:261`, `claude-turn-tracker.ts:398`). Both come back as
+      `RUNTIME_COMMAND_FAILED`.
+  - Shared owner: Team (`root-team-run.ts:409`), Org (`agent-org-run.ts:320`) and standalone
+    (`standalone-agent-run-root.ts:348`) roots all go through the same AgentRun fence on every runtime.
+  - Unknown: race versus stale local turn state, and which agent is involved. The diagnostic logged only the Org ID.
+  - Existing tests: `tests/unit/agent-execution/agent-run.test.ts:779-903` (accepted-fence paths, interrupt of
+    approval-wait and pre-turn work), `agent-run-compaction-races.test.ts`, `frozen-root-termination-scope.test.ts`,
+    `agent-org-run-termination.test.ts`. None of them asserts that a failed fence stays latched.
+  - Scenario: stopping a busy root is a Supported Normal Scenario (SC-03, AC-010). A turn ending inside the interrupt
+    round trip is ordinary timing.
+
 ## Supplement Inventory
 | Supplement | Purpose | Status |
 | --- | --- | --- |
