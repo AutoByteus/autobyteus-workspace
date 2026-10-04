@@ -20,11 +20,14 @@ export class EventMonitorActiveTraceProtocolError extends Error {
 type PageBlock = { events: EventMonitorActiveTracePageEventDto[] };
 type PageFetcher = typeof fetchEventMonitorActiveTracePage;
 
-const subjectKey = (subject: EventMonitorActiveTraceBrowseSubject): string => subject.kind === 'run'
-  ? `run:${subject.runId}`
-  : subject.kind === 'teamMember'
-    ? `team:${subject.teamRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`
-    : `org:${subject.orgRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
+const subjectKey = (subject: EventMonitorActiveTraceBrowseSubject): string => {
+  switch (subject.kind) {
+    case 'run': return `run:${subject.runId}`;
+    case 'teamMember': return `team:${subject.teamRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
+    case 'agentOrgMember': return `org:${subject.orgRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
+    case 'standaloneMember': return `agent:${subject.hostRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
+  }
+};
 
 const validateResponse = (
   response: EventMonitorActiveTracePageDto,

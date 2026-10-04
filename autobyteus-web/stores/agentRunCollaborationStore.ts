@@ -268,7 +268,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       address: child.address,
       context,
       collaborationMessages: collaboration.messagesView(child.agentRunId),
-      browse: Object.freeze({ kind: 'run' as const, runId: child.agentRunId }),
+      // A child is not a top-level run package: its pages come from the host's collaboration package.
+      browse: Object.freeze({ kind: 'standaloneMember' as const, hostRunId, memberAddress: child.address, agentRunId: child.agentRunId }),
       // A child is always addressable: a message wakes it (and its host) through the stream.
       access: 'live' as const,
       interaction: Object.freeze({

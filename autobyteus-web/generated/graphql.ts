@@ -4662,6 +4662,16 @@ export type GetTeamMemberEventMonitorActiveTracePageQueryVariables = Exact<{
 
 export type GetTeamMemberEventMonitorActiveTracePageQuery = { __typename?: 'Query', getTeamMemberEventMonitorActiveTracePage: { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorInterAgentVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, senderAgentRunId: string, senderAddress?: string | null, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', agentRunId: string } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> }> }> } };
 
+export type GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables = Exact<{
+  hostRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery = { __typename?: 'Query', agentRunCollaborationMemberEventMonitorActiveTracePage: { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorInterAgentVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, senderAgentRunId: string, senderAddress?: string | null, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', agentRunId: string } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> }> }> } };
+
 export type GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables = Exact<{
   orgRunId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
@@ -10780,6 +10790,44 @@ export function useGetTeamMemberEventMonitorActiveTracePageLazyQuery(variables?:
   return VueApolloComposable.useLazyQuery<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>(GetTeamMemberEventMonitorActiveTracePageDocument, variables, options);
 }
 export type GetTeamMemberEventMonitorActiveTracePageQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>;
+export const GetAgentRunCollaborationMemberEventMonitorActiveTracePageDocument = gql`
+    query GetAgentRunCollaborationMemberEventMonitorActiveTracePage($hostRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String) {
+  agentRunCollaborationMemberEventMonitorActiveTracePage(
+    hostRunId: $hostRunId
+    memberAddress: $memberAddress
+    agentRunId: $agentRunId
+    beforeCursor: $beforeCursor
+  ) {
+    ...EventMonitorActiveTracePageFields
+  }
+}
+    ${EventMonitorActiveTracePageFieldsFragmentDoc}`;
+
+/**
+ * __useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery({
+ *   hostRunId: // value for 'hostRunId'
+ *   memberAddress: // value for 'memberAddress'
+ *   agentRunId: // value for 'agentRunId'
+ *   beforeCursor: // value for 'beforeCursor'
+ * });
+ */
+export function useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery(variables: GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>(GetAgentRunCollaborationMemberEventMonitorActiveTracePageDocument, variables, options);
+}
+export function useGetAgentRunCollaborationMemberEventMonitorActiveTracePageLazyQuery(variables?: GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>(GetAgentRunCollaborationMemberEventMonitorActiveTracePageDocument, variables, options);
+}
+export type GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>;
 export const GetAgentOrgMemberEventMonitorActiveTracePageDocument = gql`
     query GetAgentOrgMemberEventMonitorActiveTracePage($orgRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String) {
   getAgentOrgMemberEventMonitorActiveTracePage(
