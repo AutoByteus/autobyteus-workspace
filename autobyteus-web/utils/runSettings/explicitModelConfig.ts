@@ -7,7 +7,7 @@ import { getDefaultThinkingConfig, getThinkingParamKeys } from '~/utils/llmThink
  * (a definition's default launch config keeps its own values). A model without a config schema
  * records the preset. Used by both draft owners (New chat and the Org launch page).
  */
-export const explicitModelConfig = (
+export const explicitChatModelConfig = (
   schema: UiModelConfigSchema | null,
   preset: Record<string, unknown> | null = null,
 ): Record<string, unknown> | null => {

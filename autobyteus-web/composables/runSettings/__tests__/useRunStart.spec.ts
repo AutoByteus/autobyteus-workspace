@@ -9,7 +9,6 @@ const mocks = vi.hoisted(() => ({
     retarget: vi.fn(),
   },
   org: { start: vi.fn(), startSettings: null as any },
-  runs: new Map<string, any>(),
   seed: vi.fn(),
 }))
 vi.mock('vue-router', () => ({ useRouter: () => ({ push: mocks.push }) }))
@@ -18,7 +17,6 @@ vi.mock('~/stores/chatDraftStore', () => ({
   chatStartSettingsOf: (draft: any) => ({ carriedFrom: draft.id }),
 }))
 vi.mock('~/stores/agentOrgLaunchDraftStore', () => ({ useAgentOrgLaunchDraftStore: () => mocks.org }))
-vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getRun: (id: string) => mocks.runs.get(id) }) }))
 vi.mock('~/services/runConfigEditing/teamRunLaunchSeed', () => ({ loadTeamRunLaunchSeed: mocks.seed }))
 vi.mock('~/services/workspace/runWorkspaceChoice', () => ({
   runWorkspaceChoiceFromRootPath: (path: string | null | undefined) => (path ? { kind: 'folder', rootPath: path } : null),
@@ -37,7 +35,6 @@ describe('useRunStart (the single start intent)', () => {
     vi.clearAllMocks()
     mocks.chat.draft = null
     mocks.org.startSettings = null
-    mocks.runs.clear()
   })
 
   it('Run on an Agent or Team opens New chat for it; Run on an Org opens the Org launch page', async () => {
@@ -54,15 +51,33 @@ describe('useRunStart (the single start intent)', () => {
     expect(mocks.push).toHaveBeenLastCalledWith(orgRoute('org-1'))
   })
 
-  it('"+" on an Agent run copies its workspace, approval and model config', async () => {
-    mocks.runs.set('run-1', { config: {
-      agentDefinitionId: 'agent-1', runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex',
-      llmConfig: { reasoning_effort: 'high' }, autoExecuteTools: false, workspaceMetadata: { workspaceRootPath: '/work/a' },
-    } })
-    await useRunStart().copyAgentRun('run-1')
+  const agentConfig = (overrides: Record<string, unknown> = {}): any => ({
+    agentDefinitionId: 'agent-1', agentDefinitionName: 'Agent One', runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex',
+    llmConfig: { reasoning_effort: 'high', service_tier: 'fast' }, autoExecuteTools: false, isLocked: true,
+    workspaceId: 'ws-a', workspaceMetadata: { workspaceId: 'ws-a', workspaceRootPath: '/work/a' }, ...overrides,
+  })
+
+  it('"+" on an Agent run copies the agent on screen: workspace, runtime, model, model config and approval', async () => {
+    await useRunStart().copyAgentFromConfig(agentConfig())
     expect(mocks.chat.startForDefinition).toHaveBeenCalledWith({ kind: 'agent', agentDefinitionId: 'agent-1' }, {
-      copied: { workspace: { kind: 'folder', rootPath: '/work/a' }, runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex', llmConfig: { reasoning_effort: 'high' }, autoExecuteTools: false },
+      copied: {
+        workspace: { kind: 'folder', rootPath: '/work/a' }, runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex',
+        llmConfig: { reasoning_effort: 'high', service_tier: 'fast' }, autoExecuteTools: false,
+      },
     })
+    expect(mocks.push).toHaveBeenCalledWith('/chat')
+  })
+
+  it('CR-001: "+" on an `@` collaborator copies that collaborator (no run lookup); no workspace path → temp', async () => {
+    // A task child's context lives in the run's collaboration package, never in agentContextsStore.
+    await useRunStart().copyAgentFromConfig(agentConfig({
+      agentDefinitionId: 'computer-use', runtimeKind: 'autobyteus', llmModelIdentifier: 'm', llmConfig: undefined,
+      autoExecuteTools: true, workspaceId: null, workspaceMetadata: null,
+    }))
+    expect(mocks.chat.startForDefinition).toHaveBeenCalledWith({ kind: 'agent', agentDefinitionId: 'computer-use' }, {
+      copied: { workspace: null, runtimeKind: 'autobyteus', llmModelIdentifier: 'm', llmConfig: null, autoExecuteTools: true },
+    })
+    expect(mocks.push).toHaveBeenCalledWith('/chat')
   })
 
   it('"+" on a Team run copies its settings and member overrides; a failed read opens the defaults; a late one opens nothing', async () => {

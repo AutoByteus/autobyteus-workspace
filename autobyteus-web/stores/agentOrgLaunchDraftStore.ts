@@ -7,7 +7,7 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useWorkspaceStore } from '~/stores/workspace'
-import { explicitModelConfig } from '~/utils/runSettings/explicitModelConfig'
+import { explicitChatModelConfig } from '~/utils/runSettings/explicitModelConfig'
 import { DEFAULT_AGENT_RUNTIME_KIND, runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
@@ -84,7 +84,7 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
   const orgs = () => useAgentOrgDefinitionStore()
   const schemaFor = (runtimeKind: string, llmModelIdentifier: string) =>
     useLLMProviderConfigStore().modelConfigSchemaByIdentifier(runtimeKind, llmModelIdentifier)
-  const defaultConfigFor = (choice: RunModelChoice) => explicitModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), null)
+  const defaultConfigFor = (choice: RunModelChoice) => explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), null)
   const memberOverrideDeps: MemberOverrideDeps = { defaultConfigFor, schemaFor }
   const tempWorkspace = (): RunWorkspaceChoice =>
     ({ kind: 'existing', workspaceId: useWorkspaceStore().tempWorkspaceId ?? TEMP_WORKSPACE_ID })
@@ -217,7 +217,7 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
       ...target.root,
       runtimeKind: choice.runtimeKind,
       llmModelIdentifier: choice.llmModelIdentifier,
-      llmConfig: explicitModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), choice.llmConfig),
+      llmConfig: explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), choice.llmConfig),
       autoExecuteTools: autoExecuteForNewRuntimeSelection(choice.runtimeKind, target.root.autoExecuteTools),
     }
   }

@@ -7,28 +7,30 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unifi
 ## Upstream Artifact Package
 
 - Upstream review applicability and handoff-rule result:
-  - Architecture review was selected and passed (ARCH-REV-002) on the `Large`/`High` route.
-  - The handoff rules route the result to the Code Reviewer.
+  - Architecture review was selected and passed (ARCH-REV-002, then ARCH-REV-003 for SR-009) on the
+    `Large`/`High` route.
+  - The handoff rules route the result to the Code Reviewer (targeted delta review of IR-002).
 - Requirements doc: `requirements-doc.md` (SR-006, Approved).
 - Investigation notes: `investigation-notes.md`.
 - Solution revision record: `solution-revision-record.md`.
-- Design spec: `design-spec.md` (SR-008).
+- Design spec: `design-spec.md` (SR-009).
 - Supplemental task artifacts:
   - `architecture-handoff.md`; `product-design-request*.md`.
   - The normative Product spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/run-settings-ui-unification/ui-ux-spec.md` and its `visual-references/VIS-001..042`.
 - Design review report: `design-review-report.md`.
 - Architecture review revision record: `architecture-review-revision-record.md`.
-- Triggering rework report: N/A (initial implementation).
+- Triggering rework report: `code-review-report.md` and `code-review-revision-record.md` (CRR-001
+  → CRR-002: CR-001 as Design Impact, resolved by SR-009 / ARCH-REV-003; CR-002 and CR-003 as Local Fix).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-006`, `SR-008`
-- Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review / API/E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Current implementation revision ID: `IR-002` (baseline `IR-001`)
+- Related solution revision IDs: `SR-006`, `SR-008`, `SR-009`
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`. API/E2E and delivery: `N/A`
+- Triggering finding IDs: `CR-001`, `CR-002`, `CR-003` (see `IR-002`)
 
 Agent and Team runs start only from New chat. The heading switcher picks the target, and settings
 sit in the composer chips. A Team also gets a members line that opens the Member settings drawer.
@@ -81,7 +83,7 @@ deleted.
 | BEH-004 | Edit Config is the saved-run settings view: stop, discard, save | `components/workspace/config/ExistingRunConfigEditor.vue` (container) → `components/run-settings/ExistingRunSettings.vue`; owner `stores/existingRunConfigStore.ts` + `stores/existingRunConfigEditActions.ts` (readiness derived from model options, `discardChanges`, `reloadCanonical`); `composables/runSettings/useRunStopAction.ts`; `RunConfigPanel.vue` reduced to chrome | Done. Visual 14–17; probe `existing-run-model-config` A–F (save, RUN_ACTIVE relock, replacement, indeterminate → Refresh) |
 | BEH-005 | Chat controls are reused everywhere; the model menu gains `runtimeLocked` | `ChatModelMenu.vue` (placement/align/`runtimeLocked`/`lockedModels`/drill-in), `ChatThinkingControl.vue`, `ChatWorkspaceMenu.vue` (`RunWorkspaceChoice`), `ChatApprovalToggle.vue`, `composables/popover/useMenuInBoundary.ts`; all used by `RunSettingsCard.vue` | Done |
 | BEH-006 | `@` is mention-only (Agents/Teams; current target and its tree excluded); the first message keeps mentions | `utils/collaborators/draftMentionEligibility.ts`, `composables/runSettings/useMentionCandidates.ts`, `composables/agentInput/useComposerMentionMenu.ts` (replaces `useRunMentionMenu`), `components/agentInput/ComposerMentionMirror.vue`, `ChatMessageInput.vue`, `ChatTargetMenu.vue` (mention list), `AgentUserInputTextArea.vue`; first send: `stores/agentRunStore.ts` (keeps `requestedMentions`), `stores/agentTeamRunStore.ts` (`sendMessageToFocusedMember` `mentions`), `chatLaunchService` (`mentionsPresentInText`) | Implemented and unit-tested. **Server admission of first-send mentions is not yet shown for an Agent and a Team (API/E2E).** |
-| BEH-007 | "+" on a run: Agent/Team → New chat prefilled; Org → Org page prefilled | `useRunStart.copyAgentRun/copyTeamRun({isCurrent})/copyOrgRun`; `AgentWorkspaceView.vue`, `TeamWorkspaceView.vue` (late-copy guard), `AgentOrgWorkspaceView.vue`; tree "+" → `WorkspaceAgentRunsTreePanel.vue` → `useRunStart.newChatInWorkspace` | Done. Unit-tested; the Org "+" was checked in the browser. The Agent/Team "+" from live runs is left to E2E |
+| BEH-007 | "+" on a run: Agent/Team → New chat prefilled; Org → Org page prefilled | `useRunStart.copyAgentFromConfig(displayed AgentRunConfig)/copyTeamRun({isCurrent})/copyOrgRun`; `AgentWorkspaceView.vue` (passes `target.context.config`: the host agent, an `@` task child or a task team's member; CR-001), `TeamWorkspaceView.vue` (late-copy guard), `AgentOrgWorkspaceView.vue`; tree "+" → `WorkspaceAgentRunsTreePanel.vue` → `useRunStart.newChatInWorkspace` | Done. Unit-tested; the Org "+" was checked in the browser. The Agent/Team "+" from live runs is left to E2E |
 | BEH-008 | Removed lines and forms | Removal Plan executed (see Legacy check) | Done. `runSettingsCatalog.spec.ts` asserts the files and keys are gone |
 | BEH-009 | A chip or row per other model setting | `components/chat/chatModelOptions.ts`, `components/chat/ChatModelOptionControl.vue`; rows in `RunSettingsCard.vue`; member customization by option key | Done. Visual 18–23 (Fast on/off independent of Thinking; member Fast customized; carried to Org) |
 
@@ -133,6 +135,8 @@ All paths are under `autobyteus-web/`.
 - **Draft mention eligibility** mirrors the server's CollaboratorCandidatePolicy: shared non-built-in
   agents and shared teams, excluding the target and its tree. Team definitions are flat today, so the
   "tree" is the team plus its members (TEAM_LOCAL members map to `buildTeamLocalAgentDefinitionId`).
+- **Shared start vocabulary (CR-002):** the carry type is `RunStartSettings` in `types/runSettings/RunSettings.ts`, and `explicitChatModelConfig` lives in `utils/runSettings/explicitModelConfig.ts`. `agentOrgLaunchDraftStore` has no chat-store imports.
+- **Org topology (CR-003):** a blocked topology disables Run with the "unavailable" reason, and its diagnostic is logged once when detected (a watch in the store). `launch` has no dead branch.
 - **Built-in agent ids** come from a client constant that points to the server registry. There is
   no API for them.
 - **`runMemberTree`** exposes three named functions (`buildTeamMemberTree`, `buildOrgMemberTree`,
@@ -199,9 +203,11 @@ All paths are under `autobyteus-web/`.
   - There are no parallel per-surface shapes.
 - Canonical shared design guidance reapplied: `Yes`.
 - Changed source files within size guardrails: `Yes`.
-  - No file is over 500 non-empty lines.
-  - Files over 220 were already that size at baseline, with deltas of +0 to +7: `AgentOrgExperience.vue` 497→500, `agentTeamRunStore.ts` 482→489, `existingRunConfigStore.ts` 458→460 (edit actions split into `existingRunConfigEditActions.ts`).
-  - New files stay under 400.
+  - No file is over 500 non-empty lines. `AgentOrgExperience.vue` is at exactly 500 (497 at base).
+  - Changed files over 220 non-empty lines (base → now):
+    - small deltas: `agentTeamRunStore.ts` 482→489, `existingRunConfigStore.ts` 458→460 (edit actions split into `existingRunConfigEditActions.ts`), `ChatWorkspaceMenu.vue` 233→241, `ExistingRunConfigEditor.vue` 228→232; `AgentUserInputTextArea.vue` shrank 415→386;
+    - real growth (corrected per CRR-001): `ChatModelMenu.vue` 292→396 (placement, locked runtime, drill-in), `chatDraftStore.ts` 257→340 (Team overrides, start rules; the model-config helper moved out in IR-002), `ChatMessageInput.vue` 222→270 (separate `/` and `@` popovers). Each still owns one concern.
+  - New files stay under 400 (`agentOrgLaunchDraftStore.ts` 384).
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -222,9 +228,9 @@ All paths are under `autobyteus-web/`.
 ## Local Implementation Checks Run
 
 - **Full web suite** (`pnpm test:nuxt --run`):
-  - 11 failing files (36 tests), all on the recorded baseline list (17 files at baseline); no new
-    failures. 545 files pass.
-  - Logs: `/tmp/rsui-tests-3.log`; baseline `/tmp/rsui-baseline-failing-files.txt`.
+  - IR-002: 11 failing files (36 tests), all on the recorded baseline list (17 files at baseline);
+    no new failures. 545 files pass, 3,608 tests pass.
+  - Logs: `/tmp/rsui-tests-4.log`; baseline `/tmp/rsui-baseline-failing-files.txt`.
 - **Targeted specs pass**, new and updated:
   - New: `draftMentionEligibility`, `chatModelOptions`, `startModelDefaults`, `runMemberTree`, `agentOrgLaunchService`, `agentOrgLaunchDraftStore`, `useRunStart`, `useRunStopAction`, `RunMembersLine`, `runSettingsCatalog`, `RunConfigPanel`.
   - Updated: `chatDraftStore`, `chatLaunchService`, `ChatMessageInput`, `pages/chat`, `AgentWorkspaceView`, `TeamWorkspaceView`, `TeamCanonicalPlus`, `AgentTeamDetail`, `WorkspaceAdaptiveLayout`, `existingRunConfigStore`, `ExistingRunConfigEditor.workspace`, `AgentOrgWorkspaceConfigBoundary`, `agentTeamRunStore`, `agentOrgRunLaunchSeed`, `existingAgentOrgWorkspaceDraft`, the localization catalog specs.

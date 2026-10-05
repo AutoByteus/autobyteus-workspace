@@ -65,10 +65,13 @@ const childPlaceholder = computed(() => {
   return config && !isHost.value ? t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' }) : null
 })
 
-/** ＋ opens New chat for this run's agent with its workspace, approval and model config (REQ-013). */
+/**
+ * ＋ opens New chat for the agent on screen (the run's agent or an `@` collaborator) with its
+ * workspace, approval and model config (REQ-013, CR-001).
+ */
 const startNewChatForRun = async () => {
-  const runId = target.value?.context.state.runId
-  if (runId) await runStart.copyAgentRun(runId)
+  const config = target.value?.context.config
+  if (config) await runStart.copyAgentFromConfig(config)
 }
 // A failed first send lands on the `temp-*` context; it has no saved settings (⚙ is hidden there).
 const openSelectedRunConfig = () => { if (target.value && !isTemporaryRunId(target.value.context.state.runId)) center.showConfig() }

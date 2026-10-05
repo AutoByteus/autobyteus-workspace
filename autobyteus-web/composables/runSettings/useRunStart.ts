@@ -1,7 +1,7 @@
 import { useRouter } from 'vue-router'
-import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentOrgLaunchDraftStore } from '~/stores/agentOrgLaunchDraftStore'
 import { chatStartSettingsOf, useChatDraftStore, type ChatTarget } from '~/stores/chatDraftStore'
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { RunStartSettings } from '~/types/runSettings/RunSettings'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { loadTeamRunLaunchSeed } from '~/services/runConfigEditing/teamRunLaunchSeed'
@@ -43,10 +43,14 @@ export function useRunStart() {
   /** Run on an Agent Org: the Org launch page with the Org's launch defaults. */
   const runOrg = (orgDefinitionId: string) => openOrg(orgDefinitionId)
 
-  /** "+" on an Agent run: New chat for its agent with its workspace, approval and model config. */
-  const copyAgentRun = async (runId: string) => {
-    const config = useAgentContextsStore().getRun(runId)?.config
-    if (!config) return
+  /**
+   * "+" on an Agent run view (CR-001): New chat for the agent on screen, prefilled with its
+   * workspace (temp when it has none), runtime, model, model config (thinking and other settings)
+   * and tool approval. The view passes the displayed config, so the run's own agent and an `@`
+   * collaborator (a task child or a task team's member, whose contexts live in the run's
+   * collaboration package) copy alike. No lookup by run id.
+   */
+  const copyAgentFromConfig = (config: AgentRunConfig): Promise<void> => {
     const copied: RunStartSettings = {
       workspace: runWorkspaceChoiceFromRootPath(config.workspaceMetadata?.workspaceRootPath),
       runtimeKind: config.runtimeKind,
@@ -54,7 +58,7 @@ export function useRunStart() {
       llmConfig: config.llmConfig ?? null,
       autoExecuteTools: config.autoExecuteTools,
     }
-    await openChat({ kind: 'agent', agentDefinitionId: config.agentDefinitionId }, { copied })
+    return openChat({ kind: 'agent', agentDefinitionId: config.agentDefinitionId }, { copied })
   }
 
   /**
@@ -121,5 +125,5 @@ export function useRunStart() {
     await router.push('/chat')
   }
 
-  return { runAgent, runTeam, runOrg, copyAgentRun, copyTeamRun, copyOrgRun, switchTarget, newChatInWorkspace }
+  return { runAgent, runTeam, runOrg, copyAgentFromConfig, copyTeamRun, copyOrgRun, switchTarget, newChatInWorkspace }
 }

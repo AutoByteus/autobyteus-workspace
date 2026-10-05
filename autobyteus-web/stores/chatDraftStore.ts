@@ -15,7 +15,7 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { normalizeDefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import { readChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID, TEMP_WORKSPACE_ID } from '~/utils/chat/chatDefaults'
-import { explicitModelConfig } from '~/utils/runSettings/explicitModelConfig'
+import { explicitChatModelConfig } from '~/utils/runSettings/explicitModelConfig'
 import { runWorkspaceChoiceFromRootPath } from '~/services/workspace/runWorkspaceChoice'
 import { startModelCatalog } from '~/services/runSettings/startModelCatalog'
 import { resolveStartModel } from '~/utils/runSettings/startModelDefaults'
@@ -91,7 +91,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
   const schemaFor = (runtimeKind: string, llmModelIdentifier: string) =>
     catalogs().modelConfigSchemaByIdentifier(runtimeKind, llmModelIdentifier)
   const memberOverrideDeps: MemberOverrideDeps = {
-    defaultConfigFor: (choice) => explicitModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), null),
+    defaultConfigFor: (choice) => explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), null),
     schemaFor,
   }
 
@@ -248,7 +248,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     target.context.config.llmModelIdentifier = selection.llmModelIdentifier
     // Choosing a model applies that model's defaults (thinking and other settings reset), recorded
     // explicitly so the run's settings show them.
-    target.context.config.llmConfig = explicitModelConfig(schemaFor(selection.runtimeKind, selection.llmModelIdentifier), llmConfig)
+    target.context.config.llmConfig = explicitChatModelConfig(schemaFor(selection.runtimeKind, selection.llmModelIdentifier), llmConfig)
   }
 
   /** An explicit model choice from the model menu. */

@@ -10,12 +10,12 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 const mocks = vi.hoisted(() => ({
   target: null as any,
   push: vi.fn(),
-  copyAgentRun: vi.fn(),
+  copyAgentFromConfig: vi.fn(),
   showConfig: vi.fn(),
 }))
 vi.mock('vue-router', () => ({ useRouter: () => ({ push: mocks.push }) }))
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => ({ get activeWorkspaceTarget() { return mocks.target } }) }))
-vi.mock('~/composables/runSettings/useRunStart', () => ({ useRunStart: () => ({ copyAgentRun: mocks.copyAgentRun }) }))
+vi.mock('~/composables/runSettings/useRunStart', () => ({ useRunStart: () => ({ copyAgentFromConfig: mocks.copyAgentFromConfig }) }))
 vi.mock('~/stores/workspaceCenterViewStore', () => ({ useWorkspaceCenterViewStore: () => ({ showConfig: mocks.showConfig }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => ({ agentDefinitions: [{ id: 'autobyteus-daily-assistant' }], getAgentDefinitionById: () => null, fetchAllAgentDefinitions: vi.fn() }),
@@ -80,7 +80,10 @@ describe('AgentWorkspaceView (the chat run view, D-17)', () => {
 
     await wrapper.get('[data-test="new-agent"]').trigger('click')
     await flushPromises()
-    expect(mocks.copyAgentRun).toHaveBeenCalledWith('run-1')
+    expect(mocks.copyAgentFromConfig).toHaveBeenCalledWith(expect.objectContaining({
+      agentDefinitionId: 'autobyteus-daily-assistant', runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5',
+      autoExecuteTools: true, workspaceMetadata: expect.objectContaining({ workspaceRootPath: '/Users/me/project' }),
+    }))
 
     await wrapper.get('[data-test="edit-config"]').trigger('click')
     expect(mocks.showConfig).toHaveBeenCalledTimes(1)
@@ -112,10 +115,22 @@ describe('AgentWorkspaceView (the chat run view, D-17)', () => {
     const monitor = wrapper.getComponent({ name: 'AgentEventMonitor' })
     expect(monitor.props('skillTagging')).toBeNull()
     expect(monitor.props('composerPlaceholder')).toBe('Message computer use agent…')
+    // CR-001: ＋ copies the collaborator on screen, not the host run.
     await wrapper.get('[data-test="new-agent"]').trigger('click')
     await flushPromises()
-    expect(mocks.copyAgentRun).toHaveBeenCalledWith('run-1')
+    expect(mocks.copyAgentFromConfig).toHaveBeenCalledTimes(1)
+    expect(mocks.copyAgentFromConfig).toHaveBeenCalledWith(expect.objectContaining({ agentDefinitionId: 'computer-use' }))
     await wrapper.get('[data-test="edit-config"]').trigger('click')
     expect(mocks.showConfig).toHaveBeenCalledTimes(1)
+  })
+
+  it('CR-001: ＋ on a task team’s member copies that member agent', async () => {
+    const host = buildTarget('run-1', 'hello')
+    host.context.config = { ...host.context.config, agentDefinitionId: 'reviewer-def', agentDefinitionName: 'reviewer' }
+    mocks.target = { ...host, kind: 'agent_run_task_team_member', host: { hostRunId: 'host-run' } }
+    const wrapper = mountView()
+    await wrapper.get('[data-test="new-agent"]').trigger('click')
+    await flushPromises()
+    expect(mocks.copyAgentFromConfig).toHaveBeenCalledWith(expect.objectContaining({ agentDefinitionId: 'reviewer-def' }))
   })
 })

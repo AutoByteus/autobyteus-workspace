@@ -37,7 +37,6 @@ vi.mock('~/stores/workspace', () => ({
   }),
 }))
 
-import enRunSettings from '~/localization/messages/en/runSettings'
 import { useAgentOrgLaunchDraftStore } from '../agentOrgLaunchDraftStore'
 
 const org = {
@@ -137,9 +136,14 @@ describe('agentOrgLaunchDraftStore (UIS-004)', () => {
     mocks.references.teams['team-def'].coordinatorMemberName = 'nobody'
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const store = useAgentOrgLaunchDraftStore()
+    store.start({ orgDefinitionId: 'missing' })
+    await flushPromises()
+    const unavailableReason = (store.readiness as { reason: string }).reason
+    expect(unavailableReason).toBeTruthy()
     store.start({ orgDefinitionId: 'org-1' })
     await flushPromises()
-    expect(store.readiness).toEqual({ ready: false, reason: enRunSettings['runSettings.orgLaunch.unavailable'] })
+    // The same "unavailable" reason as a missing Org: the user cannot fix a broken topology here.
+    expect(store.readiness).toEqual({ ready: false, reason: unavailableReason })
     const blocked = warn.mock.calls.filter(([message]) => message === 'AgentOrg launch blocked:')
     expect(blocked).toHaveLength(1)
     expect(String(blocked[0]![1])).toContain("no exact coordinator member 'nobody'")

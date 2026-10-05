@@ -8,6 +8,7 @@ authoritative. This record holds only the initial baseline and later implementat
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-002 Pass | N/A | `Initial Baseline` | SR-006, SR-008, ARCH-REV-002 | Implementation complete; local checks pass with no new failures; sent to code review |
+| IR-002 | Code Reviewer CRR-001/CRR-002 + Architecture Reviewer ARCH-REV-003 (SR-009) | CR-001, CR-002, CR-003 | `Design Impact` (CR-001, resolved by SR-009) / `Local Fix` (CR-002, CR-003) | SR-009, ARCH-REV-003, CRR-002 | Fixed; local checks pass with no new failures; back to code review for a delta review |
 
 ## Revision Entries
 
@@ -54,3 +55,51 @@ authoritative. This record holds only the initial baseline and later implementat
 - Remaining limitations or risks: see `implementation-handoff.md` → Known Risks. In particular,
   first-message mention admission for an Agent first send and a Team first send still needs API/E2E
   with real runtimes.
+
+### IR-002 — Agent "+" copies the agent on screen; Org store decoupled from chat store; blocked topology logged once
+
+- Triggering role, report path, and round:
+  - Code Reviewer, `code-review-report.md` / `code-review-revision-record.md`, CRR-001, corrected by CRR-002.
+  - Architecture Reviewer, `design-review-report.md`, ARCH-REV-003 (SR-009 design for CR-001).
+- Triggering finding IDs: CR-001, CR-002, CR-003. Also the non-blocking size-note correction.
+- Classification: CR-001 `Design Impact`, resolved upstream by SR-009. CR-002 and CR-003 `Local Fix`.
+- Prior authoritative result: IR-001, commit `d45fe62bc`.
+- Current authoritative result: IR-001 plus this delta. Commits `396591a37` (CR-002/CR-003) and the IR-002 commit on top.
+- Related solution revision IDs: SR-009.
+- Related architecture-review revision IDs: ARCH-REV-003.
+- Related code-review revision IDs: CRR-001, CRR-002.
+- Related API/E2E and delivery revision IDs: N/A.
+- Why recorded: rework after code review.
+- Approved behavior or requirement IDs affected: BEH-007 (REQ-013), plus the design §Dependency Rules.
+- Implementation delta:
+  - **CR-001:**
+    - `useRunStart.copyAgentRun(runId)`, which looked the run up in `agentContextsStore`, is replaced by `copyAgentFromConfig(config: AgentRunConfig)`. It builds the copy synchronously from the config, with no lookup by run id; it returns only the navigation promise.
+    - `AgentWorkspaceView` passes `target.context.config`: the host agent, a task child (`agent_run_task_agent`) or a task team's member (`agent_run_task_team_member`).
+    - New chat opens for `config.agentDefinitionId` with the workspace from its root path (temp when there is none), runtime, model, `llmConfig` and approval.
+    - The view still reaches neither `chatDraftStore` nor the router.
+  - **CR-002:**
+    - `RunStartSettings` (on `RunSettingsValues`, plus the optional Team overrides) is in `types/runSettings/RunSettings.ts`; it replaces `ChatStartSettings`.
+    - `explicitChatModelConfig` moved to `utils/runSettings/explicitModelConfig.ts`.
+    - `chatDraftStore`, `agentOrgLaunchDraftStore` and `useRunStart` import them from there. `agentOrgLaunchDraftStore` has no chat-store import.
+  - **CR-003:**
+    - A blocked Org topology is logged once when detected, by a watch on the member tree's diagnostic.
+    - The unreachable `blocked` branch in `launch` is removed, and the `readiness` comment is corrected.
+  - **Handoff:** the file-size note is corrected.
+- Changed files or areas (`autobyteus-web/`):
+  - `composables/runSettings/useRunStart.ts`, `components/workspace/agent/AgentWorkspaceView.vue`
+  - `stores/chatDraftStore.ts`, `stores/agentOrgLaunchDraftStore.ts`
+  - `types/runSettings/RunSettings.ts`, `utils/runSettings/explicitModelConfig.ts` (new)
+  - specs `useRunStart.spec.ts`, `AgentWorkspaceView.spec.ts`, `agentOrgLaunchDraftStore.spec.ts`
+- Local validation and result:
+  - Specs:
+    - The new `useRunStart` cases cover a host copy and a collaborator-child copy (no workspace → temp).
+    - `AgentWorkspaceView` covers the host, task-child and task-team-member "+".
+    - `agentOrgLaunchDraftStore` covers a blocked topology: unavailable reason, one warning, no launch.
+  - Full web suite: 11 failing files, all baseline; no new failures. 3,608 tests pass.
+  - vue-tsc: no errors in touched production files (output unchanged).
+  - The localization audit and both boundary guards pass. A direct catalog import in the new spec was replaced, so the guard passes again.
+  - Mobile specs: only the baseline-failing `MobileUxRefinement` still fails.
+- Next recipient or routing: Code Reviewer (targeted delta review), then API/E2E.
+- Remaining limitations or risks:
+  - Unchanged from IR-001. The first-message mention API/E2E proof (AF-009) is still mandatory.
+  - The built-in id constant mirrors the server registry by hand.
