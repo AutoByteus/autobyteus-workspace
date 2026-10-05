@@ -23,12 +23,14 @@ import { CodexModelCatalog } from "../../../src/llm-management/services/codex-mo
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
 
 // Live proof that an interrupted Codex automatic compaction is closed as failed (REQ-C01, AC-C01d)
 // through the real AgentRun, Codex backend, app server and memory recorder. As in probe C10, the app
 // server runs with `-c model_auto_compact_token_limit=20000` (test-only) so that a ~40K-token message
 // makes the next turn start with an automatic compaction, which is interrupted at once. The turn after
-// that compacts normally. Gated: RUN_CODEX_E2E=1 (uses Codex quota: a few turns).
+// that compacts normally. Further cases end the run's compaction by terminating the run and by killing
+// the app server (SCN-C4/C5). Gated: RUN_CODEX_E2E=1 (uses Codex quota: a few turns per case).
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const describeLive = codexBinaryReady && process.env.RUN_CODEX_E2E === "1" ? describe : describe.skip;
 const TIMEOUT_MS = Number(process.env.CODEX_COMPACTION_E2E_TIMEOUT_MS || 240_000);
@@ -61,7 +63,8 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
     await Promise.all(tempDirs.splice(0).map((dir) => fsPromises.rm(dir, { recursive: true, force: true })));
   });
 
-  it("closes an interrupted automatic compaction as failed and archives only the later completed one", async () => {
+  /** Real AgentRunManager + Codex backend + app server (lowered auto-compaction limit) + memory recorder. */
+  const startRun = async () => {
     const workspaceRoot = await fsPromises.mkdtemp(path.join(os.tmpdir(), "codex-compaction-workspace-"));
     const memoryDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), "codex-compaction-memory-"));
     tempDirs.push(workspaceRoot, memoryDir);
@@ -110,13 +113,41 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
     const turnsCompleted = () => events.filter((event) => event.eventType === AgentRunEventType.TURN_COMPLETED).length;
     const compactions = () => events.filter((event) => event.eventType === AgentRunEventType.COMPACTION_STATUS);
 
-    expect((await run.postUserMessage(new AgentInputUserMessage(dataDump("ONE")))).accepted).toBe(true);
-    await waitFor("first turn", () => turnsCompleted() === 1, events);
+    return { manager, run, recorder, memoryDir, events, turnsCompleted, compactions };
+  };
 
-    // This turn starts with an automatic compaction; interrupt while it is still running.
-    expect((await run.postUserMessage(new AgentInputUserMessage(dataDump("TWO")))).accepted).toBe(true);
+  /** Turn 1 fills the context; turn 2 starts with an automatic compaction. Resolves once it is running. */
+  const reachRunningCompaction = async (started: Awaited<ReturnType<typeof startRun>>, label: string) => {
+    const { run, events, turnsCompleted, compactions } = started;
+    expect((await run.postUserMessage(new AgentInputUserMessage(dataDump(`${label}ONE`)))).accepted).toBe(true);
+    await waitFor("first turn", () => turnsCompleted() === 1, events);
+    expect((await run.postUserMessage(new AgentInputUserMessage(dataDump(`${label}TWO`)))).accepted).toBe(true);
     await waitFor("compaction started", () => compactions().some((event) => event.payload.status === "compacting"), events);
-    const interrupted = compactions().find((event) => event.payload.status === "compacting")!;
+    return compactions().find((event) => event.payload.status === "compacting")!;
+  };
+
+  const markersOf = (memoryDir: string, providerEventId: unknown) => {
+    const store = new RunMemoryFileStore(memoryDir);
+    return [...store.listArchiveTurnRawTracesOrdered(), ...store.listTurnRawTracesOrdered()]
+      .filter((trace) => trace.traceType === "provider_compaction_boundary")
+      .map((trace) => trace.toolResult as Record<string, unknown>)
+      .filter((marker) => marker.provider_event_id === providerEventId);
+  };
+
+  /** Reopens the run through the production run-history service (active traces + projection dedupe). */
+  const reopenHistory = (memoryDir: string, historyRunId: string) =>
+    new AgentRunViewProjectionService(path.dirname(memoryDir)).getProjectionFromMetadata({
+      runId: historyRunId,
+      metadata: { runId: historyRunId, agentDefinitionId: "agent-def-codex-compaction", workspaceRootPath: os.tmpdir(),
+        memoryDir, llmModelIdentifier: "codex", llmConfig: null, autoExecuteTools: false,
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null },
+    });
+
+  it("closes an interrupted automatic compaction as failed and archives only the later completed one", async () => {
+    const started = await startRun();
+    const { run, recorder, memoryDir, events, turnsCompleted, compactions } = started;
+    // Turn 2 starts with an automatic compaction; interrupt while it is still running.
+    const interrupted = await reachRunningCompaction(started, "");
     expect((await run.interrupt()).accepted).toBe(true);
     await waitFor("interrupted turn ended", () => turnsCompleted() === 2, events);
     expect(compactions().some((event) => event.payload.status === "compacted" &&
@@ -147,5 +178,64 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
       .map((trace) => trace.toolResult as Record<string, unknown>);
     expect(markers.filter((marker) => marker.provider_event_id === interrupted.payload.provider_event_id)
       .map((marker) => marker.status)).toEqual(["compacting", "failed"]);
+
+    // Reopened history: the interrupted operation was archived with the later boundary; the active segment
+    // shows only the completed compaction, and no compaction is left "started".
+    const history = await reopenHistory(memoryDir, run.runId);
+    const historyCompactions = history.activities.filter((activity) => activity.kind === "compaction");
+    expect(historyCompactions.map((activity) => (activity as { phase?: string }).phase)).toEqual(["completed"]);
+  }, TIMEOUT_MS * 4);
+
+  // AgentRun termination quiesces input and waits for the active turn before the backend terminates, so a
+  // compaction running at Terminate ends with its turn (normally it completes). The backend's run_terminated
+  // close is a defensive path, covered by unit tests. Real-use invariant here: the compaction is never left open.
+  it("never leaves a compaction open when the run is terminated while it is running", async () => {
+    const started = await startRun();
+    const { manager, run, recorder, memoryDir, events, compactions } = started;
+    const open = await reachRunningCompaction(started, "T");
+    expect(await manager.terminateAgentRun(run.runId)).toBe(true);
+    const terminal = compactions().filter((event) => event.payload.provider_event_id === open.payload.provider_event_id &&
+      (event.payload.status === "compacted" || event.payload.status === "failed"));
+    expect(terminal, JSON.stringify(compactions().map((event) => event.payload.status))).toHaveLength(1);
+    await recorder.waitForIdle(run.runId).catch(() => undefined);
+    const terminalStatus = String(terminal[0]!.payload.status);
+    expect(markersOf(memoryDir, open.payload.provider_event_id).map((marker) => marker.status))
+      .toEqual(["compacting", terminalStatus]);
+    expect(new RunMemoryFileStore(memoryDir).readRawTraceArchiveManifest().segments)
+      .toHaveLength(terminalStatus === "compacted" ? 1 : 0);
+    const history = await reopenHistory(memoryDir, run.runId);
+    const phases = history.activities.filter((activity) => activity.kind === "compaction")
+      .map((activity) => (activity as { phase?: string }).phase);
+    expect(phases).toHaveLength(1);
+    expect(phases[0]).not.toBe("started");
+    console.info(`Codex compaction at terminate ended as: ${terminalStatus}`);
+    expect(events.filter((event) => event.eventType === AgentRunEventType.ERROR)).toHaveLength(0);
+  }, TIMEOUT_MS * 4);
+
+  it("closes a compaction cut off by an app-server crash as failed before the runtime error", async () => {
+    const started = await startRun();
+    const { run, recorder, memoryDir, events, compactions } = started;
+    const open = await reachRunningCompaction(started, "K");
+    // The app server this test's client manager spawned (a direct child of this worker process).
+    const appServerPids = spawnSync("pgrep", ["-P", String(process.pid), "-f", "model_auto_compact_token_limit"],
+      { encoding: "utf-8" }).stdout.split(/\s+/u).map(Number).filter((pid) => Number.isInteger(pid) && pid > 0);
+    expect(appServerPids).toHaveLength(1);
+    process.kill(appServerPids[0]!, "SIGKILL");
+    await waitFor("runtime error", () => events.some((event) => event.eventType === AgentRunEventType.ERROR), events);
+    expect(compactions().some((event) => event.payload.status === "compacted" &&
+      event.payload.provider_event_id === open.payload.provider_event_id),
+    "the compaction finished before the crash landed; rerun").toBe(false);
+    const failed = compactions().filter((event) => event.payload.status === "failed");
+    expect(failed).toHaveLength(1);
+    expect(failed[0]!.payload).toMatchObject({ provider_event_id: open.payload.provider_event_id, rotation_eligible: false,
+      error_message: "Compaction did not complete (Codex app server closed)." });
+    const errorEvent = events.find((event) => event.eventType === AgentRunEventType.ERROR)!;
+    expect(events.indexOf(failed[0]!)).toBeLessThan(events.indexOf(errorEvent));
+    await recorder.waitForIdle(run.runId);
+    expect(markersOf(memoryDir, open.payload.provider_event_id).map((marker) => marker.status)).toEqual(["compacting", "failed"]);
+    expect(new RunMemoryFileStore(memoryDir).readRawTraceArchiveManifest().segments).toHaveLength(0);
+    const history = await reopenHistory(memoryDir, run.runId);
+    expect(history.activities.filter((activity) => activity.kind === "compaction")
+      .map((activity) => (activity as { phase?: string }).phase)).toEqual(["failed"]);
   }, TIMEOUT_MS * 4);
 });

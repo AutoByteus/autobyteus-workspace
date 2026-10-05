@@ -1,0 +1,41 @@
+# Codex compaction — investigation
+
+- Package: codex-interrupted-compaction-fix (bootstrapped 2026-10-04 from the codex-compaction-analysis investigation; same worktree renamed, evidence carried over unchanged).
+- Original analysis package id: codex-compaction-analysis. Date 2026-10-04. Owner: Solution Designer.
+- Workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-interrupted-compaction-fix (moved from …/codex-compaction-analysis); branch codex/codex-interrupted-compaction-fix (renamed from codex/codex-compaction-analysis); base origin/personal @ 852ea5327ab2771d401bf495c8f4ac465055701a (fetched 2026-10-04); finalization target origin/personal (no merge authorized).
+- Predecessors: runtime-work-transfer-analysis (Claude fix) and agy-compaction-analysis (AGY fix), both Terminal. Program Step 1A, Codex verification.
+- U01 (User): do Codex next; experiments first until the data is understood; then judge.
+- Tools: codex-cli 0.160.0 (`codex app-server`, the same binary AutoByteus launches); probes in /tmp/codex-probe/work with model gpt-5.6-luna; protocol schema from `codex app-server generate-json-schema`. Scripts and filtered outputs are in probes/.
+
+## How AutoByteus handles Codex compaction (source)
+- C01: Codex compaction reaches AutoByteus via events/codex-item-compaction-event-converter.ts (item/started and item/completed with item type contextCompaction → status compacting non-rotating / compacted rotating), events/codex-raw-response-event-converter.ts (raw response compaction item → rotating) and codex-thread-event-converter.ts:236 (thread/compacted → rotating). CodexProviderCompactionStatusProjector (events/codex-provider-compaction-status-projector.ts) dedupes rotation-eligible boundaries per id and per thread/turn window. provider_event_id = item id, so started and completed pair by id in web and history.
+- C02: AutoByteus never calls Codex's manual compaction API (no `thread/compact/start` in src). Server-started turns are tracked: thread/codex-thread-notification-handler.ts:49-51 marks any `turn/started` notification via markTurnStarted.
+- C03: Web clears only native compaction on termination (stores/agentRunStore.ts:480 and peers, applyConfirmedNativeTermination); nothing closes a provider compaction whose turn ended. History replays markers as recorded.
+
+## Real data (~/.autobyteus/server-data/memory, all raw_traces files; probes/analyze.mjs)
+- C04: 1,100 runs with Codex markers; 822 with archives. 4,103 compaction operations started; 4,071 completed; 4,071 archive files (exact match with completed operations). Only surfaces present: codex.context_compaction_started (4,103) and codex.context_compaction_completed (4,073). thread/compacted and raw-response surfaces never occur in real data.
+- C05: The 2 "extra" rotation markers are from imported runs (imports/docker-node-1/…linkedin_marketer_…) whose legacy `raw_traces.jsonl` duplicates `raw_traces_active.jsonl`, so the analysis counted the same marker twice. Every archive starts with exactly one completed marker. No duplicate-rotation bug.
+- C06: 32 started operations have no completion (probes/real-data-unmatched-started.json; context in probes/unmatched-context.mjs). In almost every case the started marker is the last record of its turn, followed by a new user message; the next turn starts a new compaction (new id) that completes 30–190 s later. Several have long gaps (hours/days) before the next turn, consistent with stop/server shutdown. These are abandoned compactions; the "started" marker stays unpaired forever.
+
+## Live experiments (codex app-server, JSON-RPC like AutoByteus: initialize → thread/start → turn/start)
+- C07 Manual API (probes/codex-manual-api-raw.jsonl): `thread/compact/start {threadId}` returns {} and runs a separate turn: turn/started → item/started {type:"contextCompaction", id X} → ~1.6 s → item/completed {same id X} → turn/completed status completed. A later turn proceeds normally. The protocol marks compaction as a non-steerable turn kind "compact".
+- C08 `/compact` as a user message (probes/codex-slash-raw.jsonl): no contextCompaction item; the model replied "Context compacted." — a **fake**, as with AGY. A user typing `/compact` in an AutoByteus Codex run is misled today.
+- C09 Automatic compaction (probes/codex-auto-raw.jsonl; `-c model_auto_compact_token_limit=20000` for the probe only): from turn 2 on, every turn starts with item/started contextCompaction immediately after turn/started, then item/completed (same id) 2–4 s later, then the reply. Six compactions, each one started/completed pair; no thread/compacted, no raw compaction items. Items carry only {type, id}: no tokens, trigger or duration.
+- C10 Interrupt during automatic compaction (probes/codex-interrupt-auto-raw.jsonl): item/started X → turn/interrupt → turn/completed {status:"interrupted", error:null}, **no item/completed for X**. The next turn starts a new compaction Y that completes. This reproduces the real-data pattern C06 exactly.
+- C11 Interrupt during manual compaction (probes/codex-interrupt-manual-raw.jsonl): same as C10 (interrupted turn, no item/completed).
+- C12 Compact on an empty thread (probes/codex-empty-compact-raw.jsonl): succeeds (started/completed). Compaction failure could not be induced; its representation is unknown (would presumably end the turn with status failed and no item/completed, the same shape as C10).
+
+## Conclusions (evidence)
+- Codex rotation is correct: every completed compaction rotates exactly once (C04, C05).
+- Defect: an interrupted (or otherwise abandoned) compaction is never closed. The UI and history show a compaction "started" that never ends (32 real cases; reproduced C10, C11). Detection is reliable: an open contextCompaction item when its turn completes with any status.
+- Gap: `/compact` typed in a Codex run is faked by the model (C08), but Codex offers a real, proven manual compaction API (C07), and AutoByteus already tracks server-started turns (C02).
+- Not available: compaction metadata (tokens/trigger/duration) in Codex items; a duration could only be measured locally between started and completed.
+
+## SR-002 — scope decision and architecture investigation (2026-10-04)
+- U02 (User): asked which options are really valuable. Answer accepted: only the interrupted-compaction fix; a real `/compact` belongs in a later cross-runtime `/compact` ticket (Claude works, Codex via thread/compact/start, AGY tell the user it is unsupported); the 32 historical cases are cosmetic and not fixed.
+- U03 (User): "bootstrap a new ticket to work on … the interrupted-compaction fix … no need to approve now its clear". Recorded as explicit approval of REQ-C01 + REQ-C04 only.
+- Base refreshed: fast-forward to origin/personal @ 03d5db06b; `git diff --stat 852ea5327 HEAD` over backends/codex, agent-memory and web agentStreaming is empty (no drift).
+- C13 (Turn end path): codex-turn-event-converter.ts:41-52 maps every `turn/completed` (status completed/interrupted/failed) to TURN_COMPLETED and already closes open reasoning blocks there (closeReasoningBlocksForBoundary). The natural point to close an open compaction for that turn.
+- C14 (Other endings without turn/completed): (a) app-server close → CodexThread.handleClientClosed emits a local ERROR {code CODEX_APP_SERVER_CLOSED, error_scope runtime, error_effect terminal} (thread/codex-thread.ts:394-415); (b) emitRuntimeError (same shape, :381-391); (c) ERROR events are converted in events/codex-thread-lifecycle-event-converter.ts:31-45; (d) run terminate: CodexAgentRunBackend.terminateRun → threadManager.terminateThread → closeThread clears listeners and unbinds without emitting any event (thread/codex-thread-manager.ts closeThread), so a compaction open at terminate would stay open.
+- C15 (Pairing/display): web compactionActivityProjection and history replay key the activity on provider + session/thread + provider_event_id + turn; status "failed" → phase failed (Claude fix precedent). The recorder already persists non-rotating failed markers with optional error_message (agent-memory, Claude fix).
+- C16 (Tests): live Codex gate RUN_CODEX_E2E=1 (tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts:35-37). Probe frames for replay: probes/codex-interrupt-auto-raw.jsonl, probes/codex-interrupt-manual-raw.jsonl, probes/codex-auto-raw.jsonl.
