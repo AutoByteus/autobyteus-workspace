@@ -264,8 +264,9 @@ dispatch lane it fences new input admission and, through `AgentRunTermination`,
 selects one `AgentRunRootShutdownFence` attempt
 (`domain/agent-run-root-shutdown-fence.ts`): the current attempt is reused while
 pending or accepted and replaced once it ended. Run lifecycle changes schedule
-a microtask that evaluates whichever attempt is current when it runs. The attempt interrupts an active
-turn at most once and settles `{ accepted: true }` only when the run is
+a microtask that evaluates whichever attempt is current when it runs. The
+attempt interrupts an active turn at most once and settles `{ accepted: true }`
+only when the run is
 quiescent. A rejected interrupt (for example "no active turn" because the turn
 completed between the snapshot and the interrupt) is not a result. The
 attempt stays open until the local turn-completion dispatch makes the run
@@ -273,6 +274,16 @@ quiescent, or until `ROOT_SHUTDOWN_REJECTED_INTERRUPT_QUIESCENCE_TIMEOUT_MS`
 (5 s) expires, when it settles the original rejected result. Only acceptance
 is final; after a not-accepted or failed attempt, the next Stop opens a new
 attempt.
+
+**Known limit (server shutdown with a busy run).** Server shutdown
+(`closeProcessResources` → `stopAll`) does not interrupt an in-flight turn; it
+waits for the turn to finish. When the desktop app quits while an agent is
+mid-turn, Electron exits after about 30 s, but the embedded server, its runtime
+process (observed with the Codex app server) and the agent's commands keep
+running as orphans until the turn ends. That can be unbounded for a long or
+hung tool, and a relaunch can start a second server on the same data. This is
+the existing behavior, not a design guarantee; it is tracked for a separate
+fix.
 
 ## Stopped Model Configuration And Restore Serialization
 
