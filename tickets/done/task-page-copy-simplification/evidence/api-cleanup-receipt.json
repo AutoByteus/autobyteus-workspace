@@ -1,0 +1,34 @@
+{
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "node": "v22.23.1",
+  "pnpm": "10.28.2",
+  "ports": {
+    "nodeA": {
+      "port": 63510,
+      "listening": false
+    },
+    "nodeB": {
+      "port": 63522,
+      "listening": false
+    },
+    "frontend": {
+      "port": 63647,
+      "listening": false
+    }
+  },
+  "ownedPids": {
+    "nodeA": {
+      "pid": 34994,
+      "exists": false
+    },
+    "nodeB": {
+      "pid": 33499,
+      "exists": false
+    },
+    "frontend": {
+      "pid": 33865,
+      "exists": false
+    }
+  },
+  "tempRootRemoved": true
+}

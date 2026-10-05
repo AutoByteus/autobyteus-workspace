@@ -1,0 +1,494 @@
+{
+  "startedAt": "2026-10-05T19:36:25.104Z",
+  "result": "Fail",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PT-E2E-001": {
+      "title": "Fresh node default off, guarded routes and separate-node API isolation",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:09.371Z",
+      "observations": {
+        "otherNode": "project_86460a7d-109d-4b1d-8559-8331e890f16f"
+      },
+      "finishedAt": "2026-10-05T19:37:10.440Z"
+    },
+    "PT-E2E-002": {
+      "title": "Ordinary New Project validation/focus/Cancel and zero-link save to Tasks",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:10.441Z",
+      "observations": {
+        "projectId": "project_6eae0775-3a3a-4a30-85a0-08a0d51d8f85"
+      },
+      "finishedAt": "2026-10-05T19:37:14.254Z"
+    },
+    "PT-E2E-003": {
+      "title": "Aggregate Existing/New direct rows; mode drafts, normalization/no mkdir, saved links and origin tab",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:14.254Z",
+      "observations": {
+        "links": [
+          {
+            "workspaceId": "agent_ws_9a4fd79d153e9cac3fd96ef0cceb5e4f024c0b1bf1590de86828a19a73949b32",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-Vi9UB1/original-workspace",
+            "displayName": "original-workspace",
+            "description": "existing context",
+            "availability": "AVAILABLE"
+          },
+          {
+            "workspaceId": "agent_ws_8b34199f8cb9f73ea8799a4667bb476ff977e5b6217678a6bda71c23592bd57f",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-Vi9UB1/never-mkdir",
+            "displayName": "never-mkdir",
+            "description": "registered only",
+            "availability": "AVAILABLE"
+          }
+        ]
+      },
+      "finishedAt": "2026-10-05T19:37:15.303Z"
+    },
+    "PT-E2E-004": {
+      "title": "Aggregate save failure retains Project; separate successful registration remains, no mkdir",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:15.304Z",
+      "observations": {
+        "registeredPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-Vi9UB1/registration-survives"
+      },
+      "finishedAt": "2026-10-05T19:37:15.883Z"
+    },
+    "PT-E2E-005": {
+      "title": "Task ordinary composer validation, search-preserving Cancel, typed/file save clears search",
+      "result": "Fail",
+      "startedAt": "2026-10-05T19:37:15.884Z",
+      "observations": {
+        "presentation": [
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 534,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 362
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 229,
+                "bottom": 509,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 280
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 550,
+                "left": 66,
+                "right": 374,
+                "height": 386
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 217,
+                "bottom": 529,
+                "left": 87,
+                "right": 353,
+                "height": 312
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 534,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 362
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 229,
+                "bottom": 509,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 280
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 550,
+                "left": 66,
+                "right": 374,
+                "height": 386
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 217,
+                "bottom": 529,
+                "left": 87,
+                "right": 353,
+                "height": 312
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          }
+        ],
+        "blankAssociation": {
+          "invalid": "true",
+          "describedBy": "task-page-error",
+          "references": [
+            {
+              "id": "task-page-error",
+              "exists": true,
+              "role": "alert"
+            }
+          ],
+          "focused": true
+        }
+      },
+      "error": "Error: Cancel retains search\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:48:64)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:345:113\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:246:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:337:3",
+      "finishedAt": "2026-10-05T19:37:17.858Z"
+    },
+    "PT-E2E-006": {
+      "title": "Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape",
+      "result": "Fail",
+      "startedAt": "2026-10-05T19:37:17.859Z",
+      "observations": {},
+      "error": "TypeError: Cannot read properties of undefined (reading 'taskId')\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:356:20\n    at runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:246:15)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:355:3",
+      "finishedAt": "2026-10-05T19:37:17.909Z"
+    },
+    "PT-E2E-007": {
+      "title": "External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status",
+      "result": "Fail",
+      "startedAt": "2026-10-05T19:37:17.910Z",
+      "observations": {},
+      "error": "TypeError: Cannot read properties of undefined (reading 'taskId')\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:388:68\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:246:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:385:3",
+      "finishedAt": "2026-10-05T19:37:18.927Z"
+    },
+    "PT-E2E-008": {
+      "title": "Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct",
+      "result": "Fail",
+      "startedAt": "2026-10-05T19:37:18.928Z",
+      "observations": {},
+      "error": "TypeError: Cannot read properties of undefined (reading 'taskId')\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:406:180\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:246:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:399:3",
+      "finishedAt": "2026-10-05T19:37:22.314Z"
+    },
+    "PT-E2E-009": {
+      "title": "Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:22.315Z",
+      "observations": {
+        "styles": [
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "A"
+          },
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "A"
+          }
+        ]
+      },
+      "finishedAt": "2026-10-05T19:37:23.247Z"
+    },
+    "PT-E2E-010": {
+      "title": "Real backend process restart preserves Tasks, context HTTP bytes, links and feature setting",
+      "result": "Fail",
+      "startedAt": "2026-10-05T19:37:23.248Z",
+      "observations": {},
+      "error": "TypeError: Cannot read properties of undefined (reading 'taskId')\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:424:53\n    at Array.find (<anonymous>)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:424:25\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:246:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:419:3",
+      "finishedAt": "2026-10-05T19:37:25.314Z"
+    },
+    "PT-E2E-011": {
+      "title": "All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project",
+      "result": "Fail",
+      "startedAt": "2026-10-05T19:37:25.315Z",
+      "observations": {},
+      "error": "Error: Full/open counts distinct\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:48:64)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:428:64\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:246:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/tests/e2e/projects-feature-probe.mjs:427:3",
+      "finishedAt": "2026-10-05T19:37:25.365Z"
+    },
+    "PT-E2E-012": {
+      "title": "Ordinary route read/Refresh ordering: late old Project response cannot populate another Project",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:25.365Z",
+      "observations": {
+        "realOldResponseReleased": true
+      },
+      "finishedAt": "2026-10-05T19:37:26.621Z"
+    },
+    "PT-E2E-013": {
+      "title": "120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:26.622Z",
+      "observations": {
+        "total": 120
+      },
+      "finishedAt": "2026-10-05T19:37:28.351Z"
+    },
+    "PT-E2E-014": {
+      "title": "Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:28.351Z",
+      "observations": {
+        "deletedTaskId": "project_task_f2162e0a-8276-445b-b649-542a4d5ad9ba"
+      },
+      "finishedAt": "2026-10-05T19:37:30.318Z"
+    },
+    "PT-E2E-015": {
+      "title": "Normal Settings toggle invalidates nav/route without reload, retains Tasks and other settings",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:30.318Z",
+      "observations": {
+        "noReload": true
+      },
+      "finishedAt": "2026-10-05T19:37:32.401Z"
+    },
+    "PT-E2E-016": {
+      "title": "zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:32.402Z",
+      "observations": {
+        "rawKeys": 0
+      },
+      "finishedAt": "2026-10-05T19:37:33.336Z"
+    },
+    "B-001": {
+      "title": "Project create: native dictation into latest typed draft; review and explicit real save",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:33.338Z",
+      "observations": {
+        "native": {
+          "calls": 1,
+          "pending": false,
+          "tracks": [
+            "ended"
+          ],
+          "wavs": [
+            {
+              "riff": 1380533830,
+              "samples": 37504
+            }
+          ]
+        },
+        "project": {
+          "projectId": "project_a5ab3989-3acf-4ddd-9984-49301e449561",
+          "name": "Voice integration project",
+          "description": "Reviewed dictated words",
+          "taskCount": 0,
+          "openTaskCount": 0,
+          "workspaces": []
+        }
+      },
+      "finishedAt": "2026-10-05T19:37:34.837Z"
+    },
+    "B-002": {
+      "title": "Project edit at 390px: native append/manual save, blank optional update and current reader",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:34.838Z",
+      "observations": {
+        "blankCurrentReader": true
+      },
+      "finishedAt": "2026-10-05T19:37:36.821Z"
+    },
+    "B-003": {
+      "title": "Task create/edit: native dictation, no success node, attachments retained and explicit save",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:36.821Z",
+      "observations": {
+        "taskId": "project_task_2ef177c5-5023-4117-a59a-c9e71df904ce"
+      },
+      "finishedAt": "2026-10-05T19:37:39.574Z"
+    },
+    "B-004": {
+      "title": "Project no-speech/error feedback retained then successful retry clears without saving",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:39.575Z",
+      "observations": {
+        "native": {
+          "calls": 3,
+          "pending": false,
+          "tracks": [
+            "ended",
+            "ended",
+            "ended"
+          ],
+          "wavs": [
+            {
+              "riff": 1380533830,
+              "samples": 34688
+            },
+            {
+              "riff": 1380533830,
+              "samples": 36480
+            },
+            {
+              "riff": 1380533830,
+              "samples": 35968
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-10-05T19:37:42.828Z"
+    },
+    "B-005": {
+      "title": "Recording Cancel releases native tracks without insertion or persistence",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:42.829Z",
+      "observations": {
+        "native": {
+          "calls": 0,
+          "pending": false,
+          "tracks": [
+            "ended"
+          ],
+          "wavs": []
+        }
+      },
+      "finishedAt": "2026-10-05T19:37:44.041Z"
+    },
+    "B-006": {
+      "title": "Cancel navigation during pending transcription rejects late text in next editor",
+      "result": "Pass",
+      "startedAt": "2026-10-05T19:37:44.042Z",
+      "observations": {
+        "native": {
+          "calls": 1,
+          "pending": false,
+          "tracks": [
+            "ended"
+          ],
+          "wavs": [
+            {
+              "riff": 1380533830,
+              "samples": 36480
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-10-05T19:37:45.440Z"
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:18196",
+    "nodeA": "terminated:20665",
+    "nodeB": "terminated:18162",
+    "tempRootRemoved": true
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-Vi9UB1",
+    "nodeA": "http://127.0.0.1:62349",
+    "nodeB": "http://127.0.0.1:62350",
+    "frontend": "http://127.0.0.1:62397"
+  },
+  "browserVersion": "154.0.8037.97",
+  "finishedAt": "2026-10-05T19:37:51.751Z"
+}

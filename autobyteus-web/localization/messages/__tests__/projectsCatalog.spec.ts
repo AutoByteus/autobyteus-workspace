@@ -11,6 +11,17 @@ const projectsSettingsKeys = (catalog: Record<string, string>) =>
   Object.keys(catalog).filter((key) => key.startsWith('settings.components.settings.ProjectsFeatureToggleCard.')).sort();
 
 describe('Projects catalogs', () => {
+  it('uses concise task placeholders and removes only superseded authoring copy', () => {
+    expect(enProjectMessages['projects.components.projects.ProjectTaskEditor.descriptionPlaceholder']).toBe('Describe the task…')
+    expect(zhCnProjectMessages['projects.components.projects.ProjectTaskEditor.descriptionPlaceholder']).toBe('描述任务…')
+    for (const catalog of [enProjectMessages, zhCnProjectMessages]) {
+      for (const key of ['taskCreateHelp', 'taskEditHelp', 'descriptionHelp', 'inputPolicy']) {
+        expect(Object.keys(catalog)).not.toContain('projects.ui.' + key)
+      }
+      expect(catalog['projects.ui.taskDetails']).toBeTruthy()
+    }
+  });
+
   it('provide the same keys in en and zh-CN', () => {
     expect(Object.keys(zhCnProjectMessages).sort()).toEqual(Object.keys(enProjectMessages).sort());
     expect(projectsSettingsKeys(zhCnSettingsMessages)).toEqual(projectsSettingsKeys(enSettingsMessages));
