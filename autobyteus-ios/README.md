@@ -52,6 +52,24 @@ autobyteus-ios/scripts/ios-simulator-smoke.sh tickets/ios-wrapper-app/e2e-eviden
 
 The smoke script starts a local fake `/rest/remote-access/status` + `/mobile` server, injects the fake URL through UI-test build settings/Info.plist, runs the UI smoke tests, fails if those tests skip, stores an `.xcresult` with screenshots, and captures signing-readiness output. API/E2E owns authoritative simulator evidence; implementation may run this as a confidence check when time/environment allow.
 
+GitHub-hosted simulators are intermittently very slow, so the UI smoke tests wait for readiness (hittable controls, keyboard focus) with generous upper bounds instead of fixed waits, and launch the app, including the restore relaunch, with `AUTOBYTEUS_CONNECTION_TIMEOUT_SECONDS=60`. That launch-environment override of the app's connection-check timeout is compiled only into Debug builds, which the scheme's test action uses; Release/TestFlight builds always keep the 5 s default (values above 120 s are capped; invalid values are ignored).
+
+To reproduce a slow host locally, start the fake node with a delayed status response and run the fake-node test against it:
+
+```bash
+python3 autobyteus-ios/scripts/fake-mobile-server.py --port 29876 --status-delay-seconds 7 &
+xcodebuild \
+  -project autobyteus-ios/AutoByteusMobile.xcodeproj \
+  -scheme AutoByteusMobile \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -only-testing:AutoByteusMobileUITests/AutoByteusMobileUITests/testFakeNodeOpensAndRestoresWithFakeMobileMarker \
+  AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29876/mobile \
+  AUTOBYTEUS_SMOKE_TESTS_REQUIRED=1 \
+  test
+```
+
+Without the override the app's 5 s check times out and the test shows "AutoByteus node is unreachable"; with it the test passes. CI keeps the default `--status-delay-seconds 0`.
+
 ## Signing readiness
 
 Discovery only, no App Store Connect upload:

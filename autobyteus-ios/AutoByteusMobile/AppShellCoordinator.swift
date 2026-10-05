@@ -7,7 +7,7 @@ final class AppShellCoordinator {
     private let savedNodeStore: SavedNodeStore
     private let pendingStore: PendingSharedInputStore
     private let inputResolver = ConnectionInputResolver()
-    private let validator = ConnectionValidator()
+    private let validator = AppShellCoordinator.makeConnectionValidator()
     private let externalActions = ExternalActions()
 
     private weak var currentWebShell: WebShellViewController?
@@ -17,6 +17,21 @@ final class AppShellCoordinator {
         self.window = window
         self.savedNodeStore = SavedNodeStore(appGroupIdentifier: SavedNodeStore.appGroupIdentifier)
         self.pendingStore = PendingSharedInputStore(appGroupIdentifier: SavedNodeStore.appGroupIdentifier)
+    }
+
+    /// Release builds use the validator's default (5 s) unchanged. Debug builds, which the simulator
+    /// UI tests run, may raise the connection-check timeout with `AUTOBYTEUS_CONNECTION_TIMEOUT_SECONDS`
+    /// so a slow CI simulator does not fail the check. Invalid or non-positive values are ignored.
+    nonisolated private static func makeConnectionValidator() -> ConnectionValidator {
+        #if DEBUG
+        let maximumSeconds: TimeInterval = 120
+        if let raw = ProcessInfo.processInfo.environment["AUTOBYTEUS_CONNECTION_TIMEOUT_SECONDS"],
+           let seconds = TimeInterval(raw.trimmingCharacters(in: .whitespaces)),
+           seconds.isFinite, seconds > 0 {
+            return ConnectionValidator(timeoutSeconds: min(seconds, maximumSeconds))
+        }
+        #endif
+        return ConnectionValidator()
     }
 
     func start() {
