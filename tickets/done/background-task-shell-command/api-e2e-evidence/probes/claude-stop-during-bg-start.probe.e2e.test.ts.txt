@@ -1,0 +1,56 @@
+// TEMPORARY API/E2E probe (ticket background-task-shell-command): Stop sent the moment a background
+// Bash call is announced. Not durable: whether the CLI still starts the task is timing-dependent.
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { randomUUID } from "node:crypto";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { resolveClaudeCliExecutableCandidates } from "../../helpers/claude-cli-executable-candidates.js";
+import {
+  LIVE_CLAUDE_TURN_TIMEOUT_MS, closeClaudeLiveAgentHarness, createClaudeLiveAgentHarness, findProcessIds,
+  useStandaloneClaudeCli, waitForStreamMessage,
+} from "../helpers/claude-live-agent-harness.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+
+const cliCandidates = resolveClaudeCliExecutableCandidates();
+const run = process.env.RUN_CLAUDE_E2E === "1" && cliCandidates.length > 0 ? describe : describe.skip;
+
+run("TEMP probe: Stop while a background Bash is being started", () => {
+  const cleanups: Array<() => Promise<void>> = [];
+  afterEach(async () => { vi.unstubAllEnvs(); for (const c of cleanups.splice(0).reverse()) await c().catch(() => undefined); });
+
+  it.each(cliCandidates.map((c) => [c.label, c] as const))("%s", async (label, candidate) => {
+    useStandaloneClaudeCli(candidate);
+    const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), `claude-stop-bg-${label}-`));
+    cleanups.push(() => fs.rm(workspaceRoot, { recursive: true, force: true }));
+    const harness = await createClaudeLiveAgentHarness({ runId: `claude-stop-bg-${label}-${randomUUID()}`, workspaceRoot });
+    cleanups.push(() => closeClaudeLiveAgentHarness(harness));
+    const marker = `STOPBG_${randomUUID().slice(0, 8)}`;
+    cleanups.push(async () => { for (const pid of findProcessIds(marker)) process.kill(pid, "SIGTERM"); });
+
+    sendE2eSendMessageCommand(harness.socket, { content: [
+      `Use the Bash tool with run_in_background set to true to run exactly: sleep 30; echo ${marker}`,
+      "Then, in the same turn, use the Bash tool in the foreground to run exactly: python3 -c \"import time; time.sleep(30)\"",
+    ].join("\n") });
+    const toolIndex = await waitForStreamMessage(harness, (m) => m.type === "TOOL_EXECUTION_STARTED" && m.payload?.tool_name === "Bash" &&
+      String((m.payload?.arguments as Record<string, unknown> | undefined)?.command ?? "").includes(marker), "background Bash call");
+    const bashCommand = (harness.messages[toolIndex]!.payload?.arguments as Record<string, unknown>).command as string;
+    // Stop immediately after the background call is announced, before the CLI reports its task.
+    harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: `client_interrupt_${randomUUID()}` } }));
+    const snapshotsBeforeStop = harness.messages.slice(0, toolIndex + 1).filter((m) => m.type === "BACKGROUND_TASK_UPDATED").length;
+    await waitForStreamMessage(harness, (m) => m.type === "TURN_INTERRUPTED" || m.type === "TURN_COMPLETED", "turn settled", { fromIndex: toolIndex });
+    await new Promise((resolve) => setTimeout(resolve, 8_000));
+    const snapshots = harness.messages.filter((m) => m.type === "BACKGROUND_TASK_UPDATED").map((m) => m.payload as Record<string, unknown>);
+    const settle = harness.messages.find((m, i) => i > toolIndex && (m.type === "TURN_INTERRUPTED" || m.type === "TURN_COMPLETED"))?.type;
+    const report = { label, cli: candidate.version, bashCommand, snapshotsBeforeStop, settle, backgroundProcessAlive: findProcessIds(marker).length > 0, snapshots };
+    const out = process.env.TMP_PROBE_OUT;
+    if (out) await fs.appendFile(out, `${JSON.stringify(report)}\n`);
+    console.log("STOP_PROBE", JSON.stringify(report));
+    // Invariant: any listed task for this call carries its exact command by its latest snapshot.
+    const taskIds = new Set(snapshots.map((s) => s.task_id));
+    for (const taskId of taskIds) {
+      const latest = snapshots.filter((s) => s.task_id === taskId).at(-1)!;
+      expect(latest.command).toBe(bashCommand);
+    }
+  }, LIVE_CLAUDE_TURN_TIMEOUT_MS * 2);
+});

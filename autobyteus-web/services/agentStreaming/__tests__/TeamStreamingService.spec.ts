@@ -214,13 +214,15 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       agent_run_id: teacherRunId,
       task_id: 'bg-1',
       kind: 'shell',
-      description: 'sleep 20',
+      description: 'Wait for the build',
+      command: 'sleep 20 && pnpm build',
       status: 'running',
       summary: null,
       started_at: '2026-09-29T16:48:20.000Z',
     });
 
-    expect(backgroundTasks.getTasks(teacherRunId).map((task) => [task.taskId, task.status])).toEqual([['bg-1', 'running']]);
+    expect(backgroundTasks.getTasks(teacherRunId).map((task) => [task.taskId, task.status, task.command]))
+      .toEqual([['bg-1', 'running', 'sleep 20 && pnpm build']]);
     expect(backgroundTasks.getTasks(persistentStudentRunId)).toEqual([]);
     expect(team.view.getAgentContext(teacherRunId)!.state.currentStatus).not.toBe(AgentStatus.Running);
   });

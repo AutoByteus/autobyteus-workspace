@@ -1,0 +1,133 @@
+{
+  "case": "L-AGY-04",
+  "runId": "agy_background_updates_live_660cc268_ee00_45d8_8_5dbd524b7135457fa36ef2c58170a18d",
+  "model": "gemini-3.8-flash-high",
+  "turn": [
+    {
+      "at": 4,
+      "type": "AGENT_STATUS",
+      "command": null
+    },
+    {
+      "at": 4,
+      "type": "AGENT_INPUT_STATE",
+      "command": null
+    },
+    {
+      "at": 4,
+      "type": "AGENT_STATUS",
+      "command": null
+    },
+    {
+      "at": 4,
+      "type": "TURN_STARTED",
+      "command": null
+    },
+    {
+      "at": 4,
+      "type": "AGENT_INPUT_STATE",
+      "command": null
+    },
+    {
+      "at": 4,
+      "type": "AGENT_COMMAND_ACK",
+      "command": null
+    },
+    {
+      "at": 4,
+      "type": "AGENT_INPUT_STATE",
+      "command": null
+    },
+    {
+      "at": 3249,
+      "type": "TOOL_EXECUTION_STARTED",
+      "command": "sleep 40 && echo FINISHED_MARKER"
+    },
+    {
+      "at": 3249,
+      "type": "AGENT_INPUT_STATE",
+      "command": null
+    },
+    {
+      "at": 43271,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "command": "sleep 40 && echo FINISHED_MARKER"
+    },
+    {
+      "at": 43271,
+      "type": "AGENT_INPUT_STATE",
+      "command": null
+    },
+    {
+      "at": 43271,
+      "type": "SEGMENT_START",
+      "command": null
+    },
+    {
+      "at": 43271,
+      "type": "SEGMENT_CONTENT",
+      "command": null
+    },
+    {
+      "at": 43271,
+      "type": "SEGMENT_END",
+      "command": null
+    },
+    {
+      "at": 43271,
+      "type": "AGENT_INPUT_STATE",
+      "command": null
+    },
+    {
+      "at": 45133,
+      "type": "SEGMENT_START",
+      "command": null
+    },
+    {
+      "at": 45133,
+      "type": "SEGMENT_CONTENT",
+      "command": null
+    },
+    {
+      "at": 45133,
+      "type": "AGENT_INPUT_STATE",
+      "command": null
+    },
+    {
+      "at": 45159,
+      "type": "SEGMENT_CONTENT",
+      "command": null
+    },
+    {
+      "at": 45159,
+      "type": "SEGMENT_END",
+      "command": null
+    },
+    {
+      "at": 45159,
+      "type": "AGENT_INPUT_STATE",
+      "command": null
+    },
+    {
+      "at": 45166,
+      "type": "TOKEN_USAGE_UPDATED",
+      "command": null
+    },
+    {
+      "at": 45166,
+      "type": "TURN_COMPLETED",
+      "command": null
+    },
+    {
+      "at": 45166,
+      "type": "AGENT_STATUS",
+      "command": null
+    },
+    {
+      "at": 45166,
+      "type": "AGENT_INPUT_STATE",
+      "command": null
+    }
+  ],
+  "result": "Pass"
+}

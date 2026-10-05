@@ -255,7 +255,7 @@ still interrupt open tool steps instead.
 Each step closed this way is also reported to `AgyBackgroundTaskMonitor`, which
 shows it as a running background task (`BACKGROUND_TASK_UPDATED`, id
 `<conversation>/task-<stepIndex>`, kind `shell` for `run_command`, description
-from `CommandLine`). AGY's stream never reports a daemon's exit, but AGY 1.2.13
+and command both from `CommandLine`; `command` is null when the step has none). AGY's stream never reports a daemon's exit, but AGY 1.2.13
 writes `<brain>/<conversation>/.system_generated/messages/<uuid>.json` when one
 exits, with `sourceMetadata.tool.stepIndex` and `The command exited with code N`
 in `content`. While any task runs, the monitor polls `messages/*.json` every 2 s

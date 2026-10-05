@@ -729,6 +729,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             other: "other";
         }>;
         description: z.ZodString;
+        command: z.ZodNullable<z.ZodString>;
         status: z.ZodEnum<{
             running: "running";
             completed: "completed";

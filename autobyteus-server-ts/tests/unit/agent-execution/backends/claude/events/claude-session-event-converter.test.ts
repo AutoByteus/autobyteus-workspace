@@ -7,7 +7,7 @@ describe("ClaudeSessionEventConverter", () => {
   it("maps a background-task snapshot to a non-activity BACKGROUND_TASK_UPDATED event and rejects invalid snapshots", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
     const params = {
-      task_id: "bg-1", kind: "shell", description: "Sleep 20", status: "failed",
+      task_id: "bg-1", kind: "shell", description: "Sleep 20", command: "sleep 20 && exit 3", status: "failed",
       summary: "exit 3", started_at: "2026-09-29T16:48:20.000Z",
     };
 

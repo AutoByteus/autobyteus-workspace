@@ -1,0 +1,17 @@
+[   1.4] INIT {"cli":"2.1.283","tools":[…]}
+[   3.7] TOOL_USE {"id":"toolu_01QrmbKsZDnyoDN89ohw6J7y","name":"Bash","input":{"command":"python3 -c \"import time; time.sleep(25); print('AUTO_BG_DONE')\"","description":"Run Python sleep for 25 seconds then print AUTO_BG_DONE"},"parent_tool_use_id":null}
+[   8.3] TASK {"type":"system","subtype":"task_started","task_id":"byn7y7hqp","tool_use_id":"toolu_01QrmbKsZDnyoDN89ohw6J7y","description":"Run Python sleep for 25 seconds then print AUTO_BG_DONE","is_backgrounded":false,"task_type":"local_bash"}
+[  10.3] TASK {"type":"system","subtype":"background_tasks_changed","tasks":[{"task_id":"byn7y7hqp","task_type":"local_bash","description":"Run Python sleep for 25 seconds then print AUTO_BG_DONE"}]}
+[  10.3] TASK {"type":"system","subtype":"task_updated","task_id":"byn7y7hqp","patch":{"is_backgrounded":true}}
+[  10.3] TOOL_RESULT "\"Command did not complete within its 5s timeout and was moved to the background (ID: byn7y7hqp). Output is being written to: /private/tmp/claude-501/-private-tmp-autobg-probe-wd/83a6f345-a684-447e-8bcd-37a24897a43f/tasks/byn7y7hqp.output. You will be notified when it completes. To check interim output, use Read on that file path.\""
+[  19.0] TEXT "The Bash tool returned the following:\n\n**Command did not complete within its 5s timeout and was moved to the background (ID: byn7y7hqp)**\n\nThe output is being written to: `/private/tmp/claude-501/-pri"
+[  19.0] RESULT {"subtype":"success","origin":null}
+[  30.3] TASK {"type":"system","subtype":"background_tasks_changed","tasks":[]}
+[  30.3] TASK {"type":"system","subtype":"task_updated","task_id":"byn7y7hqp","patch":{"status":"completed","end_time":1791171975610}}
+[  30.3] TASK {"type":"system","subtype":"task_notification","task_id":"byn7y7hqp","tool_use_id":"toolu_01QrmbKsZDnyoDN89ohw6J7y","status":"completed","output_file":"/private/tmp/claude-501/-private-tmp-autobg-probe-wd/83a6f345-a684-447e-8bcd-37a24897a43f/tasks/byn7y7hqp.output","summary":"Background command \"Run Python sleep for 25 seconds then print AUTO_BG_DONE\" completed (exit code 0)"}
+[  30.4] INIT {"cli":"2.1.283","tools":[…]}
+[  32.8] TOOL_USE {"id":"toolu_01J4D7SpG5579Wch34mM4KQD","name":"Read","input":{"file_path":"/private/tmp/claude-501/-private-tmp-autobg-probe-wd/83a6f345-a684-447e-8bcd-37a24897a43f/tasks/byn7y7hqp.output"},"parent_tool_use_id":null}
+[  32.8] TOOL_RESULT "\"1\\tAUTO_BG_DONE\\n2\\t\\n3\\t[exited with code 0]\\n4\\t\""
+[  35.0] TEXT "The background command completed successfully. \n\n**Result:** The tool returned `AUTO_BG_DONE` (exit code 0)\n\nThe 25-second sleep command ran to completion and printed the expected output."
+[  35.0] RESULT {"subtype":"success","origin":{"kind":"task-notification"}}
+[  50.6] END {}

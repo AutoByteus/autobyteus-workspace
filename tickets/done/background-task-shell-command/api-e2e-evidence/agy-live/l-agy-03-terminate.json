@@ -1,0 +1,29 @@
+{
+  "case": "L-AGY-03",
+  "runId": "agy_background_updates_live_660cc268_ee00_45d8_8_ca7df6952583412c960d829c0d63c82e",
+  "port": 62836,
+  "model": "gemini-3.8-flash-high",
+  "turnEndAtMs": 5757,
+  "running": {
+    "at": 5757,
+    "task_id": "d8255314-ced3-45aa-9be2-f8ad4173ac15/task-2",
+    "kind": "shell",
+    "description": "python3 -m http.server 62836 --bind 127.0.0.1",
+    "command": "python3 -m http.server 62836 --bind 127.0.0.1",
+    "status": "running",
+    "summary": null,
+    "started_at": "2026-10-05T03:48:35.209Z"
+  },
+  "stoppedReceivedByMutationResponse": true,
+  "stopped": {
+    "at": 10845,
+    "task_id": "d8255314-ced3-45aa-9be2-f8ad4173ac15/task-2",
+    "kind": "shell",
+    "description": "python3 -m http.server 62836 --bind 127.0.0.1",
+    "command": "python3 -m http.server 62836 --bind 127.0.0.1",
+    "status": "stopped",
+    "summary": null,
+    "started_at": "2026-10-05T03:48:35.209Z"
+  },
+  "result": "Pass"
+}

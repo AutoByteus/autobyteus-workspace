@@ -14,6 +14,7 @@ export function handleBackgroundTaskUpdated(
     taskId: payload.task_id,
     kind: payload.kind,
     description: payload.description,
+    command: payload.command,
     status: payload.status,
     summary: payload.summary,
     startedAt: payload.started_at,

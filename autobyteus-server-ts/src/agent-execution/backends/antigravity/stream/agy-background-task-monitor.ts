@@ -56,6 +56,7 @@ export class AgyBackgroundTaskMonitor {
         taskId: `${this.options.conversationId}/task-${step.stepIndex}`,
         kind: step.toolName === "run_command" ? "shell" : "other",
         description: step.commandLine ?? step.toolName,
+        command: step.commandLine,
         status: "running",
         summary: null,
         startedAt: this.now().toISOString(),

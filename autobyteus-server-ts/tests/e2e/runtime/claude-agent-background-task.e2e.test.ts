@@ -30,6 +30,7 @@ type BackgroundTaskSnapshot = {
   task_id: string;
   kind: string;
   description: string;
+  command: string | null;
   status: string;
   summary: string | null;
   started_at: string;
@@ -137,6 +138,10 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
         message.payload?.tool_name === "Bash" &&
         String((message.payload?.arguments as Record<string, unknown> | undefined)?.command ?? "").includes(markerPath));
       expect((bashStart?.payload?.arguments as Record<string, unknown> | undefined)?.run_in_background).toBe(true);
+      // REQ-002/REQ-007: the task carries the exact command of its Bash call (possibly from a follow-up snapshot).
+      const bashCommand = (bashStart?.payload?.arguments as Record<string, unknown> | undefined)?.command;
+      expect(bashCommand).toContain(markerPath);
+      await waitForCondition(() => latestSnapshotOf(harness, running.task_id)?.command === bashCommand, "snapshot with the Bash command", 15_000);
 
       // BEH-006 preserved: notice and a turn Claude starts itself.
       const noticeIndex = await waitForStreamMessage(
@@ -157,7 +162,7 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
       const completedIndex = await waitForTaskStatus(harness, running.task_id, "completed");
       expect(completedIndex).toBeLessThan(noticeIndex);
       const final = latestSnapshotOf(harness, running.task_id)!;
-      expect(final).toMatchObject({ task_id: running.task_id, kind: "shell", status: "completed", started_at: running.started_at });
+      expect(final).toMatchObject({ task_id: running.task_id, kind: "shell", command: bashCommand, status: "completed", started_at: running.started_at });
       expect(final.summary ?? "").not.toBe("");
       expect(statusPath(snapshotsOf(harness, running.task_id))).toEqual(["running", "completed"]);
       // REQ-008: only the background task is listed.
@@ -192,6 +197,8 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
       await waitForTaskStatus(harness, running!.task_id, "failed");
       await waitForCondition(() => (latestSnapshotOf(harness, running!.task_id)?.summary ?? null) !== null, "failed summary", 15_000);
       expect(latestSnapshotOf(harness, running!.task_id)?.summary).toMatch(/exit code 3/u);
+      // REQ-002: the failed entry keeps the command of its Bash call.
+      expect(latestSnapshotOf(harness, running!.task_id)?.command ?? "").toMatch(/sleep 3; echo failing; exit 3/u);
       expect(statusPath(snapshotsOf(harness, running!.task_id))).toEqual(["running", "failed"]);
       const noticeIndex = await waitForStreamMessage(harness, isType("SYSTEM_TASK_NOTIFICATION"), "failure notice");
       expect(String(harness.messages[noticeIndex]!.payload?.content)).toMatch(/\(failed\)$/u);
@@ -252,6 +259,8 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
       expect(result.accepted).toBe(true);
       await waitForTaskStatus(harness, running!.task_id, "stopped", 5_000);
       expect(statusPath(snapshotsOf(harness, running!.task_id))).toEqual(["running", "stopped"]);
+      // REQ-002: the command survives the turn-level Stop and the terminate.
+      expect(latestSnapshotOf(harness, running!.task_id)?.command ?? "").toContain(`echo ${marker}`);
       // The interrupted foreground command never became an entry.
       expect(new Set(taskSnapshots(harness).map((snapshot) => snapshot.task_id))).toEqual(new Set([running!.task_id]));
       await waitForCondition(() => findClaudeCliProcessIds(sessionId).length === 0, "Claude CLI process exited", 20_000);
@@ -277,7 +286,39 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
       process.kill(pids[0]!, "SIGKILL");
       await waitForTaskStatus(harness, running!.task_id, "stopped", 20_000);
       expect(statusPath(snapshotsOf(harness, running!.task_id))).toEqual(["running", "stopped"]);
+      expect(latestSnapshotOf(harness, running!.task_id)?.command ?? "").toContain(`echo ${marker}`);
     },
     LIVE_CLAUDE_TURN_TIMEOUT_MS,
+  );
+
+  it.each(cases)(
+    "shows the command of a foreground Bash the CLI moves to the background after it started (UNK-001) (%s)",
+    async (_label, candidate) => {
+      useStandaloneClaudeCli(candidate);
+      // Operator-set CLI switches pass through to the CLI process (no AutoByteus CLI policy env).
+      vi.stubEnv("CLAUDE_AUTO_BACKGROUND_TASKS", "1");
+      vi.stubEnv("CLAUDE_CODE_AUTO_BACKGROUND_TIMEOUT_MS", "5000");
+      const { harness } = await startHarness("auto-background");
+      const marker = `AUTO_BG_${randomUUID().slice(0, 8)}`;
+      cleanups.push(async () => { for (const pid of findProcessIds(marker)) process.kill(pid, "SIGTERM"); });
+      await sendAndAwaitTurn(harness, [
+        `Use the Bash tool in the foreground (do not set run_in_background, do not set a timeout) to run exactly: ${longForegroundCommand(20, marker)}`,
+        "Then reply with what the tool returned and end your turn.",
+      ].join("\n"));
+      const bashCommand = (harness.messages.find((message) =>
+        message.type === "TOOL_EXECUTION_STARTED" &&
+        message.payload?.tool_name === "Bash" &&
+        String((message.payload?.arguments as Record<string, unknown> | undefined)?.command ?? "").includes(marker))
+        ?.payload?.arguments as Record<string, unknown> | undefined)?.command;
+      expect(bashCommand, "the foreground Bash call").toEqual(expect.stringContaining(marker));
+
+      const first = taskSnapshots(harness)[0];
+      expect(first, "the auto-backgrounded command is listed").toBeDefined();
+      // task_started (foreground) carried the tool_use id before the move, so the first snapshot has the command.
+      expect(first).toMatchObject({ kind: "shell", status: "running", command: bashCommand });
+      await waitForTaskStatus(harness, first!.task_id, "completed", 60_000);
+      expect(snapshotsOf(harness, first!.task_id).every((snapshot) => snapshot.command === bashCommand)).toBe(true);
+    },
+    LIVE_CLAUDE_TURN_TIMEOUT_MS * 2,
   );
 });
