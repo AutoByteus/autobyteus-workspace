@@ -198,6 +198,7 @@ export interface BackgroundTaskUpdatedPayload {
   task_id: string;
   kind: BackgroundTaskKind;
   description: string;
+  command: string | null;
   status: BackgroundTaskStatus;
   summary: string | null;
   started_at: string;

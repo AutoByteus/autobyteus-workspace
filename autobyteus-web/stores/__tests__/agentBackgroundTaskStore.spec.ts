@@ -7,6 +7,7 @@ const task = (overrides: Partial<BackgroundTask> = {}): BackgroundTask => ({
   taskId: 'task-1',
   kind: 'shell',
   description: 'sleep 20',
+  command: 'sleep 20',
   status: 'running',
   summary: null,
   startedAt: '2026-09-29T16:48:20.000Z',
@@ -31,6 +32,14 @@ describe('agentBackgroundTaskStore', () => {
 
     expect(store.getTasks('run-1')).toEqual([task({ status: 'completed', summary: 'done' })]);
     expect(store.getCounts('run-1')).toEqual({ running: 0, total: 1 });
+  });
+
+  it('fills a command reported by a follow-up snapshot into the same row (REQ-007)', () => {
+    const store = useAgentBackgroundTaskStore();
+    store.upsertTask('run-1', task({ description: 'Wait for workflows', command: null }));
+    store.upsertTask('run-1', task({ description: 'Wait for workflows', command: 'gh run watch 42' }));
+
+    expect(store.getTasks('run-1')).toEqual([task({ description: 'Wait for workflows', command: 'gh run watch 42' })]);
   });
 
   it('lists newest first and changes only the finished task (AC-012)', () => {

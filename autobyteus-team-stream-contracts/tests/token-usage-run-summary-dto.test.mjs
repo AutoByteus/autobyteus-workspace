@@ -135,6 +135,7 @@ test('team stream carries background-task snapshots with execution identity and 
     task_id: 'task-1',
     kind: 'subagent',
     description: 'Review the diff',
+    command: null,
     status: 'completed',
     summary: 'Done',
     started_at: '2026-09-29T16:48:20.000Z',
@@ -142,6 +143,8 @@ test('team stream carries background-task snapshots with execution identity and 
     agent_run_id: 'member-run-1',
   };
   assert.equal(parseTeamStreamServerMessage({ type: 'BACKGROUND_TASK_UPDATED', payload }).payload.task_id, 'task-1');
+  assert.equal(parseTeamStreamServerMessage({ type: 'BACKGROUND_TASK_UPDATED', payload: { ...payload, command: 'npm test' } }).payload.command, 'npm test');
+  assert.throws(() => parseTeamStreamServerMessage({ type: 'BACKGROUND_TASK_UPDATED', payload: { ...payload, command: undefined } }));
   assert.throws(() => parseTeamStreamServerMessage({ type: 'BACKGROUND_TASK_UPDATED', payload: { ...payload, agent_run_id: undefined } }));
   assert.throws(() => parseTeamStreamServerMessage({ type: 'TODO_LIST_UPDATE', payload: { todos: [], change_sequence: 1, agent_run_id: 'member-run-1' } }));
 });

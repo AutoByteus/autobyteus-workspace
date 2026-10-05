@@ -13,11 +13,12 @@ test("accepts a strict root-neutral message and rejects root identity", () => {
   }));
 });
 
-test("accepts a background-task snapshot and rejects the removed to-do message", () => {
+test("accepts a background-task snapshot with a required nullable command and rejects the removed to-do message", () => {
   const payload = {
     task_id: "task-1",
     kind: "shell",
     description: "Sleep 20 then write marker",
+    command: "sleep 20 && touch marker",
     status: "running",
     summary: null,
     started_at: "2026-09-29T16:48:20.000Z",
@@ -25,6 +26,10 @@ test("accepts a background-task snapshot and rejects the removed to-do message",
   assert.equal(agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload }).type, "BACKGROUND_TASK_UPDATED");
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: { ...payload, status: "pending" } }));
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: { ...payload, kind: "local_bash" } }));
+  assert.equal(agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: { ...payload, command: null } }).payload.command, null);
+  const { command: _command, ...withoutCommand } = payload;
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: withoutCommand }));
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: { ...payload, command: 42 } }));
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "TODO_LIST_UPDATE", payload: { todos: [] } }));
 });
 

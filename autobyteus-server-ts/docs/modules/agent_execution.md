@@ -628,10 +628,25 @@ them alive. Raw `task_type` maps to the shared kind: `local_bash` → `shell`,
 `monitor`, anything else → `other`. Every change is emitted as one
 `BACKGROUND_TASK_UPDATED` snapshot.
 
+The registry also learns each task's shell command. The CLI's task frames never
+carry the command; only the assistant `tool_use` block that started the task
+does (`Bash` or `Monitor` `input.command`), and `task_started.tool_use_id` names
+that block. The tracker passes every assistant/user frame to
+`observeConversationFrame(frameKind, frame, interruptRequested)` (commands are
+recorded even while a Stop is pending). The registry keeps the `input.command`
+of each tool call in flight by tool_use id, moves it to the task on
+`task_started` (whether or not the task is backgrounded yet), forgets it on the
+call's `tool_result`, and clears everything in `clear()`. The CLI lists a task in
+`background_tasks_changed` before its `task_started`, so the first snapshot of a
+background Bash usually has `command: null` and an updated snapshot with the
+command follows at once. A task without a correlated tool call (subagents,
+workflows, or a CLI that drops `tool_use_id`) keeps `command: null`.
+
 `BACKGROUND_TASK_UPDATED` (`agent-execution/domain/agent-background-task.ts`)
 is the runtime-neutral background-task event: `{task_id, kind, description,
-status, summary, started_at}`, a full snapshot of one task applied as an upsert
-by `task_id`. Claude and Antigravity produce it. It usually arrives between
+command, status, summary, started_at}`, a full snapshot of one task applied as an upsert
+by `task_id`. `command` is always present: the exact shell command the task
+runs, or `null` when the runtime does not know one. Claude and Antigravity produce it. It usually arrives between
 turns, so it is not turn activity (it is not in `ACTIVITY_EVENT_TYPES` and
 never changes run status), and it is not persisted in memory or run history.
 

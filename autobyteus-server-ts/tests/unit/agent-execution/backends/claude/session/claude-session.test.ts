@@ -768,6 +768,29 @@ describe("ClaudeSession background tasks and provider-initiated turns", () => {
     ]);
   });
 
+  it("attaches the Bash command to the background-task snapshot through task_started.tool_use_id (REQ-002, REQ-007)", async () => {
+    const { sdkClient, start, events } = createSession();
+    await start("wait for the release workflows");
+    const fake = sdkClient.current;
+    fake.init();
+    const command = "gh run watch 42 --exit-status";
+    fake.emit(
+      { type: "assistant", session_id: RESERVED_SESSION_ID, message: { id: "m-1", role: "assistant", content: [
+        { type: "tool_use", id: "toolu_bg", name: "Bash", input: { command, description: "Wait for release workflows to complete", run_in_background: true } },
+      ] } },
+      { type: "system", subtype: "background_tasks_changed", session_id: RESERVED_SESSION_ID, tasks: [{ task_id: "bg-7", task_type: "local_bash", description: "Wait for release workflows to complete" }] },
+      { type: "system", subtype: "task_started", session_id: RESERVED_SESSION_ID, task_id: "bg-7", tool_use_id: "toolu_bg", description: "Wait for release workflows to complete", task_type: "local_bash" },
+      { type: "user", session_id: RESERVED_SESSION_ID, message: { role: "user", content: [{ type: "tool_result", tool_use_id: "toolu_bg", content: "Command running in background with ID: bg-7" }] } },
+    );
+    await flushClaudeSession();
+
+    expect(events.filter((event) => event.method === ClaudeSessionEventName.BACKGROUND_TASK_UPDATED)
+      .map((event) => [event.params?.task_id, event.params?.description, event.params?.command])).toEqual([
+      ["bg-7", "Wait for release workflows to complete", null],
+      ["bg-7", "Wait for release workflows to complete", command],
+    ]);
+  });
+
   it("keeps a background task running across a turn-level Stop (MP-003)", async () => {
     const { session, sdkClient, start, events } = createSession();
     const turnId = acceptedTurnId(await start("start then stop"));

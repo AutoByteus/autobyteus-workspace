@@ -535,6 +535,7 @@ export declare const teamAgentPayloadSchemas: {
             other: "other";
         }>;
         description: z.ZodString;
+        command: z.ZodNullable<z.ZodString>;
         status: z.ZodEnum<{
             running: "running";
             completed: "completed";

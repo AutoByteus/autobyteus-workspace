@@ -30,6 +30,7 @@ type BackgroundTaskSnapshot = {
   task_id: string;
   kind: string;
   description: string;
+  command: string | null;
   status: string;
   summary: string | null;
   started_at: string;
@@ -137,6 +138,10 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
         message.payload?.tool_name === "Bash" &&
         String((message.payload?.arguments as Record<string, unknown> | undefined)?.command ?? "").includes(markerPath));
       expect((bashStart?.payload?.arguments as Record<string, unknown> | undefined)?.run_in_background).toBe(true);
+      // REQ-002/REQ-007: the task carries the exact command of its Bash call (possibly from a follow-up snapshot).
+      const bashCommand = (bashStart?.payload?.arguments as Record<string, unknown> | undefined)?.command;
+      expect(bashCommand).toContain(markerPath);
+      await waitForCondition(() => latestSnapshotOf(harness, running.task_id)?.command === bashCommand, "snapshot with the Bash command", 15_000);
 
       // BEH-006 preserved: notice and a turn Claude starts itself.
       const noticeIndex = await waitForStreamMessage(
@@ -157,7 +162,7 @@ describeLiveClaudeRuntime("Claude runtime background tasks (live E2E)", () => {
       const completedIndex = await waitForTaskStatus(harness, running.task_id, "completed");
       expect(completedIndex).toBeLessThan(noticeIndex);
       const final = latestSnapshotOf(harness, running.task_id)!;
-      expect(final).toMatchObject({ task_id: running.task_id, kind: "shell", status: "completed", started_at: running.started_at });
+      expect(final).toMatchObject({ task_id: running.task_id, kind: "shell", command: bashCommand, status: "completed", started_at: running.started_at });
       expect(final.summary ?? "").not.toBe("");
       expect(statusPath(snapshotsOf(harness, running.task_id))).toEqual(["running", "completed"]);
       // REQ-008: only the background task is listed.

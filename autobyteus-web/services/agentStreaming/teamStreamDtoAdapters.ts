@@ -159,6 +159,6 @@ export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, ag
     case 'TOOL_EXECUTION_FAILED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), error: message.payload.error } };
     case 'TOOL_EXECUTION_INTERRUPTED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), reason: message.payload.reason } };
     case 'TOOL_LOG': return { type: message.type, payload: { log_entry: message.payload.log_entry, tool_invocation_id: message.payload.tool_invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id } };
-    case 'BACKGROUND_TASK_UPDATED': return { type: message.type, payload: { task_id: message.payload.task_id, kind: message.payload.kind, description: message.payload.description, status: message.payload.status, summary: message.payload.summary, started_at: message.payload.started_at } };
+    case 'BACKGROUND_TASK_UPDATED': return { type: message.type, payload: { task_id: message.payload.task_id, kind: message.payload.kind, description: message.payload.description, command: message.payload.command, status: message.payload.status, summary: message.payload.summary, started_at: message.payload.started_at } };
   }
 };

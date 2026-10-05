@@ -135,6 +135,8 @@ suite("Claude team member background tasks (live E2E)", () => {
     const completed = await until(() => tasks().find((task) => task["task_id"] === running["task_id"] &&
       task["status"] === "completed" && typeof task["summary"] === "string" && task["summary"] !== ""), "worker completed task with summary", 120_000);
     expect(completed["agent_run_id"]).toBe(workerRunId);
+    // REQ-002, AC-006: the team-member stream carries the Bash command too.
+    expect(String(completed["command"])).toContain("echo WORKER_DONE");
 
     // A second background task on the same member, then team terminate while it runs.
     sendE2eSendMessageCommand(socket, { agent_run_id: workerRunId, context_file_paths: [], image_urls: [], content: [

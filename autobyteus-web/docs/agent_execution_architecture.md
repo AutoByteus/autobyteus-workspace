@@ -1657,6 +1657,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 6.  **Live background tasks (`agentBackgroundTaskStore`)**:
     - Keeps each run's background tasks (Claude background shell commands; Antigravity daemons) keyed by `task_id`, newest first, with running/total counts. Live-session state only: it is not persisted and starts empty after a reload.
     - `ProgressPanel` (the Activity tab) shows it in the `BackgroundTaskPanel` section above the Activity feed. The two sections share one accordion (Activity expanded by default); the section is always present and shows "No background tasks" when empty.
+    - Each row shows the description as its title and the kind label below it. When the snapshot's `command` is known and differs from the trimmed title, the kind line reads `<Kind> · <command>`: the command is monospace, truncated to one line with the full text in its tooltip, and is a button (`aria-expanded`) that expands it to the full wrapped command, like the finished-task summary. A null or blank command, or one equal to the title (Antigravity, whose title already is the command line), leaves the row unchanged. A command reported by a later snapshot fills in the existing row.
 
 ### Run-Level Compaction Activity
 

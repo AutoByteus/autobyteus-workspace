@@ -57,6 +57,19 @@ const notificationStatus = (status: string | null): AgentBackgroundTaskStatus =>
 
 const nonEmpty = (value: string | null): string | null => (value && value.length > 0 ? value : null);
 
+const contentBlocks = (frame: Record<string, unknown>): Record<string, unknown>[] =>
+  asArray(asObject(frame.message)?.content).flatMap((block) => {
+    const entry = asObject(block);
+    return entry ? [entry] : [];
+  });
+
+/** The exact `input.command` of a tool_use block (Bash, Monitor, ...); null for any other block. */
+const toolUseCommand = (block: Record<string, unknown>): string | null => {
+  if (block.type !== "tool_use") return null;
+  const command = asObject(block.input)?.command;
+  return typeof command === "string" && command.trim().length > 0 ? command : null;
+};
+
 const NO_PENDING_COMPLETION_NOTICE = "Claude started a turn on its own.";
 
 const noticeLine = (completion: BackgroundTaskCompletion): string =>
@@ -69,7 +82,8 @@ const carryOverNote = (completion: BackgroundTaskCompletion): string =>
 
 /**
  * Pure owner of the Claude CLI's background-task view: the live background set, the
- * per-task snapshot shown to the user, and background completions the model may not
+ * per-task snapshot shown to the user (including the command, correlated from the tool_use
+ * named by `task_started.tool_use_id`), and background completions the model may not
  * have seen yet. Emits no turn events; reports every snapshot change through
  * `onBackgroundTaskChanged`. Free of I/O: time comes from the injected clock.
  */
@@ -77,6 +91,9 @@ export class ClaudeBackgroundTaskRegistry {
   private readonly backgroundTaskIds = new Set<string>();
   private readonly descriptions = new Map<string, string>();
   private readonly taskTypes = new Map<string, string>();
+  /** Commands of tool calls in flight by tool_use id, until their task starts or their result arrives. */
+  private readonly pendingToolCommands = new Map<string, string>();
+  private readonly commands = new Map<string, string>();
   private readonly view = new Map<string, AgentBackgroundTask>();
   private pending: BackgroundTaskCompletion[] = [];
   private carryOver: BackgroundTaskCompletion[] = [];
@@ -117,6 +134,8 @@ export class ClaudeBackgroundTaskRegistry {
     }
     if (subtype === "task_started") {
       this.recordIdentity(taskId, asString(frame.description), asString(frame.task_type));
+      // Consumed even when not backgrounded, so a later move to the background keeps the command.
+      this.recordCommand(taskId, asString(frame.tool_use_id));
       if (frame.is_backgrounded === true) {
         this.backgroundTaskIds.add(taskId);
         this.enterBackground(taskId);
@@ -140,8 +159,17 @@ export class ClaudeBackgroundTaskRegistry {
     // task_progress is ignored: it changes no snapshot field (QR-002).
   }
 
-  /** Tracks consumption of pending completions by the running CLI turn (SPINE-3). */
-  observeConversationFrame(frameType: "user" | "assistant", interruptRequested: boolean): void {
+  /**
+   * Learns the commands of tool calls in flight (always, so a task started during an interrupt
+   * still gets its command), then tracks consumption of pending completions by the running CLI
+   * turn (SPINE-3).
+   */
+  observeConversationFrame(
+    frameType: "user" | "assistant",
+    frame: Record<string, unknown>,
+    interruptRequested: boolean,
+  ): void {
+    this.observeToolCommands(frameType, frame);
     if (interruptRequested) {
       return;
     }
@@ -216,6 +244,8 @@ export class ClaudeBackgroundTaskRegistry {
     this.taskTypes.clear();
     this.backgroundTaskIds.clear();
     this.descriptions.clear();
+    this.pendingToolCommands.clear();
+    this.commands.clear();
     this.pending = [];
     this.carryOver = [];
     this.cliTurnOpen = false;
@@ -228,6 +258,32 @@ export class ClaudeBackgroundTaskRegistry {
     if (task && task.description.length === 0 && description) this.publish({ ...task, description });
   }
 
+  /** An assistant tool_use announces a command; its user tool_result ends the tool call. */
+  private observeToolCommands(frameType: "user" | "assistant", frame: Record<string, unknown>): void {
+    for (const block of contentBlocks(frame)) {
+      if (frameType === "assistant") {
+        const toolUseId = asString(block.id);
+        const command = toolUseCommand(block);
+        if (toolUseId && command) this.pendingToolCommands.set(toolUseId, command);
+      } else if (block.type === "tool_result") {
+        const toolUseId = asString(block.tool_use_id);
+        if (toolUseId) this.pendingToolCommands.delete(toolUseId);
+      }
+    }
+  }
+
+  /** `task_started.tool_use_id` names the tool call whose command the task runs. */
+  private recordCommand(taskId: string, toolUseId: string | null): void {
+    const command = toolUseId ? this.pendingToolCommands.get(toolUseId) : undefined;
+    if (!toolUseId || command === undefined) {
+      return;
+    }
+    this.pendingToolCommands.delete(toolUseId);
+    this.commands.set(taskId, command);
+    const task = this.view.get(taskId);
+    if (task && task.command === null) this.publish({ ...task, command });
+  }
+
   /** First sight of a background task adds it as running. */
   private enterBackground(taskId: string): void {
     if (this.view.has(taskId)) {
@@ -237,6 +293,7 @@ export class ClaudeBackgroundTaskRegistry {
       taskId,
       kind: toBackgroundTaskKind(this.taskTypes.get(taskId) ?? null),
       description: this.descriptions.get(taskId) ?? "",
+      command: this.commands.get(taskId) ?? null,
       status: "running",
       summary: null,
       startedAt: this.now().toISOString(),

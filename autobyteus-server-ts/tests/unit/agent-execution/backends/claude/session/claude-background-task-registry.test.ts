@@ -25,15 +25,36 @@ const taskNotification = (taskId: string, status = "completed", summary = "Backg
   output_file: `/tmp/${taskId}.out`, summary,
 });
 
+// Conversation frames mirror probe-bash-bg.log / probe-monitor.log (ticket background-task-shell-command).
+const toolUse = (toolUseId: string, name: string, input: Record<string, unknown>) => ({
+  type: "assistant", session_id: SID,
+  message: { role: "assistant", content: [{ type: "text", text: "Starting it." }, { type: "tool_use", id: toolUseId, name, input }] },
+});
+const toolResult = (toolUseId: string) => ({
+  type: "user", session_id: SID,
+  message: { role: "user", content: [{ type: "tool_result", tool_use_id: toolUseId, content: "Command running in background" }] },
+});
+
 const createRegistry = () => {
   const emitted: AgentBackgroundTask[] = [];
   const registry = new ClaudeBackgroundTaskRegistry((task) => emitted.push(task), () => new Date(STARTED_AT));
-  const feed = (...frames: Record<string, unknown>[]) => frames.forEach((frame) => registry.observeTaskFrame(frame));
+  const feed = (...frames: Record<string, unknown>[]) => frames.forEach((frame) => {
+    if (frame.type === "assistant" || frame.type === "user") {
+      registry.observeConversationFrame(frame.type, frame, false);
+    } else {
+      registry.observeTaskFrame(frame);
+    }
+  });
   return { registry, emitted, feed };
 };
 
-const running = (taskId: string, description: string, kind: AgentBackgroundTask["kind"] = "shell"): AgentBackgroundTask => ({
-  taskId, kind, description, status: "running", summary: null, startedAt: STARTED_AT,
+const running = (
+  taskId: string,
+  description: string,
+  kind: AgentBackgroundTask["kind"] = "shell",
+  command: string | null = null,
+): AgentBackgroundTask => ({
+  taskId, kind, description, command, status: "running", summary: null, startedAt: STARTED_AT,
 });
 
 describe("ClaudeBackgroundTaskRegistry background-task view (DS-002)", () => {
@@ -173,5 +194,136 @@ describe("ClaudeBackgroundTaskRegistry background-task view (DS-002)", () => {
 
     expect(registry.pendingCount).toBe(1);
     expect(registry.drainForProviderTurn()).toBe("Background task completed: Nightly tests (completed)");
+  });
+});
+
+describe("ClaudeBackgroundTaskRegistry shell commands (DS-004, REQ-002, REQ-007)", () => {
+  const COMMAND = "sleep 6 && echo BG_DONE";
+
+  it("fills the command into the existing row once task_started names the tool_use (probe-bash-bg order, AC-001)", () => {
+    const { emitted, feed } = createRegistry();
+
+    feed(
+      toolUse("toolu_1", "Bash", { command: COMMAND, description: "Probe background sleep", run_in_background: true }),
+      bgChanged([["bmojuvt1t", "Probe background sleep"]]),
+      taskStarted("bmojuvt1t", false, { description: "Probe background sleep", tool_use_id: "toolu_1" }),
+      toolResult("toolu_1"),
+    );
+
+    expect(emitted).toEqual([
+      running("bmojuvt1t", "Probe background sleep"),
+      running("bmojuvt1t", "Probe background sleep", "shell", COMMAND),
+    ]);
+  });
+
+  it("keeps the command through completion", () => {
+    const { emitted, feed } = createRegistry();
+
+    feed(
+      toolUse("toolu_1", "Bash", { command: COMMAND, run_in_background: true }),
+      bgChanged([["bg1", "Probe"]]),
+      taskStarted("bg1", false, { tool_use_id: "toolu_1" }),
+      toolResult("toolu_1"),
+      taskNotification("bg1"),
+    );
+
+    expect(emitted.at(-1)).toEqual({
+      ...running("bg1", "Probe", "shell", COMMAND), status: "completed", summary: "Background command completed (exit code 0)",
+    });
+  });
+
+  it("includes the command in the first snapshot of a task started directly in the background", () => {
+    const { emitted, feed } = createRegistry();
+
+    feed(toolUse("toolu_1", "Bash", { command: COMMAND }), taskStarted("bg1", true, { tool_use_id: "toolu_1" }));
+
+    expect(emitted).toEqual([running("bg1", "desc bg1", "shell", COMMAND)]);
+  });
+
+  it("gives a Monitor task its monitored command (probe-monitor, AC-002)", () => {
+    const { emitted, feed } = createRegistry();
+    const monitored = "for i in 1 2 3; do echo tick-$i; sleep 1; done";
+
+    feed(
+      toolUse("toolu_m", "Monitor", { command: monitored, description: "Tick monitor" }),
+      bgChanged([["mon1", "Tick monitor"]]),
+      taskStarted("mon1", false, { description: "Tick monitor", tool_use_id: "toolu_m" }),
+    );
+
+    expect(emitted.at(-1)).toEqual(running("mon1", "Tick monitor", "shell", monitored));
+  });
+
+  it("keeps the command of a task moved to the background after it started (UNK-001)", () => {
+    const { emitted, feed } = createRegistry();
+
+    feed(
+      toolUse("toolu_1", "Bash", { command: "pnpm test" }),
+      taskStarted("bg1", false, { tool_use_id: "toolu_1" }),
+      taskUpdated("bg1", { is_backgrounded: true }),
+    );
+
+    expect(emitted).toEqual([running("bg1", "desc bg1", "shell", "pnpm test")]);
+  });
+
+  it("keeps the command exactly as the tool call gave it, including surrounding whitespace and newlines", () => {
+    const { emitted, feed } = createRegistry();
+    const heredoc = "cat <<'EOF' > out.txt\nhello\nEOF\n";
+
+    feed(toolUse("toolu_1", "Bash", { command: heredoc }), taskStarted("bg1", true, { tool_use_id: "toolu_1" }));
+
+    expect(emitted[0]?.command).toBe(heredoc);
+  });
+
+  it.each([
+    ["no tool_use_id", {}],
+    ["an unknown tool_use_id", { tool_use_id: "toolu_other" }],
+  ])("leaves the command null when task_started has %s (REQ-004, AC-005)", (_label, extra) => {
+    const { emitted, feed } = createRegistry();
+
+    feed(toolUse("toolu_1", "Bash", { command: COMMAND }), bgChanged([["bg1", "Probe"]]), taskStarted("bg1", true, extra));
+
+    expect(emitted).toEqual([running("bg1", "Probe")]);
+  });
+
+  it("leaves subagent tasks without a command (AC-005)", () => {
+    const { emitted, feed } = createRegistry();
+
+    feed(
+      toolUse("toolu_a", "Agent", { prompt: "Review the diff", run_in_background: true }),
+      taskStarted("agent-1", true, { task_type: "local_agent", description: "Review the diff", tool_use_id: "toolu_a" }),
+    );
+
+    expect(emitted).toEqual([running("agent-1", "Review the diff", "subagent")]);
+  });
+
+  it("forgets a tool call's command once its tool_result arrives (QR-001)", () => {
+    const { emitted, feed } = createRegistry();
+
+    feed(toolUse("toolu_1", "Bash", { command: "ls" }), toolResult("toolu_1"), taskStarted("late", true, { tool_use_id: "toolu_1" }));
+
+    expect(emitted).toEqual([running("late", "desc late")]);
+  });
+
+  it("learns tool commands even while an interrupt is requested", () => {
+    const { registry, emitted, feed } = createRegistry();
+
+    registry.observeConversationFrame("assistant", toolUse("toolu_1", "Bash", { command: COMMAND }), true);
+    feed(taskStarted("bg1", true, { tool_use_id: "toolu_1" }));
+
+    expect(emitted).toEqual([running("bg1", "desc bg1", "shell", COMMAND)]);
+  });
+
+  it("forgets every command when the process ends (QR-001)", () => {
+    const { registry, emitted, feed } = createRegistry();
+
+    feed(
+      toolUse("toolu_1", "Bash", { command: "first" }),
+      taskStarted("fg", false, { tool_use_id: "toolu_1" }),
+      toolUse("toolu_2", "Bash", { command: "second" }),
+    );
+    registry.clear();
+    feed(taskUpdated("fg", { is_backgrounded: true }), taskStarted("bg2", true, { tool_use_id: "toolu_2" }));
+
+    expect(emitted).toEqual([running("fg", "", "other"), running("bg2", "desc bg2")]);
   });
 });

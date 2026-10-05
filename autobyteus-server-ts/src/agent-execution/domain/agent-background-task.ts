@@ -4,9 +4,10 @@
  * A background task is work a runtime runs beyond its current turn and reports separately
  * (a Claude task in the CLI background set, an Antigravity daemon step). Each
  * `BACKGROUND_TASK_UPDATED` event carries the complete current snapshot of one task and is
- * applied as an upsert keyed by `task_id`. Runtime-specific task types never leave their
- * backend; backends map them onto this vocabulary and build payloads only through
- * `buildBackgroundTaskUpdatedPayload`.
+ * applied as an upsert keyed by `task_id`, so a later snapshot can fill in a field (such as the
+ * command) that was unknown when the task first appeared. Runtime-specific task types and
+ * correlation ids never leave their backend; backends map them onto this vocabulary and build
+ * payloads only through `buildBackgroundTaskUpdatedPayload`.
  */
 export const AGENT_BACKGROUND_TASK_KINDS = ["shell", "subagent", "monitor", "workflow", "other"] as const;
 export const AGENT_BACKGROUND_TASK_STATUSES = ["running", "completed", "failed", "stopped"] as const;
@@ -18,6 +19,8 @@ export type AgentBackgroundTask = Readonly<{
   taskId: string;
   kind: AgentBackgroundTaskKind;
   description: string;
+  /** Exact shell command the task runs; null when the runtime does not know one or it does not apply. */
+  command: string | null;
   status: AgentBackgroundTaskStatus;
   /** Final summary the runtime reported; null while running or when none was reported. */
   summary: string | null;
@@ -36,6 +39,7 @@ export const buildBackgroundTaskUpdatedPayload = (task: AgentBackgroundTask): Re
   task_id: task.taskId,
   kind: task.kind,
   description: task.description,
+  command: task.command,
   status: task.status,
   summary: task.summary,
   started_at: task.startedAt,
@@ -43,7 +47,7 @@ export const buildBackgroundTaskUpdatedPayload = (task: AgentBackgroundTask): Re
 
 /** Strictly parses a `BACKGROUND_TASK_UPDATED` payload; throws on any invalid field. */
 export const parseBackgroundTaskUpdatedPayload = (payload: Record<string, unknown>): AgentBackgroundTask => {
-  const { task_id: taskId, kind, description, status, summary, started_at: startedAt } = payload;
+  const { task_id: taskId, kind, description, command, status, summary, started_at: startedAt } = payload;
   if (typeof taskId !== "string" || taskId.trim().length === 0) {
     throw new Error("background task task_id is required");
   }
@@ -52,6 +56,9 @@ export const parseBackgroundTaskUpdatedPayload = (payload: Record<string, unknow
   }
   if (typeof description !== "string") {
     throw new Error("background task description is invalid");
+  }
+  if (command !== null && typeof command !== "string") {
+    throw new Error("background task command is invalid");
   }
   if (!isStatus(status)) {
     throw new Error("background task status is invalid");
@@ -62,5 +69,5 @@ export const parseBackgroundTaskUpdatedPayload = (payload: Record<string, unknow
   if (typeof startedAt !== "string" || startedAt.trim().length === 0) {
     throw new Error("background task started_at is required");
   }
-  return Object.freeze({ taskId, kind, description, status, summary, startedAt });
+  return Object.freeze({ taskId, kind, description, command, status, summary, startedAt });
 };

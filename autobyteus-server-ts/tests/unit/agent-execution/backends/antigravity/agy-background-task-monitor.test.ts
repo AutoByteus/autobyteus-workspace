@@ -20,7 +20,7 @@ const setup = () => {
 };
 
 const running: AgentBackgroundTask = {
-  taskId: `${conversation}/task-2`, kind: "shell", description: daemon.commandLine,
+  taskId: `${conversation}/task-2`, kind: "shell", description: daemon.commandLine, command: daemon.commandLine,
   status: "running", summary: null, startedAt: STARTED_AT,
 };
 
@@ -28,12 +28,12 @@ beforeEach(() => { vi.useFakeTimers(); });
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
 describe("AgyBackgroundTaskMonitor (DS-003)", () => {
-  it("lists a daemon left open at turn end as a running shell task", () => {
+  it("lists a daemon left open at turn end as a running shell task whose command is its command line (REQ-003)", () => {
     const { monitor, emitted } = setup();
 
     monitor.track([daemon, { stepIndex: 4, toolName: "browser_subagent", commandLine: null }]);
 
-    expect(emitted).toEqual([[running, { ...running, taskId: `${conversation}/task-4`, kind: "other", description: "browser_subagent" }]]);
+    expect(emitted).toEqual([[running, { ...running, taskId: `${conversation}/task-4`, kind: "other", description: "browser_subagent", command: null }]]);
   });
 
   it("marks the task completed when AGY writes exit code 0, without another turn (AC-013a)", async () => {
