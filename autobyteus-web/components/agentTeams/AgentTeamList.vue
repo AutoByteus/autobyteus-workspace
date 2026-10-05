@@ -118,7 +118,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import AgentTeamCard from '~/components/agentTeams/AgentTeamCard.vue';
-import { useRunActions } from '~/composables/useRunActions';
+import { useRunStart } from '~/composables/runSettings/useRunStart';
 import { useServerSettingsStore } from '~/stores/serverSettings';
 import {
   FEATURED_CATALOG_ITEMS_SETTING_KEY,
@@ -129,8 +129,7 @@ import {
 const emit = defineEmits(['navigate']);
 
 const store = useAgentTeamDefinitionStore();
-const { prepareTeamRun } = useRunActions();
-const router = useRouter();
+const runStart = useRunStart();
 const serverSettingsStore = useServerSettingsStore();
 
 const teamDefinitions = computed(() => store.rootAgentTeamDefinitions);
@@ -202,8 +201,8 @@ const viewDetails = (teamDefinitionId: string) => {
 };
 
 const handleRunTeam = (teamDef: AgentTeamDefinition) => {
-  prepareTeamRun(teamDef);
-  router.push('/workspace');
+  // Run opens New chat addressed to the team (REQ-005).
+  void runStart.runTeam(teamDef.id);
 };
 
 </script>

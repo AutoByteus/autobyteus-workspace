@@ -181,6 +181,13 @@ const newChat = async (page) => {
   await page.locator(sel('chat-new')).waitFor({ timeout: 120000 })
   await delay(800)
 }
+// run-settings-ui-unification: New chat's target is chosen in the heading switcher; `@` only mentions collaborators.
+const switchTarget = async (page, query, id) => {
+  await page.locator(sel('run-target-switcher-trigger')).click()
+  await page.locator(sel('run-target-switcher-search')).fill(query)
+  await page.locator(sel(`run-target-switcher-option-${id}`)).click()
+  await page.locator(sel('run-target-switcher-menu')).waitFor({ state: 'detached', timeout: 30000 })
+}
 const openMenu = async (page, query = '') => {
   const input = runComposer(page)
   await input.click(); await input.fill(''); await page.keyboard.type(`@${query}`)
@@ -320,9 +327,9 @@ defineCase('A01', 'UXJ-005 standalone run: menu (VIS-011/002/014, a11y), inline 
   const r = {}
   await newChat(page)
   await pickModel(page)
+  await switchTarget(page, 'Research', ids.research)
   const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@Research')
-  await page.locator(sel(`chat-target-option-${ids.research}`)).click()
+  await chatInput.click()
   await page.keyboard.type('Say hello in one short sentence.')
   await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
@@ -575,9 +582,9 @@ defineCase('T01', 'UXJ-001 Team run: VIS-001 menu; send adds the collaborator Te
   const findings = []
   await newChat(page)
   await pickModel(page)
+  await switchTarget(page, 'review', ids.reviewTeam)
   const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@review')
-  await page.locator(sel(`chat-target-option-${ids.reviewTeam}`)).click()
+  await chatInput.click()
   await page.keyboard.type('Say hello in one short sentence.')
   await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
@@ -825,9 +832,9 @@ const newPids = (before, after) => [...after].filter((pid) => !before.has(pid))
 const startStandaloneRun = async (page, prompt) => {
   await newChat(page)
   await pickModel(page)
+  await switchTarget(page, 'Research', ids.research)
   const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@Research')
-  await page.locator(sel(`chat-target-option-${ids.research}`)).click()
+  await chatInput.click()
   await page.keyboard.type(prompt)
   await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
@@ -935,9 +942,9 @@ defineCase('P01', 'Old data: Team and Org runs whose trees have no `collaborator
   const r = {}
   // Team run through the New chat quick path, then stopped.
   await newChat(page); await pickModel(page)
+  await switchTarget(page, 'review', ids.reviewTeam)
   const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@review')
-  await page.locator(sel(`chat-target-option-${ids.reviewTeam}`)).click()
+  await chatInput.click()
   await page.keyboard.type('Say hi in one short sentence.')
   await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
@@ -996,16 +1003,21 @@ defineCase('P01', 'Old data: Team and Org runs whose trees have no `collaborator
   return r
 })
 
-defineCase('N01', 'AC-013 New chat `@` is still the launch-target picker', async (page) => {
+defineCase('N01', 'New chat: the heading switcher picks the target; `@` mentions collaborators only, never the target', async (page) => {
   await newChat(page)
-  const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@')
-  await page.locator(sel('chat-target-menu')).waitFor({ timeout: 30000 })
-  const targets = await page.locator('[data-test^="chat-target-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-target-option-', '')))
-  assert(!(await page.locator(sel('run-mention-menu')).isVisible().catch(() => false)), 'run menu shown in New chat')
+  await page.locator(sel('run-target-switcher-trigger')).click()
+  await page.locator(sel('run-target-switcher-menu')).waitFor({ timeout: 30000 })
+  const targets = await page.locator('[data-test^="run-target-switcher-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('run-target-switcher-option-', '')))
   assert(targets.includes(ids.research) && targets.includes(ids.reviewTeam), 'New chat targets', targets)
   await page.keyboard.press('Escape')
-  return { targets }
+  await switchTarget(page, 'Research', ids.research)
+  await openMenu(page)
+  const mentions = await menuOptions(page)
+  assert(!(await page.locator(sel('chat-target-menu')).count()), 'the old `@` target picker is gone')
+  assert(!mentions.includes(ids.research), 'the target is offered as its own mention', mentions)
+  assert(mentions.includes(ids.reviewTeam), 'a shared Team is a mention candidate', mentions)
+  await page.keyboard.press('Escape')
+  return { targets, mentions }
 })
 
 // ---------------------------------------------------------------------------------------------

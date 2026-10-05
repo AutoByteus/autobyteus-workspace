@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Frontend-only approval regression: real Library → RunConfigPanel/forms → Run → first-send
-// GraphQL transport. Own Nuxt/Chrome and deterministic reads. Launch mutations intentionally
+// Frontend-only approval regression: real New chat (target switcher, model/workspace menus, Team
+// member settings drawer) → first-send GraphQL transport. Own Nuxt/Chrome and deterministic reads. Launch mutations intentionally
 // return a fixture rejection AFTER recording inputs, so no provider or user data is accessed.
 // This proves submitted client booleans, not server execution, desktop packaging or restart.
 // Prerequisites: pnpm install, nuxt prepare, Chrome (or --browser-executable). Run via
@@ -261,43 +261,53 @@ const scenario = async (id, description, run) => {
   } finally { evidence.inputs = inputs; await persist(); if (ledgerPath) await fs.appendFile(ledgerPath, `\n${new Date().toISOString()} ${id}: ${evidence.scenarios[id].status}; ${description}; evidence ${evidencePath}\n`) }
 }
 const sel = t => `[data-test="${t}"]`
-const library = name => page.locator(sel('probe-library-host')).getByRole('button', { name: new RegExp(name) })
-const approval = () => page.locator(sel('probe-config-host')).getByRole('switch').first()
-const checkApproval = async (checked, disabled = false) => {
-  await waitFor(`approval ${checked}`, async () => await approval().getAttribute('aria-checked') === String(checked) && await approval().isDisabled() === disabled)
-  assert(await approval().isDisabled() === disabled, `Approval disabled expected ${disabled}`)
+const toggle = (scope = page) => scope.locator(sel('chat-approval-toggle')).first()
+const composer = () => page.locator(sel('chat-composer'))
+const checkApproval = async (checked, locked = false, scope = page) => {
+  await waitFor(`approval ${checked}`, async () => await toggle(scope).getAttribute('aria-pressed') === String(checked)
+    && (await toggle(scope).getAttribute('data-locked') === 'true') === locked)
 }
-const open = async (name, viewport = { width: 1280, height: 900 }) => {
+const open = async (target = 'agent', viewport = { width: 1280, height: 900 }) => {
   await page.setViewportSize(viewport)
   await page.goto(`${evidence.baseUrl}${routePath}`, { waitUntil: 'domcontentloaded' })
-  await library(name).click({ timeout: 30000 })
-  await approval().waitFor({ timeout: timeoutMs })
+  await page.locator('main[data-ready="true"]').waitFor({ timeout: timeoutMs })
+  await page.locator(sel(target === 'team' ? 'probe-team-chat' : 'probe-chat')).click({ timeout: 30000 })
+  await page.locator(sel('chat-new')).waitFor({ timeout: timeoutMs })
+  await waitFor('New chat model ready', async () => (await page.locator(sel('chat-model-trigger')).first().innerText()).toLowerCase().includes('approval'))
 }
-const modelTwo = async () => {
-  const host = page.locator(sel('probe-config-host'))
-  await host.locator('button[aria-haspopup="listbox"]').first().click()
-  await page.getByRole('option', { name: /approval-model-two/ }).click()
+// The chip model menu: pick a runtime, then a model in it (side submenu on desktop, drill-in on phones).
+const chooseModel = async (runtimeKind, modelIdentifier, scope = composer()) => {
+  await scope.locator(sel('chat-model-trigger')).first().click()
+  await page.locator(sel(`chat-runtime-${runtimeKind}`)).first().click()
+  await page.locator(sel(`chat-model-option-${modelIdentifier}`)).first().click()
 }
-const configureWorkspace = async (root = '/workspace/approval-two') => {
-  const host = page.locator(sel('probe-config-host'))
-  await host.getByRole('tab', { name: 'New', exact: true }).first().click()
-  await host.getByPlaceholder('/absolute/path/to/workspace', { exact: true }).fill(root)
+const chooseFolder = async (root = '/workspace/approval-two') => {
+  await composer().locator(sel('chat-workspace-trigger')).click()
+  await page.locator(sel('chat-workspace-open-folder')).click()
+  await page.locator('#chat-workspace-path').fill(root)
+  await page.locator(sel('chat-workspace-folder-form')).locator('button[type="submit"]').click()
+  await waitFor('workspace chosen', async () => (await composer().locator(sel('chat-workspace-trigger')).innerText()).length > 0
+    && !(await page.locator(sel('chat-workspace-folder-form')).count()))
+}
+const switchTo = async (definitionId) => {
+  await page.locator(sel('run-target-switcher-trigger')).click()
+  await page.locator(sel(`run-target-switcher-option-${definitionId}`)).click()
+  await waitFor(`target ${definitionId}`, async () => (await page.locator(sel('run-target-name')).innerText()).includes(definitionId === 'approval-team' ? 'Approval Team' : 'Approval Agent'))
+}
+const send = async (requests, label) => {
+  const n = requests.length
+  await page.locator(sel('chat-message-input')).fill('Validate approval boundary')
+  await page.locator(sel('chat-primary-action')).click()
+  await waitFor(`${label} input`, () => requests.length === n + 1)
+  return requests.at(-1)
 }
 const agentSend = async (expected) => {
-  const n = inputs.agents.length
-  await page.locator('button.run-btn').click()
-  await page.locator(sel('probe-input-host')).getByRole('textbox').fill('Validate approval boundary')
-  await page.locator(sel('probe-input-host')).getByRole('textbox').press('Enter')
-  await waitFor('PrepareAgentRun input', () => inputs.agents.length === n + 1)
-  const input = inputs.agents.at(-1)
+  const input = await send(inputs.agents, 'PrepareAgentRun')
   assert(input.autoExecuteTools === expected, `Agent approval expected ${expected}`, input)
   return input
 }
 const teamSend = async (root, members) => {
-  const n = inputs.teams.length
-  await page.locator('button.run-btn').click()
-  await waitFor('CreateAgentTeamRun input', () => inputs.teams.length === n + 1)
-  const input = inputs.teams.at(-1)
+  const input = await send(inputs.teams, 'CreateAgentTeamRun')
   assert(input.teamConfigs[0].autoExecuteTools === root, 'Team root approval mismatch', input)
   for (const member of input.memberConfigs) assert(member.autoExecuteTools === members[member.memberAddress ?? member.agentAddress], 'Team member approval mismatch', input)
   assert(input.memberConfigs.length === 2, 'Expected both Team members', input)
@@ -330,106 +340,114 @@ try {
   })
   page = await context.newPage()
   page.on('pageerror', error => evidence.browserEvents.push({ kind: 'pageerror', message: error.message }))
+  // Warm up: a fresh Nuxt dev server optimizes New chat's dependencies on first use and then
+  // reloads the page once. Let that settle before any case starts.
+  for (const probe of ['probe-chat', 'probe-team-chat']) {
+    await page.goto(`${evidence.baseUrl}${routePath}`, { waitUntil: 'domcontentloaded' })
+    await page.locator('main[data-ready="true"]').waitFor({ timeout: timeoutMs })
+    await page.locator(sel(probe)).click()
+    await page.locator(sel('chat-new')).waitFor({ timeout: timeoutMs }).catch(() => {})
+  }
+  await waitFor('dev dependency optimization to settle', async () => {
+    const log = await fs.readFile(devLogPath, 'utf8').catch(() => '')
+    const reloads = (log.match(/optimized dependencies changed/g) ?? []).length
+    await delay(8000)
+    return reloads === ((await fs.readFile(devLogPath, 'utf8').catch(() => '')).match(/optimized dependencies changed/g) ?? []).length
+  })
   // Recheck the previously failing mobile journey before the remaining regression cases.
   await scenario('B08', 'Dedicated mobile Agent/Team setup defaults and helper agree', async () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto(`${evidence.baseUrl}${routePath}`, { waitUntil: 'domcontentloaded' })
-    await library('Approval Agent').waitFor({ timeout: timeoutMs })
-    await page.locator(sel('probe-mobile')).click()
+    await page.locator('main[data-ready="true"]').waitFor({ timeout: timeoutMs })
+    await page.locator(sel('probe-mobile')).click({ timeout: timeoutMs })
     const observations = []
     for (const target of ['agent', 'team']) {
       await page.locator(`[data-testid="mobile-run-setup-${target}-mode"]`).click()
       await page.locator(`[data-testid="mobile-run-${target}-select-toggle"]`).click()
       await page.locator(`[data-testid="mobile-run-${target}-select-option"]`).filter({ hasText: target === 'agent' ? 'Approval Agent' : 'Approval Team' }).click()
-      const toggle = page.locator('[data-testid="mobile-run-auto-approve-tools-switch"]')
-      await waitFor('Mobile fresh true', async () => await toggle.getAttribute('aria-checked') === 'true')
+      const mobileToggle = page.locator('[data-testid="mobile-run-auto-approve-tools-switch"]')
+      await waitFor('Mobile fresh true', async () => await mobileToggle.getAttribute('aria-checked') === 'true')
       const help = await page.locator('[data-testid="mobile-run-auto-approve-tools-help"]').innerText()
       await page.screenshot({ path: path.join(outputDir, `B08-${target}-fresh.png`), fullPage: true })
-      await toggle.click()
-      await waitFor('Mobile opt-out false', async () => await toggle.getAttribute('aria-checked') === 'false')
+      await mobileToggle.click()
+      await waitFor('Mobile opt-out false', async () => await mobileToggle.getAttribute('aria-checked') === 'false')
       observations.push({ target, freshChecked: true, optOutChecked: false, help })
     }
     evidence.mobileObservations = observations
     assert(observations.every(row => !/off by default/i.test(row.help)), 'Mobile helper contradicts the approved fresh true default', observations)
     return observations
   })
-  await scenario('B01', 'Library Agent fresh true and first-send true', async () => {
-    await open('Approval Agent'); await checkApproval(true)
-    await configureWorkspace(); return await agentSend(true)
+  await scenario('B01', 'New chat Agent fresh true and first-send true', async () => {
+    await open('agent'); await checkApproval(true)
+    return await agentSend(true)
   })
   await scenario('B02', 'Narrow Agent opt-out survives model/workspace/permitted runtime edits', async () => {
-    await open('Approval Agent', { width: 390, height: 844 }); await approval().click(); await checkApproval(false)
-    await modelTwo(); await checkApproval(false); await configureWorkspace(); await checkApproval(false)
-    await page.locator(sel('probe-config-host')).locator('select').first().selectOption('claude_agent_sdk'); await checkApproval(false)
-    await page.locator(sel('probe-config-host')).locator('select').first().selectOption('autobyteus'); await checkApproval(false)
-    // Runtime changes legitimately clear the old model; choose the runnable current catalog model.
-    await modelTwo(); await checkApproval(false)
+    await open('agent', { width: 390, height: 844 }); await toggle().click(); await checkApproval(false)
+    await chooseModel('autobyteus', 'approval-model-two'); await checkApproval(false)
+    await chooseFolder(); await checkApproval(false)
+    await chooseModel('claude_agent_sdk', 'approval-model'); await checkApproval(false)
+    await chooseModel('autobyteus', 'approval-model-two'); await checkApproval(false)
+    await page.screenshot({ path: path.join(outputDir, 'B02-narrow-opt-out.png'), fullPage: true })
     const input = await agentSend(false)
-    assert(input.llmModelIdentifier === 'approval-model-two', 'Model edit should submit')
+    assert(input.llmModelIdentifier === 'approval-model-two', 'Model edit should submit', input)
+    assert(input.runtimeKind === 'autobyteus', 'Runtime edit should submit', input)
     return input
   })
-  await scenario('B03', 'Library Team root and inherited members submit true', async () => {
-    await open('Approval Team'); await checkApproval(true)
-    await configureWorkspace(); return await teamSend(true, { '/lead': true, '/reviewer': true })
+  await scenario('B03', 'Switcher to a Team: root and inherited members submit true', async () => {
+    await open('agent'); await switchTo('approval-team'); await checkApproval(true)
+    assert((await page.locator(sel('run-members-line-text')).innerText()).length > 0, 'Team shows its members line')
+    return await teamSend(true, { '/lead': true, '/reviewer': true })
   })
-  await scenario('B04', 'Team opt-out ordinary edits and explicit member false', async () => {
-    await open('Approval Team'); await approval().click(); await checkApproval(false)
-    await modelTwo(); await configureWorkspace(); await checkApproval(false)
+  await scenario('B04', 'Team opt-out reaches every member; one member customized to Ask first', async () => {
+    await open('team'); await toggle().click(); await checkApproval(false)
+    await chooseModel('autobyteus', 'approval-model-two'); await checkApproval(false)
     const off = await teamSend(false, { '/lead': false, '/reviewer': false })
-    await open('Approval Team'); await configureWorkspace()
-    await page.locator(sel('team-member-overrides-toggle')).click()
-    const reviewer = page.locator(sel('member-override-item')).filter({ hasText: 'reviewer' })
-    // The member control is three-state (Global → On → Off), not a binary root switch.
-    await reviewer.getByRole('checkbox').click()
-    await reviewer.getByRole('checkbox').click()
-    assert((await reviewer.innerText()).includes('Off'), 'Member must explicitly show Off')
+    await open('team'); await checkApproval(true)
+    await page.locator(sel('run-members-open')).click()
+    const drawer = page.locator(sel('run-member-settings-drawer'))
+    await drawer.waitFor({ timeout: timeoutMs })
+    const reviewer = drawer.locator(sel('run-member-/reviewer'))
+    await reviewer.locator(sel('run-member-toggle')).click()
+    const detail = reviewer.locator(sel('run-member-detail'))
+    await checkApproval(true, false, detail)
+    await toggle(detail).click(); await checkApproval(false, false, detail)
+    assert((await reviewer.locator(sel('run-member-summary')).innerText()).length > 0, 'Member shows a summary')
+    await page.screenshot({ path: path.join(outputDir, 'B04-member-ask-first.png'), fullPage: true })
+    await page.keyboard.press('Escape')
+    await waitFor('drawer closed', async () => !(await drawer.count()))
+    assert((await page.locator(sel('run-members-line-text')).innerText()).includes('1'), 'Members line reports one customized member')
     return { off, explicit: await teamSend(true, { '/lead': true, '/reviewer': false }) }
   })
-  await scenario('B05', 'Missing workspace blocks; Antigravity stays checked/locked', async () => {
-    await open('Approval Agent'); await configureWorkspace('')
-    assert(await page.locator('button.run-btn').isDisabled(), 'Missing workspace must block launch')
-    await page.locator(sel('probe-config-host')).locator('select').first().selectOption('antigravity_cli'); await checkApproval(true, true)
-    await open('Approval Team'); await page.locator('#team-scope-root-runtime-kind').selectOption('antigravity_cli')
-    await checkApproval(true, true)
-    return { missingWorkspaceBlocked: true, agentAndTeamAntigravityLocked: true }
+  await scenario('B05', 'Antigravity keeps approval on and locked for Agent and Team', async () => {
+    await open('agent'); await toggle().click(); await checkApproval(false)
+    await chooseModel('antigravity_cli', 'approval-model'); await checkApproval(true, true)
+    const agentInput = await agentSend(true)
+    await open('team'); await chooseModel('antigravity_cli', 'approval-model'); await checkApproval(true, true)
+    const teamInput = await teamSend(true, { '/lead': true, '/reviewer': true })
+    // New chat always has a workspace (temp by default), so the old "missing workspace blocks" case no longer exists.
+    return { agentInput, teamInput, missingWorkspaceCase: 'not-applicable: New chat defaults to the temp workspace' }
   })
   await scenario('B06', 'Chat Agent/Team true defaults and deliberate opt-out reach launch boundaries', async () => {
     const runs = []
     for (const target of ['agent', 'team']) for (const expected of [true, false]) {
-      await page.goto(`${evidence.baseUrl}${routePath}`, { waitUntil: 'domcontentloaded' })
-      await library('Approval Agent').waitFor({ timeout: timeoutMs })
-      await page.locator(sel('probe-chat')).click()
-      const toggle = page.locator(sel('chat-approval-toggle'))
-      await waitFor('Chat true default', async () => await toggle.getAttribute('aria-pressed') === 'true')
-      if (target === 'team') {
-        await page.locator(sel('chat-message-input')).fill('@Approval')
-        await page.locator(sel('chat-target-option-approval-team')).click()
-        await waitFor('Chat Team stays true', async () => await toggle.getAttribute('aria-pressed') === 'true')
-      }
-      if (!expected) await toggle.click()
-      const requests = target === 'agent' ? inputs.agents : inputs.teams
-      const n = requests.length
-      await page.locator(sel('chat-message-input')).fill('Validate Chat approval')
-      await page.locator(sel('chat-primary-action')).click()
-      await waitFor('Chat launch input', () => requests.length === n + 1)
-      const input = requests.at(-1)
-      if (target === 'agent') assert(input.autoExecuteTools === expected, 'Chat Agent approval mismatch', input)
-      else {
-        assert(input.teamConfigs[0].autoExecuteTools === expected, 'Chat Team root mismatch', input)
-        assert(input.memberConfigs.length === 2 && input.memberConfigs.every(member => member.autoExecuteTools === expected), 'Chat Team inheritance mismatch', input)
-      }
+      await open('agent')
+      await checkApproval(true)
+      if (target === 'team') { await switchTo('approval-team'); await checkApproval(true) }
+      if (!expected) await toggle().click()
+      const input = target === 'agent' ? await agentSend(expected) : await teamSend(expected, { '/lead': expected, '/reviewer': expected })
       runs.push({ target, expected, input })
     }
     return runs
   })
-  await scenario('B07', 'Existing draft false copied through RunningAgentsPanel; fresh session resets only fresh defaults', async () => {
-    await open('Approval Agent'); await approval().click(); await configureWorkspace()
-    await page.locator('button.run-btn').click()
-    await page.locator(sel('probe-running-host')).locator('button.create-btn').click()
-    await checkApproval(false)
-    const copied = await agentSend(false)
-    await page.reload({ waitUntil: 'domcontentloaded' }); await library('Approval Agent').click(); await checkApproval(true)
-    return { copied, freshPageReloadTrue: true, desktopRestartClaim: false }
+  await scenario('B07', 'Retarget keeps a deliberate opt-out; a fresh New chat resets to the default', async () => {
+    await open('agent'); await toggle().click(); await checkApproval(false)
+    await switchTo('approval-team'); await checkApproval(false)
+    const carried = await teamSend(false, { '/lead': false, '/reviewer': false })
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await page.locator('main[data-ready="true"]').waitFor({ timeout: timeoutMs })
+    await page.locator(sel('probe-chat')).click(); await page.locator(sel('chat-new')).waitFor({ timeout: timeoutMs })
+    await checkApproval(true)
+    return { carried, freshPageReloadTrue: true, desktopRestartClaim: false }
   })
   assert(evidence.browserEvents.length === 0, 'Unexpected browser page errors', evidence.browserEvents)
   assert(evidence.failures.length === 0, 'Unexpected GraphQL requests', evidence.failures)

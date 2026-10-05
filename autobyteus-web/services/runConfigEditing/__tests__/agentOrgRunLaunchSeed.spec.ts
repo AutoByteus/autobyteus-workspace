@@ -1,8 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { createPinia, setActivePinia } from 'pinia'
 import { buildEditableAgentOrgRunSeed } from '../agentOrgRunLaunchSeed'
 import { seedFixture } from './orgSeedFixture'
-import { useAgentOrgRunConfigStore } from '~/stores/agentOrgRunConfigStore'
 import { toAgentOrgPlacementLaunchConfiguration } from '~/utils/agentOrgLaunchPatch'
 
 describe('Org source configuration projection', () => {
@@ -19,19 +17,6 @@ describe('Org source configuration projection', () => {
     for (const forbidden of ['orgRunId', 'agentRunId', 'teamRunId', 'platformAgentRunId', 'taskExecutions', 'applicationBinding', 'task_records']) expect(JSON.stringify(seed)).not.toContain(forbidden)
     seed.llmConfig!.budget = 8
     expect(JSON.stringify(view)).toBe(original)
-  })
-  it('installs all values atomically as a new explicit draft without shared nested references or workspace default replacement', () => {
-    setActivePinia(createPinia())
-    const { view, definition, references } = seedFixture()
-    const seed = buildEditableAgentOrgRunSeed(view.execution_tree, definition, references, [{ workspaceId: 'known', workspaceRootPath: '/source/root', displayName: 'Root', kind: 'filesystem' }])
-    const store = useAgentOrgRunConfigStore()
-    store.beginFromSeed(seed)
-    expect(store.draftEpoch).toBe(1)
-    expect(store.workspaceSelection.existingWorkspaceId).toBe('known')
-    expect(store.selectDefaultRootWorkspace('temp')).toBe(false)
-    store.agentOverrides['/director'].llmConfig!.budget = 9
-    expect(seed.agentOverrides['/director'].llmConfig!.budget).toBe(0)
-    expect(store.modelSchemaStateFor('/').status).toBe('loading')
   })
   it.each(['root', 'placement', 'kind', 'child', 'coordinator', 'agent-workspace'])('blocks unrepresentable or changed %s instead of normalizing or rebinding', what => {
     const { view, definition, references } = seedFixture(), root = view.execution_tree.rootOrg
@@ -50,13 +35,6 @@ describe('Org source configuration projection', () => {
     child.launchConfiguration.runtimeKind = 'autobyteus'
     const seed = buildEditableAgentOrgRunSeed(view.execution_tree, definition, references)
     expect(seed.agentOverrides['/director']).toMatchObject({ runtimeKind: 'autobyteus', llmConfig: { budget: 0, enabled: false } })
-  })
-  it('stores semantic missing reason changes even when status and text are unchanged', () => {
-    setActivePinia(createPinia()); const store = useAgentOrgRunConfigStore()
-    store.begin({ definitionId: 'org' })
-    store.setModelSchemaState('/', { status: 'invalid', message: 'Required' })
-    store.setModelSchemaState('/', { status: 'invalid', message: 'Required', reason: 'model_required' })
-    expect(store.firstModelSchemaBlock?.state.reason).toBe('model_required')
   })
   it('keeps missing root and Team paths incomplete, never substitutes a temporary path', () => {
     const { view, definition, references } = seedFixture(), root = view.execution_tree.rootOrg

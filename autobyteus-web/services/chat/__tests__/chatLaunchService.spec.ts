@@ -120,6 +120,7 @@ const buildDraft = (overrides: Partial<ChatDraft> = {}): ChatDraft => {
     target: { kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' },
     workspace: { kind: 'folder', rootPath: '/Users/me/project' },
     autoExecuteTools: false,
+    teamAgentOverrides: {},
     starting: false,
     ...overrides,
   }) as ChatDraft
@@ -133,6 +134,7 @@ describe('chatLaunchService', () => {
     mocks.runtimeEnabled = true
     mocks.teams = []
     mocks.createDraft.mockReset().mockReturnValue('team-draft-1')
+    mocks.setRuntimeModelCatalog.mockReset()
     mocks.sendToFocusedMember.mockReset().mockImplementation(async () => {
       mocks.events.push('team-send')
       mocks.selection.selectedType = 'team'
@@ -234,10 +236,36 @@ describe('chatLaunchService', () => {
     expect(mocks.setRuntimeModelCatalog).toHaveBeenCalledWith('codex_app_server', ['gpt-5.5-codex'])
     expect(mocks.sendToFocusedMember).toHaveBeenCalledWith('hello', draft.context.contextFilePaths, {
       attachmentDraftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
+      mentions: [],
     })
     expect(mocks.events).toEqual(['starting', 'select-team-draft:team-draft-1', 'team-send', 'navigate:/workspace', 'reset-draft'])
     // The Team view opens on the conversation, not on settings left open for another run (CR-005).
     expect(mocks.showChat).toHaveBeenCalled()
+  })
+
+  it('launches customized members with their own settings, loads every member runtime and keeps the first message’s mentions', async () => {
+    mocks.teams = [{ id: 'team-1', name: 'T', coordinatorMemberName: 'lead', nodes: [], defaultLaunchConfig: null }]
+    const draft = buildDraft({
+      target: { kind: 'team', teamDefinitionId: 'team-1' },
+      teamAgentOverrides: {
+        '/writer': { runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5', llmConfig: null },
+        '/reviewer': { llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } },
+      },
+    })
+    draft.context.requirement = '@Researcher please help'
+    draft.context.requestedMentions = [
+      { kind: 'agent', definitionId: 'researcher', name: 'Researcher' },
+      { kind: 'agent', definitionId: 'removed', name: 'Removed' },
+    ]
+
+    await launchTeamChat(draft, { navigate: vi.fn(async () => undefined) })
+
+    expect(mocks.createDraft.mock.calls[0]![0].agentOverrides).toEqual({
+      '/writer': { runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5', llmConfig: null },
+      '/reviewer': { llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } },
+    })
+    expect(mocks.setRuntimeModelCatalog.mock.calls.map(([runtimeKind]) => runtimeKind).sort()).toEqual(['autobyteus', 'codex_app_server'])
+    expect(mocks.sendToFocusedMember.mock.calls[0]![2].mentions).toEqual([{ kind: 'agent', definitionId: 'researcher', name: 'Researcher' }])
   })
 
   it('stays on New chat when the team launch throws before any message is recorded', async () => {

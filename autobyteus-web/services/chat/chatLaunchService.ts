@@ -7,18 +7,11 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
-import { useChatDraftStore, type ChatDraft, type ChatDraftWorkspace } from '~/stores/chatDraftStore'
+import { useChatDraftStore, type ChatDraft } from '~/stores/chatDraftStore'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
-import { useWorkspaceStore } from '~/stores/workspace'
 import { effectiveAutoExecuteTools } from '~/utils/agentRunRuntimeDraftPolicy'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
-import {
-  ensureRunHistoryWorkspaceByRootPath,
-  resolveRunHistoryWorkspaceMetadataByRootPath,
-} from '~/stores/runHistoryLoadActions'
 import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
-import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
-import { workspaceMetadataFromWorkspaceInfo } from '~/utils/workspaceMetadata'
 import { writeChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { isTemporaryRunId } from '~/utils/chat/chatDefaults'
 import { buildAgentRunChatRoute } from '~/services/workspace/workspaceNavigationService'
@@ -27,6 +20,9 @@ import { buildAgentDraftContextFileOwner } from '~/utils/contextFiles/contextFil
 import { normalizeMemberAddress } from '~/utils/teamDefinitionMembers'
 import { buildChatTeamLaunchConfig } from '~/services/chat/chatTeamLaunchConfig'
 import type { TeamLaunchDraftId } from '~/types/agent/TeamLaunchDraft'
+import { resolveRunWorkspaceChoice } from '~/services/workspace/runWorkspaceChoice'
+import { mentionsPresentInText } from '~/utils/collaborators/collaboratorMentionText'
+import { resolveMemberSettings } from '~/utils/runSettings/memberOverrides'
 
 const t = (key: string, params?: Record<string, string | number>): string =>
   localizationRuntime.translate(key, params)
@@ -63,30 +59,6 @@ export const resolveChatLaunchReadiness = (draft: ChatDraft): ChatLaunchReadines
   return { ready: true }
 }
 
-/** Resolve the draft's workspace choice into a workspace id + metadata, creating one for a new folder. */
-export const resolveChatWorkspace = async (
-  workspace: ChatDraftWorkspace,
-): Promise<{ workspaceId: string; workspaceMetadata: WorkspaceMetadata }> => {
-  const workspaceStore = useWorkspaceStore()
-  if (workspace.kind === 'existing') {
-    const info = workspaceStore.workspaces[workspace.workspaceId]
-    const metadata = workspaceStore.workspaceMetadataById[workspace.workspaceId]
-      ?? (info ? workspaceMetadataFromWorkspaceInfo(info) : null)
-    if (metadata) {
-      return { workspaceId: workspace.workspaceId, workspaceMetadata: metadata }
-    }
-    const rootPath = info?.absolutePath
-    if (!rootPath) throw new Error(t('chat.launch.workspaceUnavailable'))
-    return resolveChatWorkspace({ kind: 'folder', rootPath })
-  }
-  const workspaceId = await ensureRunHistoryWorkspaceByRootPath(workspace.rootPath)
-  const workspaceMetadata = workspaceId
-    ? await resolveRunHistoryWorkspaceMetadataByRootPath(workspace.rootPath)
-    : null
-  if (!workspaceId || !workspaceMetadata) throw new Error(t('chat.launch.workspaceUnavailable'))
-  return { workspaceId, workspaceMetadata }
-}
-
 /**
  * Launch a New chat addressed to an agent through the existing first-send path.
  *
@@ -110,7 +82,7 @@ export const launchAgentChat = async (
 
   const context = draft.context
   try {
-    const { workspaceId, workspaceMetadata } = await resolveChatWorkspace(draft.workspace)
+    const { workspaceId, workspaceMetadata } = await resolveRunWorkspaceChoice(draft.workspace)
     context.config.workspaceId = workspaceId
     context.config.workspaceMetadata = workspaceMetadata
     context.config.autoExecuteTools = effectiveAutoExecuteTools(context.config.runtimeKind, draft.autoExecuteTools)
@@ -141,10 +113,11 @@ export const launchAgentChat = async (
 }
 
 /**
- * Launch a New chat addressed to a team (REQ-010): a root-only launch draft with the chat's
- * runtime, model, thinking, workspace and approval for all members, focused on the coordinator.
- * The first message goes to the coordinator through the existing Team send, finalizing the
- * attachments uploaded under the chat draft. The user lands in the existing Team view.
+ * Launch a New chat addressed to a team (REQ-010): a launch draft with the chat's runtime, model,
+ * model config, workspace and approval for every member, the customized members' own settings
+ * (REQ-009), focused on the coordinator. The first message, with its `@` mentions (REQ-012), goes to
+ * the coordinator through the existing Team send, finalizing the attachments uploaded under the
+ * chat draft. The user lands in the existing Team view.
  */
 export const launchTeamChat = async (
   draft: ChatDraft,
@@ -167,19 +140,22 @@ export const launchTeamChat = async (
   const context = draft.context
   let teamDraftId: TeamLaunchDraftId | null = null
   try {
-    const { workspaceId, workspaceMetadata } = await resolveChatWorkspace(draft.workspace)
-    const config = buildChatTeamLaunchConfig(definition, {
+    const { workspaceId, workspaceMetadata } = await resolveRunWorkspaceChoice(draft.workspace)
+    const root = {
       runtimeKind: context.config.runtimeKind,
       llmModelIdentifier: context.config.llmModelIdentifier,
       llmConfig: context.config.llmConfig ?? null,
-      workspaceId,
-      workspaceMetadata,
       autoExecuteTools: effectiveAutoExecuteTools(context.config.runtimeKind, draft.autoExecuteTools),
-    })
-    // Team launch readiness checks the chosen runtime's catalog on the team config owner.
+    }
+    const config = buildChatTeamLaunchConfig(definition, { ...root, workspaceId, workspaceMetadata }, draft.teamAgentOverrides)
+    // Team launch readiness checks every effective runtime's catalog on the team config owner.
     const catalogs = useLLMProviderConfigStore()
-    await catalogs.fetchProvidersWithModels(context.config.runtimeKind)
-    teamRunConfigStore.setRuntimeModelCatalog(context.config.runtimeKind, catalogs.models(context.config.runtimeKind))
+    const runtimeKinds = new Set([root.runtimeKind, ...Object.values(draft.teamAgentOverrides)
+      .map((override) => resolveMemberSettings(root, override).runtimeKind)])
+    for (const runtimeKind of runtimeKinds) {
+      await catalogs.fetchProvidersWithModels(runtimeKind)
+      teamRunConfigStore.setRuntimeModelCatalog(runtimeKind, catalogs.models(runtimeKind))
+    }
     selectionStore.beginSelectionIntent()
     teamDraftId = teamRunConfigStore.createDraft(config, normalizeMemberAddress(definition.coordinatorMemberName))
     selectionStore.selectTeamDraftWithoutShellNavigation(teamDraftId)
@@ -192,7 +168,10 @@ export const launchTeamChat = async (
     await useAgentTeamRunStore().sendMessageToFocusedMember(
       context.requirement,
       [...context.contextFilePaths],
-      { attachmentDraftOwner: buildAgentDraftContextFileOwner(context.state.runId) },
+      {
+        attachmentDraftOwner: buildAgentDraftContextFileOwner(context.state.runId),
+        mentions: mentionsPresentInText(context.requirement, context.requestedMentions),
+      },
     )
   } catch (error) {
     // The launch failed before any message was recorded: stay on New chat with the draft intact

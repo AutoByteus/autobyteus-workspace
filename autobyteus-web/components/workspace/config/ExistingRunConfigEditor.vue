@@ -1,129 +1,87 @@
 <template>
   <div class="flex min-h-0 flex-1 flex-col" :aria-busy="draftStore.loadingCanonical || draftStore.saving || draftStore.reconciling">
-    <div class="flex-1 overflow-y-auto px-4 py-4">
-      <div
-        v-if="!draft"
-        :role="draftStore.feedback?.kind === 'error' ? 'alert' : 'status'"
-        class="rounded border px-3 py-2 text-sm"
-        :class="draftStore.feedback?.kind === 'error'
-          ? 'border-red-200 bg-red-50 text-red-700'
-          : 'border-blue-100 bg-blue-50 text-blue-700'"
-      >
-        {{ draftStore.feedback?.kind === 'error'
-          ? draftStore.feedback.message
-          : t('workspace.runModelConfig.loading') }}
-      </div>
-
-      <AgentRunConfigForm
-        v-else-if="draft.kind === 'agent' && agentConfig && agentDefinition"
-        :config="agentConfig"
-        :agent-definition="agentDefinition"
-        :workspace-loading-state="{ isLoading: false, error: null, loadedPath: draft.metadata.workspaceRootPath }"
-        :workspace-selection="agentWorkspaceSelection"
-        :workspace-locked="true"
-        :runtime-locked="true"
-        :existing-run="true"
-        :existing-model-config-editable="draft.editability.editable && !draft.isActive && !draftStore.reconciliationRequired"
-        :existing-model-config-reason="draftStore.reconciliationRequired ? 'REFRESH_REQUIRED' : draft.editability.reason"
-        :saving="draftStore.saving || draftStore.reconciling"
-        :model-config-field-errors="agentModelConfigFieldErrors"
-        :original-model-identifier="draft.metadata.llmModelIdentifier"
-        :model-options="draftStore.modelOptionsByAddress['/']"
-        @selection-change="draftStore.updateAgentModelConfig"
-        @schema-state="draftStore.setSchemaState('/', $event)"
-      />
-
-      <TeamRunConfigForm
-        v-else-if="draft.kind === 'team'"
-        :model="teamFormModel"
-        :model-config-field-errors-by-address="teamModelConfigFieldErrorsByAddress"
-        @update-existing-model-config="draftStore.updateTeamScopeModelConfig"
-        @schema-state="draftStore.setSchemaState"
-      />
-
-      <AgentOrgRunConfigForm
-        v-else-if="draft.kind === 'agent_org'"
-        class="mx-auto max-w-3xl"
-        :existing-model="agentOrgFormModel"
-        :model-config-field-errors-by-address="teamModelConfigFieldErrorsByAddress"
-        @update-existing-model-config="draftStore.updateAgentOrgScopeModelConfig"
-        @update:workspace-selection="draftStore.updateAgentOrgWorkspaceSelection"
-        @schema-state="draftStore.setSchemaState"
-      />
-
-      <div v-else role="alert" class="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-        {{ t('workspace.runModelConfig.runUnavailable') }}
-      </div>
-
-      <ul v-if="draftStore.fieldErrors.length" role="alert" class="mt-4 space-y-1 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-        <li v-for="error in draftStore.fieldErrors" :key="`${error.path}:${error.message}`">
-          <span class="font-mono text-xs">{{ error.path }}</span>: {{ error.message }}
-        </li>
-      </ul>
-    </div>
-
-    <div class="border-t border-gray-200 bg-gray-50 px-4 py-3">
+    <div v-if="!draft" class="flex-1 overflow-y-auto px-4 py-4">
       <p
-        v-if="draftStore.feedback && draft"
-        :role="draftStore.feedback.kind === 'error' ? 'alert' : 'status'"
-        :aria-live="draftStore.feedback.kind === 'error' ? 'assertive' : 'polite'"
-        class="mb-2 text-xs"
-        :class="draftStore.feedback.kind === 'error' ? 'text-red-700' : draftStore.feedback.kind === 'success' ? 'text-emerald-700' : 'text-blue-700'"
+        :role="draftStore.feedback?.kind === 'error' ? 'alert' : 'status'"
+        class="text-sm"
+        :class="draftStore.feedback?.kind === 'error' ? 'text-red-600' : 'text-gray-500'"
+        data-test="existing-run-loading"
       >
-        {{ draftStore.feedback.message }}
+        {{ draftStore.feedback?.kind === 'error' ? draftStore.feedback.message : t('workspace.runModelConfig.loading') }}
       </p>
-      <button
-        v-if="draftStore.reconciliationRequired || draft?.editability.reason === 'REFRESH_REQUIRED'"
-        type="button"
-        class="mb-2 inline-flex w-full justify-center rounded-md border border-indigo-200 bg-white px-4 py-2 text-sm font-medium text-indigo-700 shadow-sm hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        :disabled="draftStore.loadingCanonical || draftStore.reconciling"
-        @click="draftStore.retryCanonicalRefresh"
-      >
-        {{ t('workspace.runModelConfig.retry') }}
-      </button>
-      <button
-        type="button"
-        data-test="save-existing-model-config"
-        class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        :disabled="!draftStore.canSave"
-        @click="draftStore.save"
-      >
-        {{ draftStore.saving
-          ? t('workspace.runModelConfig.saving')
-          : draftStore.reconciling
-            ? t('workspace.runModelConfig.verifying')
-            : t('workspace.runModelConfig.save') }}
-      </button>
     </div>
+
+    <ExistingRunSettings
+      v-else-if="view"
+      :key="view.key"
+      :kind="view.kind"
+      :name="view.name"
+      :is-active="draft.isActive"
+      :can-edit="canEdit"
+      :state="state"
+      :stop="{ label: stopAction.label.value, pending: stopAction.pending.value, error: stopAction.error.value }"
+      :root="view.root"
+      :root-locked-models="lockedModelsFor('/')"
+      :root-model-unavailable="modelUnavailable('/')"
+      :members="view.members"
+      :locked-models-for="lockedModelsFor"
+      :dirty="draftStore.dirty"
+      :can-save="draftStore.canSave"
+      :saving="draftStore.saving || draftStore.reconciling"
+      :saved="draftStore.feedback?.kind === 'success'"
+      :save-error="saveError"
+      @stop="stopAction.stop"
+      @refresh="draftStore.retryCanonicalRefresh"
+      @change-root="(change) => changeScope('/', change)"
+      @change-member="changeScope"
+      @cancel="draftStore.discardChanges"
+      @save="draftStore.save"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
-import { useRunHistoryStore } from '~/stores/runHistoryStore'
-import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
+import ExistingRunSettings from '~/components/run-settings/ExistingRunSettings.vue'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
-import { useWorkspaceStore } from '~/stores/workspace'
-import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
-import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
-import { projectExistingTeamRunFormModel } from '~/services/runConfigEditing/existingTeamRunFormModel'
-import { projectExistingAgentOrgRunFormModel } from '~/services/runConfigEditing/existingAgentOrgRunFormModel'
-import AgentRunConfigForm from './AgentRunConfigForm.vue'
-import TeamRunConfigForm from './TeamRunConfigForm.vue'
-import AgentOrgRunConfigForm from './AgentOrgRunConfigForm.vue'
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
+import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useLocalization } from '~/composables/useLocalization'
+import { useRunStopAction, type RunStopSubject } from '~/composables/runSettings/useRunStopAction'
+import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
+import {
+  runWorkspaceChoiceFromRootPath,
+  sameRunWorkspaceChoice,
+  toWorkspaceSelection,
+} from '~/services/workspace/runWorkspaceChoice'
+import type { RunMemberSettingChange, RunSettingsValues } from '~/types/runSettings/RunSettings'
+import type { ExistingRunModelChoice } from '~/types/agent/ExistingRunModelConfigDraft'
+import { buildSavedRunMemberTree, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
+import {
+  existingRunChoiceLabelInput,
+  getModelSelectionOptionDescription,
+  getModelSelectionOptionLabel,
+} from '~/utils/modelSelectionLabel'
+
+/**
+ * The saved-run settings container (Edit Config): loads the selected run into
+ * `existingRunConfigStore` and maps its state onto `ExistingRunSettings`. Edits, Cancel, Save and
+ * Refresh go to the store; the stop icon goes through `useRunStopAction`, then re-reads the run.
+ */
+const props = defineProps<{ target?: Readonly<{ kind: 'agent_org'; orgRunId: string }> | null }>()
 
 const selection = useAgentSelectionStore()
 const history = useRunHistoryStore()
 const draftStore = useExistingRunConfigStore()
 const contexts = useAgentContextsStore()
 const definitions = useAgentDefinitionStore()
+const catalogs = useLLMProviderConfigStore()
 const { t } = useLocalization()
 const { draft } = storeToRefs(draftStore)
-const props = defineProps<{ target?: Readonly<{ kind: 'agent_org'; orgRunId: string }> | null }>()
 
 type SelectedRunKind = 'agent' | 'team' | 'agent_org'
 const selectedKind = computed<SelectedRunKind | null>(() => {
@@ -140,7 +98,6 @@ const selectedRunId = computed(() => {
   if (subject?.kind === 'team_run') return subject.rootTeamRunId
   return null
 })
-
 const selectedCanonical = computed(() => {
   const subject = selection.subject
   if (subject?.kind === 'agent_run') return history.resumeConfigByRunId[subject.runId] ?? null
@@ -166,77 +123,129 @@ watch(selectedCanonical, (payload) => {
 
 onBeforeUnmount(() => draftStore.clear())
 
-const agentConfig = computed<AgentRunConfig | null>(() => {
+const stopSubject = computed<RunStopSubject | null>(() => {
   const current = draft.value
-  if (current?.kind !== 'agent') return null
-  const hydrated = contexts.getConfigForRun(current.runId)
+  if (!current) return null
+  if (current.kind === 'agent') return { kind: 'agent', runId: current.runId }
+  if (current.kind === 'team') return { kind: 'team', teamRunId: current.teamRunId }
+  return { kind: 'agent_org', orgRunId: current.orgRunId }
+})
+const stopAction = useRunStopAction(stopSubject, { onStopped: () => draftStore.reloadCanonical() })
+
+const refreshRequired = computed(() => draftStore.reconciliationRequired || draft.value?.editability.reason === 'REFRESH_REQUIRED')
+const state = computed<'editable' | 'read_only' | 'refresh_required'>(() => {
+  if (refreshRequired.value) return 'refresh_required'
+  return draft.value?.editability.editable ? 'editable' : 'read_only'
+})
+const canEdit = computed(() => Boolean(draft.value && draft.value.editability.editable && !draft.value.isActive
+  && !refreshRequired.value && !draftStore.saving && !draftStore.reconciling && !draftStore.loadingCanonical))
+const saveError = computed(() => (draftStore.feedback?.kind === 'error' ? draftStore.feedback.message : null))
+
+const schemaFor = (runtimeKind: string, llmModelIdentifier: string) => catalogs.modelConfigSchemaByIdentifier(runtimeKind, llmModelIdentifier)
+
+/** The saved run as run-settings values and member rows. */
+const view = computed<{ key: string; kind: 'agent' | 'team' | 'org'; name: string; root: RunSettingsValues; members: readonly RunMemberNode[] } | null>(() => {
+  const current = draft.value
+  if (!current) return null
+  if (current.kind === 'agent') {
+    const hydrated = contexts.getConfigForRun(current.runId)
+    const definition = definitions.getAgentDefinitionById(current.metadata.agentDefinitionId)
+    return {
+      key: `agent:${current.runId}`,
+      kind: 'agent',
+      name: definition?.name ?? hydrated?.agentDefinitionName ?? current.metadata.agentDefinitionId,
+      root: {
+        workspace: runWorkspaceChoiceFromRootPath(current.metadata.workspaceRootPath)
+          ?? (hydrated?.workspaceId ? { kind: 'existing', workspaceId: hydrated.workspaceId } : null),
+        runtimeKind: current.metadata.runtimeKind ?? 'autobyteus',
+        llmModelIdentifier: current.draftSelection.llmModelIdentifier,
+        llmConfig: current.draftSelection.llmConfig,
+        autoExecuteTools: current.metadata.autoExecuteTools,
+      },
+      members: [],
+    }
+  }
+  const tree = buildSavedRunMemberTree(current.kind === 'team'
+    ? { kind: 'team', tree: current.executionTree, planner: current.planner }
+    : { kind: 'agent_org', tree: current.executionTree, planner: current.planner, workspaceDraft: current.workspaceDraft },
+  { schemaFor, sameWorkspace: sameRunWorkspaceChoice, workspaceFromRootPath: runWorkspaceChoiceFromRootPath })
   return {
-    agentDefinitionId: current.metadata.agentDefinitionId,
-    agentDefinitionName: hydrated?.agentDefinitionName ?? 'Agent',
-    agentAvatarUrl: hydrated?.agentAvatarUrl ?? null,
-    runtimeKind: current.metadata.runtimeKind ?? 'autobyteus',
-    ...current.draftSelection,
-    workspaceId: hydrated?.workspaceId ?? null,
-    workspaceMetadata: hydrated?.workspaceMetadata ?? null,
-    autoExecuteTools: current.metadata.autoExecuteTools,
-    isLocked: true,
+    key: current.kind === 'team' ? `team:${current.teamRunId}` : `agent_org:${current.orgRunId}`,
+    kind: current.kind === 'team' ? 'team' : 'org',
+    name: tree.name,
+    root: tree.root,
+    members: tree.nodes,
   }
 })
-const agentDefinition = computed(() => agentConfig.value
-  ? definitions.getAgentDefinitionById(agentConfig.value.agentDefinitionId) ?? { name: agentConfig.value.agentDefinitionName }
-  : null)
-const workspaceStore = useWorkspaceStore()
-// A run reopened from history carries a history-derived workspace id; show the known workspace
-// with the same root (e.g. the temp workspace) instead of an empty selector.
-const agentWorkspaceSelection = computed<WorkspaceSelectionState>(() => {
-  const rootPath = draft.value?.kind === 'agent' ? draft.value.metadata.workspaceRootPath : ''
-  const workspaceId = agentConfig.value?.workspaceId ?? null
-  const knownWorkspaceId = workspaceId && workspaceStore.workspaces[workspaceId]
-    ? workspaceId
-    : (rootPath ? workspaceStore.findWorkspaceInfoByRootPath(rootPath)?.workspaceId : null) ?? workspaceId
-  return { mode: 'existing', existingWorkspaceId: knownWorkspaceId, newWorkspacePath: rootPath }
-})
-const agentModelConfigFieldErrors = computed<Record<string, string>>(() => Object.fromEntries(
-  draftStore.fieldErrors.flatMap((error) => {
-    const match = /^llmConfig\.([^.[]+)/.exec(error.path)
-    return match ? [[match[1]!, error.message]] : []
-  }),
-))
-const teamModelConfigFieldErrorsByAddress = computed<Record<string, Record<string, string>>>(() => {
-  const byAddress: Record<string, Record<string, string>> = {}
-  for (const error of draftStore.fieldErrors) {
-    const match = /^(?:patches|modelPatches)\[(.+)]\.llmConfig\.([^.[]+)/.exec(error.path)
-    if (!match) continue
-    const addressErrors = byAddress[match[1]!] ??= {}
-    addressErrors[match[2]!] = error.message
+
+const runtimeOf = (address: string): string => {
+  const current = draft.value
+  if (!current) return ''
+  if (current.kind === 'agent') return current.metadata.runtimeKind ?? 'autobyteus'
+  return current.planner.scopesByAddress[address]?.runtimeKind ?? ''
+}
+
+const toChatModelOption = (runtimeKind: string, choice: ExistingRunModelChoice): ChatModelOption => {
+  const labelInput = existingRunChoiceLabelInput(choice)
+  return {
+    runtimeKind,
+    llmModelIdentifier: choice.llmModelIdentifier,
+    label: getModelSelectionOptionLabel(labelInput, runtimeKind),
+    secondary: getModelSelectionOptionDescription(labelInput, runtimeKind),
+    recommended: choice.recommended,
+    providerName: choice.providerName,
+    displayName: choice.displayName || null,
+    canonicalName: choice.canonicalName || null,
   }
-  return byAddress
-})
-const teamFormModel = computed(() => {
+}
+
+/** REQ-017: the saved-run model menu lists the run's runtime's models the server allows for this scope. */
+const lockedModelsFor = (address: string): readonly ChatModelOption[] | null => {
+  const options = draftStore.modelOptionsByAddress[address]?.options
+  if (!options) return []
+  const runtimeKind = runtimeOf(address)
+  const rows = [...(options.currentModel ? [options.currentModel] : []), ...options.replacements]
+  const seen = new Set<string>()
+  return rows.filter((row) => !seen.has(row.llmModelIdentifier) && seen.add(row.llmModelIdentifier))
+    .map((row) => toChatModelOption(runtimeKind, row))
+}
+
+/** REQ-016: the run's model is no longer offered by its runtime (and is still chosen). */
+const modelUnavailable = (address: string): boolean => {
   const current = draft.value
-  if (current?.kind !== 'team') throw new Error('Existing Team form requires a Team draft.')
-  return projectExistingTeamRunFormModel({
-    tree: current.executionTree,
-    planner: current.planner,
-    isActive: current.isActive,
-    modelConfigEditable: current.editability.editable && !current.isActive && !draftStore.reconciliationRequired,
-    modelConfigReason: draftStore.reconciliationRequired ? 'REFRESH_REQUIRED' : current.editability.reason ?? null,
-    modelOptionsByAddress: draftStore.modelOptionsByAddress,
-    saving: draftStore.saving || draftStore.reconciling,
-  })
-})
-const agentOrgFormModel = computed(() => {
+  const options = draftStore.modelOptionsByAddress[address]
+  if (!current || options?.status !== 'ready' || !options.options) return false
+  const selected = current.kind === 'agent'
+    ? current.draftSelection.llmModelIdentifier
+    : current.planner.scopesByAddress[address]?.draftSelection.llmModelIdentifier
+  return selected === options.options.currentModelIdentifier && !options.options.currentModel
+}
+
+const selectionOf = (address: string) => {
   const current = draft.value
-  if (current?.kind !== 'agent_org') throw new Error('Existing AgentOrg form requires an AgentOrg draft.')
-  return projectExistingAgentOrgRunFormModel({
-    workspaceDraft: current.workspaceDraft,
-    tree: current.executionTree,
-    planner: current.planner,
-    isActive: current.isActive,
-    modelConfigEditable: current.editability.editable && !current.isActive && !draftStore.reconciliationRequired,
-    modelConfigReason: draftStore.reconciliationRequired ? 'REFRESH_REQUIRED' : current.editability.reason ?? null,
-    modelOptionsByAddress: draftStore.modelOptionsByAddress,
-    saving: draftStore.saving || draftStore.reconciling,
-  })
-})
+  if (!current) return null
+  return current.kind === 'agent' ? current.draftSelection : current.planner.scopesByAddress[address]?.draftSelection ?? null
+}
+
+const updateScope = (address: string, llmModelIdentifier: string, llmConfig: Record<string, unknown> | null) => {
+  const current = draft.value
+  if (!current) return
+  const next = { llmModelIdentifier, llmConfig }
+  if (current.kind === 'agent') draftStore.updateAgentModelConfig(next)
+  else if (current.kind === 'team') draftStore.updateTeamScopeModelConfig(address, next)
+  else draftStore.updateAgentOrgScopeModelConfig(address, next)
+}
+
+const changeScope = (address: string, change: RunMemberSettingChange) => {
+  const current = selectionOf(address)
+  if (!current || !canEdit.value) return
+  if (change.field === 'model') {
+    // A saved-run replacement commits the target with its own defaults (`null`), as before.
+    updateScope(address, change.choice.llmModelIdentifier, null)
+  } else if (change.field === 'thinking') {
+    updateScope(address, current.llmModelIdentifier, change.llmConfig)
+  } else if (change.field === 'workspace' && draft.value?.kind === 'agent_org') {
+    draftStore.updateAgentOrgWorkspaceSelection(address, toWorkspaceSelection(change.choice))
+  }
+}
 </script>

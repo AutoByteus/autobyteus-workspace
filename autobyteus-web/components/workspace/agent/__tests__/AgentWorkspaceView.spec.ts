@@ -10,12 +10,12 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 const mocks = vi.hoisted(() => ({
   target: null as any,
   push: vi.fn(),
-  startNewChat: vi.fn(),
+  copyAgentRun: vi.fn(),
   showConfig: vi.fn(),
 }))
 vi.mock('vue-router', () => ({ useRouter: () => ({ push: mocks.push }) }))
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => ({ get activeWorkspaceTarget() { return mocks.target } }) }))
-vi.mock('~/stores/chatDraftStore', () => ({ useChatDraftStore: () => ({ startNewChat: mocks.startNewChat }) }))
+vi.mock('~/composables/runSettings/useRunStart', () => ({ useRunStart: () => ({ copyAgentRun: mocks.copyAgentRun }) }))
 vi.mock('~/stores/workspaceCenterViewStore', () => ({ useWorkspaceCenterViewStore: () => ({ showConfig: mocks.showConfig }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => ({ agentDefinitions: [{ id: 'autobyteus-daily-assistant' }], getAgentDefinitionById: () => null, fetchAllAgentDefinitions: vi.fn() }),
@@ -47,7 +47,8 @@ const mountView = () => mount(AgentWorkspaceView, {
       AgentStatusDisplay: { template: '<span data-test="status" />' },
       SkillImprovementComposerCta: true,
       WorkspaceHeaderActions: {
-        template: '<div><button data-test="new-agent" @click="$emit(\'new-agent\')" /><button data-test="edit-config" @click="$emit(\'edit-config\')" /></div>',
+        props: { showEditConfig: { type: Boolean, default: true } },
+        template: '<div><button data-test="new-agent" @click="$emit(\'new-agent\')" /><button v-if="showEditConfig" data-test="edit-config" @click="$emit(\'edit-config\')" /></div>',
       },
     },
     mocks: { $t: (key: string) => key },
@@ -73,17 +74,24 @@ describe('AgentWorkspaceView (the chat run view, D-17)', () => {
     expect(mountView().get('[data-test="agent-workspace-title"]').text()).toBe('New - Daily Assistant')
   })
 
-  it('＋ starts a New chat preset to this agent and workspace; ⚙ opens the run settings', async () => {
+  it('＋ opens New chat copied from this run (REQ-013); ⚙ opens the run settings', async () => {
     mocks.target = buildTarget('run-1', 'hello')
     const wrapper = mountView()
 
     await wrapper.get('[data-test="new-agent"]').trigger('click')
     await flushPromises()
-    expect(mocks.startNewChat).toHaveBeenCalledWith({ agentDefinitionId: 'autobyteus-daily-assistant', workspaceRootPath: '/Users/me/project' })
-    expect(mocks.push).toHaveBeenCalledWith('/chat')
+    expect(mocks.copyAgentRun).toHaveBeenCalledWith('run-1')
 
     await wrapper.get('[data-test="edit-config"]').trigger('click')
     expect(mocks.showConfig).toHaveBeenCalledTimes(1)
+  })
+
+  it('hides ⚙ for a `temp-*` context whose first send failed; its composer stays available (AR-003)', () => {
+    mocks.target = buildTarget('temp-chat-1', 'hello')
+    const wrapper = mountView()
+    expect(wrapper.find('[data-test="edit-config"]').exists()).toBe(false)
+    expect(wrapper.find('[data-test="new-agent"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="monitor"]').exists()).toBe(true)
   })
 
   it('gives the box `/` skill tagging with the agent skills', () => {
@@ -106,7 +114,7 @@ describe('AgentWorkspaceView (the chat run view, D-17)', () => {
     expect(monitor.props('composerPlaceholder')).toBe('Message computer use agent…')
     await wrapper.get('[data-test="new-agent"]').trigger('click')
     await flushPromises()
-    expect(mocks.startNewChat).toHaveBeenCalledWith({ agentDefinitionId: 'computer-use', workspaceRootPath: '/Users/me/project' })
+    expect(mocks.copyAgentRun).toHaveBeenCalledWith('run-1')
     await wrapper.get('[data-test="edit-config"]').trigger('click')
     expect(mocks.showConfig).toHaveBeenCalledTimes(1)
   })

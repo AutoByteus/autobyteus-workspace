@@ -30,15 +30,6 @@ const agentOrgCopy = {
   'workspace.agentOrg.history.collectionLabel': ['Orgs', '组织'],
   'workspace.agentOrg.history.stopLabel': ['Stop Agent Org', '停止智能体组织'],
   'workspace.agentOrg.runConfig.orgLabel': ['Agent Org', '智能体组织'],
-  'workspace.agentOrg.runConfig.autoApprove': ['Auto approve tools', '自动批准工具'],
-  'workspace.agentOrg.runConfig.autoApproveHelp': [
-    'Automatically allows tool calls and access requests for this run.',
-    '自动允许本次运行中的工具调用和访问请求。',
-  ],
-  'workspace.agentOrg.runConfig.workspaceRequired': [
-    'Workspace is required to run an Agent Org.',
-    '运行智能体组织需要工作区。',
-  ],
 } as const
 
 describe('flat Team and AgentOrg localization catalogs', () => {

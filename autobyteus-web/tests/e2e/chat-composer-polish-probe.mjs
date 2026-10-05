@@ -224,7 +224,7 @@ defineCase('T02', 'Launch a chat at High: the created run records thinking_enabl
   return { runId, draft, recorded, runtimeReplied: reply }
 })
 
-defineCase('T03', 'Launch Off → recorded Off → ⚙ run settings: Advanced effort edit turns Thinking on → save keeps effort (AC-010)', async (page) => {
+defineCase('T03', 'Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)', async (page) => {
   assert(state.claudeModel, 'T01 must select a Claude SDK model first')
   await newChat(page)
   await pickModel(page, CLAUDE, state.claudeModel)
@@ -240,27 +240,22 @@ defineCase('T03', 'Launch Off → recorded Off → ⚙ run settings: Advanced ef
   await page.locator(RUN_VIEW).waitFor({ timeout: 120000 })
   await page.locator(sel('workspace-header-edit-config')).click()
   await page.locator(sel('run-config-back-to-events')).waitFor({ timeout: 30000 })
-  // The Thinking toggle (ModelConfigBasic), not the auto-approve switch.
-  const toggle = page.locator('main button').filter({ has: page.locator('span.sr-only', { hasText: /^Use setting$/ }) }).first()
-  const toggleOn = async () => /bg-blue-600/.test((await toggle.getAttribute('class')) ?? '')
-  // Rendered state after the 200ms colour/knob transition: background colour and knob offset.
-  const rendered = () => toggle.evaluate((b) => ({ background: getComputedStyle(b).backgroundColor, knobX: new DOMMatrix(getComputedStyle(b.querySelector('span[aria-hidden="true"]')).transform).m41 }))
-  await toggle.waitFor({ timeout: 30000 })
-  await delay(600)
-  const offRendered = await rendered()
-  assert(!(await toggleOn()) && offRendered.knobX === 0, 'Persisted Off config does not read as Off in run settings', { recordedOff, offRendered })
-  const effort = page.locator('main select[id$="reasoning_effort"]').first()
-  if (!(await effort.isVisible().catch(() => false))) await page.locator('main [data-testid="advanced-params-toggle"]').first().click()
-  await effort.waitFor({ timeout: 15000 })
-  const before = await effort.inputValue()
-  const target = before === 'high' ? 'low' : 'high'
-  await effort.selectOption(target)
-  await waitFor('toggle on', toggleOn, 10000, 100).catch(() => {})
-  await delay(600)
+  // run-settings-ui-unification: saved-run settings use the same Thinking control as New chat.
+  const card = page.locator(sel('existing-run-root-card'))
+  const cardThinking = card.locator(sel('chat-thinking-trigger'))
+  await cardThinking.waitFor({ timeout: 30000 })
+  const offRendered = { trigger: (await cardThinking.innerText()).trim() }
+  assert(offRendered.trigger === 'Off', 'Persisted Off config does not read as Off in run settings', { recordedOff, offRendered })
+  const before = recordedOff?.reasoning_effort ?? null
+  const target = 'high'
+  await cardThinking.click()
+  await page.locator(sel('chat-thinking-menu')).waitFor()
+  await page.locator(sel(`chat-thinking-option-primary-${target}`)).click()
+  await delay(300)
   const save = page.locator(sel('save-existing-model-config'))
-  const after = { toggleOn: await toggleOn(), effort: await effort.inputValue(), rendered: await rendered(), saveEnabled: await save.isEnabled() }
+  const after = { trigger: (await cardThinking.innerText()).trim(), saveEnabled: await save.isEnabled() }
   await page.screenshot({ path: path.join(outDir, 'T03-run-settings-after-edit.png') })
-  assert(after.toggleOn && after.effort === target && after.rendered.knobX > 0 && after.rendered.background !== offRendered.background, 'AC-010: Advanced effort edit did not turn Thinking on (rendered) and keep the effort', { before, target, offRendered, after })
+  assert(after.trigger !== 'Off', 'AC-010: choosing an effort did not turn Thinking on', { before, target, offRendered, after })
   assert(after.saveEnabled, 'Run settings Save not enabled after the edit', after)
   await save.click()
   const saved = await waitFor('saved config', async () => { const c = (await runConfig(runId)).metadataConfig.llmConfig; return c?.thinking_enabled === true ? c : null }, 30000, 500)
@@ -353,8 +348,9 @@ defineCase('T05', 'Workspace search at desktop width with 14 workspaces: focus, 
   await search.press('ArrowDown'); await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter')
   await page.locator(menuSel).waitFor({ state: 'detached' })
   const picked = await selectedName()
-  const hint = (await page.locator(sel('chat-new-hint')).innerText()).trim()
-  assert(picked === 'notes' && /notes/.test(hint), 'AC-008: ArrowDown+Enter did not select the highlighted workspace', { picked, hint })
+  // run-settings-ui-unification: the hint line under the composer is gone; the trigger shows the choice.
+  const hint = null
+  assert(picked === 'notes', 'AC-008: ArrowDown+Enter did not select the highlighted workspace', { picked })
   // Reopen: query reset; Escape closes without changing the selection.
   await trigger.click(); await page.locator(menuSel).waitFor()
   const reopenedQuery = await search.inputValue()
@@ -393,12 +389,12 @@ defineCase('T06', 'Layout at 1440×1000 and 1280×700: pt-[14vh] pb-10; no overl
       const root = document.querySelector('[data-test="chat-new"]'); const inner = root.firstElementChild
       const box = (e) => { const r = e.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, h: r.height } }
       const heading = box(inner.querySelector('h1')); const subtitle = box(inner.querySelector('[data-test="chat-new-subtitle"]'))
-      const composer = box(inner.querySelector('[data-test="chat-composer"]')); const hint = box(inner.querySelector('[data-test="chat-new-hint"]'))
+      const composer = box(inner.querySelector('[data-test="chat-composer"]')); const hint = composer
       const area = box(root)
       return { paddingBottom: parseFloat(getComputedStyle(inner).paddingBottom), paddingTop: parseFloat(getComputedStyle(inner).paddingTop), heading, subtitle, composer, hint, area, overflow: root.scrollHeight > root.clientHeight + 1, blockCenter: (heading.top + hint.bottom) / 2, areaCenter: (area.top + area.bottom) / 2 }
     })
     const now = await measure()
-    const order = [now.heading, now.subtitle, now.composer, now.hint]
+    const order = [now.heading, now.subtitle, now.composer]
     const noOverlap = order.every((b, i) => i === 0 || b.top >= order[i - 1].bottom - 0.5)
     const inside = order.every((b) => b.top >= now.area.top - 0.5 && b.bottom <= now.area.bottom + 0.5)
     assert(Math.abs(now.paddingTop - 0.14 * vp.height) < 1 && now.paddingBottom === 40, 'New-chat padding is not pt-[14vh] pb-10', now)

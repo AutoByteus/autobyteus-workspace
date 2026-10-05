@@ -1,5 +1,3 @@
-import type { ChatTarget } from '~/stores/chatDraftStore'
-
 export interface ChatTargetOption {
   key: string
   kind: 'agent' | 'team'
@@ -8,11 +6,6 @@ export interface ChatTargetOption {
   initials: string
   description: string
 }
-
-export const toChatTarget = (option: ChatTargetOption): ChatTarget =>
-  option.kind === 'team'
-    ? { kind: 'team', teamDefinitionId: option.id }
-    : { kind: 'agent', agentDefinitionId: option.id }
 
 export const initialsFor = (name: string): string =>
   name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AI'

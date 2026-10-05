@@ -46,7 +46,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
-import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
+import { mentionsPresentInText, toCollaboratorMentionDtos, type RequestedCollaboratorMention } from '~/utils/collaborators/collaboratorMentionText';
 
 const teamStreamingServices = new Map<string, TeamStreamingService>();
 const inputDedupeKey = (rootTeamRunId: string, agentRunId: string, messageId: string) =>
@@ -259,7 +259,11 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
     async sendMessageToFocusedMember(
       text: string,
       contextAttachments: ContextAttachment[],
-      options: { attachmentDraftOwner?: DraftContextFileOwnerDescriptor } = {},
+      options: {
+        attachmentDraftOwner?: DraftContextFileOwnerDescriptor
+        /** A launch draft's first message: the `@` mentions chosen before the run existed (REQ-012). */
+        mentions?: readonly RequestedCollaboratorMention[]
+      } = {},
     ) {
       const contexts = useAgentTeamContextsStore();
       const drafts = useTeamRunConfigStore();
@@ -280,10 +284,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       let localSubmission: LocalUserSubmissionHandle | null = null;
       let retryAttachments = contextAttachments.map(cloneContextAttachment);
       let draftOwnerId = draft?.draftId ?? rootTeamRunId;
-      // `@` mentions exist only in a live run; a launch draft's first message never carries them.
-      const mentions = team && !draft && targetAgentRunId
-        ? mentionsPresentInText(text, team.view.getAgentContext(targetAgentRunId)?.requestedMentions ?? [])
-        : [];
+      // `@` mentions still in the text: a live run's composer records them on the focused member;
+      // a launch draft's first message brings the ones chosen in New chat (REQ-012).
+      const mentions = draft
+        ? mentionsPresentInText(text, options.mentions ?? [])
+        : team && targetAgentRunId
+          ? mentionsPresentInText(text, team.view.getAgentContext(targetAgentRunId)?.requestedMentions ?? [])
+          : [];
       try {
         if (draft) {
           const launched = await this.launchDraft(draft);

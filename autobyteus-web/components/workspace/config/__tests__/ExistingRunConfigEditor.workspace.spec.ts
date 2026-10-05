@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ExistingRunConfigEditor from '../ExistingRunConfigEditor.vue'
 
-// A stopped agent run reopened from history carries a history-derived workspace id. The run
-// settings show the known workspace with the same root (VIS-017), not an empty selector.
+// A stopped agent run reopened from history carries a history-derived workspace id. The saved-run
+// settings show the known workspace with the same root (its name, locked), not an unknown id.
 const mocks = vi.hoisted(() => ({ hydratedWorkspaceId: '' as string | null }))
 vi.mock('pinia', async (original) => {
   const { toRefs } = await import('vue')
@@ -21,6 +21,11 @@ vi.mock('~/stores/workspace', () => ({
     findWorkspaceInfoByRootPath: (rootPath: string) => (rootPath === '/data/temp_workspace' ? { workspaceId: 'temp_ws_default' } : null),
   }),
 }))
+vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => null }) }))
+vi.mock('~/composables/runSettings/useRunStopAction', async () => {
+  const { ref } = await import('vue')
+  return { useRunStopAction: () => ({ pending: ref(false), error: ref(null), label: ref('Terminate run'), stop: vi.fn() }) }
+})
 vi.mock('~/stores/existingRunConfigStore', async () => {
   const { reactive: r } = await import('vue')
   const store = r({
@@ -38,7 +43,7 @@ vi.mock('~/stores/existingRunConfigStore', async () => {
 
 const mountEditor = () => mount(ExistingRunConfigEditor, {
   global: {
-    stubs: { AgentRunConfigForm: { name: 'AgentRunConfigForm', props: { workspaceSelection: Object }, template: '<div />' }, TeamRunConfigForm: true, AgentOrgRunConfigForm: true },
+    stubs: { ExistingRunSettings: { name: 'ExistingRunSettings', props: { root: Object, kind: String, name: String, canEdit: Boolean, state: String }, template: '<div />' } },
     mocks: { $t: (key: string) => key },
   },
 })
@@ -48,13 +53,17 @@ describe('ExistingRunConfigEditor workspace display', () => {
 
   it('resolves a history-derived workspace id to the known workspace with the same root', () => {
     mocks.hydratedWorkspaceId = 'agent_ws_from_history'
-    const form = mountEditor().getComponent({ name: 'AgentRunConfigForm' })
-    expect(form.props('workspaceSelection')).toEqual({ mode: 'existing', existingWorkspaceId: 'temp_ws_default', newWorkspacePath: '/data/temp_workspace' })
+    const view = mountEditor().getComponent({ name: 'ExistingRunSettings' })
+    expect(view.props('root')).toMatchObject({ workspace: { kind: 'existing', workspaceId: 'temp_ws_default' }, runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5' })
+    expect(view.props('kind')).toBe('agent')
+    expect(view.props('name')).toBe('Daily Assistant')
+    expect(view.props('canEdit')).toBe(true)
+    expect(view.props('state')).toBe('editable')
   })
 
   it('keeps a workspace id the store already knows', () => {
     mocks.hydratedWorkspaceId = 'temp_ws_default'
-    const form = mountEditor().getComponent({ name: 'AgentRunConfigForm' })
-    expect(form.props('workspaceSelection')).toMatchObject({ existingWorkspaceId: 'temp_ws_default' })
+    const view = mountEditor().getComponent({ name: 'ExistingRunSettings' })
+    expect(view.props('root')).toMatchObject({ workspace: { kind: 'existing', workspaceId: 'temp_ws_default' } })
   })
 })

@@ -41,7 +41,7 @@ const { team, teamStore, agentStore, prepareTeamRun, push } = vi.hoisted(() => {
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({ useAgentTeamDefinitionStore: () => teamStore }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => agentStore }))
-vi.mock('~/composables/useRunActions', () => ({ useRunActions: () => ({ prepareTeamRun }) }))
+vi.mock('~/composables/runSettings/useRunStart', () => ({ useRunStart: () => ({ runTeam: prepareTeamRun }) }))
 vi.mock('vue-router', () => ({ useRouter: () => ({ push }) }))
 
 const translations: Record<string, string> = {
@@ -111,12 +111,12 @@ describe('AgentTeamDetail flat Team experience', () => {
     })
   })
 
-  it('launches the independent Team through the accepted run action', async () => {
+  it('Run opens New chat for the Team through the single start intent (REQ-005)', async () => {
     const wrapper = await mountDetail()
     await wrapper.findAll('button').find((button) => button.text() === 'Run')!.trigger('click')
 
-    expect(prepareTeamRun).toHaveBeenCalledWith(team)
-    expect(push).toHaveBeenCalledWith('/workspace')
+    expect(prepareTeamRun).toHaveBeenCalledWith(team.id)
+    expect(push).not.toHaveBeenCalledWith('/workspace')
   })
 
   it('returns to the owning Agent Org detail without inferring a parent Team', async () => {

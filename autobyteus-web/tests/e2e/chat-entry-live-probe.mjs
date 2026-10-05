@@ -195,6 +195,14 @@ const state = { model: null, modelLabel: null, models: [], taggedRunId: null, te
 const cases = []
 const defineCase = (id, title, fn) => cases.push({ id, title, fn })
 
+// run-settings-ui-unification: New chat's target is chosen in the heading switcher; `@` only mentions collaborators.
+const switchTarget = async (page, query, id) => {
+  await page.locator(sel('run-target-switcher-trigger')).click()
+  await page.locator(sel('run-target-switcher-search')).fill(query)
+  await page.locator(sel(`run-target-switcher-option-${id}`)).click()
+  await page.locator(sel('run-target-switcher-menu')).waitFor({ state: 'detached', timeout: 30000 })
+}
+
 defineCase('C01', 'Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED', async () => {
   const { agentDefinitions } = await gql('{ agentDefinitions { id name description role instructions toolNames skillScope skillNames } }')
   const da = agentDefinitions.find((a) => a.id === 'autobyteus-daily-assistant')
@@ -248,8 +256,8 @@ defineCase('C03', 'Menus: model search/runtime rows, thinking, / skills (bundled
   assert(skills.includes('probe-bundled') && skills.includes('probe-alpha') && !skills.includes('probe-disabled'), '/ list wrong', skills)
   await page.keyboard.press('Escape'); await input.fill('')
   await input.type('@')
-  await page.locator(sel('chat-target-menu')).waitFor()
-  const targets = await page.locator('[data-test^="chat-target-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-target-option-', '')))
+  await page.locator(sel('run-mention-menu')).waitFor()
+  const targets = await page.locator('[data-test^="run-mention-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('run-mention-option-', '')))
   assert(!targets.includes('autobyteus-daily-assistant') && targets.includes('probe-team') && !targets.includes('probe-org'), '@ list wrong', targets)
   await page.keyboard.press('Escape'); await input.fill('')
   await page.locator(sel('chat-workspace-trigger')).click()
@@ -424,17 +432,16 @@ defineCase('C08', 'Catalog Run (form unchanged) → /chat?id=temp-* → first se
   return { runId: state.catalogRunId }
 })
 
-defineCase('C09', '@agent scoped /, × back to Daily Assistant, tree + preset', async (page) => {
+defineCase('C09', 'switcher-chosen agent scopes /, switcher back to Daily Assistant, tree + preset', async (page) => {
   await newChat(page)
+  await switchTarget(page, 'probe-bundle', 'probe-bundle-owner')
   const input = composerInput(page)
-  await input.click(); await input.type('@probe-bundle')
-  await page.locator(sel('chat-target-option-probe-bundle-owner')).click()
-  await input.type('/')
+  await input.click(); await input.type('/')
   const scoped = await page.locator('[data-test^="chat-skill-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-skill-option-', '')))
   assert(scoped.join() === 'probe-bundled', '/ not scoped to the addressed agent', scoped)
   await page.keyboard.press('Escape'); await input.fill('')
-  await page.locator(`${sel('chat-agent-chip')} button`).first().click()
-  assert(await page.locator(sel('chat-agent-chip')).count() === 0, '× did not return to Daily Assistant')
+  await switchTarget(page, 'Daily', 'autobyteus-daily-assistant')
+  assert((await page.locator(sel('run-target-name')).innerText()).includes('Daily'), 'the switcher did not return to Daily Assistant')
   await page.goto(`${frontUrl}/chat?id=${state.taggedRunId}`, { waitUntil: 'domcontentloaded' })
   await page.locator(RUN_VIEW).waitFor({ timeout: 120000 })
   const agentRow = page.locator('[data-test="workspace-agent-row"][data-agent-definition-id="autobyteus-daily-assistant"]').first()
@@ -446,9 +453,8 @@ defineCase('C09', '@agent scoped /, × back to Daily Assistant, tree + preset', 
 defineCase('C10', 'Team quick path with an attachment: uniform member config, coordinator reads the file, Team view with the unchanged box', async (page) => {
   await newChat(page)
   await pickModel(page, runtime, state.model)
+  await switchTarget(page, 'probe-te', 'probe-team')
   const input = composerInput(page)
-  await input.click(); await input.type('@probe-te')
-  await page.locator(sel('chat-target-option-probe-team')).click()
   const attachment = path.join(ownedRoot, 'attach-note.txt')
   await fs.writeFile(attachment, 'ATTACHMENT-MARKER-7431\n')
   await page.locator(`${sel('chat-composer')} input[type="file"]`).first().setInputFiles(attachment)
@@ -535,8 +541,7 @@ const startChat = async (page, { folder, target, text }) => {
   await pickModel(page, runtime, state.model)
   if (folder) await openFolder(page, folder)
   if (target) {
-    await composerInput(page).click(); await composerInput(page).type(`@${target.slice(0, 12)}`)
-    await page.locator(sel(`chat-target-option-${target}`)).click()
+    await switchTarget(page, target.slice(0, 12), target)
   }
   await composerInput(page).fill(text)
   await page.locator(sel('chat-primary-action')).first().click()
@@ -559,8 +564,7 @@ defineCase('C14', 'D-15 Rule 1 (V-D): a user-owned workspace skill wins for the 
   await newChat(page)
   await pickModel(page, runtime, state.model)
   await openFolder(page, folder)
-  await composerInput(page).click(); await composerInput(page).type('@probe-shadow')
-  await page.locator(sel('chat-target-option-probe-shadow-owner')).click()
+  await switchTarget(page, 'probe-shadow', 'probe-shadow-owner')
   await composerInput(page).fill('Reply with exactly STRONG-SHOULD-FAIL.')
   await page.locator(sel('chat-primary-action')).first().click()
   await page.getByText(/An Error Occurred/).first().waitFor({ timeout: 120000 })
@@ -963,8 +967,7 @@ defineCase('C19', 'CR-005: ⚙ stays with its run — New chat (success, failed 
   await page.locator(sel('app-left-panel-new-chat')).click()
   await page.locator(sel('chat-new')).waitFor({ timeout: 30000 })
   await pickModel(page, runtime, state.model)
-  await composerInput(page).click(); await composerInput(page).type('@probe-te')
-  await page.locator(sel('chat-target-option-probe-team')).click()
+  await switchTarget(page, 'probe-te', 'probe-team')
   await composerInput(page).fill('Reply with exactly CR005-TEAM-OK.')
   await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
@@ -975,7 +978,7 @@ defineCase('C19', 'CR-005: ⚙ stays with its run — New chat (success, failed 
   await page.locator(RUN_VIEW).waitFor({ timeout: 120000 })
   await page.locator(sel('workspace-header-new-run')).click()
   await page.locator(sel('chat-new')).waitFor({ timeout: 30000 })
-  r.plus = { url: page.url().replace(frontUrl, ''), chip: await page.locator(sel('chat-agent-chip')).innerText().catch(() => null), workspace: await page.locator(sel('chat-workspace-trigger')).innerText() }
+  r.plus = { url: page.url().replace(frontUrl, ''), chip: await page.locator(sel('run-target-name')).innerText().catch(() => null), workspace: await page.locator(sel('chat-workspace-trigger')).innerText() }
   assert(r.success.runView && !r.success.settingsOpen, 'Successful New chat landed on run settings', r)
   assert(r.failed.runView && !r.failed.settingsOpen, 'Failed New chat landed on run settings', r)
   assert(!r.team.settingsOpen && r.team.textarea >= 1, 'Team quick path landed on run settings', r)

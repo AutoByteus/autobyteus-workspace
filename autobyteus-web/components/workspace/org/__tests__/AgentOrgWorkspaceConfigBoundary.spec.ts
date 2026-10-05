@@ -74,11 +74,9 @@ const mountBoundary = () => {
       emits: ['edit-config'],
       template: '<button data-test="mounted-settings" @click="$emit(\'edit-config\')" />',
     },
-    AgentRunConfigForm: true,
-    TeamRunConfigForm: true,
-    AgentOrgRunConfigForm: {
-      props: ['existingModel'],
-      template: '<div data-test="rendered-whole-org-form">{{ existingModel.root.address }}</div>',
+    ExistingRunSettings: {
+      props: ['kind', 'members'],
+      template: '<div data-test="rendered-whole-org-form">{{ kind }}:{{ members.length }}</div>',
     },
   } } })
 }
@@ -120,7 +118,8 @@ describe('AgentOrg workspace configuration boundary', () => {
     expect(readOrg).toHaveBeenCalledTimes(1)
     expect(readOrg).toHaveBeenCalledWith('org-run')
     expect(wrapper.get('[data-test="agent-org-run-config-editor"] [aria-busy]').attributes('aria-busy')).toBe('false')
-    expect(wrapper.get('[data-test="rendered-whole-org-form"]').text()).toBe('/')
+    // The whole Org's saved settings (the Org card and its members), not one member's.
+    expect(wrapper.get('[data-test="rendered-whole-org-form"]').text()).toMatch(/^org:[1-9]/)
     wrapper.unmount()
   })
 
@@ -131,12 +130,10 @@ describe('AgentOrg workspace configuration boundary', () => {
     const wrapper = mount(ExistingRunConfigEditor, {
       props: { target: { kind: 'agent_org', orgRunId: 'org-run' } },
       global: { plugins: [pinia], stubs: {
-        AgentRunConfigForm: true,
-        TeamRunConfigForm: true,
-        AgentOrgRunConfigForm: {
-          props: ['existingModel'],
-          template: '<div data-test="rendered-whole-org-form">{{ existingModel.root.address }}</div>',
-        },
+    ExistingRunSettings: {
+      props: ['kind', 'members'],
+      template: '<div data-test="rendered-whole-org-form">{{ kind }}:{{ members.length }}</div>',
+    },
       } },
     })
     await vi.waitFor(() => expect(readOrg).toHaveBeenCalledTimes(1))

@@ -8,10 +8,12 @@
       <!-- Center content (owned by the caller) -->
       <div
         data-test="workspace-center-pane"
-        class="bg-white p-0 flex flex-col min-h-0 flex-1 min-w-0"
+        class="relative bg-white p-0 flex flex-col min-h-0 flex-1 min-w-0"
         :style="centerPaneStyle"
       >
         <slot />
+        <!-- REQ-020: on a start surface the tools stay behind this one icon until opened. -->
+        <StartSurfaceToolsToggle v-if="startSurface && !toolsShown" @open="openStartTools" />
       </div>
 
       <div
@@ -32,7 +34,7 @@
       </div>
 
       <RightSidebarStrip
-        v-else-if="!isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip"
+        v-else-if="!startSurface && !isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip"
         data-test="workspace-right-tool-strip"
         :strip-behavior="responsiveWorkspaceShellState.rightPanel.stripBehavior ?? 'consuming'"
         :strip-activation="responsiveWorkspaceShellState.rightPanel.stripActivation!"
@@ -60,12 +62,18 @@ import { useResponsiveWorkspaceShellState } from '~/composables/layout/useRespon
 import RightSideTabs from './RightSideTabs.vue';
 import RightSidebarStrip from './RightSidebarStrip.vue';
 import WorkspaceRightToolDrawer from './WorkspaceRightToolDrawer.vue';
+import StartSurfaceToolsToggle from './StartSurfaceToolsToggle.vue';
+import { useStartSurfaceTools } from '~/composables/layout/useStartSurfaceTools';
 import { LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX } from '~/utils/layout/responsiveLayoutPolicy';
 
 /**
  * The right tool shell (dock, strip, drawer, resize) around a center slot.
  * It owns no center-view selection; the caller renders the center content.
+ * A start surface (New chat, the Org launch page) shows no strip: its tools open from one icon,
+ * docked when there is room, otherwise as the drawer (REQ-020).
  */
+const props = defineProps<{ startSurface?: boolean }>();
+const startTools = useStartSurfaceTools();
 
 const { t } = useLocalization();
 const {
@@ -115,8 +123,14 @@ onBeforeUnmount(() => {
 });
 
 const showDockedRightPanel = computed(() =>
-  isRightPanelVisible.value && responsiveWorkspaceShellState.value.rightPanel.presentation === 'docked',
+  (!props.startSurface || startTools.toolsOpen.value)
+  && isRightPanelVisible.value && responsiveWorkspaceShellState.value.rightPanel.presentation === 'docked',
 );
+const toolsShown = computed(() => showDockedRightPanel.value || isRightDrawerOpen.value);
+const openStartTools = (): void => {
+  startTools.openTools();
+  if (responsiveWorkspaceShellState.value.rightPanel.presentation !== 'docked') isRightDrawerOpen.value = true;
+};
 
 const centerPaneStyle = computed(() => ({
   minWidth: responsiveWorkspaceShellState.value.isNarrow
@@ -147,6 +161,7 @@ const rightDrawerBackdropStyle = computed(() => ({
 }));
 
 const closeRightDrawer = (): void => {
+  if (props.startSurface && isRightDrawerOpen.value) startTools.closeTools();
   isRightDrawerOpen.value = false;
 };
 

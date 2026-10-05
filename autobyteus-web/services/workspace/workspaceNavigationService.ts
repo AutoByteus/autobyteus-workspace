@@ -27,6 +27,23 @@ export const buildAgentRunChatRoute = (runId: string): RouteLocationRaw => ({
   query: { id: runId },
 })
 
+/** The Org launch page (DEC-005: the existing configuration route); "+" adds the source run. */
+export const buildAgentOrgLaunchRoute = (orgDefinitionId: string, sourceOrgRunId?: string | null): RouteLocationRaw => ({
+  path: '/workspace',
+  query: {
+    rootSubjectKind: 'agent_org',
+    definitionId: orgDefinitionId,
+    ...(sourceOrgRunId ? { sourceOrgRunId } : {}),
+    mode: 'configuration',
+  },
+})
+
+/** Where an Org launch lands: the launched Org run view, where the user chooses an Agent or Team. */
+export const buildAgentOrgActiveRoute = (orgDefinitionId: string, orgRunId: string): RouteLocationRaw => ({
+  path: '/workspace',
+  query: { rootSubjectKind: 'agent_org', definitionId: orgDefinitionId, orgRunId, mode: 'active' },
+})
+
 export const createWorkspaceExecutionLinkSignature =(link: WorkspaceExecutionLink): string => (
   link.kind === 'agent'
     ? `agent:${link.runId}`
