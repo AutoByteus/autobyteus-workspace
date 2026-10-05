@@ -23,6 +23,7 @@
 - Related architecture-review revision IDs: ARCH-REV-001.
 - Related code-review, API/E2E and delivery revision IDs: N/A.
 - Triggering finding IDs: N/A.
+- Code review status: CRR-001 Pass, score 9.5/10, no findings (`code-review-report.md`). The reviewer routed the package to `/api_e2e_engineer` for the AC-004 live gate.
 - Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction`, branch `codex/agent-run-termination-extraction`.
   - Base: `origin/personal` @ `03d5db06b`.
   - Implementation commit: `1b83c8f88`, plus a commit with these artifacts.
