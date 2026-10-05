@@ -75,3 +75,36 @@
 - Release/publication/deployment result: `Not required`
 - Release notes handoff result: `Not required`
 
+## Finalization Results
+
+- Ticket branch commit result: `Completed`, `4268d2bb4` (archive commit)
+- Ticket branch push result: `Completed`, `origin/codex/agent-run-termination-extraction` → `4268d2bb4`
+- Target branch update result: `Completed`. `origin/personal` re-fetched before the merge: still `10fb69504`, an ancestor of the ticket head.
+- Merge into target result: `Completed`, a fast-forward pushed as `codex/agent-run-termination-extraction:personal`. The shared superrepo checkout of `personal` holds unrelated uncommitted work and was not used.
+- Push target branch result: `Completed`, `origin/personal` `10fb69504..4268d2bb4`
+- Repository finalization status: `Completed`
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction`
+- Worktree cleanup result: `Completed`. `git worktree remove --force` was used because only untracked SDK `dist/` build output remained. All tracked work was pushed and merged, and no process from the worktree was running.
+- Base comparison worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction-base`: `Completed`, removed (only untracked SDK `dist/`).
+- Worktree prune result: `Not required`
+- Local ticket branch cleanup result: `Completed`, `git branch -d codex/agent-run-termination-extraction` (was `4268d2bb4`)
+- Remote branch cleanup result: `Not required`. The remote ticket branch is kept as provenance, consistent with prior deliveries.
+- Temporary finalization worktree `/tmp/finalize-agent-run-termination-extraction`: removed after this record was pushed.
+- Blocker: none
+
+## Rollback Criteria
+
+- Revert `10fb69504..4268d2bb4` on `personal` if Stop, delete, archive or shutdown of runs regresses (for example a root Stop not accepted, or a termination not retrying). There is no persisted-data change.
+
+## Final Status
+
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (Not required; the user declined)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this record was pushed (see `delivery-revision-record.md` DR-002)
