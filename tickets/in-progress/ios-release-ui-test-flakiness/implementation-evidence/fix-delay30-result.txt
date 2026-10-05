@@ -1,0 +1,3 @@
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (76.904 seconds).
+** TEST SUCCEEDED **
+exit=0

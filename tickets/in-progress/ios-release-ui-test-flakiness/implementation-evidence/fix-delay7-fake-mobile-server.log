@@ -1,0 +1,5 @@
+Fake AutoByteus node listening on http://127.0.0.1:29876
+127.0.0.1 - - [05/Oct/2026 08:19:27] "GET /rest/remote-access/status HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 08:19:28] "GET /mobile HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 08:19:38] "GET /rest/remote-access/status HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 08:19:38] "GET /mobile HTTP/1.1" 200 -

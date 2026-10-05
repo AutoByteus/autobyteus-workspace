@@ -1,0 +1,48 @@
+Application, 0x101b0a7d0, pid: 17696, label: 'AutoByteus' <App element pid: 17696>
+  Window (Main), 0x101b4ed40, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 17696, elementOrHash.elementID: 4389395008.3>
+    Other, 0x101b607e0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 17696, elementOrHash.elementID: 4389806448.127>
+      Other, 0x101b60900, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 17696, elementOrHash.elementID: 4390062560.128>
+        Other, 0x101b581f0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'connection.root' <AX element pid: 17696, elementOrHash.elementID: 4389038176.129>
+          ScrollView, 0x101b55150, {{0.0, 62.0}, {402.0, 812.0}} <AX element pid: 17696, elementOrHash.elementID: 4413513728.130>
+            Other, 0x101b60a20, {{20.0, 86.0}, {362.0, 681.7}} <AX element pid: 17696, elementOrHash.elementID: 4389046880.131>
+              StaticText, 0x101b60b40, {{20.0, 86.0}, {362.0, 36.0}}, label: 'AutoByteus Mobile' <AX element pid: 17696, elementOrHash.elementID: 4389048448.134>
+              StaticText, 0x101b60c60, {{20.0, 136.0}, {362.0, 54.0}}, label: 'Connect this iPhone or iPad to your reachable AutoByteus desktop/server node. The existing /mobile web shell owns Home, Chat, Runs and Files.' <AX element pid: 17696, elementOrHash.elementID: 4389050688.135>
+              Other, 0x101b5f900, {{20.0, 204.0}, {362.0, 171.3}} <AX element pid: 17696, elementOrHash.elementID: 4389052800.136>
+                StaticText, 0x101b5fa20, {{34.0, 218.0}, {334.0, 20.3}}, label: 'HTTP needs explicit acknowledgement' <AX element pid: 17696, elementOrHash.elementID: 4389054160.146>
+                StaticText, 0x101b5fb40, {{34.0, 244.3}, {334.0, 117.0}}, label: 'http://127.0.0.1:9/mobile uses cleartext HTTP. Prefer Tailscale Serve HTTPS for travel. Continue with HTTP only for a private LAN or tailnet you trust.
+
+Turn on the private-network HTTP acknowledgement or switch to an https:// Tailscale Serve URL.' <AX element pid: 17696, elementOrHash.elementID: 4389056496.147>
+              StaticText, 0x101b5fd70, {{20.0, 389.3}, {362.0, 14.3}}, label: 'NODE URL OR PHONE ACCESS LINK' <AX element pid: 17696, elementOrHash.elementID: 4389058224.137>
+              TextView, 0x101b5fe90, {{20.0, 417.7}, {362.0, 96.0}}, identifier: 'connection.input', value: http://127.0.0.1:9... <AX element pid: 17696, elementOrHash.elementID: 4412653568.138>
+                Other, 0x101b5ffb0, {{349.0, 417.7}, {30.0, 96.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 17696, elementOrHash.elementID: 4386938368.148>
+                  Other, 0x101b5ca60, {{376.0, 386.7}, {3.0, 28.0}} <AX element pid: 17696, elementOrHash.elementID: 4386939136.157>
+                Other, 0x101b5cb80, {{20.0, 480.7}, {362.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0% <AX element pid: 17696, elementOrHash.elementID: 4390069728.149>
+                  Other, 0x101b5cca0, {{-22.0, 507.7}, {36.0, 3.0}} <AX element pid: 17696, elementOrHash.elementID: 4390070496.158>
+              Other, 0x101b5cdc0, {{20.0, 527.7}, {362.0, 31.3}} <AX element pid: 17696, elementOrHash.elementID: 4389068368.139>
+                Switch, 0x101b5cee0, {{20.0, 529.3}, {63.0, 28.0}}, identifier: 'connection.httpAcknowledgement', value: 0 <AX element pid: 17696, elementOrHash.elementID: 4386902400.150>
+                StaticText, 0x101b5d000, {{91.0, 527.7}, {291.0, 31.3}}, label: 'I understand cleartext http:// should only be used on a trusted private LAN or tailnet.' <AX element pid: 17696, elementOrHash.elementID: 4389069424.151>
+              Other, 0x101b5d120, {{20.0, 573.0}, {362.0, 44.0}} <AX element pid: 17696, elementOrHash.elementID: 4389071152.140>
+                Button, 0x101b5d240, {{20.0, 573.0}, {114.0, 44.0}}, identifier: 'connection.connect', label: 'Connect' <AX element pid: 17696, elementOrHash.elementID: 4389072816.152>
+                  StaticText, 0x101b5d360, {{46.7, 586.0}, {61.0, 18.0}}, label: 'Connect' <AX element pid: 17696, elementOrHash.elementID: 4389075424.159>
+                Button, 0x101b5d480, {{144.0, 573.0}, {114.0, 44.0}}, label: 'Paste' <AX element pid: 17696, elementOrHash.elementID: 4386920448.153>
+                  StaticText, 0x101b5d5a0, {{181.0, 586.0}, {40.0, 18.0}}, label: 'Paste' <AX element pid: 17696, elementOrHash.elementID: 4386922512.160>
+                Button, 0x101b5e120, {{268.0, 573.0}, {114.0, 44.0}}, label: 'Scan QR' <AX element pid: 17696, elementOrHash.elementID: 4386925168.154>
+                  StaticText, 0x101b5e240, {{294.7, 586.0}, {61.0, 18.0}}, label: 'Scan QR' <AX element pid: 17696, elementOrHash.elementID: 4386927776.161>
+              StaticText, 0x101b5e360, {{20.0, 631.0}, {362.0, 14.3}}, label: 'PRIVATE NETWORK GUIDANCE' <AX element pid: 17696, elementOrHash.elementID: 4386929824.141>
+              StaticText, 0x101b5e480, {{20.0, 659.3}, {362.0, 50.3}}, label: 'Prefer an HTTPS Tailscale Serve URL such as https://desktop.tailnet.ts.net/mobile. Pairing with one stable origin avoids WebView credential-origin changes.' <AX element pid: 17696, elementOrHash.elementID: 4386931552.142>
+              Other, 0x101b5e5a0, {{20.0, 723.7}, {362.0, 44.0}} <AX element pid: 17696, elementOrHash.elementID: 4386933280.143>
+                Button, 0x101b5e6c0, {{20.0, 723.7}, {176.0, 44.0}}, label: 'Tailscale' <AX element pid: 17696, elementOrHash.elementID: 4386934944.155>
+                  StaticText, 0x101b5e7e0, {{77.0, 736.7}, {62.0, 18.0}}, label: 'Tailscale' <AX element pid: 17696, elementOrHash.elementID: 4390054208.162>
+                Button, 0x101b5e900, {{206.0, 723.7}, {176.0, 44.0}}, label: 'Settings' <AX element pid: 17696, elementOrHash.elementID: 4389853456.156>
+                  StaticText, 0x101b5ea20, {{264.0, 736.7}, {60.0, 18.0}}, label: 'Settings' <AX element pid: 17696, elementOrHash.elementID: 4389854208.163>
+            Other, 0x101b5eb40, {{369.0, 90.0}, {30.0, 722.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 17696, elementOrHash.elementID: 4390086448.132>
+              Other, 0x101b5ec60, {{396.0, 808.0}, {3.0, 7.0}} <AX element pid: 17696, elementOrHash.elementID: 4390087216.144>
+            Other, 0x101b5ed80, {{62.0, 841.0}, {278.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0% <AX element pid: 17696, elementOrHash.elementID: 4390084352.133>
+              Other, 0x101b5eea0, {{336.0, 868.0}, {7.0, 3.0}} <AX element pid: 17696, elementOrHash.elementID: 4390085120.145>
+            Other, 0x101b5efc0, {{369.0, 90.0}, {30.0, 722.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 17696, elementOrHash.elementID: 4390086448.132>
+              Other, 0x101b5f0e0, {{396.0, 808.0}, {3.0, 7.0}} <AX element pid: 17696, elementOrHash.elementID: 4390087216.144>
+            Other, 0x101b5f200, {{62.0, 841.0}, {278.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0% <AX element pid: 17696, elementOrHash.elementID: 4390084352.133>
+              Other, 0x101b5f320, {{336.0, 868.0}, {7.0, 3.0}} <AX element pid: 17696, elementOrHash.elementID: 4390085120.145>
+  Window, 0x101b5f440, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 17696, elementOrHash.elementID: 4396446720.38>
+    Other, 0x101b5f560, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 17696, elementOrHash.elementID: 4386654400.40>
+      Other, 0x101b5f680, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 17696, elementOrHash.elementID: 4388637200.42>

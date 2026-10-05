@@ -1,0 +1,867 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project /Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination "platform=iOS Simulator,id=AED15013-49CB-4DEE-9FCA-5A94B0E5650B" -resultBundlePath /Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/tickets/in-progress/ios-release-ui-test-flakiness/api-e2e-evidence/local/R2-L4-fix-no-server/result.xcresult "-only-testing:AutoByteusMobileUITests/AutoByteusMobileUITests/testFakeNodeOpensAndRestoresWithFakeMobileMarker" IOS_BUNDLE_ID=org.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=org.autobyteus.mobile.share MARKETING_VERSION=0.1.0 CURRENT_PROJECT_VERSION=1 "AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29876/mobile" AUTOBYTEUS_SMOKE_TESTS_REQUIRED=1 test
+
+Build settings from command line:
+    AUTOBYTEUS_SMOKE_TESTS_REQUIRED = 1
+    AUTOBYTEUS_TEST_NODE_URL = http://127.0.0.1:29876/mobile
+    CURRENT_PROJECT_VERSION = 1
+    IOS_BUNDLE_ID = org.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = org.autobyteus.mobile.share
+    MARKETING_VERSION = 0.1.0
+
+Writing result bundle at path:
+	/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/tickets/in-progress/ios-release-ui-test-flakiness/api-e2e-evidence/local/R2-L4-fix-no-server/result.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (5 targets)
+    Target 'AutoByteusMobileUITests' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobile' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileCoreTests' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobile' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileShareExtension' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileShareExtension' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileCore' in project 'AutoByteusMobile' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk /Users/normy/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.1-23B77-90cf18a4295e390e64c810bc6bd7acbc.sdkstatcache
+    cd /Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobile.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -o /Users/normy/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.1-23B77-90cf18a4295e390e64c810bc6bd7acbc.sdkstatcache
+
+2026-10-05 09:47:48.198579+0200 AutoByteusMobileUITests-Runner[21799:37164983] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-10-05 09:47:48.894.
+Test Suite 'AutoByteusMobileUITests.xctest' started at 2026-10-05 09:47:48.895.
+Test Suite 'AutoByteusMobileUITests' started at 2026-10-05 09:47:48.895.
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' started.
+    t =     0.00s Start Test at 2026-10-05 09:47:48.896
+    t =     0.02s Set Up
+    t =     0.03s Open org.autobyteus.mobile
+    t =     0.03s     Launch org.autobyteus.mobile
+    t =     0.65s         Setting up automation session
+    t =     1.40s         Wait for org.autobyteus.mobile to idle
+    t =     3.59s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.input" TextView`
+    t =     3.59s     Checking existence of `"connection.input" TextView`
+    t =     3.64s     Find the "connection.input" TextView
+    t =     3.67s Tap "connection.input" TextView
+    t =     3.67s     Wait for org.autobyteus.mobile to idle
+    t =     3.68s     Find the "connection.input" TextView
+    t =     3.69s     Check for interrupting elements affecting "connection.input" TextView
+    t =     3.71s     Synthesize event
+    t =     4.00s     Wait for org.autobyteus.mobile to idle
+    t =     5.05s Checking `Expect predicate `hasKeyboardFocus == 1` for object "connection.input" TextView`
+    t =     5.05s     Find the "connection.input" TextView
+    t =     5.10s Type 'http://127.0.0.1:2...' into "connection.input" TextView
+    t =     5.10s     Wait for org.autobyteus.mobile to idle
+    t =     5.10s     Find the "connection.input" TextView
+    t =     5.13s     Check for interrupting elements affecting "connection.input" TextView
+    t =     5.16s     Synthesize event
+    t =     5.85s     Wait for org.autobyteus.mobile to idle
+    t =     6.90s Checking `Expect predicate `value CONTAINS "http://127.0.0.1:29876/mobile"` for object "connection.input" TextView`
+    t =     6.90s     Find the "connection.input" TextView
+    t =     7.98s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.httpAcknowledgement" Switch`
+    t =     7.98s     Checking existence of `"connection.httpAcknowledgement" Switch`
+    t =     8.01s     Find the "connection.httpAcknowledgement" Switch
+    t =     8.05s Find the "connection.httpAcknowledgement" Switch
+    t =     8.07s Tap "connection.httpAcknowledgement" Switch
+    t =     8.07s     Wait for org.autobyteus.mobile to idle
+    t =     8.08s     Find the "connection.httpAcknowledgement" Switch
+    t =     8.10s     Check for interrupting elements affecting "connection.httpAcknowledgement" Switch
+    t =     8.13s     Synthesize event
+    t =     8.42s     Wait for org.autobyteus.mobile to idle
+    t =    10.76s Checking `Expect predicate `value == "1"` for object "connection.httpAcknowledgement" Switch`
+    t =    10.77s     Find the "connection.httpAcknowledgement" Switch
+    t =    10.81s Find the "connection.httpAcknowledgement" Switch
+    t =    11.88s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.connect" Button`
+    t =    11.88s     Checking existence of `"connection.connect" Button`
+    t =    11.91s     Find the "connection.connect" Button
+    t =    11.95s Tap "connection.connect" Button
+    t =    11.95s     Wait for org.autobyteus.mobile to idle
+    t =    11.96s     Find the "connection.connect" Button
+    t =    11.99s     Check for interrupting elements affecting "connection.connect" Button
+    t =    12.02s     Synthesize event
+    t =    12.31s     Wait for org.autobyteus.mobile to idle
+    t =    12.53s Waiting 60.0s for WebView (First Match) to exist
+    t =    13.57s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    13.58s         Checking existence of `WebView (First Match)`
+    t =    13.61s         Capturing element debug description
+    t =    14.54s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    14.54s         Checking existence of `WebView (First Match)`
+    t =    14.58s         Capturing element debug description
+    t =    15.62s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    15.62s         Checking existence of `WebView (First Match)`
+    t =    15.66s         Capturing element debug description
+    t =    16.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    16.61s         Checking existence of `WebView (First Match)`
+    t =    16.65s         Capturing element debug description
+    t =    17.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    17.61s         Checking existence of `WebView (First Match)`
+    t =    17.64s         Capturing element debug description
+    t =    18.59s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    18.59s         Checking existence of `WebView (First Match)`
+    t =    18.61s         Capturing element debug description
+    t =    19.55s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    19.55s         Checking existence of `WebView (First Match)`
+    t =    19.58s         Capturing element debug description
+    t =    20.62s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    20.62s         Checking existence of `WebView (First Match)`
+    t =    20.65s         Capturing element debug description
+    t =    21.59s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    21.59s         Checking existence of `WebView (First Match)`
+    t =    21.62s         Capturing element debug description
+    t =    22.56s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    22.56s         Checking existence of `WebView (First Match)`
+    t =    22.58s         Capturing element debug description
+    t =    23.53s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    23.54s         Checking existence of `WebView (First Match)`
+    t =    23.56s         Capturing element debug description
+    t =    24.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    24.60s         Checking existence of `WebView (First Match)`
+    t =    24.62s         Capturing element debug description
+    t =    25.56s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    25.56s         Checking existence of `WebView (First Match)`
+    t =    25.63s         Capturing element debug description
+    t =    26.57s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    26.57s         Checking existence of `WebView (First Match)`
+    t =    26.61s         Capturing element debug description
+    t =    27.55s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    27.55s         Checking existence of `WebView (First Match)`
+    t =    27.58s         Capturing element debug description
+    t =    28.53s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    28.53s         Checking existence of `WebView (First Match)`
+    t =    28.57s         Capturing element debug description
+    t =    29.53s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    29.53s         Checking existence of `WebView (First Match)`
+    t =    29.57s         Capturing element debug description
+    t =    30.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    30.60s         Checking existence of `WebView (First Match)`
+    t =    30.63s         Capturing element debug description
+    t =    31.56s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    31.56s         Checking existence of `WebView (First Match)`
+    t =    31.59s         Capturing element debug description
+    t =    32.53s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    32.53s         Checking existence of `WebView (First Match)`
+    t =    32.56s         Capturing element debug description
+    t =    33.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    33.60s         Checking existence of `WebView (First Match)`
+    t =    33.62s         Capturing element debug description
+    t =    34.55s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    34.55s         Checking existence of `WebView (First Match)`
+    t =    34.57s         Capturing element debug description
+    t =    35.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    35.60s         Checking existence of `WebView (First Match)`
+    t =    35.63s         Capturing element debug description
+    t =    36.56s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    36.56s         Checking existence of `WebView (First Match)`
+    t =    36.59s         Capturing element debug description
+    t =    37.63s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    37.63s         Checking existence of `WebView (First Match)`
+    t =    37.65s         Capturing element debug description
+    t =    38.57s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    38.57s         Checking existence of `WebView (First Match)`
+    t =    38.60s         Capturing element debug description
+    t =    39.53s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    39.53s         Checking existence of `WebView (First Match)`
+    t =    39.56s         Capturing element debug description
+    t =    40.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    40.60s         Checking existence of `WebView (First Match)`
+    t =    40.62s         Capturing element debug description
+    t =    41.55s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    41.55s         Checking existence of `WebView (First Match)`
+    t =    41.57s         Capturing element debug description
+    t =    42.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    42.60s         Checking existence of `WebView (First Match)`
+    t =    42.64s         Capturing element debug description
+    t =    43.58s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    43.58s         Checking existence of `WebView (First Match)`
+    t =    43.61s         Capturing element debug description
+    t =    44.55s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    44.55s         Checking existence of `WebView (First Match)`
+    t =    44.60s         Capturing element debug description
+    t =    45.53s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    45.53s         Checking existence of `WebView (First Match)`
+    t =    45.58s         Capturing element debug description
+    t =    46.62s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    46.62s         Checking existence of `WebView (First Match)`
+    t =    46.65s         Capturing element debug description
+    t =    47.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    47.60s         Checking existence of `WebView (First Match)`
+    t =    47.64s         Capturing element debug description
+    t =    48.58s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    48.59s         Checking existence of `WebView (First Match)`
+    t =    48.62s         Capturing element debug description
+    t =    49.55s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    49.55s         Checking existence of `WebView (First Match)`
+    t =    49.58s         Capturing element debug description
+    t =    50.62s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    50.63s         Checking existence of `WebView (First Match)`
+    t =    50.65s         Capturing element debug description
+    t =    51.59s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    51.60s         Checking existence of `WebView (First Match)`
+    t =    51.63s         Capturing element debug description
+    t =    52.58s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    52.58s         Checking existence of `WebView (First Match)`
+    t =    52.62s         Capturing element debug description
+    t =    53.55s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    53.55s         Checking existence of `WebView (First Match)`
+    t =    53.58s         Capturing element debug description
+    t =    54.62s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    54.62s         Checking existence of `WebView (First Match)`
+    t =    54.65s         Capturing element debug description
+    t =    55.58s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    55.59s         Checking existence of `WebView (First Match)`
+    t =    55.61s         Capturing element debug description
+    t =    56.55s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    56.55s         Checking existence of `WebView (First Match)`
+    t =    56.58s         Capturing element debug description
+    t =    57.61s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    57.61s         Checking existence of `WebView (First Match)`
+    t =    57.64s         Capturing element debug description
+    t =    58.57s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    58.57s         Checking existence of `WebView (First Match)`
+    t =    58.60s         Capturing element debug description
+    t =    59.53s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    59.53s         Checking existence of `WebView (First Match)`
+    t =    59.58s         Capturing element debug description
+    t =    60.61s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    60.61s         Checking existence of `WebView (First Match)`
+    t =    60.63s         Capturing element debug description
+    t =    61.55s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    61.55s         Checking existence of `WebView (First Match)`
+    t =    61.58s         Capturing element debug description
+    t =    62.61s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    62.61s         Checking existence of `WebView (First Match)`
+    t =    62.64s         Capturing element debug description
+    t =    63.57s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    63.57s         Checking existence of `WebView (First Match)`
+    t =    63.59s         Capturing element debug description
+    t =    64.53s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    64.53s         Checking existence of `WebView (First Match)`
+    t =    64.57s         Capturing element debug description
+    t =    65.60s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    65.61s         Checking existence of `WebView (First Match)`
+    t =    65.67s         Capturing element debug description
+    t =    66.61s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    66.62s         Checking existence of `WebView (First Match)`
+    t =    66.70s         Capturing element debug description
+    t =    67.56s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    67.57s         Checking existence of `WebView (First Match)`
+    t =    67.64s         Capturing element debug description
+    t =    68.57s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    68.57s         Checking existence of `WebView (First Match)`
+    t =    68.64s         Capturing element debug description
+    t =    69.57s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    69.57s         Checking existence of `WebView (First Match)`
+    t =    69.60s         Capturing element debug description
+    t =    70.63s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    70.63s         Checking existence of `WebView (First Match)`
+    t =    70.68s         Capturing element debug description
+    t =    71.61s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    71.62s         Checking existence of `WebView (First Match)`
+    t =    71.65s         Capturing element debug description
+    t =    72.56s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    72.57s         Checking existence of `WebView (First Match)`
+    t =    72.59s         Capturing element debug description
+    t =    72.59s     Checking existence of `WebView (First Match)`
+    t =    72.62s Collecting debug information to assist test failure triage
+    t =    72.62s     Requesting snapshot of accessibility hierarchy for app with pid 21808
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:106: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected WebView to exist
+    t =    72.66s Waiting 60.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+    t =    73.69s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    73.69s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    73.72s         Capturing element debug description
+    t =    74.75s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    74.75s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    74.77s         Capturing element debug description
+    t =    75.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    75.70s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    75.72s         Capturing element debug description
+    t =    76.75s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    76.75s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    76.77s         Capturing element debug description
+    t =    77.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    77.70s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    77.72s         Capturing element debug description
+    t =    78.76s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    78.76s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    78.78s         Capturing element debug description
+    t =    79.72s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    79.72s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    79.74s         Capturing element debug description
+    t =    80.68s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    80.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    80.69s         Capturing element debug description
+    t =    81.73s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    81.73s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    81.74s         Capturing element debug description
+    t =    82.68s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    82.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    82.69s         Capturing element debug description
+    t =    83.73s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    83.73s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    83.74s         Capturing element debug description
+    t =    84.68s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    84.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    84.71s         Capturing element debug description
+    t =    85.75s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    85.75s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    85.77s         Capturing element debug description
+    t =    86.71s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    86.71s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    86.75s         Capturing element debug description
+    t =    87.68s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    87.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    87.69s         Capturing element debug description
+    t =    88.73s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    88.73s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    88.75s         Capturing element debug description
+    t =    89.68s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    89.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    89.70s         Capturing element debug description
+    t =    90.73s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    90.73s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    90.75s         Capturing element debug description
+    t =    91.68s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    91.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    91.69s         Capturing element debug description
+    t =    92.74s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    92.74s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    92.76s         Capturing element debug description
+    t =    93.69s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    93.69s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    93.70s         Capturing element debug description
+    t =    94.74s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    94.74s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    94.79s         Capturing element debug description
+    t =    95.72s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    95.73s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    95.75s         Capturing element debug description
+    t =    96.68s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    96.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    96.70s         Capturing element debug description
+    t =    97.74s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    97.74s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    97.76s         Capturing element debug description
+    t =    98.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    98.70s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    98.72s         Capturing element debug description
+    t =    99.76s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    99.76s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    99.77s         Capturing element debug description
+    t =   100.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   100.70s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   100.72s         Capturing element debug description
+    t =   101.67s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   101.67s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   101.69s         Capturing element debug description
+    t =   102.73s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   102.73s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   102.75s         Capturing element debug description
+    t =   103.68s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   103.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   103.71s         Capturing element debug description
+    t =   104.76s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   104.76s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   104.79s         Capturing element debug description
+    t =   105.74s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   105.75s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   105.78s         Capturing element debug description
+    t =   106.72s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   106.72s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   106.74s         Capturing element debug description
+    t =   107.68s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   107.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   107.70s         Capturing element debug description
+    t =   108.73s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   108.74s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   108.76s         Capturing element debug description
+    t =   109.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   109.70s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   109.73s         Capturing element debug description
+    t =   110.67s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   110.67s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   110.70s         Capturing element debug description
+    t =   111.74s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   111.75s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   111.77s         Capturing element debug description
+    t =   112.72s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   112.73s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   112.76s         Capturing element debug description
+    t =   113.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   113.70s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   113.74s         Capturing element debug description
+    t =   114.67s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   114.67s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   114.70s         Capturing element debug description
+    t =   115.74s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   115.75s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   115.78s         Capturing element debug description
+    t =   116.72s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   116.73s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   116.75s         Capturing element debug description
+    t =   117.69s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   117.69s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   117.71s         Capturing element debug description
+    t =   118.74s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   118.75s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   118.77s         Capturing element debug description
+    t =   119.72s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   119.72s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   119.75s         Capturing element debug description
+    t =   120.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   120.71s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   120.73s         Capturing element debug description
+    t =   121.67s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   121.68s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   121.71s         Capturing element debug description
+    t =   122.74s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   122.74s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   122.77s         Capturing element debug description
+    t =   123.72s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   123.72s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   123.76s         Capturing element debug description
+    t =   124.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   124.70s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   124.73s         Capturing element debug description
+    t =   125.67s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   125.67s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   125.70s         Capturing element debug description
+    t =   126.74s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   126.74s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   126.76s         Capturing element debug description
+    t =   127.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   127.70s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   127.73s         Capturing element debug description
+    t =   128.67s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   128.67s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   128.71s         Capturing element debug description
+    t =   129.75s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   129.75s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   129.78s         Capturing element debug description
+    t =   130.72s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   130.72s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   130.75s         Capturing element debug description
+    t =   131.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   131.71s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   131.74s         Capturing element debug description
+    t =   132.69s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   132.69s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   132.71s         Capturing element debug description
+    t =   132.71s     Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   132.73s Collecting debug information to assist test failure triage
+    t =   132.73s     Requesting snapshot of accessibility hierarchy for app with pid 21808
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:108: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected fake /mobile marker to be visible in WKWebView
+    t =   132.76s Find the Target Application 'org.autobyteus.mobile'
+    t =   132.86s Added attachment named 'fake-mobile-opened'
+    t =   132.86s Terminate org.autobyteus.mobile:21808
+    t =   133.94s Open org.autobyteus.mobile
+    t =   133.94s     Launch org.autobyteus.mobile
+    t =   134.15s         Setting up automation session
+    t =   134.98s         Wait for org.autobyteus.mobile to idle
+    t =   136.15s Waiting 60.0s for WebView (First Match) to exist
+    t =   137.21s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   137.21s         Checking existence of `WebView (First Match)`
+    t =   137.26s         Capturing element debug description
+    t =   138.19s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   138.19s         Checking existence of `WebView (First Match)`
+    t =   138.21s         Capturing element debug description
+    t =   139.27s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   139.27s         Checking existence of `WebView (First Match)`
+    t =   139.32s         Capturing element debug description
+    t =   140.25s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   140.25s         Checking existence of `WebView (First Match)`
+    t =   140.28s         Capturing element debug description
+    t =   141.22s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   141.22s         Checking existence of `WebView (First Match)`
+    t =   141.26s         Capturing element debug description
+    t =   142.21s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   142.21s         Checking existence of `WebView (First Match)`
+    t =   142.25s         Capturing element debug description
+    t =   143.18s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   143.19s         Checking existence of `WebView (First Match)`
+    t =   143.23s         Capturing element debug description
+    t =   144.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   144.17s         Checking existence of `WebView (First Match)`
+    t =   144.21s         Capturing element debug description
+    t =   145.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   145.18s         Checking existence of `WebView (First Match)`
+    t =   145.21s         Capturing element debug description
+    t =   146.25s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   146.25s         Checking existence of `WebView (First Match)`
+    t =   146.29s         Capturing element debug description
+    t =   147.22s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   147.22s         Checking existence of `WebView (First Match)`
+    t =   147.26s         Capturing element debug description
+    t =   148.19s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   148.19s         Checking existence of `WebView (First Match)`
+    t =   148.23s         Capturing element debug description
+    t =   149.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   149.17s         Checking existence of `WebView (First Match)`
+    t =   149.21s         Capturing element debug description
+    t =   150.26s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   150.26s         Checking existence of `WebView (First Match)`
+    t =   150.30s         Capturing element debug description
+    t =   151.24s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   151.24s         Checking existence of `WebView (First Match)`
+    t =   151.29s         Capturing element debug description
+    t =   152.24s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   152.24s         Checking existence of `WebView (First Match)`
+    t =   152.28s         Capturing element debug description
+    t =   153.22s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   153.22s         Checking existence of `WebView (First Match)`
+    t =   153.24s         Capturing element debug description
+    t =   154.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   154.17s         Checking existence of `WebView (First Match)`
+    t =   154.21s         Capturing element debug description
+    t =   155.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   155.17s         Checking existence of `WebView (First Match)`
+    t =   155.21s         Capturing element debug description
+    t =   156.25s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   156.25s         Checking existence of `WebView (First Match)`
+    t =   156.28s         Capturing element debug description
+    t =   157.21s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   157.21s         Checking existence of `WebView (First Match)`
+    t =   157.23s         Capturing element debug description
+    t =   158.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   158.18s         Checking existence of `WebView (First Match)`
+    t =   158.22s         Capturing element debug description
+    t =   159.25s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   159.26s         Checking existence of `WebView (First Match)`
+    t =   159.31s         Capturing element debug description
+    t =   160.25s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   160.26s         Checking existence of `WebView (First Match)`
+    t =   160.28s         Capturing element debug description
+    t =   161.21s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   161.21s         Checking existence of `WebView (First Match)`
+    t =   161.24s         Capturing element debug description
+    t =   162.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   162.18s         Checking existence of `WebView (First Match)`
+    t =   162.20s         Capturing element debug description
+    t =   163.24s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   163.25s         Checking existence of `WebView (First Match)`
+    t =   163.28s         Capturing element debug description
+    t =   164.22s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   164.22s         Checking existence of `WebView (First Match)`
+    t =   164.26s         Capturing element debug description
+    t =   165.20s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   165.21s         Checking existence of `WebView (First Match)`
+    t =   165.25s         Capturing element debug description
+    t =   166.18s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   166.19s         Checking existence of `WebView (First Match)`
+    t =   166.23s         Capturing element debug description
+    t =   167.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   167.18s         Checking existence of `WebView (First Match)`
+    t =   167.22s         Capturing element debug description
+    t =   168.26s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   168.26s         Checking existence of `WebView (First Match)`
+    t =   168.30s         Capturing element debug description
+    t =   169.23s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   169.23s         Checking existence of `WebView (First Match)`
+    t =   169.27s         Capturing element debug description
+    t =   170.20s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   170.20s         Checking existence of `WebView (First Match)`
+    t =   170.23s         Capturing element debug description
+    t =   171.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   171.18s         Checking existence of `WebView (First Match)`
+    t =   171.22s         Capturing element debug description
+    t =   172.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   172.17s         Checking existence of `WebView (First Match)`
+    t =   172.22s         Capturing element debug description
+    t =   173.25s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   173.26s         Checking existence of `WebView (First Match)`
+    t =   173.30s         Capturing element debug description
+    t =   174.25s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   174.25s         Checking existence of `WebView (First Match)`
+    t =   174.28s         Capturing element debug description
+    t =   175.21s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   175.22s         Checking existence of `WebView (First Match)`
+    t =   175.25s         Capturing element debug description
+    t =   176.18s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   176.19s         Checking existence of `WebView (First Match)`
+    t =   176.23s         Capturing element debug description
+    t =   177.27s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   177.27s         Checking existence of `WebView (First Match)`
+    t =   177.30s         Capturing element debug description
+    t =   178.26s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   178.26s         Checking existence of `WebView (First Match)`
+    t =   178.29s         Capturing element debug description
+    t =   179.23s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   179.23s         Checking existence of `WebView (First Match)`
+    t =   179.27s         Capturing element debug description
+    t =   180.21s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   180.21s         Checking existence of `WebView (First Match)`
+    t =   180.24s         Capturing element debug description
+    t =   181.18s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   181.18s         Checking existence of `WebView (First Match)`
+    t =   181.21s         Capturing element debug description
+    t =   182.25s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   182.27s         Checking existence of `WebView (First Match)`
+    t =   182.30s         Capturing element debug description
+    t =   183.23s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   183.24s         Checking existence of `WebView (First Match)`
+    t =   183.29s         Capturing element debug description
+    t =   184.23s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   184.24s         Checking existence of `WebView (First Match)`
+    t =   184.27s         Capturing element debug description
+    t =   185.20s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   185.20s         Checking existence of `WebView (First Match)`
+    t =   185.25s         Capturing element debug description
+    t =   186.18s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   186.19s         Checking existence of `WebView (First Match)`
+    t =   186.22s         Capturing element debug description
+    t =   187.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   187.18s         Checking existence of `WebView (First Match)`
+    t =   187.20s         Capturing element debug description
+    t =   188.24s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   188.24s         Checking existence of `WebView (First Match)`
+    t =   188.28s         Capturing element debug description
+    t =   189.22s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   189.22s         Checking existence of `WebView (First Match)`
+    t =   189.25s         Capturing element debug description
+    t =   190.20s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   190.20s         Checking existence of `WebView (First Match)`
+    t =   190.23s         Capturing element debug description
+    t =   191.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   191.17s         Checking existence of `WebView (First Match)`
+    t =   191.21s         Capturing element debug description
+    t =   192.25s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   192.25s         Checking existence of `WebView (First Match)`
+    t =   192.28s         Capturing element debug description
+    t =   193.22s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   193.22s         Checking existence of `WebView (First Match)`
+    t =   193.26s         Capturing element debug description
+    t =   194.21s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   194.21s         Checking existence of `WebView (First Match)`
+    t =   194.24s         Capturing element debug description
+    t =   195.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   195.17s         Checking existence of `WebView (First Match)`
+    t =   195.22s         Capturing element debug description
+    t =   196.22s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =   196.22s         Checking existence of `WebView (First Match)`
+    t =   196.25s         Capturing element debug description
+    t =   196.25s     Checking existence of `WebView (First Match)`
+    t =   196.28s Collecting debug information to assist test failure triage
+    t =   196.28s     Requesting snapshot of accessibility hierarchy for app with pid 23943
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:106: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected WebView to exist
+    t =   196.31s Waiting 60.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+    t =   197.36s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   197.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   197.39s         Capturing element debug description
+    t =   198.31s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   198.31s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   198.33s         Capturing element debug description
+    t =   199.37s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   199.37s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   199.39s         Capturing element debug description
+    t =   200.32s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   200.32s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   200.35s         Capturing element debug description
+    t =   201.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   201.39s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   201.41s         Capturing element debug description
+    t =   202.34s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   202.34s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   202.37s         Capturing element debug description
+    t =   203.31s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   203.32s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   203.34s         Capturing element debug description
+    t =   204.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   204.39s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   204.40s         Capturing element debug description
+    t =   205.35s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   205.35s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   205.38s         Capturing element debug description
+    t =   206.33s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   206.33s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   206.35s         Capturing element debug description
+    t =   207.40s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   207.41s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   207.43s         Capturing element debug description
+    t =   208.36s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   208.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   208.38s         Capturing element debug description
+    t =   209.32s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   209.32s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   209.34s         Capturing element debug description
+    t =   210.38s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   210.38s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   210.41s         Capturing element debug description
+    t =   211.35s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   211.35s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   211.38s         Capturing element debug description
+    t =   212.32s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   212.32s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   212.35s         Capturing element debug description
+    t =   213.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   213.40s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   213.42s         Capturing element debug description
+    t =   214.35s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   214.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   214.37s         Capturing element debug description
+    t =   215.31s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   215.31s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   215.34s         Capturing element debug description
+    t =   216.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   216.39s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   216.42s         Capturing element debug description
+    t =   217.36s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   217.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   217.39s         Capturing element debug description
+    t =   218.33s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   218.33s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   218.36s         Capturing element debug description
+    t =   219.40s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   219.41s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   219.43s         Capturing element debug description
+    t =   220.37s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   220.37s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   220.42s         Capturing element debug description
+    t =   221.37s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   221.37s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   221.39s         Capturing element debug description
+    t =   222.33s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   222.33s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   222.36s         Capturing element debug description
+    t =   223.40s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   223.40s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   223.41s         Capturing element debug description
+    t =   224.34s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   224.34s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   224.36s         Capturing element debug description
+    t =   225.40s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   225.40s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   225.43s         Capturing element debug description
+    t =   226.37s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   226.37s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   226.41s         Capturing element debug description
+    t =   227.36s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   227.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   227.39s         Capturing element debug description
+    t =   228.32s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   228.32s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   228.35s         Capturing element debug description
+    t =   229.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   229.39s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   229.42s         Capturing element debug description
+    t =   230.35s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   230.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   230.38s         Capturing element debug description
+    t =   231.32s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   231.32s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   231.35s         Capturing element debug description
+    t =   232.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   232.40s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   232.43s         Capturing element debug description
+    t =   233.37s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   233.37s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   233.39s         Capturing element debug description
+    t =   234.33s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   234.33s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   234.36s         Capturing element debug description
+    t =   235.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   235.40s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   235.43s         Capturing element debug description
+    t =   236.38s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   236.38s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   236.40s         Capturing element debug description
+    t =   237.34s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   237.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   237.38s         Capturing element debug description
+    t =   238.32s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   238.32s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   238.35s         Capturing element debug description
+    t =   239.38s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   239.38s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   239.40s         Capturing element debug description
+    t =   240.34s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   240.34s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   240.38s         Capturing element debug description
+    t =   241.32s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   241.32s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   241.34s         Capturing element debug description
+    t =   242.38s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   242.38s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   242.42s         Capturing element debug description
+    t =   243.36s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   243.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   243.39s         Capturing element debug description
+    t =   244.33s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   244.33s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   244.35s         Capturing element debug description
+    t =   245.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   245.39s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   245.43s         Capturing element debug description
+    t =   246.38s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   246.39s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   246.42s         Capturing element debug description
+    t =   247.36s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   247.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   247.39s         Capturing element debug description
+    t =   248.33s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   248.33s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   248.37s         Capturing element debug description
+    t =   249.31s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   249.31s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   249.32s         Capturing element debug description
+    t =   250.36s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   250.37s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   250.40s         Capturing element debug description
+    t =   251.34s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   251.34s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   251.37s         Capturing element debug description
+    t =   252.32s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   252.32s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   252.35s         Capturing element debug description
+    t =   253.39s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   253.39s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   253.42s         Capturing element debug description
+    t =   254.36s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   254.36s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   254.37s         Capturing element debug description
+    t =   255.34s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   255.34s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   255.37s         Capturing element debug description
+    t =   256.37s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   256.37s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   256.40s         Capturing element debug description
+    t =   256.40s     Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =   256.43s Collecting debug information to assist test failure triage
+    t =   256.43s     Requesting snapshot of accessibility hierarchy for app with pid 23943
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:108: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected fake /mobile marker to be visible in WKWebView
+    t =   256.45s Find the Target Application 'org.autobyteus.mobile'
+    t =   256.56s Added attachment named 'fake-mobile-restored'
+    t =   256.56s Tear Down
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' failed (256.804 seconds).
+Test Suite 'AutoByteusMobileUITests' failed at 2026-10-05 09:52:05.699.
+	 Executed 1 test, with 4 failures (0 unexpected) in 256.804 (256.805) seconds
+Test Suite 'AutoByteusMobileUITests.xctest' failed at 2026-10-05 09:52:05.700.
+	 Executed 1 test, with 4 failures (0 unexpected) in 256.804 (256.806) seconds
+Test Suite 'Selected tests' failed at 2026-10-05 09:52:05.701.
+	 Executed 1 test, with 4 failures (0 unexpected) in 256.804 (256.807) seconds
+2026-10-05 09:52:17.343 xcodebuild[21793:37164784] [MT] IDETestOperationsObserverDebug: 270.539 elapsed -- Testing started completed.
+2026-10-05 09:52:17.343 xcodebuild[21793:37164784] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-05 09:52:17.343 xcodebuild[21793:37164784] [MT] IDETestOperationsObserverDebug: 270.539 sec, +270.539 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/tickets/in-progress/ios-release-ui-test-flakiness/api-e2e-evidence/local/R2-L4-fix-no-server/result.xcresult
+
+** TEST FAILED **
+
+Testing started
+exit=65 wall=273s

@@ -1,0 +1,7 @@
+    t =     8.15s Tap "connection.httpAcknowledgement" Switch
+    t =    12.03s Tap "connection.connect" Button
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:108: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected fake /mobile marker to be visible in WKWebView
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:108: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected fake /mobile marker to be visible in WKWebView
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' failed (138.644 seconds).
+** TEST FAILED **
+exit=65

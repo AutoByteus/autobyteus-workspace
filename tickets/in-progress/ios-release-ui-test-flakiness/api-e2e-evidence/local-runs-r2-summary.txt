@@ -1,0 +1,17 @@
+== R2-L3-fix-delay0-both
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (20.778 seconds).
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' passed (14.634 seconds).
+** TEST SUCCEEDED **
+exit=0 wall=46s
+== R2-L1-fix-delay7
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (32.614 seconds).
+** TEST SUCCEEDED **
+exit=0 wall=38s
+== R2-L4-fix-no-server
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:106: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWi
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:108: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWi
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:106: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWi
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:108: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWi
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' failed (256.804 seconds).
+** TEST FAILED **
+exit=65 wall=273s

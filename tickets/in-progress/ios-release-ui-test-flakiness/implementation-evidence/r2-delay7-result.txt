@@ -1,0 +1,5 @@
+    t =     8.21s Tap "connection.httpAcknowledgement" Switch
+    t =    12.10s Tap "connection.connect" Button
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (32.596 seconds).
+** TEST SUCCEEDED **
+exit=0

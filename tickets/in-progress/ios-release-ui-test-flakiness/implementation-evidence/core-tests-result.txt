@@ -1,0 +1,2 @@
+	 Executed 21 tests, with 0 failures (0 unexpected) in 0.033 (0.049) seconds
+** TEST SUCCEEDED **

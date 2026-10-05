@@ -1,0 +1,175 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project /Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination "platform=iOS Simulator,id=AED15013-49CB-4DEE-9FCA-5A94B0E5650B" -resultBundlePath /Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/tickets/in-progress/ios-release-ui-test-flakiness/api-e2e-evidence/local/R2-L1-fix-delay7/result.xcresult "-only-testing:AutoByteusMobileUITests/AutoByteusMobileUITests/testFakeNodeOpensAndRestoresWithFakeMobileMarker" IOS_BUNDLE_ID=org.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=org.autobyteus.mobile.share MARKETING_VERSION=0.1.0 CURRENT_PROJECT_VERSION=1 "AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29876/mobile" AUTOBYTEUS_SMOKE_TESTS_REQUIRED=1 test
+
+Build settings from command line:
+    AUTOBYTEUS_SMOKE_TESTS_REQUIRED = 1
+    AUTOBYTEUS_TEST_NODE_URL = http://127.0.0.1:29876/mobile
+    CURRENT_PROJECT_VERSION = 1
+    IOS_BUNDLE_ID = org.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = org.autobyteus.mobile.share
+    MARKETING_VERSION = 0.1.0
+
+Writing result bundle at path:
+	/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/tickets/in-progress/ios-release-ui-test-flakiness/api-e2e-evidence/local/R2-L1-fix-delay7/result.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (5 targets)
+    Target 'AutoByteusMobileUITests' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobile' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileCoreTests' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobile' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileShareExtension' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileShareExtension' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileCore' in project 'AutoByteusMobile' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk /Users/normy/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.1-23B77-90cf18a4295e390e64c810bc6bd7acbc.sdkstatcache
+    cd /Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobile.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.1.sdk -o /Users/normy/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.1-23B77-90cf18a4295e390e64c810bc6bd7acbc.sdkstatcache
+
+2026-10-05 09:47:10.456979+0200 AutoByteusMobileUITests-Runner[20402:37161476] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-10-05 09:47:11.821.
+Test Suite 'AutoByteusMobileUITests.xctest' started at 2026-10-05 09:47:11.821.
+Test Suite 'AutoByteusMobileUITests' started at 2026-10-05 09:47:11.821.
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' started.
+    t =     0.00s Start Test at 2026-10-05 09:47:11.822
+    t =     0.02s Set Up
+    t =     0.03s Open org.autobyteus.mobile
+    t =     0.03s     Launch org.autobyteus.mobile
+    t =     0.65s         Setting up automation session
+    t =     1.47s         Wait for org.autobyteus.mobile to idle
+    t =     3.68s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.input" TextView`
+    t =     3.68s     Checking existence of `"connection.input" TextView`
+    t =     3.74s     Find the "connection.input" TextView
+    t =     3.77s Tap "connection.input" TextView
+    t =     3.77s     Wait for org.autobyteus.mobile to idle
+    t =     3.77s     Find the "connection.input" TextView
+    t =     3.78s     Check for interrupting elements affecting "connection.input" TextView
+    t =     3.80s     Synthesize event
+    t =     4.09s     Wait for org.autobyteus.mobile to idle
+    t =     5.16s Checking `Expect predicate `hasKeyboardFocus == 1` for object "connection.input" TextView`
+    t =     5.17s     Find the "connection.input" TextView
+    t =     5.22s Type 'http://127.0.0.1:2...' into "connection.input" TextView
+    t =     5.22s     Wait for org.autobyteus.mobile to idle
+    t =     5.23s     Find the "connection.input" TextView
+    t =     5.26s     Check for interrupting elements affecting "connection.input" TextView
+    t =     5.28s     Synthesize event
+    t =     5.97s     Wait for org.autobyteus.mobile to idle
+    t =     7.03s Checking `Expect predicate `value CONTAINS "http://127.0.0.1:29876/mobile"` for object "connection.input" TextView`
+    t =     7.03s     Find the "connection.input" TextView
+    t =     8.13s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.httpAcknowledgement" Switch`
+    t =     8.14s     Checking existence of `"connection.httpAcknowledgement" Switch`
+    t =     8.19s     Find the "connection.httpAcknowledgement" Switch
+    t =     8.23s Find the "connection.httpAcknowledgement" Switch
+    t =     8.26s Tap "connection.httpAcknowledgement" Switch
+    t =     8.26s     Wait for org.autobyteus.mobile to idle
+    t =     8.26s     Find the "connection.httpAcknowledgement" Switch
+    t =     8.29s     Check for interrupting elements affecting "connection.httpAcknowledgement" Switch
+    t =     8.32s     Synthesize event
+    t =     8.61s     Wait for org.autobyteus.mobile to idle
+    t =    10.94s Checking `Expect predicate `value == "1"` for object "connection.httpAcknowledgement" Switch`
+    t =    10.94s     Find the "connection.httpAcknowledgement" Switch
+    t =    10.98s Find the "connection.httpAcknowledgement" Switch
+    t =    12.05s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.connect" Button`
+    t =    12.05s     Checking existence of `"connection.connect" Button`
+    t =    12.11s     Find the "connection.connect" Button
+    t =    12.15s Tap "connection.connect" Button
+    t =    12.15s     Wait for org.autobyteus.mobile to idle
+    t =    12.15s     Find the "connection.connect" Button
+    t =    12.18s     Check for interrupting elements affecting "connection.connect" Button
+    t =    12.21s     Synthesize event
+    t =    12.50s     Wait for org.autobyteus.mobile to idle
+    t =    12.72s Waiting 60.0s for WebView (First Match) to exist
+    t =    13.79s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    13.80s         Checking existence of `WebView (First Match)`
+    t =    13.84s         Capturing element debug description
+    t =    14.78s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    14.78s         Checking existence of `WebView (First Match)`
+    t =    14.81s         Capturing element debug description
+    t =    15.76s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    15.76s         Checking existence of `WebView (First Match)`
+    t =    15.79s         Capturing element debug description
+    t =    16.73s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    16.74s         Checking existence of `WebView (First Match)`
+    t =    16.78s         Capturing element debug description
+    t =    17.73s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    17.74s         Checking existence of `WebView (First Match)`
+    t =    17.78s         Capturing element debug description
+    t =    18.72s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    18.72s         Checking existence of `WebView (First Match)`
+    t =    18.77s         Capturing element debug description
+    t =    19.72s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    19.73s         Checking existence of `WebView (First Match)`
+    t =    19.73s Waiting 60.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+    t =    20.77s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    20.77s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    20.80s Find the Target Application 'org.autobyteus.mobile'
+    t =    20.90s Added attachment named 'fake-mobile-opened'
+    t =    20.90s Terminate org.autobyteus.mobile:20425
+    t =    21.98s Open org.autobyteus.mobile
+    t =    21.98s     Launch org.autobyteus.mobile
+    t =    22.19s         Setting up automation session
+    t =    22.97s         Wait for org.autobyteus.mobile to idle
+    t =    24.13s Waiting 60.0s for WebView (First Match) to exist
+    t =    25.17s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    25.18s         Checking existence of `WebView (First Match)`
+    t =    25.23s         Capturing element debug description
+    t =    26.16s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    26.16s         Checking existence of `WebView (First Match)`
+    t =    26.19s         Capturing element debug description
+    t =    27.13s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    27.13s         Checking existence of `WebView (First Match)`
+    t =    27.16s         Capturing element debug description
+    t =    28.21s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    28.21s         Checking existence of `WebView (First Match)`
+    t =    28.24s         Capturing element debug description
+    t =    29.19s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    29.19s         Checking existence of `WebView (First Match)`
+    t =    29.23s         Capturing element debug description
+    t =    30.18s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    30.18s         Checking existence of `WebView (First Match)`
+    t =    30.24s         Capturing element debug description
+    t =    31.16s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    31.17s         Checking existence of `WebView (First Match)`
+    t =    31.18s Waiting 60.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+    t =    32.22s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    32.22s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    32.24s Find the Target Application 'org.autobyteus.mobile'
+    t =    32.35s Added attachment named 'fake-mobile-restored'
+    t =    32.35s Tear Down
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (32.614 seconds).
+Test Suite 'AutoByteusMobileUITests' passed at 2026-10-05 09:47:44.437.
+	 Executed 1 test, with 0 failures (0 unexpected) in 32.614 (32.615) seconds
+Test Suite 'AutoByteusMobileUITests.xctest' passed at 2026-10-05 09:47:44.438.
+	 Executed 1 test, with 0 failures (0 unexpected) in 32.614 (32.617) seconds
+Test Suite 'Selected tests' passed at 2026-10-05 09:47:44.439.
+	 Executed 1 test, with 0 failures (0 unexpected) in 32.614 (32.618) seconds
+2026-10-05 09:47:44.744 xcodebuild[20364:37161047] [MT] IDETestOperationsObserverDebug: 35.742 elapsed -- Testing started completed.
+2026-10-05 09:47:44.744 xcodebuild[20364:37161047] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-05 09:47:44.744 xcodebuild[20364:37161047] [MT] IDETestOperationsObserverDebug: 35.742 sec, +35.742 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/tickets/in-progress/ios-release-ui-test-flakiness/api-e2e-evidence/local/R2-L1-fix-delay7/result.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
+exit=0 wall=38s
