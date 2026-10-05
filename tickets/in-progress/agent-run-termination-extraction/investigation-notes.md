@@ -1,10 +1,10 @@
-# Investigation Notes — agent-run-termination-and-root-delivery-core
+# Investigation Notes — agent-run-termination-extraction
 
 ## Bootstrap
-- **Package:** `agent-run-termination-and-root-delivery-core` (new ticket; not a revision of the finalized
+- **Package:** `agent-run-termination-extraction` (bootstrapped as `agent-run-termination-and-root-delivery-core`, renamed in SR-002 when the scope narrowed to Part A; new ticket; not a revision of the finalized
   `standalone-agent-run-root`).
-- **Worktree:** `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-and-root-delivery-core`, branch
-  `codex/agent-run-termination-and-root-delivery-core`, created 2026-10-04 from `origin/personal` @ `03d5db06b` (fetched
+- **Worktree:** `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction`, branch
+  `codex/agent-run-termination-extraction` (renamed 2026-10-05), created 2026-10-04 from `origin/personal` @ `03d5db06b` (fetched
   the same day). Finalization target: `personal`.
 - **Origin:** request from `/code_reviewer` (run `code_reviewer_47ea626b23c646c88b7a7808d79784bf`), 2026-10-04,
   directed by the user: "do it as one combined ticket please … send to solution designer to bootstrap a new ticket." The
@@ -61,7 +61,7 @@
   - All pass on the base (E-X1). `agent-run-root-shutdown-fence.test.ts` constructs the fence class directly, so moving
     that class changes the test's import or construction, not its assertions.
 
-## Part B evidence — root message delivery
+## Part B evidence — root message delivery (deferred; out of scope since SR-002, kept for the follow-up candidate)
 - **E-B1, files and sizes** (effective lines):
   - `agent-team-execution/services/team-run-message-delivery.ts` 112: address and run-ID delivery, delegation
     placement, listing. The Team root's `withLiveLease`, `isLiveAgent` and `executeAgentCommand` live in
