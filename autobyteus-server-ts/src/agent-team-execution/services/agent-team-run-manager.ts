@@ -33,7 +33,7 @@ import {
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import { materializeTeamRoot } from "./team-root-materializer.js";
-import type { TaskLifetimeRuntime } from "../../agent-collaboration/execution/task/task-lifetime-gate.js";
+import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -46,7 +46,7 @@ export type AgentTeamRunManagerOptions = Readonly<{
   flatTeamExecutionFactory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  taskLifetimes?: TaskLifetimeRuntime;
+  taskAgentResources?: TaskAgentResourcePort;
   executionTreeStore?: TeamRunExecutionTreeStore;
   communicationStore?: TeamCommunicationV1Store;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
@@ -63,7 +63,7 @@ export class AgentTeamRunManager {
   private readonly communicationStore: TeamCommunicationV1Store;
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  private readonly taskLifetimes?: TaskLifetimeRuntime;
+  private readonly taskAgentResources?: TaskAgentResourcePort;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
   private readonly managedRoots = new Map<string, RootTeamRun>();
@@ -112,7 +112,7 @@ export class AgentTeamRunManager {
     this.factory = options.flatTeamExecutionFactory;
     this.memberExecutionContextBuilder = options.memberExecutionContextBuilder;
     this.taskExecutionIdentity = options.taskExecutionIdentity;
-    this.taskLifetimes = options.taskLifetimes;
+    this.taskAgentResources = options.taskAgentResources;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
     this.modelSelectionValidator = options.modelSelectionValidator;
@@ -390,7 +390,7 @@ export class AgentTeamRunManager {
       factory: this.factory,
       memberExecutionContextBuilder: this.memberExecutionContextBuilder,
       taskExecutionIdentity: this.taskExecutionIdentity,
-      taskLifetimes: this.taskLifetimes,
+      taskAgentResources: this.taskAgentResources,
       executionTreeStore: this.executionTreeStore,
       communicationStore: this.communicationStore,
     } as const;

@@ -62,8 +62,8 @@ import { getCodexAppServerClientManager } from "../runtime-management/codex/clie
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { TaskLifetimeRuntime } from "../agent-collaboration/execution/task/task-lifetime-gate.js";
-import { composeProjectTaskLifetimes, releaseProjectTaskLifetimes } from "../compositions/project-task-lifetime-composition.js";
+import type { TaskAgentResourcePort } from "../agent-collaboration/execution/task/task-agent-resource-port.js";
+import { composeProjectTaskAgentResources, releaseProjectTaskAgentResources } from "../compositions/project-task-agent-resource-composition.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -229,7 +229,7 @@ export const startStandaloneApplicationHost = async (
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor:
     GeneralProcessRunSupervisor | null = null;
-  let taskLifetimes: TaskLifetimeRuntime | null = null;
+  let taskAgentResources: TaskAgentResourcePort | null = null;
   let hostDefinitionServices: HostDefinitionServices | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
@@ -267,7 +267,8 @@ export const startStandaloneApplicationHost = async (
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
-    taskLifetimes = composeProjectTaskLifetimes({ activeRootDirectory: getActiveCollaborationRootDirectory() });
+    taskAgentResources = await composeProjectTaskAgentResources({
+      activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: processResources.appConfig.getAppDataDir() });
     generalProcessRunSupervisor =
       createGeneralProcessRunSupervisor({
         memoryDir: processResources.appConfig.getMemoryDir(),
@@ -280,7 +281,7 @@ export const startStandaloneApplicationHost = async (
         agentProviderFactoryBuilder,
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
-        taskLifetimes,
+        taskAgentResources,
       });
     generalProcessAuthority = null;
     const applicationRuntime = buildApplicationPlatformRuntime({
@@ -322,7 +323,7 @@ export const startStandaloneApplicationHost = async (
           try {
             await generalProcessRunSupervisor!.close();
           } finally {
-            releaseProjectTaskLifetimes(taskLifetimes!);
+            releaseProjectTaskAgentResources(taskAgentResources!);
             try {
               await agentToolsMcpHost!.close();
             } finally {
@@ -357,7 +358,7 @@ export const startStandaloneApplicationHost = async (
         try {
           await generalProcessRunSupervisor?.close();
         } finally {
-          if (taskLifetimes) releaseProjectTaskLifetimes(taskLifetimes);
+          if (taskAgentResources) releaseProjectTaskAgentResources(taskAgentResources);
           try {
             generalProcessAuthority?.close();
           } finally {

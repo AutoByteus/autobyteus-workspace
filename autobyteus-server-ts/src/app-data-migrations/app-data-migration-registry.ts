@@ -23,6 +23,7 @@ import { TeamRunExecutionTreeV2AppDataMigration } from "./migrations/team-run-ex
 import { AgentOrgFlatTeamFamiliesV1AppDataMigration } from "./migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import { AgentOrgHistoryFirstMessageSummaryV1AppDataMigration } from "./migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
 import { RemoveExternalMessagingDataMigration } from "./migrations/remove-external-messaging-data-migration.js";
+import { ProjectsPerFolderV1AppDataMigration } from "./migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -75,6 +76,7 @@ export class AppDataMigrationRegistry {
         gatewayDownloadDir: path.join(appConfigProvider.config.getDownloadDir(), "messaging-gateway"),
         gatewayLogsDir: path.join(appConfigProvider.config.getLogsDir(), "messaging-gateway"),
       }),
+      new ProjectsPerFolderV1AppDataMigration(appConfigProvider.config.getAppDataDir()),
     ];
     this.validateDefinitions();
   }

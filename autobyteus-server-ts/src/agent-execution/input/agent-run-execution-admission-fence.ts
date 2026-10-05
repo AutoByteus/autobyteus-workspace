@@ -8,7 +8,7 @@ export class AgentRunExecutionAdmissionFence {
   }
   close(): void { this.closed = true; }
   assertOpen(): void {
-    if (this.closed) throw new Error('TASK_LIFETIME_CLOSED: exact runtime release has fenced input.');
+    if (this.closed) throw new Error('AGENT_RUN_RELEASED: exact runtime release has fenced input.');
     this.assertAllowed?.();
   }
 }

@@ -1,33 +1,21 @@
 import { getProjectService } from "../../projects/services/project-service.js";
 import { getProjectTaskService } from "../../projects/services/project-task-service.js";
 import type { ProjectTaskStatus, ProjectTaskView } from "../../projects/domain/models.js";
-import type { ProjectTaskExecutionLink } from "../../projects/domain/project-task-execution.js";
-import type { TaskExecutionLinkIdentity } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { TaskAssignment } from "../../projects/domain/task-agent-resources.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
 import { PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseProjectTaskToolInput, type ProjectTaskToolName } from "./project-task-tool-contract.js";
 
 type TaskAcknowledgement = Pick<ProjectTaskView, "projectId" | "taskId" | "status">;
-type TaskAssignment = Pick<TaskExecutionLinkIdentity, "root" | "execution" | "ingressAgentRunId"> & {
-  dispatchOutcome: "accepted" | "not_confirmed" | "failed";
-};
-type TaskBusinessRead = Pick<ProjectTaskView, "projectId" | "taskId" | "description" | "status" | "contextFiles"> & {
-  assignments: TaskAssignment[];
-};
-const dispatchOutcomes: Record<ProjectTaskExecutionLink["dispatch"], TaskAssignment["dispatchOutcome"]> = {
-  delivered: "accepted", reserved: "not_confirmed", admitted: "not_confirmed", failed: "failed",
-};
+/** Business read: current (open) assignments, or a marker when this Task's assignments can't be read. */
+type TaskBusinessRead = Pick<ProjectTaskView, "projectId" | "taskId" | "description" | "status" | "contextFiles">
+  & ({ assignments: TaskAssignment[] } | { assignmentsUnavailable: true });
 const taskAcknowledgement = ({ projectId, taskId, status }: ProjectTaskView): TaskAcknowledgement => ({ projectId, taskId, status });
-const taskBusinessRead = ({ projectId, taskId, description, status, contextFiles, executionLifetimes }: ProjectTaskView): TaskBusinessRead => ({
+const taskBusinessRead = ({ projectId, taskId, description, status, contextFiles }: ProjectTaskView,
+  assignments: TaskAssignment[] | "unavailable" | undefined): TaskBusinessRead => ({
   projectId, taskId, description, status, contextFiles,
-  assignments: executionLifetimes.flatMap(lifetime => lifetime.executions
-    .filter(link => link.purpose !== "helper")
-    .map(link => ({ root: { rootSubjectKind: link.root.rootSubjectKind, rootRunId: link.root.rootRunId },
-      execution: "agentRunId" in link.execution ? { agentRunId: link.execution.agentRunId } : { teamRunId: link.execution.teamRunId }, ingressAgentRunId: link.ingressAgentRunId,
-      dispatchOutcome: dispatchOutcomes[link.dispatch] }))),
+  ...(assignments === "unavailable" ? { assignmentsUnavailable: true as const } : { assignments: assignments ?? [] }),
 });
 
-const isInternalStateError = (error: ProjectError): boolean =>
-  error.code === "PROJECT_STATE_UNAVAILABLE" || error.code.startsWith("TASK_LIFETIME_");
 class TaskMutationUnconfirmed extends Error {
   constructor(cause: unknown) { super("Task change could not be confirmed. Check the saved Task before repeating.", { cause }); }
 }
@@ -36,15 +24,19 @@ export const projectTaskToolError = (error: unknown) => {
     console.error("Project Task mutation result unavailable.", error);
     return { error: { code: "PROJECT_OPERATION_UNCONFIRMED", message: error.message } };
   }
-  if (error instanceof ProjectError && !isInternalStateError(error)) return { error: { code: error.code, message: error.message } };
+  if (error instanceof ProjectError) return { error: { code: error.code, message: error.message } };
   console.error("Project tool operation failed.", error);
-  return { error: { code: error instanceof ProjectError ? error.code : "PROJECT_OPERATION_FAILED", message: "Project data could not be read." } };
+  return { error: { code: "PROJECT_OPERATION_FAILED", message: "Project operation failed." } };
 };
 export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unknown): Promise<unknown> {
   const input = parseProjectTaskToolInput(name, raw);
   if (name === "list_projects") return { projects: await getProjectService().listProjectSummaries() };
   const projectId = input.project_id as string;
-  if (name === "list_project_tasks") return { projectId, tasks: (await getProjectTaskService().listTasks(projectId, input.status as ProjectTaskStatus | undefined)).map(taskBusinessRead) };
+  if (name === "list_project_tasks") {
+    const tasks = await getProjectTaskService().listTasks(projectId, input.status as ProjectTaskStatus | undefined);
+    const assignments = await getProjectTaskService().currentAssignments(tasks.map(task => task.taskId));
+    return { projectId, tasks: tasks.map(task => taskBusinessRead(task, assignments.get(task.taskId))) };
+  }
   // The service may fail while producing its view AFTER the write. Neither a
   // fabricated acknowledgement nor a rollback claim is safe without its result.
   try {
@@ -55,7 +47,7 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
       : await getProjectTaskService().createTask({ projectId, description: input.description as string });
     return { task: taskAcknowledgement(task) };
   } catch (error) {
-    if (error instanceof ProjectError && !isInternalStateError(error)) throw error;
+    if (error instanceof ProjectError) throw error;
     throw new TaskMutationUnconfirmed(error);
   }
 }

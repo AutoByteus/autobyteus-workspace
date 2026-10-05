@@ -34,10 +34,10 @@ describe("projects subsystem boundaries", () => {
     expect(filesImporting(join(SRC, "api"), /projects\/stores\//)).toEqual([]);
   });
 
-  it("keeps Project Tasks and execution-internal delegated tasks apart (REQ-012, SR-021)", () => {
+  it("keeps Project Tasks and execution-internal delegated tasks apart (REQ-012, SR-021/SR-023)", () => {
     // Projects may import only the neutral lifetime contracts, never runtime implementations.
     const neutralContracts = new Set([
-      "agent-collaboration/execution/task/task-execution-lifetime.js",
+      "agent-collaboration/execution/task/task-agent-resource-port.js",
       "agent-collaboration/execution/task/task-execution-reference.js",
       "agent-collaboration/execution/domain/root-execution-identity.js",
     ]);
@@ -51,11 +51,11 @@ describe("projects subsystem boundaries", () => {
     const runtimeRoots = ["agent-team-execution", "agent-collaboration", "agent-execution", "agent-org-execution", "standalone-agent-run-root"]
       .map((folder) => join(SRC, folder))
       .filter((root) => { try { return statSync(root).isDirectory(); } catch { return false; } });
-    for (const root of runtimeRoots) {
+    for (const root of [...runtimeRoots, join(SRC, "run-history")]) {
       expect(filesImporting(root, /(^|\/)projects\//)).toEqual([]);
     }
     // Only the one composition binding knows both sides.
-    expect(filesImporting(join(SRC, "compositions"), /(^|\/)projects\//)).toEqual(["compositions/project-task-lifetime-composition.ts"]);
+    expect(filesImporting(join(SRC, "compositions"), /(^|\/)projects\//)).toEqual(["compositions/project-task-agent-resource-composition.ts"]);
     expect(filesImporting(join(SRC, "api", "graphql", "types"), /projects\/services\/project-task-service/))
       .toEqual(["api/graphql/types/project-tasks.ts"]);
   });

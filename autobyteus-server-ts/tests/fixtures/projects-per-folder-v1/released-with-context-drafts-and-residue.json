@@ -1,0 +1,44 @@
+[
+  {
+    "projectId": "project_ctx",
+    "name": "With files",
+    "description": "",
+    "createdAt": "2026-10-01T08:00:00.000Z",
+    "updatedAt": "2026-10-01T08:00:00.000Z",
+    "workspaces": [{ "workspaceId": "ws_1", "workspaceRootPath": "/work/site", "description": "repo", "addedAt": "2026-10-01T08:00:00.000Z" }],
+    "tasks": [
+      {
+        "taskId": "project_task_ctx",
+        "description": "Has saved files",
+        "status": "IN_PROGRESS",
+        "createdAt": "2026-10-01T08:01:00.000Z",
+        "updatedAt": "2026-10-01T08:03:00.000Z",
+        "contextFiles": [
+          { "storedFilename": "ctx_0ad25cc6cad1__requirements.txt", "displayName": "requirements.txt", "mimeType": "text/plain", "sizeBytes": 12 },
+          { "storedFilename": "ctx_1be36dd7dbe2__missing.txt", "displayName": "missing.txt", "mimeType": "text/plain", "sizeBytes": 4 }
+        ]
+      },
+      { "taskId": "project_task_done", "description": "Finished", "status": "DONE", "createdAt": "2026-10-01T08:01:00.000Z", "updatedAt": "2026-10-01T08:04:00.000Z" },
+      { "taskId": "", "description": "invalid task entry", "status": "TODO", "createdAt": "x", "updatedAt": "x" }
+    ]
+  },
+  { "taskLifetimes": [{ "lifetimeId": "dev-lifetime", "projectId": "project_ctx", "taskId": "project_task_ctx", "openedAt": "2026-10-02T00:00:00.000Z", "completedAt": null, "executions": [] }] },
+  { "projectId": "", "name": "invalid row" },
+  {
+    "projectId": "project_ctx",
+    "name": "Duplicate id",
+    "description": "",
+    "createdAt": "2026-10-01T08:00:00.000Z",
+    "updatedAt": "2026-10-01T08:00:00.000Z",
+    "workspaces": [],
+    "tasks": []
+  },
+  {
+    "projectId": "project_plain",
+    "name": "No tasks key",
+    "description": "released row written before Tasks existed",
+    "createdAt": "2026-09-01T08:00:00.000Z",
+    "updatedAt": "2026-09-01T08:00:00.000Z",
+    "workspaces": []
+  }
+]

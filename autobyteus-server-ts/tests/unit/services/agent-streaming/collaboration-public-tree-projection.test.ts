@@ -44,7 +44,7 @@ const setup = (kind: "agent" | "agent_org", linked = true) => {
 afterEach(() => vi.restoreAllMocks());
 
 describe.each(["agent", "agent_org"] as const)("%s camel-case public projection", kind => {
-  it("keeps the entire public nested forest, source/member/provider/launch identity and internal stamps", () => {
+  it("keeps the entire public nested forest and identity; dev-residue Task stamps never reach the current tree (C-1)", () => {
     const current = setup(kind), before = JSON.stringify(current.tree), view = current.projectView();
     const publicTree = view.root_subject_kind === "agent" ? view.root_agent.execution_tree : view.root_org.execution_tree;
     // Unstamped current trees already ARE the strict public shape. Exact equality
@@ -54,9 +54,8 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
       : agentOrgExecutionTreeDtoSchema.parse(orgProjectionTree(false)));
     expect(JSON.stringify(publicTree)).not.toContain("taskLifetime");
     expect(JSON.stringify(current.tree)).toBe(before);
-    expect(before.match(/taskLifetime/g)?.length).toBe(kind === "agent" ? 8 : 9);
-    const schema = kind === "agent" ? agentRunCollaborationTreeDtoSchema : agentOrgExecutionTreeDtoSchema;
-    expect(() => schema.parse(current.tree)).toThrow(); // strict DTO NOT relaxed
+    expect(before).not.toContain("taskLifetime");
+    expect(JSON.stringify(current.tree)).toBe(JSON.stringify(setup(kind, false).tree));
   });
   it.each(["solo-copy", "packet-copy", "nested-task-team", "nested-helper", "follow-on-agent", "follow-on-team", "review-helper", "shared-helper"])("projects the actual indexed started execution %s", id => {
     const current = setup(kind), unlinked = setup(kind, false);
@@ -69,7 +68,7 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
       kind: "task_execution_started", host_kind: indexed.host.hostKind, host_run_id: indexed.host.hostRunId,
       execution: unlinked.index.getTaskExecution(reference)!.source,
     } });
-    expect(indexed.source.taskLifetime).toBeDefined();
+    expect(indexed.source).not.toHaveProperty("taskLifetime");
   });
   it("projects collaborator events recursively without exposing lifetime ownership", () => {
     const current = setup(kind), unlinked = setup(kind, false);
@@ -113,7 +112,7 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
   });
 });
 
-it("GraphQL Agent inspection reuses the exact public view without materialization or stamp loss", async () => {
+it("GraphQL Agent inspection reuses the exact public view without materialization", async () => {
   const current = setup("agent"), inspection = { hostRunId: "manager", isActive: false, snapshot: current.snapshot, baseChangeSequence: 7 };
   const getInspection = vi.fn(async () => inspection), restore = vi.fn();
   const manager = { getInspection, resolveCommandReadyRoot: restore } as never;
@@ -124,7 +123,7 @@ it("GraphQL Agent inspection reuses the exact public view without materializatio
   expect(result).toEqual(projectAgentCollaborationView(inspection as never));
   expect(getInspection).toHaveBeenCalledWith("manager");
   expect(restore).not.toHaveBeenCalled();
-  expect(JSON.stringify(current.tree)).toContain("taskLifetime");
+  expect(JSON.stringify(current.tree)).not.toContain("taskLifetime");
 });
 
 it("Org GraphQL inspection service reuses strict public snapshot projection without restoring", async () => {
@@ -135,5 +134,5 @@ it("Org GraphQL inspection service reuses strict public snapshot projection with
   expect(await service.getInspection("org-root")).toEqual(projectAgentOrgExecutionSnapshot(inspection as never));
   expect(getInspection).toHaveBeenCalledWith("org-root");
   expect(restore).not.toHaveBeenCalled();
-  expect(JSON.stringify(current.tree)).toContain("taskLifetime");
+  expect(JSON.stringify(current.tree)).not.toContain("taskLifetime");
 });

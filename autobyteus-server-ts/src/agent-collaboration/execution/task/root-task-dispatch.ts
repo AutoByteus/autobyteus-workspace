@@ -1,35 +1,51 @@
-import type { RootTaskExecutionAdapter, TaskExecutionActivationOperation, TaskExecutionActivationPlan, TaskExecutionActivationWork } from "./root-task-execution-adapter.js";
+import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { RootTaskExecutionAdapter, TaskExecutionActivationOperation, TaskExecutionActivationPlan } from "./root-task-execution-adapter.js";
 import type { RootTaskExecutionCommandQueue } from "./root-task-execution-command-queue.js";
-import type { TaskExecutionLifetimePort, TaskLifetimeAdmission } from "./task-execution-lifetime.js";
-import { RootTaskPersistenceFinalizationIndeterminateError, TaskDispatchIndeterminateError, type TaskDelegationContext, type DelegateTaskResult } from "./task-delegation-command.js";
+import type { TaskAgentResourcePort } from "./task-agent-resource-port.js";
+import type { TaskExecutionReference } from "./task-execution-reference.js";
+import { asTaskDelegationError } from "./root-task-agent-resource-scope.js";
+import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError, TaskDispatchIndeterminateError, type TaskDelegationContext, type DelegateTaskResult } from "./task-delegation-command.js";
 
-/** One staged dispatch, attached to the root lifecycle's queue and confirmed-open lifetime admission. */
+/** How the new copy joins a Task, decided by the lifecycle from the sender's ownership. */
+export type TaskAgentResourceJoin =
+  | Readonly<{ role: "assigned"; taskId: string; assignedBy: string }>
+  | Readonly<{ role: "delegated" | "broughtIn"; creator: TaskExecutionReference }>;
+
+/**
+ * One staged dispatch on the root lifecycle's queue. A Task copy is linked after identity planning
+ * and before registration, so DONE always reaches it; every await is followed by an open check.
+ */
 export async function dispatchTaskCopy<T>(input: {
   adapter: RootTaskExecutionAdapter<T>; queue: RootTaskExecutionCommandQueue;
-  context: TaskDelegationContext; placement: T; admission?: TaskLifetimeAdmission;
-  lifetimePort?: TaskExecutionLifetimePort; explicitTaskId?: string;
+  context: TaskDelegationContext; placement: T; workPacket?: AgentInputUserMessage;
+  join?: TaskAgentResourceJoin; resources?: TaskAgentResourcePort;
   assertAdmitting(): void;
-} & TaskExecutionActivationWork): Promise<DelegateTaskResult> {
+}): Promise<DelegateTaskResult> {
   let plan: TaskExecutionActivationPlan<T> | null = null;
   let operation: TaskExecutionActivationOperation | null = null;
-  let reserved = false, committed = false, accepted = false;
-  const assertOpen = () => { input.assertAdmitting(); input.admission?.assertOpen(); };
+  let linked = false, committed = false, accepted = false;
+  const assertOpen = () => {
+    input.assertAdmitting();
+    if (linked && !input.resources!.isOpen(plan!.target.execution)) {
+      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task was marked DONE; its new work was not started.");
+    }
+  };
   try {
-    assertOpen();
-    const identityPlan = { identity: input.context.identity, placement: input.placement, startedAt: new Date().toISOString() };
-    plan = await input.adapter.planActivation(input.workPacket
-      ? { ...identityPlan, workPacket: input.workPacket, taskLifetime: input.taskLifetime }
-      : { ...identityPlan, taskLifetime: input.taskLifetime });
-    assertOpen();
+    input.assertAdmitting();
+    plan = await input.adapter.planActivation({ identity: input.context.identity, placement: input.placement,
+      startedAt: new Date().toISOString(), ...(input.workPacket ? { workPacket: input.workPacket } : {}) });
+    input.assertAdmitting();
     const exact = plan;
+    if (input.join) {
+      const target = exact.target;
+      await input.resources!.linkAgentRun({ ...input.join, hostRoot: target.root, agentRun: target.execution,
+        ...("teamRunId" in target.execution ? { coordinatorAgentRunId: target.ingressAgentRunId } : {}) })
+        .catch(error => { throw asTaskDelegationError(error); });
+      linked = true;
+    }
     operation = await input.queue.submit({ kind: "activate", executeAtQueueHead: async () => {
       assertOpen(); return input.adapter.beginActivation(exact);
     } });
-    if (input.taskLifetime) {
-      await input.lifetimePort!.reserveExecution(input.taskLifetime.lifetimeId, plan.link, input.explicitTaskId);
-      reserved = true;
-    }
-    assertOpen();
     const prepared = await operation.prepare();
     assertOpen();
     const result = await input.queue.submit({ kind: "activate", executeAtQueueHead: async () => {
@@ -37,34 +53,25 @@ export async function dispatchTaskCopy<T>(input: {
     } });
     if (!result.committed) throw new Error(result.message);
     committed = true;
-    if (input.taskLifetime) {
-      const actual = input.adapter.linkForExecution(plan.link.execution);
-      if (!actual || actual.ingressAgentRunId !== plan.link.ingressAgentRunId || actual.purpose !== plan.link.purpose)
-        throw new Error("Durable Task stamp/link differs from the reserved exact identity.");
-      await input.lifetimePort!.recordDispatch(input.taskLifetime.lifetimeId, plan.link, "admitted");
-    }
     assertOpen();
     if (input.workPacket) {
       const receipt = await prepared.acceptSeed(assertOpen);
       if (!receipt.accepted) throw new Error(receipt.message ?? "Task seed was not accepted.");
       accepted = true;
-      if (input.taskLifetime) await input.lifetimePort!.recordDispatch(input.taskLifetime.lifetimeId, plan.link, "delivered");
     }
-    return { target_agent_run_id: plan.link.ingressAgentRunId };
+    if (linked) await input.resources!.markStarted(exact.target.execution);
+    return { target_agent_run_id: exact.target.ingressAgentRunId };
   } catch (error) {
     operation?.cancel();
-    let cleanup: "released" | "pending" | "failed" = "released";
-    try { if (operation && !(await operation.release()).accepted) cleanup = "pending"; }
-    catch { cleanup = "failed"; }
-    if (reserved && plan && input.taskLifetime) {
-      try {
-        if (!accepted) await input.lifetimePort!.recordDispatch(input.taskLifetime.lifetimeId, plan.link, "failed", { code: "TASK_DISPATCH_FAILED", message: errorMessage(error) });
-        await input.lifetimePort!.recordCleanup(input.taskLifetime.lifetimeId, plan.link.root, { unrequested: [], requested: [{ execution: plan.link.execution,
-          cleanup, ...(cleanup === "released" ? {} : { error: { code: "TASK_RELEASE_UNCONFIRMED", message: "Exact cleanup remains pending or failed; retry DONE." } }) }] });
-      } catch (recordError) { throw new TaskDispatchIndeterminateError(plan.link.execution, new AggregateError([error, recordError])); }
+    let released = true;
+    try { if (operation && !(await operation.release()).accepted) released = false; }
+    catch { released = false; }
+    if (linked && plan && !accepted) {
+      try { await input.resources!.markFailed(plan.target.execution, { code: "TASK_DISPATCH_FAILED", message: errorMessage(error) }); }
+      catch (recordError) { throw new TaskDispatchIndeterminateError(plan.target.execution, new AggregateError([error, recordError])); }
     }
     if (error instanceof RootTaskPersistenceFinalizationIndeterminateError) throw error;
-    if (plan && (accepted || (committed && cleanup !== "released"))) throw new TaskDispatchIndeterminateError(plan.link.execution, error);
+    if (plan && (accepted || (committed && !released))) throw new TaskDispatchIndeterminateError(plan.target.execution, error);
     return { target_agent_run_id: null, message: errorMessage(error) };
   }
 }

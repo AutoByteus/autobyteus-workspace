@@ -68,7 +68,7 @@ export class AgentOrgRunMessageDelivery {
     if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
     const target = resolution.placement.receiver;
     const receiver = this.identityFor(target.agentRunId, target.address);
-    return this.withReceiverLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
+    return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
       senderIdentity: sender,
       senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
       receiverIdentity: receiver,
@@ -86,7 +86,7 @@ export class AgentOrgRunMessageDelivery {
     if (!receiver) {
       return Promise.resolve({ accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `AgentRun '${input.targetAgentRunId}' is not in this AgentOrg.` });
     }
-    return this.withReceiverLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
+    return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
       senderIdentity: input.sender.identity,
       senderDisplayName: input.sender.displayName,
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
@@ -159,13 +159,13 @@ export class AgentOrgRunMessageDelivery {
       return Object.freeze({ result, executionKind: agent.executionKind });
     }
     // Operator input wakes a shut-down child exactly like send_message_to.
-    const result = await this.withReceiverLease(agentRunId, execute);
+    const result = await this.withLiveLease(agentRunId, execute);
     return Object.freeze({ result, executionKind: agent.executionKind });
   }
 
   /** Target lease that records the receiver's first accepted message or operator post. */
-  withReceiverLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
-    return this.options.taskExecutions.withLiveLease(agentRunId, operation, { recordAcceptance: true });
+  withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    return this.options.taskExecutions.withLiveLease(agentRunId, operation);
   }
 
   /**

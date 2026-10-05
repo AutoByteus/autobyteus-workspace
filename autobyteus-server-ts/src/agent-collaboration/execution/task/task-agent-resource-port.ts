@@ -1,0 +1,50 @@
+import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
+import type { TaskExecutionReference } from "./task-execution-reference.js";
+
+/**
+ * Neutral contract between collaboration runtime and the business Task side. "Task" means the
+ * business Task; `taskId` is opaque to the runtime (equality/dedupe only). The runtime stores no
+ * Task facts: it asks this port, which answers from the Task side's loaded agent run resources.
+ */
+export type TaskAgentResourceRole = "assigned" | "delegated" | "broughtIn";
+export type TaskAgentResourceOwner = Readonly<{ taskId: string; agentRun: TaskExecutionReference; open: boolean }>;
+export type TaskAgentResourceLinkInput = Readonly<{
+  hostRoot: RootExecutionIdentity; agentRun: TaskExecutionReference; coordinatorAgentRunId?: string;
+}> & (
+  | Readonly<{ role: "assigned"; taskId: string; assignedBy: string }>
+  | Readonly<{ role: "delegated" | "broughtIn"; creator: TaskExecutionReference }>
+);
+
+export interface TaskAgentResourcePort {
+  /** Saved work for a non-owned assignment; unknown, DONE or unreadable Tasks reject. */
+  resolveAssignment(taskId: string): Promise<Readonly<{ description: string; referenceFiles: string[] }>>;
+  /** Records the agent run `starting` before any of its resources are acquired. */
+  linkAgentRun(input: TaskAgentResourceLinkInput): Promise<Readonly<{ taskId: string }>>;
+  markStarted(agentRun: TaskExecutionReference): Promise<void>;
+  markFailed(agentRun: TaskExecutionReference, error: Readonly<{ code: string; message: string }>): Promise<void>;
+  /**
+   * Innermost linked owner of a containment chain. `null` when no element belongs to a Task and
+   * all Task resource data is readable. Mixed Tasks reject TASK_AGENT_RESOURCE_CONFLICT; an unknown chain
+   * while any Task's data is unreadable rejects TASK_AGENT_RESOURCES_UNAVAILABLE.
+   */
+  ownerOf(chain: readonly TaskExecutionReference[]): TaskAgentResourceOwner | null;
+  isOpen(agentRun: TaskExecutionReference): boolean;
+  openAgentRuns(taskId: string, role: TaskAgentResourceRole): readonly TaskExecutionReference[];
+  /** Rejects TASK_AGENT_RESOURCES_UNAVAILABLE while any Task's resource data is unreadable. */
+  assertResourceDataReadable(): void;
+}
+
+/** Task → runtime: stop exactly these closed agent runs in one host root. `null`: the root is not active. */
+export type TaskAgentResourceReleaseRequest = (hostRoot: RootExecutionIdentity, agentRuns: readonly TaskExecutionReference[])
+  => Promise<readonly TaskAgentResourceStopResult[]> | null;
+export type TaskAgentResourceStopResult = Readonly<{
+  agentRun: TaskExecutionReference; stopped: boolean; error?: Readonly<{ code: string; message: string }>;
+}>;
+
+/** Coded port rejections; implementations throw errors carrying one of these `code`s. */
+export const TASK_AGENT_RESOURCE_REJECTION_CODES = ["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT", "TASK_AGENT_RESOURCES_UNAVAILABLE", "TASK_AGENT_RESOURCE_OWNED_SENDER"] as const;
+export type TaskAgentResourceRejectionCode = typeof TASK_AGENT_RESOURCE_REJECTION_CODES[number];
+export const taskAgentResourceRejectionCode = (error: unknown): TaskAgentResourceRejectionCode | null => {
+  const code = (error as { code?: unknown } | null)?.code;
+  return (TASK_AGENT_RESOURCE_REJECTION_CODES as readonly unknown[]).includes(code) ? code as TaskAgentResourceRejectionCode : null;
+};

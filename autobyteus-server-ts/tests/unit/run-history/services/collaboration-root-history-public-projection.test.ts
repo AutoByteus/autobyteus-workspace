@@ -49,10 +49,7 @@ describe("mixed public history Org projection", () => {
   ] as const)("strictly projects active=%s linked=%s via %s without losing any concrete worker or private bytes", async (active, linked, surface) => {
     const current = await setup(active, linked);
     const privateBefore = JSON.stringify(current.tree);
-    if (linked) {
-      expect(privateBefore.match(/taskLifetime/g)).toHaveLength(9);
-      expect(agentOrgExecutionTreeDtoSchema.safeParse(current.tree).success).toBe(false);
-    }
+    expect(privateBefore).not.toContain("taskLifetime"); // dev-residue stamps never reach the current tree (C-1)
     // Repeated normal reads have the same result, never a write/migration/restore.
     for (let attempt = 0; attempt < 2; attempt++) {
       const rows = surface === "list" ? await current.service.list() : [await current.service.getAgentOrg(" org-root ")];
@@ -69,7 +66,7 @@ describe("mixed public history Org projection", () => {
     expect(current.write).not.toHaveBeenCalled();
     expect(current.getExecutionTreeSnapshot).toHaveBeenCalledTimes(active ? 2 : 0);
     expect(current.read).toHaveBeenCalledTimes(active ? 0 : 2);
-    if (linked) expect(JSON.stringify(await current.store.read(current.packagePath, "org-root")).match(/taskLifetime/g)).toHaveLength(9);
+    expect(JSON.stringify(await current.store.read(current.packagePath, "org-root"))).not.toContain("taskLifetime");
   });
 
   it("uses the active snapshot rather than a stale stored copy and leaves that copy intact", async () => {

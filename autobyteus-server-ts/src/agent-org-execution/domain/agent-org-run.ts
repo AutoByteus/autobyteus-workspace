@@ -1,6 +1,5 @@
+import type { TaskAgentResourcePort, TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
-import type { TaskLifetimeReleaseReport } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
-import type { TaskLifetimeRuntime } from "../../agent-collaboration/execution/task/task-lifetime-gate.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { AgentOrgIndexedAgentExecution } from "../services/agent-org-execution-index.js";
 import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
@@ -113,7 +112,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    }), { ...options.taskExecutionIdleShutdown, taskLifetimes: options.taskLifetimes });
+    }), { ...options.taskExecutionIdleShutdown, taskAgentResources: options.taskAgentResources });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
       identities: options.taskExecutionIdentity,
@@ -161,8 +160,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     this.assertAdmitting();
     this.taskExecutions.assertInputAllowed(agentRunId);
   }
-  releaseTaskLifetime(id: string, executions: readonly TaskExecutionReference[]): Promise<TaskLifetimeReleaseReport> {
-    return this.taskExecutions.releaseTaskLifetime(id, executions);
+  releaseTaskAgentResources(executions: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
+    return this.taskExecutions.releaseTaskAgentResources(executions);
   }
 
   get orgRunId(): string { return this.tree.rootOrg.orgRunId; }

@@ -18,7 +18,7 @@ import type {
 
 type TaskTeamDto = Extract<CollaborationTaskExecutionDto, { teamRunId: string }>;
 
-// Agent/Org camel-case wire ownership only. Internal lifetime stamps remain in
+// Agent/Org camel-case wire ownership only. Internal-only tree facts remain in
 // the current tree; every public concrete child is projected, never filtered.
 const projectLaunch = (value: AgentLaunchConfiguration): TaskAgentExecutionSourceDto["launchConfiguration"] =>
   agentOrgLaunchConfigurationDtoSchema.parse({

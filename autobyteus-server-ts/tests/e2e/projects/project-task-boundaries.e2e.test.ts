@@ -214,11 +214,13 @@ describe("Project Task production HTTP boundaries", () => {
     const updated = await gql<{ updateProject: { taskCount: number; openTaskCount: number; workspaces: Array<{ addedAt: string }> } }>(
       `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate existing", description: "saved", workspaces: [{ workspaceId: registered.workspaceId, description: "normalized registration" }] } });
     expect(updated.updateProject).toMatchObject({ taskCount: 1, openTaskCount: 0 });
-    const before = await fs.readFile(path.join(root, "projects", "projects.json"), "utf8");
+    const projectsDir = path.join(root, "projects");
+    const projectFiles = async () => (await fs.readdir(projectsDir)).sort();
+    const before = { entries: await projectFiles(), project: await fs.readFile(path.join(projectsDir, projectId, "project.json"), "utf8") };
     const failure = await fetch(`${origin}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({
       query: "mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", variables: { i: { name: "AGGREGATE EXISTING", workspaces: [{ workspaceId: registered.workspaceId }] } } }) });
     expect((await failure.json()).errors[0].extensions.code).toBe("PROJECT_NAME_TAKEN");
-    expect(await fs.readFile(path.join(root, "projects", "projects.json"), "utf8")).toBe(before);
+    expect({ entries: await projectFiles(), project: await fs.readFile(path.join(projectsDir, projectId, "project.json"), "utf8") }).toEqual(before);
     expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toContain(registered.workspaceId);
     await gql("mutation($i:RemoveWorkspaceInput!){removeWorkspace(input:$i){success}}", { i: { workspaceId: registered.workspaceId } });
     const reread = await gql<{ updateProject: { workspaces: Array<{ addedAt: string }> } }>(

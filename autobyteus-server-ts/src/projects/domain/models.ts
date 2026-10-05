@@ -1,4 +1,3 @@
-import type { ProjectTaskLifetime } from "./project-task-execution.js";
 import type { ProjectTaskContextFile, ProjectTaskContextFileView, ProjectTaskContextDraft, ProjectTaskContextChanges } from "./project-task-context.js";
 
 /** A workspace link as persisted inside a Project record. */
@@ -12,7 +11,7 @@ export interface ProjectWorkspaceLink {
 
 export type ProjectTaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
-/** A Task as persisted inside its Project record. It has no title; the description is the content. */
+/** A Task as persisted in `<projectId>/tasks/<taskId>/task.json` (which also records its `projectId`). It has no title; the description is the content. */
 export interface ProjectTask {
   taskId: string;
   description: string;
@@ -22,7 +21,7 @@ export interface ProjectTask {
   updatedAt: string;
 }
 
-/** A Project as persisted in `<appDataDir>/projects/projects.json`. */
+/** A Project as persisted in `<appDataDir>/projects/<projectId>/project.json`; its Tasks live in their own folders. */
 export interface Project {
   projectId: string;
   name: string;
@@ -30,7 +29,6 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
   workspaces: ProjectWorkspaceLink[];
-  tasks: ProjectTask[];
 }
 
 export type ProjectWorkspaceAvailability = "AVAILABLE" | "UNREGISTERED";
@@ -41,7 +39,7 @@ export interface ProjectWorkspaceView extends ProjectWorkspaceLink {
   availability: ProjectWorkspaceAvailability;
 }
 
-export interface ProjectView extends Omit<Project, "workspaces" | "tasks"> {
+export interface ProjectView extends Omit<Project, "workspaces"> {
   workspaces: ProjectWorkspaceView[];
   /** Number of Tasks whose status is not `DONE`; computed at read time. */
   openTaskCount: number;
@@ -52,7 +50,6 @@ export interface ProjectView extends Omit<Project, "workspaces" | "tasks"> {
 export interface ProjectTaskView extends Omit<ProjectTask, "contextFiles"> {
   contextFiles: ProjectTaskContextFileView[];
   projectId: string;
-  executionLifetimes: ProjectTaskLifetime[];
 }
 
 export interface ProjectWorkspaceInput { workspaceId: string; description?: string | null }

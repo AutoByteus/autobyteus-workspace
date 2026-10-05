@@ -1,0 +1,28 @@
+[
+  {
+    "projectId": "project_7e74c1d2-3b4a-4f5e-9a8b-1c2d3e4f5a6b",
+    "name": "Website relaunch",
+    "description": "Relaunch the marketing website",
+    "createdAt": "2026-10-01T08:00:00.000Z",
+    "updatedAt": "2026-10-01T08:05:00.000Z",
+    "workspaces": [],
+    "tasks": [
+      {
+        "taskId": "project_task_efdc0a11-2b3c-4d5e-8f9a-0b1c2d3e4f5a",
+        "description": "Write the requirements doc",
+        "status": "TODO",
+        "createdAt": "2026-10-01T08:01:00.000Z",
+        "updatedAt": "2026-10-01T08:01:00.000Z",
+        "contextFiles": []
+      },
+      {
+        "taskId": "project_task_18e5b2c3-4d5e-4f6a-9b8c-7d6e5f4a3b2c",
+        "description": "Draft the landing page copy",
+        "status": "TODO",
+        "createdAt": "2026-10-01T08:02:00.000Z",
+        "updatedAt": "2026-10-01T08:02:00.000Z",
+        "contextFiles": []
+      }
+    ]
+  }
+]

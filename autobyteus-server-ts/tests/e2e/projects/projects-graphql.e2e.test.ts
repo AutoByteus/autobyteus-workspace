@@ -1,3 +1,4 @@
+import { ProjectsPerFolderV1AppDataMigration } from "../../../src/app-data-migrations/migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
 import "reflect-metadata";
 import fs from "node:fs";
 import os from "node:os";
@@ -16,7 +17,7 @@ import { resetProjectTaskServiceForTests } from "../../../src/projects/services/
 import { getServerSettingsService } from "../../../src/services/server-settings-service.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
-// Un-mocked Projects GraphQL boundary: resolver -> ProjectService -> ProjectStore (projects.json)
+// Un-mocked Projects GraphQL boundary: resolver -> ProjectService -> ProjectStore (per-Project folders)
 // plus the real WorkspaceManager registry (workspaces.json) and real server settings, all in an
 // isolated app data dir. Only the process run managers are emulated as "no active runs" so the
 // unchanged workspace-removal guard can execute outside a full server process.
@@ -229,8 +230,30 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     )).projectTasks;
 
   const readWorkspacesJson = () => fs.readFileSync(path.join(appDataDir, "workspaces.json"), "utf-8");
-  const readProjectsJson = () =>
-    JSON.parse(fs.readFileSync(path.join(appDataDir, "projects", "projects.json"), "utf-8")) as unknown[];
+  /** Every persisted `<projectId>/project.json` with its Tasks' `task.json` contents. */
+  const readProjectsJson = () => {
+    const root = path.join(appDataDir, "projects");
+    const read = (file: string) => { try { return JSON.parse(fs.readFileSync(file, "utf-8")); } catch { return null; } };
+    const dirs = fs.existsSync(root) ? fs.readdirSync(root) : [];
+    return dirs.flatMap(dir => {
+      const project = read(path.join(root, dir, "project.json"));
+      if (!project) return [];
+      const tasksDir = path.join(root, dir, "tasks");
+      const tasks = (fs.existsSync(tasksDir) ? fs.readdirSync(tasksDir) : []).map(t => read(path.join(tasksDir, t, "task.json"))).filter(Boolean);
+      return [{ ...project, tasks }];
+    }) as unknown[];
+  };
+  /** Byte snapshot of every file under the Projects root. */
+  const snapshotProjectsDir = () => {
+    const root = path.join(appDataDir, "projects");
+    const files: Record<string, string> = {};
+    const walk = (dir: string) => { for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) walk(full); else files[path.relative(root, full)] = fs.readFileSync(full, "utf-8");
+    } };
+    if (fs.existsSync(root)) walk(root);
+    return files;
+  };
 
   it("API-001: projects capability defaults to disabled, persists, toggles, and leaves Applications/SI settings untouched", async () => {
     const CAPABILITY = `query { projectsCapability { enabled settingKey source } }`;
@@ -411,7 +434,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     await addLink(project.projectId, prototype.workspaceId, "UI prototype workspace");
     const task = await createTask(project.projectId, "Write release notes for 1.4.87\nInclude Projects and Tasks");
     await execOk(`mutation { setProjectsEnabled(enabled: true) { enabled } }`);
-    const persistedBefore = fs.readFileSync(path.join(appDataDir, "projects", "projects.json"), "utf-8");
+    const persistedBefore = snapshotProjectsDir();
 
     // Simulate a process restart: fresh config provider, registry and Projects singletons over the same data dir.
     appConfigProvider.resetForTests();
@@ -432,7 +455,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
       }),
     ]);
     expect(await listTasks(project.projectId)).toEqual([task]);
-    expect(fs.readFileSync(path.join(appDataDir, "projects", "projects.json"), "utf-8")).toBe(persistedBefore);
+    expect(snapshotProjectsDir()).toEqual(persistedBefore);
   });
   it("API-007: creates, lists, edits and deletes Tasks through the real store without touching the Project or offering a status mutation", async () => {
     const CREATE = `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${TASK_FIELDS} } }`;
@@ -520,7 +543,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(readWorkspacesJson()).toBe(workspacesBefore);
   });
 
-  it("API-009: a released v1.4.86 projects.json is read intact without a rewrite, and the first Task write keeps every released field", async () => {
+  it("API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released field", async () => {
     const prototype = await registerWorkspace("autobyteus-web-prototype");
     const releasedRow = {
       projectId: "project_3f0c9a52-1b7e-4d1e-9d4f-0a6b2c1d7e11",
@@ -539,8 +562,13 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     const releasedContent = `${JSON.stringify([releasedRow], null, 2)}\n`;
     fs.writeFileSync(filePath, releasedContent, "utf-8");
-    const mtimeBefore = fs.statSync(filePath).mtimeMs;
 
+    // Before the migration runs, Projects rejects clearly instead of showing an empty list; nothing is read or written.
+    await expect(listProjects()).rejects.toThrow("Projects data is being upgraded; restart the app to finish.");
+    expect(fs.readFileSync(filePath, "utf-8")).toBe(releasedContent);
+
+    expect((await new ProjectsPerFolderV1AppDataMigration(appDataDir).execute()).status).toBe("SUCCEEDED");
+    expect(fs.readFileSync(path.join(appDataDir, "projects", "projects.pre-folders.json"), "utf-8")).toBe(releasedContent);
     expect(await listProjects()).toEqual([
       expect.objectContaining({
         projectId: releasedRow.projectId, name: "autobyteus", description: "AutoByteus product",
@@ -549,13 +577,9 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
       }),
     ]);
     expect(await listTasks(releasedRow.projectId)).toEqual([]);
-    expect((await getProject(releasedRow.projectId))?.openTaskCount).toBe(0);
-    expect(fs.readFileSync(filePath, "utf-8")).toBe(releasedContent);
-    expect(fs.statSync(filePath).mtimeMs).toBe(mtimeBefore);
 
     const task = await createTask(releasedRow.projectId, "First task on a released Project");
     const [persisted] = readProjectsJson() as Array<Record<string, unknown>>;
-    expect(persisted).toEqual({ ...releasedRow, tasks: [expect.objectContaining({ taskId: task.taskId, status: "TODO" })] });
-    expect((persisted.tasks as Array<Record<string, unknown>>)[0]).not.toHaveProperty("projectId");
+    expect(persisted).toEqual({ ...releasedRow, tasks: [expect.objectContaining({ taskId: task.taskId, projectId: releasedRow.projectId, status: "TODO" })] });
   });
 });

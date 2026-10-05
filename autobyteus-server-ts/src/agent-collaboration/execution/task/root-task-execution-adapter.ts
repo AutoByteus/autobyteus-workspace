@@ -3,7 +3,6 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
-import type { TaskExecutionLifetimeStamp, TaskExecutionLinkIdentity } from "./task-execution-lifetime.js";
 
 export type TaskExecutionActivationCommitResult = Readonly<{ committed: true }> | Readonly<{ committed: false; message: string }>;
 export type PreparedTaskExecutionActivation = Readonly<{
@@ -11,15 +10,17 @@ export type PreparedTaskExecutionActivation = Readonly<{
   commit(): Promise<TaskExecutionActivationCommitResult>;
   acceptSeed(assertOpen: () => void): Promise<AgentOperationResult>;
 }>;
-/** A seedless helper is always Task-owned; described/assignment work always has a packet. */
-export type TaskExecutionActivationWork =
-  | Readonly<{ workPacket: AgentInputUserMessage; taskLifetime?: TaskExecutionLifetimeStamp & { purpose: "assignment" | "delegation" } }>
-  | Readonly<{ workPacket?: never; taskLifetime: TaskExecutionLifetimeStamp & { purpose: "helper" } }>;
+/** Described work always has a packet; a seedless copy is a brought-in helper started by its first message. */
 export type TaskExecutionActivationPreparation<TPlacement> = Readonly<{
   identity: CollaborationMemberExecutionIdentity; placement: TPlacement; startedAt: string;
-}> & TaskExecutionActivationWork;
+  workPacket?: AgentInputUserMessage;
+}>;
+/** The exact planned copy: its root, reference and ingress (the Agent, or the Team's coordinator). */
+export type TaskExecutionTarget = Readonly<{
+  root: RootExecutionIdentity; execution: TaskExecutionReference; ingressAgentRunId: string;
+}>;
 export type TaskExecutionActivationPlan<TPlacement> = TaskExecutionActivationPreparation<TPlacement> & Readonly<{
-  link: TaskExecutionLinkIdentity;
+  target: TaskExecutionTarget;
   ownedAgentRunIds: readonly string[];
 }>;
 export interface TaskExecutionActivationOperation {
@@ -27,8 +28,9 @@ export interface TaskExecutionActivationOperation {
   cancel(): void;
   release(): Promise<AgentOperationResult>;
 }
-export type RegisteredTaskActivation<TPlacement> = Readonly<{
-  plan: Pick<TaskExecutionActivationPlan<TPlacement>, "link" | "ownedAgentRunIds" | "taskLifetime">; operation: TaskExecutionActivationOperation;
+/** A registered copy: retained exact activation authority plus its planned members (for pre-commit ownership). */
+export type RegisteredTaskActivation = Readonly<{
+  target: TaskExecutionTarget; ownedAgentRunIds: readonly string[]; operation: TaskExecutionActivationOperation;
 }>;
 
 /** Root-private aggregate retains the local authority even when its prepare rejects. */
@@ -84,13 +86,19 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   assertCurrentSchemaReady(): void;
   planActivation(input: TaskExecutionActivationPreparation<TPlacement>): Promise<TaskExecutionActivationPlan<TPlacement>>;
   beginActivation(plan: TaskExecutionActivationPlan<TPlacement>): TaskExecutionActivationOperation;
-  registeredActivations(lifetimeId: string): readonly RegisteredTaskActivation<TPlacement>[];
-  ownedExecutions(lifetimeId: string): readonly TaskExecutionReference[];
-  findLifetimeHelper(lifetimeId: string, address: string): TaskExecutionLinkIdentity | null;
-  lifetimeForAgent(agentRunId: string): TaskExecutionLifetimeStamp | undefined;
-  linkForExecution(reference: TaskExecutionReference): TaskExecutionLinkIdentity | null;
+  /** The registered activation of an exact copy, retained for exact release. */
+  registrationFor(reference: TaskExecutionReference): RegisteredTaskActivation | null;
+  /**
+   * Containment chain used for ownership questions: the index chain (innermost first) or, for an
+   * agent of a copy not yet committed, the registered copies whose planned members include it.
+   */
+  ownershipChainFor(agentRunId: string): readonly TaskExecutionReference[];
+  /** The committed copy at `address` among the given references, with its ingress. */
+  taskExecutionAt(address: string, among: readonly TaskExecutionReference[]): TaskExecutionTarget | null;
   cancelOwnedExecution(reference: TaskExecutionReference): void;
+  /** Exact release of a committed copy; `EXACT_RELEASE_AUTHORITY_UNAVAILABLE` when the root holds none. */
   releaseOwnedExecution(reference: TaskExecutionReference): Promise<AgentOperationResult>;
+  /** Index-only containment chain for idle shutdown and restore. */
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[];
   isLive(reference: TaskExecutionReference): boolean;
   assertRestorableChain(agentRunId: string): void;

@@ -1,9 +1,8 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import { messagePlacement } from "../../collaborators/message-recipient-resolution.js";
-import { dispatchTaskCopy } from "./root-task-dispatch.js";
-import { RootTaskLifetimeScope } from "./root-task-lifetime-scope.js";
-import type { TaskLifetimeAdmission, TaskLifetimeReleaseReport } from "./task-execution-lifetime.js";
-import type { TaskLifetimeRuntime } from "./task-lifetime-gate.js";
+import { dispatchTaskCopy, type TaskAgentResourceJoin } from "./root-task-dispatch.js";
+import { RootTaskAgentResourceScope, asTaskDelegationError } from "./root-task-agent-resource-scope.js";
+import type { TaskAgentResourcePort, TaskAgentResourceStopResult } from "./task-agent-resource-port.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-execution-idle-shutdown-setting.js";
 import type {
@@ -11,7 +10,7 @@ import type {
 } from "./root-task-execution-adapter.js";
 import { RootTaskExecutionCommandQueue } from "./root-task-execution-command-queue.js";
 import {
-  TaskDelegationError, TaskDispatchIndeterminateError,
+  TaskDelegationError,
   type DelegateTaskInput,
   type DelegateTaskResult,
   type TaskDelegationContext,
@@ -46,7 +45,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   private readonly schedule: TaskExecutionIdleShutdownSchedule;
   private readonly leases = new Map<string, number>();
   private accepting = true;
-  private readonly lifetimeScope: RootTaskLifetimeScope<TPlacement>;
+  private readonly resourceScope: RootTaskAgentResourceScope<TPlacement>;
   private readonly helperAttempts = new Map<string, Promise<DelegateTaskResult>>();
 
   constructor(
@@ -54,10 +53,10 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     options: Readonly<{
       gracePeriodMs?: () => number;
       timers?: TaskExecutionIdleTimers;
-      taskLifetimes?: TaskLifetimeRuntime;
+      taskAgentResources?: TaskAgentResourcePort;
     }> = {},
   ) {
-    this.lifetimeScope = new RootTaskLifetimeScope(adapter, options.taskLifetimes);
+    this.resourceScope = new RootTaskAgentResourceScope(adapter, options.taskAgentResources);
     this.schedule = new TaskExecutionIdleShutdownSchedule({
       gracePeriodMs: options.gracePeriodMs ?? (() => resolveTaskExecutionIdleShutdownGraceMs()),
       onFire: (reference) => this.onGraceElapsed(reference),
@@ -87,85 +86,71 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   ): Promise<DelegateTaskResult> {
     this.assertAdmitting(context.identity);
     this.adapter.assertCurrentSchemaReady();
-    const inherited = this.adapter.lifetimeForAgent(context.identity.agentRunId);
     const linked = Object.prototype.hasOwnProperty.call(input, "task_id");
     const allowed = linked ? ["recipient_address", "task_id"] : ["recipient_address", "description", "reference_files"];
     if (Object.keys(input).some(key => !allowed.includes(key))) throw new TaskDelegationError("VALIDATION_ERROR", "Delegation accepts exactly one work source.");
-    let lifetimeId = inherited?.lifetimeId;
+    const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
     let description: string, referenceFiles: readonly string[];
+    let join: TaskAgentResourceJoin | undefined;
     if (linked) {
+      if (owner) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "Task workers delegate sub-work without task_id.");
       const taskId = requireTaskString(input.task_id, "task_id");
-      const saved = await this.lifetimeScope.port().resolveDelegationWork(taskId, lifetimeId);
-      lifetimeId = saved.lifetimeId; description = saved.description;
+      const saved = await this.resourceScope.port().resolveAssignment(taskId).catch(error => { throw asTaskDelegationError(error); });
+      description = saved.description;
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
+      join = { role: "assigned", taskId, assignedBy: context.identity.agentRunId };
     } else {
+      if (owner && !owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (Task DONE).");
+      // An unowned copy could not be told apart from an unreadable Task's work: reject before any planning.
+      if (!owner) this.resourceScope.assertResourceDataReadable();
       description = requireTaskString(input.description, "description");
       referenceFiles = await validateTaskReferenceFiles(input.reference_files ?? []);
+      if (owner) join = { role: "delegated", creator: owner.agentRun };
     }
-    const admission = lifetimeId ? await this.lifetimeScope.acquire(lifetimeId) : undefined;
     return dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
       workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, description, referenceFiles }),
-      taskLifetime: lifetimeId ? { lifetimeId, purpose: linked ? "assignment" : "delegation" } : undefined,
-      admission, lifetimePort: lifetimeId ? this.lifetimeScope.port() : undefined,
-      explicitTaskId: linked ? input.task_id : undefined,
+      ...(join ? { join, resources: this.resourceScope.port() } : {}),
       assertAdmitting: () => this.assertAdmitting(context.identity),
     });
   }
 
-  assertInputAllowed(agentRunId: string): void { this.lifetimeScope.assertInputAllowed(agentRunId); }
-  assertMessageScope(sender: string, recipient: string): void { this.lifetimeScope.assertMessageScope(sender, recipient); }
-  lifetimeForAgent(agentRunId: string) { return this.adapter.lifetimeForAgent(agentRunId); }
-  releaseTaskLifetime(id: string, references: readonly TaskExecutionReference[]): Promise<TaskLifetimeReleaseReport> {
-    return this.lifetimeScope.release(id, references);
+  assertInputAllowed(agentRunId: string): void { this.resourceScope.assertInputAllowed(agentRunId); }
+  assertMessageScope(sender: string, recipient: string): void { this.resourceScope.assertMessageScope(sender, recipient); }
+  /** The Task owning the copy that contains the agent, as an opaque key; `null` when unowned. */
+  taskOwnerOf(agentRunId: string): Readonly<{ taskId: string }> | null {
+    const owner = this.resourceScope.ownerOf(agentRunId);
+    return owner ? { taskId: owner.taskId } : null;
+  }
+  releaseTaskAgentResources(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
+    return this.resourceScope.releaseTaskAgentResources(agentRuns);
   }
 
-  /** One seedless existing Task copy per lifetime/address; its first ordinary message proves delivery. */
-  async ensureLifetimeHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<DelegateTaskResult> {
-    const stamp = this.adapter.lifetimeForAgent(context.identity.agentRunId);
-    if (!stamp) throw new TaskDelegationError("TASK_LIFETIME_UNAVAILABLE", "Helper ownership requires a Task-owned sender.");
-    const admission = await this.lifetimeScope.acquire(stamp.lifetimeId);
-    const key = `${stamp.lifetimeId}:${address}`;
-    const existing = this.adapter.findLifetimeHelper(stamp.lifetimeId, address);
-    if (existing) return { target_agent_run_id: existing.ingressAgentRunId };
+  /** One seedless brought-in copy per Task/address among the Task's open helpers. */
+  async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<DelegateTaskResult> {
+    const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
+    if (!owner) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Helper bring-in requires a Task-owned sender.");
+    if (!owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (Task DONE).");
+    const existing = this.helperPlacement(owner.taskId, address);
+    if (existing) return { target_agent_run_id: existing.receiver.agentRunId };
+    const key = `${owner.taskId}:${address}`;
     const pending = this.helperAttempts.get(key);
     if (pending) return pending;
     const attempt = dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
-      taskLifetime: { lifetimeId: stamp.lifetimeId, purpose: "helper" }, admission, lifetimePort: this.lifetimeScope.port(),
+      join: { role: "broughtIn", creator: owner.agentRun }, resources: this.resourceScope.port(),
       assertAdmitting: () => this.assertAdmitting(context.identity),
     });
     this.helperAttempts.set(key, attempt);
     try { return await attempt; } finally { if (this.helperAttempts.get(key) === attempt) this.helperAttempts.delete(key); }
   }
 
-  helperPlacement(lifetimeId: string, address: string) {
-    const link = this.adapter.findLifetimeHelper(lifetimeId, address);
-    return link ? messagePlacement("agentRunId" in link.execution ? "agent" : "agent_team", address,
-      { agentRunId: link.ingressAgentRunId, address }) : null;
+  helperPlacement(taskId: string, address: string) {
+    const helper = this.adapter.taskExecutionAt(address, this.resourceScope.port().openAgentRuns(taskId, "broughtIn"));
+    return helper ? messagePlacement("agentRunId" in helper.execution ? "agent" : "agent_team", address,
+      { agentRunId: helper.ingressAgentRunId, address }) : null;
   }
 
-  /** `delivered` is monotonic: a lock-free read skips the locked write once the receiver's link is final. */
-  private async recordMessageAccepted(agentRunId: string): Promise<void> {
-    const stamp = this.adapter.lifetimeForAgent(agentRunId);
-    if (!stamp) return;
-    const reference = this.adapter.taskExecutionChainFor(agentRunId)[0];
-    const link = reference && this.adapter.linkForExecution(reference);
-    if (!link) return;
-    const port = this.lifetimePort();
-    if (await port.readExecutionDispatch(stamp.lifetimeId, link) === "delivered") return;
-    await port.recordDispatch(stamp.lifetimeId, link, "delivered");
-  }
-
-  private lifetimePort() { return this.lifetimeScope.port(); }
-
-  /**
-   * Actual input fence shared by all root facades. Only the receiver of an accepted message or
-   * operator post opts into `recordAcceptance`, which records its link's first acceptance.
-   */
-  async withLiveLease(
-    agentRunId: string,
-    operation: () => Promise<AgentOperationResult>,
-    options: Readonly<{ recordAcceptance?: boolean }> = {},
-  ): Promise<AgentOperationResult> {
+  /** Actual input fence shared by all root facades: wakes the chain and holds it live for the operation. */
+  async withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
     let lease: TaskExecutionLiveLease;
     try { lease = await this.acquireLiveLease(agentRunId); }
     catch (error) {
@@ -174,12 +159,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     }
     try {
       lease.assertOpen();
-      const result = await operation();
-      if (result.accepted && options.recordAcceptance) {
-        try { await this.recordMessageAccepted(agentRunId); }
-        catch (error) { throw new TaskDispatchIndeterminateError({ agentRunId }, error); }
-      }
-      return result;
+      return await operation();
     } finally { lease.release(); }
   }
 
@@ -208,21 +188,23 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     if (!this.accepting) {
       throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
     }
-    const admission = await this.lifetimeScope.acquireForAgent(agentRunId);
-    return this.queue.submit({ kind: "wake", executeAtQueueHead: () => this.acquireAtHead(agentRunId, admission) });
+    // The Task side's loaded records are the authority: no durable read, closed stays closed after restart.
+    this.resourceScope.assertInputAllowed(agentRunId);
+    return this.queue.submit({ kind: "wake", executeAtQueueHead: () => this.acquireAtHead(agentRunId) });
   }
 
-  private async acquireAtHead(agentRunId: string, admission?: TaskLifetimeAdmission): Promise<TaskExecutionLiveLease> {
+  private async acquireAtHead(agentRunId: string): Promise<TaskExecutionLiveLease> {
     if (!this.accepting) {
       throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
     }
-    admission?.assertOpen();
+    const assertOpen = () => this.resourceScope.assertInputAllowed(agentRunId);
+    assertOpen();
     const chain = this.adapter.taskExecutionChainFor(agentRunId);
-    if (!chain.length) return admission ? Object.freeze({ assertOpen: admission.assertOpen, release: () => undefined }) : NO_OP_LEASE;
+    if (!chain.length) return Object.freeze({ assertOpen, release: () => undefined });
     this.adapter.assertRestorableChain(agentRunId);
     try {
-      await this.adapter.restoreChain(agentRunId, () => { admission?.assertOpen(); this.lifetimeScope.assertInputAllowed(agentRunId); });
-      admission?.assertOpen();
+      await this.adapter.restoreChain(agentRunId, assertOpen);
+      assertOpen();
     } catch (error) {
       // Executions restored before the failure are never left live without a timer.
       this.armLive(chain);
@@ -237,7 +219,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     keys.forEach((key) => this.leases.set(key, (this.leases.get(key) ?? 0) + 1));
     let released = false;
     return Object.freeze({
-      assertOpen: () => { admission?.assertOpen(); this.lifetimeScope.assertInputAllowed(agentRunId); },
+      assertOpen,
       release: () => {
         if (released) return;
         released = true;
@@ -284,5 +266,4 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   }
 }
 
-const NO_OP_LEASE: TaskExecutionLiveLease = Object.freeze({ assertOpen: () => undefined, release: () => undefined });
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);

@@ -204,12 +204,12 @@ export class StandaloneRootMessageDelivery {
         : Promise.resolve({ accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in Agent root '${this.options.hostRunId}'.` });
     }
     // Operator input wakes a shut-down child exactly like send_message_to.
-    return this.withReceiverLease(agentRunId, execute);
+    return this.withLiveLease(agentRunId, execute);
   }
 
   /** Target lease that records the receiver's first accepted message or operator post. */
-  withReceiverLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
-    return this.options.taskExecutions.withLiveLease(agentRunId, operation, { recordAcceptance: true });
+  withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    return this.options.taskExecutions.withLiveLease(agentRunId, operation);
   }
 
   isLiveChild(agentRunId: string): boolean {
@@ -231,7 +231,7 @@ export class StandaloneRootMessageDelivery {
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
     });
-    if (receiver.executionKind !== "host") return this.withReceiverLease(receiver.agentRunId, deliver);
+    if (receiver.executionKind !== "host") return this.withLiveLease(receiver.agentRunId, deliver);
     try {
       await this.options.host.ensureReady();
     } catch (error) {

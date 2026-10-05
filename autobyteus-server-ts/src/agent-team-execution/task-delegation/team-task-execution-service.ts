@@ -1,5 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { TaskLifetimeReleaseReport } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { RootTaskExecutionLifecycle, type TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type {
@@ -17,18 +17,18 @@ export class TeamTaskExecutionService {
   private readonly lifecycle: RootTaskExecutionLifecycle<TeamDelegationPlacement>;
 
   constructor(options: TeamTaskExecutionServiceOptions) {
-    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskLifetimes: options.taskLifetimes });
+    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskAgentResources: options.taskAgentResources });
   }
 
   assertInputAllowed(id: string): void { this.lifecycle.assertInputAllowed(id); }
   assertMessageScope(sender: string, recipient: string): void { this.lifecycle.assertMessageScope(sender, recipient); }
-  lifetimeForAgent(id: string) { return this.lifecycle.lifetimeForAgent(id); }
-  ensureLifetimeHelper(context: TaskDelegationContext, address: string, placement: TeamDelegationPlacement) {
-    return this.lifecycle.ensureLifetimeHelper(context, address, placement);
+  taskOwnerOf(id: string) { return this.lifecycle.taskOwnerOf(id); }
+  ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TeamDelegationPlacement) {
+    return this.lifecycle.ensureTaskHelper(context, address, placement);
   }
   helperPlacement(id: string, address: string) { return this.lifecycle.helperPlacement(id, address); }
-  releaseTaskLifetime(id: string, refs: readonly TaskExecutionReference[]): Promise<TaskLifetimeReleaseReport> {
-    return this.lifecycle.releaseTaskLifetime(id, refs);
+  releaseTaskAgentResources(refs: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
+    return this.lifecycle.releaseTaskAgentResources(refs);
   }
 
   closeExternalAdmission(): void { this.lifecycle.closeExternalAdmission(); }
@@ -48,8 +48,8 @@ export class TeamTaskExecutionService {
     return this.lifecycle.delegate(context, input, placement);
   }
 
-  withLiveLease(id: string, operation: () => Promise<AgentOperationResult>, options: Readonly<{ recordAcceptance?: boolean }> = {}): Promise<AgentOperationResult> {
-    return this.lifecycle.withLiveLease(id, operation, options);
+  withLiveLease(id: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    return this.lifecycle.withLiveLease(id, operation);
   }
 
   acquireLiveLease(agentRunId: string): Promise<TaskExecutionLiveLease> {

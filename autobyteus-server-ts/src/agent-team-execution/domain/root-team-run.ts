@@ -1,6 +1,5 @@
+import type { TaskAgentResourcePort, TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
-import type { TaskLifetimeReleaseReport } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
-import type { TaskLifetimeRuntime } from "../../agent-collaboration/execution/task/task-lifetime-gate.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -96,7 +95,7 @@ export class RootTeamRun {
     persistence: TeamRunPersistenceCoordinator;
     publisher: TeamRunEventPublisher<TeamRunEvent>;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-    taskLifetimes?: TaskLifetimeRuntime;
+    taskAgentResources?: TaskAgentResourcePort;
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
@@ -137,7 +136,7 @@ export class RootTeamRun {
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
       idleShutdown: options.taskExecutionIdleShutdown,
-      taskLifetimes: options.taskLifetimes,
+      taskAgentResources: options.taskAgentResources,
     });
     this.communication = new TeamCommunicationService({
       rootTeamRunId: this.teamRunId,
@@ -172,7 +171,7 @@ export class RootTeamRun {
       communication: this.communication,
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
       isLiveAgent: (agentRunId) => this.isLiveAgent(agentRunId),
-      withReceiverLease: (agentRunId, operation) => this.taskExecutions.withLiveLease(agentRunId, operation, { recordAcceptance: true }),
+      withLiveLease: (agentRunId, operation) => this.taskExecutions.withLiveLease(agentRunId, operation),
     });
     this.platformBindings = new TeamAgentPlatformBindingCommitter({
       persistence: options.persistence,
@@ -191,8 +190,8 @@ export class RootTeamRun {
     this.assertAdmitting();
     this.taskExecutions.assertInputAllowed(agentRunId);
   }
-  releaseTaskLifetime(id: string, executions: readonly TaskExecutionReference[]): Promise<TaskLifetimeReleaseReport> {
-    return this.taskExecutions.releaseTaskLifetime(id, executions);
+  releaseTaskAgentResources(executions: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
+    return this.taskExecutions.releaseTaskAgentResources(executions);
   }
 
   get teamRunId(): string { return this.tree.rootTeam.teamRunId; }
@@ -351,7 +350,7 @@ export class RootTeamRun {
       return this.taskExecutions.withLiveLease(agentRunId, async () => {
         const run = await this.requireContainingTeamRun(agentRunId);
         return run.executeDirectAgentCommand(agentRunId, command);
-      }, { recordAcceptance: true });
+      });
     });
   }
 

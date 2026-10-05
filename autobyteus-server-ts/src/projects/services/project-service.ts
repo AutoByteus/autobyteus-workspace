@@ -16,14 +16,11 @@ import type {
 import { ProjectError } from "../domain/project-errors.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 
-import { getProjectTaskContextStore, type ProjectTaskContextStore } from "../context/project-task-context-store.js";
-
 type WorkspaceRegistrationLookup = Pick<WorkspaceManager, "getRegisteredWorkspaceRootPath">;
-type ProjectPersistence = Pick<ProjectStore, "listRecords" | "updateRecords">;
+type ProjectPersistence = Pick<ProjectStore, "listProjects" | "readProject" | "listTasks" | "createProject" | "updateProject" | "deleteProject">;
 
 type ProjectServiceDependencies = {
   store?: ProjectPersistence;
-  contextStore?: ProjectTaskContextStore;
   workspaceLookup?: WorkspaceRegistrationLookup;
   now?: () => Date;
   createId?: () => string;
@@ -57,14 +54,6 @@ const assertNameAvailable = (records: Project[], name: string, exceptProjectId?:
   }
 };
 
-const findProjectIndex = (records: Project[], projectId: string): number => {
-  const index = records.findIndex((record) => record.projectId === projectId);
-  if (index < 0) {
-    throw new ProjectError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);
-  }
-  return index;
-};
-
 const findLinkIndex = (project: Project, workspaceId: string): number => {
   const index = project.workspaces.findIndex((link) => link.workspaceId === workspaceId);
   if (index < 0) {
@@ -79,8 +68,8 @@ const findLinkIndex = (project: Project, workspaceId: string): number => {
 /**
  * Governing owner of Project invariants: name normalisation and uniqueness,
  * identity/timestamps, workspace-link validation, and read-time availability.
- * Every validation that depends on stored state runs inside the locked store
- * updater, so a rejected change never writes.
+ * Every validation that depends on stored Projects runs inside the store's
+ * serialized Project write, so a rejected change never writes.
  */
 export class ProjectService {
   constructor(private readonly deps: ProjectServiceDependencies = {}) {}
@@ -102,18 +91,17 @@ export class ProjectService {
   }
 
   async listProjects(): Promise<ProjectView[]> {
-    const records = await this.store.listRecords();
+    const records = await this.store.listProjects();
     const views = await Promise.all(records.map((record) => this.toView(record)));
     return views.sort(compareByName);
   }
 
   async listProjectSummaries(): Promise<Array<Pick<ProjectView, "projectId" | "name" | "description">>> {
-    return (await this.store.listRecords()).map(({projectId, name, description}) => ({projectId, name, description})).sort(compareByName);
+    return (await this.store.listProjects()).map(({projectId, name, description}) => ({projectId, name, description})).sort(compareByName);
   }
 
   async getProject(projectId: string): Promise<ProjectView | null> {
-    const records = await this.store.listRecords();
-    const record = records.find((entry) => entry.projectId === projectId);
+    const record = await this.store.readProject(projectId);
     return record ? this.toView(record) : null;
   }
 
@@ -128,13 +116,12 @@ export class ProjectService {
       createdAt: timestamp,
       updatedAt: timestamp,
       workspaces: [],
-      tasks: [],
     };
 
-    await this.store.updateRecords(async (records) => {
+    await this.store.createProject(async (records) => {
       assertNameAvailable(records, name);
       created.workspaces = await this.resolveFormLinks(created, command.workspaces ?? []);
-      return [...records, created];
+      return created;
     });
 
     return this.toView(created);
@@ -153,21 +140,11 @@ export class ProjectService {
   }
 
   /**
-   * Removes the Project record with its links and its embedded Tasks in one locked write.
-   * Returns `false` when it does not exist.
+   * Removes the Project with its links, drafts and its Tasks' metadata and context.
+   * Agent run resources stay, so closed work stays closed. Returns `false` when it does not exist.
    */
   async deleteProject(projectId: string): Promise<boolean> {
-    let removed = false;
-    await this.store.updateRecords((records) => {
-      const remaining = records.filter((record) => record.projectId !== projectId);
-      removed = remaining.length !== records.length;
-      return remaining;
-    });
-    if (removed) {
-      try { await (this.deps.contextStore ?? getProjectTaskContextStore()).deleteOwner(projectId); }
-      catch (e) { console.warn("Project metadata deleted; context cleanup failed.", e); }
-    }
-    return removed;
+    return this.store.deleteProject(projectId);
   }
 
   async addWorkspaceLink(command: AddProjectWorkspaceCommand): Promise<ProjectView> {
@@ -238,18 +215,12 @@ export class ProjectService {
     projectId: string,
     change: (project: Project, records: Project[]) => Project | Promise<Project>,
   ): Promise<Project> {
-    const records = await this.store.updateRecords(async (current) => {
-      const index = findProjectIndex(current, projectId);
-      const next = await change(current[index], current);
-      const nextRecords = [...current];
-      nextRecords[index] = { ...next, updatedAt: this.nowIso() };
-      return nextRecords;
-    });
-    return records[findProjectIndex(records, projectId)];
+    return this.store.updateProject(projectId, async (project, all) => ({ ...(await change(project, all)), updatedAt: this.nowIso() }));
   }
 
   private async toView(project: Project): Promise<ProjectView> {
-    const { tasks, workspaces: storedLinks, ...fields } = project;
+    const { workspaces: storedLinks, ...fields } = project;
+    const tasks = await this.store.listTasks(project.projectId);
     const links = [...storedLinks].sort((left, right) => left.addedAt.localeCompare(right.addedAt));
     const workspaces = await Promise.all(links.map((link) => this.toWorkspaceView(link)));
     return {

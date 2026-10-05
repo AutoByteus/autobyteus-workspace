@@ -1,4 +1,4 @@
-import type { TaskLifetimeRuntime } from "../../agent-collaboration/execution/task/task-lifetime-gate.js";
+import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
@@ -29,7 +29,7 @@ export type TeamRootMaterializationInput = Readonly<{
   factory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  taskLifetimes?: TaskLifetimeRuntime;
+  taskAgentResources?: TaskAgentResourcePort;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationV1Store;
   /** The process admission coordinator unless given. */
@@ -119,7 +119,7 @@ export const materializeTeamRoot = async (
       persistence,
       publisher,
       taskExecutionIdentity: input.taskExecutionIdentity,
-      taskLifetimes: input.taskLifetimes,
+      taskAgentResources: input.taskAgentResources,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: () => { if (root) input.onTerminated(root); },
     });

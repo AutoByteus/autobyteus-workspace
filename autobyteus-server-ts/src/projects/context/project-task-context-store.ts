@@ -8,12 +8,12 @@ import { buildStoredFilename, CONTEXT_FILE_DRAFT_TTL_MS } from "../../context-fi
 import { writeContextFileUpload } from "../../context-files/services/context-file-upload-writer.js";
 import type { ProjectTaskContextFile, ProjectTaskDraftManifest } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
-import { ProjectTaskContextLayout } from "./project-task-context-layout.js";
+import { ProjectsLayout } from "../stores/projects-layout.js";
 
 export interface PreparedTaskContext { files: ProjectTaskContextFile[]; draftId?: string; consumed: string[] }
 const missing = (): never => { throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Task context was not found."); };
 export class ProjectTaskContextStore {
-  constructor(readonly layout = new ProjectTaskContextLayout()) {}
+  constructor(readonly layout = new ProjectsLayout()) {}
   async begin(projectId: string, taskId?: string): Promise<ProjectTaskDraftManifest> {
     await this.cleanupProjectDrafts(projectId);
     const manifest: ProjectTaskDraftManifest = { projectId, draftId: randomUUID(), ...(taskId ? { taskId } : {}), files: [] };
@@ -76,7 +76,7 @@ export class ProjectTaskContextStore {
       if (manifest.taskId !== (existing ? taskId : undefined)) throw new ProjectError("TASK_CONTEXT_INVALID", "Draft belongs to a different Task.");
       await this.expire(dir, manifest);
       if (!filenames.length) return { files: [], consumed: [] };
-      const target = this.layout.taskDir(projectId, taskId);
+      const target = this.layout.contextDir(projectId, taskId);
       await this.layout.directory(target, true);
       const files: ProjectTaskContextFile[] = [];
       for (const name of filenames) {
@@ -96,7 +96,7 @@ export class ProjectTaskContextStore {
     });
   }
   async savedFile(projectId: string, taskId: string, file: ProjectTaskContextFile): Promise<string> {
-    const filePath = this.layout.file(this.layout.taskDir(projectId, taskId), file.storedFilename);
+    const filePath = this.layout.file(this.layout.contextDir(projectId, taskId), file.storedFilename);
     await this.layout.regular(filePath);
     if ((await fs.stat(filePath)).size !== file.sizeBytes) missing();
     await fs.access(filePath, 4);
@@ -104,21 +104,13 @@ export class ProjectTaskContextStore {
   }
   async cleanupRemoved(projectId: string, taskId: string, files: ProjectTaskContextFile[]): Promise<void> {
     for (const file of files) {
-      const filePath = this.layout.file(this.layout.taskDir(projectId, taskId), file.storedFilename);
+      const filePath = this.layout.file(this.layout.contextDir(projectId, taskId), file.storedFilename);
       await this.layout.regular(filePath).then(() => fs.unlink(filePath)).catch((e) => { if (e.code !== "ENOENT") throw e; });
     }
   }
-  async deleteOwner(projectId: string, taskId?: string): Promise<void> {
-    const dirs = taskId ? [this.layout.taskDir(projectId, taskId)] : [
-      this.layout.projectDir(projectId, "task_context_files"), this.layout.projectDir(projectId, "task_context_drafts"),
-    ];
-    for (const dir of dirs) {
-      await this.layout.directory(dir).then(() => fs.rm(dir, { recursive: true, force: true })).catch((e) => { if (e.code !== "ENOENT") throw e; });
-    }
-  }
-  /** Caller holds the Project metadata lock: this fresh membership proof is the cleanup authority. */
+  /** Caller holds the Task metadata lock: this fresh membership proof is the cleanup authority. */
   async reclaimUnpublished(projectId: string, taskId: string, referenced: Set<string>): Promise<void> {
-    const dir = this.layout.taskDir(projectId, taskId);
+    const dir = this.layout.contextDir(projectId, taskId);
     try { await this.layout.directory(dir); } catch (e) { if ((e as NodeJS.ErrnoException).code === "ENOENT") return; throw e; }
     for (const name of await fs.readdir(dir)) {
       if (referenced.has(name)) continue;
@@ -163,10 +155,10 @@ export class ProjectTaskContextStore {
     await this.writeManifest(dir, manifest);
   }
   private async cleanupProjectDrafts(projectId: string): Promise<void> {
-    const parent = this.layout.projectDir(projectId, "task_context_drafts");
+    const parent = this.layout.draftsDir(projectId);
     await this.layout.directory(parent, true);
     for (const id of await fs.readdir(parent)) {
-      if (!/^[a-f0-9-]{36}$/.test(id)) continue;
+      if (!this.layout.isDraftId(id)) continue;
       await this.lockDraft(projectId, id, async (dir) => {
         const manifest = await this.readManifest(dir, projectId, id);
         await this.expire(dir, manifest);

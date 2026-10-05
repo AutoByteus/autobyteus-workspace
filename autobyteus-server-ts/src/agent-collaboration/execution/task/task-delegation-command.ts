@@ -12,10 +12,10 @@ export type DelegateTaskResult =
   | Readonly<{ target_agent_run_id: null; message: string }>;
 
 export type TaskDelegationErrorCode =
-  | "TASK_LIFETIME_CLOSED"
-  | "TASK_LIFETIME_UNAVAILABLE"
-  | "TASK_LIFETIME_CONFLICT"
-  | "TASK_LIFETIME_INVALID"
+  | "TASK_AGENT_RESOURCE_CLOSED"
+  | "TASK_AGENT_RESOURCE_CONFLICT"
+  | "TASK_AGENT_RESOURCES_UNAVAILABLE"
+  | "TASK_AGENT_RESOURCE_OWNED_SENDER"
   | "VALIDATION_ERROR"
   | "INVALID_REFERENCE_FILE"
   | "ROOT_RUN_NOT_ACTIVE"

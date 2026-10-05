@@ -9,22 +9,22 @@ type TaskScope = NonNullable<Parameters<typeof resolveMessageRecipient>[0]['task
 export function taskScopedMessageRecipient<T extends DelegationPlacement>(input: {
   sender: CollaborationMemberExecutionIdentity;
   lifecycle: {
-    lifetimeForAgent(id: string): { lifetimeId: string } | undefined;
-    helperPlacement(id: string, address: string): CollaborationMessagePlacement | null;
-    ensureLifetimeHelper(context: TaskDelegationContext, address: string, placement: T): Promise<DelegateTaskResult>;
+    taskOwnerOf(agentRunId: string): Readonly<{ taskId: string }> | null;
+    helperPlacement(taskId: string, address: string): CollaborationMessagePlacement | null;
+    ensureTaskHelper(context: TaskDelegationContext, address: string, placement: T): Promise<DelegateTaskResult>;
   };
   resolvePlacement(address: AgentTeamAddress): Promise<T>;
   getAgent(id: string): Readonly<{ agentRunId: string; address: AgentTeamAddress }>;
 }): TaskScope {
   return {
-    lifetimeForAgent: id => input.lifecycle.lifetimeForAgent(id),
-    helper: (id, address) => {
-      const helper = input.lifecycle.helperPlacement(id, address);
+    taskOwnerOf: id => input.lifecycle.taskOwnerOf(id),
+    helper: (taskId, address) => {
+      const helper = input.lifecycle.helperPlacement(taskId, address);
       return helper ? messagePlacement(helper.kind, address, input.getAgent(helper.receiver.agentRunId)) : null;
     },
     bringIn: async address => {
       const placement = await input.resolvePlacement(address);
-      const result = await input.lifecycle.ensureLifetimeHelper({ identity: input.sender }, address, placement);
+      const result = await input.lifecycle.ensureTaskHelper({ identity: input.sender }, address, placement);
       if (result.target_agent_run_id === null) throw new Error(result.message);
       return messagePlacement(placement.kind, address, input.getAgent(result.target_agent_run_id));
     },

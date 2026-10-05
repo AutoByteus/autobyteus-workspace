@@ -1,4 +1,3 @@
-import type { TaskExecutionLifetimeStamp } from "./task-execution-lifetime.js";
 import type {
   TaskAgentExecution,
   TaskAgentExecutionSource,
@@ -26,7 +25,6 @@ export const projectTaskAgentExecution = (input: {
   agentRunId: string;
   delegatorAgentRunId: string;
   startedAt: string;
-  taskLifetime?: TaskExecutionLifetimeStamp;
   /** Only for a copy started from the catalog. */
   source?: TaskAgentExecutionSource | null;
 }): TaskAgentExecution => Object.freeze({
@@ -36,14 +34,12 @@ export const projectTaskAgentExecution = (input: {
   delegatorAgentRunId: input.delegatorAgentRunId,
   startedAt: input.startedAt,
   ...(input.source ? { source: input.source } : {}),
-  ...(input.taskLifetime ? { taskLifetime: input.taskLifetime } : {}),
 });
 
 export const projectTaskTeamExecution = (input: {
   node: TeamRunAgentTeamNode;
   delegatorAgentRunId: string;
   startedAt: string;
-  taskLifetime?: TaskExecutionLifetimeStamp;
   /** Only for a copy started from the catalog. */
   source?: TaskTeamExecutionSource | null;
 }): TaskTeamExecution => Object.freeze({
@@ -54,5 +50,4 @@ export const projectTaskTeamExecution = (input: {
   delegatorAgentRunId: input.delegatorAgentRunId,
   startedAt: input.startedAt,
   ...(input.source ? { source: input.source } : {}),
-  ...(input.taskLifetime ? { taskLifetime: input.taskLifetime } : {}),
 });

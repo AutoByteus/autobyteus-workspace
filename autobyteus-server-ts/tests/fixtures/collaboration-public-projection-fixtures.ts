@@ -8,6 +8,7 @@ export const projectionLaunch = {
   autoExecuteTools: true, workspaceRootPath: "/tmp/test-owned-projection-workspace",
 };
 const startedAt = "2026-10-03T00:00:01.000Z";
+/** `linked`: dev data from unshipped ticket builds carried a `taskLifetime` field; the current tolerant reader drops it (C-1). */
 const stamp = (linked: boolean, purpose: "assignment" | "delegation" | "helper" = "delegation") =>
   linked ? { taskLifetime: { lifetimeId: "task-owned-lifetime", purpose } } : {};
 const taskAgent = (address: string, id: string, linked: boolean, delegatorAgentRunId?: string) => ({

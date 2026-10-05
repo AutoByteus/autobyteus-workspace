@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
-import { RootTaskLifetimeScope } from '../../../src/agent-collaboration/execution/task/root-task-lifetime-scope.js';
-import { TaskLifetimeGate } from '../../../src/agent-collaboration/execution/task/task-lifetime-gate.js';
+import { RootTaskAgentResourceScope } from '../../../src/agent-collaboration/execution/task/root-task-agent-resource-scope.js';
 import { createRootExecutionPhysicalScope } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { nestedReleaseScenario } from '../../fixtures/task-release-generation-fixtures.js';
 
 const message = () => new AgentInputUserMessage('Summarize completed work');
-const closedLifetimes = () => {
-  const port = { readLifetimeClosure: async () => 'closed' as const };
-  return { port, gate: new TaskLifetimeGate(port) } as never;
+/** DONE on Task A: the Task side closes its agent runs, then this root stops exactly those. */
+const doneScope = (f: Awaited<ReturnType<typeof nestedReleaseScenario>>) => {
+  f.resources.close('A');
+  return new RootTaskAgentResourceScope(f.adapter, f.resources);
 };
 describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generation exact Task release', kind => {
   it('coordinator-only follow-up preserves verified nested Agent/Team/grandchild proof and separately stops sibling helper', async () => {
@@ -27,10 +27,10 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generatio
     if (f.rootTeam) await f.rootTeam.tryShutDownDirectTaskExecutionIfQuiet({ teamRunId: 'A-team' });
     await f.adapter.restoreChain('A-lead', () => undefined);
     expect(await f.getManaged('A-team')!.postMessage(message(), 'A-lead')).toMatchObject({ accepted: true });
-    const scope = new RootTaskLifetimeScope(f.adapter, closedLifetimes());
-    expect((await scope.release('A', f.requested)).requested).toEqual(f.requested.map(execution => ({ execution, cleanup: 'released' })));
-    expect((await scope.release('A', [{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }])).requested).toEqual([
-      { execution: { agentRunId: 'A-child' }, cleanup: 'released' }, { execution: { teamRunId: 'A-nested' }, cleanup: 'released' }]);
+    const scope = doneScope(f);
+    expect(await scope.releaseTaskAgentResources(f.requested)).toEqual(f.requested.map(agentRun => ({ agentRun, stopped: true })));
+    expect(await scope.releaseTaskAgentResources([{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }])).toEqual([
+      { agentRun: { agentRunId: 'A-child' }, stopped: true }, { agentRun: { teamRunId: 'A-nested' }, stopped: true }]);
     expect(f.acquired.filter(r => ['A-child', 'A-nested-lead', 'A-grand'].includes(r.runId))).toHaveLength(3);
     expect([...f.active.keys()].sort()).toEqual(['B-worker', 'borrowed', f.managerId].sort());
     expect(JSON.stringify(f.tree)).toBe(history); if (f.rootTeam) expect(f.rootTeam.isActive()).toBe(true);
@@ -58,15 +58,15 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generatio
     const restored = f.active.get(id); expect(restored).toBeDefined();
     expect(f.acquired.filter(r => r.runId === id)).toHaveLength(2);
     f.stopFailures.add(restored);
-    const scope = new RootTaskLifetimeScope(f.adapter, closedLifetimes());
-    const first = (await scope.release('A', f.requested)).requested;
-    expect(first.find(o => 'agentRunId' in o.execution && o.execution.agentRunId === id)?.cleanup).not.toBe('released');
+    const scope = doneScope(f);
+    const first = await scope.releaseTaskAgentResources(f.requested);
+    expect(first.find(o => 'agentRunId' in o.agentRun && o.agentRun.agentRunId === id)?.stopped).toBe(false);
     expect(f.active.get(id)).toBe(restored); expect(restored.alive).toBe(true);
     expect(f.active.has('A-helper')).toBe(false);
     f.stopFailures.delete(restored);
-    expect((await scope.release('A', f.requested)).requested.every(o => o.cleanup === 'released')).toBe(true);
+    expect((await scope.releaseTaskAgentResources(f.requested)).every(o => o.stopped)).toBe(true);
     const stops = f.stopped.length, acquisitions = f.acquired.length;
-    expect((await scope.release('A', f.requested)).requested.every(o => o.cleanup === 'released')).toBe(true);
+    expect((await scope.releaseTaskAgentResources(f.requested)).every(o => o.stopped)).toBe(true);
     expect(f.stopped).toHaveLength(stops); expect(f.acquired).toHaveLength(acquisitions);
     expect(restored.alive).toBe(false); expect([...f.active.keys()].sort()).toEqual(['B-worker', 'borrowed', f.managerId].sort());
     expect(JSON.stringify(f.tree)).toBe(history); if (f.rootTeam) expect(f.rootTeam.isActive()).toBe(true);

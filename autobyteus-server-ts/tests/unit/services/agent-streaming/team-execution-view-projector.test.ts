@@ -75,7 +75,7 @@ describe("Team execution view strict projection", () => {
     });
   });
 
-  it("keeps the separate snake-case Team protocol identical for private stamped nested children", () => {
+  it("keeps the separate snake-case Team protocol identical when dev data carries Task stamps, which the reader drops (C-1)", () => {
     const stamped = JSON.parse(JSON.stringify(tree));
     const parent = stamped.rootTeam.taskExecutions[0];
     parent.taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "assignment" };
@@ -92,7 +92,7 @@ describe("Team execution view strict projection", () => {
     expect(projectSequencedTeamRunEvent({ getExecutionTreeSnapshot: () => current } as never, event as never))
       .toEqual(projectSequencedTeamRunEvent(root as never, event as never));
     expect(JSON.stringify(current)).toBe(before);
-    expect(before).toContain("taskLifetime");
+    expect(before).not.toContain("taskLifetime");
   });
 
   it("keeps snapshot placement identity out of the exact live status payload", () => {

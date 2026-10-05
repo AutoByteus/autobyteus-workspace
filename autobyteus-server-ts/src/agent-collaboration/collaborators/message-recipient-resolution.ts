@@ -56,8 +56,8 @@ export type MessageRecipientResult =
  * The one `send_message_to(address)` resolution (DS-002), called inside the root gate.
  * (1) The sender's own team instances, deepest first: an address inside an instance resolves
  * only within that instance (AR-003, no fall-through), so parallel copies never cross.
- * (2) For a Task-owned sender, its lifetime's helper at the address. (3) Run-wide, except
- * another Task's owned execution. (4) A Task-owned sender brings in a lifetime helper;
+ * (2) For a Task-owned sender, its Task's open helper at the address. (3) Run-wide; an owned
+ * sender never borrows a Task-owned run. (4) A Task-owned sender brings in a new Task helper;
  * otherwise a listed catalog definition that is not in the run is brought in with the same
  * admission as `@` and the address resolves again to the new instance. A failed add returns
  * `COLLABORATOR_ADD_FAILED` (nothing was added); any other miss is the normal not found.
@@ -70,14 +70,15 @@ export const resolveMessageRecipient = async (input: Readonly<{
   address: AgentTeamAddress;
   catalog: CatalogBringInPort;
   taskScope?: Readonly<{
-    lifetimeForAgent(agentRunId: string): { lifetimeId: string } | undefined;
-    helper(lifetimeId: string, address: AgentTeamAddress): CollaborationMessagePlacement | null;
+    /** Opaque owning Task of the copy containing the agent; `null` when the agent is not Task-owned. */
+    taskOwnerOf(agentRunId: string): Readonly<{ taskId: string }> | null;
+    helper(taskId: string, address: AgentTeamAddress): CollaborationMessagePlacement | null;
     bringIn(address: AgentTeamAddress): Promise<CollaborationMessagePlacement | null>;
   }>;
   notFoundMessage(address: AgentTeamAddress): string;
 }>): Promise<MessageRecipientResult> => {
   const port = input.port();
-  const owner = input.taskScope?.lifetimeForAgent(input.senderAgentRunId);
+  const owner = input.taskScope?.taskOwnerOf(input.senderAgentRunId) ?? null;
   // Own-instance misses cannot fall through to an identically addressed parallel copy.
   for (const instance of port.teamInstancesOf(input.senderAgentRunId)) {
     if (!isWithin(input.address, instance)) continue;
@@ -86,11 +87,11 @@ export const resolveMessageRecipient = async (input: Readonly<{
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration target '${input.address}' is not a member of your team instance '${instance.address}'.`);
   }
   if (owner) {
-    const helper = input.taskScope!.helper(owner.lifetimeId, input.address);
+    const helper = input.taskScope!.helper(owner.taskId, input.address);
     if (helper) return { resolved: true, placement: helper };
   }
   const outside = port.getMessagePlacement(input.address);
-  if (outside && (!owner || !input.taskScope?.lifetimeForAgent(outside.receiver.agentRunId))) {
+  if (outside && (!owner || !input.taskScope?.taskOwnerOf(outside.receiver.agentRunId))) {
     return { resolved: true, placement: outside };
   }
   if (owner) {

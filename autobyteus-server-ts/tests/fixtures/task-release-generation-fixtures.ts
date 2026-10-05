@@ -13,7 +13,9 @@ import { StandaloneRootTaskExecutionAdapter } from '../../src/standalone-agent-r
 import { MemberCollaborationContext, MemberExecutionContext } from '../../src/agent-collaboration/execution/domain/member-execution-context.js';
 import { createRootExecutionIdentity, createRootExecutionPhysicalScope, type RootSubjectKind } from '../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { projectTaskAgentExecution, projectTaskTeamExecution } from '../../src/agent-collaboration/execution/task/task-execution-tree-projection.js';
+import { taskExecutionReferenceKey } from '../../src/agent-collaboration/execution/task/task-execution-reference.js';
 import { testActivationManager } from './agent-run-preparation-fixtures.js';
+import { InMemoryTaskAgentResources } from './task-agent-resource-fixtures.js';
 import { testAgentNode, testAgentTeamNode, testExecutionTree, testTeamRunConfig } from './current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from './current-agent-org-run-fixtures.js';
 
@@ -53,7 +55,6 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
   return { root, kind, factory, callbacks, manager, active, acquired, stopped, stop, stopFailures, teams, rootAgents };
 }
 const now = '2026-10-03T00:00:00.000Z';
-const stamp = (purpose: 'assignment' | 'delegation' | 'helper' = 'assignment') => ({ lifetimeId: 'A', purpose });
 const agentSource = (n: any) => ({ kind: 'agent', agentDefinitionId: n.agentDefinitionId,
   launchConfiguration: { runtimeKind: n.runtimeKind, llmModelIdentifier: n.llmModelIdentifier, llmConfig: n.llmConfig,
     autoExecuteTools: n.autoExecuteTools, workspaceRootPath: n.workspaceRootPath } });
@@ -99,19 +100,19 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
   for (const node of copies) {
     const input = { address: node.address, agentRunId: node.agentRunId, sourceNode: node };
     const op = rootTeam ? rootTeam.beginTaskAgent(input) : f.rootAgents.beginTaskPreparation(input);
-    await commit(op); if (node.agentRunId === 'A-helper') controls.push({ plan: { taskLifetime: stamp('helper'), link: { execution: { agentRunId: 'A-helper' } } }, operation: op });
+    await commit(op); if (node.agentRunId === 'A-helper') controls.push({ execution: { agentRunId: 'A-helper' }, operation: op });
   }
   for (const [execution, operation] of [[{ teamRunId: 'A-team' }, teamOp], [{ agentRunId: 'A-child' }, childOp],
     [{ teamRunId: 'A-nested' }, nestedOp], [{ agentRunId: 'A-grand' }, grandOp]] as const) {
-    controls.push({ plan: { taskLifetime: stamp(), link: { execution } }, operation });
+    controls.push({ execution, operation });
   }
-  const agentProjection = (n: any, lifetime?: any) => projectTaskAgentExecution({ address: n.address, agentRunId: n.agentRunId,
-    delegatorAgentRunId: managerNode.agentRunId, startedAt: now, source: agentSource(n) as never, taskLifetime: lifetime });
+  const agentProjection = (n: any) => projectTaskAgentExecution({ address: n.address, agentRunId: n.agentRunId,
+    delegatorAgentRunId: managerNode.agentRunId, startedAt: now, source: agentSource(n) as never });
   const nested = { ...projectTaskTeamExecution({ node: nestedNode, delegatorAgentRunId: 'A-lead', startedAt: now,
-    source: teamSource(nestedNode) as never, taskLifetime: stamp('delegation') }), taskExecutions: [agentProjection(grandNode, stamp('delegation'))] };
+    source: teamSource(nestedNode) as never }), taskExecutions: [agentProjection(grandNode)] };
   const task = { ...projectTaskTeamExecution({ node: teamNode, delegatorAgentRunId: managerNode.agentRunId, startedAt: now,
-    source: teamSource(teamNode) as never, taskLifetime: stamp() }), taskExecutions: [agentProjection(childNode, stamp('delegation')), nested] };
-  const tasks = [task, agentProjection(copies[0], stamp('helper')), agentProjection(copies[1], { lifetimeId: 'B', purpose: 'assignment' }), agentProjection(copies[2])];
+    source: teamSource(teamNode) as never }), taskExecutions: [agentProjection(childNode), nested] };
+  const tasks = [task, agentProjection(copies[0]), agentProjection(copies[1]), agentProjection(copies[2])];
   let tree: any, index: any, adapter: any;
   if (rootTeam) {
     const base = testExecutionTree({ rootTeamRunId: 'root', children: [managerNode], coordinatorAddress: '/Manager' });
@@ -133,12 +134,25 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
     adapter = kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(options as never) : new StandaloneRootTaskExecutionAdapter(options as never);
   }
   // Original exact controls observed at the root registration boundary, not reconstructed by lookup.
-  vi.spyOn(adapter, 'registeredActivations').mockReturnValue(controls);
+  vi.spyOn(adapter, 'registrationFor').mockImplementation((ref: any) => {
+    const control = controls.find(c => taskExecutionReferenceKey(c.execution) === taskExecutionReferenceKey(ref));
+    return control ? { target: { root: f.root, execution: control.execution, ingressAgentRunId: '' }, ownedAgentRunIds: [], operation: control.operation } : null;
+  });
+  // The Task side alone knows which runs belong to Task A (assigned Team, its delegated copies, helper) and Task B.
+  const resources = new InMemoryTaskAgentResources();
+  resources.addTask('A'); resources.addTask('B');
+  const hostRoot = f.root, assigned = { role: 'assigned' as const, assignedBy: managerNode.agentRunId, hostRoot };
+  await resources.linkAgentRun({ ...assigned, taskId: 'A', agentRun: { teamRunId: 'A-team' }, coordinatorAgentRunId: 'A-lead' });
+  for (const agentRun of [{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }, { agentRunId: 'A-grand' }]) {
+    await resources.linkAgentRun({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, agentRun });
+  }
+  await resources.linkAgentRun({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, agentRun: { agentRunId: 'A-helper' } });
+  await resources.linkAgentRun({ ...assigned, taskId: 'B', agentRun: { agentRunId: 'B-worker' } });
   const quiet = rootTeam ? await rootTeam.tryShutDownDirectTaskExecutionIfQuiet({ teamRunId: 'A-team' })
     : await f.teams.tryShutDownRootTaskTeamIfQuiet('A-team');
   if (!quiet) throw Error('Fixture must reach actual verified quiet shutdown');
   if (resolver) resolver.unregisterTerminated(); else f.teams.unregisterTerminated();
   const getManaged = (id: string) => resolver ? resolver.getManaged(id) : f.teams.getManaged(id);
-  return { ...f, tree, adapter, rootTeam, getManaged, retireTerminated: () => resolver ? resolver.unregisterTerminated() : f.teams.unregisterTerminated(), oldTeam, oldNested, managerId: managerNode.agentRunId,
+  return { ...f, tree, adapter, rootTeam, resources, getManaged, retireTerminated: () => resolver ? resolver.unregisterTerminated() : f.teams.unregisterTerminated(), oldTeam, oldNested, managerId: managerNode.agentRunId,
     requested: [{ teamRunId: 'A-team' }, { agentRunId: 'A-child' }, { teamRunId: 'A-nested' }, { agentRunId: 'A-grand' }, { agentRunId: 'A-helper' }] };
 }

@@ -47,7 +47,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   private readonly plans = new WeakMap<TaskExecutionActivationPlan<TeamDelegationPlacement>, {
     hostTeamRunId: string; beginLocal(): Promise<TaskExecutionPreparationOperation>;
   }>();
-  private readonly registrations = new Map<string, RegisteredTaskActivation<TeamDelegationPlacement>>();
+  private readonly registrations = new Map<string, RegisteredTaskActivation>();
   get root() { return createTeamRootExecutionIdentity(this.options.rootTeamRunId); }
   private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
   private readonly memoryLocator: RootedAgentMemoryLocator;
@@ -83,8 +83,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       command = { address: input.placement.address, teamRunId: materialized.teamNode.teamRunId,
         handoffs: source.handoffs, teamNode: materialized.teamNode, message: input.workPacket };
     }
-    const plan = Object.freeze({ ...input, ownedAgentRunIds, link: Object.freeze({ root: this.root, execution, ingressAgentRunId,
-      purpose: input.taskLifetime?.purpose ?? "delegation" }) });
+    const plan = Object.freeze({ ...input, ownedAgentRunIds, target: Object.freeze({ root: this.root, execution, ingressAgentRunId }) });
     this.plans.set(plan, { hostTeamRunId, beginLocal: async () => {
       const host = await this.options.requireTeamRun(hostTeamRunId);
       return "agentRunId" in command ? host.beginTaskAgent(command) : host.beginTaskTeam(command);
@@ -107,13 +106,13 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       prepared.sealForCommit();
       const execution: TaskExecution = prepared.binding.kind === "agent"
         ? projectTaskAgentExecution({ address: prepared.binding.address, agentRunId: prepared.binding.agentRunId,
-          delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt, taskLifetime: plan.taskLifetime,
+          delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt,
           source: plan.placement.kind === "agent" ? plan.placement.source : null })
         : projectTaskTeamExecution({ node: requirePreparedTaskTeamNode(prepared), delegatorAgentRunId: plan.identity.agentRunId,
-          startedAt: plan.startedAt, taskLifetime: plan.taskLifetime, source: plan.placement.kind === "agent_team" ? plan.placement.source : null });
+          startedAt: plan.startedAt, source: plan.placement.kind === "agent_team" ? plan.placement.source : null });
       let work: CommittedTaskExecution | null = null;
       return Object.freeze({
-        targetAgentRunId: plan.link.ingressAgentRunId,
+        targetAgentRunId: plan.target.ingressAgentRunId,
         commit: () => { assertAccepting(); return this.commitActivation({ input: plan, hostTeamRunId: facts.hostTeamRunId,
           prepared, reservation, execution, retainWork: (value) => { work = value; } }); },
         acceptSeed: (assertOpen) => {
@@ -122,24 +121,22 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
         },
       });
     } });
-    this.registrations.set(taskExecutionReferenceKey(plan.link.execution), { plan: { link: plan.link, ownedAgentRunIds: plan.ownedAgentRunIds, taskLifetime: plan.taskLifetime }, operation });
+    this.registrations.set(taskExecutionReferenceKey(plan.target.execution), Object.freeze({ target: plan.target, ownedAgentRunIds: plan.ownedAgentRunIds, operation }));
     return operation;
   }
 
-  registeredActivations(lifetimeId: string) { return [...this.registrations.values()].filter(entry => entry.plan.taskLifetime?.lifetimeId === lifetimeId); }
-  ownedExecutions(lifetimeId: string) { return this.options.getIndex().listOwnedTaskExecutions(lifetimeId).map(referenceOf); }
-  lifetimeForAgent(agentRunId: string) {
-    return this.options.getIndex().taskLifetimeFor(agentRunId)
-      ?? [...this.registrations.values()].find(entry => entry.plan.ownedAgentRunIds.includes(agentRunId))?.plan.taskLifetime;
+  registrationFor(reference: TaskExecutionReference) { return this.registrations.get(taskExecutionReferenceKey(reference)) ?? null; }
+  ownershipChainFor(agentRunId: string): readonly TaskExecutionReference[] {
+    const chain = this.taskExecutionChainFor(agentRunId);
+    return chain.length ? chain : [...this.registrations.values()]
+      .filter(entry => entry.ownedAgentRunIds.includes(agentRunId)).map(entry => entry.target.execution);
   }
-  findLifetimeHelper(lifetimeId: string, address: string) {
-    const entry = this.options.getIndex().findLifetimeHelper(lifetimeId, address);
-    return entry ? this.linkForExecution(referenceOf(entry)) : null;
-  }
-  linkForExecution(reference: TaskExecutionReference) {
-    const entry = this.options.getIndex().getTaskExecution(reference);
-    return entry?.source.taskLifetime ? { root: this.root, execution: reference,
-      ingressAgentRunId: this.ingressOf(entry).agentRunId, purpose: entry.source.taskLifetime.purpose } : null;
+  taskExecutionAt(address: string, among: readonly TaskExecutionReference[]) {
+    for (const reference of among) {
+      const entry = this.options.getIndex().getTaskExecution(reference);
+      if (entry?.address === address) return Object.freeze({ root: this.root, execution: reference, ingressAgentRunId: this.ingressOf(entry).agentRunId });
+    }
+    return null;
   }
   cancelOwnedExecution(reference: TaskExecutionReference): void {
     const entry = this.options.getIndex().getTaskExecution(reference);

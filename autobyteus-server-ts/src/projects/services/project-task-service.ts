@@ -1,25 +1,29 @@
-import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import type { TaskExecutionDispatch, TaskExecutionLifetimePort, TaskExecutionLinkIdentity, TaskExecutionReleaseOutcome, TaskLifetimeClosure, TaskLifetimeClosureListener, TaskLifetimeReleaseReport } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
-import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { assertLifetimeOpen, uniqueTask, requireLifetime, reserveExecutionLink, requireExecutionLink, closeTaskLifetimes, boundedTaskError } from "../domain/project-task-execution-state.js";
-import type { ProjectTaskExecutionLink, ProjectTaskLifetime } from "../domain/project-task-execution.js";
-import { ProjectTaskRuntimeRelease, type TaskRootReleaseRequest } from "../runtime/project-task-runtime-release.js";
 import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
-import type { CreateProjectTaskCommand, DeleteProjectTaskCommand, Project, ProjectTask, ProjectTaskStatus, ProjectTaskView, UpdateProjectTaskCommand } from "../domain/models.js";
+import type {
+  TaskAgentResourceLinkInput, TaskAgentResourcePort, TaskAgentResourceReleaseRequest, TaskAgentResourceRole,
+} from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { CreateProjectTaskCommand, DeleteProjectTaskCommand, ProjectTask, ProjectTaskStatus, ProjectTaskView, UpdateProjectTaskCommand } from "../domain/models.js";
 import { projectTaskFileLocator, type ProjectTaskContextFile } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
+import type { TaskAssignment } from "../domain/task-agent-resources.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { getProjectTaskContextStore, type ProjectTaskContextStore, type PreparedTaskContext } from "../context/project-task-context-store.js";
+import { TaskAgentResourceRelease } from "../runtime/task-agent-resource-release.js";
+import { TaskAgentResourceService } from "./task-agent-resource-service.js";
+import { TaskAgentResourceStore } from "../stores/task-agent-resource-store.js";
 
+type TaskPersistence = Pick<ProjectStore, "layout" | "readProject" | "listTasks" | "readTask" | "findTask" | "createTask" | "updateTask" | "deleteTask">;
 type Dependencies = {
-  store?: Pick<ProjectStore, "listRecords" | "updateRecords" | "readState" | "updateState">;
+  store?: TaskPersistence;
   contextStore?: ProjectTaskContextStore;
   now?: () => Date;
-  /** Bound once by the process composition; absent means no runtime is notified or released. */
-  closureListener?: TaskLifetimeClosureListener;
-  requestRuntimeRelease?: TaskRootReleaseRequest;
   createId?: () => string;
+  /** The process authority over agent run resources; bound once by the composition. */
+  taskAgentResources?: TaskAgentResourceService;
+  /** Exact-root stop request; absent means no runtime is asked to stop anything. */
+  requestRelease?: TaskAgentResourceReleaseRequest;
 };
 const normalizeDescription = (description: unknown): string => {
   if (typeof description !== "string" || !description.trim()) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
@@ -30,64 +34,50 @@ export const validateTaskStatus = (status: unknown): ProjectTaskStatus => {
   return status;
 };
 const compareTasks = (a: ProjectTask, b: ProjectTask): number => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId);
-const projectIndex = (records: Project[], projectId: string): number => {
-  const index = records.findIndex((p) => p.projectId === projectId);
-  if (index < 0) throw new ProjectError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);
-  return index;
-};
-const findTask = (tasks: ProjectTask[], taskId: string): ProjectTask => {
-  const task = tasks.find((t) => t.taskId === taskId);
-  if (!task) throw new ProjectError("TASK_NOT_FOUND", `Task '${taskId}' was not found in this project.`);
-  return task;
-};
 const cleanup = async (operation: () => Promise<unknown>): Promise<void> => {
   try { await operation(); } catch (e) { console.warn("Task context cleanup failed.", e); }
 };
-const sameRootLink = (lifetime: ProjectTaskLifetime, root: RootExecutionIdentity, outcome: TaskExecutionReleaseOutcome): ProjectTaskExecutionLink | undefined =>
-  lifetime.executions.find(e => e.root.rootSubjectKind === root.rootSubjectKind && e.root.rootRunId === root.rootRunId
-    && taskExecutionReferenceKey(e.execution) === taskExecutionReferenceKey(outcome.execution));
-const applyCleanup = (link: ProjectTaskExecutionLink, outcome: TaskExecutionReleaseOutcome): void => {
-  if (link.cleanup !== "released") link.cleanup = outcome.cleanup;
-  if (outcome.error) link.error = boundedTaskError(outcome.error);
-};
 
 /**
- * Task invariant/metadata authority, including durable lifetime closure and membership (execution links).
- * It owns no runtime latch: closure is announced through the injected listener. Bytes stay in the context store.
+ * The Task subject boundary: Task metadata and context (released semantics over the per-Project
+ * store), saved work for assignment, status rules, and DONE / assignment orchestration. It is the
+ * runtime's `TaskAgentResourcePort`, delegating agent run facts to TaskAgentResourceService.
  */
-export class ProjectTaskService implements TaskExecutionLifetimePort {
-  private readonly releaseEffect: ProjectTaskRuntimeRelease;
+export class ProjectTaskService implements TaskAgentResourcePort {
+  private readonly resources: TaskAgentResourceService;
+  private readonly release: TaskAgentResourceRelease;
   constructor(private readonly deps: Dependencies = {}) {
-    this.releaseEffect = new ProjectTaskRuntimeRelease({ request: deps.requestRuntimeRelease,
-      record: (id, root, report) => this.recordCleanup(id, root, report) });
+    // Agent run resources live in the same Projects layout as the Task metadata.
+    this.resources = deps.taskAgentResources ?? new TaskAgentResourceService(new TaskAgentResourceStore(deps.store?.layout));
+    this.release = new TaskAgentResourceRelease(deps.requestRelease);
   }
   private get store() { return this.deps.store ?? getProjectStore(); }
   private get context() { return this.deps.contextStore ?? getProjectTaskContextStore(); }
   private nowIso(): string { return (this.deps.now?.() ?? new Date()).toISOString(); }
+
+  /** Loads the agent run resource view (composition, once, after app-data migrations). */
+  load(): Promise<void> { return this.resources.load(); }
+
   async listTasks(projectId: string, status?: ProjectTaskStatus): Promise<ProjectTaskView[]> {
     if (status !== undefined) validateTaskStatus(status);
-    const records = await this.store.listRecords();
-    return Promise.all([...records[projectIndex(records, projectId)].tasks]
+    return Promise.all((await this.store.listTasks(projectId))
       .filter((t) => status === undefined || t.status === status).sort(compareTasks).map((t) => this.toView(projectId, t)));
+  }
+  /** The Manager's read of current assignments per Task; `unavailable` when a Task's data can't be read. */
+  async currentAssignments(taskIds: readonly string[]): Promise<Map<string, TaskAssignment[] | "unavailable">> {
+    return new Map(await Promise.all(taskIds.map(async (taskId) => [taskId, await this.resources.currentAssignments(taskId)] as const)));
   }
   async createTask(command: CreateProjectTaskCommand): Promise<ProjectTaskView> {
     const description = normalizeDescription(command.description);
     const taskId = this.deps.createId?.() ?? `project_task_${randomUUID()}`;
     const timestamp = this.nowIso();
     await this.assertOwner(command.projectId);
-    let prepared!: PreparedTaskContext;
-    let task!: ProjectTask;
-    await this.store.updateState(async state => {
-      const index = projectIndex(state.projects, command.projectId);
-      if (state.projects.some(p => p.tasks.some(t => t.taskId === taskId)) || state.taskLifetimes.some(l => l.taskId === taskId)) {
-        throw new ProjectError("TASK_ID_COLLISION", "Task identity already exists; no context published.");
-      }
-      prepared = command.contextDraft ? await this.context.prepare(command.projectId, taskId,
-        command.contextDraft.draftId, command.contextDraft.storedFilenames, false) : { files: [], consumed: [] };
+    const prepared = command.contextDraft ? await this.context.prepare(command.projectId, taskId,
+      command.contextDraft.draftId, command.contextDraft.storedFilenames, false) : { files: [], consumed: [] };
+    // On any unproven failed outcome retain prepared bytes and draft, never infer rollback from catch.
+    const task = await this.store.createTask(command.projectId, taskId, async () => {
       await this.validatePrepared(command.projectId, taskId, prepared);
-      task = { taskId, description, status: "TODO", createdAt: timestamp, updatedAt: timestamp, contextFiles: prepared.files };
-      state.projects[index] = { ...state.projects[index]!, tasks: [...state.projects[index]!.tasks, task] };
-      return state;
+      return { taskId, description, status: "TODO", createdAt: timestamp, updatedAt: timestamp, contextFiles: prepared.files };
     });
     await this.consume(command.projectId, prepared);
     return this.toView(command.projectId, task);
@@ -102,43 +92,44 @@ export class ProjectTaskService implements TaskExecutionLifetimePort {
     const additions = changes?.addStoredFilenames ?? [];
     const removals = changes?.removeStoredFilenames ?? [];
     if (new Set(removals).size !== removals.length) throw new ProjectError("TASK_CONTEXT_INVALID", "Context removals must be unique.");
-    await this.assertOwner(command.projectId, command.taskId);
+    const existing = await this.assertOwner(command.projectId, command.taskId);
+    // Input errors are rejected before anything is written (DONE would otherwise already have closed its runs).
+    if (removals.some((name) => !(existing?.contextFiles ?? []).some((f) => f.storedFilename === name))) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved context was not found in this Task.");
     const prepared = await this.prepareChanges(command.projectId, command.taskId, changes?.draftId, additions, Boolean(changes));
-    let updated!: ProjectTask;
     let removed: ProjectTaskContextFile[] = [];
-    const committedState = await this.store.updateState(async state => {
-      const records = state.projects;
-      const index = projectIndex(records, command.projectId);
-      const current = findTask(records[index].tasks, command.taskId);
+    const writeMetadata = () => this.store.updateTask(command.projectId, command.taskId, async (current) => {
       const files = current.contextFiles ?? [];
       if (removals.some((name) => !files.some((f) => f.storedFilename === name))) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved context was not found in this Task.");
       await this.validatePrepared(command.projectId, command.taskId, prepared);
       removed = files.filter((f) => removals.includes(f.storedFilename));
       const meaningful = (description !== undefined && current.description !== description)
         || (status !== undefined && current.status !== status) || additions.length > 0 || removals.length > 0;
-      updated = meaningful ? { ...current, ...(hasDescription ? { description } : {}), ...(hasStatus ? { status } : {}),
+      return meaningful ? { ...current, ...(hasDescription ? { description } : {}), ...(hasStatus ? { status } : {}),
         ...(changes ? { contextFiles: [...files.filter((f) => !removals.includes(f.storedFilename)), ...prepared.files] } : {}), updatedAt: this.nowIso() } as ProjectTask : current;
-      state.projects[index] = { ...records[index], tasks: records[index].tasks.map((t) => t.taskId === command.taskId ? updated : t) };
-      if (status === "DONE") closeTaskLifetimes(state, command.projectId, command.taskId, this.nowIso());
-      return state;
-    }, state => {
-      if (status === "DONE") this.deps.closureListener?.onLifetimesClosed(state.taskLifetimes
-        .filter(l => l.projectId === command.projectId && l.taskId === command.taskId && l.completedAt !== null).map(l => l.lifetimeId));
     });
-    if (status === "DONE") for (const l of committedState.taskLifetimes.filter(l => l.projectId === command.projectId && l.taskId === command.taskId && l.completedAt !== null)) this.releaseEffect.initiate(l);
+    let updated: ProjectTask;
+    if (status === "DONE") {
+      // DONE: close the Task's agent runs first (fences at once), then the status, then ask roots to stop them.
+      let closed = false, written: ProjectTask | undefined;
+      try {
+        await this.resources.closeTask({ projectId: command.projectId, taskId: command.taskId }, async () => {
+          closed = true;
+          written = await writeMetadata();
+        });
+      } finally {
+        if (closed) this.release.release(command.taskId, this.resources.closedByHostRoot(command.taskId));
+      }
+      updated = written!;
+    } else {
+      updated = await writeMetadata();
+    }
     await this.consume(command.projectId, prepared);
     if (removed.length) await cleanup(() => this.context.cleanupRemoved(command.projectId, command.taskId, removed));
     return this.toView(command.projectId, updated);
   }
+  /** Removes metadata and context; the Task's agent run resources stay, so closed work stays closed. */
   async deleteTask(command: DeleteProjectTaskCommand): Promise<boolean> {
-    let removed: ProjectTask | undefined;
-    await this.store.updateRecords((records) => {
-      const index = projectIndex(records, command.projectId);
-      removed = records[index].tasks.find((t) => t.taskId === command.taskId);
-      const next = [...records]; next[index] = { ...records[index], tasks: records[index].tasks.filter((t) => t.taskId !== command.taskId) }; return next;
-    });
-    if (removed) await cleanup(() => this.context.deleteOwner(command.projectId, command.taskId));
-    return Boolean(removed);
+    return Boolean(await this.store.deleteTask(command.projectId, command.taskId));
   }
   async beginContextDraft(projectId: string, taskId?: string) {
     await this.assertOwner(projectId, taskId);
@@ -168,93 +159,53 @@ export class ProjectTaskService implements TaskExecutionLifetimePort {
     const filePath = await this.context.savedFile(projectId, taskId, file).catch(() => { throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved Task bytes are unavailable."); });
     return { file, filePath };
   }
-  async resolveDelegationWork(taskId: string, inheritedLifetimeId?: string) {
+  /** Settles stop requests already made by DONE (tests and orderly shutdown). */
+  async drainRuntimeReleases(): Promise<void> { await this.release.drain(); }
+
+  // ── TaskAgentResourcePort (runtime-facing) ──
+  async resolveAssignment(taskId: string) {
+    const { projectId, task } = await this.uniqueTask(taskId);
+    if (task.status === "DONE") throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", "The Task is DONE; reopen it before assigning new work.");
+    await this.resources.load();
+    this.resources.assertTaskReadable(taskId);
+    const referenceFiles = await Promise.all((task.contextFiles ?? []).map(f => this.context.savedFile(projectId, taskId, f)));
+    return { description: task.description, referenceFiles };
+  }
+  async linkAgentRun(input: TaskAgentResourceLinkInput): Promise<{ taskId: string }> {
+    if (input.role !== "assigned") return { taskId: await this.resources.linkInherited(input) };
+    const { projectId } = await this.uniqueTask(input.taskId);
+    await this.resources.serialize(input.taskId, async () => {
+      // Status re-check inside the Task's serialization: a DONE is entirely before or entirely after.
+      const task = await this.store.readTask(projectId, input.taskId);
+      if (!task) throw new ProjectError("TASK_NOT_FOUND", `Task '${input.taskId}' was not found.`);
+      if (task.status === "DONE") throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", "The Task is DONE; reopen it before assigning new work.");
+      await this.resources.linkAssigned({ projectId, taskId: input.taskId }, input);
+    });
+    return { taskId: input.taskId };
+  }
+  markStarted(agentRun: TaskExecutionReference): Promise<void> { return this.resources.markStarted(agentRun); }
+  markFailed(agentRun: TaskExecutionReference, error: { code: string; message: string }): Promise<void> { return this.resources.markFailed(agentRun, error); }
+  ownerOf(chain: readonly TaskExecutionReference[]) { return this.resources.ownerOf(chain); }
+  isOpen(agentRun: TaskExecutionReference): boolean { return this.resources.isOpen(agentRun); }
+  openAgentRuns(taskId: string, role: TaskAgentResourceRole) { return this.resources.openAgentRuns(taskId, role); }
+  assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
+
+  private async uniqueTask(taskId: string) {
     if (typeof taskId !== "string" || !taskId.trim()) throw new ProjectError("TASK_NOT_FOUND", "Task ID must be nonblank.");
-    let description = "", referenceFiles: string[] = [], lifetimeId = "";
-    await this.store.updateState(async state => {
-      const { project, task } = uniqueTask(state, taskId);
-      if (task.status === "DONE") throw new ProjectError("TASK_LIFETIME_CLOSED", "Explicitly reopen the Task before new delegation.");
-      if (inheritedLifetimeId) {
-        const inherited = requireLifetime(state, inheritedLifetimeId); assertLifetimeOpen(inherited);
-        if (inherited.taskId !== taskId || inherited.projectId !== project.projectId) throw new ProjectError("TASK_LIFETIME_CONFLICT", "Owned workers cannot dispatch into another Task lifetime.");
-      }
-      description = task.description;
-      referenceFiles = await Promise.all((task.contextFiles ?? []).map(f => this.context.savedFile(project.projectId, taskId, f)));
-      let lifetime = state.taskLifetimes.find(l => l.taskId === taskId && l.completedAt === null);
-      if (!lifetime) {
-        lifetime = { lifetimeId: `project_task_lifetime_${randomUUID()}`, projectId: project.projectId, taskId,
-          openedAt: this.nowIso(), completedAt: null, executions: [] };
-        state.taskLifetimes.push(lifetime);
-      }
-      if (inheritedLifetimeId && inheritedLifetimeId !== lifetime.lifetimeId) throw new ProjectError("TASK_LIFETIME_CONFLICT", "Completed lifetimes cannot be inherited after reopen.");
-      lifetimeId = lifetime.lifetimeId;
-      return state;
-    });
-    return { lifetimeId, description, referenceFiles };
+    const matches = await this.store.findTask(taskId);
+    if (matches.length !== 1) throw new ProjectError(matches.length ? "TASK_ID_AMBIGUOUS" : "TASK_NOT_FOUND",
+      `Task '${taskId}' must identify exactly one current node-local Task (found ${matches.length}).`);
+    return matches[0]!;
   }
-  async readLifetimeClosure(id: string): Promise<TaskLifetimeClosure> {
-    return requireLifetime(await this.store.readState(), id).completedAt === null ? "open" : "closed";
-  }
-  async assertExecutionLinked(id: string, identity: TaskExecutionLinkIdentity): Promise<void> {
-    const link = requireExecutionLink(await this.store.readState(), id, identity);
-    if (link.dispatch !== "admitted" && link.dispatch !== "delivered") throw new ProjectError("TASK_LIFETIME_INVALID", "Execution is not durably admitted.");
-  }
-  async reserveExecution(id: string, identity: TaskExecutionLinkIdentity, explicitTaskId?: string): Promise<void> {
-    await this.store.updateState(state => {
-      const l = requireLifetime(state, id); assertLifetimeOpen(l); // Durable closure check under the Projects lock.
-      if (explicitTaskId) {
-        const { project, task } = uniqueTask(state, explicitTaskId);
-        if (task.status === "DONE" || l.taskId !== task.taskId || l.projectId !== project.projectId) throw new ProjectError("TASK_LIFETIME_CLOSED", "Task changed before reservation.");
-      }
-      reserveExecutionLink(state, id, identity, this.nowIso()); return state;
-    });
-  }
-  async readExecutionDispatch(id: string, identity: TaskExecutionLinkIdentity): Promise<TaskExecutionDispatch> {
-    return requireExecutionLink(await this.store.readState(), id, identity).dispatch;
-  }
-  async recordDispatch(id: string, identity: TaskExecutionLinkIdentity, dispatch: 'admitted' | 'delivered' | 'failed', error?: { code: string; message: string }): Promise<void> {
-    await this.store.updateState(state => {
-      const link = requireExecutionLink(state, id, identity);
-      if (link.dispatch === 'delivered' && dispatch !== 'delivered') throw new ProjectError("TASK_LIFETIME_INVALID", "Accepted work cannot be reset to failed/unadmitted.");
-      link.dispatch = dispatch; if (error) link.error = boundedTaskError(error);
-      return state; // Never reset completion or cleanup after a late accepted result.
-    });
-  }
-  /**
-   * Durable links are the membership authority. Requested outcomes must match a link; unrequested
-   * (stamped-only) outcomes reconcile onto an existing unreleased link, and an unlinked stamp is
-   * reported as a bounded diagnostic without inventing a link.
-   */
-  async recordCleanup(id: string, root: RootExecutionIdentity, report: TaskLifetimeReleaseReport): Promise<void> {
-    let unlinked: TaskExecutionReleaseOutcome[] = [];
-    await this.store.updateState(state => {
-      unlinked = [];
-      const l = requireLifetime(state, id);
-      for (const result of report.requested) {
-        const link = sameRootLink(l, root, result);
-        if (!link) throw new ProjectError("TASK_LIFETIME_INVALID", "Cleanup result has no exact reservation.");
-        if (l.completedAt === null && link.dispatch !== "failed") throw new ProjectError("TASK_LIFETIME_INVALID", "Open-lifetime cleanup requires failed dispatch proof.");
-        applyCleanup(link, result);
-      }
-      for (const result of report.unrequested) {
-        const link = sameRootLink(l, root, result);
-        if (!link) unlinked.push(result);
-        else if (link.cleanup !== "released") applyCleanup(link, result);
-      }
-      return state;
-    });
-    for (const result of unlinked) {
-      console.warn("TASK_LIFETIME_UNLINKED_EXECUTION", { lifetimeId: id, root: { rootSubjectKind: root.rootSubjectKind, rootRunId: root.rootRunId },
-        execution: result.execution, cleanup: result.cleanup, ...(result.error ? { error: boundedTaskError(result.error) } : {}) });
-    }
-  }
-  async drainRuntimeReleases(): Promise<void> { await this.releaseEffect.drain(); }
   private async assertOwner(projectId: string, taskId?: string): Promise<ProjectTask | undefined> {
-    const records = await this.store.listRecords();
-    const project = records[projectIndex(records, projectId)];
-    return taskId === undefined ? undefined : findTask(project.tasks, taskId);
+    if (!(await this.store.readProject(projectId))) throw new ProjectError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);
+    if (taskId === undefined) return undefined;
+    const task = await this.store.readTask(projectId, taskId);
+    if (!task) throw new ProjectError("TASK_NOT_FOUND", `Task '${taskId}' was not found in this project.`);
+    return task;
   }
   private async assertDraftOwner(projectId: string, draftId: string) {
+    await this.assertOwner(projectId);
     const manifest = await this.context.describe(projectId, draftId);
     await this.assertOwner(projectId, manifest.taskId);
   }
@@ -264,11 +215,10 @@ export class ProjectTaskService implements TaskExecutionLifetimePort {
     return this.context.prepare(projectId, taskId, draftId, names, true);
   }
   private async reclaim(projectId: string, taskId: string) {
-    await this.store.updateRecords(async (records) => {
-      const task = findTask(records[projectIndex(records, projectId)].tasks, taskId);
+    await this.store.updateTask(projectId, taskId, async (task) => {
       // Failed membership proof preserves bytes; housekeeping failure is non-fatal.
       await cleanup(() => this.context.reclaimUnpublished(projectId, taskId, new Set(task.contextFiles?.map((f) => f.storedFilename))));
-      return records;
+      return task;
     });
   }
   private async validatePrepared(projectId: string, taskId: string, prepared: PreparedTaskContext) {
@@ -282,19 +232,19 @@ export class ProjectTaskService implements TaskExecutionLifetimePort {
       const localPath = await this.context.savedFile(projectId, task.taskId, f).catch(() => undefined);
       return { ...f, locator: projectTaskFileLocator(projectId, task.taskId, f.storedFilename), ...(localPath ? { localPath } : {}) };
     }));
-    const state = await this.store.readState();
-    return { ...task, projectId, contextFiles, executionLifetimes: state.taskLifetimes.filter(l => l.projectId === projectId && l.taskId === task.taskId) };
+    return { ...task, projectId, contextFiles };
   }
 }
+
 let singleton: ProjectTaskService | null = null;
 /** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
 export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "closureListener" | "requestRuntimeRelease">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskAgentResources" | "requestRelease">): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };
-export const releaseProjectTaskServiceProcessInstance = (instance: TaskExecutionLifetimePort): void => {
+export const releaseProjectTaskServiceProcessInstance = (instance: TaskAgentResourcePort): void => {
   if (singleton === instance) singleton = null;
 };
 export const resetProjectTaskServiceForTests = (): void => { singleton = null; };
