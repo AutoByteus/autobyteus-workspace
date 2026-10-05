@@ -139,6 +139,18 @@ full description, read-only status and saved context; no repeated description,
 IDs or timestamps. Back to tasks returns to the same board. Edit returns to
 detail; successful creation/deletion returns to board with a transient notice.
 
+New/edit share `ProjectTaskDraftEditor` and `TaskDescriptionComposer`: project
+context and page title lead directly to the required Description label and editor.
+There is no explanatory subtitle, inner Task details heading, description-help
+paragraph or standing file/voice policy note. The placeholder is “Describe the
+task…” (en) / “描述任务…” (zh-CN). Heading-only spacing is removed; card padding,
+eight-row textarea and responsive actions remain. Context Files/count, attachment/
+drag-paste-upload affordances, save shortcut and conditional voice feedback remain.
+The label names the textarea; `aria-describedby` references only the existing
+required-error node while invalid. Save/file/voice errors remain actionable.
+Read-only Task detail retains its Task details heading. First-nonempty-line board
+summaries and saved data are unchanged; this cleanup needs no migration or text rewrite.
+
 Task deletion is inline on detail, with Cancel-first focus, Escape cancellation
 and focus return. Missing Task/Project/file states remain explicit/actionable;
 only a saved file reference is opened/downloaded through the captured client.
@@ -261,6 +273,11 @@ performance certification. No obsolete overlay/focus-trap or injected same-windo
 switching journey. `--skip-server-build` requires a current built server;
 `--output-dir=<path>` retains evidence. Clear inherited ENABLE_* flags when
 running development servers; the probe owns isolated flags/profiles.
+
+PT-E2E-005/006 additionally assert concise New/Edit copy and placeholders in
+en/zh-CN at wide/narrow sizes, retained labels/controls, error-only ARIA, reclaimed
+heading space, Ctrl/Meta saves, upload failure/retry and save failure/retained-draft
+retry. The read-only detail heading and existing preservation journeys remain.
 
 Add `--voice-input` to exercise six additional Project create/edit and Task
 voice journeys, including quiet success, manual persistence, optional blank

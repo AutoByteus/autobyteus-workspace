@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-05T20:03:45.446639+00:00",
+  "instance": {
+    "instanceId": "iso-49396-2c6f",
+    "pid": 85992,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:49397",
+    "graphqlUrl": "http://127.0.0.1:49397/graphql",
+    "controlEndpoint": "http://127.0.0.1:49396",
+    "controlPort": 49396,
+    "serverPort": 49397,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HaqjZZ",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HaqjZZ/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-49396-2c6f.log",
+    "startedAt": "2026-10-05T20:00:28.491Z",
+    "running": true
+  },
+  "startReceipt": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/tickets/in-progress/task-page-copy-simplification/evidence/electron-preview-start.json",
+  "sourceChanges": "None since prior API-REV-001 validation; git HEAD unchanged",
+  "head": "5873f08b67adbdf13c2880f87131f24c8c5e054d",
+  "userAcceptanceReceived": false,
+  "cleanup": "Pending user inspection; transferred exact-instance cleanup to Delivery",
+  "stopCommand": "pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification --silent isolated-app stop iso-49396-2c6f"
+}
