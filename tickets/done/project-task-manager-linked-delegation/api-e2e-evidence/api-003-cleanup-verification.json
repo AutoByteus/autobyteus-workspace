@@ -1,0 +1,21 @@
+{
+  "instanceId": "iso-58490-670f",
+  "ownedRootAbsent": true,
+  "ownRecordAbsent": true,
+  "stop": {
+    "instanceId": "iso-58490-670f",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  },
+  "otherRecordCountBefore": 4,
+  "otherRecordCountAfter": 4,
+  "othersExactUnchanged": true,
+  "userAppTouched": false,
+  "importTargetOnly": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6/server-data/db/production.db",
+  "noVaultOrKeyArchived": true
+}

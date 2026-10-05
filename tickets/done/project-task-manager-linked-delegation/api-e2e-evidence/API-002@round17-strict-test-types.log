@@ -1,0 +1,5 @@
+START 2026-10-05T04:37:42.047420+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["pnpm", "-C", "autobyteus-server-ts", "exec", "tsc", "--noEmit", "-p", "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/tests-tsconfig.json"]
+
+INNER_EXIT_CODE=0

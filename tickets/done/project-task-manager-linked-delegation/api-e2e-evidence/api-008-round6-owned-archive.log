@@ -1,0 +1,6 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round6-archive-and-witness.py
+Archived 44 files; exact 4 case receipts; 58 own ancestry PIDs captured
+
+PROCESS_EXIT_CODE=0

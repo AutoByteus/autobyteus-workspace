@@ -1,0 +1,8 @@
+STEP root, project and Task created
+STEP Task R assigned to W
+STEP (a) run-ID reply reached W; only H started; Task file = assigned W + delegated H
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+2 !== 1
+
+exit 1

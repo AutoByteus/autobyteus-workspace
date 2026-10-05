@@ -1,0 +1,1276 @@
+{
+  "at": "2026-10-04T08:21:43.324217+00:00",
+  "binaryIndexExact": false,
+  "entryCount": 45332,
+  "stageModeBlobPathAndFlagsExact": true,
+  "extensionsAndEntryPaddingExact": true,
+  "bothChecksumsValid": true,
+  "statCacheFieldsOnly": true,
+  "changedStatPaths": 102,
+  "changedStatFields": 210,
+  "statChanges": [
+    {
+      "path": "autobyteus-agent-presentation-contracts/LICENSE",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/LICENSE",
+      "field": "ctimeNano",
+      "before": 848824232,
+      "after": 19778815
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/README.md",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/README.md",
+      "field": "ctimeNano",
+      "before": 866541615,
+      "after": 37516842
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts",
+      "field": "ctimeNano",
+      "before": 867957172,
+      "after": 38000053
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts.map",
+      "field": "ctimeNano",
+      "before": 855789937,
+      "after": 26965151
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js",
+      "field": "ctimeNano",
+      "before": 849357764,
+      "after": 20388902
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js.map",
+      "field": "ctimeNano",
+      "before": 856466841,
+      "after": 27684531
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts",
+      "field": "ctimeNano",
+      "before": 868934737,
+      "after": 38604098
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts.map",
+      "field": "ctimeNano",
+      "before": 857333034,
+      "after": 28398368
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js",
+      "field": "ctimeNano",
+      "before": 849965253,
+      "after": 21131240
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js.map",
+      "field": "ctimeNano",
+      "before": 858210143,
+      "after": 29076456
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts",
+      "field": "ctimeNano",
+      "before": 869780930,
+      "after": 39273103
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts.map",
+      "field": "ctimeNano",
+      "before": 859208916,
+      "after": 29861794
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js",
+      "field": "ctimeNano",
+      "before": 850649448,
+      "after": 21916954
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map",
+      "field": "ctimeNano",
+      "before": 859993860,
+      "after": 30878592
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.d.ts",
+      "field": "ctimeNano",
+      "before": 870458460,
+      "after": 39957357
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.d.ts.map",
+      "field": "ctimeNano",
+      "before": 860647098,
+      "after": 31461971
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.js",
+      "field": "ctimeNano",
+      "before": 851379477,
+      "after": 22811792
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.js.map",
+      "field": "ctimeNano",
+      "before": 861396168,
+      "after": 32504394
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.d.ts",
+      "field": "ctimeNano",
+      "before": 871105989,
+      "after": 40622402
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.d.ts.map",
+      "field": "ctimeNano",
+      "before": 862082738,
+      "after": 33186148
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.js",
+      "field": "ctimeNano",
+      "before": 852323376,
+      "after": 23679839
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.js.map",
+      "field": "ctimeNano",
+      "before": 862865266,
+      "after": 33854194
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.d.ts",
+      "field": "ctimeNano",
+      "before": 871767394,
+      "after": 41139197
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.d.ts.map",
+      "field": "ctimeNano",
+      "before": 863921496,
+      "after": 34564948
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.js",
+      "field": "ctimeNano",
+      "before": 853179527,
+      "after": 24602678
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.js.map",
+      "field": "ctimeNano",
+      "before": 864688316,
+      "after": 35312286
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts",
+      "field": "ctimeNano",
+      "before": 872357758,
+      "after": 41573992
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts.map",
+      "field": "ctimeNano",
+      "before": 865240764,
+      "after": 36066833
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js",
+      "field": "ctimeNano",
+      "before": 854129426,
+      "after": 25568976
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js.map",
+      "field": "ctimeNano",
+      "before": 865751879,
+      "after": 36932755
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/package.json",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/package.json",
+      "field": "ctimeNano",
+      "before": 854895037,
+      "after": 26194980
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/README.md",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/README.md",
+      "field": "ctimeNano",
+      "before": 983379803,
+      "after": 33210607
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/package.json",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/package.json",
+      "field": "ctimeNano",
+      "before": 965163012,
+      "after": 13793737
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/LICENSE",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/LICENSE",
+      "field": "ctimeNano",
+      "before": 912874306,
+      "after": 989468711
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/README.md",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/README.md",
+      "field": "ctimeNano",
+      "before": 944994549,
+      "after": 607988
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts",
+      "field": "ctimeNano",
+      "before": 945973864,
+      "after": 1083866
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts.map",
+      "field": "ctimeNano",
+      "before": 936937489,
+      "after": 994391825
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js",
+      "field": "ctimeNano",
+      "before": 913687707,
+      "after": 990502509
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js.map",
+      "field": "ctimeNano",
+      "before": 937473937,
+      "after": 995180122
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts",
+      "field": "ctimeNano",
+      "before": 946818599,
+      "after": 1593745
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts.map",
+      "field": "ctimeNano",
+      "before": 937938054,
+      "after": 995897668
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js",
+      "field": "ctimeNano",
+      "before": 914377570,
+      "after": 991446473
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js.map",
+      "field": "ctimeNano",
+      "before": 938512085,
+      "after": 996916007
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.d.ts",
+      "field": "ctimeNano",
+      "before": 947464962,
+      "after": 2057706
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.d.ts.map",
+      "field": "ctimeNano",
+      "before": 939113115,
+      "after": 997679304
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.js",
+      "field": "ctimeNano",
+      "before": 934449118,
+      "after": 992336645
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.js.map",
+      "field": "ctimeNano",
+      "before": 939825936,
+      "after": 998343391
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts",
+      "field": "ctimeNano",
+      "before": 947924537,
+      "after": 2523500
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map",
+      "field": "ctimeNano",
+      "before": 940569755,
+      "after": 999069520
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js",
+      "field": "ctimeNano",
+      "before": 935784177,
+      "after": 993176692
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js.map",
+      "field": "ctimeNano",
+      "before": 942786090,
+      "after": 87402
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/package.json",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100541
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/package.json",
+      "field": "ctimeNano",
+      "before": 936314292,
+      "after": 993814738
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/LICENSE",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/LICENSE",
+      "field": "ctimeNano",
+      "before": 949491842,
+      "after": 48188074
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/README.md",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/README.md",
+      "field": "ctimeNano",
+      "before": 975122163,
+      "after": 73099353
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.d.ts",
+      "field": "ctimeNano",
+      "before": 975757234,
+      "after": 73759732
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.d.ts.map",
+      "field": "ctimeNano",
+      "before": 958754172,
+      "after": 56681335
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.js",
+      "field": "ctimeNano",
+      "before": 950037540,
+      "after": 48616910
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.js.map",
+      "field": "ctimeNano",
+      "before": 959396868,
+      "after": 57627466
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.d.ts",
+      "field": "ctimeNano",
+      "before": 976383681,
+      "after": 74493820
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.d.ts.map",
+      "field": "ctimeNano",
+      "before": 960045981,
+      "after": 58421846
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.js",
+      "field": "ctimeNano",
+      "before": 950692986,
+      "after": 49155913
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.js.map",
+      "field": "ctimeNano",
+      "before": 960594221,
+      "after": 59287060
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts",
+      "field": "ctimeNano",
+      "before": 977106293,
+      "after": 75095032
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map",
+      "field": "ctimeNano",
+      "before": 961300083,
+      "after": 60060898
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js",
+      "field": "ctimeNano",
+      "before": 951275392,
+      "after": 49712875
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map",
+      "field": "ctimeNano",
+      "before": 962223066,
+      "after": 60623401
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.d.ts",
+      "field": "ctimeNano",
+      "before": 977710907,
+      "after": 75717703
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.d.ts.map",
+      "field": "ctimeNano",
+      "before": 963013093,
+      "after": 61204905
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.js",
+      "field": "ctimeNano",
+      "before": 951863798,
+      "after": 50508672
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.js.map",
+      "field": "ctimeNano",
+      "before": 963904535,
+      "after": 61722741
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.d.ts",
+      "field": "ctimeNano",
+      "before": 978322645,
+      "after": 76465124
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.d.ts.map",
+      "field": "ctimeNano",
+      "before": 965047764,
+      "after": 62352662
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.js",
+      "field": "ctimeNano",
+      "before": 952508995,
+      "after": 51579554
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.js.map",
+      "field": "ctimeNano",
+      "before": 966001997,
+      "after": 63342960
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts",
+      "field": "ctimeNano",
+      "before": 979205838,
+      "after": 77046253
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts.map",
+      "field": "ctimeNano",
+      "before": 966663526,
+      "after": 64091381
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js",
+      "field": "ctimeNano",
+      "before": 953054401,
+      "after": 52075223
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js.map",
+      "field": "ctimeNano",
+      "before": 967444304,
+      "after": 64914136
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.d.ts",
+      "field": "ctimeNano",
+      "before": 979860492,
+      "after": 77626173
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.d.ts.map",
+      "field": "ctimeNano",
+      "before": 968142166,
+      "after": 65532348
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.js",
+      "field": "ctimeNano",
+      "before": 954405543,
+      "after": 52711977
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.js.map",
+      "field": "ctimeNano",
+      "before": 968700114,
+      "after": 66517104
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.d.ts",
+      "field": "ctimeNano",
+      "before": 980525647,
+      "after": 78095009
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.d.ts.map",
+      "field": "ctimeNano",
+      "before": 969250770,
+      "after": 67385943
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.js",
+      "field": "ctimeNano",
+      "before": 955266861,
+      "after": 53483440
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.js.map",
+      "field": "ctimeNano",
+      "before": 970073005,
+      "after": 68098781
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts",
+      "field": "ctimeNano",
+      "before": 981118886,
+      "after": 78624804
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map",
+      "field": "ctimeNano",
+      "before": 970750659,
+      "after": 68736993
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.js",
+      "field": "ctimeNano",
+      "before": 955925098,
+      "after": 54022360
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.js.map",
+      "field": "ctimeNano",
+      "before": 971360773,
+      "after": 69512039
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.d.ts",
+      "field": "ctimeNano",
+      "before": 981886163,
+      "after": 79190224
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.d.ts.map",
+      "field": "ctimeNano",
+      "before": 971963846,
+      "after": 70561004
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.js",
+      "field": "ctimeNano",
+      "before": 956755750,
+      "after": 54607322
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.js.map",
+      "field": "ctimeNano",
+      "before": 972597084,
+      "after": 71323384
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.d.ts",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.d.ts",
+      "field": "ctimeNano",
+      "before": 982693524,
+      "after": 79684394
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.d.ts.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.d.ts.map",
+      "field": "ctimeNano",
+      "before": 973449068,
+      "after": 71980305
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.js",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.js",
+      "field": "ctimeNano",
+      "before": 957363364,
+      "after": 55196326
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.js.map",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.js.map",
+      "field": "ctimeNano",
+      "before": 974404551,
+      "after": 72489933
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/package.json",
+      "field": "ctimeSec",
+      "before": 1791093145,
+      "after": 1791100542
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/package.json",
+      "field": "ctimeNano",
+      "before": 958018185,
+      "after": 55768663
+    },
+    {
+      "path": "autobyteus-web/build/icons/16x16.png",
+      "field": "ctimeSec",
+      "before": 1791093176,
+      "after": 1791100575
+    },
+    {
+      "path": "autobyteus-web/build/icons/16x16.png",
+      "field": "ctimeNano",
+      "before": 884901759,
+      "after": 671467887
+    },
+    {
+      "path": "autobyteus-web/build/icons/16x16.png",
+      "field": "mtimeSec",
+      "before": 1791093176,
+      "after": 1791100575
+    },
+    {
+      "path": "autobyteus-web/build/icons/16x16.png",
+      "field": "mtimeNano",
+      "before": 884901759,
+      "after": 671467887
+    },
+    {
+      "path": "autobyteus-web/build/icons/32x32.png",
+      "field": "ctimeSec",
+      "before": 1791093176,
+      "after": 1791100575
+    },
+    {
+      "path": "autobyteus-web/build/icons/32x32.png",
+      "field": "ctimeNano",
+      "before": 886582186,
+      "after": 673324190
+    },
+    {
+      "path": "autobyteus-web/build/icons/32x32.png",
+      "field": "mtimeSec",
+      "before": 1791093176,
+      "after": 1791100575
+    },
+    {
+      "path": "autobyteus-web/build/icons/32x32.png",
+      "field": "mtimeNano",
+      "before": 886582186,
+      "after": 673324190
+    },
+    {
+      "path": "autobyteus-web/build/icons/48x48.png",
+      "field": "ctimeSec",
+      "before": 1791093176,
+      "after": 1791100575
+    },
+    {
+      "path": "autobyteus-web/build/icons/48x48.png",
+      "field": "ctimeNano",
+      "before": 887819414,
+      "after": 674638573
+    },
+    {
+      "path": "autobyteus-web/build/icons/48x48.png",
+      "field": "mtimeSec",
+      "before": 1791093176,
+      "after": 1791100575
+    },
+    {
+      "path": "autobyteus-web/build/icons/48x48.png",
+      "field": "mtimeNano",
+      "before": 887819414,
+      "after": 674638573
+    }
+  ],
+  "inputSha256": "fb948dad47bc6f23b92bf7df14413771087c7db15fa56f9b262747dc2edc3e5a",
+  "currentSha256": "66b8ee1ed7af64e745e4ee40f40fcfab5b7a5589b2946bf64d72dc8a0cd8beaa",
+  "scope": "Read-only exact binary DIRC2 audit. Only stat-cache words and corresponding footer changed; no stage/blob/mode/path/flag/extension edit. Original index not restored."
+}

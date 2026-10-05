@@ -1,0 +1,731 @@
+--- a/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts
++++ b/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts
+@@ -1,6 +1,7 @@
+ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
+ import type { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
+-import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
++import type { AgentOrgExecutionTreeDto } from "@autobyteus/collaboration-stream-contracts";
++import { projectAgentOrgExecutionTree } from "../../services/agent-streaming/collaboration-execution-tree-dto-projection.js";
+ import type { TeamRunHistoryItem } from "../domain/team-run-history-index-types.js";
+ import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
+ import type { AgentOrgRunHistoryCatalogService } from "./agent-org-run-history-catalog-service.js";
+@@ -8,7 +9,7 @@
+ 
+ export type CollaborationRootHistoryItem =
+   | Readonly<{ root_subject_kind: "agent_team"; root_run_id: string; created_at: string; archived_at: string | null; is_active: boolean; summary: string; team: TeamRunHistoryItem }>
+-  | Readonly<{ root_subject_kind: "agent_org"; root_run_id: string; created_at: string; archived_at: string | null; is_active: boolean; summary: string; org: AgentOrgRunExecutionTreeSnapshot }>;
++  | Readonly<{ root_subject_kind: "agent_org"; root_run_id: string; created_at: string; archived_at: string | null; is_active: boolean; summary: string; org: AgentOrgExecutionTreeDto }>;
+ 
+ /** Read-only mixed facade. Family selection remains explicit and subject readers stay authoritative. */
+ export class CollaborationRootHistoryService {
+@@ -50,7 +51,7 @@
+         archived_at: row.archivedAt,
+         is_active: Boolean(active),
+         summary: row.summary,
+-        org: tree,
++        org: projectAgentOrgExecutionTree(tree),
+       }));
+     }
+     return Object.freeze(items.sort((left, right) => right.created_at.localeCompare(left.created_at)));
+diff --git a/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts b/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+index f3d9ba4ca..8a5f805ce 100644
+--- a/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
++++ b/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
+ import { createPinia, setActivePinia } from 'pinia';
+ import { useRunHistoryStore } from '../runHistoryStore';
+ import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport';
++import linkedOrgHistory from '~/test-support/fixtures/linked-org-history-public.json';
+ import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+ 
+ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
+@@ -688,6 +689,67 @@ describe('runHistoryStore', () => {
+     expect(store.historyFamilyErrors).toEqual({ workspace: null, agentOrg: null });
+   });
+ 
++  it('loads all retained linked Org trees from the real public facade fixture without losing family or worker identity', async () => {
++    // Public-only fixture provenance records real stored/active-seam producer controls.
++    // Never import server/core into the web, or accept private lifetime fields here.
++    queryMock.mockImplementation(async ({ query }: { query: string }) => {
++      if (query === 'ListWorkspaceRunHistory') return { data: { listWorkspaceRunHistory: [] }, errors: [] };
++      if (query === 'ListCollaborationRootHistory') return {
++        data: { listCollaborationRootHistory: [
++          { root_subject_kind: 'agent_team', root_run_id: 'standalone-team-not-an-org' },
++          ...linkedOrgHistory,
++        ] }, errors: [],
++      };
++      throw new Error(`Unexpected query: ${String(query)}`);
++    });
++    const store = useRunHistoryStore();
++    await store.fetchTree();
++    const assertFamily = () => {
++      expect(store.historyFamilyErrors).toEqual({ workspace: null, agentOrg: null });
++      expect(store.agentOrgHistory).toHaveLength(3);
++      expect(store.agentOrgHistory.map(row => [row.rootRunId, row.isActive, row.executionTree])).toEqual(
++        linkedOrgHistory.map(row => [row.root_run_id, row.is_active, row.org]),
++      );
++      const visible = store.getTreeNodes().flatMap(node => node.agentOrgDefinitions).flatMap(group => group.runs);
++      expect(visible.map(row => row.rootRunId).sort()).toEqual(linkedOrgHistory.map(row => row.root_run_id).sort());
++      for (const row of visible) expect(row.executionTree).toEqual(
++        linkedOrgHistory.find(original => original.root_run_id === row.rootRunId)!.org,
++      );
++      expect(JSON.stringify(store.agentOrgHistory)).not.toContain('taskLifetime');
++    };
++    assertFamily();
++    await store.refreshAgentOrgHistory();
++    assertFamily();
++    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
++      query: 'ListCollaborationRootHistory', fetchPolicy: 'network-only', context: { queryDeduplication: false },
++    }));
++    expect(agentOrgContextsStoreMock.reconcileRetainedHistory).toHaveBeenCalledWith(linkedOrgHistory.map(row => row.root_run_id));
++  });
++
++  it('still rejects a private-stamped Org history reply and keeps the last valid complete family', async () => {
++    let leakPrivateStamp = false;
++    queryMock.mockImplementation(async ({ query }: { query: string }) => {
++      if (query === 'ListWorkspaceRunHistory') return { data: { listWorkspaceRunHistory: [] }, errors: [] };
++      const rows = structuredClone(linkedOrgHistory);
++      if (leakPrivateStamp) Object.assign(rows[0]!.org.rootOrg.taskExecutions[0]!, {
++        taskLifetime: { lifetimeId: 'negative-private-control', purpose: 'assignment' },
++      });
++      return { data: { listCollaborationRootHistory: rows }, errors: [] };
++    });
++    const store = useRunHistoryStore();
++    await store.fetchTree();
++    const retained = store.agentOrgHistory;
++    expect(retained).toHaveLength(3);
++    leakPrivateStamp = true;
++    await store.fetchTree();
++    expect(store.agentOrgHistory).toBe(retained);
++    expect(store.historyFamilyErrors.agentOrg).toContain('taskLifetime');
++    expect(store.historyFamilyErrors.workspace).toBeNull();
++    await store.refreshAgentOrgHistory();
++    expect(store.agentOrgHistory).toBe(retained);
++    expect(store.historyFamilyErrors.agentOrg).toContain('taskLifetime');
++  });
++
+   it('retains each successful history-family slice when the other query fails', async () => {
+     workspaceStoreMock.allWorkspaces = [{
+       workspaceId: 'ws-a', absolutePath: '/ws/a', workspaceRootPath: '/ws/a', name: 'Workspace A',
+--- /dev/null
++++ b/autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts
+@@ -0,0 +1,101 @@
++import fs from "node:fs/promises";
++import os from "node:os";
++import path from "node:path";
++import { afterEach, describe, expect, it, vi } from "vitest";
++import { agentOrgExecutionTreeDtoSchema } from "@autobyteus/collaboration-stream-contracts";
++import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
++import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
++import { getAgentOrgRunExecutionTreePath } from "../../../../src/run-history/store/agent-org-run-execution-tree-path.js";
++import { CollaborationRootHistoryService } from "../../../../src/run-history/services/collaboration-root-history-service.js";
++import { projectAgentOrgRunHistoryRow } from "../../../../src/run-history/services/agent-org-run-history-row-projector.js";
++import { orgProjectionTree } from "../../../fixtures/collaboration-public-projection-fixtures.js";
++
++const roots: string[] = [];
++afterEach(async () => {
++  vi.restoreAllMocks();
++  await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true })));
++});
++
++// Check every public field, not just a set of IDs: source/ingress/launch facts
++// and every nested position must survive. Private ownership stays in storage.
++const setup = async (active: boolean, linked: boolean) => {
++  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-history-public-"));
++  roots.push(memoryDir);
++  const tree = { ...orgProjectionTree(linked), archivedAt: null };
++  const expected = agentOrgExecutionTreeDtoSchema.parse({ ...orgProjectionTree(false), archivedAt: null });
++  const store = new AgentOrgRunExecutionTreeStore();
++  const packagePath = new AgentMemoryLayout(memoryDir).getOrgDirPath("org-root");
++  await store.write(packagePath, tree);
++  const file = getAgentOrgRunExecutionTreePath(packagePath);
++  const bytes = await fs.readFile(file);
++  const read = vi.spyOn(store, "read");
++  const write = vi.spyOn(store, "write");
++  const getExecutionTreeSnapshot = vi.fn(() => tree);
++  const catalog = [projectAgentOrgRunHistoryRow(tree)];
++  const service = new CollaborationRootHistoryService({
++    memoryDir,
++    teams: { listTeamRunHistory: async () => [] },
++    orgs: { listCatalogRows: async () => catalog },
++    orgRuns: { getActive: vi.fn(() => active ? { getExecutionTreeSnapshot } : null) } as never,
++    orgTrees: store,
++  });
++  return { tree, expected, store, packagePath, file, bytes, read, write, getExecutionTreeSnapshot, catalog, service };
++};
++
++describe("mixed public history Org projection", () => {
++  it.each([
++    [false, true], [true, true], [false, false], [true, false],
++  ])("strictly projects stored/active=%s linked=%s without losing any concrete worker or private bytes", async (active, linked) => {
++    const current = await setup(active, linked);
++    const privateBefore = JSON.stringify(current.tree);
++    if (linked) {
++      expect(privateBefore.match(/taskLifetime/g)).toHaveLength(9);
++      expect(agentOrgExecutionTreeDtoSchema.safeParse(current.tree).success).toBe(false);
++    }
++    // Repeated normal reads have the same result, never a write/migration/restore.
++    for (let attempt = 0; attempt < 2; attempt++) {
++      const rows = await current.service.list();
++      expect(rows).toHaveLength(1);
++      const row = rows[0]!;
++      expect(row).toMatchObject({ root_subject_kind: "agent_org", root_run_id: "org-root", is_active: active });
++      if (row.root_subject_kind !== "agent_org") throw new Error("Expected Org branch");
++      expect(agentOrgExecutionTreeDtoSchema.parse(row.org)).toEqual(current.expected);
++      expect(row.org).toEqual(current.expected);
++      expect(JSON.stringify(row.org)).not.toContain("taskLifetime");
++      expect(JSON.stringify(current.tree)).toBe(privateBefore);
++      expect(await fs.readFile(current.file)).toEqual(current.bytes);
++    }
++    expect(current.write).not.toHaveBeenCalled();
++    expect(current.getExecutionTreeSnapshot).toHaveBeenCalledTimes(active ? 2 : 0);
++    expect(current.read).toHaveBeenCalledTimes(active ? 0 : 2);
++    if (linked) expect(JSON.stringify(await current.store.read(current.packagePath, "org-root")).match(/taskLifetime/g)).toHaveLength(9);
++  });
++
++  it("uses the active snapshot rather than a stale stored copy and leaves that copy intact", async () => {
++    const current = await setup(true, true);
++    current.getExecutionTreeSnapshot.mockReturnValue({ ...current.tree, rootOrg: { ...current.tree.rootOrg, orgDefinitionName: "Active current name" } });
++    const rows = await current.service.list();
++    expect(rows[0]).toMatchObject({ org: { rootOrg: { orgDefinitionName: "Active current name" } } });
++    expect(current.read).not.toHaveBeenCalled();
++    expect(current.write).not.toHaveBeenCalled();
++    expect(await fs.readFile(current.file)).toEqual(current.bytes);
++  });
++
++  it("retains mixed family ordering and the existing archived inactive exclusion", async () => {
++    const current = await setup(false, true);
++    const team = { teamRunId: "team-root", createdAt: "2026-10-04T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Team" };
++    const service = new CollaborationRootHistoryService({
++      memoryDir: roots.at(-1)!, teams: { listTeamRunHistory: async () => [team] } as never,
++      orgs: { listCatalogRows: async () => current.catalog },
++      orgRuns: { getActive: () => null }, orgTrees: current.store,
++    });
++    const rows = await service.list();
++    expect(rows.map(row => row.root_run_id)).toEqual(["team-root", "org-root"]);
++    expect(rows[0]).toMatchObject({ root_subject_kind: "agent_team", team });
++    expect(rows[0]?.root_subject_kind === "agent_team" && rows[0].team).toBe(team);
++    current.catalog[0] = { ...current.catalog[0]!, archivedAt: "2026-10-03T02:00:00.000Z" };
++    expect((await service.list()).map(row => row.root_run_id)).toEqual(["team-root"]);
++    expect(current.write).not.toHaveBeenCalled();
++    expect(await fs.readFile(current.file)).toEqual(current.bytes);
++  });
++});
+--- /dev/null
++++ b/autobyteus-web/test-support/fixtures/linked-org-history-public.json
+@@ -0,0 +1,455 @@
++[
++  {
++    "root_subject_kind": "agent_org",
++    "root_run_id": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298",
++    "created_at": "2026-10-03T18:14:34.347Z",
++    "archived_at": null,
++    "is_active": false,
++    "summary": "Resolve own Project project_8984965a-aa0b-45d4-8ace-ef86642eee2d, inspect saved Task project_task...",
++    "org": {
++      "subjectKind": "agent_org",
++      "createdAt": "2026-10-03T18:14:34.347Z",
++      "archivedAt": null,
++      "applicationBinding": null,
++      "handoffs": [],
++      "rootOrg": {
++        "address": "/",
++        "orgDefinitionId": "api009-approval-org-a6f2d91c-63ef-4f55-87dd-385d81448edc",
++        "orgDefinitionName": "API009 Approval Org a6f2d91c-63ef-4f55-87dd-385d81448edc",
++        "orgRunId": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298",
++        "defaultLaunchConfiguration": {
++          "runtimeKind": "codex_app_server",
++          "llmModelIdentifier": "gpt-6.1-sol",
++          "llmConfig": {
++            "reasoning_effort": "low"
++          },
++          "autoExecuteTools": true,
++          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/manual-approval"
++        },
++        "members": [
++          {
++            "address": "/manager",
++            "agentDefinitionId": "autobyteus-project-task-manager",
++            "role": null,
++            "description": null,
++            "agentRunId": "project_task_manager_72233ae14c094337881006e94c43379d",
++            "platformAgentRunId": "01a102f9-9b6c-7590-9227-bc1246dfa135",
++            "launchConfiguration": {
++              "runtimeKind": "codex_app_server",
++              "llmModelIdentifier": "gpt-6.1-sol",
++              "llmConfig": {
++                "reasoning_effort": "low"
++              },
++              "autoExecuteTools": true,
++              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/manual-approval"
++            }
++          },
++          {
++            "address": "/manual",
++            "agentDefinitionId": "api009-manual-reader-1a14b6ff-17b9-47c8-9432-ac8deea1bd41",
++            "role": null,
++            "description": null,
++            "agentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_aec762b899854c1784b3b3ad7614fcf9",
++            "platformAgentRunId": null,
++            "launchConfiguration": {
++              "runtimeKind": "codex_app_server",
++              "llmModelIdentifier": "gpt-6.1-sol",
++              "llmConfig": {
++                "reasoning_effort": "low"
++              },
++              "autoExecuteTools": false,
++              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/manual-approval"
++            }
++          }
++        ],
++        "collaborators": [],
++        "taskExecutions": [
++          {
++            "address": "/manual",
++            "startedAt": "2026-10-03T18:14:48.506Z",
++            "delegatorAgentRunId": "project_task_manager_72233ae14c094337881006e94c43379d",
++            "agentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099",
++            "platformAgentRunId": "01a102f9-cfe0-75a0-856f-be57e1aa39ae"
++          }
++        ]
++      }
++    }
++  },
++  {
++    "root_subject_kind": "agent_org",
++    "root_run_id": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c",
++    "created_at": "2026-10-03T18:07:13.196Z",
++    "archived_at": null,
++    "is_active": false,
++    "summary": "Authorized own isolated validation. Resolve Project project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e;...",
++    "org": {
++      "subjectKind": "agent_org",
++      "createdAt": "2026-10-03T18:07:13.196Z",
++      "archivedAt": null,
++      "applicationBinding": null,
++      "handoffs": [],
++      "rootOrg": {
++        "address": "/",
++        "orgDefinitionId": "api009p-physical-org-0890dca9-8e56-436c-9bc3-f5119f4abede",
++        "orgDefinitionName": "API009P Physical Org 0890dca9-8e56-436c-9bc3-f5119f4abede",
++        "orgRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c",
++        "defaultLaunchConfiguration": {
++          "runtimeKind": "codex_app_server",
++          "llmModelIdentifier": "gpt-6.1-sol",
++          "llmConfig": {
++            "reasoning_effort": "low"
++          },
++          "autoExecuteTools": true,
++          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
++        },
++        "members": [
++          {
++            "address": "/manager",
++            "agentDefinitionId": "autobyteus-project-task-manager",
++            "role": null,
++            "description": null,
++            "agentRunId": "project_task_manager_358fa68fd9e541818e26e8275fa38fae",
++            "platformAgentRunId": "01a102f2-e183-77e3-b6e6-af832848d67c",
++            "launchConfiguration": {
++              "runtimeKind": "codex_app_server",
++              "llmModelIdentifier": "gpt-6.1-sol",
++              "llmConfig": {
++                "reasoning_effort": "low"
++              },
++              "autoExecuteTools": true,
++              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
++            }
++          },
++          {
++            "address": "/borrowed",
++            "agentDefinitionId": "api009p-borrowed-packet-agent",
++            "role": null,
++            "description": null,
++            "agentRunId": "api009p_borrowed_packet_agent_b3f9b376293b40abb759f84d03c5fa60",
++            "platformAgentRunId": null,
++            "launchConfiguration": {
++              "runtimeKind": "codex_app_server",
++              "llmModelIdentifier": "gpt-6.1-sol",
++              "llmConfig": {
++                "reasoning_effort": "low"
++              },
++              "autoExecuteTools": true,
++              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
++            }
++          },
++          {
++            "address": "/workers",
++            "teamDefinitionId": "api009p-physical-workers",
++            "role": null,
++            "description": null,
++            "teamRunId": "api009p_physical_workers_cc33fae78ec14f91b5c06b1e341dc8c2",
++            "coordinatorAddress": "/workers/coordinator",
++            "defaultLaunchConfiguration": {
++              "runtimeKind": "codex_app_server",
++              "llmModelIdentifier": "gpt-6.1-sol",
++              "llmConfig": {
++                "reasoning_effort": "low"
++              },
++              "autoExecuteTools": true,
++              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-task-workers-round9"
++            },
++            "members": [
++              {
++                "address": "/workers/coordinator",
++                "agentDefinitionId": "api009p-physical-coordinator",
++                "role": null,
++                "description": null,
++                "agentRunId": "api009p_physical_coordinator_1cec5f6a4e6548fa97ae725c6d02a6df",
++                "platformAgentRunId": null,
++                "launchConfiguration": {
++                  "runtimeKind": "codex_app_server",
++                  "llmModelIdentifier": "gpt-6.1-sol",
++                  "llmConfig": {
++                    "reasoning_effort": "low"
++                  },
++                  "autoExecuteTools": true,
++                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-task-workers-round9"
++                }
++              },
++              {
++                "address": "/workers/reader",
++                "agentDefinitionId": "api009p-physical-reader",
++                "role": null,
++                "description": null,
++                "agentRunId": "api009p_physical_reader_bb3ff3391d744e36990ba0075b9c06c7",
++                "platformAgentRunId": null,
++                "launchConfiguration": {
++                  "runtimeKind": "codex_app_server",
++                  "llmModelIdentifier": "gpt-6.1-sol",
++                  "llmConfig": {
++                    "reasoning_effort": "low"
++                  },
++                  "autoExecuteTools": true,
++                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-task-workers-round9"
++                }
++              }
++            ],
++            "taskExecutions": []
++          }
++        ],
++        "collaborators": [],
++        "taskExecutions": [
++          {
++            "address": "/workers",
++            "startedAt": "2026-10-03T18:07:36.850Z",
++            "delegatorAgentRunId": "project_task_manager_358fa68fd9e541818e26e8275fa38fae",
++            "teamRunId": "api009p_physical_workers_7e30647905394883b46755a70ba3ee53",
++            "members": [
++              {
++                "address": "/workers/coordinator",
++                "agentRunId": "api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d",
++                "platformAgentRunId": "01a102f3-39f8-7e60-b749-67107ca18cd0"
++              },
++              {
++                "address": "/workers/reader",
++                "agentRunId": "api009p_physical_reader_c538f1aded884cb7978aa345d9bf695a",
++                "platformAgentRunId": "01a102f3-3a80-74e3-886f-1cc435779313"
++              }
++            ],
++            "taskExecutions": []
++          },
++          {
++            "address": "/borrowed",
++            "startedAt": "2026-10-03T18:07:37.274Z",
++            "delegatorAgentRunId": "project_task_manager_358fa68fd9e541818e26e8275fa38fae",
++            "agentRunId": "api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914",
++            "platformAgentRunId": "01a102f3-3b53-71d0-81b8-57c36c4ee9d9"
++          },
++          {
++            "address": "/api009p_physical_leaf",
++            "startedAt": "2026-10-03T18:08:12.548Z",
++            "delegatorAgentRunId": "api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d",
++            "agentRunId": "api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493",
++            "platformAgentRunId": "01a102f3-c523-7bd0-b013-58742babd6cf",
++            "source": {
++              "kind": "agent",
++              "agentDefinitionId": "api009p-physical-leaf",
++              "launchConfiguration": {
++                "runtimeKind": "codex_app_server",
++                "llmModelIdentifier": "gpt-6.1-sol",
++                "llmConfig": {
++                  "reasoning_effort": "low"
++                },
++                "autoExecuteTools": true,
++                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
++              }
++            }
++          },
++          {
++            "address": "/api009p_physical_helper_team",
++            "startedAt": "2026-10-03T18:08:12.744Z",
++            "delegatorAgentRunId": "api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d",
++            "teamRunId": "api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420",
++            "members": [
++              {
++                "address": "/api009p_physical_helper_team/coordinator",
++                "agentRunId": "api009p_physical_helper_coordinator_01368906dcfe4fe3899f6131325072df",
++                "platformAgentRunId": "01a102f3-c5df-75f3-94e0-369ed6871f61"
++              },
++              {
++                "address": "/api009p_physical_helper_team/reader",
++                "agentRunId": "api009p_physical_reader_5043594e9f894d6a87ee4237a242c5be",
++                "platformAgentRunId": "01a102f3-c673-7302-8c43-547fcf1ac803"
++              }
++            ],
++            "taskExecutions": [],
++            "source": {
++              "kind": "agent_team",
++              "teamDefinitionId": "api009p-physical-helper-team",
++              "coordinatorAddress": "/api009p_physical_helper_team/coordinator",
++              "members": [
++                {
++                  "address": "/api009p_physical_helper_team/coordinator",
++                  "agentDefinitionId": "api009p-physical-helper-coordinator"
++                },
++                {
++                  "address": "/api009p_physical_helper_team/reader",
++                  "agentDefinitionId": "api009p-physical-reader"
++                }
++              ],
++              "handoffs": [],
++              "defaultLaunchConfiguration": {
++                "runtimeKind": "codex_app_server",
++                "llmModelIdentifier": "gpt-6.1-sol",
++                "llmConfig": {
++                  "reasoning_effort": "low"
++                },
++                "autoExecuteTools": true,
++                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
++              }
++            }
++          }
++        ]
++      }
++    }
++  },
++  {
++    "root_subject_kind": "agent_org",
++    "root_run_id": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
++    "created_at": "2026-10-03T18:03:25.632Z",
++    "archived_at": null,
++    "is_active": true,
++    "summary": "Read ONLY /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5W...",
++    "org": {
++      "subjectKind": "agent_org",
++      "createdAt": "2026-10-03T18:03:25.632Z",
++      "archivedAt": null,
++      "applicationBinding": null,
++      "handoffs": [],
++      "rootOrg": {
++        "address": "/",
++        "orgDefinitionId": "api009-concrete-root-org-rerun-861fe254-2e56-495d-8639-190c065a1ecc",
++        "orgDefinitionName": "API009 Concrete Root Org Rerun 861fe254-2e56-495d-8639-190c065a1ecc",
++        "orgRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
++        "defaultLaunchConfiguration": {
++          "runtimeKind": "codex_app_server",
++          "llmModelIdentifier": "gpt-6.1-sol",
++          "llmConfig": {
++            "reasoning_effort": "low"
++          },
++          "autoExecuteTools": true,
++          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
++        },
++        "members": [
++          {
++            "address": "/manager",
++            "agentDefinitionId": "autobyteus-project-task-manager",
++            "role": null,
++            "description": null,
++            "agentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
++            "platformAgentRunId": "01a102ef-a412-70d0-a85a-18f7209f45b8",
++            "launchConfiguration": {
++              "runtimeKind": "codex_app_server",
++              "llmModelIdentifier": "gpt-6.1-sol",
++              "llmConfig": {
++                "reasoning_effort": "low"
++              },
++              "autoExecuteTools": true,
++              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
++            }
++          },
++          {
++            "address": "/borrowed",
++            "agentDefinitionId": "api009-packet-agent",
++            "role": null,
++            "description": null,
++            "agentRunId": "api009_packet_agent_9cb0c12b1c564ae097517e7bc92c1b23",
++            "platformAgentRunId": "01a102ef-6735-7fb2-9e87-159d90d1d2ea",
++            "launchConfiguration": {
++              "runtimeKind": "codex_app_server",
++              "llmModelIdentifier": "gpt-6.1-sol",
++              "llmConfig": {
++                "reasoning_effort": "low"
++              },
++              "autoExecuteTools": true,
++              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
++            }
++          }
++        ],
++        "collaborators": [],
++        "taskExecutions": [
++          {
++            "address": "/borrowed",
++            "startedAt": "2026-10-03T18:03:59.152Z",
++            "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
++            "agentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
++            "platformAgentRunId": "01a102ef-e751-7610-ac5b-15b932034e94"
++          },
++          {
++            "address": "/api009_packet_team",
++            "startedAt": "2026-10-03T18:04:07.221Z",
++            "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
++            "teamRunId": "api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d",
++            "members": [
++              {
++                "address": "/api009_packet_team/coordinator",
++                "agentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
++                "platformAgentRunId": "01a102f0-06ca-7521-9626-0cda8a85ba07"
++              },
++              {
++                "address": "/api009_packet_team/reader",
++                "agentRunId": "api009_team_reader_5239c53dc5ec4e659542c1e092d9512e",
++                "platformAgentRunId": "01a102f0-0743-7b62-9fa3-f64c9460f7f9"
++              }
++            ],
++            "taskExecutions": [],
++            "source": {
++              "kind": "agent_team",
++              "teamDefinitionId": "api009-packet-team",
++              "coordinatorAddress": "/api009_packet_team/coordinator",
++              "members": [
++                {
++                  "address": "/api009_packet_team/coordinator",
++                  "agentDefinitionId": "api009-team-coordinator"
++                },
++                {
++                  "address": "/api009_packet_team/reader",
++                  "agentDefinitionId": "api009-team-reader"
++                }
++              ],
++              "handoffs": [],
++              "defaultLaunchConfiguration": {
++                "runtimeKind": "codex_app_server",
++                "llmModelIdentifier": "gpt-6.1-sol",
++                "llmConfig": {
++                  "reasoning_effort": "low"
++                },
++                "autoExecuteTools": true,
++                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
++              }
++            }
++          },
++          {
++            "address": "/api009_packet_team",
++            "startedAt": "2026-10-03T18:05:12.464Z",
++            "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
++            "teamRunId": "api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe",
++            "members": [
++              {
++                "address": "/api009_packet_team/coordinator",
++                "agentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
++                "platformAgentRunId": "01a102f1-05a7-7642-ae5a-b106da515ad0"
++              },
++              {
++                "address": "/api009_packet_team/reader",
++                "agentRunId": "api009_team_reader_0a6c9e981db043a28d9b851cfa76ead5",
++                "platformAgentRunId": "01a102f1-0625-7bf3-9c02-a76a623770d1"
++              }
++            ],
++            "taskExecutions": [],
++            "source": {
++              "kind": "agent_team",
++              "teamDefinitionId": "api009-packet-team",
++              "coordinatorAddress": "/api009_packet_team/coordinator",
++              "members": [
++                {
++                  "address": "/api009_packet_team/coordinator",
++                  "agentDefinitionId": "api009-team-coordinator"
++                },
++                {
++                  "address": "/api009_packet_team/reader",
++                  "agentDefinitionId": "api009-team-reader"
++                }
++              ],
++              "handoffs": [],
++              "defaultLaunchConfiguration": {
++                "runtimeKind": "codex_app_server",
++                "llmModelIdentifier": "gpt-6.1-sol",
++                "llmConfig": {
++                  "reasoning_effort": "low"
++                },
++                "autoExecuteTools": true,
++                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
++              }
++            }
++          }
++        ]
++      }
++    }
++  }
++]
+--- /dev/null
++++ b/autobyteus-web/test-support/fixtures/linked-org-history-public.provenance.json
+@@ -0,0 +1,57 @@
++{
++  "purpose": "Public-only Org history fixture generated by IR-008 rebuilt mixed facade from captured API-009 stamped trees. Not a live product/restart pass.",
++  "producer": "tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-008-history-fixture-producer.mjs",
++  "fixtureSha256": "b5dc5f6589a2a433a7a49bc37cc76b8e6a0503a5ca9c1da587ac43d7634a6e4a",
++  "witness": {
++    "file": "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-fapi-009-witness.json",
++    "sha256": "3f4de15efdf47f515c9c85bed52719d8a04532881ee5b57feda0bd6bd7c8fa7e"
++  },
++  "inputs": [
++    {
++      "file": "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/agent_org_run_execution_tree.json",
++      "sha256": "75b9b26679a89a24c015e561d6b4ce5f1b6477c5a0c731d42fc1be76f5940de6"
++    },
++    {
++      "file": "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/agent_org_run_execution_tree.json",
++      "sha256": "8e3696324c50f5ef7222d30bb1205a7cc507c0261327826986f731505e7e8e91"
++    },
++    {
++      "file": "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/agent_org_run_execution_tree.json",
++      "sha256": "6ecde47d99d41b82673fe21680a1301c7fd7b27d938a277087d825d988568918"
++    }
++  ],
++  "controls": [
++    {
++      "rootRunId": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298",
++      "branch": "real stored tree",
++      "privateStamps": 1,
++      "publicStamps": 0,
++      "positionedFacts": 14,
++      "strict": true,
++      "bytesUnchanged": true
++    },
++    {
++      "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c",
++      "branch": "real stored tree",
++      "privateStamps": 4,
++      "publicStamps": 0,
++      "positionedFacts": 55,
++      "strict": true,
++      "bytesUnchanged": true
++    },
++    {
++      "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
++      "branch": "active snapshot seam",
++      "privateStamps": 3,
++      "publicStamps": 0,
++      "positionedFacts": 44,
++      "strict": true,
++      "bytesUnchanged": true
++    }
++  ],
++  "limits": [
++    "Active row uses validated real bytes at a controlled getExecutionTreeSnapshot seam, not actual active runtime.",
++    "Frontend imports JSON only; no core/server dependency or weakened parser.",
++    "Offline fixture generation is local implementation evidence, not independent HTTP/desktop or provider acceptance."
++  ]
++}

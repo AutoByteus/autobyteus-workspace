@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-020-causal-investigation/verify-receipts.py", line 26, in <module>
+    assert B(f)==B(before)==B(after)==B(w['projects']);assert B(after)['completedAt'];assert B(after)['executions'][0]['cleanup']=='failed';assert r['beforeTree']==r['atFailureTree']==w['privateTree']
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-020-causal-investigation/verify-receipts.py", line 25, in <lambda>
+    f=a['closedState'];before=r['beforeState'];after=r['atFailureState'];proj=lambda x:next(p for p in x if p['projectId']==a['project']['projectId']);B=lambda x:next(l for l in proj(x)['taskLifetimes'] if l['taskId']==a['tasks']['B']['taskId'])
+KeyError: 'taskLifetimes'

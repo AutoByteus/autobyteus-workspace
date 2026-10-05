@@ -1,0 +1,22 @@
+{
+  "userRequest": "Since reviewer identified boundary concern, why not send for design update?",
+  "incomingReferences": 1619,
+  "missing": [],
+  "sourceChangesSinceCRR013Baseline": [],
+  "currentWorkInProgressNotReviewed": true,
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "reviewerActions": "ticket artifacts only; no pause/reset of ongoing implementation correction",
+  "changedIncomingSinceCRR013Start": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "newNonTicketStatusSinceCRR013": [
+    " M autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    " M autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+    "?? autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts",
+    "?? autobyteus-web/test-support/fixtures/linked-org-history-public.json",
+    "?? autobyteus-web/test-support/fixtures/linked-org-history-public.provenance.json"
+  ]
+}

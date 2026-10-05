@@ -1,0 +1,14 @@
+{
+  "rootExists": false,
+  "archiveBad": [],
+  "ports": {
+    "63749": {
+      "plainBind": true,
+      "connectEx": 61
+    },
+    "63750": {
+      "plainBind": true,
+      "connectEx": 61
+    }
+  }
+}

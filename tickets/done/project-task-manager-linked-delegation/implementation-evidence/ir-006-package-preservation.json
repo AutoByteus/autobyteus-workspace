@@ -1,0 +1,15 @@
+{
+  "entryCount": 282,
+  "currentCount": 283,
+  "unchangedCount": 278,
+  "modified": [
+    "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+    "autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+    "autobyteus-server-ts/src/agent-team-execution/local/task-team-execution-factory.ts",
+    "autobyteus-server-ts/tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts"
+  ],
+  "missing": [],
+  "added": [
+    "autobyteus-server-ts/tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts"
+  ]
+}

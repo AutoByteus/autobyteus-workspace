@@ -1,0 +1,10 @@
+2026-10-04T06:29:15.998080+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-concrete-lifecycle-probe.mjs", "claude", "agent_org", "--keep-a-open"]
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(out.borrowedTrace.some(x=>x.trace_type==='tool_result'&&['read_file','run_bash'].includes(x.tool_name)&&JSON.stringify(x.tool_result).includes(`API014_${target.toUpperCase()}_PROTECT_`+kind)))
+
+
+INNER_EXIT=1
+ELAPSED=17.54

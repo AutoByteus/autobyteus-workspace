@@ -1,0 +1,324 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts.ancestor",
+      "sha256": "fa8d60193660d2b132c1374f22899cce26791e4a8c50dddb5207b58bdbd31a08"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts.candidate",
+      "sha256": "2c78db725982435871904e17e82b8c2b474c0472bca6a47bc435efb0c1cc91ff"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts.latest-base",
+      "sha256": "e50cc41189f43c27b83f99aa46768b871c6eba2d9a449c479ac1c3ec2ba64af2"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts.working",
+      "sha256": "6e58ca59be17391459ba39678ff4da09b24cdb76717682f434983a584a92d7c1"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts.ancestor",
+      "sha256": "0dd86de91feafe7db56af56e5bab3fdc51edd6d0da9d94eea06d6c0a50568f5a"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts.candidate",
+      "sha256": "574527d0179f6086f69cd37b11c671790fb23b90daf58d637f83c4f78ed8ee4f"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts.latest-base",
+      "sha256": "c62a242fcabdb57e38764a2718a17934bc3e3c40108cd3f2b529ec326a1fb484"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts.working",
+      "sha256": "f76c68e57e35f4c9c4be8f6b60c06c103bf0d7ac0936b5a751353a0a3d1fb4ce"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts.ancestor",
+      "sha256": "b12b19140d392634a2c10ab4a1060efd6cda01fd43ace1b8e6438884180ad3be"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts.candidate",
+      "sha256": "33ab9e59aefeea86c22cb54d9fa5838365b5cf86ad25dbcbb1de275255ae9f96"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts.latest-base",
+      "sha256": "fc525917d678391acdc86a78abe840202b427bce8250273df0f8dfc2742b1f77"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts.working",
+      "sha256": "8ee78af1915c72437148c182826daa9acec80a1fd1d6bb99173cb325c40a6241"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts.ancestor",
+      "sha256": "789f33ebc1ca99ce027efc09e40476d6a8903dfe4f141f49b9387b0e1d161fdc"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts.candidate",
+      "sha256": "294f9fe73168f19b3d1b551f192981d41e660105a65a408bd07681f3a3244bb1"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts.latest-base",
+      "sha256": "bf48edff3d7c3746806c75982ac9ad78539335e6ada19e2bade81f7b3f93f238"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts.working",
+      "sha256": "9e15d8a4ed47129e6f91f2283e4917a6d93aad698cc28cddd9ec12988657a1d0"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts.ancestor",
+      "sha256": "884b980de7036d10240f50098bc744faad54c1b4d90347f93430eed552ef8c7a"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts.candidate",
+      "sha256": "df1eaa8ad928439616d9b77b93d423cd014f44ed4f326a4ed84cfb1925c6f618"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts.latest-base",
+      "sha256": "ad706d1d5a51a84d0c89f3b708d82924c2d22d849ee1da7a13dc939140ae0fee"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts.working",
+      "sha256": "29fde064172cd9ac810e4cb778db829d7f399026df011545f9d181c40c0020a5"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts.ancestor",
+      "sha256": "90133d95feb6f6306804d271acf6b5b185e050289c387992e53da2b4c32e5a06"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts.candidate",
+      "sha256": "a365ab4149e901b5ba21c43634f4c5c5f6caac397f1c281666cc7975a4cca0e8"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts.latest-base",
+      "sha256": "f6206226c4503936090395b1ecdcd6f634968c892633efbcaaa9b9df35070afb"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts.working",
+      "sha256": "fdefe059aa565b3db0749d2a969b019ebdf815216bcced066dc4ca847d3e5580"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts.ancestor",
+      "sha256": "cc4937f907d0dd1c433aacf5a1c24702490d77d8faa689f71fea1740b9daec35"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts.candidate",
+      "sha256": "603097d087802b2eac6acc752daaf8c9e21e0ce67128cdcd2b574f02567b2db3"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts.latest-base",
+      "sha256": "a8cb63b5401033796283152f483fa13c152d7f7b937d041c39e8cbb9240ec029"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts.working",
+      "sha256": "266d672e27e81e7d97f629d947a98b2df9ae8b35334d0880cc244aea06f30575"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts.ancestor",
+      "sha256": "893cbeca916d6ff59352de96c7ca5a8f5410cec35c5d1b637ee9eaf29fe7b2b9"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts.candidate",
+      "sha256": "a19b836db50df8a89d0ca827b9a18c45f176516284d9022d6990272ddd28aca8"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts.latest-base",
+      "sha256": "206deb76eebbacd183bc136535b30fa84889308e43181243d279ce344c341f01"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts.working",
+      "sha256": "44368b2f7145e439d41370dbe1c7b26b38020d7a2b221a63b2569e5501069671"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts.ancestor",
+      "sha256": "aa04600ea04bac36277e3504cbee46288428b82daf4203dbc96211f7d8f5c8f5"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts.candidate",
+      "sha256": "cc3e1def20c0de41d123c6d336ef25e75114c43bbb8f8748e79b7b29131385c9"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts.latest-base",
+      "sha256": "245a8f74778a290a3ec74f9b1b0ab9ca506a0bbd68493788009f33d1bbb9a816"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts.working",
+      "sha256": "38e2788f62e4bdab941c789035f408c7ddf483c6b4b962dc68c17bd0b455afca"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts.ancestor",
+      "sha256": "431f24e8065c6e5b228f1fe38e88921ab324f7b18a6ad38271d830b27eb82bbf"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts.candidate",
+      "sha256": "f83d35b2c118c3c63b747eb7aefe06ad6b8fde7307085208427313b94bb12888"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts.latest-base",
+      "sha256": "9cc50d9f786f2f4b15d0607ffe150156f9d4b7e11fa30b3965fe98d51293e161"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts.working",
+      "sha256": "2da127a31f32be40363126940c7a96c04e1563213cc9d66917a47159d5e08b1b"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts.ancestor",
+      "sha256": "e172e372f97b10d835343333703ce7d34c806e1171f916936ff2113344c59bef"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts.candidate",
+      "sha256": "2097129716739ac87d566aa3e3d398eaa2c6cf6a4b3d3937612c3449e64d15de"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts.latest-base",
+      "sha256": "735f7bc0d6a5ec90df03e391a08ae3f9c8295dccaf7dd6e09bac41e4baadc9a7"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts.working",
+      "sha256": "a86949abe3f5ddbc2d3ec6a27c1c992f59fa5b011a37c45c5c282abbe1fb11e7"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts.ancestor",
+      "sha256": "ebd626e06d2aeceab979557393b53e48e5311fdde32ee66923f57b0f06462518"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts.candidate",
+      "sha256": "b6a0c86b6dc4d250dcfb8b885a0fcd0d044513c6015b7c8a35241fa34a27bd4b"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts.latest-base",
+      "sha256": "11d0593010654ab786343350cbf1a38fac8f107237362af33d2f7ab7d7d65c81"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts.working",
+      "sha256": "5f64cf25a5876e89d571cc9148b35384eac8c11acb0d04e2601fdcbe9bfc5cfa"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts.ancestor",
+      "sha256": "de1e8fccc27e193a7d4a581db48588fec9a8cbfd1c67a6d3eb761d5ec72bdaa5"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts.candidate",
+      "sha256": "0f74442367a9078bccb5c00bd969256c28e9308f0ca9b82d7a217ab0fa44d3f1"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts.latest-base",
+      "sha256": "b1ec94bb943d0a11c24fac411d223bc71a8975b2faa4b2e6b8e02db0ef1d720f"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts.working",
+      "sha256": "18b094675695d2b32a13cdefae95b6c21e411f6dcb77b72a82874cd78b34103a"
+    }
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+    "status": "Unresolved source/test integration; no Delivery resolution",
+    "ancestorExists": true,
+    "ancestor": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts.ancestor",
+      "sha256": "e6e46dc2184038f01d93bf86932403b76320698f22a4067f7c922e8dd45ef6b4"
+    },
+    "candidateExists": true,
+    "candidate": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts.candidate",
+      "sha256": "46a9e961cfa98224adba30eb55797020e3ce1bda3675087c579341034d2edf76"
+    },
+    "latest-baseExists": true,
+    "latest-base": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts.latest-base",
+      "sha256": "3f3116d7963b6ba01097f81de354b6d432ea03f5d1b6f9d37af70a297d7783ab"
+    },
+    "working": {
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/conflicts/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts.working",
+      "sha256": "c813ce0caec028e1851035d450c456101b13212d813ab3e0818c70da249af4a7"
+    }
+  }
+]

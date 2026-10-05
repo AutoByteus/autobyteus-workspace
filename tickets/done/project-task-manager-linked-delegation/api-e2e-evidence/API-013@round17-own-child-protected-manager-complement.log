@@ -1,0 +1,9 @@
+START 2026-10-05T04:54:49.675537+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-physical-owner-complement.py"]
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-physical-owner-complement.py", line 27, in <module>
+    mid=j['managerRunId'];data2=json.loads(urllib.request.urlopen(urllib.request.Request(i['graphqlUrl'],data=json.dumps({'query':query,'variables':{'id':mid}}).encode(),headers={'content-type':'application/json'}),timeout=30).read());assert not data2.get('errors');session2=data2['data']['getAgentRunResumeConfig']['metadataConfig']['runtimeReference']['sessionId'];assert session2 and session2!=session
+AssertionError
+
+INNER_EXIT_CODE=1

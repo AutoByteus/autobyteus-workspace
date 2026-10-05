@@ -1,0 +1,17 @@
+failed to load config from /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/vitest.config.mts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Dynamic require of "node:os" is not supported
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.vite-temp/vitest.config.mts.timestamp-1791047833989-38bdcfd3f7652.mjs:11:9
+    at ../node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/config.cjs (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.vite-temp/vitest.config.mts.timestamp-1791047833989-38bdcfd3f7652.mjs:36:14)
+    at __require2 (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.vite-temp/vitest.config.mts.timestamp-1791047833989-38bdcfd3f7652.mjs:14:50)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.vite-temp/vitest.config.mts.timestamp-1791047833989-38bdcfd3f7652.mjs:482:29
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async loadConfigFromBundledFile (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35909:12)
+    at async bundleAndLoadConfigFile (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35797:17)
+    at async loadConfigFromFile (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35764:42)
+    at async resolveConfig (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35413:22)
+
+
+

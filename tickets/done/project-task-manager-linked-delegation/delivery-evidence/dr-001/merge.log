@@ -1,0 +1,47 @@
+Auto-merging autobyteus-server-ts/docs/modules/prompt_engineering.md
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+Auto-merging autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts
+Auto-merging autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
+Auto-merging autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+Auto-merging autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-builder.ts
+Auto-merging autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-communication-adapter.ts
+Auto-merging autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts
+Auto-merging autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts
+Auto-merging autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts
+Auto-merging autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Auto-merging autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-compaction-root-fixture.ts
+Auto-merging autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
+Automatic merge failed; fix conflicts and then commit the result.

@@ -1,0 +1,30 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts",
+    "added": 15,
+    "removed": 7,
+    "effectiveNonempty": 491,
+    "sha256": "aa7f47584a722c8c932c57dff37889f4245004e89055ce5711f8bae03252f4ea"
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts",
+    "added": 7,
+    "removed": 3,
+    "effectiveNonempty": 41,
+    "sha256": "f474b05512612fb0af7953ea18291a107b77a4cc7b806a0c9b845f456d7f37fb"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts",
+    "added": 2,
+    "removed": 0,
+    "effectiveNonempty": 28,
+    "sha256": "8fc30087f80dcb3228938e269770e209cb5f732267ad5165c8d799198faee73f"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts",
+    "added": 199,
+    "removed": 0,
+    "effectiveNonempty": 190,
+    "sha256": "03395cea359d763e9e1d71aa888ce049fe554b10e3ed477e1c64b0f52406e101"
+  }
+]

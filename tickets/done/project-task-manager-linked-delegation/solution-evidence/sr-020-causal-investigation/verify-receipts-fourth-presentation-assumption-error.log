@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-020-causal-investigation/verify-receipts.py", line 39, in <module>
+    statuses=w['inspection']['root_org']['agent_statuses'];selected=[s for s in statuses if s['agent_run_id'] in [reader,a['managerRunId']]];assert next(s for s in selected if s['agent_run_id']==reader)['status']=='running';assert next(s for s in selected if s['agent_run_id']==a['managerRunId'])['status']=='idle';assert w['inspection']['root_org']['is_active']
+AssertionError

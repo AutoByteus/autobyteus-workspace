@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-04T18:39:10.695267+00:00",
+  "instanceId": "iso-55595-c9e4",
+  "files": [
+    {
+      "relative": "server-data/projects/projects.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-owned-archive/server-data/projects/projects.json",
+      "sha256": "6e4d65896bab31db11bda7bfeacf3be027f9d46b894f47ded1876079b4c74d08"
+    },
+    {
+      "relative": "api016-ambiguity-workspace/protected-sentinel.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-owned-archive/api016-ambiguity-workspace/protected-sentinel.txt",
+      "sha256": "5401366404a46d9604b227843ce12b1d7806d58a5ca3fca4f375e1d40ac8980a"
+    },
+    {
+      "relative": "server-data/memory/agents/project_task_manager_50bd7da596c444a48ca9b907c5906196/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-owned-archive/server-data/memory/agents/project_task_manager_50bd7da596c444a48ca9b907c5906196/raw_traces_active.jsonl",
+      "sha256": "0a1dfb2f4e4f643973b25f0c3f5b8305945e407e41183a682cf7650bfbf9c4b7"
+    },
+    {
+      "relative": "server-data/memory/agents/project_task_manager_50bd7da596c444a48ca9b907c5906196/run_metadata.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-owned-archive/server-data/memory/agents/project_task_manager_50bd7da596c444a48ca9b907c5906196/run_metadata.json",
+      "sha256": "61c85caebf96ff2c9df1b2715525085629ed5a44f4ee22a91c1ead2cac0d7bf7"
+    }
+  ],
+  "capturedOwnPids": [
+    19892,
+    28120,
+    28122,
+    28123,
+    29056,
+    29068,
+    29074,
+    29075
+  ],
+  "scope": "Only own Project, workspace sentinel and allowlisted history/tree/messages/metadata; no env/vault/keys/database/nativeHOME"
+}

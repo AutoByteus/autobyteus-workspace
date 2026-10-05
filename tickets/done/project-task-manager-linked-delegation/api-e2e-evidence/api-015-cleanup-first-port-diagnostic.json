@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-04T08:20:47.483319+00:00",
+  "ports": {
+    "57942": {
+      "lsofListenExit": 1,
+      "lsofListenStdout": "",
+      "lsofListenStderr": "",
+      "tcpConnect": "[Errno 61] Connection refused"
+    },
+    "57943": {
+      "lsofListenExit": 1,
+      "lsofListenStdout": "",
+      "lsofListenStderr": "",
+      "tcpConnect": "[Errno 61] Connection refused"
+    }
+  },
+  "scope": "Read-only exact reported own port diagnosis after first plain-bind EADDRINUSE. No signal/foreign cleanup or assumed TCP-state cause."
+}

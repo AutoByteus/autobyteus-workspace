@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round7c5-idempotent-done.mjs
+Scoped Pass: actual one-call repeated DONE on successful fresh lifetime same exact authority/tree/no new seed, compact business ack and actual assistant final. Ordinary idempotence, NOT failed-cleanup retry or original cause closure.
+
+PROCESS_EXIT_CODE=0

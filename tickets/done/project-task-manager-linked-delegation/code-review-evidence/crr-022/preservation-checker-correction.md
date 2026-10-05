@@ -1,0 +1,1 @@
+Initial verifier used default git stash list against input custom %H %gd %s, then a diagnostic %gs differed only in reflog-vs-commit autostash description. Input custom %H %gd %s is byte-exact current. Corrected checker format, not Git/stash/source/history. Original script/error retained. No verdict deduction or Git mutation.

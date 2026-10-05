@@ -1,0 +1,404 @@
+{
+  "at": "2026-10-04T04:04:15.689506+00:00",
+  "round": 11,
+  "executions": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11-build.log",
+      "command": "bash -c 'pnpm --silent isolated-app start --build > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-instance.json'",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11-catalog-current.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-target-setup.mjs catalog",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11-catalog.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-target-setup.mjs catalog",
+      "innerExit": 1,
+      "summary": [
+        "PROCESS_EXIT_CODE=1"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11-cleanup-check.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-cleanup-check.py",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11-codex-setup.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-target-setup.mjs setup codex",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11-import-preview.log",
+      "command": "pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/server-data/db/production.db --dry-run",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11-native-setup.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-target-setup.mjs setup native",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11-restart.log",
+      "command": "bash -c 'pnpm --silent isolated-app restart iso-57259-7e1c > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-restart.json'",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11-stop.log",
+      "command": "bash -c 'pnpm --silent isolated-app stop iso-57259-7e1c > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-stop.json'",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-catalog.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-target-setup.mjs catalog",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-cleanup-current.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-cleanup-check.py",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-cleanup.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-cleanup-check.py",
+      "innerExit": 1,
+      "summary": [
+        "PROCESS_EXIT_CODE=1"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-codex-setup.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-target-setup.mjs setup codex",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-import-preview.log",
+      "command": "pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-0Fv5wX/server-data/db/production.db --dry-run",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-import-restart.log",
+      "command": "bash -c 'pnpm --silent isolated-app restart iso-58092-b3e1 > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011r-restart.json'",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-native-setup.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-target-setup.mjs setup native",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-start.log",
+      "command": "bash -c 'pnpm --silent isolated-app start --from-worktree > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011r-instance.json'",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-stop.log",
+      "command": "bash -c 'pnpm --silent isolated-app stop iso-58092-b3e1 > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011r-stop.json'",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round11r-whole-app-restart.log",
+      "command": "bash -c 'pnpm --silent isolated-app restart iso-58092-b3e1 > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011r-history-restart.json'",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11-codex-final-ui.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-codex-final-ui.mjs",
+      "innerExit": 1,
+      "summary": [
+        "PROCESS_EXIT_CODE=1"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11-codex-team.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-concrete-lifecycle-probe.mjs codex agent_team",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11-native-org-current.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-concrete-lifecycle-probe.mjs native agent_org --resume-borrowed",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11-native-org.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-concrete-lifecycle-probe.mjs native agent_org",
+      "innerExit": 1,
+      "summary": [
+        "PROCESS_EXIT_CODE=1"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11r-codex-pre.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-pre-restart.mjs codex agent_team",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11r-codex-resume-current.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-resume.mjs resume codex --observations",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11r-codex-resume.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-resume.mjs resume codex",
+      "innerExit": 1,
+      "summary": [
+        "PROCESS_EXIT_CODE=1"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11r-native-pre.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-pre-restart.mjs native agent_org",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11r-native-resume-current-2.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-resume.mjs resume native --observations",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11r-native-resume-current.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-resume.mjs resume native --observations",
+      "innerExit": 1,
+      "summary": [
+        "PROCESS_EXIT_CODE=1"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round11r-native-resume.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-resume.mjs resume native",
+      "innerExit": 1,
+      "summary": [
+        "PROCESS_EXIT_CODE=1"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round11-archive.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-archive.py",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round11-byte-before.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-byte-guard.py before",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round11-byte-final.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-byte-guard.py final",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round11-byte-restored.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-byte-guard.py restored",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round11-byte-stored.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-byte-guard.py stored",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round11-history-restart.log",
+      "command": "bash -c 'pnpm --silent isolated-app restart iso-57259-7e1c > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-history-restart.json'",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round11r-archive.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-archive.py",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round11r-codex-snapshot.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-resume.mjs snapshot codex",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round11r-native-snapshot.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-resume.mjs snapshot native",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round11-history.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts tests/unit/run-history/services/collaboration-root-history-readiness.test.ts tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts --no-watch",
+      "innerExit": 0,
+      "summary": [
+        " Test Files  4 passed (4)",
+        "      Tests  35 passed (35)",
+        "   Duration  5.70s (transform 2.43s, setup 24ms, import 4.50s, tests 433ms, environment 0ms)",
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round11-native-live-history-current.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-history-product.mjs native live --reuse-controls",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round11-native-live-history.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-history-product.mjs native live",
+      "innerExit": 1,
+      "summary": [
+        "PROCESS_EXIT_CODE=1"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round11-native-restored-history.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-history-product.mjs native restored",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round11-native-stored-history.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-history-product.mjs native stored",
+      "innerExit": 0,
+      "summary": [
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-round11-native-claude.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts --no-watch",
+      "innerExit": 0,
+      "summary": [
+        " Test Files  13 passed (13)",
+        "      Tests  130 passed (130)",
+        "   Duration  28.38s (transform 2.67s, setup 54ms, import 10.00s, tests 16.90s, environment 1ms)",
+        "PROCESS_EXIT_CODE=0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-import-tty.log",
+      "command": "Documented secrets:import; exact own database and authorized source; direct script PTY on real import.",
+      "innerExit": null,
+      "summary": [
+        "SKIP_CONFIGURED 0",
+        "CONFIGURED 10",
+        "REPLACED 0"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011r-import-tty.log",
+      "command": "Documented secrets:import; exact own database and authorized source; direct script PTY on real import.",
+      "innerExit": 1,
+      "summary": [
+        "LOCAL_SECRET_IMPORT_FAILED IMPORT_CONFIRMATION_REQUIRED",
+        "PROCESS_EXIT_CODE=1"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011r-import-pty-current.log",
+      "command": "Documented secrets:import; exact own database and authorized source; direct script PTY on real import.",
+      "innerExit": 0,
+      "summary": [
+        "SKIP_CONFIGURED 0",
+        "CONFIGURED 10",
+        "REPLACED 0",
+        "PROCESS_EXIT_CODE=0"
+      ]
+    }
+  ],
+  "countsOverlap": true,
+  "wrapperExitIsNotInnerExit": true
+}

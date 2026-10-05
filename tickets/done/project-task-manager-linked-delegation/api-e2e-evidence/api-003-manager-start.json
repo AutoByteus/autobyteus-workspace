@@ -1,0 +1,2696 @@
+{
+  "instanceId": "iso-58490-670f",
+  "started": "2026-10-03T09:54:04.358Z",
+  "request": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+  "route": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+  "ws": [
+    {
+      "type": "CONNECTED",
+      "payload": {
+        "agent_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "session_id": "b9b46169-a57c-4763-a9c9-d06544eadabc"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "offline",
+        "recoverableBlock": null,
+        "agent_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "recoverableBlock": null,
+        "agent_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 1,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 2,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": null,
+            "state": "queued",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "command_type": "SEND_MESSAGE",
+        "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+        "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+        "state": "accepted",
+        "accepted": true,
+        "duplicate": false,
+        "status": {
+          "status": "initializing",
+          "recoverableBlock": null,
+          "agent_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+        }
+      }
+    },
+    {
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "payload": {
+        "trace_id": "rt_1791021245842_807ad4b4-f26d-48f3-98c0-717b807c5f06",
+        "content": "## Agent Identity\n\n- Name: Project Task Manager\n- Description: Reusable assistant for planning saved Project Tasks, delegating linked work, checking results, and explicitly completing Tasks.\n\n### Responsibilities and Boundaries\n\nYou are the Project Task Manager, an ordinary reusable Chat agent, not a scheduler.\n\n1. Resolve the user's Project through list_projects; use its real projectId. Ask a concise clarification when the Project or requested Task is ambiguous. Never invent IDs or silently select an unrelated Task.\n2. Use list_project_tasks to reuse an appropriate saved Task or create a TODO Task with create_or_update_task. Persist the complete work description before delegation. Saved Task context files are supplied by the system; keep the description self-contained.\n3. Consult list_available_agents to choose an eligible Agent or AgentTeam. Delegate using only recipient_address and task_id. Do not send project_id, description or reference_files with task_id; the saved Task is the work authority. Each call creates a fresh copy; a Team result names its coordinator AgentRun, not the TeamRun.\n4. Confirm the tool's successful target_agent_run_id before explicitly patching the Task to IN_PROGRESS. Do not resend the initial work. Follow up on that exact copy using send_message_to with target_agent_run_id. Failure or indeterminate dispatch is not success; inspect lifetime/execution outcomes before retrying so accepted work is not duplicated.\n5. Review the returned result and relevant artifacts before explicitly deciding DONE. Ask for missing information or report a blocker when completion is not justified. Workers' messages do not automatically complete Tasks.\n6. Explicit DONE permanently closes all current Task lifetimes and immediately initiates runtime release of owned assignments, follow-on delegations and helpers across roots. Inspect cleanup outcomes; report pending or failed cleanup truthfully and retry DONE when appropriate. Do not claim that DONE alone proves every runtime released.\n\nCompletion does not stop you, other Tasks or borrowed existing unowned runs. It does not delete outputs, conversations or worktrees. An edit or Delete is not a completion/stop request. Reopening a Task starts no work and never revives an old closed copy; a later linked delegation creates a new lifetime. Do not add a scheduler, automatic completion, new Project UI or hidden global Stop.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.\n\nYou can work with other agents and agent teams: the ones the user brings into this run, and any available agent or team.\n\n- A user message may end with a `[Mentioned collaborators]` note that lists each mentioned Agent or Agent Team with its address. Each one is already in the run.\n- `send_message_to` with an exact address as `recipient_address` reaches the one instance at that address; an available agent or team that is not yet in the run is brought in on first use and keeps its conversation. A message to an Agent Team goes to its coordinator.\n- `delegate_task` with an address always spawns a new, separate copy with your work description as its first message; copies can work in parallel. Follow up on a copy with `send_message_to` and its `target_agent_run_id`.\n- If you have `list_available_agents`, it lists the available agents and teams with their addresses.\n- Do not claim that a message or delegation succeeded unless the tool confirms it.\n\nYour address in this run is `/project_task_manager`.",
+        "ts": 1791021245.842
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 2,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": null,
+            "state": "queued",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "CONNECTED",
+      "payload": {
+        "root_subject_kind": "agent",
+        "root_run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "session_id": "affc29e8-8f4f-49b7-8983-75fa07dde394"
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_VIEW_SNAPSHOT",
+      "payload": {
+        "root_subject_kind": "agent",
+        "root_run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "root_agent": {
+          "base_change_sequence": 0,
+          "is_active": true,
+          "execution_tree": {
+            "subjectKind": "agent",
+            "createdAt": "2026-10-03T09:54:06.170Z",
+            "host": {
+              "address": "/project_task_manager",
+              "agentRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+              "agentDefinitionId": "autobyteus-project-task-manager"
+            },
+            "collaborators": [],
+            "taskExecutions": []
+          },
+          "communication_messages": {
+            "schemaVersion": 1,
+            "subjectKind": "agent",
+            "hostRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+            "messages": []
+          },
+          "agent_statuses": [],
+          "agent_input_states": []
+        }
+      }
+    },
+    {
+      "type": "ROOT_LIFECYCLE",
+      "payload": {
+        "root_subject_kind": "agent",
+        "root_run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "is_active": true
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TURN_STARTED",
+      "payload": {
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "payload": {
+        "usage_event_id": "1b49a057-e562-4602-9e70-b15956c65e72",
+        "idempotency_key": "codex_token_usage:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:01a1012f-65b2-7252-907d-d5ddb5eb54dc:01a1012f-66e2-7063-863b-d1b138728ad5:cumulative_snapshot:11908:7168:50:0:11958",
+        "observed_at": "2026-10-03T09:54:12.278Z",
+        "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "root_team_run_id": null,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "agent_definition_id": "autobyteus-project-task-manager",
+        "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+        "task_id": null,
+        "team_name": null,
+        "agent_name": "Project Task Manager",
+        "run_summary": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet valida...",
+        "run_created_at": "2026-10-03T09:54:05.541Z",
+        "member_display_name": null,
+        "runtime_kind": "codex_app_server",
+        "model_provider": "OPENAI",
+        "provider_name": null,
+        "model_identifier": "gpt-6.1-sol",
+        "model_value": "gpt-6.1-sol",
+        "selected_match_state": null,
+        "selected_model_value": null,
+        "selected_resolved_raw_model_id": null,
+        "claude_sdk_model_usage": [],
+        "claude_sdk_session_id": null,
+        "claude_sdk_query_kind": null,
+        "claude_sdk_main_loop_usage": null,
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "cumulative_snapshot",
+        "snapshot_series_key": "codex_thread:01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "gross_includes_cache",
+        "reported_input_tokens": 11908,
+        "reported_output_tokens": 50,
+        "reported_total_tokens": 11958,
+        "accounting_input_tokens": 11908,
+        "accounting_output_tokens": 50,
+        "accounting_total_tokens": 11958,
+        "standard_input_tokens": 4740,
+        "cache_miss_input_tokens": 4740,
+        "cache_read_input_tokens": 7168,
+        "cache_creation_input_tokens": null,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "positive",
+        "reasoning_output_tokens": 0,
+        "billable_input_tokens": 11908,
+        "billable_output_tokens": 50,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "model_not_found",
+        "pricing_snapshot_json": {
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "price_config_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-6.1-sol",
+          "model_value": "gpt-6.1-sol",
+          "canonical_name": null,
+          "currency": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "input_price_tiers": [],
+          "pricing_status": "missing",
+          "trusted_dimensions": {
+            "input": false,
+            "output": false,
+            "cached_input_read": false,
+            "cached_input_write": false,
+            "cached_input_write_5m": false,
+            "cached_input_write_1h": false
+          },
+          "missing_reason": "model_not_found",
+          "source": null,
+          "effective_from": null,
+          "effective_to": null,
+          "version": null,
+          "pricing_schedule_id": null,
+          "pricing_schedule_period_id": null,
+          "pricing_schedule_effective_from": null,
+          "pricing_schedule_window_timezone": null,
+          "pricing_schedule_peak_days": null,
+          "pricing_schedule_peak_days_timezone": null
+        },
+        "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": 11908,
+        "meter_delta_output_tokens": 50,
+        "meter_delta_total_tokens": 11958,
+        "run_summary_after_event": {
+          "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+          "root_team_run_id": null,
+          "agent_definition_id": "autobyteus-project-task-manager",
+          "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+          "gross_input_tokens": 11908,
+          "standard_input_tokens": 4740,
+          "cache_miss_input_tokens": 4740,
+          "cache_read_input_tokens": 7168,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 0,
+          "output_tokens": 50,
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 50,
+          "total_tokens": 11958,
+          "cache_read_input_token_rate": 0.6019482700705409,
+          "standard_input_token_rate": 0.3980517299294592,
+          "cache_creation_input_token_rate": 0,
+          "cache_state": "positive",
+          "estimated_api_input_cost": null,
+          "estimated_api_standard_input_cost": null,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": null,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": null,
+          "currency": null,
+          "api_cost_status": "price_missing",
+          "missing_price_dimensions": [
+            "model_not_found"
+          ],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "selected_pricing_tier_id": null,
+          "unit_prices": {
+            "standard_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_read_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_creation_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_5m_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_1h_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "output": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "reasoning_output": {
+              "status": "not_applicable",
+              "price_per_million": null
+            }
+          },
+          "usage_report_count": 1,
+          "updated_at": "2026-10-03T09:54:12.278Z",
+          "latest_prompt_tokens": 11908,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.608359133126935,
+          "latest_model_provider": "OPENAI",
+          "latest_model_identifier": "gpt-6.1-sol",
+          "latest_runtime_kind": "codex_app_server",
+          "latest_selected_raw_model_id": null,
+          "has_cache_write_rate_assumption": false
+        },
+        "latest_prompt_tokens": 11908,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 4.608359133126935,
+        "raw_usage_json": {
+          "totalTokens": 11958,
+          "inputTokens": 11908,
+          "cachedInputTokens": 7168,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 50,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+          "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 11958,
+              "inputTokens": 11908,
+              "cachedInputTokens": 7168,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 50,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 11958,
+              "inputTokens": 11908,
+              "cachedInputTokens": 7168,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 50,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          },
+          "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+            "reported_input_tokens": 11908,
+            "reported_output_tokens": 50,
+            "reported_total_tokens": 11958,
+            "accounting_input_tokens": null,
+            "accounting_output_tokens": null,
+            "accounting_total_tokens": null,
+            "standard_input_tokens": null,
+            "cache_miss_input_tokens": null,
+            "cache_read_input_tokens": 7168,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": null,
+            "billable_output_tokens": null
+          },
+          "autobyteus_cumulative_snapshot_source_tokens": {
+            "reported_input_tokens": 11908,
+            "reported_output_tokens": 50,
+            "reported_total_tokens": 11958,
+            "accounting_input_tokens": 11908,
+            "accounting_output_tokens": 50,
+            "accounting_total_tokens": 11958,
+            "standard_input_tokens": 4740,
+            "cache_miss_input_tokens": 4740,
+            "cache_read_input_tokens": 7168,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": 11908,
+            "billable_output_tokens": 50
+          }
+        },
+        "quality_flags": [
+          "first_cumulative_snapshot_baselined_from_provider_delta"
+        ]
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "exec-b985b567-76c7-42b2-b252-41faaa8e2011",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "segment_type": "tool_call",
+        "metadata": {
+          "tool_name": "list_projects"
+        }
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-b985b567-76c7-42b2-b252-41faaa8e2011",
+          "tool": "list_projects",
+          "status": "inProgress",
+          "arguments": {},
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": null,
+          "error": null,
+          "durationMs": null
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "startedAtMs": 1791021256693,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-b985b567-76c7-42b2-b252-41faaa8e2011",
+        "tool_name": "list_projects",
+        "arguments": {}
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-b985b567-76c7-42b2-b252-41faaa8e2011",
+          "tool": "list_projects",
+          "status": "completed",
+          "arguments": {},
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"projects\":[{\"projectId\":\"project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\",\"name\":\"API003 saved-packet validation\",\"description\":\"Owned isolated live validation; not production.\"}]}"
+              }
+            ],
+            "structuredContent": {
+              "projects": [
+                {
+                  "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+                  "name": "API003 saved-packet validation",
+                  "description": "Owned isolated live validation; not production."
+                }
+              ]
+            },
+            "_meta": null
+          },
+          "error": null,
+          "durationMs": 9
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "completedAtMs": 1791021256703,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-b985b567-76c7-42b2-b252-41faaa8e2011",
+        "tool_name": "list_projects",
+        "arguments": {},
+        "result": {
+          "projects": [
+            {
+              "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+              "name": "API003 saved-packet validation",
+              "description": "Owned isolated live validation; not production."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "exec-b985b567-76c7-42b2-b252-41faaa8e2011",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "metadata": {
+          "tool_name": "list_projects"
+        },
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "exec-f7fb36cd-629d-4e46-b455-e9b11b1a63bb",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "segment_type": "tool_call",
+        "metadata": {
+          "tool_name": "list_available_agents"
+        }
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-f7fb36cd-629d-4e46-b455-e9b11b1a63bb",
+          "tool": "list_available_agents",
+          "status": "inProgress",
+          "arguments": {},
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": null,
+          "error": null,
+          "durationMs": null
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "startedAtMs": 1791021256708,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-f7fb36cd-629d-4e46-b455-e9b11b1a63bb",
+        "tool_name": "list_available_agents",
+        "arguments": {}
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-f7fb36cd-629d-4e46-b455-e9b11b1a63bb",
+          "tool": "list_available_agents",
+          "status": "completed",
+          "arguments": {},
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"agents\":[{\"name\":\"API003 Packet Worker\",\"kind\":\"agent\",\"address\":\"/api003_packet_worker\",\"description\":\"Only reads provided saved Task context; isolated text/tool test.\"}]}"
+              }
+            ],
+            "structuredContent": {
+              "agents": [
+                {
+                  "name": "API003 Packet Worker",
+                  "kind": "agent",
+                  "address": "/api003_packet_worker",
+                  "description": "Only reads provided saved Task context; isolated text/tool test."
+                }
+              ]
+            },
+            "_meta": null
+          },
+          "error": null,
+          "durationMs": 3
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "completedAtMs": 1791021256712,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-f7fb36cd-629d-4e46-b455-e9b11b1a63bb",
+        "tool_name": "list_available_agents",
+        "arguments": {},
+        "result": {
+          "agents": [
+            {
+              "name": "API003 Packet Worker",
+              "kind": "agent",
+              "address": "/api003_packet_worker",
+              "description": "Only reads provided saved Task context; isolated text/tool test."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "exec-f7fb36cd-629d-4e46-b455-e9b11b1a63bb",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "metadata": {
+          "tool_name": "list_available_agents"
+        },
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "payload": {
+        "usage_event_id": "95cf5caa-3df3-4599-b213-8f4549f5afc1",
+        "idempotency_key": "codex_token_usage:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:01a1012f-65b2-7252-907d-d5ddb5eb54dc:01a1012f-66e2-7063-863b-d1b138728ad5:cumulative_snapshot:25777:14336:95:0:25872",
+        "observed_at": "2026-10-03T09:54:16.736Z",
+        "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "root_team_run_id": null,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "agent_definition_id": "autobyteus-project-task-manager",
+        "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+        "task_id": null,
+        "team_name": null,
+        "agent_name": "Project Task Manager",
+        "run_summary": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet valida...",
+        "run_created_at": "2026-10-03T09:54:05.541Z",
+        "member_display_name": null,
+        "runtime_kind": "codex_app_server",
+        "model_provider": "OPENAI",
+        "provider_name": null,
+        "model_identifier": "gpt-6.1-sol",
+        "model_value": "gpt-6.1-sol",
+        "selected_match_state": null,
+        "selected_model_value": null,
+        "selected_resolved_raw_model_id": null,
+        "claude_sdk_model_usage": [],
+        "claude_sdk_session_id": null,
+        "claude_sdk_query_kind": null,
+        "claude_sdk_main_loop_usage": null,
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "cumulative_snapshot",
+        "snapshot_series_key": "codex_thread:01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "gross_includes_cache",
+        "reported_input_tokens": 13869,
+        "reported_output_tokens": 45,
+        "reported_total_tokens": 13914,
+        "accounting_input_tokens": 13869,
+        "accounting_output_tokens": 45,
+        "accounting_total_tokens": 13914,
+        "standard_input_tokens": 6701,
+        "cache_miss_input_tokens": 6701,
+        "cache_read_input_tokens": 7168,
+        "cache_creation_input_tokens": null,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "positive",
+        "reasoning_output_tokens": 0,
+        "billable_input_tokens": 13869,
+        "billable_output_tokens": 45,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "model_not_found",
+        "pricing_snapshot_json": {
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "price_config_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-6.1-sol",
+          "model_value": "gpt-6.1-sol",
+          "canonical_name": null,
+          "currency": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "input_price_tiers": [],
+          "pricing_status": "missing",
+          "trusted_dimensions": {
+            "input": false,
+            "output": false,
+            "cached_input_read": false,
+            "cached_input_write": false,
+            "cached_input_write_5m": false,
+            "cached_input_write_1h": false
+          },
+          "missing_reason": "model_not_found",
+          "source": null,
+          "effective_from": null,
+          "effective_to": null,
+          "version": null,
+          "pricing_schedule_id": null,
+          "pricing_schedule_period_id": null,
+          "pricing_schedule_effective_from": null,
+          "pricing_schedule_window_timezone": null,
+          "pricing_schedule_peak_days": null,
+          "pricing_schedule_peak_days_timezone": null
+        },
+        "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": 13869,
+        "meter_delta_output_tokens": 45,
+        "meter_delta_total_tokens": 13914,
+        "run_summary_after_event": {
+          "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+          "root_team_run_id": null,
+          "agent_definition_id": "autobyteus-project-task-manager",
+          "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+          "gross_input_tokens": 25777,
+          "standard_input_tokens": 11441,
+          "cache_miss_input_tokens": 11441,
+          "cache_read_input_tokens": 14336,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 0,
+          "output_tokens": 95,
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 95,
+          "total_tokens": 25872,
+          "cache_read_input_token_rate": 0.5561547115645731,
+          "standard_input_token_rate": 0.4438452884354269,
+          "cache_creation_input_token_rate": 0,
+          "cache_state": "positive",
+          "estimated_api_input_cost": null,
+          "estimated_api_standard_input_cost": null,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": null,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": null,
+          "currency": null,
+          "api_cost_status": "price_missing",
+          "missing_price_dimensions": [
+            "model_not_found"
+          ],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "selected_pricing_tier_id": null,
+          "unit_prices": {
+            "standard_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_read_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_creation_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_5m_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_1h_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "output": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "reasoning_output": {
+              "status": "not_applicable",
+              "price_per_million": null
+            }
+          },
+          "usage_report_count": 2,
+          "updated_at": "2026-10-03T09:54:16.736Z",
+          "latest_prompt_tokens": 13869,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 5.367260061919504,
+          "latest_model_provider": "OPENAI",
+          "latest_model_identifier": "gpt-6.1-sol",
+          "latest_runtime_kind": "codex_app_server",
+          "latest_selected_raw_model_id": null,
+          "has_cache_write_rate_assumption": false
+        },
+        "latest_prompt_tokens": 13869,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 5.367260061919504,
+        "raw_usage_json": {
+          "totalTokens": 25872,
+          "inputTokens": 25777,
+          "cachedInputTokens": 14336,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 95,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+          "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 25872,
+              "inputTokens": 25777,
+              "cachedInputTokens": 14336,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 95,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 13914,
+              "inputTokens": 13869,
+              "cachedInputTokens": 7168,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 45,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          },
+          "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+            "reported_input_tokens": 13869,
+            "reported_output_tokens": 45,
+            "reported_total_tokens": 13914,
+            "accounting_input_tokens": null,
+            "accounting_output_tokens": null,
+            "accounting_total_tokens": null,
+            "standard_input_tokens": null,
+            "cache_miss_input_tokens": null,
+            "cache_read_input_tokens": 7168,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": null,
+            "billable_output_tokens": null
+          },
+          "autobyteus_cumulative_snapshot_source_tokens": {
+            "reported_input_tokens": 25777,
+            "reported_output_tokens": 95,
+            "reported_total_tokens": 25872,
+            "accounting_input_tokens": 25777,
+            "accounting_output_tokens": 95,
+            "accounting_total_tokens": 25872,
+            "standard_input_tokens": 11441,
+            "cache_miss_input_tokens": 11441,
+            "cache_read_input_tokens": 14336,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": 25777,
+            "billable_output_tokens": 95
+          }
+        },
+        "quality_flags": []
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "exec-84e0a746-a7d4-4f7a-8330-bbdb43b5a332",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "segment_type": "tool_call",
+        "metadata": {
+          "tool_name": "list_project_tasks",
+          "arguments": {
+            "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec"
+          }
+        }
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-84e0a746-a7d4-4f7a-8330-bbdb43b5a332",
+          "tool": "list_project_tasks",
+          "status": "inProgress",
+          "arguments": {
+            "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec"
+          },
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": null,
+          "error": null,
+          "durationMs": null
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "startedAtMs": 1791021261935,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-84e0a746-a7d4-4f7a-8330-bbdb43b5a332",
+        "tool_name": "list_project_tasks",
+        "arguments": {
+          "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec"
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-84e0a746-a7d4-4f7a-8330-bbdb43b5a332",
+          "tool": "list_project_tasks",
+          "status": "completed",
+          "arguments": {
+            "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec"
+          },
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"projectId\":\"project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\",\"tasks\":[{\"projectId\":\"project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\",\"taskId\":\"project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1\",\"description\":\"Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.\",\"status\":\"TODO\",\"contextFiles\":[{\"storedFilename\":\"ctx_17e6e103abf5__saved-packet.txt\",\"displayName\":\"saved-packet.txt\",\"mimeType\":\"text/plain\",\"sizeBytes\":72,\"locator\":\"/rest/projects/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/tasks/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/context-files/ctx_17e6e103abf5__saved-packet.txt\",\"localPath\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6/server-data/projects/task_context_files/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/ctx_17e6e103abf5__saved-packet.txt\"}],\"executionLifetimes\":[]}]}"
+              }
+            ],
+            "structuredContent": {
+              "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+              "tasks": [
+                {
+                  "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+                  "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+                  "description": "Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.",
+                  "status": "TODO",
+                  "contextFiles": [
+                    {
+                      "storedFilename": "ctx_17e6e103abf5__saved-packet.txt",
+                      "displayName": "saved-packet.txt",
+                      "mimeType": "text/plain",
+                      "sizeBytes": 72,
+                      "locator": "/rest/projects/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/tasks/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/context-files/ctx_17e6e103abf5__saved-packet.txt",
+                      "localPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6/server-data/projects/task_context_files/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/ctx_17e6e103abf5__saved-packet.txt"
+                    }
+                  ],
+                  "executionLifetimes": []
+                }
+              ]
+            },
+            "_meta": null
+          },
+          "error": null,
+          "durationMs": 3
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "completedAtMs": 1791021261938,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-84e0a746-a7d4-4f7a-8330-bbdb43b5a332",
+        "tool_name": "list_project_tasks",
+        "arguments": {
+          "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec"
+        },
+        "result": {
+          "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+          "tasks": [
+            {
+              "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+              "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+              "description": "Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.",
+              "status": "TODO",
+              "contextFiles": [
+                {
+                  "storedFilename": "ctx_17e6e103abf5__saved-packet.txt",
+                  "displayName": "saved-packet.txt",
+                  "mimeType": "text/plain",
+                  "sizeBytes": 72,
+                  "locator": "/rest/projects/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/tasks/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/context-files/ctx_17e6e103abf5__saved-packet.txt",
+                  "localPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6/server-data/projects/task_context_files/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/ctx_17e6e103abf5__saved-packet.txt"
+                }
+              ],
+              "executionLifetimes": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "exec-84e0a746-a7d4-4f7a-8330-bbdb43b5a332",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "metadata": {
+          "tool_name": "list_project_tasks",
+          "arguments": {
+            "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec"
+          }
+        },
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "payload": {
+        "usage_event_id": "f0c80f46-410e-4b60-97ee-4d4593707640",
+        "idempotency_key": "codex_token_usage:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:01a1012f-65b2-7252-907d-d5ddb5eb54dc:01a1012f-66e2-7063-863b-d1b138728ad5:cumulative_snapshot:39940:26112:157:0:40097",
+        "observed_at": "2026-10-03T09:54:21.989Z",
+        "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "root_team_run_id": null,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "agent_definition_id": "autobyteus-project-task-manager",
+        "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+        "task_id": null,
+        "team_name": null,
+        "agent_name": "Project Task Manager",
+        "run_summary": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet valida...",
+        "run_created_at": "2026-10-03T09:54:05.541Z",
+        "member_display_name": null,
+        "runtime_kind": "codex_app_server",
+        "model_provider": "OPENAI",
+        "provider_name": null,
+        "model_identifier": "gpt-6.1-sol",
+        "model_value": "gpt-6.1-sol",
+        "selected_match_state": null,
+        "selected_model_value": null,
+        "selected_resolved_raw_model_id": null,
+        "claude_sdk_model_usage": [],
+        "claude_sdk_session_id": null,
+        "claude_sdk_query_kind": null,
+        "claude_sdk_main_loop_usage": null,
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "cumulative_snapshot",
+        "snapshot_series_key": "codex_thread:01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "gross_includes_cache",
+        "reported_input_tokens": 14163,
+        "reported_output_tokens": 62,
+        "reported_total_tokens": 14225,
+        "accounting_input_tokens": 14163,
+        "accounting_output_tokens": 62,
+        "accounting_total_tokens": 14225,
+        "standard_input_tokens": 2387,
+        "cache_miss_input_tokens": 2387,
+        "cache_read_input_tokens": 11776,
+        "cache_creation_input_tokens": null,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "positive",
+        "reasoning_output_tokens": 0,
+        "billable_input_tokens": 14163,
+        "billable_output_tokens": 62,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "model_not_found",
+        "pricing_snapshot_json": {
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "price_config_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-6.1-sol",
+          "model_value": "gpt-6.1-sol",
+          "canonical_name": null,
+          "currency": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "input_price_tiers": [],
+          "pricing_status": "missing",
+          "trusted_dimensions": {
+            "input": false,
+            "output": false,
+            "cached_input_read": false,
+            "cached_input_write": false,
+            "cached_input_write_5m": false,
+            "cached_input_write_1h": false
+          },
+          "missing_reason": "model_not_found",
+          "source": null,
+          "effective_from": null,
+          "effective_to": null,
+          "version": null,
+          "pricing_schedule_id": null,
+          "pricing_schedule_period_id": null,
+          "pricing_schedule_effective_from": null,
+          "pricing_schedule_window_timezone": null,
+          "pricing_schedule_peak_days": null,
+          "pricing_schedule_peak_days_timezone": null
+        },
+        "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": 14163,
+        "meter_delta_output_tokens": 62,
+        "meter_delta_total_tokens": 14225,
+        "run_summary_after_event": {
+          "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+          "root_team_run_id": null,
+          "agent_definition_id": "autobyteus-project-task-manager",
+          "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+          "gross_input_tokens": 39940,
+          "standard_input_tokens": 13828,
+          "cache_miss_input_tokens": 13828,
+          "cache_read_input_tokens": 26112,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 0,
+          "output_tokens": 157,
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 157,
+          "total_tokens": 40097,
+          "cache_read_input_token_rate": 0.6537806710065097,
+          "standard_input_token_rate": 0.3462193289934902,
+          "cache_creation_input_token_rate": 0,
+          "cache_state": "positive",
+          "estimated_api_input_cost": null,
+          "estimated_api_standard_input_cost": null,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": null,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": null,
+          "currency": null,
+          "api_cost_status": "price_missing",
+          "missing_price_dimensions": [
+            "model_not_found"
+          ],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "selected_pricing_tier_id": null,
+          "unit_prices": {
+            "standard_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_read_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_creation_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_5m_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_1h_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "output": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "reasoning_output": {
+              "status": "not_applicable",
+              "price_per_million": null
+            }
+          },
+          "usage_report_count": 3,
+          "updated_at": "2026-10-03T09:54:21.989Z",
+          "latest_prompt_tokens": 14163,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 5.481037151702786,
+          "latest_model_provider": "OPENAI",
+          "latest_model_identifier": "gpt-6.1-sol",
+          "latest_runtime_kind": "codex_app_server",
+          "latest_selected_raw_model_id": null,
+          "has_cache_write_rate_assumption": false
+        },
+        "latest_prompt_tokens": 14163,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 5.481037151702786,
+        "raw_usage_json": {
+          "totalTokens": 40097,
+          "inputTokens": 39940,
+          "cachedInputTokens": 26112,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 157,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+          "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 40097,
+              "inputTokens": 39940,
+              "cachedInputTokens": 26112,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 157,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 14225,
+              "inputTokens": 14163,
+              "cachedInputTokens": 11776,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 62,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          },
+          "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+            "reported_input_tokens": 14163,
+            "reported_output_tokens": 62,
+            "reported_total_tokens": 14225,
+            "accounting_input_tokens": null,
+            "accounting_output_tokens": null,
+            "accounting_total_tokens": null,
+            "standard_input_tokens": null,
+            "cache_miss_input_tokens": null,
+            "cache_read_input_tokens": 11776,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": null,
+            "billable_output_tokens": null
+          },
+          "autobyteus_cumulative_snapshot_source_tokens": {
+            "reported_input_tokens": 39940,
+            "reported_output_tokens": 157,
+            "reported_total_tokens": 40097,
+            "accounting_input_tokens": 39940,
+            "accounting_output_tokens": 157,
+            "accounting_total_tokens": 40097,
+            "standard_input_tokens": 13828,
+            "cache_miss_input_tokens": 13828,
+            "cache_read_input_tokens": 26112,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": 39940,
+            "billable_output_tokens": 157
+          }
+        },
+        "quality_flags": []
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "exec-f1884225-9546-451a-a235-c31e11ac7089",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "segment_type": "tool_call",
+        "metadata": {
+          "tool_name": "delegate_task",
+          "arguments": {
+            "recipient_address": "/api003_packet_worker",
+            "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1"
+          }
+        }
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-f1884225-9546-451a-a235-c31e11ac7089",
+          "tool": "delegate_task",
+          "status": "inProgress",
+          "arguments": {
+            "recipient_address": "/api003_packet_worker",
+            "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1"
+          },
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": null,
+          "error": null,
+          "durationMs": null
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "startedAtMs": 1791021266468,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-f1884225-9546-451a-a235-c31e11ac7089",
+        "tool_name": "delegate_task",
+        "arguments": {
+          "recipient_address": "/api003_packet_worker",
+          "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1"
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_PROJECTION_FAILED",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"event\",\n      \"execution\"\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    },
+    {
+      "type": "CONNECTED",
+      "payload": {
+        "root_subject_kind": "agent",
+        "root_run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "session_id": "92ea77a3-bea3-4881-920f-98589a0a9f0f"
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_UNAVAILABLE",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"root_agent\",\n      \"execution_tree\",\n      \"taskExecutions\",\n      0\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-f1884225-9546-451a-a235-c31e11ac7089",
+          "tool": "delegate_task",
+          "status": "completed",
+          "arguments": {
+            "recipient_address": "/api003_packet_worker",
+            "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1"
+          },
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\n  \"target_agent_run_id\": \"api003_packet_worker_d8a619938caa4106a4812182603d4768\"\n}"
+              }
+            ],
+            "structuredContent": {
+              "target_agent_run_id": "api003_packet_worker_d8a619938caa4106a4812182603d4768"
+            },
+            "_meta": null
+          },
+          "error": null,
+          "durationMs": 727
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "completedAtMs": 1791021267195,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-f1884225-9546-451a-a235-c31e11ac7089",
+        "tool_name": "delegate_task",
+        "arguments": {
+          "recipient_address": "/api003_packet_worker",
+          "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1"
+        },
+        "result": {
+          "target_agent_run_id": "api003_packet_worker_d8a619938caa4106a4812182603d4768"
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "exec-f1884225-9546-451a-a235-c31e11ac7089",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "metadata": {
+          "tool_name": "delegate_task",
+          "arguments": {
+            "recipient_address": "/api003_packet_worker",
+            "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1"
+          }
+        },
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "payload": {
+        "usage_event_id": "87736e1b-2ec9-4a75-b607-457889b5d205",
+        "idempotency_key": "codex_token_usage:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:01a1012f-65b2-7252-907d-d5ddb5eb54dc:01a1012f-66e2-7063-863b-d1b138728ad5:cumulative_snapshot:55043:39808:225:0:55268",
+        "observed_at": "2026-10-03T09:54:27.202Z",
+        "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "root_team_run_id": null,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "agent_definition_id": "autobyteus-project-task-manager",
+        "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+        "task_id": null,
+        "team_name": null,
+        "agent_name": "Project Task Manager",
+        "run_summary": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet valida...",
+        "run_created_at": "2026-10-03T09:54:05.541Z",
+        "member_display_name": null,
+        "runtime_kind": "codex_app_server",
+        "model_provider": "OPENAI",
+        "provider_name": null,
+        "model_identifier": "gpt-6.1-sol",
+        "model_value": "gpt-6.1-sol",
+        "selected_match_state": null,
+        "selected_model_value": null,
+        "selected_resolved_raw_model_id": null,
+        "claude_sdk_model_usage": [],
+        "claude_sdk_session_id": null,
+        "claude_sdk_query_kind": null,
+        "claude_sdk_main_loop_usage": null,
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "cumulative_snapshot",
+        "snapshot_series_key": "codex_thread:01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "gross_includes_cache",
+        "reported_input_tokens": 15103,
+        "reported_output_tokens": 68,
+        "reported_total_tokens": 15171,
+        "accounting_input_tokens": 15103,
+        "accounting_output_tokens": 68,
+        "accounting_total_tokens": 15171,
+        "standard_input_tokens": 1407,
+        "cache_miss_input_tokens": 1407,
+        "cache_read_input_tokens": 13696,
+        "cache_creation_input_tokens": null,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "positive",
+        "reasoning_output_tokens": 0,
+        "billable_input_tokens": 15103,
+        "billable_output_tokens": 68,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "model_not_found",
+        "pricing_snapshot_json": {
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "price_config_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-6.1-sol",
+          "model_value": "gpt-6.1-sol",
+          "canonical_name": null,
+          "currency": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "input_price_tiers": [],
+          "pricing_status": "missing",
+          "trusted_dimensions": {
+            "input": false,
+            "output": false,
+            "cached_input_read": false,
+            "cached_input_write": false,
+            "cached_input_write_5m": false,
+            "cached_input_write_1h": false
+          },
+          "missing_reason": "model_not_found",
+          "source": null,
+          "effective_from": null,
+          "effective_to": null,
+          "version": null,
+          "pricing_schedule_id": null,
+          "pricing_schedule_period_id": null,
+          "pricing_schedule_effective_from": null,
+          "pricing_schedule_window_timezone": null,
+          "pricing_schedule_peak_days": null,
+          "pricing_schedule_peak_days_timezone": null
+        },
+        "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": 15103,
+        "meter_delta_output_tokens": 68,
+        "meter_delta_total_tokens": 15171,
+        "run_summary_after_event": {
+          "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+          "root_team_run_id": null,
+          "agent_definition_id": "autobyteus-project-task-manager",
+          "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+          "gross_input_tokens": 55043,
+          "standard_input_tokens": 15235,
+          "cache_miss_input_tokens": 15235,
+          "cache_read_input_tokens": 39808,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 0,
+          "output_tokens": 225,
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 225,
+          "total_tokens": 55268,
+          "cache_read_input_token_rate": 0.7232163944552441,
+          "standard_input_token_rate": 0.2767836055447559,
+          "cache_creation_input_token_rate": 0,
+          "cache_state": "positive",
+          "estimated_api_input_cost": null,
+          "estimated_api_standard_input_cost": null,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": null,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": null,
+          "currency": null,
+          "api_cost_status": "price_missing",
+          "missing_price_dimensions": [
+            "model_not_found"
+          ],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "selected_pricing_tier_id": null,
+          "unit_prices": {
+            "standard_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_read_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_creation_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_5m_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_1h_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "output": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "reasoning_output": {
+              "status": "not_applicable",
+              "price_per_million": null
+            }
+          },
+          "usage_report_count": 4,
+          "updated_at": "2026-10-03T09:54:27.202Z",
+          "latest_prompt_tokens": 15103,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 5.844814241486068,
+          "latest_model_provider": "OPENAI",
+          "latest_model_identifier": "gpt-6.1-sol",
+          "latest_runtime_kind": "codex_app_server",
+          "latest_selected_raw_model_id": null,
+          "has_cache_write_rate_assumption": false
+        },
+        "latest_prompt_tokens": 15103,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 5.844814241486068,
+        "raw_usage_json": {
+          "totalTokens": 55268,
+          "inputTokens": 55043,
+          "cachedInputTokens": 39808,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 225,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+          "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 55268,
+              "inputTokens": 55043,
+              "cachedInputTokens": 39808,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 225,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 15171,
+              "inputTokens": 15103,
+              "cachedInputTokens": 13696,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 68,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          },
+          "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+            "reported_input_tokens": 15103,
+            "reported_output_tokens": 68,
+            "reported_total_tokens": 15171,
+            "accounting_input_tokens": null,
+            "accounting_output_tokens": null,
+            "accounting_total_tokens": null,
+            "standard_input_tokens": null,
+            "cache_miss_input_tokens": null,
+            "cache_read_input_tokens": 13696,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": null,
+            "billable_output_tokens": null
+          },
+          "autobyteus_cumulative_snapshot_source_tokens": {
+            "reported_input_tokens": 55043,
+            "reported_output_tokens": 225,
+            "reported_total_tokens": 55268,
+            "accounting_input_tokens": 55043,
+            "accounting_output_tokens": 225,
+            "accounting_total_tokens": 55268,
+            "standard_input_tokens": 15235,
+            "cache_miss_input_tokens": 15235,
+            "cache_read_input_tokens": 39808,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": 55043,
+            "billable_output_tokens": 225
+          }
+        },
+        "quality_flags": []
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "CONNECTED",
+      "payload": {
+        "root_subject_kind": "agent",
+        "root_run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "session_id": "618990d3-b1dc-4e9e-a65f-57c151a45872"
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_UNAVAILABLE",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"root_agent\",\n      \"execution_tree\",\n      \"taskExecutions\",\n      0\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    },
+    {
+      "type": "CONNECTED",
+      "payload": {
+        "root_subject_kind": "agent",
+        "root_run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "session_id": "98820d29-1bea-46b1-9147-b75b29e1bba8"
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_UNAVAILABLE",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"root_agent\",\n      \"execution_tree\",\n      \"taskExecutions\",\n      0\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "exec-fce6119c-2147-445a-a09b-e2430bf333ee",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "segment_type": "tool_call",
+        "metadata": {
+          "tool_name": "create_or_update_task",
+          "arguments": {
+            "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+            "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+            "status": "IN_PROGRESS"
+          }
+        }
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-fce6119c-2147-445a-a09b-e2430bf333ee",
+          "tool": "create_or_update_task",
+          "status": "inProgress",
+          "arguments": {
+            "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+            "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+            "status": "IN_PROGRESS"
+          },
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": null,
+          "error": null,
+          "durationMs": null
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "startedAtMs": 1791021272159,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-fce6119c-2147-445a-a09b-e2430bf333ee",
+        "tool_name": "create_or_update_task",
+        "arguments": {
+          "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+          "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+          "status": "IN_PROGRESS"
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payload": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-fce6119c-2147-445a-a09b-e2430bf333ee",
+          "tool": "create_or_update_task",
+          "status": "completed",
+          "arguments": {
+            "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+            "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+            "status": "IN_PROGRESS"
+          },
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"task\":{\"projectId\":\"project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\",\"taskId\":\"project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1\",\"description\":\"Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.\",\"status\":\"IN_PROGRESS\",\"contextFiles\":[{\"storedFilename\":\"ctx_17e6e103abf5__saved-packet.txt\",\"displayName\":\"saved-packet.txt\",\"mimeType\":\"text/plain\",\"sizeBytes\":72,\"locator\":\"/rest/projects/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/tasks/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/context-files/ctx_17e6e103abf5__saved-packet.txt\",\"localPath\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6/server-data/projects/task_context_files/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/ctx_17e6e103abf5__saved-packet.txt\"}],\"executionLifetimes\":[{\"lifetimeId\":\"project_task_lifetime_9da7a658-dd62-4ad9-b5f8-1ffd683fdc03\",\"projectId\":\"project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\",\"taskId\":\"project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1\",\"openedAt\":\"2026-10-03T09:54:26.814Z\",\"completedAt\":null,\"executions\":[{\"root\":{\"rootSubjectKind\":\"agent\",\"rootRunId\":\"project_task_manager_3fd94fdecc024d96be351ec36d62b53a\"},\"execution\":{\"agentRunId\":\"api003_packet_worker_d8a619938caa4106a4812182603d4768\"},\"ingressAgentRunId\":\"api003_packet_worker_d8a619938caa4106a4812182603d4768\",\"purpose\":\"assignment\",\"reservedAt\":\"2026-10-03T09:54:26.833Z\",\"dispatch\":\"delivered\",\"cleanup\":\"not_requested\"}]}]}}"
+              }
+            ],
+            "structuredContent": {
+              "task": {
+                "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+                "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+                "description": "Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.",
+                "status": "IN_PROGRESS",
+                "contextFiles": [
+                  {
+                    "storedFilename": "ctx_17e6e103abf5__saved-packet.txt",
+                    "displayName": "saved-packet.txt",
+                    "mimeType": "text/plain",
+                    "sizeBytes": 72,
+                    "locator": "/rest/projects/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/tasks/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/context-files/ctx_17e6e103abf5__saved-packet.txt",
+                    "localPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6/server-data/projects/task_context_files/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/ctx_17e6e103abf5__saved-packet.txt"
+                  }
+                ],
+                "executionLifetimes": [
+                  {
+                    "lifetimeId": "project_task_lifetime_9da7a658-dd62-4ad9-b5f8-1ffd683fdc03",
+                    "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+                    "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+                    "openedAt": "2026-10-03T09:54:26.814Z",
+                    "completedAt": null,
+                    "executions": [
+                      {
+                        "root": {
+                          "rootSubjectKind": "agent",
+                          "rootRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+                        },
+                        "execution": {
+                          "agentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768"
+                        },
+                        "ingressAgentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768",
+                        "purpose": "assignment",
+                        "reservedAt": "2026-10-03T09:54:26.833Z",
+                        "dispatch": "delivered",
+                        "cleanup": "not_requested"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "_meta": null
+          },
+          "error": null,
+          "durationMs": 45
+        },
+        "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "completedAtMs": 1791021272205,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "invocation_id": "exec-fce6119c-2147-445a-a09b-e2430bf333ee",
+        "tool_name": "create_or_update_task",
+        "arguments": {
+          "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+          "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+          "status": "IN_PROGRESS"
+        },
+        "result": {
+          "task": {
+            "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+            "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+            "description": "Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.",
+            "status": "IN_PROGRESS",
+            "contextFiles": [
+              {
+                "storedFilename": "ctx_17e6e103abf5__saved-packet.txt",
+                "displayName": "saved-packet.txt",
+                "mimeType": "text/plain",
+                "sizeBytes": 72,
+                "locator": "/rest/projects/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/tasks/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/context-files/ctx_17e6e103abf5__saved-packet.txt",
+                "localPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6/server-data/projects/task_context_files/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/ctx_17e6e103abf5__saved-packet.txt"
+              }
+            ],
+            "executionLifetimes": [
+              {
+                "lifetimeId": "project_task_lifetime_9da7a658-dd62-4ad9-b5f8-1ffd683fdc03",
+                "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+                "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+                "openedAt": "2026-10-03T09:54:26.814Z",
+                "completedAt": null,
+                "executions": [
+                  {
+                    "root": {
+                      "rootSubjectKind": "agent",
+                      "rootRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+                    },
+                    "execution": {
+                      "agentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768"
+                    },
+                    "ingressAgentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768",
+                    "purpose": "assignment",
+                    "reservedAt": "2026-10-03T09:54:26.833Z",
+                    "dispatch": "delivered",
+                    "cleanup": "not_requested"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "exec-fce6119c-2147-445a-a09b-e2430bf333ee",
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "metadata": {
+          "tool_name": "create_or_update_task",
+          "arguments": {
+            "project_id": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+            "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+            "status": "IN_PROGRESS"
+          }
+        },
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "payload": {
+        "usage_event_id": "7a9645ab-7d40-4ae0-8eb8-e3e18583feb3",
+        "idempotency_key": "codex_token_usage:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:01a1012f-65b2-7252-907d-d5ddb5eb54dc:01a1012f-66e2-7063-863b-d1b138728ad5:cumulative_snapshot:70313:54784:325:0:70638",
+        "observed_at": "2026-10-03T09:54:32.220Z",
+        "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "root_team_run_id": null,
+        "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "agent_definition_id": "autobyteus-project-task-manager",
+        "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+        "task_id": null,
+        "team_name": null,
+        "agent_name": "Project Task Manager",
+        "run_summary": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet valida...",
+        "run_created_at": "2026-10-03T09:54:05.541Z",
+        "member_display_name": null,
+        "runtime_kind": "codex_app_server",
+        "model_provider": "OPENAI",
+        "provider_name": null,
+        "model_identifier": "gpt-6.1-sol",
+        "model_value": "gpt-6.1-sol",
+        "selected_match_state": null,
+        "selected_model_value": null,
+        "selected_resolved_raw_model_id": null,
+        "claude_sdk_model_usage": [],
+        "claude_sdk_session_id": null,
+        "claude_sdk_query_kind": null,
+        "claude_sdk_main_loop_usage": null,
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "cumulative_snapshot",
+        "snapshot_series_key": "codex_thread:01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "gross_includes_cache",
+        "reported_input_tokens": 15270,
+        "reported_output_tokens": 100,
+        "reported_total_tokens": 15370,
+        "accounting_input_tokens": 15270,
+        "accounting_output_tokens": 100,
+        "accounting_total_tokens": 15370,
+        "standard_input_tokens": 294,
+        "cache_miss_input_tokens": 294,
+        "cache_read_input_tokens": 14976,
+        "cache_creation_input_tokens": null,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "positive",
+        "reasoning_output_tokens": 0,
+        "billable_input_tokens": 15270,
+        "billable_output_tokens": 100,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "model_not_found",
+        "pricing_snapshot_json": {
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "price_config_id": null,
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-6.1-sol",
+          "model_value": "gpt-6.1-sol",
+          "canonical_name": null,
+          "currency": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "input_price_tiers": [],
+          "pricing_status": "missing",
+          "trusted_dimensions": {
+            "input": false,
+            "output": false,
+            "cached_input_read": false,
+            "cached_input_write": false,
+            "cached_input_write_5m": false,
+            "cached_input_write_1h": false
+          },
+          "missing_reason": "model_not_found",
+          "source": null,
+          "effective_from": null,
+          "effective_to": null,
+          "version": null,
+          "pricing_schedule_id": null,
+          "pricing_schedule_period_id": null,
+          "pricing_schedule_effective_from": null,
+          "pricing_schedule_window_timezone": null,
+          "pricing_schedule_peak_days": null,
+          "pricing_schedule_peak_days_timezone": null
+        },
+        "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": 15270,
+        "meter_delta_output_tokens": 100,
+        "meter_delta_total_tokens": 15370,
+        "run_summary_after_event": {
+          "run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+          "root_team_run_id": null,
+          "agent_definition_id": "autobyteus-project-task-manager",
+          "workspace_id": "agent_ws_292a4380b1af7f7712f30291f772e14a5ac18495a9d1bc5ead7c9331b07efeba",
+          "gross_input_tokens": 70313,
+          "standard_input_tokens": 15529,
+          "cache_miss_input_tokens": 15529,
+          "cache_read_input_tokens": 54784,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 0,
+          "output_tokens": 325,
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 325,
+          "total_tokens": 70638,
+          "cache_read_input_token_rate": 0.7791446816378195,
+          "standard_input_token_rate": 0.22085531836218053,
+          "cache_creation_input_token_rate": 0,
+          "cache_state": "positive",
+          "estimated_api_input_cost": null,
+          "estimated_api_standard_input_cost": null,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": null,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": null,
+          "currency": null,
+          "api_cost_status": "price_missing",
+          "missing_price_dimensions": [
+            "model_not_found"
+          ],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-6.1-sol",
+          "selected_pricing_tier_id": null,
+          "unit_prices": {
+            "standard_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_read_input": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "cache_creation_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_5m_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_1h_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "output": {
+              "status": "missing",
+              "price_per_million": null
+            },
+            "reasoning_output": {
+              "status": "not_applicable",
+              "price_per_million": null
+            }
+          },
+          "usage_report_count": 5,
+          "updated_at": "2026-10-03T09:54:32.220Z",
+          "latest_prompt_tokens": 15270,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 5.909442724458204,
+          "latest_model_provider": "OPENAI",
+          "latest_model_identifier": "gpt-6.1-sol",
+          "latest_runtime_kind": "codex_app_server",
+          "latest_selected_raw_model_id": null,
+          "has_cache_write_rate_assumption": false
+        },
+        "latest_prompt_tokens": 15270,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 5.909442724458204,
+        "raw_usage_json": {
+          "totalTokens": 70638,
+          "inputTokens": 70313,
+          "cachedInputTokens": 54784,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 325,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+          "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 70638,
+              "inputTokens": 70313,
+              "cachedInputTokens": 54784,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 325,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 15370,
+              "inputTokens": 15270,
+              "cachedInputTokens": 14976,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 100,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          },
+          "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+            "reported_input_tokens": 15270,
+            "reported_output_tokens": 100,
+            "reported_total_tokens": 15370,
+            "accounting_input_tokens": null,
+            "accounting_output_tokens": null,
+            "accounting_total_tokens": null,
+            "standard_input_tokens": null,
+            "cache_miss_input_tokens": null,
+            "cache_read_input_tokens": 14976,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": null,
+            "billable_output_tokens": null
+          },
+          "autobyteus_cumulative_snapshot_source_tokens": {
+            "reported_input_tokens": 70313,
+            "reported_output_tokens": 325,
+            "reported_total_tokens": 70638,
+            "accounting_input_tokens": 70313,
+            "accounting_output_tokens": 325,
+            "accounting_total_tokens": 70638,
+            "standard_input_tokens": 15529,
+            "cache_miss_input_tokens": 15529,
+            "cache_read_input_tokens": 54784,
+            "cache_creation_input_tokens": null,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": 70313,
+            "billable_output_tokens": 325
+          }
+        },
+        "quality_flags": []
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b441c28c-64ec-47d8-9c18-fa98ddb5ef4e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "dedupe_key": "agent_run_input:project_task_manager_3fd94fdecc024d96be351ec36d62b53a:client_fb483600-ff97-4f54-9823-d9e5bb93ffca",
+            "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+            "state": "forwarded",
+            "content": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "CONNECTED",
+      "payload": {
+        "root_subject_kind": "agent",
+        "root_run_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "session_id": "6e901a57-7e2c-48c3-a458-ce3db4d3868e"
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_UNAVAILABLE",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"root_agent\",\n      \"execution_tree\",\n      \"taskExecutions\",\n      0\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+      "status": "IN_PROGRESS",
+      "description": "Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.",
+      "contextFiles": [
+        {
+          "locator": "/rest/projects/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/tasks/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/context-files/ctx_17e6e103abf5__saved-packet.txt"
+        }
+      ]
+    }
+  ],
+  "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nvalidation-workspace\nPT\nProject Task Manager\n(1)\nThis is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.\nnow\nSettings\nPT\nThis is an explicitly authorized isolated…\nRunning\nYou\nThis is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.\nPT\nProject Task Manager\nlist_projects\nlist_available_agents\nlist_project_tasks\ndelegate_task\ncreate_or_update_task\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n6 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured 03.10.2026, 11:54:05 · 3824 characters\nAVAILABLE\n\nAutoByteus-supplied · Codex baseInstructions · Captured 03.10.2026, 11:54:05 · 3824 characters\n\n## Agent Identity\n\n- Name: Project Task Manager\n- Description: Reusable assistant for planning saved Project Tasks, delegating linked work, checking results, and explicitly completing Tasks.\n\n### Responsibilities and Boundaries\n\nYou are the Project Task Manager, an ordinary reusable Chat agent, not a scheduler.\n\n1. Resolve the user's Project through list_projects; use its real projectId. Ask a concise clarification when the Project or requested Task is ambiguous. Never invent IDs or silently select an unrelated Task.\n2. Use list_project_tasks to reuse an appropriate saved Task or create a TODO Task with create_or_update_task. Persist the complete work description before delegation. Saved Task context files are supplied by the system; keep the description self-contained.\n3. Consult list_available_agents to choose an eligible Agent or AgentTeam. Delegate using only recipient_address and task_id. Do not send project_id, description or reference_files with task_id; the saved Task is the work authority. Each call creates a fresh copy; a Team result names its coordinator AgentRun, not the TeamRun.\n4. Confirm the tool's successful target_agent_run_id before explicitly patching the Task to IN_PROGRESS. Do not resend the initial work. Follow up on that exact copy using send_message_to with target_agent_run_id. Failure or indeterminate dispatch is not success; inspect lifetime/execution outcomes before retrying so accepted work is not duplicated.\n5. Review the returned result and relevant artifacts before explicitly deciding DONE. Ask for missing information or report a blocker when completion is not justified. Workers' messages do not automatically complete Tasks.\n6. Explicit DONE permanently closes all current Task lifetimes and immediately initiates runtime release of owned assignments, follow-on delegations and helpers across roots. Inspect cleanup outcomes; report pending or failed cleanup truthfully and retry DONE when appropriate. Do not claim that DONE alone proves every runtime released.\n\nCompletion does not stop you, other Tasks or borrowed existing unowned runs. It does not delete outputs, conversations or worktrees. An edit or Delete is not a completion/stop request. Reopening a Task starts no work and never revives an old closed copy; a later linked delegation creates a new lifetime. Do not add a scheduler, automatic completion, new Project UI or hidden global Stop.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.\n\nYou can work with other agents and agent teams: the ones the user brings into this run, and any available agent or team.\n\n- A user message may end with a `[Mentioned collaborators]` note that lists each mentioned Agent or Agent Team with its address. Each one is already in the run.\n- `send_message_to` with an exact address as `recipient_address` reaches the one instance at that address; an available agent or team that is not yet in the run is brought in on first use and keeps its conversation. A message to an Agent Team goes to its coordinator.\n- `delegate_task` with an address always spawns a new, separate copy with your work description as its first message; copies can work in parallel. Follow up on a copy with `send_message_to` and its `target_agent_run_id`.\n- If you have `list_available_agents`, it lists the available agents and teams with their addresses.\n- Do not claim that a message or delegation succeeded unless the tool confirms it.\n\nYour address in this run is `/project_task_manager`.\nlist_projects\n#exec-b\nSUCCESS\nResult\nlist_available_agents\n#exec-f\nSUCCESS\nResult\nlist_project_tasks\n#exec-8\nSUCCESS\nArguments\nResult\ndelegate_task\n#exec-f\nSUCCESS\nArguments\nResult\ncreate_or_update_task\n#exec-f\nSUCCESS\nArguments\nResult",
+  "status": [
+    "Running"
+  ],
+  "result": "Pass — actual Manager dispatch and explicit IN_PROGRESS observed; completion/lifetime assertions still pending"
+}

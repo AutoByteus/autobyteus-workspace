@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-04T05:02:50.900361+00:00",
+  "incomingReferenceCount": 2425,
+  "missingIncoming": [],
+  "changedIncoming": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "unexpectedIncomingChanges": [],
+  "sourceTestNonTicketStatusAndHashesUnchangedDuringReview": true,
+  "nonTicketDirtyIndividualPaths": 297,
+  "indexHashUnchanged": true,
+  "headUnchanged": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "unmergedUnchanged": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts"
+  ],
+  "API20CurrentFinalHashesUnchanged": true,
+  "APIOriginalInputEqualsCurrentCandidate": false,
+  "originalCRR015ArchiveMatchesIncomingReport": true,
+  "reviewerChanges": "Only own report/history/evidence; no source/test/Git integration/app/provider operation",
+  "note": "API input-to-new-base drift preserved, not hidden by reviewer input preservation"
+}

@@ -1,0 +1,19 @@
+{
+  "priorCRR": "CRR-001",
+  "priorFingerprints": 192,
+  "currentFingerprints": 195,
+  "modifiedExisting": [
+    "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+    "autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts",
+    "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+    "autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts",
+    "autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-tree-scope.test.ts"
+  ],
+  "newFiles": [
+    "autobyteus-server-ts/tests/fixtures/task-release-generation-fixtures.ts",
+    "autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-quiet-generation.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-private-release-independence.test.ts"
+  ],
+  "unchangedExisting": 187,
+  "missingPriorFiles": []
+}

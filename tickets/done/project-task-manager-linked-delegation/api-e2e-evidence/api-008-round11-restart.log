@@ -1,0 +1,5 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=bash -c 'pnpm --silent isolated-app restart iso-57259-7e1c > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-restart.json'
+
+PROCESS_EXIT_CODE=0

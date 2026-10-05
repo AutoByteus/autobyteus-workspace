@@ -1,0 +1,41 @@
+{
+  "at": "2026-10-05T03:08:16.846527+00:00",
+  "result": "Blocked",
+  "head": "028cca2312eae25737f482d94f9f3c213d83c3b9",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "mergeHead": "4dee901d6163ca7053916fa1edc295afbfd7a6da",
+  "indexPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git/worktrees/project-task-manager-linked-delegation/index",
+  "indexHash": "3c68381fdc9e9126a635be4d72f7381ce216ff27db930cd5d18edcd4bd09f37a",
+  "stagesHash": "4d660a44e714da22ba0fcdce88d9abf0a75846140a0a686722835fd90c20b956",
+  "postMergeStagesExact": true,
+  "unmergedPaths": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts",
+    "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+    "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+    "autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts",
+    "autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts",
+    "autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts",
+    "autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts"
+  ],
+  "stashUnchanged": true,
+  "originalTicket3720FilesExact": true,
+  "acceptedReference4205HashesRecoverable": true,
+  "integrationAlteredReferenceCount": 58,
+  "accepted300SnapshotsExact": true,
+  "canonicalDeliveryReportHashes": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/docs-sync-report.md": "d3ffae0ad6b3f49559a8d74c88275348db7d162141e6730b6ab05f6b3d6727b5",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/handoff-summary.md": "c790d9e15ec57de0dcd69db8f0fb93581ae309a485bf70249899eee6cb3a7186",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/release-deployment-report.md": "837eb733f063edd30b33d7ec9a8ed8bc5486db04a04237a0d19aa413798903bb",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-revision-record.md": "0d53efb57240da043f9a7835d5c49fefefad8f805b088a527b8303e0527bf1de"
+  },
+  "noLongLivedDocsSourceTestEditAfterMerge": true,
+  "noNewProductExecution": true,
+  "noFinalizationOrPushOrReleaseOrDeploy": true
+}

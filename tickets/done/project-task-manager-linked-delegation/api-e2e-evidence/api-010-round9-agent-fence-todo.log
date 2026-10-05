@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs fence-todo
+Scoped Pass: actual closed late input rejected without trace/seed/tree/lifetime wake; explicit TODO alone starts nothing, old closed history and open A preserved.
+
+PROCESS_EXIT_CODE=0

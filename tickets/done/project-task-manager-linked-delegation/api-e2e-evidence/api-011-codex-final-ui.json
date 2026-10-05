@@ -1,0 +1,8 @@
+{
+  "instanceId": "iso-57259-7e1c",
+  "at": "2026-10-04T03:41:39.381Z",
+  "rootId": "api011_codex_concrete_root_team_4ed5aa57cade4f8fb3d6b52cef6ec6aa",
+  "route": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace",
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(out.route.includes(d.rootId))\n",
+  "stack": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(out.route.includes(d.rootId))\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-codex-final-ui.mjs:5:5"
+}

@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-05T05:23:14.954384+00:00",
+  "priorResolvedMergeCommit": "cd469cbadc2d871e7a0139262869334e6b1cd682",
+  "priorMergeBase": "4dee901d6163ca7053916fa1edc295afbfd7a6da",
+  "latestBase": "10fb69504f99a615e0728ffdd6c1fcab0104ff05",
+  "newBaseCommits": 5,
+  "latestMergeExit": 0,
+  "head": "ccb5fbe3ca63b3542fa6538e035a4b1428c80788",
+  "unmergedPaths": [],
+  "finalization": false,
+  "push": false
+}

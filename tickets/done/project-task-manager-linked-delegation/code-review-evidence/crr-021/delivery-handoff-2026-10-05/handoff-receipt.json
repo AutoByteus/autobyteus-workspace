@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-05T03:01:22.238Z",
+  "raw": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /software_engineering_team/delivery_engineer.\",\"target_agent_run_id\":\"delivery_engineer_d841da94fda24934a311f9f5204a712c\"}"
+      }
+    ],
+    "structuredContent": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to /software_engineering_team/delivery_engineer.",
+      "target_agent_run_id": "delivery_engineer_d841da94fda24934a311f9f5204a712c"
+    }
+  },
+  "recipient_address": "/software_engineering_team/delivery_engineer",
+  "target_agent_run_id": "delivery_engineer_d841da94fda24934a311f9f5204a712c",
+  "reference_files_count": 4205,
+  "kind": "Confirmed normal reviewed-route Delivery handoff; administrative continuation of CRR-021",
+  "existingResultsUnchanged": true,
+  "noNewReviewOrAPIRerunAssignment": true,
+  "authorizationLimits": "Normal handoff only, not blanket merge/push/release/deploy/paid execution/user-resource disruption authority"
+}

@@ -1,0 +1,13 @@
+node:internal/process/per_thread:281
+      throw new ErrnoException(err, 'kill');
+            ^
+
+Error: kill ESRCH
+    at process.kill (node:internal/process/per_thread:281:13)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-008-org-history-preview.mjs:77:166 {
+  errno: -3,
+  code: 'ESRCH',
+  syscall: 'kill'
+}
+
+Node.js v22.23.1

@@ -1,0 +1,6 @@
+case=API-009
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round5-manager-visibility-probe.mjs reconnect
+Pass: actual renderer reload/reconnect retains Agent+Team rows and both readable worker conversations.
+
+PROCESS_EXIT_CODE=0

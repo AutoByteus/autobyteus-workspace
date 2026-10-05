@@ -1,0 +1,272 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-collaboration/configured-root-first-work.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-collaboration/configured-root-first-work.test.ts > standalone_team configured first work > scope stays Offline; 'autobyteus' / 'none' / null readies only receivers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-collaboration/configured-root-first-work.test.ts (48 tests) 1753ms
+stdout | tests/unit/projects/project-task-context-store.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > returns proven committed metadata even when subsequent lock finalization fails
+Project state committed; lock finalization failed. Error: release failure
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:90:65)
+    at Object.unlink (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at code (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/persistence/file/store-utils.ts:55:20)
+    at withFilePathLock (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/persistence/file/store-utils.ts:123:9)
+    at ProjectStore.updateState (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/stores/project-store.ts:25:7)
+    at ProjectTaskService.createTask (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/services/project-task-service.ts:69:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:93:18
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > cleanup failure cannot turn a confirmed file-removal commit into rollback
+Task context cleanup failed. Error: cleanup unavailable
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:119:63
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/unit/projects/project-task-context-store.test.ts (9 tests) 1003ms
+stdout | tests/unit/agent-collaboration/task-lifetime-dispatch-races.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/task-lifetime-dispatch-races.test.ts (9 tests) 867ms
+stdout | tests/unit/projects/project-task-lifetime.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-task-lifetime.test.ts (6 tests) 583ms
+stdout | tests/unit/projects/project-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-service.test.ts (29 tests) 476ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts (6 tests) 432ms
+stdout | tests/unit/projects/project-task-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-task-service.test.ts (15 tests) 381ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession streaming lifecycle > closes the opened process and fails the turn when system-instruction persistence fails
+Claude input for run 'run-1' failed before send: Error: persist failed
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:251:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.handleProcessOpened (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:378:5)
+    at Object.onOpened (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:118:34)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:75:18)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:220:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:133:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:258:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession streaming lifecycle > enriches a failed process open with bounded redacted stderr diagnostics
+Claude input for run 'run-1' failed before send: Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:13)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:220:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:133:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:372:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > fails the active turn visibly on an unexpected exit and reopens with resume on the next input (AC-009)
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:833:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > treats a conflicting provider UUID as fatal for the process and fails the active turn
+Claude process for run 'run-1' exited: Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:82:13)
+    at ClaudeSession.handleFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:401:37)
+    at Object.onFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:119:32)
+    at ClaudeSessionProcess.runPump (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:91:26)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > marks still-running background tasks stopped on unexpected exit (REQ-009, AC-011)
+Claude process for run 'run-1' exited: Error: killed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:885:112
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:894:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession token usage > marks the first observation after a reopen following an unexpected exit, but never a create generation
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:1003:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession compaction (real SDK frame shapes) > records one operation for an auto compaction with 30 s keepalives (AC-023)
+Claude compaction 7a12debe-56a1-4b84-ba8d-c69fd6973df9 suppressed 3 repeated compacting status frame(s).
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession compaction (real SDK frame shapes) > closes an open operation as process_exited before the terminal turn error (SCN-020)
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:1464:15
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (48 tests) 88ms
+stdout | tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts (39 tests) 196ms
+stderr | tests/unit/projects/project-state-schema.test.ts > one current Project-row array authority, no migration > observes validated logical commit immediately, despite subsequent lock-finalization failure
+Project state committed; lock finalization failed. Error: test finalization failure
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-state-schema.test.ts:67:65)
+
+ ✓ tests/unit/projects/project-state-schema.test.ts (11 tests) 113ms
+stdout | tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts (26 tests) 57ms
+stdout | tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts (21 tests) 34ms
+stdout | tests/unit/agent-collaboration/task-lifetime-quiet-generation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-collaboration/task-lifetime-quiet-generation.test.ts > agent quiet-generation exact Task release > coordinator-only follow-up preserves verified nested Agent/Team/grandchild proof and separately stops sibling helper
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-collaboration/task-lifetime-quiet-generation.test.ts (9 tests) 35ms
+ ✓ tests/unit/agent-collaboration/task-lifetime-tree-scope.test.ts (11 tests) 18ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts (28 tests) 11ms
+stdout | tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts (12 tests) 12ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (34 tests) 11ms
+ ✓ tests/unit/agent-execution/domain/agent-background-task.test.ts (11 tests) 10ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-background-task-monitor.test.ts (8 tests) 10ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts (16 tests) 10ms
+ ✓ tests/unit/agent-team-execution/team-agent-background-task-admission.test.ts (3 tests) 9ms
+stdout | tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts (2 tests) 6ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts (8 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-background-task-registry.test.ts (36 tests) 8ms
+ ✓ tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts (2 tests) 6ms
+stdout | tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts (6 tests) 5ms
+stdout | tests/unit/projects/projects-capability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/projects-capability-service.test.ts (3 tests) 3ms
+ ✓ tests/unit/agent-collaboration/frozen-root-termination-scope.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-collaboration/collaborators/catalog-address-map.test.ts (6 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts (1 test) 3ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-command-queue.test.ts (3 tests) 3ms
+ ✓ tests/unit/agent-collaboration/execution/root-communication-runtime-builder.test.ts (4 tests) 3ms
+ ✓ tests/unit/agent-collaboration/collaboration-logical-address.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-collaboration/execution/member-instance-scope.test.ts (3 tests) 2ms
+ ✓ tests/unit/agent-collaboration/collaborators/catalog-copy-execution-source.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-collaboration/execution/task-copy-host.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-collaboration/collaboration-launch-configuration-resolver.test.ts (1 test) 2ms
+
+ Test Files  37 passed (37)
+      Tests  482 passed (482)
+   Start at  07:25:58
+   Duration  28.10s (transform 3.81s, setup 170ms, import 18.02s, tests 6.17s, environment 3ms)
+

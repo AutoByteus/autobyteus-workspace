@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-05T05:09:57.874845+00:00",
+  "referencesChecked": 5869,
+  "missing": [],
+  "changedReferences": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-case-ledger.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-handoff.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-revision-record.md"
+  ],
+  "foreignOwnedAppendOnlyNotices": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-revision-record.md",
+      "priorBytes": 80157,
+      "currentBytes": 82205,
+      "priorPrefixExact": true,
+      "currentSha256": "b8e343ce4ff685a75b79b06fa7cd92b54257cec2e58ac30c11babe3ebf3775e2",
+      "reason": "Independent Implementation-owned informational CRR22 confirmed primary acceptance notice only"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-handoff.md",
+      "priorBytes": 24188,
+      "currentBytes": 26236,
+      "priorPrefixExact": true,
+      "currentSha256": "2beb72149b947c6653232fdfda437a78d372233b106643bb09d1f56e714d2705",
+      "reason": "Independent Implementation-owned informational CRR22 confirmed primary acceptance notice only"
+    }
+  ],
+  "sourceAndPackage545Exact": true,
+  "all20DurablesExact": true,
+  "currentDistPackagedFiles": 4426,
+  "asarExact": true,
+  "headMergeHeadBranchStashStagesExact": true,
+  "binaryIndexInitialExact": false,
+  "binaryIndexCurrentSha256": "7b88df25613022646974421c128cb3570c6c4bba26ee0efd141540a2fa33baea",
+  "knownStatCacheOnlyDerivative": true,
+  "indexSemanticFieldsAndExtensionsExact": true,
+  "zeroUnmerged": true,
+  "stagedUnstagedBinaryDiffsExact": true,
+  "nonTicketStatusNulSegmentsExact": 1312,
+  "cleanupVerified": true,
+  "legacyBaselineAndCachedWhitespaceNotRelabeled": true
+}

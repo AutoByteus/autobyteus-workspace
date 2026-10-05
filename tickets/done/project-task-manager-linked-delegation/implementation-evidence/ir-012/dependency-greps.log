@@ -1,0 +1,4 @@
+$ rg -n "projects/" src/{agent-collaboration,agent-team-execution,agent-org-execution,standalone-agent-run-root,agent-execution}
+exit=1
+$ rg -n "task-lifetime-gate|active-collaboration-root-directory|root-task-" src/projects
+exit=1

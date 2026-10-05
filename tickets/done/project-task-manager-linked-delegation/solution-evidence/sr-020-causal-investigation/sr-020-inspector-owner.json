@@ -1,0 +1,65 @@
+{
+  "instance": {
+    "instanceId": "iso-52225-3ea5",
+    "pid": 13070,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:52226",
+    "graphqlUrl": "http://127.0.0.1:52226/graphql",
+    "controlEndpoint": "http://127.0.0.1:52225",
+    "controlPort": 52225,
+    "serverPort": 52226,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kwlJwi",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kwlJwi/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52225-3ea5.log"
+  },
+  "backend": {
+    "pid": 14025,
+    "ppid": 13070,
+    "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+  },
+  "ancestryRows": [
+    {
+      "pid": 13070,
+      "ppid": 1,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 13079,
+      "ppid": 13070,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 13080,
+      "ppid": 13070,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 14025,
+      "ppid": 13070,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+    },
+    {
+      "pid": 14032,
+      "ppid": 13070,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+    },
+    {
+      "pid": 14035,
+      "ppid": 13070,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 14036,
+      "ppid": 13070,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    }
+  ],
+  "inspectorPort": 9229,
+  "freeBindBeforeSignal": true,
+  "signal": "SIGUSR1",
+  "at": 1791097010.010207
+}

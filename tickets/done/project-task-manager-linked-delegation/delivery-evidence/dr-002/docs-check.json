@@ -1,0 +1,65 @@
+{
+  "at": "2026-10-05T05:29:25.764369+00:00",
+  "addedLinks": [
+    {
+      "doc": "autobyteus-server-ts/docs/modules/projects.md",
+      "reference": "agent_team_execution.md#server-owned-task-delegation",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_team_execution.md"
+    },
+    {
+      "doc": "autobyteus-server-ts/docs/modules/projects.md",
+      "reference": "agent_communication.md#task-linked-message-scope",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_communication.md"
+    },
+    {
+      "doc": "autobyteus-server-ts/docs/modules/projects.md",
+      "reference": "run_history.md#task-linked-history-and-public-projection",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/run_history.md"
+    },
+    {
+      "doc": "autobyteus-web/docs/projects.md",
+      "reference": "../../autobyteus-server-ts/docs/modules/projects.md#saved-id-delegation-and-execution-lifetimes",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/projects.md"
+    },
+    {
+      "doc": "autobyteus-server-ts/docs/modules/agent_team_execution.md",
+      "reference": "projects.md#saved-id-delegation-and-execution-lifetimes",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/projects.md"
+    },
+    {
+      "doc": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "reference": "projects.md#saved-id-delegation-and-execution-lifetimes",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/projects.md"
+    },
+    {
+      "doc": "autobyteus-server-ts/docs/modules/agent_orgs.md",
+      "reference": "agent_communication.md#task-linked-message-scope",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_communication.md"
+    },
+    {
+      "doc": "autobyteus-server-ts/docs/modules/standalone_agent_run_root.md",
+      "reference": "projects.md#saved-id-delegation-and-execution-lifetimes",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/projects.md"
+    },
+    {
+      "doc": "autobyteus-server-ts/docs/modules/standalone_agent_run_root.md",
+      "reference": "agent_communication.md#task-linked-message-scope",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_communication.md"
+    },
+    {
+      "doc": "autobyteus-server-ts/docs/modules/standalone_agent_run_root.md",
+      "reference": "run_history.md#task-linked-history-and-public-projection",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/run_history.md"
+    },
+    {
+      "doc": "autobyteus-server-ts/docs/modules/agent_communication.md",
+      "reference": "projects.md#saved-id-delegation-and-execution-lifetimes",
+      "target": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/projects.md"
+    }
+  ],
+  "issues": [],
+  "diffCheckCommand": "GIT_OPTIONAL_LOCKS=0 git diff --check",
+  "diffCheckExit": 0,
+  "diffCheckOutput": "",
+  "scope": "Added docs links/anchors and whitespace only; semantic sync read against current source/approved contracts, not a new source or API certification."
+}

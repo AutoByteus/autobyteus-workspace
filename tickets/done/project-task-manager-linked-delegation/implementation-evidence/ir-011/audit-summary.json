@@ -1,0 +1,17 @@
+{
+  "accepted300SnapshotsExact": true,
+  "accepted300BytesExact": 262,
+  "accepted300ChangedOrRenamed": 38,
+  "acceptedRenamed": 8,
+  "all20DurableSnapshotsExact": true,
+  "durableCurrentBytesExact": 15,
+  "durableRenamed": 2,
+  "durableChanged": 5,
+  "all4205AcceptedReferencesExactAtRecoverableLocations": true,
+  "all4597IncomingReferencesRecoverable": true,
+  "incomingCurrentExact": 4572,
+  "manualPaths": 28,
+  "overlap58": 58,
+  "cumulativeAndIntegrationSourceCount": 258,
+  "maxEffectiveSource": 496
+}

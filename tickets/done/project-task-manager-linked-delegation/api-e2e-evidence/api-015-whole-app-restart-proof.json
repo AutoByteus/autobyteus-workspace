@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-04T08:18:00.858905+00:00",
+  "instanceId": "iso-57942-2d9d",
+  "sameOwnedProfilePortsExecutable": true,
+  "oldAppPid": 2081,
+  "newAppPid": 64929,
+  "oldCapturedPids": [
+    2081,
+    2082,
+    2083,
+    3011,
+    3022,
+    3030,
+    3031,
+    3773,
+    5436,
+    19121,
+    20798,
+    34667,
+    35950,
+    49596,
+    53635
+  ],
+  "allOldCapturedPidsGone": true,
+  "oldInspectorBackendGone": 3011,
+  "scope": "Actual normal whole-app shutdown/restart after observed quiescence. Not browser reload, mid-turn crash recovery, prior failed-generation repair or Task release proof."
+}

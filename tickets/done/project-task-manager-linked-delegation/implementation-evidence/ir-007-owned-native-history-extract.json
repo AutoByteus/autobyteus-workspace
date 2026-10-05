@@ -1,0 +1,188 @@
+{
+  "path": "/Users/normy/.codex/sessions/2026/10/03/rollout-2026-10-03T17-59-49-01a1027e-3ae7-75f2-ac7a-96b5d899d188.jsonl",
+  "sha256": "c965a7c1c16cc30a9e8205a931bfa0801a6d4f89be6e27c05d1c13a657db2751",
+  "scope": "read-only EXACT historical API008-owned thread, metadata and event facts only; no other thread contents, credentials or profile config read",
+  "rows": [
+    {
+      "line": 1,
+      "at": "2026-10-03T16:00:15.348Z",
+      "type": "session_meta",
+      "identity": {
+        "id": "01a1027e-3ae7-75f2-ac7a-96b5d899d188",
+        "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team",
+        "source": "vscode",
+        "originator": "autobyteus-server-ts",
+        "cli_version": "0.160.0"
+      }
+    },
+    {
+      "line": 2,
+      "at": "2026-10-03T16:00:15.348Z",
+      "type": "event_msg",
+      "event": "task_started",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f"
+    },
+    {
+      "line": 3,
+      "at": "2026-10-03T16:00:15.662Z",
+      "type": "response_item"
+    },
+    {
+      "line": 4,
+      "at": "2026-10-03T16:00:15.662Z",
+      "type": "response_item"
+    },
+    {
+      "line": 5,
+      "at": "2026-10-03T16:00:15.662Z",
+      "type": "response_item"
+    },
+    {
+      "line": 6,
+      "at": "2026-10-03T16:00:15.662Z",
+      "type": "response_item"
+    },
+    {
+      "line": 7,
+      "at": "2026-10-03T16:00:15.663Z",
+      "type": "world_state"
+    },
+    {
+      "line": 8,
+      "at": "2026-10-03T16:00:15.664Z",
+      "type": "turn_context",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team",
+      "model": "gpt-6.1-sol"
+    },
+    {
+      "line": 9,
+      "at": "2026-10-03T16:00:15.690Z",
+      "type": "response_item"
+    },
+    {
+      "line": 10,
+      "at": "2026-10-03T16:00:15.691Z",
+      "type": "event_msg",
+      "event": "item_completed",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f"
+    },
+    {
+      "line": 11,
+      "at": "2026-10-03T16:00:23.272Z",
+      "type": "response_item"
+    },
+    {
+      "line": 12,
+      "at": "2026-10-03T16:00:23.279Z",
+      "type": "token_usage_record"
+    },
+    {
+      "line": 13,
+      "at": "2026-10-03T16:00:23.331Z",
+      "type": "event_msg",
+      "event": "item_completed",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f"
+    },
+    {
+      "line": 14,
+      "at": "2026-10-03T16:00:23.334Z",
+      "type": "response_item"
+    },
+    {
+      "line": 15,
+      "at": "2026-10-03T16:00:23.335Z",
+      "type": "event_msg",
+      "event": "token_count"
+    },
+    {
+      "line": 16,
+      "at": "2026-10-03T16:00:26.975Z",
+      "type": "response_item"
+    },
+    {
+      "line": 17,
+      "at": "2026-10-03T16:00:26.983Z",
+      "type": "event_msg",
+      "event": "item_completed",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f"
+    },
+    {
+      "line": 18,
+      "at": "2026-10-03T16:00:27.058Z",
+      "type": "token_usage_record"
+    },
+    {
+      "line": 19,
+      "at": "2026-10-03T16:00:27.059Z",
+      "type": "response_item"
+    },
+    {
+      "line": 20,
+      "at": "2026-10-03T16:00:27.059Z",
+      "type": "event_msg",
+      "event": "token_count"
+    },
+    {
+      "line": 21,
+      "at": "2026-10-03T16:00:34.333Z",
+      "type": "response_item"
+    },
+    {
+      "line": 22,
+      "at": "2026-10-03T16:00:34.366Z",
+      "type": "event_msg",
+      "event": "item_completed",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f"
+    },
+    {
+      "line": 23,
+      "at": "2026-10-03T16:00:34.377Z",
+      "type": "token_usage_record"
+    },
+    {
+      "line": 24,
+      "at": "2026-10-03T16:00:34.377Z",
+      "type": "response_item"
+    },
+    {
+      "line": 25,
+      "at": "2026-10-03T16:00:34.378Z",
+      "type": "event_msg",
+      "event": "token_count"
+    },
+    {
+      "line": 26,
+      "at": "2026-10-03T16:00:36.638Z",
+      "type": "event_msg",
+      "event": "token_count"
+    },
+    {
+      "line": 27,
+      "at": "2026-10-03T16:00:36.642Z",
+      "type": "response_item"
+    },
+    {
+      "line": 28,
+      "at": "2026-10-03T16:00:36.646Z",
+      "type": "event_msg",
+      "event": "turn_aborted",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+      "reason": "interrupted"
+    }
+  ],
+  "actualTerminal": {
+    "timestamp": "2026-10-03T16:00:36.646Z",
+    "ordinal": 27,
+    "type": "event_msg",
+    "payload": {
+      "type": "turn_aborted",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+      "reason": "interrupted",
+      "started_at": 1791043215,
+      "completed_at": 1791043236,
+      "duration_ms": 21300
+    }
+  },
+  "limits": "Native core history is not app-server delivery/backend acceptance or registry finalization receipt."
+}

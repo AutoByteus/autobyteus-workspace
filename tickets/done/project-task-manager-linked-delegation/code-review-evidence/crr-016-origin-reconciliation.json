@@ -1,0 +1,143 @@
+{
+  "stash": "c0d5140aeee1902f46993237433436152b2472ee",
+  "stashFirstParent": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "inputHead": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "currentHead": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "inputAncestorOfCurrent": true,
+  "paths": [
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "inputSha256": "b0c4715a874f06284ea82d3c41119607aa7721bfeb76a20b83c371562e28574a",
+      "ancestorSha256": "986546c04e924c492aabd2405fa2c0e54d6cbc657a6c32288b9128158d43cc2f",
+      "taskSha256": "b0c4715a874f06284ea82d3c41119607aa7721bfeb76a20b83c371562e28574a",
+      "upstreamSha256": "7c95752264d0136447b670b0b099af375861f5e31580b7297ba6cb88f9b97252",
+      "workingSha256": "9d7b08e4ed9a9dd9c85f14b25bc54b01ea4da0725595787e586b59c46a3f059a",
+      "taskMatchesAPIInput": true,
+      "currentMatchesAPIFinal": true,
+      "indexStagesMatch": {
+        "ancestor": true,
+        "upstream": true,
+        "task": true
+      }
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+      "inputSha256": "9c188c898170aa50ed009a30e584cd100602c761cdae225fab69d1e72beb2d1d",
+      "ancestorSha256": "1b926f6cd03a924fea8055a6a3f1e36b90327e76fde67184e6d502140e5c63cb",
+      "taskSha256": "9c188c898170aa50ed009a30e584cd100602c761cdae225fab69d1e72beb2d1d",
+      "upstreamSha256": "65ca33fbebea10dead072d0e0886e256975fbf3449af844db74c42aa8ed0eb79",
+      "workingSha256": "7355fff4118ce76e46dee7c02c809cdd2e9e3d0fbd7e32840b4f54964fadb347",
+      "taskMatchesAPIInput": true,
+      "currentMatchesAPIFinal": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "inputSha256": "daa8284478d806370c10f8af1f87bd4d19f4dc28e9dbfddf43536812ed2ecb8b",
+      "ancestorSha256": "af242aff825fe3b8a0c518f6ef58b9d47e7d709b78633a89388dd98e91a413ed",
+      "taskSha256": "daa8284478d806370c10f8af1f87bd4d19f4dc28e9dbfddf43536812ed2ecb8b",
+      "upstreamSha256": "8ab1d2565f898d488ef16a9979d984762b87f0a1ef2d2ad523c7fba76622cafb",
+      "workingSha256": "f70e0ee09845568872fb4fc20aa60390f50a02b23d3b52b939c9aa33c852a8a1",
+      "taskMatchesAPIInput": true,
+      "currentMatchesAPIFinal": true,
+      "indexStagesMatch": {
+        "ancestor": true,
+        "upstream": true,
+        "task": true
+      }
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+      "inputSha256": "051b34e4912ca6d3a1c0f2db2d74c40d27e92129e2c8783cbe8a82fb0c0a2a12",
+      "ancestorSha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+      "taskSha256": "051b34e4912ca6d3a1c0f2db2d74c40d27e92129e2c8783cbe8a82fb0c0a2a12",
+      "upstreamSha256": "34962d0f8b9f4895035a881163630ec97a054c93d749f0a967fefaf314131216",
+      "workingSha256": "91b58699e333933bb0ecdba6c157fe361566f9cea25bc40b0f762c6f23ab5d51",
+      "taskMatchesAPIInput": true,
+      "currentMatchesAPIFinal": true,
+      "indexStagesMatch": {
+        "ancestor": true,
+        "upstream": true,
+        "task": true
+      }
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "inputSha256": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "ancestorSha256": "ff9ab7f4530f3f8c178644b69889eb9cf2607320cbf83f71e53b6ae4f8bc3176",
+      "taskSha256": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "upstreamSha256": "5a65ca09a4ea3a4919e7a53d580ba240fbb13b4067fd333a778cf6063def6f9e",
+      "workingSha256": "edadd6e41a6d791036ac17c4115ad0de5e92c65cf1fa0a520bd73100dde71d80",
+      "taskMatchesAPIInput": true,
+      "currentMatchesAPIFinal": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+      "inputSha256": "6e291ecfb474adbb71fa6f951da54109d7ba6a1ca99fc263102deb833159908e",
+      "ancestorSha256": "37ce348409b64980b1315b67979b0a1fcf2fa4b5e67d2b9b35762c559314dc55",
+      "taskSha256": "6e291ecfb474adbb71fa6f951da54109d7ba6a1ca99fc263102deb833159908e",
+      "upstreamSha256": "dec33165600674d88cd970e9dd0f6ecddda3df017ccba958196d0e1924208fd9",
+      "workingSha256": "9fe8c746634ee1d44a6d8c73a21058dcbddd908891a78fc5a8b8c885308f3cd5",
+      "taskMatchesAPIInput": true,
+      "currentMatchesAPIFinal": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+      "inputSha256": "9e1a34ee2d01cf785956747a32494830284f7db2622fefe0c016466208c99277",
+      "ancestorSha256": "6b55345c45ea20eb0eb5e968e5d62e58d657971fab6a21042fbbbf3bfaf1801c",
+      "taskSha256": "9e1a34ee2d01cf785956747a32494830284f7db2622fefe0c016466208c99277",
+      "upstreamSha256": "49b739558f35844c6cd3fa85b214f1455875cef202cf4d1969e60b0105eb1381",
+      "workingSha256": "d30d803240ef2271e28dab71029b7632237e66133db0aee20cf86f6ef994eb80",
+      "taskMatchesAPIInput": true,
+      "currentMatchesAPIFinal": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+      "inputSha256": "fdd5e14bcb91a262017bc35c682998d4b8de478df9a6516fae0f51586dcca029",
+      "ancestorSha256": "a1636c51cde0a6b56e1b7782f88705b8f3ccec9ff4a2afa9a53f362607363182",
+      "taskSha256": "fdd5e14bcb91a262017bc35c682998d4b8de478df9a6516fae0f51586dcca029",
+      "upstreamSha256": "5ea14fc33347a8e363c72e4ccc4f5af03253b02cd938661750335b5800b95642",
+      "workingSha256": "b1ba38bc1933ec4d9cabf4629fc3d96c9b59a2ba5da2ae0487ca61662d1e780f",
+      "taskMatchesAPIInput": true,
+      "currentMatchesAPIFinal": true
+    }
+  ],
+  "designerDocuments": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/requirements-doc.md",
+      "priorArchiveMatchesAPIInput": true,
+      "currentMatchesSR019Snapshot": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/design-spec.md",
+      "priorArchiveMatchesAPIInput": true,
+      "currentMatchesSR019Snapshot": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/investigation-notes.md",
+      "priorArchiveMatchesAPIInput": true,
+      "currentMatchesSR019Snapshot": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-revision-record.md",
+      "priorArchiveMatchesAPIInput": true,
+      "currentMatchesSR019Snapshot": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-design-handoff.md",
+      "priorArchiveMatchesAPIInput": true,
+      "currentMatchesSR019Snapshot": true
+    }
+  ],
+  "unmergedIndexEntries": [
+    "100644 28a90a189d53c0aa1a1edfa5050131d3375fb03d 1\tautobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "100644 ca59de1d0f804eecf7296bd4632cdc8696f8e737 2\tautobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "100644 7f656b73f79078823ee3b667cd5e368a7b7d1dbe 3\tautobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "100644 904a76015311ea4a68bff2c43e8085047fbfc4c8 1\tautobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "100644 d75518ea4b9916b6cd4ee1c2d9ff374f3c44fa28 2\tautobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "100644 e4215165d9719d2d9aaeefe288bc0c2a25ce6523 3\tautobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "100644 550ac7e035d1217680281e1426520f4d45b005d2 1\tautobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+    "100644 9f7d4c8928129be6e06a8a8a824981e908e4cd1a 2\tautobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+    "100644 4e89f816ade7f0ed8d38ad45509080b6cc837f43 3\tautobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts"
+  ],
+  "at": "2026-10-04T04:57:18.973887+00:00"
+}

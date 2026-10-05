@@ -1,0 +1,12 @@
+case=API-014
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs live
+locator.waitFor: Timeout 45000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="agent-org-definition-api010-concrete-root-org-rerun-456f250d-b245-46a4-bab4-7584f94c9ea4"]') to be visible[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs:33:98 {
+  name: 'TimeoutError'
+}
+
+PROCESS_EXIT_CODE=1

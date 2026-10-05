@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-03T17:56:37.948Z",
+  "instanceId": "iso-58861-449a",
+  "pid": 73104,
+  "verified": {
+    "pid": 73104,
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+  },
+  "breakpoints": [
+    "root-begin",
+    "root-proof-request",
+    "root-proof-settled",
+    "team-release-start",
+    "team-proof-settled",
+    "agent-manager-components",
+    "agent-manager-removal",
+    "agent-backend-return",
+    "agent-before-input-settlement",
+    "agent-before-unsubscribe",
+    "input-unresolved-assertion",
+    "codex-backend-negative",
+    "codex-thread-cleanup-proof",
+    "input-outcome-fact",
+    "agent-force-begin",
+    "native-terminal",
+    "canonical-input-before",
+    "canonical-input-after",
+    "team-disposed-proof"
+  ]
+}

@@ -1,0 +1,2 @@
+| **CRR-021** | `api-e2e-test-review-report.md` | API-REV-016 successful cumulative20-path proportional test review | CRR020 source-only Pass9.20; no prior test-review result | **Pass — all20 durable paths; no new source score or Delivery authorization** | None; original FAPI007/FAPI011 limits retained |
+

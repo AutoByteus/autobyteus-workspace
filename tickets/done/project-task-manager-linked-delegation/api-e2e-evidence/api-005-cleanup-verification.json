@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-03T14:09:51.702908+00:00",
+  "instanceId": "iso-65323-9445",
+  "stop": {
+    "instanceId": "iso-65323-9445",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  },
+  "otherInstancesBefore": 4,
+  "otherInstancesAfter": 4,
+  "otherRecordsExactlyUnchanged": true,
+  "capturedOwnAncestryPids": 78,
+  "remainingCapturedPids": [],
+  "dataRootExists": false,
+  "acceptanceLimit": "This is test-owned isolated-app cleanup only, not evidence that FAPI-007 Task cleanup succeeded."
+}

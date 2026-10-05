@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-04T04:57:29.519337+00:00",
+  "results": [
+    {
+      "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+      "expectedExit": 0,
+      "actualExit": 2,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-016-production-typecheck.log"
+    },
+    {
+      "command": "git diff --check",
+      "expectedExit": 0,
+      "actualExit": 2,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-016-diffcheck.log"
+    }
+  ],
+  "boundary": "Compile/diff only; changed runtime not executed"
+}

@@ -1,0 +1,205 @@
+--- accepted/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
++++ integrated/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+@@ -20,6 +20,18 @@
+ import { CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID } from "../../../../../../src/agent-execution/domain/system-task-notification-senders.js";
+ import type { ClaudeSdkStreamingSessionOptions } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+ import type { SystemInstructionCaptureService } from "../../../../../../src/agent-memory/services/system-instruction-capture-service.js";
++import { ClaudeSessionEventConverter } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-converter.js";
++import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
++import { RuntimeMemoryEventAccumulator } from "../../../../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
++import { ExternalRuntimeMemoryWriter } from "../../../../../../src/agent-memory/store/external-runtime-memory-writer.js";
++import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
++import {
++  CLAUDE_AUTO_COMPACTION_FRAMES,
++  CLAUDE_AUTO_FAILED_COMPACTION_FRAMES,
++  CLAUDE_MANUAL_COMPACTION_FRAMES,
++  claudeCompactingKeepalive,
++  withClaudeSessionId,
++} from "../../../../../fixtures/claude-compaction/claude-compaction-frames.js";
+ import {
+   createFakeClaudeSdkClient,
+   flushClaudeSession,
+@@ -1258,3 +1270,183 @@
+     expect(events.some((event) => event.params?.id === activeTurnId)).toBe(false);
+   });
+ });
++
++describe("ClaudeSession compaction (real SDK frame shapes)", () => {
++  const tempDirs: string[] = [];
++  afterEach(async () => {
++    await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
++  });
++
++  /** Session events → Claude converter → runtime memory accumulator, as in production. */
++  const recordIntoMemory = async (events: RecordedEvent[]) => {
++    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "claude-compaction-memory-"));
++    tempDirs.push(memoryDir);
++    const writer = new ExternalRuntimeMemoryWriter({ memoryDir });
++    // Earlier work in the active raw traces, which the rotation must move into the archive.
++    writer.appendRawTrace({ traceType: "assistant", turnId: "earlier-turn", content: "earlier work", sourceEvent: "test" });
++    const accumulator = new RuntimeMemoryEventAccumulator({
++      runId: "run-1",
++      writer,
++      toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
++    });
++    const runEvents = events.flatMap((event) => new ClaudeSessionEventConverter("run-1").convert(event));
++    for (const runEvent of runEvents) accumulator.recordRunEvent(runEvent);
++    const store = new RunMemoryFileStore(memoryDir);
++    return {
++      compactionEvents: runEvents.filter((event) => event.eventType === AgentRunEventType.COMPACTION_STATUS),
++      active: store.listTurnRawTracesOrdered(),
++      manifest: store.readRawTraceArchiveManifest(),
++      archived: store.listArchiveTurnRawTracesOrdered().map((trace) => trace.traceType),
++    };
++  };
++
++  const COMPACTION_METHODS = new Set<string>([
++    ClaudeSessionEventName.STATUS_COMPACTING,
++    ClaudeSessionEventName.COMPACT_BOUNDARY,
++    ClaudeSessionEventName.COMPACTION_FAILED,
++  ]);
++  const compactionMethods = (events: RecordedEvent[]) =>
++    events.map((event) => event.method).filter((method) => COMPACTION_METHODS.has(method));
++
++  it("rotates once for the real manual /compact sequence through the session path (AC-022a/b, AC-024)", async () => {
++    const { sdkClient, start, events } = createSession();
++    await start("Reply with exactly: OK ONE");
++    sdkClient.current.completeTurn("OK ONE");
++    await flushClaudeSession();
++    await start("/compact");
++    const fake = sdkClient.current;
++    const [compacting, success, boundary] = withClaudeSessionId(CLAUDE_MANUAL_COMPACTION_FRAMES, RESERVED_SESSION_ID);
++    fake.emit(compacting, success);
++    fake.init();
++    fake.emit(
++      boundary,
++      { type: "user", session_id: RESERVED_SESSION_ID, message: { role: "user", content: "This session is being continued..." } },
++      { type: "user", session_id: RESERVED_SESSION_ID, isReplay: true, message: { role: "user", content: "<local-command-stdout>Compacted </local-command-stdout>" } },
++    );
++    fake.result([fake.sent[1]!.uuid], { num_turns: 0 });
++    await flushClaudeSession();
++
++    expect(compactionMethods(events)).toEqual([
++      ClaudeSessionEventName.STATUS_COMPACTING,
++      ClaudeSessionEventName.COMPACT_BOUNDARY,
++    ]);
++    const memory = await recordIntoMemory(events);
++    expect(memory.compactionEvents.map((event) => event.payload.status)).toEqual(["compacting", "compacted"]);
++    expect(new Set(memory.compactionEvents.map((event) => event.payload.provider_event_id))).toEqual(
++      new Set(["a85e8ae9-cc82-478d-a145-118ee3e10f81"]),
++    );
++    expect(memory.manifest.segments).toHaveLength(1);
++    expect(memory.manifest.segments[0]).toMatchObject({
++      boundary_type: "provider_compaction_boundary",
++      status: "complete",
++    });
++    expect(memory.active.map((trace) => trace.traceType)).toEqual(["provider_compaction_boundary"]);
++    expect(memory.active[0]?.toolResult).toMatchObject({
++      source_surface: "claude.compact_boundary",
++      rotation_eligible: true,
++      status: "compacted",
++      trigger: "manual",
++      pre_tokens: 3350,
++      post_tokens: 1149,
++      duration_ms: 12216,
++      provider_event_id: "a85e8ae9-cc82-478d-a145-118ee3e10f81",
++    });
++    expect(memory.archived).toEqual(["assistant", "provider_compaction_boundary"]);
++  });
++
++  it("records one operation for an auto compaction with 30 s keepalives (AC-023)", async () => {
++    const { sdkClient, start, events } = createSession();
++    await start("Reply with exactly: OK AFTER");
++    const fake = sdkClient.current;
++    const [compacting, success, boundary] = withClaudeSessionId(CLAUDE_AUTO_COMPACTION_FRAMES, RESERVED_SESSION_ID);
++    fake.init();
++    fake.emit(
++      compacting,
++      claudeCompactingKeepalive(RESERVED_SESSION_ID, "keepalive-30s"),
++      claudeCompactingKeepalive(RESERVED_SESSION_ID, "keepalive-60s"),
++      claudeCompactingKeepalive(RESERVED_SESSION_ID, "keepalive-90s"),
++      success,
++      boundary,
++    );
++    fake.assistantText("OK AFTER");
++    fake.result([fake.sent[0]!.uuid]);
++    await flushClaudeSession();
++
++    const memory = await recordIntoMemory(events);
++    expect(memory.compactionEvents.map((event) => event.payload.status)).toEqual(["compacting", "compacted"]);
++    expect(memory.compactionEvents.map((event) => event.payload.provider_event_id)).toEqual([
++      "7a12debe-56a1-4b84-ba8d-c69fd6973df9",
++      "7a12debe-56a1-4b84-ba8d-c69fd6973df9",
++    ]);
++    expect(memory.manifest.segments).toHaveLength(1);
++    expect(memory.archived).toEqual(["assistant", "provider_compaction_boundary"]);
++    expect(memory.active.map((trace) => trace.traceType)).toEqual(["provider_compaction_boundary"]);
++    expect(memory.active[0]?.toolResult).toMatchObject({ trigger: "auto", pre_tokens: 128715, post_tokens: 1546 });
++    expect(events.at(-1)?.method).toBe(ClaudeSessionEventName.TURN_COMPLETED);
++  });
++
++  it("closes a provider-reported failure without rotating and lets the turn complete (AC-025)", async () => {
++    const { sdkClient, start, events } = createSession();
++    await start("More data. Reply with exactly: OK DUMP2");
++    const fake = sdkClient.current;
++    fake.init();
++    fake.emit(...withClaudeSessionId(CLAUDE_AUTO_FAILED_COMPACTION_FRAMES, RESERVED_SESSION_ID));
++    fake.assistantText("OK DUMP2");
++    fake.result([fake.sent[0]!.uuid]);
++    await flushClaudeSession();
++
++    expect(compactionMethods(events)).toEqual([
++      ClaudeSessionEventName.STATUS_COMPACTING,
++      ClaudeSessionEventName.COMPACTION_FAILED,
++    ]);
++    expect(events.at(-1)?.method).toBe(ClaudeSessionEventName.TURN_COMPLETED);
++    const memory = await recordIntoMemory(events);
++    expect(memory.compactionEvents.map((event) => event.payload.status)).toEqual(["compacting", "failed"]);
++    expect(memory.compactionEvents[1]?.payload).toMatchObject({
++      provider_event_id: "abd3f4d3-a350-4ead-9cb3-bbb255827ad0",
++      error_message: "too_few_groups",
++      rotation_eligible: false,
++    });
++    expect(memory.manifest.segments).toHaveLength(0);
++    const failedMarker = memory.active.find((trace) => (trace.toolResult as Record<string, unknown> | null)?.status === "failed");
++    expect(failedMarker?.toolResult).toMatchObject({ error_message: "too_few_groups", rotation_eligible: false });
++  });
++
++  it("closes an operation left open by turn settlement before the turn completion event", async () => {
++    const { sdkClient, start, events } = createSession();
++    await start("/compact");
++    const fake = sdkClient.current;
++    fake.emit(withClaudeSessionId(CLAUDE_MANUAL_COMPACTION_FRAMES, RESERVED_SESSION_ID)[0]);
++    fake.init();
++    fake.result([fake.sent[0]!.uuid]);
++    await flushClaudeSession();
++
++    const tail = events.slice(-2);
++    expect(tail.map((event) => event.method)).toEqual([
++      ClaudeSessionEventName.COMPACTION_FAILED,
++      ClaudeSessionEventName.TURN_COMPLETED,
++    ]);
++    expect(tail[0]?.params).toMatchObject({
++      operationId: "a85e8ae9-cc82-478d-a145-118ee3e10f81",
++      reason: "turn_ended_before_boundary",
++    });
++  });
++
++  it("closes an open operation as process_exited before the terminal turn error (SCN-020)", async () => {
++    const { sdkClient, start, events } = createSession();
++    await start("/compact");
++    const fake = sdkClient.current;
++    fake.emit(withClaudeSessionId(CLAUDE_MANUAL_COMPACTION_FRAMES, RESERVED_SESSION_ID)[0]);
++    await flushClaudeSession();
++    fake.fail(new Error("Claude Code process terminated by signal SIGKILL"));
++    await flushClaudeSession();
++
++    const failedIndex = events.findIndex((event) => event.method === ClaudeSessionEventName.COMPACTION_FAILED);
++    const errorIndex = events.findIndex((event) => event.method === ClaudeSessionEventName.ERROR);
++    expect(failedIndex).toBeGreaterThan(-1);
++    expect(failedIndex).toBeLessThan(errorIndex);
++    expect(events[failedIndex]?.params).toMatchObject({ reason: "process_exited" });
++    const memory = await recordIntoMemory(events);
++    expect(memory.manifest.segments).toHaveLength(0);
++  });
++});

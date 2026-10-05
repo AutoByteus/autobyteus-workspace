@@ -1,0 +1,64 @@
+--- accepted/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts
++++ integrated/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts
+@@ -4,6 +4,11 @@
+ import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
+ import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+ import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
++import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
++import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
++import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
++import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
++import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
+ 
+ describe("AgentOrgRun termination stabilization", () => {
+   it("freezes and fences every direct/mounted Agent scope before task and persistence drain", async () => {
+@@ -166,6 +171,49 @@
+     expect(f.onTerminated).toHaveBeenCalledOnce();
+   });
+ 
++  it("a first Stop fails on a rejected interrupt of a finishing turn; a second Stop reaches the AgentRun again and succeeds (SR-006)", async () => {
++    vi.useFakeTimers();
++    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
++    try {
++      // A real AgentRun behind the member handle: a busy turn whose interrupt the runtime rejects ("no active turn").
++      let snapshot: AgentRuntimeLifecycleSnapshot = { availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: "turn-busy" } };
++      let publish: ((events: readonly AgentRunEvent[]) => Promise<void> | void) | null = null;
++      const context = new AgentRunContext({ runId: "lead-run", runtimeContext: null, config: new AgentRunConfig({
++        runtimeKind: "codex_app_server", agentDefinitionId: "lead", llmModelIdentifier: "m", autoExecuteTools: false, workspaceId: null, llmConfig: null,
++      }) });
++      const backendInterrupt = vi.fn(async () => ({ accepted: false, code: "AGENT_RUN_INTERRUPT_REJECTED", message: "no active turn" }));
++      const agentRun = new AgentRun({ context, providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, backend: {
++        runId: "lead-run", runtimeKind: "codex_app_server", compactionRecovery: { kind: "unsupported" },
++        inputCapabilities: { activeTurnAppend: "unsupported" }, getContext: () => context, getPlatformAgentRunId: () => "p",
++        isActive: () => true, getLifecycleSnapshot: () => snapshot,
++        subscribeToSourceEventBatches: (next: typeof publish) => { publish = next; return () => { publish = null; }; },
++        dispatchUserInput: vi.fn(), approveToolInvocation: vi.fn(), interrupt: backendInterrupt,
++        terminate: vi.fn(async () => ({ accepted: true })),
++      } as never });
++      const f = build({
++        handleTerminate: async () => ({ accepted: true }),
++        handleFence: () => agentRun.fenceInputAndInterruptForRootShutdown(),
++      });
++
++      const firstStop = f.run.terminate();
++      await vi.advanceTimersByTimeAsync(5000);
++      await expect(firstStop).resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_INTERRUPT_REJECTED" });
++      expect(f.onTerminated).not.toHaveBeenCalled();
++      expect(warn).toHaveBeenCalledWith(expect.stringContaining("activeTurn=IDENTIFIED(turn-busy)"));
++
++      // The turn finishes on its own; the second Stop starts a new AgentRun attempt that settles accepted.
++      snapshot = { availability: "active", phase: "idle", currentTurn: { kind: "NONE" } };
++      await publish!([{ eventType: AgentRunEventType.TURN_COMPLETED, runId: "lead-run", payload: { turn_id: "turn-busy" }, statusHint: null }]);
++      await expect(f.run.terminate()).resolves.toEqual({ accepted: true });
++      expect(f.handle.fenceForRootShutdown).toHaveBeenCalledTimes(2);
++      expect(backendInterrupt).toHaveBeenCalledOnce();
++      expect(f.onTerminated).toHaveBeenCalledOnce();
++    } finally {
++      warn.mockRestore();
++      vi.useRealTimers();
++    }
++  });
++
+   it("keeps the fail-stop settlement path when retrying a failed fail-stop termination", async () => {
+     const f = build({ handleTerminate: vi.fn<() => Promise<Result>>()
+       .mockRejectedValueOnce(new Error("member termination failed"))

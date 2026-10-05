@@ -1,0 +1,48 @@
+{
+  "at": "2026-10-03T20:06:10.668646+00:00",
+  "inputCount": 1739,
+  "missing": [],
+  "reviewerOwnedChanged": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "externallyOwnedDesignerChangesIndependentlyReconciled": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/design-spec.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/investigation-notes.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/requirements-doc.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-design-handoff.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-revision-record.md"
+  ],
+  "unexpectedInputChanges": [],
+  "SR018InputCount": 1821,
+  "SR018Missing": [],
+  "SR018ReviewerEvidenceChanges": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-015-source-audit.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "SR018UnexpectedChanges": [],
+  "packageCount": 292,
+  "packageMismatches": [],
+  "prior287Mismatches": [],
+  "sourceSnapshots35Mismatches": [],
+  "designerPriorArchivesMatch": true,
+  "CRR014ExactArchiveMatchesIncomingReport": true,
+  "branch": "codex/project-task-manager-linked-delegation",
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "nonTicketStatusCount": 292,
+  "nonTicketStatusUnchanged": true,
+  "diffCheckExit": 0,
+  "ownership": "Reviewer ticket report/evidence only. Exactly five Designer canonical changes read/reconciled against matching archived input, not silently accepted source changes. No runtime/provider/profile/model/deployment/commit work by reviewer.",
+  "postHandoff": {
+    "at": "2026-10-03T20:07:37.287955+00:00",
+    "packageMismatches": [],
+    "nonTicketStatusUnchanged": true,
+    "outgoingFinalManifestCount": 1832,
+    "outgoingMissing": [],
+    "primaryConfirmed": true,
+    "informationalConfirmed": true,
+    "primaryAttachedCount": 1829,
+    "note": "Final manifest also carries actual ordered delivery receipts created after primary message, not falsely claimed as its original attachments."
+  }
+}

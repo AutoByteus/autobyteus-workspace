@@ -1,0 +1,65 @@
+{
+  "result": "Fail local rendered integration self-check",
+  "error": "locator.evaluate: Error: strict mode violation: locator('aside') resolved to 2 elements:\n    1) <aside class=\"w-[360px] max-w-full rounded border bg-white p-2\">…</aside> aka getByText('Research AssistantCUcomputer')\n    2) <aside data-v-e4ed9f26=\"\" data-test=\"team-communication-left-list\" class=\"collaboration-message-list min-h-0 shrink-0 overflow-y-auto border-r border-gray-200 pb-2\">…</aside> aka locator('[data-test=\"team-communication-left-list\"]')\n\nCall log:\n\u001b[2m  - waiting for locator('aside')\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/rendered-preview.mjs:56:61",
+  "states": {
+    "loaded": {
+      "loading": false,
+      "selected": null,
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": [
+        "computer use agent"
+      ]
+    },
+    "agent": {
+      "loading": false,
+      "selected": "cua-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": [
+        "Research Assistant"
+      ]
+    },
+    "member": {
+      "loading": false,
+      "selected": "pp-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/prototyper",
+        "agentRunId": "pp-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": []
+    }
+  },
+  "events": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtExitCode": null,
+    "nuxtSignal": "SIGTERM",
+    "temporaryRouteRemoved": true
+  }
+}

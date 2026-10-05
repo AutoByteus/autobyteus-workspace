@@ -1,0 +1,20 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=bash -c 'pnpm --silent isolated-app stop iso-62535-1894 > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-004-stop.json; r=$?; cat tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-004-stop.json; exit $r'
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-62535-1894",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+
+PROCESS_EXIT_CODE=0

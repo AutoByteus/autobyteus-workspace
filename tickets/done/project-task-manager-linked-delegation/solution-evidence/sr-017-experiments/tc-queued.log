@@ -1,0 +1,19 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/queued-pipeline.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/queued-pipeline.test.ts > SD017 ordinary AgentRun queue negative control > does not equate ordinary queued async pipeline delay with pre-listener delay
+SD017 {"at":"2026-10-03T17:19:36.277Z","variant":"tc","test":"queue-negative-control","boundary":"native-gone-actual-pipeline-pending","value":{"runId":"sd017-owned-reader","generation":"4431ba5b-f694-4c4a-b4fa-3a6504e8bb64","threadId":"owned-thread-1","activeTurn":null,"lastTerminal":"owned-thread-1-turn","status":"IDLE","threadRetained":false,"protectedRetained":true,"release":null,"backendReturns":[{"accepted":true}],"input":{"run_instance_id":"4431ba5b-f694-4c4a-b4fa-3a6504e8bb64","revision":3,"entries":[{"sequence":1,"message_id":null,"dedupe_key":null,"turn_id":"owned-thread-1-turn","state":"forwarded","content":"sd017 queued finite canonical processing","sender_type":"user","file_attachments":[]}],"recoverableBlock":null},"facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"}],"wire":[{"method":"turn/started","params":{"threadId":"owned-thread-1","turn":{"id":"owned-thread-1-turn"}}},{"method":"thread/status/changed","params":{"threadId":"owned-thread-1","status":{"type":"idle"}}},{"method":"turn/completed","params":{"threadId":"owned-thread-1","turn":{"id":"owned-thread-1-turn","status":"interrupted","error":null}}}],"pendingSourceWork":"owner not present"}}
+
+stdout | ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/queued-pipeline.test.ts > SD017 ordinary AgentRun queue negative control > does not equate ordinary queued async pipeline delay with pre-listener delay
+SD017 {"at":"2026-10-03T17:19:36.282Z","variant":"tc","test":"queue-negative-control","boundary":"actual-pipeline-completed","value":{"runId":"sd017-owned-reader","generation":"4431ba5b-f694-4c4a-b4fa-3a6504e8bb64","threadId":"owned-thread-1","activeTurn":null,"lastTerminal":"owned-thread-1-turn","status":"IDLE","threadRetained":false,"protectedRetained":true,"release":{"accepted":true},"backendReturns":[{"accepted":true}],"input":{"run_instance_id":"4431ba5b-f694-4c4a-b4fa-3a6504e8bb64","revision":4,"entries":[],"recoverableBlock":null},"facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}],"wire":[{"method":"turn/started","params":{"threadId":"owned-thread-1","turn":{"id":"owned-thread-1-turn"}}},{"method":"thread/status/changed","params":{"threadId":"owned-thread-1","status":{"type":"idle"}}},{"method":"turn/completed","params":{"threadId":"owned-thread-1","turn":{"id":"owned-thread-1-turn","status":"interrupted","error":null}}}],"pendingSourceWork":"owner not present"}}
+
+ ✓ ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/queued-pipeline.test.ts (1 test) 218ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  19:19:32
+   Duration  3.82s (transform 2.50s, setup 0ms, import 3.50s, tests 218ms, environment 0ms)
+

@@ -1,0 +1,498 @@
+{
+  "instanceId": "iso-58490-670f",
+  "started": "2026-10-03T09:53:51.160Z",
+  "credentials": {
+    "providerCredentialSettings": [
+      {
+        "provider": {
+          "id": "ANTHROPIC",
+          "name": "Anthropic"
+        },
+        "apiKeyConfigured": true
+      },
+      {
+        "provider": {
+          "id": "AUTOBYTEUS",
+          "name": "AutoByteus"
+        },
+        "apiKeyConfigured": true
+      },
+      {
+        "provider": {
+          "id": "DEEPSEEK",
+          "name": "DeepSeek"
+        },
+        "apiKeyConfigured": true
+      },
+      {
+        "provider": {
+          "id": "GEMINI",
+          "name": "Gemini"
+        },
+        "apiKeyConfigured": true
+      },
+      {
+        "provider": {
+          "id": "GLM",
+          "name": "GLM"
+        },
+        "apiKeyConfigured": true
+      },
+      {
+        "provider": {
+          "id": "GROK",
+          "name": "Grok"
+        },
+        "apiKeyConfigured": true
+      },
+      {
+        "provider": {
+          "id": "KIMI",
+          "name": "Kimi"
+        },
+        "apiKeyConfigured": true
+      },
+      {
+        "provider": {
+          "id": "LMSTUDIO",
+          "name": "LM Studio"
+        },
+        "apiKeyConfigured": false
+      },
+      {
+        "provider": {
+          "id": "MINIMAX",
+          "name": "MiniMax"
+        },
+        "apiKeyConfigured": false
+      },
+      {
+        "provider": {
+          "id": "MISTRAL",
+          "name": "Mistral"
+        },
+        "apiKeyConfigured": false
+      },
+      {
+        "provider": {
+          "id": "OLLAMA",
+          "name": "Ollama"
+        },
+        "apiKeyConfigured": false
+      },
+      {
+        "provider": {
+          "id": "OPENAI",
+          "name": "OpenAI"
+        },
+        "apiKeyConfigured": true
+      },
+      {
+        "provider": {
+          "id": "QWEN",
+          "name": "Qwen"
+        },
+        "apiKeyConfigured": false
+      }
+    ]
+  },
+  "settings": [],
+  "catalogs": {
+    "codex_app_server": [
+      {
+        "ownerProvider": {
+          "id": "OPENAI"
+        },
+        "llmModels": [
+          {
+            "modelIdentifier": "gpt-5.5",
+            "configSchema": {
+              "parameters": [
+                {
+                  "name": "reasoning_effort",
+                  "type": "enum",
+                  "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                  "required": false,
+                  "default_value": "medium",
+                  "enum_values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh"
+                  ]
+                },
+                {
+                  "name": "service_tier",
+                  "label": "Fast mode",
+                  "type": "enum",
+                  "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                  "required": false,
+                  "enum_values": [
+                    "fast"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "modelIdentifier": "gpt-5.6-luna",
+            "configSchema": {
+              "parameters": [
+                {
+                  "name": "reasoning_effort",
+                  "type": "enum",
+                  "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                  "required": false,
+                  "default_value": "medium",
+                  "enum_values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh",
+                    "max"
+                  ]
+                },
+                {
+                  "name": "service_tier",
+                  "label": "Fast mode",
+                  "type": "enum",
+                  "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                  "required": false,
+                  "enum_values": [
+                    "fast"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "modelIdentifier": "gpt-5.6-sol",
+            "configSchema": {
+              "parameters": [
+                {
+                  "name": "reasoning_effort",
+                  "type": "enum",
+                  "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                  "required": false,
+                  "default_value": "low",
+                  "enum_values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh",
+                    "max",
+                    "ultra"
+                  ]
+                },
+                {
+                  "name": "service_tier",
+                  "label": "Fast mode",
+                  "type": "enum",
+                  "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                  "required": false,
+                  "enum_values": [
+                    "fast"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "modelIdentifier": "gpt-5.6-terra",
+            "configSchema": {
+              "parameters": [
+                {
+                  "name": "reasoning_effort",
+                  "type": "enum",
+                  "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                  "required": false,
+                  "default_value": "medium",
+                  "enum_values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh",
+                    "max",
+                    "ultra"
+                  ]
+                },
+                {
+                  "name": "service_tier",
+                  "label": "Fast mode",
+                  "type": "enum",
+                  "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                  "required": false,
+                  "enum_values": [
+                    "fast"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "modelIdentifier": "gpt-6-astra",
+            "configSchema": {
+              "parameters": [
+                {
+                  "name": "reasoning_effort",
+                  "type": "enum",
+                  "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                  "required": false,
+                  "default_value": "medium",
+                  "enum_values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh",
+                    "max",
+                    "ultra"
+                  ]
+                },
+                {
+                  "name": "service_tier",
+                  "label": "Fast mode",
+                  "type": "enum",
+                  "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                  "required": false,
+                  "enum_values": [
+                    "fast"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "modelIdentifier": "gpt-6-luna",
+            "configSchema": {
+              "parameters": [
+                {
+                  "name": "reasoning_effort",
+                  "type": "enum",
+                  "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                  "required": false,
+                  "default_value": "medium",
+                  "enum_values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh",
+                    "max"
+                  ]
+                },
+                {
+                  "name": "service_tier",
+                  "label": "Fast mode",
+                  "type": "enum",
+                  "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                  "required": false,
+                  "enum_values": [
+                    "fast"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "modelIdentifier": "gpt-6-sol",
+            "configSchema": {
+              "parameters": [
+                {
+                  "name": "reasoning_effort",
+                  "type": "enum",
+                  "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                  "required": false,
+                  "default_value": "medium",
+                  "enum_values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh",
+                    "max",
+                    "ultra"
+                  ]
+                },
+                {
+                  "name": "service_tier",
+                  "label": "Fast mode",
+                  "type": "enum",
+                  "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                  "required": false,
+                  "enum_values": [
+                    "fast"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "modelIdentifier": "gpt-6.1-sol",
+            "configSchema": {
+              "parameters": [
+                {
+                  "name": "reasoning_effort",
+                  "type": "enum",
+                  "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                  "required": false,
+                  "default_value": "low",
+                  "enum_values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh",
+                    "max",
+                    "ultra"
+                  ]
+                },
+                {
+                  "name": "service_tier",
+                  "label": "Fast mode",
+                  "type": "enum",
+                  "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                  "required": false,
+                  "enum_values": [
+                    "fast"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "antigravity_cli": [
+      {
+        "ownerProvider": {
+          "id": "GEMINI"
+        },
+        "llmModels": [
+          {
+            "modelIdentifier": "gemini-3.1-pro-high",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.1-pro-low",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.6-flash-high",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.6-flash-low",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.6-flash-medium",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.7-flash-high",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.7-flash-low",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.7-flash-medium",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.8-flash-high",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.8-flash-low",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "gemini-3.8-flash-medium",
+            "configSchema": null
+          }
+        ]
+      },
+      {
+        "ownerProvider": {
+          "id": "ANTHROPIC"
+        },
+        "llmModels": [
+          {
+            "modelIdentifier": "claude-opus-5-5-high",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "claude-opus-5-5-low",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "claude-opus-5-5-medium",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "claude-sonnet-5-5-high",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "claude-sonnet-5-5-low",
+            "configSchema": null
+          },
+          {
+            "modelIdentifier": "claude-sonnet-5-5-medium",
+            "configSchema": null
+          }
+        ]
+      },
+      {
+        "ownerProvider": {
+          "id": "OPENAI"
+        },
+        "llmModels": [
+          {
+            "modelIdentifier": "gpt-oss-120b-medium",
+            "configSchema": null
+          }
+        ]
+      }
+    ]
+  },
+  "workspaceRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6/validation-workspace",
+  "project": {
+    "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+    "name": "API003 saved-packet validation"
+  },
+  "draft": {
+    "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+    "draftId": "8da881aa-69a5-41ff-b981-6f8e97bbab2c",
+    "files": []
+  },
+  "attachment": {
+    "storedFilename": "ctx_a2060036cb9b__saved-packet.txt",
+    "displayName": "saved-packet.txt",
+    "mimeType": "text/plain",
+    "sizeBytes": 72
+  },
+  "task": {
+    "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+    "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+    "description": "Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.",
+    "status": "TODO",
+    "contextFiles": [
+      {
+        "storedFilename": "ctx_17e6e103abf5__saved-packet.txt",
+        "displayName": "saved-packet.txt",
+        "locator": "/rest/projects/project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec/tasks/project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1/context-files/ctx_17e6e103abf5__saved-packet.txt"
+      }
+    ]
+  },
+  "worker": {
+    "id": "api003-packet-worker",
+    "name": "API003 Packet Worker",
+    "defaultLaunchConfig": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      }
+    }
+  }
+}

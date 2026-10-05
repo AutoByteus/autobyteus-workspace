@@ -1,0 +1,21 @@
+Correction to my API-REV-015 handoff/status package:
+
+Gemini 4.8 was a stale Antigravity validation label, not a prerequisite of the corrected Claude package. Please disregard the prior request for Gemini 4.8 or a substitute and the assertion that its absence blocks this revalidation. A remote-host setting is also not a local Native/Codex/Claude prerequisite. The current Claude target remains the user-authorized Claude Agent SDK Sonnet 5, with the exact configuration already exercised.
+
+The previous Blocked / 88.57% assessment relied on that invalid scope assumption and is withdrawn as a corrected acceptance verdict; the original report is preserved explicitly as historical. I am not replacing it with an unsupported Pass or percentage. API/E2E owns the remaining requirements-linked assessment against REQ-BL-008 / semantic SR-014 / ARCH-REV-005, Large / High / Reviewed, rather than an invented all-model matrix.
+
+What is actually proven on the freshly built corrected IR-010 package:
+- Uninstrumented Claude Org and Team saved-ID/native-byte journeys, active DONE and reopening, genuine canonical interruption/input settlement/offline, and retained LIVE rows.
+- The SAME recursive Task's eight actual AgentRuns, exact Session/SDK-owner child bindings, physical exit and IO/component/input proof before app teardown, with protected Manager/other-Task/borrowed/data complements.
+- Actual normal whole-app restart, SAME worker and SAME Manager original saved-work resumption, sole final A DONE, and strict active/stored public forest/privacy/no-write checks.
+- The selected repository suites, current compile/diff/zero-unmerged gates, all 20 cumulative API durable files valid and unchanged, and verified owned cleanup/preservation. No new API production/test edits. Overlapping counts and skipped/emulated scopes remain separately labeled.
+
+Original FAPI-007 remains Open / Unclear / Not Reproduced, and original FAPI-011 inner/physical/sole-cause/identity limits remain unbackfilled. Those are independent evidence/attribution matters, not Gemini dependencies. No original failure closure, cumulative API Pass, successful proportional test-review request, or Delivery advance is asserted by this correction.
+
+The canonical report, investigation, revision record, and ledger now prominently record this correction while retaining the original reports and evidence. Complete cumulative references, all 20 durable paths, and correction provenance are attached. This corrects the previous message to you only; it does not assign work to another owner or change the reviewed route.
+
+Current report: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-execution-coverage-report.md
+Investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-coverage-investigation.md
+Revision record: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-revision-record.md
+Ledger: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-case-ledger.md
+Correction provenance: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-model-scope-correction.json

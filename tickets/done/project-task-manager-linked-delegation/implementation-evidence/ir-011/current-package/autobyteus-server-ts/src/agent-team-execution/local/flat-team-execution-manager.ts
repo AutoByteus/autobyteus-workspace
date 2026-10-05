@@ -1,0 +1,492 @@
+import { createFrozenRootTerminationScope } from "../../agent-collaboration/execution/backends/frozen-root-termination-scope.js";
+import type { FlatTeamExecutionManagerOptions } from "./flat-team-execution-manager-options.js";
+import { prepareFlatTeamConfiguredActivation } from "./prepare-flat-team-configured-activation.js";
+import { releaseOwnedFlatTeamRuntime } from "./owned-flat-team-runtime-release.js";
+import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
+import { createTeamAgentExecutionBinding } from "../domain/team-agent-execution-binding.js";
+import {
+  createCollaborationMemberExecutionIdentity,
+} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot, type TeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
+import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../domain/task-agent-execution.js";
+import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../domain/task-team-execution.js";
+import type { TeamRun } from "../domain/team-run.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecutionPreparationOperation } from "../domain/prepared-task-execution.js";
+import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
+import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
+import type { TeamRunContext } from "../domain/team-run-context.js";
+import type { FlatTeamExecutionContext, ConfiguredMemberActivationMode } from "./flat-team-execution-context.js";
+import type { TeamRunAgentNode } from "../domain/team-run-config.js";
+import { CollaboratorTeamExecutionRegistry, type PreparedCollaboratorTeam } from "./registries/collaborator-team-execution-registry.js";
+import { ConfiguredAgentExecutionRegistry } from "./registries/configured-agent-execution-registry.js";
+import { FlatTeamAgentExecutionHandle } from "./flat-team-agent-execution-handle.js";
+import { TaskAgentExecutionRegistry } from "./registries/task-agent-execution-registry.js";
+import { TaskTeamExecutionRegistry } from "./registries/task-team-execution-registry.js";
+import { FlatTeamMemberConfigResolver } from "./registries/flat-team-member-config-resolver.js";
+import { TeamRootCollaboratorAgentRegistry } from "./registries/team-root-collaborator-agent-registry.js";
+import type { FrozenTeamRunTerminationScope } from "../domain/frozen-team-run-termination-scope.js";
+
+/** Provider/local mechanics for exactly one concrete TeamRun. */
+export class FlatTeamExecutionManager {
+  private lifecycle: "active" | "quiescing" | "terminating" | "terminated" = "active";
+  private preparingTermination: Promise<PreparedLocalExecutionTermination> | null = null;
+  private preparedTermination: PreparedLocalExecutionTermination | null = null;
+  private termination: Promise<AgentOperationResult> | null = null;
+  private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
+  private readonly configured: ConfiguredAgentExecutionRegistry;
+  private readonly taskAgents: TaskAgentExecutionRegistry;
+  private readonly taskTeams: TaskTeamExecutionRegistry;
+  private readonly collaboratorTeams: CollaboratorTeamExecutionRegistry;
+  private readonly collaboratorAgents: TeamRootCollaboratorAgentRegistry;
+
+  constructor(
+    private readonly context: TeamRunContext<FlatTeamExecutionContext>,
+    options: FlatTeamExecutionManagerOptions,
+  ) {
+    // Every direct Agent handle (configured, task, collaborator) runs on the same mechanics.
+    const agentMechanics = {
+      teamContext: context,
+      agentRunManager: options.agentRunManager,
+      memoryLocator: options.memoryLocator,
+      activityInspector: options.activityInspector,
+      workspaceManager: options.workspaceManager,
+      callbacks: options.callbacks,
+    };
+    this.configured = new ConfiguredAgentExecutionRegistry({
+      ...agentMechanics,
+      configResolver: new FlatTeamMemberConfigResolver(context),
+    });
+    this.taskAgents = new TaskAgentExecutionRegistry(agentMechanics);
+    this.taskTeams = new TaskTeamExecutionRegistry({ teamContext: context, subTeamRunFactory: options.subTeamRunFactory });
+    this.collaboratorTeams = new CollaboratorTeamExecutionRegistry({ teamContext: context, subTeamRunFactory: options.subTeamRunFactory });
+    this.collaboratorAgents = new TeamRootCollaboratorAgentRegistry(agentMechanics);
+  }
+
+  /**
+   * Adds a collaborator Agent as a direct Agent of this TeamRun (Team root), held by the
+   * collaborator registry beside the configured members. The handle starts lazily on the first
+   * message. `commit` runs after the tree write is durable.
+   */
+  prepareCollaboratorAgent(node: TeamRunAgentNode, mode: ConfiguredMemberActivationMode): Readonly<{ commit(): void }> {
+    this.assertActive();
+    return this.collaboratorAgents.prepare(node, mode);
+  }
+
+  /** Prepares a collaborator Team as one TeamRun under this TeamRun (lazy members, no idle shutdown). */
+  prepareCollaboratorTeam(input: Parameters<CollaboratorTeamExecutionRegistry["prepare"]>[0]): Promise<PreparedCollaboratorTeam> {
+    this.assertActive();
+    return this.collaboratorTeams.prepare(input);
+  }
+
+  requireCollaboratorTeam(teamRunId: string): TeamRun {
+    const run = this.collaboratorTeams.get(teamRunId);
+    if (!run) throw new Error(`Collaborator TeamRun '${teamRunId}' is not active in TeamRun '${this.context.teamRunId}'.`);
+    return run;
+  }
+
+
+  prepareConfiguredActivation() {
+    this.assertActive();
+    const handles = this.context.runtimeContext.memberContexts.map(member => this.configured.getOrCreate(member));
+    return prepareFlatTeamConfiguredActivation({ teamRunId: this.context.teamRunId, handles,
+      releasePrivate: () => this.releasePrivateActivation() });
+  }
+
+  cancelPrivateActivation(): void {
+    for (const handle of this.configured.listHandles()) handle.cancelActivation();
+  }
+  async releasePrivateActivation(): Promise<AgentOperationResult> {
+    this.cancelPrivateActivation();
+    const errors: unknown[] = [];
+    let pending = false;
+    // Start every independently owned member before awaiting any provider's bounded drain.
+    const results = await Promise.allSettled(this.configured.listHandles().map(handle => handle.releaseRuntime()));
+    for (const result of results) {
+      if (result.status === "rejected") errors.push(result.reason);
+      else if (!result.value.accepted) pending = true;
+    }
+    if (errors.length) throw new AggregateError(errors, "Team private members could not all be released.");
+    return pending ? { accepted: false, code: "RUNTIME_RELEASE_PENDING" } : { accepted: true };
+  }
+
+  isActive(): boolean { return this.lifecycle === "active" || this.lifecycle === "quiescing"; }
+  isTerminated(): boolean { return this.lifecycle === "terminated"; }
+
+  getInputStateSnapshots() {
+    if (!this.isActive()) return [];
+    return [...this.configured.listHandles().flatMap(handle => handle.getInputStateSnapshots()),
+      ...this.collaboratorAgents.listHandles().flatMap(handle => handle.getInputStateSnapshots()),
+      ...this.taskAgents.getInputStateSnapshots(),
+      ...this.taskTeams.listTeamRuns().flatMap(run => run.getInputStateSnapshots()),
+      ...this.collaboratorTeams.list().flatMap(run => run.getInputStateSnapshots())];
+  }
+  getLeafAgentStatusSnapshots(): TeamAgentStatusSnapshot[] {
+    if (!this.isActive()) return [];
+    const handles = new Map(this.configured.listHandles().map((handle) => [handle.context.address, handle]));
+    const configured = this.context.runtimeContext.memberContexts.flatMap((member) => {
+      const handle = handles.get(member.address);
+      if (handle) return handle.getLeafAgentStatusSnapshots();
+      return [this.offline(member.address, member.agentRunId)];
+    });
+    const collaborators = this.collaboratorAgents.list().flatMap((collaborator) => collaborator.handle
+      ? collaborator.handle.getLeafAgentStatusSnapshots()
+      : [this.offline(collaborator.address, collaborator.agentRunId)]);
+    return [
+      ...configured,
+      ...collaborators,
+      ...this.taskAgents.getLeafAgentStatusSnapshots(),
+      ...this.taskTeams.listTeamRuns().flatMap((run) => run.getLeafAgentStatusSnapshots()),
+      ...this.collaboratorTeams.list().flatMap((run) => run.getLeafAgentStatusSnapshots()),
+    ];
+  }
+
+  hasOpenExecutionWork(): boolean {
+    return this.directAgentHandles().some((handle) => handle.hasOpenExecutionWork()) ||
+      this.taskAgents.hasRunningWork() ||
+      this.taskTeams.hasRunningWork() ||
+      this.collaboratorTeams.hasOpenExecutionWork();
+  }
+
+  reserveDirectAgentInput(
+    agentRunId: string,
+    message: AgentInputUserMessage,
+    options: AgentRunInputOptions = {},
+  ): Promise<AgentRunInputReservationResult> {
+    this.assertActive();
+    const task = this.taskAgents.get(agentRunId);
+    if (task) return task.reserveInput(message, options);
+    const handle = this.getDirectAgent(agentRunId);
+    if (!handle) return Promise.resolve({
+      reserved: false,
+      code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
+      message: `AgentRun '${agentRunId}' is not a direct execution of TeamRun '${this.context.teamRunId}'.`,
+    });
+    return handle.reserveInput(message, options);
+  }
+
+  async deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult> {
+    this.assertActive();
+    const task = this.taskAgents.get(agentRunId);
+    if (task) return task.postMessage(message);
+    const handle = this.getDirectAgent(agentRunId);
+    return handle
+      ? handle.postMessage(message)
+      : { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not direct to TeamRun '${this.context.teamRunId}'.` };
+  }
+
+  async executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+    this.assertActive();
+    if (this.taskAgents.get(agentRunId)) return this.taskAgents.executeCommand(agentRunId, command);
+    const handle = this.getDirectAgent(agentRunId);
+    if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not direct to TeamRun '${this.context.teamRunId}'.` };
+    switch (command.kind) {
+      case "post_message": return handle.postMessage(command.message);
+      case "approve_tool": return handle.approveToolInvocation(command.invocationId, command.approved, command.reason);
+      case "interrupt": return handle.interrupt();
+    }
+  }
+
+  beginTaskAgent(input: PrepareTaskAgentInput): TaskExecutionPreparationOperation {
+    this.assertActive();
+    return this.taskAgents.beginPreparation(input);
+  }
+
+  beginTaskTeam(input: PrepareTaskTeamInput): TaskExecutionPreparationOperation {
+    this.assertActive();
+    return this.taskTeams.beginPreparation(input);
+  }
+
+  restoreTaskAgent(input: RestoreTaskAgentInput): Promise<void> {
+    this.assertActive();
+    return this.taskAgents.restore(input);
+  }
+
+  restoreTaskTeam(input: RestoreTaskTeamInput): Promise<TeamRun> {
+    this.assertActive();
+    return this.taskTeams.restore(input);
+  }
+
+  cancelDirectTaskExecution(reference: TaskExecutionReference): void {
+    if ("agentRunId" in reference) this.taskAgents.cancel(reference.agentRunId);
+    else this.taskTeams.cancel(reference.teamRunId);
+  }
+  releaseDirectTaskExecution(reference: TaskExecutionReference): Promise<AgentOperationResult> {
+    return "agentRunId" in reference ? this.taskAgents.release(reference.agentRunId) : this.taskTeams.release(reference.teamRunId);
+  }
+  hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean {
+    if (!this.isActive()) return false;
+    return "agentRunId" in reference
+      ? this.taskAgents.isLive(reference.agentRunId)
+      : this.taskTeams.get(reference.teamRunId)?.isActive() ?? false;
+  }
+
+  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
+    this.assertActive();
+    return "agentRunId" in reference
+      ? this.taskAgents.tryShutDownIfQuiet(reference.agentRunId)
+      : this.taskTeams.tryShutDownIfQuiet(reference.teamRunId);
+  }
+
+  /** The caller owns this entire stamped assembly; not the outer root or a borrowed host. */
+  cancelRuntimeActivation(): void {
+    this.taskTeams.cancelRestorations();
+    this.configured.listHandles().forEach(handle => handle.cancelActivation());
+    [...this.taskAgents.listHandles(), ...this.taskAgents.listPreparedHandles()].forEach(handle => handle.cancelActivation());
+    [...this.taskTeams.listTeamRuns(), ...this.taskTeams.listPreparedTeamRuns(), ...this.collaboratorTeams.list()]
+      .forEach(run => run.cancelRuntimeActivation());
+  }
+  async releaseOwnedRuntime(): Promise<AgentOperationResult> {
+    if (this.lifecycle === "terminated") return { accepted: true };
+    this.cancelRuntimeActivation();
+    this.lifecycle = "terminating";
+    const releases = [
+      ...this.taskTeams.releaseRestorations().map(attempt => () => attempt),
+      ...this.configured.listHandles().map(handle => () => handle.releaseRuntime()),
+      ...[...this.taskAgents.listHandles(), ...this.taskAgents.listPreparedHandles()].map(handle => () => handle.releaseRuntime()),
+      ...[...this.taskTeams.listTeamRuns(), ...this.taskTeams.listPreparedTeamRuns(), ...this.collaboratorTeams.list()].map(run => () => run.releaseOwnedRuntime()),
+    ];
+    return releaseOwnedFlatTeamRuntime({ releases, disposeAfterProof: () => {
+      this.configured.dispose(); this.taskAgents.dispose(); this.taskTeams.dispose(); this.collaboratorTeams.dispose();
+      this.lifecycle = "terminated";
+    } });
+  }
+
+  prepareTermination(): Promise<PreparedLocalExecutionTermination> {
+    if (this.preparedTermination) return Promise.resolve(this.preparedTermination);
+    if (this.preparingTermination) return this.preparingTermination;
+    const preparation = this.prepareTerminationOnce();
+    this.preparingTermination = preparation;
+    void preparation.finally(() => {
+      if (this.preparingTermination === preparation) this.preparingTermination = null;
+    }).catch(() => undefined);
+    return preparation;
+  }
+
+  async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
+    if (this.preparedTermination) return this.preparedTermination;
+    if (this.preparingTermination || this.lifecycle !== "active") return null;
+    this.lifecycle = "quiescing";
+    const locals: PreparedLocalExecutionTermination[] = [];
+    try {
+      for (const handle of this.taskAgents.listHandles()) {
+        const local = await handle.tryPrepareTerminationIfQuiescent();
+        if (!local) return this.cancelDeferredPreparation(locals);
+        locals.push(local);
+      }
+      for (const handle of this.taskAgents.listPreparedHandles()) {
+        const local = await handle.tryPrepareTerminationIfQuiescent();
+        if (!local) return this.cancelDeferredPreparation(locals);
+        locals.push(local);
+      }
+      for (const run of this.taskTeams.listTeamRuns()) {
+        const local = await run.tryPrepareTerminationIfQuiescent();
+        if (!local) return this.cancelDeferredPreparation(locals);
+        locals.push(local);
+      }
+      for (const run of [...this.taskTeams.listPreparedTeamRuns(), ...this.collaboratorTeams.list()]) {
+        const local = await run.tryPrepareTerminationIfQuiescent();
+        if (!local) return this.cancelDeferredPreparation(locals);
+        locals.push(local);
+      }
+      for (const handle of [...this.directAgentHandles()].reverse()) {
+        const local = await handle.tryPrepareTerminationIfQuiescent();
+        if (!local) return this.cancelDeferredPreparation(locals);
+        locals.push(local);
+      }
+      return this.createPreparedTermination(locals);
+    } catch (error) {
+      this.cancelDeferredPreparation(locals);
+      throw error;
+    }
+  }
+
+  freezeForRootTermination(): FrozenTeamRunTerminationScope {
+    if (this.frozenTerminationScope) return this.frozenTerminationScope;
+    this.configured.freezeMaterialization();
+    this.collaboratorAgents.freezeMaterialization();
+    this.taskAgents.freezeMaterialization();
+    this.taskTeams.freezeMaterialization();
+    this.collaboratorTeams.freezeMaterialization();
+
+    const agentHandles = [...new Set([
+      ...this.directAgentHandles().filter((handle): handle is FlatTeamAgentExecutionHandle =>
+        handle instanceof FlatTeamAgentExecutionHandle),
+      ...this.taskAgents.listHandles(),
+      ...this.taskAgents.listPreparedHandles(),
+    ])];
+    const childRuns = [...new Set([
+      ...this.taskTeams.listTeamRuns(),
+      ...this.taskTeams.listPreparedTeamRuns(),
+      ...this.collaboratorTeams.list(),
+    ])];
+    const childScopes = childRuns.map((run) => run.freezeForRootTermination());
+    this.frozenTerminationScope = this.createFrozenTerminationScope(agentHandles, childScopes);
+    return this.frozenTerminationScope;
+  }
+
+  async terminate(): Promise<AgentOperationResult> {
+    if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
+    if (this.termination) return this.termination;
+    const prepared = await this.prepareTermination();
+    return prepared.commit().finish();
+  }
+
+  private async prepareTerminationOnce(): Promise<PreparedLocalExecutionTermination> {
+    if (this.lifecycle === "terminated") return this.completedTerminationPreparation();
+    if (this.lifecycle !== "active") {
+      throw new Error(`TeamRun '${this.context.teamRunId}' termination preparation is unavailable.`);
+    }
+    this.lifecycle = "quiescing";
+    const locals: PreparedLocalExecutionTermination[] = [];
+    try {
+      for (const handle of this.taskAgents.listHandles()) {
+        locals.push(await handle.prepareTermination());
+      }
+      for (const handle of this.taskAgents.listPreparedHandles()) {
+        locals.push(await handle.prepareTermination());
+      }
+      for (const run of this.taskTeams.listTeamRuns()) {
+        locals.push(await run.prepareTermination());
+      }
+      for (const run of [...this.taskTeams.listPreparedTeamRuns(), ...this.collaboratorTeams.list()]) {
+        locals.push(await run.prepareTermination());
+      }
+      for (const handle of [...this.directAgentHandles()].reverse()) {
+        locals.push(await handle.prepareTermination());
+      }
+    } catch (error) {
+      [...locals].reverse().forEach((local) => local.cancel());
+      this.lifecycle = "active";
+      throw error;
+    }
+
+    return this.createPreparedTermination(locals);
+  }
+
+  private createPreparedTermination(
+    locals: readonly PreparedLocalExecutionTermination[],
+  ): PreparedLocalExecutionTermination {
+    let state: "prepared" | "cancelled" | "committed" = "prepared";
+    let committed: ReturnType<PreparedLocalExecutionTermination["commit"]> | null = null;
+    const prepared: PreparedLocalExecutionTermination = Object.freeze({
+      cancel: () => {
+        if (state !== "prepared") return;
+        state = "cancelled";
+        [...locals].reverse().forEach((local) => local.cancel());
+        this.lifecycle = "active";
+        if (this.preparedTermination === prepared) this.preparedTermination = null;
+      },
+      commit: () => {
+        if (state === "cancelled") throw new Error(`TeamRun '${this.context.teamRunId}' termination preparation was cancelled.`);
+        if (committed) return committed;
+        state = "committed";
+        this.lifecycle = "terminating";
+        const localCommits = locals.map((local) => local.commit());
+        committed = Object.freeze({ finish: () => this.finishCommittedTermination(localCommits) });
+        return committed;
+      },
+    });
+    this.preparedTermination = prepared;
+    return prepared;
+  }
+
+  private cancelDeferredPreparation(
+    locals: readonly PreparedLocalExecutionTermination[],
+  ): null {
+    [...locals].reverse().forEach((local) => local.cancel());
+    this.lifecycle = "active";
+    return null;
+  }
+
+  private finishCommittedTermination(
+    localCommits: readonly ReturnType<PreparedLocalExecutionTermination["commit"]>[],
+  ): Promise<AgentOperationResult> {
+    if (this.termination) return this.termination;
+    const termination = this.finishCommittedTerminationOnce(localCommits);
+    this.termination = termination;
+    void termination.then((result) => {
+      if (!result.accepted && this.termination === termination) this.termination = null;
+    }, () => {
+      if (this.termination === termination) this.termination = null;
+    });
+    return termination;
+  }
+
+  private async finishCommittedTerminationOnce(
+    localCommits: readonly ReturnType<PreparedLocalExecutionTermination["commit"]>[],
+  ): Promise<AgentOperationResult> {
+    const errors: unknown[] = [];
+    let pending: AgentOperationResult | null = null;
+    for (const local of localCommits) {
+      try { const result = await local.finish(); if (!result.accepted) pending = result; }
+      catch (error) { errors.push(error); }
+    }
+    if (errors.length) throw new AggregateError(errors, "Team exact member release failed.");
+    if (pending) return pending;
+    this.configured.dispose();
+    this.collaboratorAgents.dispose();
+    this.taskAgents.dispose();
+    this.taskTeams.dispose();
+    this.collaboratorTeams.dispose();
+    this.lifecycle = "terminated";
+    return { accepted: true };
+  }
+
+  private completedTerminationPreparation(): PreparedLocalExecutionTermination {
+    return Object.freeze({
+      cancel: () => undefined,
+      commit: () => Object.freeze({ finish: async () => ({ accepted: true as const }) }),
+    });
+  }
+
+  private createFrozenTerminationScope(
+    agentHandles: readonly FlatTeamAgentExecutionHandle[],
+    childScopes: readonly FrozenTeamRunTerminationScope[],
+  ): FrozenTeamRunTerminationScope {
+    return createFrozenRootTerminationScope({ agentHandles, teamScopes: childScopes,
+      onReleased: () => this.completeFrozenTermination() });
+  }
+
+  private completeFrozenTermination(): void {
+    if (this.lifecycle === "terminated") return;
+    this.configured.dispose();
+    this.collaboratorAgents.dispose();
+    this.taskAgents.dispose();
+    this.taskTeams.dispose();
+    this.collaboratorTeams.dispose();
+    this.lifecycle = "terminated";
+  }
+
+  /** Configured members first, then collaborator Agents (in the order they were added). */
+  private directAgentHandles(): FlatTeamAgentExecutionHandle[] {
+    return [...this.configured.listHandles(), ...this.collaboratorAgents.listHandles()];
+  }
+
+  /** A configured member's handle, else a collaborator Agent's; null for any other AgentRun. */
+  private getDirectAgent(agentRunId: string): FlatTeamAgentExecutionHandle | null {
+    const member = this.context.runtimeContext.memberContexts.find((candidate) =>
+      candidate.kind === "agent" && candidate.agentRunId === agentRunId,
+    );
+    if (!member || member.kind !== "agent") return this.collaboratorAgents.get(agentRunId);
+    const handle = this.configured.getOrCreate(member);
+    return handle instanceof FlatTeamAgentExecutionHandle ? handle : null;
+  }
+
+  private offline(address: import("../../agent-collaboration/domain/agent-team-address.js").AgentTeamAddress, agentRunId: string) {
+    return createTeamAgentStatusSnapshot({
+      execution: createTeamAgentExecutionBinding(createCollaborationMemberExecutionIdentity({
+        root: this.context.rootIdentity,
+        memberAddress: address,
+        agentRunId,
+      })),
+      details: createTeamAgentStatusDetails({ status: "offline" }),
+    });
+  }
+
+  private assertActive(): void {
+    if (this.lifecycle !== "active") throw new Error(`TeamRun '${this.context.teamRunId}' is not active.`);
+  }
+}

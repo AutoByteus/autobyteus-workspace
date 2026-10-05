@@ -1,0 +1,6 @@
+2026-10-04T06:27:43.887288+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["bash", "-c", "pnpm --silent isolated-app list > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-instances-before.json && pnpm --silent isolated-app start --from-worktree > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-instance.json"]
+
+INNER_EXIT=0
+ELAPSED=4.82

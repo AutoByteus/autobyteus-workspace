@@ -1,0 +1,135 @@
+[codex/project-task-manager-linked-delegation 028cca231] chore(delivery): checkpoint reviewed linked-delegation candidate before latest-base refresh
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 300 files changed, 10314 insertions(+), 2497 deletions(-)
+ create mode 100644 autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts
+ create mode 100644 autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map
+ create mode 100644 autobyteus-application-backend-sdk/dist/application-agent-target-address.js
+ create mode 100644 autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map
+ create mode 100644 autobyteus-application-backend-sdk/dist/index.d.ts
+ create mode 100644 autobyteus-application-backend-sdk/dist/index.d.ts.map
+ create mode 100644 autobyteus-application-backend-sdk/dist/index.js
+ create mode 100644 autobyteus-application-backend-sdk/dist/index.js.map
+ create mode 100644 autobyteus-application-backend-sdk/dist/launch-profile.d.ts
+ create mode 100644 autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map
+ create mode 100644 autobyteus-application-backend-sdk/dist/launch-profile.js
+ create mode 100644 autobyteus-application-backend-sdk/dist/launch-profile.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-bindings.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-communication.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-events.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-events.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-member-address.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-target-url.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-tools.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-iframe-contract.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-websockets.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-websockets.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/application-websockets.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/execution-resources.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/execution-resources.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/index.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/index.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/index.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/index.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/manifests.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/manifests.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/manifests.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/manifests.js.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts
+ create mode 100644 autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map
+ create mode 100644 autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js
+ create mode 100644 autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map
+ create mode 100644 autobyteus-server-ts/src/agent-collaboration/collaborators/task-scoped-message-recipient.ts
+ create mode 100644 autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-dispatch.ts
+ create mode 100644 autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts
+ create mode 100644 autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-lifetime.ts
+ create mode 100644 autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-seed-admission.ts
+ create mode 100644 autobyteus-server-ts/src/agent-collaboration/execution/task/task-lifetime-operation-gate.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-preparation.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-input-submission.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-release-scope.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/input/agent-run-execution-admission-fence.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/services/agent-run-activation-operation.ts
+ create mode 100644 autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts
+ create mode 100644 autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager-options.ts
+ create mode 100644 autobyteus-server-ts/src/agent-team-execution/local/owned-flat-team-runtime-release.ts
+ create mode 100644 autobyteus-server-ts/src/agent-team-execution/local/prepare-flat-team-configured-activation.ts
+ create mode 100644 autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent-config.json
+ create mode 100644 autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md
+ create mode 100644 autobyteus-server-ts/src/projects/domain/project-task-execution-state.ts
+ create mode 100644 autobyteus-server-ts/src/projects/domain/project-task-execution.ts
+ create mode 100644 autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts
+ create mode 100644 autobyteus-server-ts/src/projects/stores/project-metadata-schema.ts
+ create mode 100644 autobyteus-server-ts/src/projects/stores/project-state-schema.ts
+ create mode 100644 autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts
+ create mode 100644 autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-session-opening.ts
+ create mode 100644 autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts
+ create mode 100644 autobyteus-server-ts/tests/e2e/projects/projects-startup-no-write.e2e.test.ts
+ create mode 100644 autobyteus-server-ts/tests/fixtures/agent-run-preparation-fixtures.ts
+ create mode 100644 autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs
+ create mode 100644 autobyteus-server-ts/tests/fixtures/codex-owned-terminal-cli.mjs
+ create mode 100644 autobyteus-server-ts/tests/fixtures/collaboration-public-projection-fixtures.ts
+ create mode 100644 autobyteus-server-ts/tests/fixtures/projects-released-array.json
+ create mode 100644 autobyteus-server-ts/tests/fixtures/projects-released-array.provenance.json
+ create mode 100644 autobyteus-server-ts/tests/fixtures/task-release-generation-fixtures.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-dispatch-races.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-quiet-generation.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-tree-scope.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/services/agent-run-activation-operation.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-private-release-independence.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-work-source.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/projects/project-state-schema.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/projects/project-task-lifetime.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts
+ create mode 100644 autobyteus-web/test-support/fixtures/linked-org-history-public.json
+ create mode 100644 autobyteus-web/test-support/fixtures/linked-org-history-public.provenance.json

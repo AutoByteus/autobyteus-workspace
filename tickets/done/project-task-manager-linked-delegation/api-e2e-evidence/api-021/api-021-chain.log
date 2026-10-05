@@ -1,0 +1,154 @@
+=== import 15:07:46
+import CONFIGURED ['CONFIGURED 10', 'SKIPPED 0', 'REPLACED 0'] exit 0
+=== exit 0
+=== restart-1 15:08:04
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "restart",
+  "result": {
+    "instanceId": "iso-50993-65ad",
+    "pid": 91482,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:50994",
+    "graphqlUrl": "http://127.0.0.1:50994/graphql",
+    "controlEndpoint": "http://127.0.0.1:50993",
+    "controlPort": 50993,
+    "serverPort": 50994,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api021-upgrade-root-dxrY",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api021-upgrade-root-dxrY/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-50993-65ad.log"
+  }
+}
+=== exit 0
+=== restart-no-op 15:08:08
+=== exit 0
+=== setup 15:08:08
+{"instanceId":"iso-50993-65ad","at":"2026-10-05T15:08:08.734Z","modelOffered":[{"modelIdentifier":"deepseek-v4-flash"}],"packetAgent":{"id":"api021-packet-agent","name":"API021 Packet Agent"},"delegateHelper":{"id":"api021-delegate-helper","name":"API021 Delegate Helper"},"bringHelper":{"id":"api021-bring-helper","name":"API021 Bring Helper"},"coordinator":{"id":"api021-team-coordinator","name":"API021 Team Coordinator"},"reader":{"id":"api021-team-reader","name":"API021 Team Reader"},"team":{"id":"api021-packet-team","name":"API021 Packet Team"},"manager":{"id":"autobyteus-project-task-manager","name":"Project Task Manager"}}
+=== exit 0
+=== agent 15:08:08
+STEP agent run root created
+STEP agent run assigned entries written and started; trees Task-free
+STEP agent run owned delegate → delegated, bring-in → broughtIn, owned task_id rejected
+STEP agent run Manager read: current assignments only
+STEP agent run DONE A closed every A entry and stopped exactly A runs
+STEP agent run fence: every closed A run rejects input
+STEP agent run Manager, open B and borrowed still usable
+STEP agent run repeat DONE: no resource file change
+STEP agent run reopen + delegate: new open assigned; old closed; list shows only new
+STEP agent run unlinked delegation works and records nothing
+STEP agent run run phase complete
+=== exit 0
+=== agent_team 15:09:13
+STEP agent_team run root created
+STEP agent_team run assigned entries written and started; trees Task-free
+STEP agent_team run DONE A closed every A entry and stopped exactly A runs
+STEP agent_team run fence: every closed A run rejects input
+STEP agent_team run Manager, open B and borrowed still usable
+STEP agent_team run repeat DONE: no resource file change
+STEP agent_team run run phase complete
+=== exit 0
+=== agent_org 15:09:43
+STEP agent_org run root created
+STEP agent_org run assigned entries written and started; trees Task-free
+STEP agent_org run DONE A closed every A entry and stopped exactly A runs
+STEP agent_org run fence: every closed A run rejects input
+STEP agent_org run Manager, open B and borrowed still usable
+STEP agent_org run repeat DONE: no resource file change
+STEP agent_org run run phase complete
+=== exit 0
+=== reply 15:10:16
+STEP root, project and Task created
+STEP Task R assigned to W
+STEP (a) run-ID reply reached W; only H started; Task file = assigned W + delegated H
+STEP (b) unlinked control: address reply brought in a new root-wide run; no Task file written
+STEP DONE R closed and stopped exactly W and H; unlinked worker still answers
+=== exit 0
+=== done-smoke 15:10:49
+STEP root, project and tasks created
+STEP assigned A → Agent W, B → Team T (coordinator + reader)
+STEP DONE closed both Tasks and stopped W, T coordinator and T reader (offline)
+STEP closed input rejected TASK_AGENT_RESOURCE_CLOSED
+STEP repeat DONE: no file change, no new run
+STEP Manager still answers
+=== exit 0
+=== restart-2 15:11:17
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "restart",
+  "result": {
+    "instanceId": "iso-50993-65ad",
+    "pid": 96327,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:50994",
+    "graphqlUrl": "http://127.0.0.1:50994/graphql",
+    "controlEndpoint": "http://127.0.0.1:50993",
+    "controlPort": 50993,
+    "serverPort": 50994,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api021-upgrade-root-dxrY",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api021-upgrade-root-dxrY/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-50993-65ad.log"
+  }
+}
+=== exit 0
+=== resume-agent 15:11:21
+STEP agent resume root restored after whole-app restart
+STEP agent resume closed A runs rejected after restart (not woken/restored)
+STEP agent resume open B resumes after restart
+STEP agent resume Task delete keeps the resource file; closed runs still rejected
+STEP agent resume resume phase complete
+=== exit 0
+=== resume-team 15:11:59
+STEP agent_team resume root restored after whole-app restart
+STEP agent_team resume closed A runs rejected after restart (not woken/restored)
+STEP agent_team resume open B resumes after restart
+STEP agent_team resume resume phase complete
+=== exit 0
+=== resume-org 15:12:05
+STEP agent_org resume root restored after whole-app restart
+STEP agent_org resume closed A runs rejected after restart (not woken/restored)
+STEP agent_org resume open B resumes after restart
+STEP agent_org resume resume phase complete
+=== exit 0
+=== damaged-prepare 15:12:11
+STEP agent damaged-prepare damaged Task B agent_run_resources.json (restart next)
+=== exit 0
+=== restart-3 15:12:11
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "restart",
+  "result": {
+    "instanceId": "iso-50993-65ad",
+    "pid": 99489,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:50994",
+    "graphqlUrl": "http://127.0.0.1:50994/graphql",
+    "controlEndpoint": "http://127.0.0.1:50993",
+    "controlPort": 50993,
+    "serverPort": 50994,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api021-upgrade-root-dxrY",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api021-upgrade-root-dxrY/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-50993-65ad.log"
+  }
+}
+=== exit 0
+=== damaged 15:12:15
+STEP agent damaged list_project_tasks marks damaged B assignmentsUnavailable
+STEP agent damaged DONE on damaged B fails with the clear error; status unchanged
+STEP agent damaged description-only delegation rejected up front while a file is damaged
+STEP agent damaged messaging the damaged Task copy is rejected
+STEP agent damaged a readable Task still assigns normally
+STEP agent damaged damaged phase complete
+=== exit 0
+=== ui 15:12:36
+{"result":"pass","columns":["project-task-column-TODO","project-task-column-count","project-task-column-empty","project-task-column-IN_PROGRESS","project-task-column-count","project-task-column-empty","project-task-column-DONE","project-task-column-count"]}
+=== exit 0
+=== CHAIN COMPLETE

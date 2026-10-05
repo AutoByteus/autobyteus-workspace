@@ -1,0 +1,55 @@
+{
+  "rootId": "api015_claude_concrete_root_team_d39f94431a6b476288709fae0b1f9d8a",
+  "instanceId": "iso-57942-2d9d",
+  "canonical": {
+    "api015_claude_team_coordinator_5a1918d55a9f47a8ab1c0e930280175c": {
+      "turnInterrupted": [],
+      "lastInput": {
+        "run_instance_id": "0c2634ba-a83f-4758-807b-2cf71c354057",
+        "revision": 5,
+        "entries": [],
+        "recoverableBlock": null,
+        "change_sequence": 600,
+        "agent_run_id": "api015_claude_team_coordinator_5a1918d55a9f47a8ab1c0e930280175c"
+      },
+      "lastStatus": {
+        "recoverableBlock": null,
+        "status": "offline",
+        "trigger": null,
+        "tool_name": null,
+        "error_message": null,
+        "error_details": null,
+        "change_sequence": 655,
+        "agent_run_id": "api015_claude_team_coordinator_5a1918d55a9f47a8ab1c0e930280175c"
+      }
+    },
+    "api015_claude_team_reader_82920f779bb241f48d63cb5ac76a8524": {
+      "turnInterrupted": [
+        {
+          "turn_id": "api015_claude_team_reader_82920f779bb241f48d63cb5ac76a8524:turn:f69a6503-ecc4-4bb5-b418-15aa6423334c",
+          "reason": null,
+          "change_sequence": 646,
+          "agent_run_id": "api015_claude_team_reader_82920f779bb241f48d63cb5ac76a8524"
+        }
+      ],
+      "lastInput": {
+        "run_instance_id": "7e392037-97e6-494b-ab00-51af77838e1d",
+        "revision": 6,
+        "entries": [],
+        "recoverableBlock": null,
+        "change_sequence": 648,
+        "agent_run_id": "api015_claude_team_reader_82920f779bb241f48d63cb5ac76a8524"
+      },
+      "lastStatus": {
+        "recoverableBlock": null,
+        "status": "offline",
+        "trigger": null,
+        "tool_name": null,
+        "error_message": null,
+        "error_details": null,
+        "change_sequence": 668,
+        "agent_run_id": "api015_claude_team_reader_82920f779bb241f48d63cb5ac76a8524"
+      }
+    }
+  }
+}

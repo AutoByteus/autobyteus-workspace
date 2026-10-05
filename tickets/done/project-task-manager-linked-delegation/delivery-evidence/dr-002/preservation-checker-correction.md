@@ -1,0 +1,3 @@
+# Checker format correction
+
+Initial read-only preservation checker exited1 at the stash comparison: it used `%H %s` (commit subject), whereas the incoming snapshot used `%H %gs` (stash reflog subject). Same exact stash IDs, but the top autostash subject strings differ by design. Both actual read outputs are retained in stash-subject.txt and stash-reflog.txt; the latter is exact input. No stash/index restoration or Git mutation followed. The single comparison was corrected to the original format, and the complete audit rerun. This is checker evidence, not a source/API/runtime failure or erased attempt.

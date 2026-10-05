@@ -1,0 +1,7 @@
+2026-10-04T06:06:38.571339+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round13-resume.mjs", "resume", "native"]
+Scoped Pass actual whole-app restart + explicit same-root restore + same open worker real saved-byte re-read/final reply and same Manager business read; closed B fenced; IDs/lifetimes/Project/tree/old bytes protected; actual packaged renderer reply.
+
+INNER_EXIT=0
+ELAPSED=10.03

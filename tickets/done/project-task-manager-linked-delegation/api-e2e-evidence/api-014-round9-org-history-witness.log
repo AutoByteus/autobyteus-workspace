@@ -1,0 +1,7 @@
+case=API-014
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-org-history-witness.mjs
+Fail FAPI-009: public Org history exposes private Task lifetime stamps and violates strict renderer history contract
+AssertionError [ERR_ASSERTION]: Supported public Org history rows must satisfy strict current renderer contract without private Task lifetime stamps
+
+PROCESS_EXIT_CODE=1

@@ -1,0 +1,37 @@
+{
+  "instanceId": "iso-52127-37fa",
+  "at": "2026-10-05T15:40:46.893Z",
+  "modelOffered": [
+    {
+      "modelIdentifier": "gpt-6-luna"
+    }
+  ],
+  "packetAgent": {
+    "id": "api022-packet-agent",
+    "name": "API022 Packet Agent"
+  },
+  "delegateHelper": {
+    "id": "api022-delegate-helper",
+    "name": "API022 Delegate Helper"
+  },
+  "bringHelper": {
+    "id": "api022-bring-helper",
+    "name": "API022 Bring Helper"
+  },
+  "coordinator": {
+    "id": "api022-team-coordinator",
+    "name": "API022 Team Coordinator"
+  },
+  "reader": {
+    "id": "api022-team-reader",
+    "name": "API022 Team Reader"
+  },
+  "team": {
+    "id": "api022-packet-team",
+    "name": "API022 Packet Team"
+  },
+  "manager": {
+    "id": "autobyteus-project-task-manager",
+    "name": "Project Task Manager"
+  }
+}

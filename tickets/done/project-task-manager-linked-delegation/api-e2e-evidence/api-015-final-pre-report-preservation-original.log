@@ -1,0 +1,2 @@
+Original manual final-pre-report preservation returned1: binary index changed; flags/paths/stages/current300/all20/reference checks independently positive in api-015-final-pre-report-preservation.json. AssertionError at line24 semanticIndexExact because stat audit absent. Original index retained; no restore.
+INNER_EXIT=1

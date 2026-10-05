@@ -1,0 +1,58 @@
+{
+  "agent-collaboration/execution/task/root-task-lifetime-scope.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts",
+    "sha256": "616f3e248e1079a5a6c19a1bc73bc32b1fd6dcfa99dfab5b7b7d44eea4360395"
+  },
+  "projects/runtime/project-task-runtime-release.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts",
+    "sha256": "a97ebf7a44a59e98df4cd378f49615db96f8988d09f1bd5d2ded02e53b932f44"
+  },
+  "agent-team-execution/local/owned-flat-team-runtime-release.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/owned-flat-team-runtime-release.ts",
+    "sha256": "078b7e814a71c7c3865727a31bd09fd6ee85d789c1af5d8e7e045dfe1bfb8818"
+  },
+  "agent-team-execution/local/flat-team-execution-manager.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+    "sha256": "dba3930507beb0a21fd902f9f9b575b0d93ea3a3b25fb64138b724512d040c08"
+  },
+  "agent-execution/domain/agent-run.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+    "sha256": "a5e6bb3c601b2228a2d2f0b045182c0c271798dadaeedbb655d3f0a73cb50c7f"
+  },
+  "agent-execution/input/agent-run-input-admission-state.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts",
+    "sha256": "f2b629df02a77c2d5c09c980199c2ebb6ccce03dc151bad0c246c3785f2598f2"
+  },
+  "agent-execution/services/agent-run-manager.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+    "sha256": "162fbab50b5df6ef0a148a5ce5c69f71467e16167bade7434542616e49f91cbe"
+  },
+  "agent-execution/backends/claude/session/claude-session-cleanup.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts",
+    "sha256": "f7471faa33897d0355f4709e9abc264aa4c8a3d3662fae55c9d2c8469ba2046d"
+  },
+  "agent-execution/backends/claude/session/claude-session.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts",
+    "sha256": "d00f9a124f816a2ca0948e20d5aac976e58360986f72c5ff55d6a3c466774986"
+  },
+  "agent-execution/backends/claude/session/claude-turn-tracker.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-tracker.ts",
+    "sha256": "77f3da6070046763926f28682f155b287afd20a550633586ed51c447c3d935ce"
+  },
+  "agent-execution/backends/claude/session/claude-session-manager.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts",
+    "sha256": "6a7961bf0416fd8241b78789a0edbaf966cb6cc8be49cb19afc5bf0ccb66719e"
+  },
+  "agent-execution/backends/claude/session/claude-session-process.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts",
+    "sha256": "0c2c54eb258fb2076c1979292d408e7ea6473956060b7c2e34f421353a65f102"
+  },
+  "agent-execution/backends/claude/events/claude-session-event-converter.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts",
+    "sha256": "c836a6a8e53a2a0927f0a1fcbea70f3abd1a2e6790129d20b499632e0ecb303c"
+  },
+  "runtime-management/claude/client/claude-sdk-process-owner.ts": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts",
+    "sha256": "e2b8060bdebcc87e458935c09a8327a99fe404ab6b96674150cd74bf29510197"
+  }
+}

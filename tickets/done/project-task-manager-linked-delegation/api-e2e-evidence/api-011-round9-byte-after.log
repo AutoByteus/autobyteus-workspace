@@ -1,0 +1,9 @@
+case=API-011
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-byte-preservation.py after
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-byte-preservation.py", line 25, in <module>
+    else:assert n['completedAt'] and all(e['cleanup']=='released' for e in n['executions']);assert len(n['executions'])==len(l['executions'])
+AssertionError
+
+PROCESS_EXIT_CODE=1

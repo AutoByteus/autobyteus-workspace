@@ -1,0 +1,28 @@
+--- incoming-merge/autobyteus-server-ts/tests/fixtures/task-release-generation-fixtures.ts
++++ IR-011/autobyteus-server-ts/tests/fixtures/task-release-generation-fixtures.ts
+@@ -6,10 +6,10 @@
+ import { TeamRunResolver } from '../../src/agent-team-execution/services/team-run-resolver.js';
+ import { TeamExecutionIndex } from '../../src/agent-team-execution/services/team-execution-index.js';
+ import { AgentOrgExecutionIndex } from '../../src/agent-org-execution/services/agent-org-execution-index.js';
+-import { AgentRunCollaborationExecutionIndex } from '../../src/agent-run-collaboration/services/agent-run-collaboration-execution-index.js';
++import { StandaloneRootExecutionIndex } from '../../src/standalone-agent-run-root/services/standalone-root-execution-index.js';
+ import { TeamTaskExecutionAdapter } from '../../src/agent-team-execution/task-delegation/team-task-execution-adapter.js';
+ import { AgentOrgTaskExecutionAdapter } from '../../src/agent-org-execution/services/agent-org-task-execution-adapter.js';
+-import { AgentRunCollaborationTaskExecutionAdapter } from '../../src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.js';
++import { StandaloneRootTaskExecutionAdapter } from '../../src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.js';
+ import { MemberCollaborationContext, MemberExecutionContext } from '../../src/agent-collaboration/execution/domain/member-execution-context.js';
+ import { createRootExecutionIdentity, createRootExecutionPhysicalScope, type RootSubjectKind } from '../../src/agent-collaboration/execution/domain/root-execution-identity.js';
+ import { projectTaskAgentExecution, projectTaskTeamExecution } from '../../src/agent-collaboration/execution/task/task-execution-tree-projection.js';
+@@ -127,10 +127,10 @@
+       tree = { ...base, rootOrg: { ...base.rootOrg, taskExecutions: tasks } }; index = new AgentOrgExecutionIndex(tree);
+     } else {
+       tree = { subjectKind: 'agent', createdAt: now, host: { address: '/Manager', agentRunId: 'root', agentDefinitionId: 'manager' }, collaborators: [], taskExecutions: tasks };
+-      index = new AgentRunCollaborationExecutionIndex(tree);
++      index = new StandaloneRootExecutionIndex(tree);
+     }
+     const options = { root: f.root, rootAgents: f.rootAgents, teams: f.teams, callbacks: f.callbacks, getTree: () => tree, getIndex: () => index, tokenUsageReadiness: {} };
+-    adapter = kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(options as never) : new AgentRunCollaborationTaskExecutionAdapter(options as never);
++    adapter = kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(options as never) : new StandaloneRootTaskExecutionAdapter(options as never);
+   }
+   // Original exact controls observed at the root registration boundary, not reconstructed by lookup.
+   vi.spyOn(adapter, 'registeredActivations').mockReturnValue(controls);

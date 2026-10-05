@@ -1,0 +1,17 @@
+[
+  {
+    "path": "src/built-in-agents/templates/project-task-manager/agent.md",
+    "current": "97f905389c1f9979c79d7d59cf5df490cc810ace05a463b11b94d6a5c8554d26",
+    "bundled": "97f905389c1f9979c79d7d59cf5df490cc810ace05a463b11b94d6a5c8554d26"
+  },
+  {
+    "path": "dist/services/agent-streaming/collaboration-execution-tree-dto-projection.js",
+    "current": "9bfa8ef6270b1b26a259fe27a87585b14ee8eaec79d9ab7e07a8f2b7b6733f84",
+    "bundled": "9bfa8ef6270b1b26a259fe27a87585b14ee8eaec79d9ab7e07a8f2b7b6733f84"
+  },
+  {
+    "path": "dist/agent-tools/project-tasks/project-task-tool-manifest.js",
+    "current": "7ee1ba7d421d4a72523b71fcf100cea159179d7c57ff45aaf8f7ad191cc46433",
+    "bundled": "7ee1ba7d421d4a72523b71fcf100cea159179d7c57ff45aaf8f7ad191cc46433"
+  }
+]

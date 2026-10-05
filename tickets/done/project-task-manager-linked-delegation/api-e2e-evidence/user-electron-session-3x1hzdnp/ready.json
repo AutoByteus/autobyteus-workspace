@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-05T05:59:10.626360+00:00",
+  "instanceId": "iso-52633-5c91",
+  "backendHealth": {
+    "status": "ok",
+    "message": "Server is running"
+  },
+  "mainWindowTargets": [
+    {
+      "id": "6C9CDA754E5AC65BFF87FAD9A32B5342",
+      "title": "index.html",
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+    }
+  ],
+  "ownPidPresent": true,
+  "leftRunningForUser": true,
+  "keepDataRoot": true,
+  "sourceTestOrAPIReportMutation": false
+}

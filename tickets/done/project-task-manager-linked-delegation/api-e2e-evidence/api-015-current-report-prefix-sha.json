@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-04T08:25:31.632498+00:00",
+  "priorAPI014Bytes": 188038,
+  "priorAPI014Sha256": "fbfc6b8625cd96484e168a123e3147383a7aab61059223f780c83dbfe3d3cd3f",
+  "exactPriorReportRetainedAtEnd": true,
+  "currentRevision": "API-REV-015",
+  "result": "Blocked",
+  "confidence": 88.57
+}

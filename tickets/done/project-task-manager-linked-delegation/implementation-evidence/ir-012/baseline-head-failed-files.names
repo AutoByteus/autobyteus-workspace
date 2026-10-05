@@ -1,0 +1,82 @@
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus","codex_app_server","claude_agent_sdk"]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["claude_agent_sdk"]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["codex_app_server"]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > emits root lifecycle transitions and unregisters only after accepted termination
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > holds Team archive's manager lane through tree/index commit before Restore
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > holds Team unarchive's manager lane through tree/index commit before Restore
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > holds one exact-ID transition lane across unmanaged deletion and restore registration
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > orders an exact-ID Team restore after an in-flight Save and restores committed config
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > refuses Team archive and unarchive after Restore owns the exact-root lane
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > rejects active updates, then persists a stopped narrow patch for the next restore
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > restores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > returns RUN_ACTIVE when an exact-ID Team restore completes before Save
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+ FAIL  tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > fresh standalone Team stays unstarted until exact input; concurrent first input shares readiness
+ FAIL  tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > org Stop drains first readiness and leaves no published worker after success
+ FAIL  tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > publishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none
+ FAIL  tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > readiness rejection remains an error for the exact worker, without starting other members
+ FAIL  tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > restores full Offline scope and durably readies only each addressed member
+ FAIL  tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > team Stop drains first readiness and leaves no published worker after success
+ FAIL  tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts > FlatTeamRunBackend exact local facade integration > forwards prepared task execution, restore, liveness, quiet shutdown, and termination capabilities without alternate ownership
+ FAIL  tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+ FAIL  tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+ FAIL  tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts > MediaUrlTransformerProcessor > emits media segment events
+ FAIL  tests/unit/agent-execution/agent-api-status-projectors.test.ts > agent API status and runtime lifecycle projectors > projects identified and anonymous Autobyteus turns as current running work
+ FAIL  tests/unit/agent-execution/agent-api-status-projectors.test.ts > agent API status and runtime lifecycle projectors > serializes status without the removed interrupt capability
+ FAIL  tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > does not persist activation failure state and permits retry from prepared facts
+ FAIL  tests/unit/agent-execution/backends/autobyteus/events/autobyteus-status-projector.test.ts > projectAutoByteusAgentLifecycleSnapshot > lets current anonymous work establish running
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > reads only the requested root's tree when the team run ID is a stored root (REQ-005)
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > resolves an AgentOrg member's own run inside the requested org root
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > resolves only one exact current address/run match while retaining its configured launch placement
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > still resolves a nested team run ID by searching every root
+ FAIL  tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService member identity and invalid roots > lists the configured member and its task instance as separate runs
+ FAIL  tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService member identity and invalid roots > reports a delegated task instance with its own run ID (AC-011)
+ FAIL  tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService member identity and invalid roots > skips a corrupt root tree with a warning while other roots still list (AC-003)
+ FAIL  tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService member identity and invalid roots > skips a root folder whose tree names a different team run, while other roots still list
+ FAIL  tests/unit/agent-packages/package-root-summary.test.ts > package-root-summary > validates package roots and counts shared agents, team-local agents, and teams
+ FAIL  tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > sets isTemp false for regular workspace IDs
+ FAIL  tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > sets isTemp true for temp workspace ID
+ FAIL  tests/unit/api/graphql/studio-application-api-services.test.ts > Studio application API service registration > publishes one exact service set and releases it idempotently
+ FAIL  tests/unit/api/graphql/types/memory-view-member-resolver.test.ts > MemoryViewResolver member run views > keeps reading team member runs through the shared member view read
+ FAIL  tests/unit/api/graphql/types/memory-view-member-resolver.test.ts > MemoryViewResolver member run views > reads an org member run's memory through its resolved org location
+ FAIL  tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets lifecycle restart recovery reach ready and dispatch an existing pending event
+ FAIL  tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets reload/reentry inspect and dispatch existing journal state before activation
+ FAIL  tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts > buildApplicationExecutionScopeKernel construction transaction > transfers one complete frozen K8 kernel with fixed idempotent construction abort
+ FAIL  tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts > buildApplicationExecutionScopeKernel construction transaction > unwinds the exact owned authority at K6
+ FAIL  tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts > buildApplicationExecutionScopeKernel construction transaction > unwinds the exact owned authority at K7
+ FAIL  tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > authorizes configured and dynamic application Team producers through the live root topology
+ FAIL  tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > continues authority close after shutdown failure and aggregates both failures
+ FAIL  tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > delegates construction abort exactly once after kernel transfer
+ FAIL  tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > maps restore-aware Agent and Team input without changing target or errors
+ FAIL  tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > owns one complete graph-local kernel and freezes every outward capability
+ FAIL  tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects Agent launch identity without leaking the service result
+ FAIL  tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects direct configured Team Agents, excludes task nodes, and deep-freezes
+ FAIL  tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > quiesces issue admission and closes run graph before authority exactly once
+ FAIL  tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > materializes a fresh selected application runtime cwd before definition/provider readiness
+ FAIL  tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+ FAIL  tests/unit/config/streaming-content-flush-interval-setting.test.ts > streaming content flush interval setting > falls back for invalid runtime input undefined
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > builds the workspace directory tree
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > produces shallow JSON with limited depth
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > reads file content within size limits
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > rejects reading files outside the workspace
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > returns the root tree node
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > serializes the tree to JSON
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > throws when reading a file that exceeds max size
+ FAIL  tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > starts with no selected mode and no implicit priority
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm defaults to non-query log kinds
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors explicit environment query-log policy only
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors typed policy and typed-false precedence
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm import acquires no Prisma client or datasource
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm rejects a conflicting post-bind logging policy
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code
+ FAIL  tests/unit/run-history/services/published-artifact-projection-service.test.ts > PublishedArtifactProjectionService > reads historical published-artifact summaries and revision text from durable projection storage
+ FAIL  tests/unit/run-history/services/team-run-history-catalog-service.test.ts > TeamRunHistoryCatalogService current V2 tree > archives the exact V2 execution tree and derived catalog row together
+ FAIL  tests/unit/run-history/services/team-run-history-catalog-service.test.ts > TeamRunHistoryCatalogService current V2 tree > keeps the current row and package when the candidate index write fails
+ FAIL  tests/unit/run-history/services/team-run-history-catalog-service.test.ts > TeamRunHistoryCatalogService current V2 tree > records the first summary only and serializes current lifecycle updates
+ FAIL  tests/unit/run-history/services/team-run-history-catalog-service.test.ts > TeamRunHistoryCatalogService current V2 tree > restores the exact tree and index snapshot after an archive index failure
+ FAIL  tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a remote URL
+ FAIL  tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and initializes a SkillWorkspace for skill_ws_ IDs
+ FAIL  tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files

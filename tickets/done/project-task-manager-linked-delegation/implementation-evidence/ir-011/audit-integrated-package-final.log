@@ -1,0 +1,18 @@
+{
+  "accepted300SnapshotsExact": true,
+  "accepted300BytesExact": 262,
+  "accepted300ChangedOrRenamed": 38,
+  "acceptedRenamed": 8,
+  "all20DurableSnapshotsExact": true,
+  "durableCurrentBytesExact": 15,
+  "durableRenamed": 2,
+  "durableChanged": 5,
+  "all4205AcceptedReferencesExactAtRecoverableLocations": true,
+  "all4597IncomingReferencesRecoverable": true,
+  "incomingCurrentExact": 4572,
+  "manualPaths": 28,
+  "overlap58": 58,
+  "cumulativeAndIntegrationSourceCount": 258,
+  "maxEffectiveSource": 496
+}
+durable changes [('autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts', 'autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-compaction-root-fixture.ts'), ('autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts', 'autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts'), ('autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts', 'autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts'), ('autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts', 'autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts'), ('autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts', 'autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts')]

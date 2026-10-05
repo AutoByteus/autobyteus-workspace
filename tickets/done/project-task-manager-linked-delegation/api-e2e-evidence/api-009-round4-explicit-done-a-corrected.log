@@ -1,0 +1,6 @@
+case=API-009
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/current-manager-visibility-probe.mjs done-a-corrected
+Pass: explicit user DONE, durable closure and released diagnostic, retained offline child rows, Manager/workspaces preserved (not full three-root cascade/physical certification).
+
+PROCESS_EXIT_CODE=0

@@ -2,96 +2,245 @@
 
 ## Scope And Ownership
 
-Projects are durable, node-local work containers: a unique name, optional
-string description, described links to registered filesystem workspaces, and
-embedded Project Tasks. Tasks have descriptions, business status and optional
-Task-owned context files. Manual authoring and three selected agent tools use
-the same services; status is read-only in the web UI and writable by the tools.
+Projects are durable, node-local work containers. Each has a unique name, an
+optional string description, and described links to registered filesystem
+workspaces. It also holds Project Tasks, each with a description, a business
+status and optional Task-owned context files. Manual authoring and three
+selected agent tools use the same services. Status is read-only in the web UI
+and writable by the tools.
 
-Project Tasks are **not** delegated execution children. `projects/**` and
-agent-execution/task-delegation subsystems do not import each other. A status
-write does not launch/delegate/stop an execution, associate a run, assess work,
-or release resources. `DONE` is business metadata, not engineering acceptance.
-The caller owns reasoning and ordering; no scheduler, automatic status flow,
-Manager/team package, new client/script/skill or runtime stopping is provided.
+A Project Task is a **business record**, not an execution child. Saved-ID
+delegation starts fresh Agent/Team copies for a Task. The Task side alone
+records which agent runs were started for it, as the Task's **agent run
+resources**. Execution trees (Team, Org and standalone run history) carry **no
+Task information**: they record runs, nesting, creator and source only.
 
-`ENABLE_PROJECTS` is default-off, per-node **web visibility**, not a backend
-CRUD or tool authorization gate. Unset values initialize to false; persisted
-values are authoritative. Disabling retains metadata and files. The existing
-shared boolean setting accessor is unchanged. Tools must be explicitly selected
-in the agent definition independently of the UI capability.
+The Task service owns business status and the agent run resource records. The
+shared root lifecycle and runtime owners perform dispatch, admission and exact
+release. Explicit `DONE` closes every open agent run resource of the Task
+forever, then asks the runtime to stop exactly those runs. DONE is neither
+engineering acceptance nor proof that the stop succeeded. Other status writes
+do not start work.
+
+The shipped **Project Task Manager** is an ordinary reusable Agent, invoked
+through the existing Chat or `@`. It is not a Project-page panel or a
+scheduler. Its template is in
+`src/built-in-agents/templates/project-task-manager/` (definition ID
+`autobyteus-project-task-manager`).
+
+The Manager:
+- selects, reuses or creates real Tasks;
+- discovers an Agent or Team and delegates saved work to it;
+- follows up on the exact ingress run ID that delegation returns;
+- explicitly sets IN_PROGRESS or DONE from the business information available
+  to it.
+
+Its selected tools are the three Project tools plus `list_available_agents`,
+`delegate_task`, `send_message_to` and `read_file`. It has no
+resource-inspection or cleanup-retry duty. This feature does not guarantee
+worker completion reports, automatic DONE, scheduling, or a worker self-update
+convention.
+
+`ENABLE_PROJECTS` is a default-off, per-node **web visibility** flag. It does
+not gate backend CRUD or tool authorization. Unset values initialize to false,
+and persisted values are authoritative. Disabling it keeps all metadata and
+files. The existing shared boolean setting accessor is unchanged. Tools must be
+selected explicitly in the agent definition, independently of the UI flag.
 
 ## Main Owners
 
-- `src/projects/domain/{models,project-errors,project-task-context,settings}.ts`
-- `src/projects/stores/project-store.ts`
-- `src/projects/services/{project-service,project-task-service,projects-capability-service}.ts`
-- `src/projects/context/project-task-context-{layout,store}.ts`
+- `src/projects/domain/{models,project-errors,project-task-context,settings,task-agent-resources}.ts`
+- `src/projects/stores/{projects-layout,project-store,task-agent-resource-store,task-agent-resource-schema}.ts`
+- `src/projects/services/{project-service,project-task-service,task-agent-resource-service,projects-capability-service}.ts`
+- `src/projects/runtime/task-agent-resource-release.ts` (DONE's stop request)
+- `src/projects/context/project-task-context-store.ts`
+- `src/compositions/project-task-agent-resource-composition.ts`: the **single**
+  place where Projects and the collaboration runtime are bound
+- `src/agent-collaboration/execution/task/`: the root-neutral dispatch, fence
+  and release boundary, reached only through `TaskAgentResourcePort`
+- `src/app-data-migrations/migrations/projects-per-folder-v1/`
 - `src/agent-tools/project-tasks/` (shared contract, manifest, native tools)
 - `src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.ts`
 - `src/api/graphql/types/{projects,project-tasks,projects-capability}.ts`
 - `src/api/rest/project-task-context-files.ts`
 
-## Persistence And Current-Record Writes
+## Persistence Layout
 
-`ProjectStore` stores a JSON array in `<appDataDir>/projects/projects.json`.
-Missing file means no Projects. Updates use the existing per-file lock and
-atomic rename. Tasks share the Project lock and metadata deletion boundary.
+`ProjectsLayout` is the single path owner for `<appDataDir>/projects/`:
 
-```json
-{
-  "projectId": "project_<uuid>",
-  "name": "autobyteus",
-  "description": "",
-  "createdAt": "…",
-  "updatedAt": "…",
-  "workspaces": [
-    { "workspaceId": "agent_ws_…", "workspaceRootPath": "/abs/root", "description": "", "addedAt": "…" }
-  ],
-  "tasks": [
-    {
-      "taskId": "project_task_<uuid>",
-      "description": "Fix login\nDetails…",
-      "status": "TODO",
-      "createdAt": "…",
-      "updatedAt": "…",
-      "contextFiles": [
-        { "storedFilename": "ctx_token__note.txt", "displayName": "note.txt", "mimeType": "text/plain", "sizeBytes": 42 }
-      ]
-    }
-  ]
-}
+```
+<appDataDir>/projects/
+└── <projectId>/
+    ├── project.json
+    ├── drafts/<draftId>/                 temporary uploads before a Task is saved
+    └── tasks/<taskId>/
+        ├── task.json
+        ├── context/                       the Task's saved context files
+        └── agent_run_resources.json       agent runs started for this Task (optional)
 ```
 
-Readers/writers project recognized fields only. Malformed Project/Task/link
-entries are dropped; malformed optional context metadata does not discard an
-otherwise valid Task description. Missing Tasks or contextFiles means empty.
-Existing released Projects are **Directly Usable — No Migration**. Browsing
-never rewrites storage; writes persist the normalized array. No schema version,
-legacy decoder/fallback, migration marker or global startup byte audit is added.
+- **Folder names.** Project and Task IDs pass the safe-segment rule (no
+  separators, NUL or dot segments) and are URI-encoded before becoming folder
+  names, so no path escapes the root.
+- **What is listed.** A folder is a Project only if it holds a valid
+  `project.json`, and a Task only if it holds a valid `task.json` under a valid
+  Project. A Task folder that holds only `agent_run_resources.json`, as left by
+  Delete, is not listed.
+- **Optional files.** A missing `agent_run_resources.json` means no agent runs
+  were started for the Task. A missing `context/` means the Task has no files.
 
-Never persist counts, summaries, availability/display names, context locators,
-absolute context paths, duplicated Project IDs inside Tasks, or client tokens.
+`project.json` holds the released Project fields minus `tasks`:
+`projectId, name, description, createdAt, updatedAt, workspaces[]`.
+
+`task.json` holds the released Task fields plus `projectId`:
+`taskId, projectId, description, status, createdAt, updatedAt, contextFiles[]`.
+
+### Reading and writing
+
+- **Reading is tolerant.** `readProjectFile` and `readTaskFile` in
+  `project-store.ts` keep recognized fields only. A file whose IDs do not match
+  its folders is not a Project or Task. Malformed optional context metadata
+  never discards an otherwise valid Task.
+- **Writing is exact and one file at a time.** Writes use the existing per-file
+  lock and atomic temp-file-plus-rename. Project create, update and delete
+  serialize on one catalog lock, so name uniqueness is checked against the
+  current catalog. Each Task update is a locked read-modify-write of its own
+  `task.json`. A throwing updater writes nothing.
+- **Committed writes are returned.** If a Task write is proven committed but
+  releasing its lock fails afterwards, the committed Task is returned with a
+  warning. This is bounded in-memory commit proof. It is not a durable journal,
+  an fsync or power-loss promise, or a rollback protocol.
+
+### What is never persisted
+
+- Counts, summaries, availability or display names.
+- Context locators, absolute context paths, or client tokens.
+- Run shutdown state, liveness, lineage, addresses or descriptions, in either
+  the Task files or `agent_run_resources.json`.
+
+### Services
+
 `ProjectService` validates names (trimmed, required, case-insensitively unique),
-workspace membership and duplicates inside the locked current-record updater.
-Project reads sort by case-insensitive name then ID. Views exclude embedded
-Tasks and compute `taskCount = tasks.length` and `openTaskCount = non-DONE`.
+workspace membership and duplicates. Project reads sort by case-insensitive
+name, then ID. Views compute `taskCount` and `openTaskCount` (non-DONE) from the
+Task folders.
 
-`ProjectTaskService` applies only supplied fields to the **current** Task under
-the same lock. It never replaces a stale whole Task/Project snapshot. Creation
-requires trimmed nonempty text and generates a TODO Task. Listing is complete
-for the explicit Project, optionally filtered by exact status, ordered by
-updatedAt descending then taskId. Unknown IDs fail, never create on patch.
-Meaningful text/status/file changes bump only Task updatedAt; same-value patches
-preserve it. Task operations never alter parent metadata/timestamps. Description
-or status patches preserve saved context unless an explicit context delta exists.
+`ProjectTaskService` applies only the supplied fields to the **current** Task.
+- Creation requires trimmed, non-empty text and creates a TODO Task with a fresh
+  UUID. Creation never reads an existing `agent_run_resources.json`.
+- Listing covers the whole explicit Project, optionally filtered by exact
+  status, and is ordered by `updatedAt` descending, then `taskId`.
+- Unknown IDs fail; a patch never creates a Task.
+- Meaningful text, status or file changes bump only the Task's `updatedAt`.
+  Same-value patches preserve it.
+- Task operations never change the parent Project's metadata or timestamps.
 
-The JSON writer's optional synchronous commit observer runs immediately after
-successful rename, before lock finalization. ProjectStore records those proven
-committed rows and returns them with a warning if finalization later fails.
-Pre-rename failures still propagate. This is bounded in-memory commit proof,
-not a durable journal, fsync/power-loss promise, retry or rollback protocol;
-a failed lock release can still block subsequent writes.
+### Delete
+
+- **Task Delete** removes the Task's `task.json` and `context/`, and keeps its
+  `agent_run_resources.json`.
+- **Project Delete** removes `project.json` first, then `drafts/` and every
+  Task's `task.json` and `context/`, and keeps every `agent_run_resources.json`.
+
+Keeping these files preserves closed-forever and history. Delete adds no stop
+and no guard: still-open work continues under the normal runtime lifecycle. New
+Tasks get fresh UUIDs, so they never reuse a deleted Task's ID.
+
+## One-Time Migration And The Projects Gate
+
+Released data lived in the single array file `projects/projects.json`, plus
+`task_context_files/` and `task_context_drafts/`. The STARTUP_ONLY app-data
+migration `20261005_projects_per_folder_v1` (`projects-per-folder-v1`,
+`requiredOnStartup`) moves it once into the layout above:
+
+| Before (released) | After |
+| --- | --- |
+| `projects.json` row (with `tasks[]`) | `<projectId>/project.json` and `<projectId>/tasks/<taskId>/task.json` |
+| `task_context_files/<pid>/<tid>/` | `<pid>/tasks/<tid>/context/` (directory rename) |
+| `task_context_drafts/<pid>/<draftId>/` | `<pid>/drafts/<draftId>/` (directory rename) |
+| `projects.json` | `projects.pre-folders.json` (the retained original, never read again) |
+
+How the migration behaves:
+- **Frozen reader.** It reads the source only through the frozen
+  `released-projects-array-v1.ts`, and validates its output with the current
+  readers before retiring the source.
+- **Skips.** Invalid rows or Tasks, a duplicate `projectId`, and conflicting
+  existing targets are `SKIPPED` with a warning and preserved. The unshipped
+  dev `{taskLifetimes}` row is skipped silently as known residue.
+- **Failure.** An unparsable source or an I/O failure is `FAILED`, and the
+  sources stay unchanged.
+- **Retry.** A retry recognizes completed targets and redoes only the rest.
+  There are no backups, hashes or journal.
+- **Cleanup.** The old context and draft roots are removed only when empty.
+
+**No lockout.** Startup never waits on Projects. While `projects.json` still
+exists (migration not completed), **only Projects** rejects, with
+`PROJECTS_MIGRATION_PENDING` ("Projects data is being upgraded; restart the app
+to finish. Other features keep working."). Chat, agents and everything else
+keep working. Un-migrated data is never shown as an empty Project list. Current
+code checks only that `projects.json` **exists**; it never reads the old shape.
+
+**Maintenance obligation (CRR-027; data_migration_guideline §4).** The migration
+validates its output with the current `ProjectsLayout`, `readProjectFile` and
+`readTaskFile`. Before any change to those three, repoint
+`projects-per-folder-v1` to frozen copies of them, so the released migration
+keeps its exact behavior.
+
+## Agent Run Resources
+
+Each Task's `<projectId>/tasks/<taskId>/agent_run_resources.json` is the
+**only** record of the agent runs started for that Task:
+
+```jsonc
+{ "taskId": "project_task_…",
+  "agentRunResources": [
+    { "role": "assigned", "assignedBy": "<manager agentRunId>",
+      "hostRoot": { "kind": "agent", "runId": "…" },
+      "agentRun": { "kind": "team", "teamRunId": "…", "coordinatorAgentRunId": "…" },
+      "linkedAt": "…", "start": "started", "closedAt": null },
+    { "role": "delegated", "hostRoot": { … }, "agentRun": { "kind": "agent", "agentRunId": "…" },
+      "linkedAt": "…", "start": "failed", "startError": { "code": "…", "message": "…" }, "closedAt": null } ] }
+```
+
+| Field | Meaning |
+| --- | --- |
+| `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`. `delegated`: an open owned run's `delegate_task` without a task_id. `broughtIn`: an open owned run's `send_message_to` that started a new copy. |
+| `assignedBy` | Present only on `assigned`: the run that made the assignment. |
+| `hostRoot` | The top-level run the user started, which hosts this agent run. |
+| `agentRun` | `{kind: agent, agentRunId}` or `{kind: team, teamRunId, coordinatorAgentRunId}`. |
+| `linkedAt` | Written **before** any resource is acquired, so DONE always reaches work that is still starting. |
+| `start` | `starting`, then `started` or `failed` (with `startError`). Set once. |
+| `closedAt` | `null` while open. DONE sets it on every open entry. **Closed is forever.** |
+
+Rules for the file:
+- Its `taskId` matches its folder.
+- A run appears at most once and never belongs to two Tasks.
+- Write preconditions are evaluated from the content read under that file's
+  lock, never from the in-memory view. These cover the creator being open,
+  uniqueness, and the open set that DONE closes.
+- At composition, the server loads every
+  `*/tasks/*/agent_run_resources.json` into an in-memory view.
+
+### Damaged file (Q-3)
+
+A damaged file is one that is unreadable, invalid, or whose `taskId` does not
+match its folder. It puts its Task in the **damaged set**. The server starts
+normally and logs `TASK_AGENT_RESOURCES_UNAVAILABLE` once per damaged file.
+
+The rest of the app keeps working: Chat, the Projects screens, Task
+create/edit/delete, non-DONE status changes, and every Task whose file is
+readable.
+
+These operations fail with `TASK_AGENT_RESOURCES_UNAVAILABLE`, whose message
+names the file and says to fix or restore it and restart:
+- assign and DONE for the damaged Task;
+- while the damaged set is non-empty, description-only `delegate_task` by a
+  non-owned sender (rejected up front, before planning or resources);
+- while the damaged set is non-empty, waking, messaging or restoring a copy
+  that is not in the view.
+
+Recovery: there is no self-repair and no automatic reload. Fix or restore the
+file and restart.
 
 ## Exactly Three Agent Tools
 
@@ -104,105 +253,240 @@ Tools MCP share the parser, manifest, services and error projection.
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS or DONE | `{projectId, tasks: [...]}` |
 | `create_or_update_task` | Required `project_id`; omit `task_id` to create with required `description` and **omit status**; provide a known `task_id` to patch description and/or status | `{task: {...}}` |
 
-Tool Task results contain projectId, taskId, full description, status and
-contextFiles; no timestamps. Each file exposes saved metadata and a relative
-HTTP locator; localPath is included only when Task authority validates physical
-saved bytes. It is a server-local path, not guaranteed accessible to a remote
-consumer. Missing bytes do not produce a fabricated localPath.
+`list_project_tasks` stays global: it returns every Task in the Project, with
+an optional `status` filter. Each Task has `projectId`, `taskId`, the full
+`description`, `status` and `contextFiles`, plus **one** of:
+- `assignments`: the Task's **current** assignments. These are the `role:
+  assigned` entries with `closedAt: null`, from any Manager. Each is
+  `{targetAgentRunId, kind: agent | team, assignedBy, outcome}`.
+  - `targetAgentRunId` is the value `delegate_task` returned: the Agent's run,
+    or the Team's coordinator.
+  - `outcome` is `accepted` (started), `not_confirmed` (starting) or `failed`.
+- `assignmentsUnavailable: true`, when that Task's `agent_run_resources.json`
+  is damaged. An empty list is never shown in its place.
 
-Presence matters: null/blank task_id is invalid, not creation; null/blank or
-non-string description is invalid; unknown input keys are rejected. Empty patch
-is TASK_PATCH_REQUIRED; invalid status TASK_STATUS_INVALID; any supplied status
-on creation TASK_CREATE_STATUS_UNSUPPORTED. No batch update, Project creation,
-context upload/edit/delete tool or implicit Project binding is provided.
+The result omits closed assignments, workers' internal `delegated`/`broughtIn`
+runs, timestamps and raw lifetime or stop diagnostics. Those runs stay visible
+in the app's run views. Acceptance is not completion. The purpose is continuity
+across chats and Managers (follow-up via `send_message_to`) and avoiding
+duplicate work.
 
-These names are opt-in in both native and session MCP exposure. They require
-no collaboration-member context, are independent of the Projects UI flag, and
-protect their first-party names against configured MCP collisions. Selection
-of one does not expose the other two. Unselected tools remain absent/rejected;
-no retired task tools/category-wide exposure is restored. Existing discovery,
-delegate_task and send_message_to remain separate operations.
+`create_or_update_task` returns only `{task: {projectId, taskId, status}}`. It is
+a recorded-business acknowledgement, not an assessment or proof of a stop.
 
-Known domain errors preserve `{error: {code, message}}`; unexpected tool failures
-are logged and redacted as PROJECT_OPERATION_FAILED. MCP sets isError on tool
-failure and returns matching JSON text/structuredContent; native uses the same
-business projection. Session/local-admission failures remain transport-owned.
-See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle/access.
+Each listed context file exposes its saved metadata and a relative HTTP
+locator. `localPath` is included only when the Task authority validates the
+physical saved bytes. It is a server-local path, not guaranteed to be reachable
+by a remote consumer. Missing bytes never produce a fabricated `localPath`.
+
+Input validation:
+- Presence matters: a null or blank `task_id` is invalid, not a request to
+  create. A null, blank or non-string `description` is invalid.
+- Unknown input keys are rejected.
+- An empty patch fails with `TASK_PATCH_REQUIRED`, an invalid status with
+  `TASK_STATUS_INVALID`, and any status supplied on creation with
+  `TASK_CREATE_STATUS_UNSUPPORTED`.
+- There is no batch update, Project creation, context upload/edit/delete tool,
+  or implicit Project binding.
+
+Exposure:
+- The tool names are opt-in in both native and session MCP exposure.
+- They need no collaboration-member context and are independent of the
+  Projects UI flag.
+- Their first-party names are protected against configured MCP collisions.
+- Selecting one does not expose the other two. Unselected tools stay absent or
+  rejected. No retired task tools and no category-wide exposure are restored.
+- Discovery, `delegate_task` and `send_message_to` remain separate operations.
+
+Errors:
+- Known domain errors keep the shape `{error: {code, message}}`. Unexpected
+  tool failures are logged and redacted as `PROJECT_OPERATION_FAILED`.
+- MCP sets `isError` on tool failure and returns matching JSON
+  text/structuredContent. Native tools use the same business projection.
+- Session and local-admission failures remain transport-owned.
+- If a mutation's result cannot be confirmed, `PROJECT_OPERATION_UNCONFIRMED`
+  asks the caller to check the saved Task before repeating. An exception is not
+  proof of rollback.
+
+See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and access.
+
+## Saved-ID Delegation And Agent Run Resources
+
+`delegate_task` has two strict, coequal input modes:
+
+- Described work: `{recipient_address, description, reference_files?}`.
+- Linked saved work: `{recipient_address, task_id}` only. No `project_id`,
+  description or reference_files override is accepted. Blank, unknown or
+  ambiguous Task IDs, DONE Tasks and unavailable saved bytes fail without
+  spawning anything as a fallback.
+
+Linked dispatch resolves the unique current node-local Task and snapshots its
+saved description and context bytes into the ordinary work packet. Later Task
+edits do not rewrite work that was already delivered. Each call allocates a
+fresh copy. The TeamRun identity and the coordinator's ingress AgentRun
+identity remain distinct. Follow-up uses the exact returned
+`target_agent_run_id`, not the definition address.
+
+### Assignment and linking
+
+- **Link before resources.** The `assigned` entry is written as `starting`
+  after identity planning and before any resource is acquired. It then becomes
+  `started` or `failed`.
+- **Re-read under serialization.** Inside the Task's serialization,
+  `ProjectTaskService` re-reads the Task, which must exist and not be DONE. A
+  concurrent DONE is therefore either entirely before the link (and the link is
+  rejected) or entirely after it (and the link is closed).
+- **Indeterminate dispatch.** A dispatch that may already have been accepted
+  is reported as indeterminate. Inspect it rather than repeating blindly. A run
+  left `starting` by a crash stays `starting`, which the Manager sees as
+  `not_confirmed`.
+
+### Ownership
+
+- **Owned runs.** A Task owns its assigned copies, their configured Team
+  members, and the copies its open owned runs create: `delegated` sub-work and
+  `broughtIn` helpers, even when a helper is physically hosted as a sibling in
+  the enclosing root.
+- **Hosting.** All runs of an assignment are hosted in one root: the top-level
+  run the user started. Two Tasks in the same root stay fully separate.
+- **Workers cannot assign.** A Task-owned run may not call `delegate_task` with
+  any `task_id` (`TASK_AGENT_RESOURCE_OWNED_SENDER`). Workers delegate sub-work
+  without a task_id.
+- **Address messaging order:** the sender's own Team instance; then the Task's
+  open helper at that address; then an existing unowned run in the root; then a
+  new `broughtIn` copy.
+- **Borrowed, not adopted.** Existing unowned advisers and the user's `@`
+  collaborators are borrowed, never adopted. Unowned agents are never checked
+  against Task data. Another Task's run is never a shared helper
+  (`TASK_AGENT_RESOURCE_CONFLICT`). Definition or address equality is not
+  ownership.
+
+### DONE
+
+1. Explicit DONE commits `closedAt` on every open entry of the Task's
+   `agent_run_resources.json`, then writes the status to `task.json`.
+2. It then asks each host root to stop exactly the Task's closed runs. The root
+   invokes the exact release on every authority it still holds for each run,
+   whether or not the run looks live. It does not wait for work to become idle.
+3. A closed run can never receive new input, be woken or be restored, whatever
+   happened to its stop. This holds after restart and after the Task is
+   deleted.
+
+Stop failures and retries:
+- **Nothing about the stop is persisted (Q-1).** Failures are kept in memory
+  and logged (`TASK_AGENT_RESOURCE_STOP_FAILED`) with taskId, hostRoot, run and
+  error. The platform never reports a stop it did not achieve.
+- **Repeating DONE is the retry.** It writes no file change and requests the
+  stop again. Already-stopped runs are no-ops; live ones are retried.
+- **No automatic retry.** There is no background retry. Root Stop or a server
+  restart also ends the runs.
+- **If the metadata write fails**, the runs stay closed and the stop is still
+  requested. The caller gets the existing "could not be confirmed" error, and
+  repeating DONE completes it.
+
+### Reopen and what DONE never touches
+
+Reopening to TODO or IN_PROGRESS starts nothing and does not reopen old runs. A
+later deliberate delegation adds a new open `assigned` entry. DONE never
+deletes outputs, conversations, workspaces, Git worktrees or uploaded
+originals. It never stops the Manager, the root, another Task's runs or
+borrowed runs.
+
+See [Team delegation](agent_team_execution.md#server-owned-task-delegation),
+[message resolution](agent_communication.md#task-linked-message-scope) and
+[public history](run_history.md#task-linked-history-and-public-projection).
 
 ## Workspace Registration Boundary
 
 Projects query only WorkspaceManager's public registration API, never the
-registry file directly. Workspaces do not import Projects and removal is not
-blocked by links. Views derive AVAILABLE/UNREGISTERED from current registration
-and displayName from the preserved root snapshot. Re-registering the same
-path-derived identity restores availability.
+registry file directly. Workspaces do not import Projects, and removing a
+workspace is not blocked by links. Views derive AVAILABLE or UNREGISTERED from
+the current registration, and the display name from the preserved root
+snapshot. Re-registering the same path-derived identity restores availability.
 
-Create/update Project inputs may contain one aggregate `workspaces` list of
-workspaceId/description. Omission on edit preserves links; a supplied list is
-the explicit desired membership. Retained links preserve their root/addedAt,
-including unregistered snapshots; new links must be currently registered and
-unique. Project edits preserve current embedded Tasks.
+Create and update Project inputs may contain one aggregate `workspaces` list of
+workspaceId/description:
+- On edit, omitting the list preserves the existing links. A supplied list is
+  the explicit desired membership.
+- Retained links keep their root and `addedAt`, including unregistered
+  snapshots. New links must be currently registered and unique.
 
-The web form registers each New path through existing createWorkspace **before**
-the aggregate Project save. Registration normalizes metadata; it does **not**
-mkdir. A registration may survive a later failed Project save; no distributed
-transaction/rollback saga is promised. Direct add/update/remove workspace-link
-GraphQL APIs remain supported. Unlinking/deleting a Project never unregisters
-or removes physical workspace roots.
+The web form registers each new path through the existing `createWorkspace`
+**before** the aggregate Project save.
+- Registration normalizes metadata; it does **not** mkdir.
+- A registration may survive a later failed Project save. No distributed
+  transaction or rollback saga is promised.
+- The direct add/update/remove workspace-link GraphQL APIs remain supported.
+- Unlinking or deleting a Project never unregisters or removes physical
+  workspace roots.
 
-## Task Context Bytes / Lifetime
+## Task Context Bytes
 
-Compound Project/Task identity owns saved files under:
+Compound Project/Task identity owns the saved files:
 
-- `<appDataDir>/projects/task_context_files/<encodedProjectId>/<encodedTaskId>/`
-- Drafts: `<appDataDir>/projects/task_context_drafts/<encodedProjectId>/<draftId>/`
+- Saved: `<appDataDir>/projects/<projectId>/tasks/<taskId>/context/`
+- Drafts: `<appDataDir>/projects/<projectId>/drafts/<draftId>/`
 
-Draft manifests are server-owned; no synthetic run owner, arbitrary client path,
-locator fetch or run-context fallback. The neutral policy/writer in
+Draft manifests are server-owned. There is no synthetic run owner, arbitrary
+client path, locator fetch or run-context fallback.
+
+Uploads use the neutral policy and writer in
 `src/context-files/domain/context-file-upload-policy.ts` and
-`services/context-file-upload-writer.ts` is shared with existing run uploads:
-MIME allowlist, 25 MiB maximum, safe generated names, exclusive writes and
-multipart truncation rejection. Descendant symlinks/traversal fail closed;
-a configured root symlink is allowed under the existing containment convention.
+`services/context-file-upload-writer.ts`, shared with existing run uploads:
+- MIME allowlist and a 25 MiB maximum;
+- safe generated names and exclusive writes;
+- rejection of truncated multipart uploads;
+- descendant symlinks and traversal fail closed. A configured root symlink is
+  allowed under the existing containment convention.
 
-Successful Task metadata Save is the only publication boundary. Creation accepts
-contextDraft `{draftId, storedFilenames}`; edit accepts contextChanges
-`{draftId?, addStoredFilenames?, removeStoredFilenames?}`. Explicit deltas are
-merged with current references; text/status-only updates preserve files.
-Immutable new copies are prepared/validated before metadata commit. Old saved
-bytes are not deleted before successful commit; supplied file membership and
-compound ownership are rechecked inside the Project update.
+A successful Task metadata Save is the only publication boundary.
+- Creation accepts `contextDraft {draftId, storedFilenames}`.
+- Edit accepts
+  `contextChanges {draftId?, addStoredFilenames?, removeStoredFilenames?}`.
+- Explicit deltas are merged with the current references. Text-only or
+  status-only updates preserve the files.
+- New immutable copies are prepared and validated before the metadata commit.
+  Old saved bytes are not deleted before a successful commit.
 
-Unproven outcomes retain prepared copies and drafts rather than assuming an
-exception means rollback. After proven success, consumed drafts/removed copies
-are cleaned best-effort; cleanup failure cannot undo committed metadata or cause
-fake failure/resend. Task deletion commits metadata first, then cleans its owned
-bytes; Project deletion also cleans its scoped saved/draft namespace best-effort.
-Other Task/Project/run/workspace files and original uploads are not deleted.
+Unproven outcomes keep the prepared copies and drafts rather than assuming an
+exception means rollback. After proven success, consumed drafts and removed
+copies are cleaned up best-effort. A cleanup failure cannot undo committed
+metadata or cause a fake failure or resend. Other Task, Project, run or
+workspace files and original uploads are never deleted.
 
-Draft files expire after 24h by per-file mtime; saved references never TTL-expire,
-including DONE Tasks. Reclaiming old unpublished saved copies requires fresh
-Task-scoped membership proof while holding the Project lock on explicit context
-operations. Failed proof preserves bytes; failed cleanup can leave inaccessible
-orphan bytes, including failed-create copies until explicit Project cleanup.
-No secure-erasure, global recovery or adversarial filesystem race guarantee.
+Retention:
+- Draft files expire after 24 hours, by per-file mtime.
+- Saved references never expire, including on DONE Tasks.
+- A failed cleanup can leave inaccessible orphan bytes.
+- There is no secure-erasure, global recovery or adversarial filesystem race
+  guarantee.
 
 ## GraphQL And REST
 
-Project queries/mutations and capability operations retain their names.
-`Project` exposes taskCount and openTaskCount, not its embedded list;
-createProject/updateProject additionally accept optional aggregate workspaces.
+Project queries, mutations and capability operations keep their names.
+`Project` exposes `taskCount` and `openTaskCount`, not its Task list.
+`createProject` and `updateProject` additionally accept the optional aggregate
+`workspaces`.
 
-- `projectTasks(projectId)` returns full ProjectTask records with contextFiles.
-- `createProjectTask({projectId, description, contextDraft?})` creates TODO.
+- `projectTasks(projectId)` returns full ProjectTask records with
+  `contextFiles`. GraphQL Task reads do not include assignments.
+- `createProjectTask({projectId, description, contextDraft?})` creates a TODO
+  Task.
 - `updateProjectTask({projectId, taskId, description, contextChanges?})` edits
-  text/context, preserving status. **No GraphQL/manual UI status mutation.**
-- `deleteProjectTask({projectId, taskId})` returns Boolean.
-- GraphQL context metadata includes locator, not native tool localPath.
-- ProjectError maps to GraphQLError extensions.code (see domain/project-errors.ts).
+  text and context, preserving status. **There is no GraphQL or manual UI
+  status mutation.**
+- `deleteProjectTask({projectId, taskId})` returns a Boolean.
+- GraphQL context metadata includes the locator, not the native tool's
+  `localPath`.
+- `ProjectError` maps to `GraphQLError extensions.code` (see
+  `domain/project-errors.ts`).
 
-REST routes below are mounted under `/rest`, within existing main-server
-access policy (not the loopback Agent Tools MCP listener):
+Known gap: the gated `projects` and `project` queries surface
+`PROJECTS_MIGRATION_PENDING` as a clear message without `extensions.code`. No
+current consumer reads that code.
+
+REST routes are mounted under `/rest`, within the existing main-server access
+policy (not the loopback Agent Tools MCP listener):
 
 | Method / route | Purpose |
 | --- | --- |
@@ -212,20 +496,30 @@ access policy (not the loopback Agent Tools MCP listener):
 | DELETE `/projects/:projectId/task-context-drafts/:draftId` | Discard draft |
 | GET `/projects/:projectId/tasks/:taskId/context-files/:storedFilename` | Read currently referenced saved bytes |
 
-Missing Project/Task/reference/bytes is 404; invalid domain context is 400.
-Reads enforce physical regular-file containment and compound membership.
-Responses set nosniff; supported raster images inline, other MIME types download
-with encoded display filename. No directory listing or arbitrary-path route.
+A missing Project, Task, reference or set of bytes returns 404. An invalid
+domain context returns 400. Reads enforce physical regular-file containment and
+compound membership. Responses set nosniff. Supported raster images are served
+inline; other MIME types download with an encoded display filename. There is no
+directory listing and no arbitrary-path route.
 
 ## Testing / Related Docs
 
-Read [workspace TESTING.md](../../../TESTING.md) first. Coverage lives in
-`tests/unit/projects`, `tests/unit/agent-tools/project-tasks`, preserved
-`tests/unit/context-files`, `tests/architecture/projects-boundaries.test.ts`,
-`tests/e2e/projects/{projects-graphql,project-task-boundaries}.e2e.test.ts`,
-and MCP route/runtime exposure/startup tests. Real temporary byte fixtures and
-HTTP/default MCP/native tests are distinct from injected fault contracts.
-Run `pnpm -C autobyteus-server-ts prepare:shared` before downstream server checks.
+Read [workspace TESTING.md](../../../TESTING.md) first.
+
+Coverage:
+- `tests/unit/projects`: per-folder store, services, Task agent run resources.
+- `tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts`
+- `tests/unit/agent-tools/project-tasks`
+- `tests/unit/context-files` (preserved)
+- `tests/architecture/projects-boundaries.test.ts`
+- `tests/e2e/projects/{projects-graphql,project-task-boundaries,projects-startup-migration}.e2e.test.ts`.
+  The startup-migration e2e covers both startup entrypoints, the gate before
+  and after, and retry.
+- MCP route, runtime exposure and startup tests.
+
+Real temporary byte fixtures and HTTP, default MCP and native tests are
+distinct from injected fault contracts. Run
+`pnpm -C autobyteus-server-ts prepare:shared` before downstream server checks.
 
 - [Frontend Projects](../../../autobyteus-web/docs/projects.md)
 - [Workspaces](workspaces.md)

@@ -1,0 +1,112 @@
+{
+  "at": "2026-10-04T06:37:06.687184+00:00",
+  "scope": "Observation correction only, original attempt failure preserved; no six-read or release pass",
+  "scriptReadNameOracle": "Original physical probe still used reversed run_bash/read_file allowlist, so its reads0 is invalid for SDK Bash/Read. This omission is a temporary oracle issue, not source failure. Even with corrected classification only4/6 actually read, coordinators delegated/read reported markers instead of own file result; no guaranteed report/read style invented.",
+  "inheritedSixIds": [
+    "api014p_physical_coordinator_c3e624c43ba94b58878ad2effa020844",
+    "api014p_physical_reader_7a5c8db790bd411ea6f50f7d63eef110",
+    "api014p_physical_leaf_0aba54efb18e4e49bdc01c2e38a243d3",
+    "api014p_physical_helper_coordinator_e32ebc162fd6401eb986bd2494dfe22a",
+    "api014p_physical_reader_6a5fa952f9754b018c1a5df47c8e61f7",
+    "api014p_physical_leaf_5192cc993fec49ec8b73ed68b31d72d0"
+  ],
+  "actualReadActors": 4,
+  "actors": [
+    {
+      "agentRunId": "api014p_physical_coordinator_c3e624c43ba94b58878ad2effa020844",
+      "actualNativeReadResult": false,
+      "reads": [],
+      "archiveSource": "server-data/memory/agent_orgs/api014p_physical_org_a22d24f2_cdcd_43b7_8435_4d1ee1351819_e0ccdf3fc10a4cb2ab8ebfc6f5c59583/api014p_physical_workers_9a5c083d90654be88c52dd4eea385a48/api014p_physical_coordinator_c3e624c43ba94b58878ad2effa020844/raw_traces_active.jsonl"
+    },
+    {
+      "agentRunId": "api014p_physical_reader_7a5c8db790bd411ea6f50f7d63eef110",
+      "actualNativeReadResult": true,
+      "reads": [
+        {
+          "id": "rt_1791095486177_25938d31-3670-462e-9f07-bfad4821932d",
+          "ts": 1791095486.177,
+          "turn_id": "api014p_physical_reader_7a5c8db790bd411ea6f50f7d63eef110:turn:4fe5b582-8a50-4caa-a710-cd9f43f91e7e",
+          "seq": 3,
+          "trace_type": "tool_result",
+          "content": "",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "Bash",
+          "tool_call_id": "toolu_01EtxLRyxA4if1uHtSh2SjQX",
+          "tool_result": "API014P_PHYSICAL_A_d688ec0f-257e-4b9f-812b-1cbf117c24ad",
+          "tool_error": null
+        }
+      ],
+      "archiveSource": "server-data/memory/agent_orgs/api014p_physical_org_a22d24f2_cdcd_43b7_8435_4d1ee1351819_e0ccdf3fc10a4cb2ab8ebfc6f5c59583/api014p_physical_workers_9a5c083d90654be88c52dd4eea385a48/api014p_physical_reader_7a5c8db790bd411ea6f50f7d63eef110/raw_traces_active.jsonl"
+    },
+    {
+      "agentRunId": "api014p_physical_leaf_0aba54efb18e4e49bdc01c2e38a243d3",
+      "actualNativeReadResult": true,
+      "reads": [
+        {
+          "id": "rt_1791095489661_f8c27103-f5f5-478c-b3ce-30b02a3e8194",
+          "ts": 1791095489.661,
+          "turn_id": "api014p_physical_leaf_0aba54efb18e4e49bdc01c2e38a243d3:turn:7203c942-afb9-4721-afc0-d8176013f380",
+          "seq": 3,
+          "trace_type": "tool_result",
+          "content": "",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "Bash",
+          "tool_call_id": "toolu_01G4axA5AXAvsNtcQCSioxSr",
+          "tool_result": "API014P_PHYSICAL_A_d688ec0f-257e-4b9f-812b-1cbf117c24ad",
+          "tool_error": null
+        }
+      ],
+      "archiveSource": "server-data/memory/agent_orgs/api014p_physical_org_a22d24f2_cdcd_43b7_8435_4d1ee1351819_e0ccdf3fc10a4cb2ab8ebfc6f5c59583/api014p_physical_leaf_0aba54efb18e4e49bdc01c2e38a243d3/raw_traces_active.jsonl"
+    },
+    {
+      "agentRunId": "api014p_physical_helper_coordinator_e32ebc162fd6401eb986bd2494dfe22a",
+      "actualNativeReadResult": false,
+      "reads": [],
+      "archiveSource": "server-data/memory/agent_orgs/api014p_physical_org_a22d24f2_cdcd_43b7_8435_4d1ee1351819_e0ccdf3fc10a4cb2ab8ebfc6f5c59583/api014p_physical_helper_team_ea9160b99420450c924c9447ba7b1c22/api014p_physical_helper_coordinator_e32ebc162fd6401eb986bd2494dfe22a/raw_traces_active.jsonl"
+    },
+    {
+      "agentRunId": "api014p_physical_reader_6a5fa952f9754b018c1a5df47c8e61f7",
+      "actualNativeReadResult": true,
+      "reads": [
+        {
+          "id": "rt_1791095499058_da452d5d-23a8-4a96-b2fb-4d9dafe493b0",
+          "ts": 1791095499.058,
+          "turn_id": "api014p_physical_reader_6a5fa952f9754b018c1a5df47c8e61f7:turn:1dc0f556-d3d8-4caa-8713-3bb0c0f5a0b1",
+          "seq": 3,
+          "trace_type": "tool_result",
+          "content": "",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "Bash",
+          "tool_call_id": "toolu_01N755GfK73Gudx8bqhRnpuo",
+          "tool_result": "API014P_PHYSICAL_A_d688ec0f-257e-4b9f-812b-1cbf117c24ad",
+          "tool_error": null
+        }
+      ],
+      "archiveSource": "server-data/memory/agent_orgs/api014p_physical_org_a22d24f2_cdcd_43b7_8435_4d1ee1351819_e0ccdf3fc10a4cb2ab8ebfc6f5c59583/api014p_physical_helper_team_ea9160b99420450c924c9447ba7b1c22/api014p_physical_reader_6a5fa952f9754b018c1a5df47c8e61f7/raw_traces_active.jsonl"
+    },
+    {
+      "agentRunId": "api014p_physical_leaf_5192cc993fec49ec8b73ed68b31d72d0",
+      "actualNativeReadResult": true,
+      "reads": [
+        {
+          "id": "rt_1791095508669_f4dcd31f-0cb4-4a17-ab37-4701cafcc3bc",
+          "ts": 1791095508.669,
+          "turn_id": "api014p_physical_leaf_5192cc993fec49ec8b73ed68b31d72d0:turn:f3a397c5-3945-4f6c-84f0-c71d0ec019d6",
+          "seq": 3,
+          "trace_type": "tool_result",
+          "content": "",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "Bash",
+          "tool_call_id": "toolu_019PoCW1rP7yoZpGsLeq5NRN",
+          "tool_result": "API014P_PHYSICAL_A_d688ec0f-257e-4b9f-812b-1cbf117c24ad",
+          "tool_error": null
+        }
+      ],
+      "archiveSource": "server-data/memory/agent_orgs/api014p_physical_org_a22d24f2_cdcd_43b7_8435_4d1ee1351819_e0ccdf3fc10a4cb2ab8ebfc6f5c59583/api014p_physical_leaf_5192cc993fec49ec8b73ed68b31d72d0/raw_traces_active.jsonl"
+    }
+  ],
+  "businessDoneSent": false,
+  "physicalReleaseTested": false,
+  "fullCausalReleaseCertificate": false,
+  "remaining": "Physical predicate timed out before DONE. Configured unowned actor replies also activated outside owned family; exclusive-W2 census not reached. No provider/process leak or wrong-scope cause inferred."
+}

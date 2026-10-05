@@ -1,0 +1,21 @@
+{
+  "mcpResult": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /software_engineering_team/code_reviewer.\",\"target_agent_run_id\":\"code_reviewer_324c9986b1b745749a92256d790995c4\"}"
+      }
+    ],
+    "structuredContent": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to /software_engineering_team/code_reviewer.",
+      "target_agent_run_id": "code_reviewer_324c9986b1b745749a92256d790995c4"
+    }
+  },
+  "deliveredReferenceCount": 1596,
+  "recipient_address": "/software_engineering_team/code_reviewer",
+  "scope": "API-REV-009 Fail / focused failure-origin review only; no successful-test or Delivery advancement.",
+  "at": "2026-10-03T19:31:53.608318+00:00",
+  "receiptCreatedAfterDelivery": true
+}

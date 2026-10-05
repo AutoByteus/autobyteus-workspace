@@ -1,0 +1,15 @@
+{
+  "result": "API-REV-016 Pass",
+  "confidence": 95,
+  "referenceCountDelivered": 4167,
+  "all20DurablePathsAttached": true,
+  "recipient": "/software_engineering_team/code_reviewer",
+  "receipt": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/code_reviewer.",
+    "target_agent_run_id": "code_reviewer_324c9986b1b745749a92256d790995c4"
+  },
+  "deliveryAdvanceAuthorized": false,
+  "scope": "Post-delivery receipt only; no recipient polling or further stage work"
+}

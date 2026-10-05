@@ -1,0 +1,16 @@
+{
+  "entry": "Implementation Review",
+  "revision": "CRR-022",
+  "scope": "Full Re-Audit",
+  "decision": "Pass",
+  "primary": {
+    "recipient_address": "/software_engineering_team/api_e2e_engineer",
+    "when": "implementation review passes and cumulative package ready for executable coverage"
+  },
+  "informationalAfterPrimarySuccess": {
+    "recipient_address": "/software_engineering_team/implementation_engineer",
+    "when": "implementation review passes and needs informational pass notification after primary API/E2E success"
+  },
+  "noDeliveryRoute": true,
+  "noAdditionalRecipientsOrPolling": true
+}

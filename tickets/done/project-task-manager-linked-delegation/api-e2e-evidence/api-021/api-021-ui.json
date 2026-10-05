@@ -1,0 +1,41 @@
+{
+  "at": "2026-10-05T15:12:37.200Z",
+  "instanceId": "iso-50993-65ad",
+  "listText": "Projects\n\nGroup related workspaces under a named project and describe what each one is for.\n\nNew project\nSearch projects\nAPI020 reply aa09e62f\n\nFAPI-012 re-baseline\n\nNo open tasks · No workspaces\n\nAPI021 agent_org c4d64d5b\n\nIR-013 root journey\n\n1 open task · No workspaces\n\nAPI021 agent_team 70c0157b\n\nIR-013 root journey\n\n1 open task · No workspaces\n\nAPI021 done 5c5e741d\n\nIR-014 force-release smoke\n\nNo open tasks · No workspaces\n\nUpgrade witness A\n\nWritten by the released app\n\n1 open task · No workspaces\n\nUpgrade witness B\n\nSecond released Project\n\n1 open task · No workspaces",
+  "boardText": "Search tasks\nRefresh\nNew task\nTo Do\n0\n\nNo tasks\n\nIn Progress\n0\n\nNo tasks\n\nDone\n1\nAPI020 Task R: wait for the user's follow-up instructions and report briefly to the requester. Do not change any Task status.",
+  "columns": [
+    {
+      "id": "project-task-column-TODO",
+      "text": "To Do\n0\n\nNo tasks"
+    },
+    {
+      "id": "project-task-column-count",
+      "text": "0"
+    },
+    {
+      "id": "project-task-column-empty",
+      "text": "No tasks"
+    },
+    {
+      "id": "project-task-column-IN_PROGRESS",
+      "text": "In Progress\n0\n\nNo tasks"
+    },
+    {
+      "id": "project-task-column-count",
+      "text": "0"
+    },
+    {
+      "id": "project-task-column-empty",
+      "text": "No tasks"
+    },
+    {
+      "id": "project-task-column-DONE",
+      "text": "Done\n1\nAPI020 Task R: wait for the user's follow-up instructions and report briefly to the requester. Do not change any Task status."
+    },
+    {
+      "id": "project-task-column-count",
+      "text": "1"
+    }
+  ],
+  "result": "pass"
+}

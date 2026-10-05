@@ -1,0 +1,4 @@
+agent-collaboration/execution/task/task-lifetime-gate.js packaged=41d3b650b0ce6c33 worktree=41d3b650b0ce6c33
+compositions/project-task-lifetime-composition.js packaged=e1df0dda4508dca2 worktree=e1df0dda4508dca2
+projects/services/project-task-service.js packaged=dc05fd80eba03340 worktree=dc05fd80eba03340
+agent-collaboration/execution/task/root-task-execution-lifecycle.js packaged=d893493df30289fd worktree=d893493df30289fd

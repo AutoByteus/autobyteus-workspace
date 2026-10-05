@@ -1,0 +1,60 @@
+{
+  "createdAt": "2026-10-03T20:23:51.649Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "api010-packet-team",
+    "teamDefinitionName": "API010 Packet Team",
+    "teamRunId": "api010_packet_team_8c65ab2a16724d8bbce74a2f6e41ecb8",
+    "coordinatorAddress": "/coordinator",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b"
+    },
+    "members": [
+      {
+        "address": "/coordinator",
+        "agentDefinitionId": "api010-team-coordinator",
+        "role": null,
+        "description": null,
+        "agentRunId": "api010_team_coordinator_57038826e49a4bd280207230128b5740",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b"
+        }
+      },
+      {
+        "address": "/reader",
+        "agentDefinitionId": "api010-team-reader",
+        "role": null,
+        "description": null,
+        "agentRunId": "api010_team_reader_4fe638a8544e4394994d5c6ea6cba2ac",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b"
+        }
+      }
+    ],
+    "collaborators": [],
+    "taskExecutions": []
+  }
+}

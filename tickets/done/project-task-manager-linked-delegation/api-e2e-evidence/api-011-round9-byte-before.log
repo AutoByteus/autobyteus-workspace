@@ -1,0 +1,6 @@
+case=API-011
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-byte-preservation.py before
+Scoped before-byte snapshot 51 OWN files/all8 complete workspace files
+
+PROCESS_EXIT_CODE=0

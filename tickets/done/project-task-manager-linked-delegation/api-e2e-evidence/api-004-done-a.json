@@ -1,0 +1,2701 @@
+{
+  "instanceId": "iso-62535-1894",
+  "mode": "done-a",
+  "started": "2026-10-03T12:33:51.115Z",
+  "ws": [],
+  "console": [],
+  "checkpoints": [],
+  "hostRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+  "beforeView": {
+    "root_subject_kind": "agent",
+    "root_run_id": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+    "root_agent": {
+      "base_change_sequence": 1315,
+      "is_active": true,
+      "execution_tree": {
+        "subjectKind": "agent",
+        "createdAt": "2026-10-03T12:27:33.688Z",
+        "host": {
+          "address": "/project_task_manager",
+          "agentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+          "agentDefinitionId": "autobyteus-project-task-manager"
+        },
+        "collaborators": [],
+        "taskExecutions": [
+          {
+            "address": "/api004_packet_agent",
+            "agentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+            "platformAgentRunId": "01a101bc-3d28-7db0-9642-ab859c89cba7",
+            "delegatorAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "startedAt": "2026-10-03T12:27:56.045Z",
+            "source": {
+              "kind": "agent",
+              "agentDefinitionId": "api004-packet-agent",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+              }
+            }
+          },
+          {
+            "address": "/api004_packet_team",
+            "teamRunId": "api004_packet_team_2cd38d86f65144f09ab76c5072d0d436",
+            "members": [
+              {
+                "address": "/api004_packet_team/coordinator",
+                "agentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+                "platformAgentRunId": "01a101bc-583d-7be2-8cb7-e323d87e1e95"
+              },
+              {
+                "address": "/api004_packet_team/reader",
+                "agentRunId": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+                "platformAgentRunId": "01a101bc-58b7-7a51-bc0b-268b0ca71d2b"
+              }
+            ],
+            "taskExecutions": [],
+            "delegatorAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "startedAt": "2026-10-03T12:28:02.977Z",
+            "source": {
+              "kind": "agent_team",
+              "teamDefinitionId": "api004-packet-team",
+              "coordinatorAddress": "/api004_packet_team/coordinator",
+              "members": [
+                {
+                  "address": "/api004_packet_team/coordinator",
+                  "agentDefinitionId": "api004-team-coordinator"
+                },
+                {
+                  "address": "/api004_packet_team/reader",
+                  "agentDefinitionId": "api004-team-reader"
+                }
+              ],
+              "handoffs": [],
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+              }
+            }
+          },
+          {
+            "address": "/api004_team_reader",
+            "agentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+            "platformAgentRunId": "01a101bd-0d55-7f51-973c-97a9e349c576",
+            "delegatorAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "startedAt": "2026-10-03T12:28:49.335Z",
+            "source": {
+              "kind": "agent",
+              "agentDefinitionId": "api004-team-reader",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+              }
+            }
+          }
+        ]
+      },
+      "communication_messages": {
+        "schemaVersion": 1,
+        "subjectKind": "agent",
+        "hostRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+        "messages": [
+          {
+            "messageId": "collabmsg_i7yXp2uZ7KxMlkpRuzNEBlSIC4bRHfeq",
+            "senderAgentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+            "receiverAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "content": "Blocked: read_file is not available in this run's tool inventory, so I cannot read the supplied saved Task attachment using the required tool or verify its exact marker. No files or Task statuses were changed. Please make read_file available.",
+            "messageType": "blocker",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:28:11.218Z"
+          },
+          {
+            "messageId": "collabmsg_Er7wH0XgwEg3GtcQYdlmqM211lo1Tr9G",
+            "senderAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "receiverAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "content": "Blocked: read_file is not available in my enabled tool inventory, so I cannot verify the attachment marker using the required tool. Also, no exact canonical address for the configured Team reader member was supplied. Please provide read_file access and the reader member address. I have not modified files, created copies, or changed any Task status.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:28:21.472Z"
+          },
+          {
+            "messageId": "collabmsg_DT0wiIV1BdK58zShnFNc-t9eq4iOjKi3",
+            "senderAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "receiverAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "content": "Available-agent discovery returned API004 Team Reader at canonical address /api004_team_reader. This supplies the missing address only; do not create copies or resend initial work. I cannot make read_file available through my current tools. Preserve the saved Task instructions and report the blocker if the required tool remains unavailable; do not change Task status.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:28:32.848Z"
+          },
+          {
+            "messageId": "collabmsg_MgRV0NMrETM4yzm9YVINfXaMxS7TYASB",
+            "senderAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "receiverAgentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+            "content": "Read only the supplied saved Task attachment using read_file and return its exact API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067 marker. Exact readable path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/server-data/projects/task_context_files/project_865580da-5cef-4545-84d0-493db4819067/project_task_bc9dd420-32e0-4597-860f-b238223683ae/ctx_e3e8db390957__saved-packet-B.txt . Do not modify files, create copies, delegate further, or change Task status. If read_file is unavailable, report the blocker.",
+            "messageType": "agent_message",
+            "referenceFiles": [
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/server-data/projects/task_context_files/project_865580da-5cef-4545-84d0-493db4819067/project_task_bc9dd420-32e0-4597-860f-b238223683ae/ctx_e3e8db390957__saved-packet-B.txt"
+            ],
+            "createdAt": "2026-10-03T12:28:49.497Z"
+          },
+          {
+            "messageId": "collabmsg_ycDl47lTuUt8G_82l8ZP2fRcgvne-y8z",
+            "senderAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "receiverAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "content": "The required read_file tool remains unavailable, so my own read marker is unverified. Sent the single required work message with the exact supplied attachment path to /api004_team_reader; delivery confirmed to api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76. No copies, file modifications, or Task status changes.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:28:57.375Z"
+          },
+          {
+            "messageId": "collabmsg_r3Pd2co_HT9pYqdigvuEOgeaF8_KSpeo",
+            "senderAgentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+            "receiverAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "content": "Blocked: read_file is unavailable in the enabled tools. I did not read the attachment, modify files, create copies, delegate, or change Task status.",
+            "messageType": "blocker",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:29:00.137Z"
+          },
+          {
+            "messageId": "collabmsg_cCX86a-y54bZxNHRIOHkxrrVNlHelBik",
+            "senderAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "receiverAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "content": "Reader /api004_team_reader also reports read_file unavailable and did not read the attachment. Both coordinator and reader markers remain unverified. No files were modified, copies created, further delegation performed, or Task status changed.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:29:07.406Z"
+          },
+          {
+            "messageId": "collabmsg_yx7m0L2LEcLybaH9TIAle6EWGJlzmAWX",
+            "senderAgentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+            "receiverAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "content": "Read the supplied exact attachment using read-only cat. Exact marker: API004_ATTACHMENT_A_project_865580da-5cef-4545-84d0-493db4819067. No files or Task statuses changed.",
+            "messageType": "result",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:32:12.474Z"
+          },
+          {
+            "messageId": "collabmsg_aif_On9HZCgV5JuzSsRkHLQgOxsol_j5",
+            "senderAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "receiverAgentRunId": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+            "content": "Read only the saved attachment at exact path /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/server-data/projects/task_context_files/project_865580da-5cef-4545-84d0-493db4819067/project_task_bc9dd420-32e0-4597-860f-b238223683ae/ctx_e3e8db390957__saved-packet-B.txt and report its exact marker. Requester explicitly permits runtime-native read-only cat if read_file is unavailable. Actually read it; do not infer from description. Do not modify files or Task status, inspect credentials, create copies, or delegate.",
+            "messageType": "agent_message",
+            "referenceFiles": [
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/server-data/projects/task_context_files/project_865580da-5cef-4545-84d0-493db4819067/project_task_bc9dd420-32e0-4597-860f-b238223683ae/ctx_e3e8db390957__saved-packet-B.txt"
+            ],
+            "createdAt": "2026-10-03T12:32:21.251Z"
+          },
+          {
+            "messageId": "collabmsg_sFuvPGYP4SZCw3dkrmXxVLZjiBNWgitq",
+            "senderAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "receiverAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "content": "Actually read the exact supplied attachment using permitted read-only cat (exit code 0). My exact read marker: API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067. Sent one work message to the corrected configured member /api004_packet_team/reader; delivery confirmed. No files or Task status changed, no copies created, and no credentials inspected.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:32:29.629Z"
+          },
+          {
+            "messageId": "collabmsg_bYuyCD9liuISiFFbuQ2IA469SrjTgps5",
+            "senderAgentRunId": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+            "receiverAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "content": "Read the supplied saved attachment. Exact marker: API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:32:37.146Z"
+          },
+          {
+            "messageId": "collabmsg_rnH6sCe1ZI4j0hK9PnxG-u3idtkWqST7",
+            "senderAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "receiverAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+            "content": "Configured reader /api004_packet_team/reader independently reports reading the supplied attachment and returning the same exact marker as my own read: API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T12:32:43.543Z"
+          }
+        ]
+      },
+      "agent_statuses": [
+        {
+          "member_address": "/api004_packet_agent",
+          "agent_run_id": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api004_team_reader",
+          "agent_run_id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api004_packet_team/coordinator",
+          "agent_run_id": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api004_packet_team/reader",
+          "agent_run_id": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        }
+      ],
+      "agent_input_states": [
+        {
+          "agent_run_id": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+          "state": {
+            "run_instance_id": "e6d02c90-5190-43a8-95eb-58a0c6099198",
+            "revision": 7,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+          "state": {
+            "run_instance_id": "37ddf5e1-78ae-4194-a964-3dba33f6e195",
+            "revision": 4,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+          "state": {
+            "run_instance_id": "5aea5a5c-4e65-4cc2-9e6b-92647b34c068",
+            "revision": 12,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+          "state": {
+            "run_instance_id": "c8c0211a-961f-4825-94d9-517b062979c4",
+            "revision": 4,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        }
+      ]
+    }
+  },
+  "beforeState": [
+    {
+      "projectId": "project_865580da-5cef-4545-84d0-493db4819067",
+      "name": "API004 saved-ID visible workers",
+      "description": "Owned current real-provider validation",
+      "createdAt": "2026-10-03T12:26:23.452Z",
+      "updatedAt": "2026-10-03T12:26:23.452Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_0352e556-c4cc-493c-83ab-a478e75f70ca",
+          "description": "Read the supplied saved Task attachment using read_file and return its exact API004_ATTACHMENT_A_project_865580da-5cef-4545-84d0-493db4819067 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T12:26:23.504Z",
+          "updatedAt": "2026-10-03T12:27:56.274Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_fc0a561759c0__saved-packet-A.txt",
+              "displayName": "saved-packet-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_bc9dd420-32e0-4597-860f-b238223683ae",
+          "description": "Read the supplied saved Task attachment using read_file and return its exact API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T12:26:23.572Z",
+          "updatedAt": "2026-10-03T12:28:03.308Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_e3e8db390957__saved-packet-B.txt",
+              "displayName": "saved-packet-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskLifetimes": [
+        {
+          "lifetimeId": "project_task_lifetime_64732eee-8554-4d08-83a0-433a21ff0061",
+          "projectId": "project_865580da-5cef-4545-84d0-493db4819067",
+          "taskId": "project_task_0352e556-c4cc-493c-83ab-a478e75f70ca",
+          "openedAt": "2026-10-03T12:27:56.044Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3"
+              },
+              "execution": {
+                "agentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b"
+              },
+              "ingressAgentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T12:27:56.051Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_548ac8bd-e0f9-49e3-b085-675c0adce9ce",
+          "projectId": "project_865580da-5cef-4545-84d0-493db4819067",
+          "taskId": "project_task_bc9dd420-32e0-4597-860f-b238223683ae",
+          "openedAt": "2026-10-03T12:28:02.975Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3"
+              },
+              "execution": {
+                "teamRunId": "api004_packet_team_2cd38d86f65144f09ab76c5072d0d436"
+              },
+              "ingressAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T12:28:02.986Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3"
+              },
+              "execution": {
+                "agentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76"
+              },
+              "ingressAgentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+              "purpose": "helper",
+              "reservedAt": "2026-10-03T12:28:49.352Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "beforeProcesses": [
+    {
+      "pid": 34718,
+      "ppid": 1,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 34719,
+      "ppid": 34718,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 34720,
+      "ppid": 34718,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 35668,
+      "ppid": 34718,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 35674,
+      "ppid": 34718,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+    },
+    {
+      "pid": 35727,
+      "ppid": 34718,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 35728,
+      "ppid": 34718,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 38854,
+      "ppid": 35668,
+      "comm": "codex",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+    },
+    {
+      "pid": 39117,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 39118,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 39139,
+      "ppid": 39118,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 39826,
+      "ppid": 38854,
+      "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+    },
+    {
+      "pid": 41311,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 41312,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 41347,
+      "ppid": 41312,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 42312,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 42313,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 42357,
+      "ppid": 42313,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 42560,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 42562,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 42628,
+      "ppid": 42560,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 45695,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 45696,
+      "ppid": 38854,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 45735,
+      "ppid": 45695,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    }
+  ],
+  "currentInternalTree": {
+    "subjectKind": "agent",
+    "createdAt": "2026-10-03T12:27:33.688Z",
+    "host": {
+      "address": "/project_task_manager",
+      "agentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+      "agentDefinitionId": "autobyteus-project-task-manager"
+    },
+    "collaborators": [],
+    "taskExecutions": [
+      {
+        "address": "/api004_packet_agent",
+        "agentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+        "platformAgentRunId": "01a101bc-3d28-7db0-9642-ab859c89cba7",
+        "taskLifetime": {
+          "lifetimeId": "project_task_lifetime_64732eee-8554-4d08-83a0-433a21ff0061",
+          "purpose": "assignment"
+        },
+        "delegatorAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+        "startedAt": "2026-10-03T12:27:56.045Z",
+        "source": {
+          "kind": "agent",
+          "agentDefinitionId": "api004-packet-agent",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+          }
+        }
+      },
+      {
+        "address": "/api004_packet_team",
+        "teamRunId": "api004_packet_team_2cd38d86f65144f09ab76c5072d0d436",
+        "members": [
+          {
+            "address": "/api004_packet_team/coordinator",
+            "agentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "platformAgentRunId": "01a101bc-583d-7be2-8cb7-e323d87e1e95"
+          },
+          {
+            "address": "/api004_packet_team/reader",
+            "agentRunId": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+            "platformAgentRunId": "01a101bc-58b7-7a51-bc0b-268b0ca71d2b"
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+        "startedAt": "2026-10-03T12:28:02.977Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "api004-packet-team",
+          "coordinatorAddress": "/api004_packet_team/coordinator",
+          "members": [
+            {
+              "address": "/api004_packet_team/coordinator",
+              "agentDefinitionId": "api004-team-coordinator"
+            },
+            {
+              "address": "/api004_packet_team/reader",
+              "agentDefinitionId": "api004-team-reader"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+          }
+        },
+        "taskLifetime": {
+          "lifetimeId": "project_task_lifetime_548ac8bd-e0f9-49e3-b085-675c0adce9ce",
+          "purpose": "assignment"
+        }
+      },
+      {
+        "address": "/api004_team_reader",
+        "agentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+        "platformAgentRunId": "01a101bd-0d55-7f51-973c-97a9e349c576",
+        "taskLifetime": {
+          "lifetimeId": "project_task_lifetime_548ac8bd-e0f9-49e3-b085-675c0adce9ce",
+          "purpose": "helper"
+        },
+        "delegatorAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+        "startedAt": "2026-10-03T12:28:49.335Z",
+        "source": {
+          "kind": "agent",
+          "agentDefinitionId": "api004-team-reader",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+          }
+        }
+      }
+    ]
+  },
+  "request": "I explicitly approve and instruct you to mark saved Task project_task_0352e556-c4cc-493c-83ab-a478e75f70ca in Project project_865580da-5cef-4545-84d0-493db4819067 DONE now using create_or_update_task. Keep its description/context unchanged. Do not change any other Task, do not delegate, do not stop this Manager/root, and do not delete anything. Then list the Project Tasks and report recorded business statuses. Return API004_A_DONE_RECORDED. Do not infer that accepted work is completed unless I instruct it; this is my explicit business instruction.",
+  "samples": [
+    {
+      "time": "2026-10-03T12:33:51.379Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:51.888Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:52.391Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:52.892Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:53.398Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:53.903Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:54.405Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:54.910Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:55.412Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:55.920Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:56.423Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:56.927Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:57.429Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:57.930Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:58.432Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:58.933Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:59.435Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:33:59.948Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:00.451Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:00.954Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:01.455Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:01.962Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:02.468Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:02.971Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:03.475Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:03.977Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:04.479Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:04.985Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:05.487Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:05.990Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:06.492Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:06.995Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:07.505Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:08.010Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:08.514Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:09.017Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:09.519Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:10.021Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:10.526Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:11.027Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:11.530Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:12.032Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:12.534Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:13.037Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:13.542Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:14.044Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:14.547Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:15.049Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:15.555Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:16.060Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:16.563Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:17.065Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:17.566Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:18.067Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:18.569Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:19.071Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:19.580Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:20.089Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:20.592Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:21.095Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:21.604Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:22.105Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:22.607Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:23.112Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:23.615Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:24.117Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:24.623Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:25.123Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:25.625Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:26.128Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:26.630Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:27.138Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:27.643Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:28.144Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:28.646Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:29.147Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:29.652Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:30.153Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:30.654Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:31.156Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:31.657Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:32.158Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:32.660Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:33.161Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:33.662Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:34.164Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:34.666Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:35.166Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:35.669Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:36.170Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:36.672Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:37.173Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:37.674Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:38.175Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:38.678Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:39.179Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:39.680Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:40.182Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:40.683Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:41.185Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:41.687Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:42.188Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:42.690Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:43.194Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:43.695Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:44.196Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:44.699Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:45.209Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:45.711Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:46.212Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:46.713Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:47.215Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:47.716Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:48.217Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:48.727Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:49.228Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:49.729Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:50.233Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:50.735Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:51.237Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:51.737Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:52.239Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:52.743Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:53.243Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:53.745Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:54.245Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:54.751Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:55.254Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:55.757Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:56.260Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:56.765Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:57.266Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:57.769Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:58.271Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:58.774Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:59.275Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:34:59.777Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:00.279Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:00.781Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:01.284Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:01.786Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:02.288Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:02.790Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:03.293Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:03.795Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:04.296Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:04.798Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:05.300Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:05.801Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:06.302Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:06.803Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:07.304Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:07.805Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:08.308Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:08.810Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:09.311Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:09.818Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:10.322Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:10.824Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:11.325Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:11.829Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:12.331Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:12.837Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:13.340Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:13.842Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:14.343Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:14.846Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:15.348Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:15.856Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:16.359Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:16.861Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:17.364Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:17.867Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:18.372Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:18.875Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:19.377Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:19.879Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:20.380Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:20.883Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:21.385Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:21.886Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:22.389Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:22.890Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:23.393Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:23.899Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:24.400Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:24.904Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:25.406Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:25.908Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:26.409Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:26.911Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:27.417Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:27.919Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:28.421Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:28.923Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:29.425Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:29.930Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:30.431Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:30.937Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:31.440Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:31.947Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:32.455Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:32.956Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:33.460Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:33.962Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:34.468Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:34.980Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:35.483Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:35.986Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:36.490Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:36.991Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:37.492Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:37.994Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:38.498Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:39.001Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:39.502Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:40.007Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:40.510Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:41.014Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:41.524Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:42.026Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:42.527Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:43.032Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:43.537Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:44.039Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:44.542Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:45.043Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:45.549Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:46.050Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:46.557Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:47.059Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:47.560Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:48.065Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:48.567Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:49.072Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:49.573Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:50.075Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:50.578Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T12:35:51.081Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    }
+  ],
+  "afterState": [
+    {
+      "projectId": "project_865580da-5cef-4545-84d0-493db4819067",
+      "name": "API004 saved-ID visible workers",
+      "description": "Owned current real-provider validation",
+      "createdAt": "2026-10-03T12:26:23.452Z",
+      "updatedAt": "2026-10-03T12:26:23.452Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_0352e556-c4cc-493c-83ab-a478e75f70ca",
+          "description": "Read the supplied saved Task attachment using read_file and return its exact API004_ATTACHMENT_A_project_865580da-5cef-4545-84d0-493db4819067 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T12:26:23.504Z",
+          "updatedAt": "2026-10-03T12:27:56.274Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_fc0a561759c0__saved-packet-A.txt",
+              "displayName": "saved-packet-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_bc9dd420-32e0-4597-860f-b238223683ae",
+          "description": "Read the supplied saved Task attachment using read_file and return its exact API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T12:26:23.572Z",
+          "updatedAt": "2026-10-03T12:28:03.308Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_e3e8db390957__saved-packet-B.txt",
+              "displayName": "saved-packet-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskLifetimes": [
+        {
+          "lifetimeId": "project_task_lifetime_64732eee-8554-4d08-83a0-433a21ff0061",
+          "projectId": "project_865580da-5cef-4545-84d0-493db4819067",
+          "taskId": "project_task_0352e556-c4cc-493c-83ab-a478e75f70ca",
+          "openedAt": "2026-10-03T12:27:56.044Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3"
+              },
+              "execution": {
+                "agentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b"
+              },
+              "ingressAgentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T12:27:56.051Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_548ac8bd-e0f9-49e3-b085-675c0adce9ce",
+          "projectId": "project_865580da-5cef-4545-84d0-493db4819067",
+          "taskId": "project_task_bc9dd420-32e0-4597-860f-b238223683ae",
+          "openedAt": "2026-10-03T12:28:02.975Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3"
+              },
+              "execution": {
+                "teamRunId": "api004_packet_team_2cd38d86f65144f09ab76c5072d0d436"
+              },
+              "ingressAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T12:28:02.986Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3"
+              },
+              "execution": {
+                "agentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76"
+              },
+              "ingressAgentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+              "purpose": "helper",
+              "reservedAt": "2026-10-03T12:28:49.352Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "error": "Error: TIMEOUT exact DONE closed + release diagnostic",
+  "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nmanager\nPT\nProject Task Manager\n(1)\nThis is an explicitly authorized isolated validation. Resolve Project named \"API004 saved-ID visible workers\" and inspect its saved Tasks. Reuse Task A project_task_0352e556-c4cc-493c-83ab-a478e75f70ca and Task B project_task_bc9dd420-32e0-4597-860f-b238223683ae without changing their description or context. Consult available agents. Delegate Task A ONCE to API004 Packet Agent and Task B ONCE to API004 Packet Team, each using ONLY recipient_address and task_id. On each successful returned ingress explicitly mark its Task IN_PROGRESS. Do not resend initial work. Do not mark either DONE until my explicit instruction. Summarize exact returned worker IDs and business status; do not create other Projects/Tasks. Do not inspect credentials or other workspaces.\n2m\nAP\napi004 packet agent\napi004 packet team\nC\ncoordinator\nR\nreader\nAT\napi004 team reader\nTemp Workspace\nSettings\nPT\nThis is an explicitly authorized isolated…\nIdle\nYou\nThis is an explicitly authorized isolated validation. Resolve Project named \"API004 saved-ID visible workers\" and inspect its saved Tasks. Reuse Task A project_task_0352e556-c4cc-493c-83ab-a478e75f70ca and Task B project_task_bc9dd420-32e0-4597-860f-b238223683ae without changing their description or context. Consult available agents. Delegate Task A ONCE to API004 Packet Agent and Task B ONCE to API004 Packet Team, each using ONLY recipient_address and task_id. On each successful returned ingress explicitly mark its Task IN_PROGRESS. Do not resend initial work. Do not mark either DONE until my explicit instruction. Summarize exact returned worker IDs and business status; do not create other Projects/Tasks. Do not inspect credentials or other workspaces.\nPT\nProject Task Manager\nlist_projects\nlist_available_agents\nlist_project_tasks\ndelegate_task\ncreate_or_update_task\ndelegate_task\ncreate_or_update_task\n\nResolved Project: project_865580da-5cef-4545-84d0-493db4819067.\n\nTask A → API004 Packet Agent\nWorker ID: api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b\nBusiness status: IN_PROGRESS\nTask B → API004 Packet Team\nWorker ID: api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827\nBusiness status: IN_PROGRESS\n\nEach delegated exactly once using only recipient_address and task_id. Descriptions and context preserved; initial work not resent. Neither marked DONE. No other Projects or Tasks created.\n\nPT\nProject Task Manager\n\nFrom Api004 Packet Agent:\n\nBlocked: read_file is not available in this run’s tool inventory, so I cannot read the supplied saved Task attachment using the required tool or verify its exact marker. No files or Task statuses were changed. Please make read_file available.\n\nTask A’s worker api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b reports a blocker: read_file is unavailable, so it cannot verify the attachment marker.\n\nTask A remains IN_PROGRESS, not DONE. No work was resent. Task B remains IN_PROGRESS; no result received yet.\n\nPT\nProject Task Manager\n\nFrom Coordinator:\n\nBlocked: read_file is not available in my enabled tool inventory, so I cannot verify the attachment marker using the required tool. Also, no exact canonical address for the configured Team reader member was supplied. Please provide read_file access and the reader member address. I have not modified files, created copies, or changed any Task status.\n\nsend_message_to\n\nTask B also reports blocked by missing read_file. I supplied the discovered reader address, /api004_team_reader, to the exact coordinator worker; delivery was confirmed.\n\nBoth Tasks remain IN_PROGRESS, not DONE. No initial work was resent or new copies delegated. Required read_file access remains unresolved.\n\nPT\nProject Task Manager\n\nFrom Coordinator:\n\nThe required read_file tool remains unavailable, so my own read marker is unverified. Sent the single required work message with the exact supplied attachment path to /api004_team_reader; delivery confirmed to api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76. No copies, file modifications, or Task status changes.\n\nTask B coordinator confirms reader handoff to api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76.\n\nThe coordinator’s marker remains unverified because read_file is unavailable. Both Tasks remain IN_PROGRESS; neither is DONE.\n\nPT\nProject Task Manager\n\nFrom Coordinator:\n\nReader /api004_team_reader also reports read_file unavailable and did not read the attachment. Both coordinator and reader markers remain unverified. No files were modified, copies created, further delegation performed, or Task status changed.\n\nTask B is blocked for both coordinator and reader: read_file is unavailable, and neither verified the attachment marker.\n\nBoth Task A and Task B remain IN_PROGRESS, not DONE. No additional delegation or status changes were made.\n\nPT\nProject Task Manager\n\nFrom Api004 Packet Agent:\n\nRead the supplied exact attachment using read-only cat. Exact marker: API004_ATTACHMENT_A_project_865580da-5cef-4545-84d0-493db4819067. No files or Task statuses changed.\n\nTask A’s worker reports the exact marker via read-only cat:\n\nAPI004_ATTACHMENT_A_project_865580da-5cef-4545-84d0-493db4819067\n\nThis does not satisfy the saved instruction to use read_file. Both Tasks remain IN_PROGRESS, not DONE; Task B’s markers remain unverified.\n\nPT\nProject Task Manager\n\nFrom Coordinator:\n\nActually read the exact supplied attachment using permitted read-only cat (exit code 0). My exact read marker: API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067. Sent one work message to the corrected configured member /api004_packet_team/reader; delivery confirmed. No files or Task status changed, no copies created, and no credentials inspected.\n\nTask B coordinator reports this marker via read-only cat:\n\nAPI004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067\n\nIt also reports delivery to corrected reader address /api004_packet_team/reader; no reader result yet. The required read_file method remains unmet.\n\nBoth Tasks remain IN_PROGRESS, not DONE.\n\nPT\nProject Task Manager\n\nFrom Coordinator:\n\nConfigured reader /api004_packet_team/reader independently reports reading the supplied attachment and returning the same exact marker as my own read: API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067.\n\nTask B coordinator reports that the configured reader independently returned the same marker:\n\nAPI004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067\n\nThe reader’s tool method is unspecified. Both Tasks remain IN_PROGRESS; neither will be marked DONE without your explicit instruction.\n\nContext Files (0)\n(drag, paste, or upload)",
+  "rows": [
+    {
+      "host": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+      "text": "APapi004 packet agentTemporary task agent · api004 packet agent · /api004_packet_agentapi004 packet teamTemporary task team · api004 packet team · /api004_packet_teamCcoordinatorTemporary task agent · coordinator · /api004_packet_team/coordinatorRreaderTemporary task agent · reader · /api004_packet_team/readerATapi004 team readerTemporary task agent · api004 team reader · /api004_team_reader",
+      "rows": [
+        {
+          "id": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+          "label": "Temporary task agent, api004 packet agent, level 1, idle, Started by project task manager, /api004_packet_agent",
+          "selected": "false"
+        },
+        {
+          "id": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+          "label": "Temporary task agent, coordinator, level 2, idle, /api004_packet_team/coordinator",
+          "selected": "false"
+        },
+        {
+          "id": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+          "label": "Temporary task agent, reader, level 2, idle, /api004_packet_team/reader",
+          "selected": "false"
+        },
+        {
+          "id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+          "label": "Temporary task agent, api004 team reader, level 1, idle, Started by coordinator, /api004_team_reader",
+          "selected": "false"
+        }
+      ]
+    }
+  ]
+}

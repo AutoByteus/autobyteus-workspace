@@ -1,0 +1,18 @@
+{
+  "experiments": [
+    {
+      "label": "currentFreshWorkspace",
+      "stampedAccepted": false,
+      "unmodifiedInitialAccepted": true,
+      "onlyStampRemovedAccepted": true
+    },
+    {
+      "label": "actualPackagedServer",
+      "stampedAccepted": false,
+      "unmodifiedInitialAccepted": true,
+      "onlyStampRemovedAccepted": true
+    }
+  ],
+  "hashesMatch": true,
+  "interpretation": "Actual current live Agent root snapshot/event stream rejects valid persisted assignment ownership stamp. Current freshly built and actual packaged schema bytes match. Removing only stamp isolates strict DTO boundary, NOT an approved implementation fix or live acceptance. No source/contract/product mutation."
+}

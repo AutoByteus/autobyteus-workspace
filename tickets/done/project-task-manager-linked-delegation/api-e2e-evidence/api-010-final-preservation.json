@@ -1,0 +1,67 @@
+{
+  "at": "2026-10-03T20:41:36.607901+00:00",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "incoming1832ReferencesExist": true,
+  "incomingReviewed292AllBytesUnchanged": true,
+  "nonTicketDirty297ExactlyIncoming292PlusFiveTestPaths": true,
+  "fiveUpdatedDurable": [
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+    "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts",
+    "autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts"
+  ],
+  "incomingChangedReferences": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-case-ledger.md"
+  ],
+  "allowedIncomingChanges": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-case-ledger.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts"
+  ],
+  "carried15AllUnchanged": true,
+  "archive22AllHashesVerified": true,
+  "completeCumulativeReferenceCount": 1998,
+  "cleanup": {
+    "at": "2026-10-03T20:35:53.748956+00:00",
+    "instanceId": "iso-63749-7f67",
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-63749-7f67",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "capturedOwnedPidCount": 38,
+    "aliveAfterStop": [],
+    "portsFreeBind": {
+      "63749": true,
+      "63750": true
+    },
+    "ownRootRemoved": true,
+    "foreignRecordsExactlyUnchanged": 4,
+    "archiveFilesVerified": 22,
+    "scope": "Only fresh own instance teardown, not product Task release. No debugger/observer was installed this round; no foreign instance/profile/old endpoint touched."
+  },
+  "diffCheckExit": 0
+}

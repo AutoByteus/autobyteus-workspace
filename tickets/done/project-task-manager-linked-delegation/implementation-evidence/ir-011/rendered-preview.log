@@ -1,0 +1,115 @@
+{
+  "result": "Pass local rendered integration self-check",
+  "states": {
+    "loaded": {
+      "loading": false,
+      "selected": null,
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": [
+        "computer use agent"
+      ]
+    },
+    "agent": {
+      "loading": false,
+      "selected": "cua-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": [
+        "Research Assistant"
+      ]
+    },
+    "member": {
+      "loading": false,
+      "selected": "pp-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/prototyper",
+        "agentRunId": "pp-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": []
+    },
+    "mobileGeometry": {
+      "width": 358,
+      "right": 374,
+      "viewport": 390
+    },
+    "error": {
+      "loading": false,
+      "selected": "cua-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": "Controlled stored inspection failure",
+      "labels": [
+        "Research Assistant"
+      ]
+    },
+    "empty": {
+      "loading": false,
+      "selected": "cua-run",
+      "rows": [],
+      "error": "Controlled stored inspection failure"
+    },
+    "recovered": {
+      "loading": false,
+      "selected": "cua-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": [
+        "Research Assistant"
+      ]
+    }
+  },
+  "events": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtExitCode": null,
+    "nuxtSignal": "SIGTERM",
+    "temporaryRouteRemoved": true
+  }
+}

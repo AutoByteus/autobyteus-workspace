@@ -1,0 +1,468 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts > Agent root of a standalone run > creates the package on the first admitted mention, hosts each collaborator once, messages it, copies it and restores
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts (11 tests) 455ms
+stdout | tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > spawns a agent with one tree write, shuts it down after the grace period, and restores it on a message
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts (6 tests) 315ms
+stdout | tests/unit/agent-org-execution/agent-org-collaborators.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-collaborators.test.ts > collaborators brought into an AgentOrg run with @ > admits mentions on SEND_MESSAGE, streams collaborator_added and posts the composed note
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-collaborators.test.ts (5 tests) 243ms
+stdout | tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts > agent-initiated collaborators and team instances in an AgentOrg > a copy of a mounted Team reaches its own members, not the mounted Team's (REQ-007 behavior change)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts (5 tests) 323ms
+stdout | tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts (1 test | 1 failed) 90ms
+     × restores scope lazily and durably replaces a no-conversation binding on first work 89ms
+ ❯ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (0 test)
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts (8 tests | 1 failed) 10ms
+     ✓ captures the exact baseInstructions after successful handoff and stages only created evidence 3ms
+     ✓ registers the thread with the shared router before starting the remote thread 1ms
+     ✓ uses the workspace app-server client boundary for same-workspace standalone agent runs 0ms
+     ✓ shares the cwd-scoped app-server client for team member runs 1ms
+     ✓ passes auto-approved access config to Codex thread start and resume 0ms
+     ✓ passes serviceTier when resuming a remote Codex thread 0ms
+     ✓ passes thread-scoped app-server config to thread start and resume 1ms
+     × surfaces a known-thread resume failure without starting a replacement thread 3ms
+stdout | tests/unit/agent-org-execution/agent-org-task-publication.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-org-execution/agent-org-task-publication.test.ts (6 tests | 1 failed) 13ms
+     × forwards root task-Team and recursively materialized Team/Agent events after ordered durable release 7ms
+     ✓ keeps aborted agent preparation and subsequent callbacks private 1ms
+     ✓ keeps aborted team preparation and subsequent callbacks private 0ms
+     ✓ closes the agent publisher when preparation rejects 1ms
+     ✓ closes the team publisher when preparation rejects 1ms
+     ✓ releases only the exact root-Agent preparation once and then forwards live events 1ms
+stdout | tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts > AgentOrg status snapshot traversal > streams every root-owned and recursively Team-owned Agent exactly once across reselect
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts (3 tests | 1 failed) 16ms
+     × streams every root-owned and recursively Team-owned Agent exactly once across reselect 11ms
+     ✓ reports a shut-down root task Team as offline without requiring a live TeamRun 2ms
+     ✓ keeps the flat registered Team scope authoritative for frozen root shutdown 2ms
+stdout | tests/unit/projects/project-task-context-store.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > returns proven committed metadata even when subsequent lock finalization fails
+Project state committed; lock finalization failed. Error: release failure
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:90:65)
+    at Object.unlink (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at code (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/persistence/file/store-utils.ts:55:20)
+    at withFilePathLock (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/persistence/file/store-utils.ts:123:9)
+    at ProjectStore.updateState (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/stores/project-store.ts:25:7)
+    at ProjectTaskService.createTask (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/services/project-task-service.ts:69:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:93:18
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > cleanup failure cannot turn a confirmed file-removal commit into rollback
+Task context cleanup failed. Error: cleanup unavailable
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:119:63
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/unit/projects/project-task-context-store.test.ts (9 tests) 989ms
+stdout | tests/unit/agent-org-execution/agent-org-run-config.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-config.test.ts (18 tests) 651ms
+stdout | tests/unit/projects/project-task-lifetime.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-task-lifetime.test.ts (6 tests) 589ms
+stdout | tests/unit/projects/project-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-service.test.ts (29 tests) 468ms
+stdout | tests/unit/projects/project-task-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-task-service.test.ts (15 tests) 360ms
+stdout | tests/unit/agent-org-execution/agent-org-run-inspection.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-org-execution/agent-org-run-inspection.test.ts > distinguishes a real empty local task trace from a physical read failure without provider activation
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/org-inspection-An9gkM/agent_orgs/org/task-run/raw_traces_active.jsonl
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-inspection.test.ts (6 tests) 171ms
+stdout | tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts (6 tests) 113ms
+stdout | tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts (5 tests) 90ms
+stdout | tests/unit/agent-org-execution/agent-org-run-termination.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-run-termination.test.ts > AgentOrgRun termination stabilization > freezes and fences every direct/mounted Agent scope before task and persistence drain
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-termination.test.ts (4 tests) 59ms
+stdout | tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts > AgentOrg committed communication presentation > publishes one root row then the configured receiver input before releasing delivery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts (15 tests) 36ms
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > keeps a new run private until synchronous candidate publication
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > claims the run id before the first backend await and rejects overlapping preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > allows retry only after candidate abort confirms inactivity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines an uncertain candidate cleanup and rejects same-process replacement
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores codex_app_server from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores claude_agent_sdk from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > aborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rolls back already-attached run resources when a later attachment fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates exactly once when a post-activation backend identity mismatch fails before attachment
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines attachment rollback when exact-run session deactivation fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation create failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation restore failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines with primary then deactivation cleanup evidence
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rejects another candidate after publication without replacing the active run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > detaches run resources and invokes exact-run MCP cleanup after accepted termination
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > allows only one non-waiting quiescence preparation attempt per exact run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > cancels through the exact run without releasing it and permits a fresh preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries only after a rejected finish and releases once after acceptance
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > coalesces one committed finish attempt and caches successful finalization
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retains accepted-but-active failure without removing the exact run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries exact retained component cleanup after physical release without stopping twice
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal not_found as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal identity_mismatch as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > rejects a missing or different exact instance before lower-level preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-execution/agent-run-manager.test.ts (25 tests) 19ms
+stdout | tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts (11 tests) 13ms
+stdout | tests/unit/agent-org-execution/agent-org-task-shutdown-event-retirement.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-task-shutdown-event-retirement.test.ts > AgentOrg mounted-Team delegated execution shutdown event retirement > retires the child's teardown events, keeps the execution in the tree, and publishes one offline status
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-task-shutdown-event-retirement.test.ts (1 test) 10ms
+stdout | tests/unit/agent-org-execution/agent-org-run-manager-restore-self-heal.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-restore-self-heal.test.ts (5 tests) 9ms
+stderr | tests/unit/projects/project-state-schema.test.ts > one current Project-row array authority, no migration > observes validated logical commit immediately, despite subsequent lock-finalization failure
+Project state committed; lock finalization failed. Error: test finalization failure
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-state-schema.test.ts:67:65)
+
+ ✓ tests/unit/projects/project-state-schema.test.ts (11 tests) 97ms
+stdout | tests/unit/agent-org-execution/agent-org-member-scope.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-member-scope.test.ts > AgentOrg member collaboration scope (CR-001) > a mounted Team member keeps its cross-placement Org handoffs and its Team instruction (AC-012)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-member-scope.test.ts (3 tests) 7ms
+stdout | tests/unit/agent-org-execution/agent-org-reference-content-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-reference-content-service.test.ts (2 tests) 5ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts (2 tests) 6ms
+stdout | tests/unit/agent-org-execution/agent-org-command-execution-kind.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-command-execution-kind.test.ts > AgentOrgRun command execution kind > returns exact configured/task kind while preserving the generic result-only command surface
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-command-execution-kind.test.ts (1 test) 5ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-config-options.test.ts (1 test) 4ms
+stdout | tests/unit/projects/projects-capability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/projects-capability-service.test.ts (3 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts [ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts ]
+Error: Transform failed with 1 error:
+/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts:209:3: ERROR: Expected ";" but found ")"
+  Plugin: vite:esbuild
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts:209:3
+  
+  Expected ";" but found ")"
+  207 |      clientManager,
+  208 |      agentToolMcpRunSessions,
+  209 |    });
+      |     ^
+  210 |  };
+  211 |  
+  
+ ❯ failureErrorWithLog ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:1467:15
+ ❯ ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:736:50
+ ❯ responseCallbacks.<computed> ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:603:9
+ ❯ handleIncomingPacket ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:658:12
+ ❯ Socket.readFromStdout ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:581:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts > AgentOrgExecutionScopeBuilder restore > restores scope lazily and durably replaces a no-conversation binding on first work
+CollaborationAgentActivationError: Agent run 'agent-verifier' cleanup could not be confirmed.
+ ❯ ConfiguredAgentExecutionHandle.cleanupError src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts:440:12
+    438|   }
+    439|   private cleanupError(runId: string, cause: Error): CollaborationAgen…
+    440|     return new CollaborationAgentActivationError(
+       |            ^
+    441|       "AGENT_RUN_ACTIVATION_CLEANUP_FAILED",
+    442|       `Agent run '${runId}' cleanup could not be confirmed.`,
+ ❯ ConfiguredAgentExecutionHandle.initializeReady src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts:317:66
+
+Caused by: TypeError: this.manager.releaseExactRun is not a function
+ ❯ ConfiguredAgentExecutionHandle.releaseRuntime src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts:218:41
+ ❯ ConfiguredAgentExecutionHandle.initializeReady src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts:316:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts > AgentOrg status snapshot traversal > streams every root-owned and recursively Team-owned Agent exactly once across reselect
+Error: missing AgentOrg snapshot
+ ❯ connect tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts:153:76
+    151|   const snapshot = sent.map((value) => CollaborationStreamServerMessag…
+    152|     .find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"…
+    153|   if (!snapshot || snapshot.type !== "ROOT_EXECUTION_VIEW_SNAPSHOT") t…
+       |                                                                            ^
+    154|   return { handler, sessionId, snapshot };
+    155| };
+ ❯ tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts:161:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-task-publication.test.ts > Org-root prepared task publishers > forwards root task-Team and recursively materialized Team/Agent events after ordered durable release
+AssertionError: expected [ 'activated', …(4) ] to deeply equal [ 'activated', …(3) ]
+
+- Expected
++ Received
+
+  [
+    "activated",
+    "parent-lead:initializing",
+    "parent-lead:idle",
+    "parent-lead:idle",
++   "parent-lead:running",
+  ]
+
+ ❯ tests/unit/agent-org-execution/agent-org-task-publication.test.ts:45:18
+     43|     await committed.releaseWork(() => undefined);
+     44|     expect(() => committed.releaseWork(() => undefined)).toThrow();
+     45|     expect(seen).toEqual(["activated", "parent-lead:initializing", "pa…
+       |                  ^
+     46|     await flushMicrotasks();
+     47|     expect(handles.get("parent-lead")!.handle.postMessage).toHaveBeenC…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts > CodexThreadManager > surfaces a known-thread resume failure without starting a replacement thread
+AssertionError: expected "vi.fn()" to be called with arguments: [ '/tmp/workspace' ]
+
+Number of calls: 0
+
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts:443:27
+    441|     );
+    442|     expect(request).not.toHaveBeenCalledWith("thread/start", expect.an…
+    443|     expect(releaseClient).toHaveBeenCalledWith("/tmp/workspace");
+       |                           ^
+    444|   });
+    445| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  5 failed | 25 passed (30)
+      Tests  4 failed | 219 passed (223)
+   Start at  09:39:52
+   Duration  28.21s (transform 2.71s, setup 110ms, import 20.05s, tests 5.17s, environment 2ms)
+

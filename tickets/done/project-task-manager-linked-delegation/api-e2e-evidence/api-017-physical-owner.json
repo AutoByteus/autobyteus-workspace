@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-05T04:54:27.258838+00:00",
+  "instanceId": "iso-63884-5507",
+  "scope": "Read-only exact post-resume actor runtime-reference to own SDK process PID. No inspector/hooks/pauses, no production auth/key inspection; no IO object-state or original-cause claim.",
+  "runId": "api017_claude_packet_agent_8bfb925ed4524b2ea6aab6eaeabefa4a",
+  "response": {
+    "data": null,
+    "errors": [
+      {
+        "message": "Run metadata not found for 'api017_claude_packet_agent_8bfb925ed4524b2ea6aab6eaeabefa4a'.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 20
+          }
+        ],
+        "path": [
+          "getAgentRunResumeConfig"
+        ]
+      }
+    ]
+  },
+  "result": "Diagnostic unavailable, not physical evidence",
+  "limitations": "Member provenance read not exposed by this observational query; not a product scenario failure."
+}

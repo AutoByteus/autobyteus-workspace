@@ -1,0 +1,1197 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ ❯ tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts (6 tests | 2 failed) 289ms
+     × strictly projects stored/active=false linked=true without losing any concrete worker or private bytes 54ms
+     × strictly projects stored/active=true linked=true without losing any concrete worker or private bytes 28ms
+     ✓ strictly projects stored/active=false linked=false without losing any concrete worker or private bytes 63ms
+     ✓ strictly projects stored/active=true linked=false without losing any concrete worker or private bytes 49ms
+     ✓ uses the active snapshot rather than a stale stored copy and leaves that copy intact 31ms
+     ✓ retains mixed family ordering and the existing archived inactive exclusion 64ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts > mixed public history Org projection > strictly projects stored/active=false linked=true without losing any concrete worker or private bytes
+ FAIL  tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts > mixed public history Org projection > strictly projects stored/active=true linked=true without losing any concrete worker or private bytes
+ZodError: [
+  {
+    "code": "invalid_union",
+    "errors": [
+      [
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "agentDefinitionId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "agentRunId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "platformAgentRunId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "object",
+          "code": "invalid_type",
+          "path": [
+            "launchConfiguration"
+          ],
+          "message": "Invalid input: expected object, received undefined"
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "teamDefinitionId",
+            "teamRunId",
+            "coordinatorAddress",
+            "defaultLaunchConfiguration",
+            "members",
+            "taskExecutions"
+          ],
+          "path": [],
+          "message": "Unrecognized keys: \"teamDefinitionId\", \"teamRunId\", \"coordinatorAddress\", \"defaultLaunchConfiguration\", \"members\", \"taskExecutions\""
+        }
+      ],
+      [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent_team"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent_team\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "teamDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "coordinatorAddress"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "handoffs"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "defaultLaunchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentDefinitionId",
+                  "launchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"agentDefinitionId\", \"launchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "taskExecutions",
+            0
+          ],
+          "message": "Invalid input"
+        }
+      ]
+    ],
+    "path": [
+      "rootOrg",
+      "members",
+      1
+    ],
+    "message": "Invalid input"
+  },
+  {
+    "code": "invalid_union",
+    "errors": [
+      [
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "taskLifetime"
+          ],
+          "path": [],
+          "message": "Unrecognized key: \"taskLifetime\""
+        }
+      ],
+      [
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "teamRunId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "members"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "taskExecutions"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "code": "invalid_value",
+          "values": [
+            "agent_team"
+          ],
+          "path": [
+            "source",
+            "kind"
+          ],
+          "message": "Invalid input: expected \"agent_team\""
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "teamDefinitionId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "coordinatorAddress"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "members"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "handoffs"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "expected": "object",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "defaultLaunchConfiguration"
+          ],
+          "message": "Invalid input: expected object, received undefined"
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "agentDefinitionId",
+            "launchConfiguration"
+          ],
+          "path": [
+            "source"
+          ],
+          "message": "Unrecognized keys: \"agentDefinitionId\", \"launchConfiguration\""
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "agentRunId",
+            "platformAgentRunId",
+            "taskLifetime"
+          ],
+          "path": [],
+          "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+        }
+      ]
+    ],
+    "path": [
+      "rootOrg",
+      "collaborators",
+      1,
+      "taskExecutions",
+      0
+    ],
+    "message": "Invalid input"
+  },
+  {
+    "code": "invalid_union",
+    "errors": [
+      [
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "taskLifetime"
+          ],
+          "path": [],
+          "message": "Unrecognized key: \"taskLifetime\""
+        }
+      ],
+      [
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "teamRunId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "members"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "taskExecutions"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "code": "invalid_value",
+          "values": [
+            "agent_team"
+          ],
+          "path": [
+            "source",
+            "kind"
+          ],
+          "message": "Invalid input: expected \"agent_team\""
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "teamDefinitionId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "coordinatorAddress"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "members"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "handoffs"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "expected": "object",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "defaultLaunchConfiguration"
+          ],
+          "message": "Invalid input: expected object, received undefined"
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "agentDefinitionId",
+            "launchConfiguration"
+          ],
+          "path": [
+            "source"
+          ],
+          "message": "Unrecognized keys: \"agentDefinitionId\", \"launchConfiguration\""
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "agentRunId",
+            "platformAgentRunId",
+            "taskLifetime"
+          ],
+          "path": [],
+          "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+        }
+      ]
+    ],
+    "path": [
+      "rootOrg",
+      "taskExecutions",
+      0
+    ],
+    "message": "Invalid input"
+  },
+  {
+    "code": "invalid_union",
+    "errors": [
+      [
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "agentRunId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "platformAgentRunId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "code": "invalid_value",
+          "values": [
+            "agent"
+          ],
+          "path": [
+            "source",
+            "kind"
+          ],
+          "message": "Invalid input: expected \"agent\""
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "agentDefinitionId"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "object",
+          "code": "invalid_type",
+          "path": [
+            "source",
+            "launchConfiguration"
+          ],
+          "message": "Invalid input: expected object, received undefined"
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "teamDefinitionId",
+            "coordinatorAddress",
+            "members",
+            "handoffs",
+            "defaultLaunchConfiguration"
+          ],
+          "path": [
+            "source"
+          ],
+          "message": "Unrecognized keys: \"teamDefinitionId\", \"coordinatorAddress\", \"members\", \"handoffs\", \"defaultLaunchConfiguration\""
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "teamRunId",
+            "members",
+            "taskExecutions",
+            "taskLifetime"
+          ],
+          "path": [],
+          "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+        }
+      ],
+      [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "invalid_union",
+                "errors": [
+                  [
+                    {
+                      "expected": "string",
+                      "code": "invalid_type",
+                      "path": [
+                        "agentRunId"
+                      ],
+                      "message": "Invalid input: expected string, received undefined"
+                    },
+                    {
+                      "expected": "string",
+                      "code": "invalid_type",
+                      "path": [
+                        "platformAgentRunId"
+                      ],
+                      "message": "Invalid input: expected string, received undefined"
+                    },
+                    {
+                      "code": "unrecognized_keys",
+                      "keys": [
+                        "teamRunId",
+                        "members",
+                        "taskExecutions"
+                      ],
+                      "path": [],
+                      "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\""
+                    }
+                  ],
+                  [
+                    {
+                      "code": "invalid_union",
+                      "errors": [
+                        [
+                          {
+                            "code": "unrecognized_keys",
+                            "keys": [
+                              "taskLifetime"
+                            ],
+                            "path": [],
+                            "message": "Unrecognized key: \"taskLifetime\""
+                          }
+                        ],
+                        [
+                          {
+                            "expected": "string",
+                            "code": "invalid_type",
+                            "path": [
+                              "teamRunId"
+                            ],
+                            "message": "Invalid input: expected string, received undefined"
+                          },
+                          {
+                            "expected": "array",
+                            "code": "invalid_type",
+                            "path": [
+                              "members"
+                            ],
+                            "message": "Invalid input: expected array, received undefined"
+                          },
+                          {
+                            "expected": "array",
+                            "code": "invalid_type",
+                            "path": [
+                              "taskExecutions"
+                            ],
+                            "message": "Invalid input: expected array, received undefined"
+                          },
+                          {
+                            "code": "invalid_value",
+                            "values": [
+                              "agent_team"
+                            ],
+                            "path": [
+                              "source",
+                              "kind"
+                            ],
+                            "message": "Invalid input: expected \"agent_team\""
+                          },
+                          {
+                            "expected": "string",
+                            "code": "invalid_type",
+                            "path": [
+                              "source",
+                              "teamDefinitionId"
+                            ],
+                            "message": "Invalid input: expected string, received undefined"
+                          },
+                          {
+                            "expected": "string",
+                            "code": "invalid_type",
+                            "path": [
+                              "source",
+                              "coordinatorAddress"
+                            ],
+                            "message": "Invalid input: expected string, received undefined"
+                          },
+                          {
+                            "expected": "array",
+                            "code": "invalid_type",
+                            "path": [
+                              "source",
+                              "members"
+                            ],
+                            "message": "Invalid input: expected array, received undefined"
+                          },
+                          {
+                            "expected": "array",
+                            "code": "invalid_type",
+                            "path": [
+                              "source",
+                              "handoffs"
+                            ],
+                            "message": "Invalid input: expected array, received undefined"
+                          },
+                          {
+                            "expected": "object",
+                            "code": "invalid_type",
+                            "path": [
+                              "source",
+                              "defaultLaunchConfiguration"
+                            ],
+                            "message": "Invalid input: expected object, received undefined"
+                          },
+                          {
+                            "code": "unrecognized_keys",
+                            "keys": [
+                              "agentDefinitionId",
+                              "launchConfiguration"
+                            ],
+                            "path": [
+                              "source"
+                            ],
+                            "message": "Unrecognized keys: \"agentDefinitionId\", \"launchConfiguration\""
+                          },
+                          {
+                            "code": "unrecognized_keys",
+                            "keys": [
+                              "agentRunId",
+                              "platformAgentRunId",
+                              "taskLifetime"
+                            ],
+                            "path": [],
+                            "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+                          }
+                        ]
+                      ],
+                      "path": [
+                        "taskExecutions",
+                        0
+                      ],
+                      "message": "Invalid input"
+                    }
+                  ]
+                ],
+                "path": [
+                  "members",
+                  0
+                ],
+                "message": "Invalid input"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "taskExecutions",
+            0
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent_team"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent_team\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "teamDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "coordinatorAddress"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "handoffs"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "defaultLaunchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentDefinitionId",
+                  "launchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"agentDefinitionId\", \"launchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "taskExecutions",
+            1
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "agentDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "launchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamDefinitionId",
+                  "coordinatorAddress",
+                  "members",
+                  "handoffs",
+                  "defaultLaunchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"teamDefinitionId\", \"coordinatorAddress\", \"members\", \"handoffs\", \"defaultLaunchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "invalid_union",
+                "errors": [
+                  [
+                    {
+                      "code": "unrecognized_keys",
+                      "keys": [
+                        "taskLifetime"
+                      ],
+                      "path": [],
+                      "message": "Unrecognized key: \"taskLifetime\""
+                    }
+                  ],
+                  [
+                    {
+                      "expected": "string",
+                      "code": "invalid_type",
+                      "path": [
+                        "teamRunId"
+                      ],
+                      "message": "Invalid input: expected string, received undefined"
+                    },
+                    {
+                      "expected": "array",
+                      "code": "invalid_type",
+                      "path": [
+                        "members"
+                      ],
+                      "message": "Invalid input: expected array, received undefined"
+                    },
+                    {
+                      "expected": "array",
+                      "code": "invalid_type",
+                      "path": [
+                        "taskExecutions"
+                      ],
+                      "message": "Invalid input: expected array, received undefined"
+                    },
+                    {
+                      "code": "invalid_value",
+                      "values": [
+                        "agent_team"
+                      ],
+                      "path": [
+                        "source",
+                        "kind"
+                      ],
+                      "message": "Invalid input: expected \"agent_team\""
+                    },
+                    {
+                      "expected": "string",
+                      "code": "invalid_type",
+                      "path": [
+                        "source",
+                        "teamDefinitionId"
+                      ],
+                      "message": "Invalid input: expected string, received undefined"
+                    },
+                    {
+                      "expected": "string",
+                      "code": "invalid_type",
+                      "path": [
+                        "source",
+                        "coordinatorAddress"
+                      ],
+                      "message": "Invalid input: expected string, received undefined"
+                    },
+                    {
+                      "expected": "array",
+                      "code": "invalid_type",
+                      "path": [
+                        "source",
+                        "members"
+                      ],
+                      "message": "Invalid input: expected array, received undefined"
+                    },
+                    {
+                      "expected": "array",
+                      "code": "invalid_type",
+                      "path": [
+                        "source",
+                        "handoffs"
+                      ],
+                      "message": "Invalid input: expected array, received undefined"
+                    },
+                    {
+                      "expected": "object",
+                      "code": "invalid_type",
+                      "path": [
+                        "source",
+                        "defaultLaunchConfiguration"
+                      ],
+                      "message": "Invalid input: expected object, received undefined"
+                    },
+                    {
+                      "code": "unrecognized_keys",
+                      "keys": [
+                        "agentDefinitionId",
+                        "launchConfiguration"
+                      ],
+                      "path": [
+                        "source"
+                      ],
+                      "message": "Unrecognized keys: \"agentDefinitionId\", \"launchConfiguration\""
+                    },
+                    {
+                      "code": "unrecognized_keys",
+                      "keys": [
+                        "agentRunId",
+                        "platformAgentRunId",
+                        "taskLifetime"
+                      ],
+                      "path": [],
+                      "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+                    }
+                  ]
+                ],
+                "path": [
+                  "taskExecutions",
+                  0
+                ],
+                "message": "Invalid input"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "taskExecutions",
+            2
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "taskLifetime"
+          ],
+          "path": [],
+          "message": "Unrecognized key: \"taskLifetime\""
+        }
+      ]
+    ],
+    "path": [
+      "rootOrg",
+      "taskExecutions",
+      1
+    ],
+    "message": "Invalid input"
+  }
+]
+ ❯ tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts:62:45
+     60|       expect(row).toMatchObject({ root_subject_kind: "agent_org", root…
+     61|       if (row.root_subject_kind !== "agent_org") throw new Error("Expe…
+     62|       expect(agentOrgExecutionTreeDtoSchema.parse(row.org)).toEqual(cu…
+       |                                             ^
+     63|       expect(row.org).toEqual(current.expected);
+     64|       expect(JSON.stringify(row.org)).not.toContain("taskLifetime");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  21:42:20
+   Duration  993ms (transform 133ms, setup 14ms, import 197ms, tests 289ms, environment 0ms)
+

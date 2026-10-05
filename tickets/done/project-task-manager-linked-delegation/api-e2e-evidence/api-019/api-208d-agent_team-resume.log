@@ -1,0 +1,4 @@
+STEP agent_team resume root restored after whole-app restart
+STEP agent_team resume closed A runs rejected after restart (not woken/restored)
+STEP agent_team resume open B resumes after restart
+STEP agent_team resume resume phase complete

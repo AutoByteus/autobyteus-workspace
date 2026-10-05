@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-03T14:50:17.612Z",
+  "instanceId": "iso-51765-db16",
+  "pid": 44580,
+  "verified": {
+    "pid": 44580,
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+  },
+  "breakpoints": [
+    "root-begin",
+    "root-proof-request",
+    "root-proof-settled",
+    "team-release-start",
+    "team-proof-settled",
+    "agent-manager-components",
+    "agent-manager-removal",
+    "agent-backend-return",
+    "agent-before-input-settlement",
+    "agent-before-unsubscribe",
+    "input-unresolved-assertion",
+    "codex-backend-negative",
+    "codex-thread-cleanup-proof"
+  ]
+}

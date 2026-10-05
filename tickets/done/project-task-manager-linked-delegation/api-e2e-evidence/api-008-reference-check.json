@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-03T16:32:05.354031+00:00",
+  "totalReferences": 1172,
+  "incomingReferencesPreserved": 1058,
+  "newDistinctReferencePaths": 114,
+  "missing": [],
+  "archiveFilesVerified": 22,
+  "archiveHashMismatches": [],
+  "diffCheckExit": 0,
+  "scope": "Complete cumulative1058 incoming refs plus current report/revision/ledger/evidence/temp probes and ONE changed durable baseline test; no DB/vault/key/env artifacts",
+  "status": "DELIVERED to single focused failure-origin reviewer; stage ended",
+  "referencesDelivered": 1171,
+  "subsequentHandoffReceiptAdded": true
+}

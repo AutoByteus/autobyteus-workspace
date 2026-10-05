@@ -1,0 +1,81 @@
+{
+  "original_regression_before": {
+    "exit": 1,
+    "files_failed": 1,
+    "tests_failed": 1,
+    "tests_passed": 1,
+    "log": "ir-006-publication-before.log",
+    "scope": "Original exact missing terminal callback defect"
+  },
+  "root_fix_first": {
+    "exit": 1,
+    "tests_failed": 1,
+    "tests_passed": 1,
+    "log": "ir-006-root-publication-round1.log",
+    "scope": "Gate now delivers; controlled fake emits twice for duplicate accepted stop receipts, unlike memoized production AgentRun termination"
+  },
+  "additional_owner_before": {
+    "exit": 1,
+    "tests_failed": 22,
+    "tests_passed": 10,
+    "log": "ir-006-owner-neighbors-before.log",
+    "scope": "Root owner fixed, original fixture transition corrected; Team-local Team/Agent gates still suppress terminal callbacks"
+  },
+  "terminal_neighbors_round1": {
+    "exit": 0,
+    "files_passed": 8,
+    "tests_passed": 90,
+    "log": "ir-006-terminal-neighbors-round1.log"
+  },
+  "recursive_input_round2": {
+    "exit": 0,
+    "files_passed": 1,
+    "tests_passed": 33,
+    "log": "ir-006-recursive-input-round2.log"
+  },
+  "private_fixture_initial": {
+    "exit": 1,
+    "tests_failed": 2,
+    "tests_passed": 97,
+    "log": "ir-006-terminal-neighbors-final.log",
+    "scope": "New Team-root private fixture used invalid empty address; corrected to canonical / without source/schema change"
+  },
+  "terminal_neighbors_final": {
+    "exit": 0,
+    "files_passed": 8,
+    "tests_passed": 99,
+    "log": "ir-006-terminal-neighbors-final2.log"
+  },
+  "cumulative_selected_units": {
+    "exit": 0,
+    "files_passed": 138,
+    "files_skipped": 3,
+    "tests_passed": 1274,
+    "tests_skipped": 5,
+    "log": "ir-006-cumulative-focused-final.log"
+  },
+  "web_context_controls": {
+    "exit": 0,
+    "files_passed": 3,
+    "tests_passed": 18,
+    "log": "ir-006-web-context-control.log",
+    "scope": "Existing mocked context/stream/store controls, not joined desktop rendering"
+  },
+  "production_typecheck": {
+    "exit": 0,
+    "log": "ir-006-production-typecheck.log"
+  },
+  "server_build": {
+    "exit": 0,
+    "log": "ir-006-server-build.log",
+    "scope": "Production compile/assets and sanitized test-owned built-in bootstrap, not desktop packaging"
+  },
+  "diffcheck": {
+    "exit": 0,
+    "log": "ir-006-diffcheck.log"
+  },
+  "startup_released_migration_strict_dto_preservation": {
+    "diff_bytes": 0,
+    "log": "ir-006-unchanged-startup-contracts-migrations.diff"
+  }
+}

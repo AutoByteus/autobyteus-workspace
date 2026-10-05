@@ -1,0 +1,295 @@
+{
+  "at": "2026-10-04T03:45:12.182561+00:00",
+  "instanceId": "iso-57259-7e1c",
+  "mode": "final",
+  "files": [
+    {
+      "relative": "server-data/projects/projects.json",
+      "bytes": 10185,
+      "sha256": "3baff6ba48aea5c008b35d929c1025a136c8985eeb341d10b7bce76b6fc1c35a",
+      "prefixOnly": false,
+      "actualBytes": 10185,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10/agent_org_run_execution_tree.json",
+      "bytes": 7800,
+      "sha256": "c2b84a64998336a9be4873cb9bb2c2a2a688e2bde908b7fa718250a2b23eb1ce",
+      "prefixOnly": false,
+      "actualBytes": 7800,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10/api011_native_packet_team_9877c0704a96466d96355aa66882402d/api011_native_team_coordinator_7f4ff760eb0442df8bb5723650dbbaba/raw_traces_active.jsonl",
+      "bytes": 17571,
+      "sha256": "273a3c9184a54884002fa7d12e7c041ab88e3cf52b0c3ac63520b23b623e3558",
+      "prefixOnly": true,
+      "actualBytes": 17571,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10/api011_native_packet_team_9877c0704a96466d96355aa66882402d/api011_native_team_reader_946a16f2e7f948f7a428e26cecb1f6f5/raw_traces_active.jsonl",
+      "bytes": 12296,
+      "sha256": "f01bf83c81a6d516333c6248af852f4aa1f796d2f6f4765a36a1088f066abcc0",
+      "prefixOnly": true,
+      "actualBytes": 12296,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10/api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff/raw_traces_active.jsonl",
+      "bytes": 12213,
+      "sha256": "89a3ba850a14faa7952393c5352a363736f41275225b08979d476e83afe8fc64",
+      "prefixOnly": true,
+      "actualBytes": 12213,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10/project_task_manager_3910d2869f6240cb9d5fc2eee61473b6/raw_traces_active.jsonl",
+      "bytes": 62754,
+      "sha256": "8a1d06a7a7ce11597a341e54a1042a9eced334f5552369637286b565a0c1ac87",
+      "prefixOnly": true,
+      "actualBytes": 62754,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10/api011_native_packet_agent_55f2e60b73ce4e52bb427ff2cffb8071/raw_traces_active.jsonl",
+      "bytes": 10953,
+      "sha256": "268f587dbf4d0e41112a769540a0f5628edf307216aff887d83fa41a0bfd76dd",
+      "prefixOnly": true,
+      "actualBytes": 10953,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10/api011_native_packet_team_781d11b07c3f474db457bd025e97b877/api011_native_team_reader_8640a6460652498cabbd747097afd11a/raw_traces_active.jsonl",
+      "bytes": 17105,
+      "sha256": "4baf3f513b23e19d6dc56426ffd0de720021b3a04395579dacb60191705e5644",
+      "prefixOnly": true,
+      "actualBytes": 17105,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10/api011_native_packet_team_781d11b07c3f474db457bd025e97b877/api011_native_team_coordinator_d3a49b37f0a544a19fd1c2b0e3f5421a/raw_traces_active.jsonl",
+      "bytes": 17403,
+      "sha256": "7a2eed2d62e5e455a0ef00503974ed2907da485bcda9519446e6bfe015abea9a",
+      "prefixOnly": true,
+      "actualBytes": 17403,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10/api011_native_packet_agent_c7ee91f14a6846c7b2d6cc5d6974203f/raw_traces_active.jsonl",
+      "bytes": 14065,
+      "sha256": "afd379da1906c2ec827f73f35befb750dee124ecaff57daebae27c7593f329d8",
+      "prefixOnly": true,
+      "actualBytes": 14065,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_orgs/api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_b81d6aaeab13442eb51b0cde46418468/agent_org_run_execution_tree.json",
+      "bytes": 2338,
+      "sha256": "4eaf666b38b37d6e1e293c97e8211882301d75bc5e5de063af06b7599649c73e",
+      "prefixOnly": false,
+      "actualBytes": 2338,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_teams/api011_codex_concrete_root_team_4ed5aa57cade4f8fb3d6b52cef6ec6aa/team_run_execution_tree.json",
+      "bytes": 6835,
+      "sha256": "f1a7c6f1270b3d2f023a138fed5525a77933f4619f869a1c1e616f5888cf801f",
+      "prefixOnly": false,
+      "actualBytes": 6835,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_teams/api011_codex_concrete_root_team_4ed5aa57cade4f8fb3d6b52cef6ec6aa/api011_codex_packet_agent_718c889669ff406eb2a45fbe094f6806/raw_traces_active.jsonl",
+      "bytes": 10086,
+      "sha256": "2d4aae41d51721914ba68dfa8166012dc172c37a6d937097ad91dc7c263caf47",
+      "prefixOnly": true,
+      "actualBytes": 10086,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_teams/api011_codex_concrete_root_team_4ed5aa57cade4f8fb3d6b52cef6ec6aa/api011_codex_packet_team_4431430ec7054980b9dad578a22a2ddc/api011_codex_team_coordinator_dc3fc702478d4b7d91847a4a5ead7b83/raw_traces_active.jsonl",
+      "bytes": 12082,
+      "sha256": "228c6ff77d1e95786652a82ff82e89674ded1f2f7b6c2544ead27d7eab410e93",
+      "prefixOnly": true,
+      "actualBytes": 12082,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_teams/api011_codex_concrete_root_team_4ed5aa57cade4f8fb3d6b52cef6ec6aa/api011_codex_packet_team_4431430ec7054980b9dad578a22a2ddc/api011_codex_team_reader_58156f8bc9be4fdbbf69bf1040cc2f88/raw_traces_active.jsonl",
+      "bytes": 9446,
+      "sha256": "8f323199d8f606c730dc0a84016a00b40389b061a19a714a85c8a4c025697569",
+      "prefixOnly": true,
+      "actualBytes": 9446,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_teams/api011_codex_concrete_root_team_4ed5aa57cade4f8fb3d6b52cef6ec6aa/api011_codex_packet_agent_9a63aedb7efc472a9adf84f400264dd3/raw_traces_active.jsonl",
+      "bytes": 8483,
+      "sha256": "36e2ff4304008527696d94dc1cfaadc925b10016b2db02ce3f9bd867b3d3e9e1",
+      "prefixOnly": true,
+      "actualBytes": 8483,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_teams/api011_codex_concrete_root_team_4ed5aa57cade4f8fb3d6b52cef6ec6aa/api011_codex_packet_team_e252c21cbfb24badb4c752e89f86eba3/api011_codex_team_reader_1bb8f017ab174e779473e8b7d120c55e/raw_traces_active.jsonl",
+      "bytes": 10061,
+      "sha256": "1a905ffe2bf31014b0e628156cbf8c2746130ff08014d34576b4b892aca465de",
+      "prefixOnly": true,
+      "actualBytes": 10061,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_teams/api011_codex_concrete_root_team_4ed5aa57cade4f8fb3d6b52cef6ec6aa/api011_codex_packet_team_e252c21cbfb24badb4c752e89f86eba3/api011_codex_team_coordinator_36fc2c3bb9da496b930dc6e35f9560e7/raw_traces_active.jsonl",
+      "bytes": 12777,
+      "sha256": "098bf46e808961a310ca7bdba81fd3767cdd13995f494f1c8a0702ace8686eb6",
+      "prefixOnly": true,
+      "actualBytes": 12777,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_teams/api011_codex_concrete_root_team_4ed5aa57cade4f8fb3d6b52cef6ec6aa/project_task_manager_a040a47189f346b5851547bb51b3370f/raw_traces_active.jsonl",
+      "bytes": 56333,
+      "sha256": "e0bebe3d241b1afdf3a8a1e31cddf99014bb8d92aebc561b593e1bba90dcc9e2",
+      "prefixOnly": true,
+      "actualBytes": 56333,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/memory/agent_teams/api011_native_packet_team_0d395ee5c772456d9008e7b9b1ba0196/team_run_execution_tree.json",
+      "bytes": 2216,
+      "sha256": "315e21fa21980c8202492d0ed091869f20600422eb202ba93135953697e8af69",
+      "prefixOnly": false,
+      "actualBytes": 2216,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/projects/task_context_files/project_e3eb0ac7-bf87-4fe7-8742-fef2c13d7add/project_task_20245c9c-0b2b-4f45-94ee-b2980de30366/ctx_e95ab8a2ba78__saved-agent_org-B.txt",
+      "bytes": 63,
+      "sha256": "50f197b946064776740c746da75705c76d3bdc632557a14eb02df1247743c0a7",
+      "prefixOnly": false,
+      "actualBytes": 63,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/projects/task_context_files/project_e3eb0ac7-bf87-4fe7-8742-fef2c13d7add/project_task_d9d69e54-5103-44c7-81bf-b7fec4fc2c8a/ctx_0f918f110e66__saved-agent_org-A.txt",
+      "bytes": 63,
+      "sha256": "be0660cbed58e86810da546adc1ff8416b843b64ac4b1a99ff1aab7465255639",
+      "prefixOnly": false,
+      "actualBytes": 63,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/projects/task_context_files/project_fcfc0a5c-78ae-40ec-a9a6-381f86eaa889/project_task_ffcfab18-2cfa-4e91-8b6d-9f5cb3631347/ctx_2795df66b844__saved-agent_team-A.txt",
+      "bytes": 63,
+      "sha256": "ac2b962c7bc3d8bf625d9b99147a5707ba58896ce519b617693bf43c590f7811",
+      "prefixOnly": false,
+      "actualBytes": 63,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "server-data/projects/task_context_files/project_fcfc0a5c-78ae-40ec-a9a6-381f86eaa889/project_task_55df6def-5b04-4b2e-88c6-31d27d4313e4/ctx_81065577dae1__saved-agent_team-B.txt",
+      "bytes": 63,
+      "sha256": "97ecfee2703ee683428a65bee35af8520a9e3fe3665c34f9c59c5ebb2ac24435",
+      "prefixOnly": false,
+      "actualBytes": 63,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "validation-workspace/codex-concrete-agent_team/protected-sentinel.txt",
+      "bytes": 32,
+      "sha256": "d67c11f9ac3c2c0c94b2b4b132702cf15518831e6d82149f56d456235537e26c",
+      "prefixOnly": false,
+      "actualBytes": 32,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "validation-workspace/native/team-b/protected-sentinel.txt",
+      "bytes": 30,
+      "sha256": "1323cb2ffb3c8c514b1801bb2fccac035273e19ae46cb2437ac8ccd1d514f329",
+      "prefixOnly": false,
+      "actualBytes": 30,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "validation-workspace/native/agent-a/protected-sentinel.txt",
+      "bytes": 31,
+      "sha256": "da7718917e8d9e3d83a2fd71bb5be73e9f11ed41235f21522281d9686a81d3b3",
+      "prefixOnly": false,
+      "actualBytes": 31,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "validation-workspace/native/manager/protected-sentinel.txt",
+      "bytes": 31,
+      "sha256": "58e26eb16eaed05fb5cc8b523c10920a03d7365e7d050771eb4efa8e092e31b9",
+      "prefixOnly": false,
+      "actualBytes": 31,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "validation-workspace/codex/team-b/protected-sentinel.txt",
+      "bytes": 29,
+      "sha256": "43f2579969240916b8d4dddc3a7ed51ebe309c6cd73bca038122de5433493c1d",
+      "prefixOnly": false,
+      "actualBytes": 29,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "validation-workspace/codex/agent-a/protected-sentinel.txt",
+      "bytes": 30,
+      "sha256": "1ed77b4580656066990f4d1f1c14252f352d993c74a0abd5478685dbe5492f3c",
+      "prefixOnly": false,
+      "actualBytes": 30,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "validation-workspace/codex/manager/protected-sentinel.txt",
+      "bytes": 30,
+      "sha256": "37055d4ff90b6bfc4dbd02d259f882e6f86388a27fe785c38cb4d7bbb56f9d05",
+      "prefixOnly": false,
+      "actualBytes": 30,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    },
+    {
+      "relative": "validation-workspace/native-concrete-agent_org/protected-sentinel.txt",
+      "bytes": 32,
+      "sha256": "da43abb82590a3b243e3aa1fbc14754a39d009c4447c7d6c7b35ab20c28ab88f",
+      "prefixOnly": false,
+      "actualBytes": 32,
+      "addedBytes": 0,
+      "unchangedProtectedBytes": true
+    }
+  ]
+}

@@ -1,0 +1,671 @@
+[
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round9-before-cleanup.log",
+    "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-cleanup.py before",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-cleanup.py before",
+      "Current own31 / all captured 163",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round9-cleanup-verify-current.log",
+    "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-cleanup-current.py after",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-cleanup-current.py after",
+      "{\"at\": \"2026-10-03T19:21:15.987183+00:00\", \"instanceId\": \"iso-58861-449a\", \"ownCurrentPidCount\": 31, \"ownCapturedPidCount\": 163, \"ownAliveAfterStop\": [], \"freeBind\": {\"58861\": true, \"58862\": true, \"9229\": true}, \"ownRootDatabaseImportedKeyRemoved\": true, \"foreignImmediatelyBeforeVsAfterExactlyUnchanged\": 4, \"entryFourForeignRecordsExactlyUnchanged\": true, \"scope\": \"OWN app teardown after evidence only; never successful Task-release or history facade repair. Generated build and allowlisted evidence retained; no foreign/user app/data/profile mutation.\"}",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round9-cleanup-verify.log",
+    "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-cleanup.py after",
+    "innerExit": 1,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "    assert all(free.values());assert not Path(i['dataRoot']).exists();debug=[json.loads(x) for x in (E/'api-009-round9-owner-debugger.jsonl').read_text().splitlines()];assert debug[-1]['event']=='detached'",
+      "TypeError: 'list' object is not callable",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round9-cleanup.log",
+    "command": "bash -c 'pnpm --silent isolated-app stop iso-58861-449a > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-stop.json'",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "command=bash -c 'pnpm --silent isolated-app stop iso-58861-449a > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-stop.json'",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round9-desktop-build.log",
+    "command": "bash -c 'pnpm --silent isolated-app start --build > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-instance.json'",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "  '/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.92-beta.12.zip'",
+      "]",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round9-import-preview.log",
+    "command": "bash -c 'DB=$(python3 -c \"import json;print(json.load(open(\\\"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-instance.json\\\"))[\\\"result\\\"][\\\"databaseUrl\\\"])\"); pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url \"$DB\" --dry-run'",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "BLOCKED 0",
+      "INSTRUCTION NONE",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round9-own-restart.log",
+    "command": "bash -c 'pnpm --silent isolated-app restart iso-58861-449a > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-restart.json'",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "command=bash -c 'pnpm --silent isolated-app restart iso-58861-449a > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-restart.json'",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round9-owned-archive.log",
+    "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-archive.py",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-archive.py",
+      "Retained 58 allowlisted OWN files",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round9-recovery-restart.log",
+    "command": "bash -c 'pnpm --silent isolated-app restart iso-58861-449a > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-recovery-restart.json'",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "command=bash -c 'pnpm --silent isolated-app restart iso-58861-449a > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-recovery-restart.json'",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-agent-final-a.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-manager-final-a.mjs done-a",
+    "innerExit": 1,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "  \"text\": \"Chat\\nAgents\\nAgent Teams\\nAgent Orgs\\nSkills\\nMemory\\nNodes\\nWorkspaces\\n[ { \\\"code\\\": \\\"invalid_union\\\", \\\"errors\\\": [ [ { \\\"code\\\": \\\"unrecognized_keys\\\", \\\"keys\\\": [ \\\"taskLifetime\\\" ], \\\"path\\\": [], \\\"message\\\": \\\"Invalid input\\\" } ], [ { \\\"expected\\\": \\\"string\\\", \\\"code\\\": \\\"invalid_type\\\", \\\"path\\\": [ \\\"teamRunId\\\" ], \\\"message\\\": \\\"Invalid input\\\" }, { \\\"expected\\\": \\\"array\\\", \\\"code\\\": \\\"invalid_type\\\", \\\"path\\\": [ \\\"members\\\" ], \\\"message\\\": \\\"Invalid input\\\" }, { \\\"expected\\\": \\\"array\\\", \\\"code\\\": \\\"invalid_type\\\", \\\"path\\\": [ \\\"taskExecutions\\\" ], \\\"message\\\": \\\"Invalid input\\\" }, { \\\"code\\\": \\\"unrecognized_keys\\\", \\\"keys\\\": [ \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\" ], \\\"path\\\": [], \\\"message\\\": \\\"Invalid input\\\" } ] ], \\\"path\\\": [ \\\"rootOrg\\\", \\\"taskExecutions\\\", 0 ], \\\"message\\\": \\\"Invalid input\\\" } ]\\nconcrete-agent_org\\nconcrete-agent_team\\nmanager\\nmanual-approval\\nphysical-manager-round9\\nphysical-task-workers-round9\\nTemp Workspace\\nSettings\\nWhat should we work on?\\n\\nAll your skills are available. Type / to use a skill, or @ to chat with an agent or team.\\n\\nContext Files (0)\\n(drag, paste, or upload)\\nTemp workspace\\nAuto-approve\\nGPT-6.1-Sol (default reasoning: low)\\nCodex\\n\\nRuntimes\\n\\nAutoByteus\\nCodex App Server\\n8\\nGPT-5.5 (default reasoning: medium)\\nGPT-5.6-Luna (default reasoning: medium)\\nGPT-5.6-Sol (default reasoning: low)\\nGPT-5.6-Terra (default reasoning: medium)\\nGPT-6-Astra (default reasoning: medium)\\nGPT-6-Luna (default reasoning: medium)\\nGPT-6-Sol (default reasoning: medium)\\nGPT-6.1-Sol (default reasoning: low)\\nClaude Agent SDK\\n10\\nAntigravity CLI\\nGrok Build\\n1\\nLow\\n\\nFiles are saved in the temp workspace \u00b7 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/server-data/temp_workspace\"",
+      "}",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-agent-inspection.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-manager-probe.mjs reconnect-final",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-manager-probe.mjs reconnect-final",
+      "Pass: actual renderer reload/reconnect retains Agent+Team rows and both readable worker conversations.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-agent-ui-start.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-manager-probe.mjs start",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-manager-probe.mjs start",
+      "Pass: real ordinary Manager fresh Agent+Team saved-ID/immutable context/link/stamp and visible rows; release/reconnect/inspection pending.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-import-tty.log",
+    "command": null,
+    "innerExit": null,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "CONFIGURED 10",
+      "SKIPPED 0",
+      "REPLACED 0",
+      "INSTRUCTION NONE"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-live-setup.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-manager-probe.mjs setup",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "  \"settings\": []",
+      "}",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-actual-approval.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-approval-probe.mjs",
+    "innerExit": 1,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "  assert(/lifetime|closed|completed/i.test(JSON.stringify(out.lateAck.payload)))",
+      "",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-agent-fence-todo.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs fence-todo",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs fence-todo",
+      "Scoped Pass: actual closed late input rejected without trace/seed/tree/lifetime wake; explicit TODO alone starts nothing, old closed history and open A preserved.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-agent-new-b-done.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs done-new-b",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs done-new-b",
+      "Scoped Pass: reopened B explicit DONE releases new exact lifetime and genuine two offline events LIVE; old history/A/Manager retained. Shared provider physical release not inferred.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-agent-reopen-b.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs reopen-b",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs reopen-b",
+      "Scoped Pass: saved-ID redelegation after explicit TODO creates fresh lifetime, Team and two member IDs/real byte reads; original closed executions retained.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-agent-restart-read.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs restart-read",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs restart-read",
+      "Scoped Pass: exact own app restart preserves current physical Project array/tree; normal readers do not rewrite, closed B stays fenced/open A restores same authority and actually reads saved bytes.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-agent-stop-restore.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs stop-restore",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-agent-lifecycle-probe.mjs stop-restore",
+      "Scoped Pass: normal exact Root Stop physically exits shared provider/captured children without deleting durable state; same root restore rejects old B and restores open A same ID with real fresh saved-byte read/no new seed/lifetime.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-agent_org-restart-read.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs agent_org restart-read",
+    "innerExit": 1,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs agent_org restart-read",
+      "Error: TIMEOUT Supported current root WS ready",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-agent_team-restart-read.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs agent_team restart-read",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs agent_team restart-read",
+      "Scoped Pass agent_team restart-read: exact separate Root Stop/physical exclusive owner exit/other roots protected and same-root/open-A recovery with real read; closed B fenced, current array/tree/history/metadata/workspace retained",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-approval-continuation.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-approval-continuation.mjs",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-approval-continuation.mjs",
+      "Scoped Pass original real pending approval/DONE/release/typed Interrupted/empty input/live offline + exact stale actual invocation rejected RUN_NOT_ACTIVE with no wake/trace/tree/state/file change; API-owned text oracle corrected, not product Fail",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-final-a.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-final-a.mjs",
+    "innerExit": 1,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-final-a.mjs",
+      "Error: TIMEOUT Exact A genuine terminal",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-org-restart-current.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe-current.mjs agent_org restart-read",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe-current.mjs agent_org restart-read",
+      "Scoped Pass agent_org restart-read: exact separate Root Stop/physical exclusive owner exit/other roots protected and same-root/open-A recovery with real read; closed B fenced, current array/tree/history/metadata/workspace retained",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-org-stop-restore.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs agent_org stop-restore",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs agent_org stop-restore",
+      "Scoped Pass agent_org stop-restore: exact separate Root Stop/physical exclusive owner exit/other roots protected and same-root/open-A recovery with real read; closed B fenced, current array/tree/history/metadata/workspace retained",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-recursive.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-physical-recursive-probe.mjs",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-physical-recursive-probe.mjs",
+      "Scoped Pass: real Orgroot/CodexMCP configured-copy saved Task recursive Team/Agent/helper-Team actual five reads/stamps\u2192business DONE\u2192all exact terminal events + exclusive provider and captured native descendant PID exit; Manager/B sharedW1 provider and history/files protected. Not full other-root/native/race/retry/restore acceptance.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-team-stop-restore.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs agent_team stop-restore",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs agent_team stop-restore",
+      "Scoped Pass agent_team stop-restore: exact separate Root Stop/physical exclusive owner exit/other roots protected and same-root/open-A recovery with real read; closed B fenced, current array/tree/history/metadata/workspace retained",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-three-root-idempotence-current.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-idempotent-done-current.mjs",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "agent_team Scoped Pass exact repeated DONE retains same released lifetime/execution/history; no new copy/seed or other Task effect",
+      "agent_org Scoped Pass exact repeated DONE retains same released lifetime/execution/history; no new copy/seed or other Task effect",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round9-three-root-idempotence.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-idempotent-done.mjs",
+    "innerExit": 1,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-idempotent-done.mjs",
+      "Error: TIMEOUT Actual repeat DONE final",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round9-api.log",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts --no-watch",
+    "innerExit": 0,
+    "testFiles": [
+      " Test Files  7 passed (7)"
+    ],
+    "tests": [
+      "      Tests  21 passed (21)"
+    ],
+    "tail": [
+      "   Duration  27.44s (transform 5.70s, setup 45ms, import 12.98s, tests 13.14s, environment 1ms)",
+      "",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round9-before-restart.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-pre-restart.mjs",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-pre-restart.mjs",
+      "Scoped Pass faithful current physical bare array/tree checkpoint; no version envelope, migration or write",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round9-byte-after.log",
+    "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-byte-preservation.py after",
+    "innerExit": 1,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "    else:assert n['completedAt'] and all(e['cleanup']=='released' for e in n['executions']);assert len(n['executions'])==len(l['executions'])",
+      "AssertionError",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round9-byte-before.log",
+    "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-byte-preservation.py before",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-byte-preservation.py before",
+      "Scoped before-byte snapshot 51 OWN files/all8 complete workspace files",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round9-partial-bytes.log",
+    "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-partial-preservation.py",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-partial-preservation.py",
+      "Scoped Pass data preservation + already-offline Team A once-DONE exact released lifetime. Not three-root final A or new live terminal proof. Original temporary oracle failures retained. 51 exact bytes/prefix checks.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-round9-inspector-owner.log",
+    "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-inspector-owner.py",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-inspector-owner.py",
+      "{\"instanceId\": \"iso-58861-449a\", \"ownBackendPid\": 73104, \"cwd\": \"/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server\", \"bound9229ToExactOwner\": true}",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-round9-org-lifecycle.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-concrete-lifecycle-probe.mjs agent_org",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-concrete-lifecycle-probe.mjs agent_org",
+      "Scoped Pass critical ordinary saved-ID new B closure/reopen: exact all-released diagnostic and genuine member terminals; A/borrowed/root/packet protection. Remaining Root Stop/restore held for separate case.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-round9-team-lifecycle.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-concrete-lifecycle-probe.mjs agent_team",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-concrete-lifecycle-probe.mjs agent_team",
+      "Scoped Pass critical ordinary saved-ID new B closure/reopen: exact all-released diagnostic and genuine member terminals; A/borrowed/root/packet protection. Remaining Root Stop/restore held for separate case.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round9-history-readiness.log",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/collaboration-root-history-readiness.test.ts --no-watch",
+    "innerExit": 0,
+    "testFiles": [
+      " Test Files  1 passed (1)"
+    ],
+    "tests": [
+      "      Tests  1 passed (1)"
+    ],
+    "tail": [
+      "   Duration  5.37s (transform 3.13s, setup 17ms, import 4.69s, tests 118ms, environment 0ms)",
+      "",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round9-native-web.log",
+    "command": "pnpm test:native-input-history",
+    "innerExit": 1,
+    "testFiles": [
+      " Test Files  1 failed (1)"
+    ],
+    "tests": [
+      "      Tests  2 failed (2)"
+    ],
+    "tail": [
+      "\u2009ELIFECYCLE\u2009 Command failed with exit code 1.",
+      "\u2009ELIFECYCLE\u2009 Command failed with exit code 1.",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round9-nuxt.log",
+    "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/agentRunCollaborationStore.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts composables/agentCollaboration/__tests__/useAgentRunCollaborationSync.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts stores/__tests__/runHistoryStore.spec.ts --run",
+    "innerExit": 1,
+    "testFiles": [
+      " Test Files  1 failed | 6 passed (7)"
+    ],
+    "tests": [
+      "      Tests  2 failed | 129 passed (131)"
+    ],
+    "tail": [
+      "",
+      "\u2009ELIFECYCLE\u2009 Command failed with exit code 1.",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round9-org-history-witness.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-org-history-witness.mjs",
+    "innerExit": 1,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "Fail FAPI-009: public Org history exposes private Task lifetime stamps and violates strict renderer history contract",
+      "AssertionError [ERR_ASSERTION]: Supported public Org history rows must satisfy strict current renderer contract without private Task lifetime stamps",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-round9-cumulative.log",
+    "command": "bash tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-007-cumulative-focused-command.sh",
+    "innerExit": 0,
+    "testFiles": [
+      " Test Files  141 passed | 3 skipped (144)"
+    ],
+    "tests": [
+      "      Tests  1379 passed | 5 skipped (1384)"
+    ],
+    "tail": [
+      "   Duration  135.00s (transform 6.56s, setup 646ms, import 69.77s, tests 50.79s, environment 10ms)",
+      "",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-round9-final-diffcheck.log",
+    "command": "git diff --check",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "command=git diff --check",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-round9-strict-tool-log.log",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts --no-watch",
+    "innerExit": 1,
+    "testFiles": [
+      " Test Files  1 failed (1)"
+    ],
+    "tests": [
+      "      Tests  4 failed | 1 passed (5)"
+    ],
+    "tail": [
+      "   Duration  995ms (transform 319ms, setup 18ms, import 420ms, tests 14ms, environment 0ms)",
+      "",
+      "",
+      "PROCESS_EXIT_CODE=1"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-round9-typecheck.log",
+    "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "command=pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-round9-agent-done-b.log",
+    "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-manager-probe.mjs done-b",
+    "innerExit": 0,
+    "testFiles": [],
+    "tests": [],
+    "tail": [
+      "command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-manager-probe.mjs done-b",
+      "Scoped Pass: explicit user DONE, genuine terminal stream and retained offline rows LIVE before any repair reload; Manager/open other Task/workspaces protected. Physical shared Codex lease release remains separately unproven, not whole acceptance.",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-round9-neighbors.log",
+    "command": "bash tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-006-terminal-neighbors-command.sh",
+    "innerExit": 0,
+    "testFiles": [
+      " Test Files  8 passed (8)"
+    ],
+    "tests": [
+      "      Tests  99 passed (99)"
+    ],
+    "tail": [
+      "   Duration  12.17s (transform 3.51s, setup 52ms, import 10.37s, tests 374ms, environment 1ms)",
+      "",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-round9-owners.log",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/backends/codex/thread tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts --no-watch",
+    "innerExit": 0,
+    "testFiles": [
+      " Test Files  9 passed (9)"
+    ],
+    "tests": [
+      "      Tests  200 passed (200)"
+    ],
+    "tail": [
+      "   Duration  31.87s (transform 3.02s, setup 56ms, import 7.89s, tests 22.37s, environment 1ms)",
+      "",
+      "",
+      "PROCESS_EXIT_CODE=0"
+    ]
+  }
+]

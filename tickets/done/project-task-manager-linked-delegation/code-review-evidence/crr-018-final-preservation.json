@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-04T06:51:37.110594+00:00",
+  "incomingReferenceCount": 3245,
+  "missing": [],
+  "changedIncomingReferencesOnlyReviewerCanonicals": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "all299NonTicketStatusAndHashesExact": true,
+  "all20IncomingDurablesExactByFullHashComparison": true,
+  "binaryIndexExact": true,
+  "stagesExact": true,
+  "headAndBranchExact": true,
+  "unmerged": 0,
+  "CRR001Through017RevisionHistoryReconstructsByteExact": true,
+  "priorCRR017CanonicalExact": true,
+  "noProductionDurableGitOrAppChanges": true,
+  "checks": {
+    "diffHEAD": {
+      "exit": 0,
+      "output": ""
+    },
+    "diffIndex": {
+      "exit": 0,
+      "output": ""
+    }
+  },
+  "initialVerifierFailure": "Retained separately: accidental added newline only, corrected without canonical mutation"
+}

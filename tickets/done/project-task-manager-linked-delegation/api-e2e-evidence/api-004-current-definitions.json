@@ -1,0 +1,100 @@
+{
+  "data": {
+    "agentDefinitions": [
+      {
+        "id": "api004-packet-agent",
+        "name": "API004 Packet Agent",
+        "toolNames": [
+          "read_file",
+          "send_message_to"
+        ],
+        "defaultLaunchConfig": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          }
+        }
+      },
+      {
+        "id": "api004-team-coordinator",
+        "name": "API004 Team Coordinator",
+        "toolNames": [
+          "read_file",
+          "send_message_to"
+        ],
+        "defaultLaunchConfig": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          }
+        }
+      },
+      {
+        "id": "api004-team-reader",
+        "name": "API004 Team Reader",
+        "toolNames": [
+          "read_file",
+          "send_message_to"
+        ],
+        "defaultLaunchConfig": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          }
+        }
+      },
+      {
+        "id": "autobyteus-daily-assistant",
+        "name": "Daily Assistant",
+        "toolNames": [
+          "run_bash",
+          "read_file",
+          "read_url",
+          "search_web",
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "run_script",
+          "screenshot",
+          "get_process_output",
+          "start_background_process",
+          "stop_background_process",
+          "download_media",
+          "edit_image",
+          "generate_image",
+          "generate_speech",
+          "read_media_file"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "autobyteus-project-task-manager",
+        "name": "Project Task Manager",
+        "toolNames": [
+          "list_projects",
+          "list_project_tasks",
+          "create_or_update_task",
+          "list_available_agents",
+          "delegate_task",
+          "send_message_to",
+          "read_file"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "autobyteus-retrospective-skill-improver",
+        "name": "Retrospective Skill Improver",
+        "toolNames": [
+          "run_bash",
+          "send_message_to"
+        ],
+        "defaultLaunchConfig": null
+      }
+    ]
+  }
+}

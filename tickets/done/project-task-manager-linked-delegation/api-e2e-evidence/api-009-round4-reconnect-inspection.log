@@ -1,0 +1,37 @@
+case=API-009
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/current-manager-visibility-probe.mjs reconnect
+{
+  "error": "AssertionError [ERR_ASSERTION]: Actual successful read_file marker required for A",
+  "rows": [
+    {
+      "host": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+      "text": "APapi004 packet agentTemporary task agent · api004 packet agent · /api004_packet_agentapi004 packet teamTemporary task team · api004 packet team · /api004_packet_teamCcoordinatorTemporary task agent · coordinator · /api004_packet_team/coordinatorRreaderTemporary task agent · reader · /api004_packet_team/readerATapi004 team readerTemporary task agent · api004 team reader · /api004_team_reader",
+      "rows": [
+        {
+          "id": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+          "label": "Temporary task agent, api004 packet agent, level 1, idle, Started by project task manager, /api004_packet_agent",
+          "selected": "false"
+        },
+        {
+          "id": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+          "label": "Temporary task agent, coordinator, level 2, running, /api004_packet_team/coordinator",
+          "selected": "true"
+        },
+        {
+          "id": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+          "label": "Temporary task agent, reader, level 2, idle, /api004_packet_team/reader",
+          "selected": "false"
+        },
+        {
+          "id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+          "label": "Temporary task agent, api004 team reader, level 1, idle, Started by coordinator, /api004_team_reader",
+          "selected": "false"
+        }
+      ]
+    }
+  ],
+  "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nmanager\nPT\nProject Task Manager\n(1)\nThis is an explicitly authorized isolated validation. Resolve Project named \"API004 saved-ID visible workers\" and inspect its saved Tasks. Reuse Task A project_task_0352e556-c4cc-493c-83ab-a478e75f70ca and Task B project_task_bc9dd420-32e0-4597-860f-b238223683ae without changing their description or context. Consult available agents. Delegate Task A ONCE to API004 Packet Agent and Task B ONCE to API004 Packet Team, each using ONLY recipient_address and task_id. On each successful returned ingress explicitly mark its Task IN_PROGRESS. Do not resend initial work. Do not mark either DONE until my explicit instruction. Summarize exact returned worker IDs and business status; do not create other Projects/Tasks. Do not inspect credentials or other workspaces.\nnow\nAP\napi004 packet agent\napi004 packet team\nC\ncoordinator\nR\nreader\nAT\napi004 team reader\nTemp Workspace\nSettings\nC\ncoordinator\nRunning\nYou\nTask delegator address: /project_task_manager\nTask delegator AgentRun ID: project_task_manager_818aee4963a743bd9f15bbcc7ef253c3\n\nDescription:\nRead the supplied saved Task attachment using read_file and return its exact API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/server-data/projects/task_context_files/project_865580da-5cef-4545-84d0-493db4819067/project_task_bc9dd420-32e0-4597-860f-b238223683ae/ctx_e3e8db390957__saved-packet-B.txt\nC\ncoordinator\nget_handoff_rules\nsend_message_to\n\nBlocked: required read_file tool and reader member address are unavailable. Reported to requester; marker remains unverified. No files or Task status changed.\n\nC\ncoordinator\n\nFrom Project Task Manager:\n\nAvailable-agent discovery returned API004 Team Reader at canonical address /api004_team_reader. This supplies the missing address only; do not create copies or resend initial work. I cannot make read_file available through my current tools. Preserve the saved Task instructions and report the blocker if the required tool remains unavailable; do not change Task status.\n\nsend_message_to\nget_handoff_rules\nsend_message_to\nC\ncoordinator\n\nFrom Api004 Team Reader:\n\nBlocked: read_file is unavailable in the enabled tools. I did not read the attachment, modify files, create copies, delegate, or change Task status.\n\nReader request delivered. My marker remains unverified because read_file is unavailable; blocker reported to requester. No files or Task status changed.\n\nContext Files (0)\n(drag, paste, or upload)"
+}
+
+PROCESS_EXIT_CODE=1

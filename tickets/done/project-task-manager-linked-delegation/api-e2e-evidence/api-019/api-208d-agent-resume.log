@@ -1,0 +1,5 @@
+STEP agent resume root restored after whole-app restart
+STEP agent resume closed A runs rejected after restart (not woken/restored)
+STEP agent resume open B resumes after restart
+STEP agent resume Task delete keeps the resource file; closed runs still rejected
+STEP agent resume resume phase complete

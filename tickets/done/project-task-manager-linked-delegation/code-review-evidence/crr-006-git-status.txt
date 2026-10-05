@@ -1,0 +1,220 @@
+ M autobyteus-server-ts/docs/modules/prompt_engineering.md
+ M autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+ M autobyteus-server-ts/src/agent-collaboration/collaborators/message-recipient-resolution.ts
+ M autobyteus-server-ts/src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/services/active-collaboration-root-directory.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-adapter.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-input.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-tree-projection.ts
+ M autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts
+ M autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts
+ M autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-process-groups.ts
+ M autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts
+ M autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-cleanup.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
+ M autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts
+ M autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+ M autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts
+ M autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts
+ M autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
+ M autobyteus-server-ts/src/agent-execution/services/managed-agent-run-termination.ts
+ M autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+ M autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/prepared-task-execution.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/task-agent-execution.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/task-team-execution.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-callbacks.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/registries/task-team-execution-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/task-team-execution-factory.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service-contract.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts
+ M autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts
+ M autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts
+ M autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts
+ M autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+ M autobyteus-server-ts/src/llm-management/services/codex-model-catalog.ts
+ M autobyteus-server-ts/src/persistence/file/store-utils.ts
+ M autobyteus-server-ts/src/projects/context/project-task-context-store.ts
+ M autobyteus-server-ts/src/projects/domain/models.ts
+ M autobyteus-server-ts/src/projects/domain/project-errors.ts
+ M autobyteus-server-ts/src/projects/services/project-task-service.ts
+ M autobyteus-server-ts/src/projects/stores/project-store.ts
+ M autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts
+ M autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts
+ M autobyteus-server-ts/src/runtime-management/acp/acp-agent-process.ts
+ M autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts
+ M autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-streaming-session.ts
+ M autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts
+ M autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts
+ M autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
+ M autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts
+ M autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts
+ M autobyteus-server-ts/tests/fixtures/configured-root-first-work-fixture.ts
+ M autobyteus-server-ts/tests/helpers/fake-claude-streaming-sdk.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/configured-root-first-work.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-scope.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-task-publication.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-execution-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-liveness.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-root-agent-initiated-collaborators.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+ M autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+ M autobyteus-server-ts/tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts
+ M autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/projects/project-service.test.ts
+ M autobyteus-server-ts/tests/unit/projects/project-task-service.test.ts
+ M autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+ M autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts
+ M autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts
+ M autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts
+ M autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts
+ M autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts
+ M autobyteus-ts/src/agent/factory/agent-factory.ts
+ M autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/src/agent-collaboration/collaborators/task-scoped-message-recipient.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-dispatch.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-lifetime.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-seed-admission.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/task-lifetime-operation-gate.ts
+?? autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-preparation.ts
+?? autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-input-submission.ts
+?? autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-release-scope.ts
+?? autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts
+?? autobyteus-server-ts/src/agent-execution/input/agent-run-execution-admission-fence.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-activation-operation.ts
+?? autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts
+?? autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager-options.ts
+?? autobyteus-server-ts/src/agent-team-execution/local/owned-flat-team-runtime-release.ts
+?? autobyteus-server-ts/src/agent-team-execution/local/prepare-flat-team-configured-activation.ts
+?? autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/
+?? autobyteus-server-ts/src/projects/domain/project-task-execution-state.ts
+?? autobyteus-server-ts/src/projects/domain/project-task-execution.ts
+?? autobyteus-server-ts/src/projects/runtime/
+?? autobyteus-server-ts/src/projects/stores/project-metadata-schema.ts
+?? autobyteus-server-ts/src/projects/stores/project-state-schema.ts
+?? autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts
+?? autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-session-opening.ts
+?? autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts
+?? autobyteus-server-ts/tests/e2e/projects/projects-startup-no-write.e2e.test.ts
+?? autobyteus-server-ts/tests/fixtures/agent-run-preparation-fixtures.ts
+?? autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs
+?? autobyteus-server-ts/tests/fixtures/collaboration-public-projection-fixtures.ts
+?? autobyteus-server-ts/tests/fixtures/projects-released-array.json
+?? autobyteus-server-ts/tests/fixtures/projects-released-array.provenance.json
+?? autobyteus-server-ts/tests/fixtures/task-release-generation-fixtures.ts
+?? autobyteus-server-ts/tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts
+?? autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-dispatch-races.test.ts
+?? autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-quiet-generation.test.ts
+?? autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-tree-scope.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/services/
+?? autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-private-release-independence.test.ts
+?? autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts
+?? autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-work-source.test.ts
+?? autobyteus-server-ts/tests/unit/projects/project-state-schema.test.ts
+?? autobyteus-server-ts/tests/unit/projects/project-task-lifetime.test.ts
+?? autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts
+?? autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts
+?? autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts
+?? autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts
+?? autobyteus-server-ts/tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts
+?? tickets/in-progress/project-task-manager-linked-delegation/

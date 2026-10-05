@@ -1,0 +1,11 @@
+{
+  "packageCount": 287,
+  "unchangedPackage": true,
+  "sixFixtureProducerBytesIndependentlyHEADMatched": true,
+  "historyCurrentDistSHAMatchesAPIInstalledReceipt": {
+    "run-history/services/collaboration-root-history-service.js": "82c0d40ece2c17a702e28e62ccc2dabcf1eb900700fd26e28c8ba5c36aea9632",
+    "api/graphql/types/collaboration-root-history.js": "f363225a564948f4279c4653d395f979db42af97cc68fef85d4dca0d3bd11b0b"
+  },
+  "positive102ProvenanceVerified": true,
+  "reviewerLiveReplay": false
+}

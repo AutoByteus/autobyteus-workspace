@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-pre-restart.mjs native agent_org
+Scoped Pass pre-restart: A remains open/actual saved read, B explicitly closed/allreleased with genuine terminals; protected root/borrowed/packets.
+
+PROCESS_EXIT_CODE=0

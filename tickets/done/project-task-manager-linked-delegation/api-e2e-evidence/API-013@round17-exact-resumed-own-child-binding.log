@@ -1,0 +1,6 @@
+START 2026-10-05T04:54:27.181614+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-physical-owner.py"]
+Diagnostic unavailable, not physical evidence
+
+INNER_EXIT_CODE=0

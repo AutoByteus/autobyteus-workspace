@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-04T05:51:33.056754+00:00",
+  "stage": "post-repository",
+  "categories": {
+    "requirementAcceptance": 75,
+    "changedBoundaryDirectness": 90,
+    "integrationRealism": 75,
+    "environmentIdentityFidelity": 90,
+    "failureLifecycleRecovery": 75,
+    "userBrowserDesktopSurface": 50,
+    "durableCoverageQuality": 95
+  },
+  "overall": 78.57,
+  "decision": "Required",
+  "rationale": "Fresh tsc/build and changed list/scoped HTTP/WS/scopedMCP/native/FIFO/exact real-owned-child controls pass, but no current packaged renderer/provider journey or whole-app resumption yet. Controlled provider/private doubles and model absence are not product proof. Full20 cumulative durables valid, current1498 selection and exact child failed retry controls distinct from unresolved original FAPI007. Current critical availableNative/Codex/fullforest/LIVE/protectedmatrix/restart remains to execute. ExactClaude model dependency separately pending catalog, no substitution."
+}

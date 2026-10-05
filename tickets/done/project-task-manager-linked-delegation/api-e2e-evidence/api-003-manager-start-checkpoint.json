@@ -1,0 +1,31 @@
+{
+  "instanceId": "iso-58490-670f",
+  "started": "2026-10-03T09:54:04.358Z",
+  "request": "This is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.",
+  "route": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+  "ws": [
+    {
+      "type": "CONNECTED",
+      "payload": {
+        "agent_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+        "session_id": "b9b46169-a57c-4763-a9c9-d06544eadabc"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "offline",
+        "recoverableBlock": null,
+        "agent_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "recoverableBlock": null,
+        "agent_id": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+      }
+    }
+  ]
+}

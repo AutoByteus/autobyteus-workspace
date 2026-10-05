@@ -1,0 +1,132 @@
+2026-10-04T05:57:39.342235+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round13-native-agent-probe.mjs", "setup"]
+{
+  "instanceId": "iso-63229-72f4",
+  "project": {
+    "projectId": "project_1b3296d4-ea65-4ba4-b4aa-b8ddf557051e",
+    "name": "API013N saved-ID visible workers"
+  },
+  "tasks": {
+    "A": {
+      "taskId": "project_task_b1641f12-3a64-4135-a951-a63849e2ae9e",
+      "projectId": "project_1b3296d4-ea65-4ba4-b4aa-b8ddf557051e",
+      "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API013N_ATTACHMENT_A_project_1b3296d4-ea65-4ba4-b4aa-b8ddf557051e marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+      "status": "TODO",
+      "contextFiles": [
+        {
+          "storedFilename": "ctx_7a92dc477e6f__saved-packet-A.txt",
+          "displayName": "saved-packet-A.txt",
+          "locator": "/rest/projects/project_1b3296d4-ea65-4ba4-b4aa-b8ddf557051e/tasks/project_task_b1641f12-3a64-4135-a951-a63849e2ae9e/context-files/ctx_7a92dc477e6f__saved-packet-A.txt"
+        }
+      ],
+      "marker": "API013N_ATTACHMENT_A_project_1b3296d4-ea65-4ba4-b4aa-b8ddf557051e"
+    },
+    "B": {
+      "taskId": "project_task_a158469c-7342-4d5b-8374-f7d4ae6f5de3",
+      "projectId": "project_1b3296d4-ea65-4ba4-b4aa-b8ddf557051e",
+      "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API013N_ATTACHMENT_B_project_1b3296d4-ea65-4ba4-b4aa-b8ddf557051e marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+      "status": "TODO",
+      "contextFiles": [
+        {
+          "storedFilename": "ctx_812b8c5589c7__saved-packet-B.txt",
+          "displayName": "saved-packet-B.txt",
+          "locator": "/rest/projects/project_1b3296d4-ea65-4ba4-b4aa-b8ddf557051e/tasks/project_task_a158469c-7342-4d5b-8374-f7d4ae6f5de3/context-files/ctx_812b8c5589c7__saved-packet-B.txt"
+        }
+      ],
+      "marker": "API013N_ATTACHMENT_B_project_1b3296d4-ea65-4ba4-b4aa-b8ddf557051e"
+    }
+  },
+  "agents": [
+    {
+      "id": "api013n-packet-agent",
+      "name": "API013N Packet Agent",
+      "defaultLaunchConfig": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "llmConfig": {
+          "thinking_type": "disabled"
+        }
+      }
+    },
+    {
+      "id": "api013n-team-coordinator",
+      "name": "API013N Team Coordinator",
+      "defaultLaunchConfig": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "llmConfig": {
+          "thinking_type": "disabled"
+        }
+      }
+    },
+    {
+      "id": "api013n-team-reader",
+      "name": "API013N Team Reader",
+      "defaultLaunchConfig": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "llmConfig": {
+          "thinking_type": "disabled"
+        }
+      }
+    }
+  ],
+  "team": {
+    "id": "api013n-packet-team",
+    "name": "API013N Packet Team"
+  },
+  "catalogModels": {
+    "autobyteus": [
+      "claude-fable-5",
+      "claude-fable-5-1",
+      "claude-opus-4.7",
+      "claude-opus-4.8",
+      "claude-opus-5",
+      "claude-opus-5-5",
+      "claude-sonnet-4.6",
+      "claude-sonnet-5",
+      "deepseek-v4-flash",
+      "deepseek-v4-pro",
+      "gemini-3.1-pro-preview",
+      "gemini-3.8-flash",
+      "glm-5.3",
+      "grok-4.7",
+      "kimi-k3",
+      "minimax-m3",
+      "devstral-2",
+      "mistral-large-3",
+      "gpt-5.4",
+      "gpt-5.4-mini",
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra",
+      "gpt-6-luna",
+      "gpt-6-sol",
+      "qwen:deepseek-v4-flash-0731",
+      "qwen:deepseek-v4-pro",
+      "qwen:glm-5.2",
+      "qwen3-max",
+      "qwen3.7-max",
+      "qwen3.8-max"
+    ],
+    "claude_agent_sdk": [
+      "claude-fable-5",
+      "claude-fable-5-1[1m]",
+      "haiku",
+      "claude-opus-4-6",
+      "claude-opus-4-7",
+      "claude-opus-4-8",
+      "claude-opus-5",
+      "opus",
+      "claude-sonnet-4-6",
+      "sonnet"
+    ]
+  },
+  "settings": []
+}
+
+INNER_EXIT=0
+ELAPSED=1.21

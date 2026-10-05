@@ -1,0 +1,10 @@
+2026-10-04T08:20:16.696509+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-cleanup-check.py"]
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-cleanup-check.py", line 30, in <module>
+    assert stop['ok'] and out['recordAbsent'] and out['dataRootAbsent'];assert all(x is True for x in ports.values()) and not out['capturedOwnPidsStillPresent'];assert out['foreignRecordsUnchanged'] and not bad
+AssertionError
+
+INNER_EXIT=1
+ELAPSED=0.08

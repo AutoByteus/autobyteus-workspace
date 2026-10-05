@@ -1,0 +1,6 @@
+2026-10-04T07:51:35.035217+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["pnpm", "-C", "autobyteus-server-ts", "exec", "tsc", "--noEmit", "-p", "tsconfig.build.json"]
+
+INNER_EXIT=0
+ELAPSED=7.66

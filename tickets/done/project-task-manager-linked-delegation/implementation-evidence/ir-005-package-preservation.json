@@ -1,0 +1,50 @@
+{
+  "input_files": 273,
+  "current_files": 281,
+  "unchanged": 269,
+  "changed_input_files": [
+    "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts",
+    "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts",
+    "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md",
+    "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts"
+  ],
+  "missing_files": [],
+  "newly_dirty_previously_clean_tracked_paths": [
+    "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+    "autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts",
+    "autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts"
+  ],
+  "new_repository_files": [
+    "autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts",
+    "autobyteus-server-ts/tests/fixtures/collaboration-public-projection-fixtures.ts",
+    "autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts",
+    "autobyteus-server-ts/tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts"
+  ],
+  "added_to_dirty_manifest": [
+    "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+    "autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts",
+    "autobyteus-server-ts/tests/fixtures/collaboration-public-projection-fixtures.ts",
+    "autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts",
+    "autobyteus-server-ts/tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts",
+    "autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts"
+  ],
+  "all_local_existing_path_changes": [
+    "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts",
+    "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts",
+    "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md",
+    "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+    "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+    "autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts",
+    "autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts"
+  ],
+  "previously_clean_head_hashes": {
+    "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts": "4804294119cffa09ef479d4af03527844d69816a46ba257adf2d24b115e72aa8",
+    "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts": "43e920b2c76cb3f483e3eff143da54730d7d13effa5a977a9303d91982a76bd6",
+    "autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts": "f077d137bd8ff475599f4cc8dd4166286166f3c86f381260cb081798e56e41db",
+    "autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts": "6904a74984f9d5c346696af3fd24696cff137bb119d637dbee0abf12fbbc7e22"
+  }
+}

@@ -1,0 +1,8 @@
+STEP agent_org run root created
+STEP agent_org run assigned entries written and started; trees Task-free
+STEP agent_org run DONE A closed every A entry and stopped exactly A runs
+STEP agent_org run fence: every closed A run rejects input
+STEP agent_org run Manager, open B and borrowed still usable
+STEP agent_org run repeat DONE: no resource file change
+STEP agent_org run run phase complete
+exit 0

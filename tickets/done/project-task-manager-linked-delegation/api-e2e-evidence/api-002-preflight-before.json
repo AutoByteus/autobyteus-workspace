@@ -1,0 +1,30 @@
+{
+  "paths": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/db/test.db",
+      "exists": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/db/test.db.secret.key",
+      "exists": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/db/test.db-wal",
+      "exists": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/db/test.db-shm",
+      "exists": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/db/test.db-journal",
+      "exists": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/live-e2e-runtime",
+      "exists": false
+    }
+  ],
+  "source": "Repository readTrackedTestEnvironment ApplicationDatabaseLocation; presence only, no vault values read",
+  "noSourceFileSupplied": true
+}

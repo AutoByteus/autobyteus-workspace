@@ -1,0 +1,55 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts > witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts > witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending
+NESTED_RESTORE_WITNESS {"first":[{"execution":{"teamRunId":"A-team"},"cleanup":"failed","error":{"code":"TASK_RELEASE_FAILED","message":"AgentTeam '/Workers' is not configured or a collaborator of this run."}},{"execution":{"agentRunId":"A-child"},"cleanup":"pending","error":{"code":"EXACT_RELEASE_AUTHORITY_UNAVAILABLE","message":"Exact release proof is unavailable; retry DONE."}}],"retry":[{"execution":{"teamRunId":"A-team"},"cleanup":"failed","error":{"code":"TASK_RELEASE_FAILED","message":"AgentTeam '/Workers' is not configured or a collaborator of this run."}},{"execution":{"agentRunId":"A-child"},"cleanup":"pending","error":{"code":"EXACT_RELEASE_AUTHORITY_UNAVAILABLE","message":"Exact release proof is unavailable; retry DONE."}}],"active":["A-lead"],"rootActive":true}
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts > witness: partial private Team release waits for member 1 before initiating member 2 cleanup
+PRIVATE_RELEASE_BEFORE_FIRST_DRAIN ["first"]
+
+ ❯ tests/unit/reviewer/cleanup-witness.test.ts (2 tests | 1 failed) 15ms
+   × witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending 14ms
+   ✓ witness: partial private Team release waits for member 1 before initiating member 2 cleanup 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/reviewer/cleanup-witness.test.ts > witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending
+AssertionError: expected [ { execution: { …(1) }, …(2) }, …(1) ] to deeply equal [ { execution: { …(1) }, …(1) }, …(1) ]
+
+- Expected
++ Received
+
+@@ -1,8 +1,12 @@
+  [
+    {
+-     "cleanup": "released",
++     "cleanup": "failed",
++     "error": {
++       "code": "TASK_RELEASE_FAILED",
++       "message": "AgentTeam '/Workers' is not configured or a collaborator of this run.",
++     },
+      "execution": {
+        "teamRunId": "A-team",
+      },
+    },
+    {
+
+ ❯ tests/unit/reviewer/cleanup-witness.test.ts:74:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  10:28:25
+   Duration  3.19s (transform 2.21s, setup 0ms, import 3.09s, tests 15ms, environment 0ms)
+

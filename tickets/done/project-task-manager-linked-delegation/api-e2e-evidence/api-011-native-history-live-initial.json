@@ -1,0 +1,636 @@
+{
+  "mode": "live",
+  "instanceId": "iso-57259-7e1c",
+  "at": "2026-10-04T03:37:08.041Z",
+  "requests": [
+    {
+      "query": "mutation($i:CreateAgentTeamRunInput!){createAgentTeamRun(input:$i){success message teamRunId}}",
+      "variables": {
+        "i": {
+          "teamDefinitionId": "api011-native-packet-team",
+          "teamConfigs": [
+            {
+              "autoExecuteTools": true,
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": {
+                "thinking_type": "disabled"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b",
+              "teamAddress": "/"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "autoExecuteTools": true,
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": {
+                "thinking_type": "disabled"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b",
+              "memberAddress": "/coordinator",
+              "agentDefinitionId": "api011-native-team-coordinator"
+            },
+            {
+              "autoExecuteTools": true,
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": {
+                "thinking_type": "disabled"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b",
+              "memberAddress": "/reader",
+              "agentDefinitionId": "api011-native-team-reader"
+            }
+          ]
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "createAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run created successfully.",
+            "teamRunId": "api011_native_packet_team_0d395ee5c772456d9008e7b9b1ba0196"
+          }
+        }
+      }
+    },
+    {
+      "query": "mutation($i:CreateAgentOrgRunInput!){createAgentOrgRun(input:$i){success message agentOrgRunId}}",
+      "variables": {
+        "i": {
+          "agentOrgDefinitionId": "api011-native-concrete-root-org-rerun-8216bff6-fc10-41f2-97e6-3e3831053459",
+          "rootConfiguration": {
+            "autoExecuteTools": true,
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "deepseek-v4-flash",
+            "llmConfig": {
+              "thinking_type": "disabled"
+            },
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b"
+          }
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_b81d6aaeab13442eb51b0cde46418468"
+          }
+        }
+      }
+    },
+    {
+      "query": "query ListCollaborationRootHistory {listCollaborationRootHistory {__typename ... on AgentOrgRootHistoryObject {root_subject_kind root_run_id created_at archived_at is_active summary org} ... on AgentTeamRootHistoryObject {root_subject_kind root_run_id}}}",
+      "variables": {},
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "listCollaborationRootHistory": [
+            {
+              "__typename": "AgentOrgRootHistoryObject",
+              "root_subject_kind": "agent_org",
+              "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_b81d6aaeab13442eb51b0cde46418468",
+              "created_at": "2026-10-04T03:37:08.133Z",
+              "archived_at": null,
+              "is_active": true,
+              "summary": "",
+              "org": {
+                "subjectKind": "agent_org",
+                "createdAt": "2026-10-04T03:37:08.133Z",
+                "archivedAt": null,
+                "applicationBinding": null,
+                "handoffs": [],
+                "rootOrg": {
+                  "address": "/",
+                  "orgDefinitionId": "api011-native-concrete-root-org-rerun-8216bff6-fc10-41f2-97e6-3e3831053459",
+                  "orgDefinitionName": "API011_NATIVE Concrete Root Org Rerun 8216bff6-fc10-41f2-97e6-3e3831053459",
+                  "orgRunId": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_b81d6aaeab13442eb51b0cde46418468",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "deepseek-v4-flash",
+                    "llmConfig": {
+                      "thinking_type": "disabled"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b"
+                  },
+                  "members": [
+                    {
+                      "address": "/manager",
+                      "agentDefinitionId": "autobyteus-project-task-manager",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "project_task_manager_ddfb6b8024d34a2dbb9a60aa0383540f",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "autobyteus",
+                        "llmModelIdentifier": "deepseek-v4-flash",
+                        "llmConfig": {
+                          "thinking_type": "disabled"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b"
+                      }
+                    },
+                    {
+                      "address": "/borrowed",
+                      "agentDefinitionId": "api011-native-packet-agent",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api011_native_packet_agent_6096c6a76042411a8dc1a4b367d5907c",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "autobyteus",
+                        "llmModelIdentifier": "deepseek-v4-flash",
+                        "llmConfig": {
+                          "thinking_type": "disabled"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b"
+                      }
+                    }
+                  ],
+                  "collaborators": [],
+                  "taskExecutions": []
+                }
+              }
+            },
+            {
+              "__typename": "AgentTeamRootHistoryObject",
+              "root_subject_kind": "agent_team",
+              "root_run_id": "api011_native_packet_team_0d395ee5c772456d9008e7b9b1ba0196"
+            },
+            {
+              "__typename": "AgentOrgRootHistoryObject",
+              "root_subject_kind": "agent_org",
+              "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+              "created_at": "2026-10-04T03:32:19.532Z",
+              "archived_at": null,
+              "is_active": true,
+              "summary": "Read ONLY /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe1...",
+              "org": {
+                "subjectKind": "agent_org",
+                "createdAt": "2026-10-04T03:32:19.532Z",
+                "archivedAt": null,
+                "applicationBinding": null,
+                "handoffs": [],
+                "rootOrg": {
+                  "address": "/",
+                  "orgDefinitionId": "api011-native-concrete-root-org-rerun-8216bff6-fc10-41f2-97e6-3e3831053459",
+                  "orgDefinitionName": "API011_NATIVE Concrete Root Org Rerun 8216bff6-fc10-41f2-97e6-3e3831053459",
+                  "orgRunId": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "deepseek-v4-flash",
+                    "llmConfig": {
+                      "thinking_type": "disabled"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                  },
+                  "members": [
+                    {
+                      "address": "/manager",
+                      "agentDefinitionId": "autobyteus-project-task-manager",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "autobyteus",
+                        "llmModelIdentifier": "deepseek-v4-flash",
+                        "llmConfig": {
+                          "thinking_type": "disabled"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                      }
+                    },
+                    {
+                      "address": "/borrowed",
+                      "agentDefinitionId": "api011-native-packet-agent",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api011_native_packet_agent_55f2e60b73ce4e52bb427ff2cffb8071",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "autobyteus",
+                        "llmModelIdentifier": "deepseek-v4-flash",
+                        "llmConfig": {
+                          "thinking_type": "disabled"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                      }
+                    }
+                  ],
+                  "collaborators": [],
+                  "taskExecutions": [
+                    {
+                      "address": "/borrowed",
+                      "startedAt": "2026-10-04T03:35:44.739Z",
+                      "delegatorAgentRunId": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+                      "agentRunId": "api011_native_packet_agent_c7ee91f14a6846c7b2d6cc5d6974203f",
+                      "platformAgentRunId": null
+                    },
+                    {
+                      "address": "/api011_native_packet_team",
+                      "startedAt": "2026-10-04T03:35:44.817Z",
+                      "delegatorAgentRunId": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+                      "teamRunId": "api011_native_packet_team_9877c0704a96466d96355aa66882402d",
+                      "members": [
+                        {
+                          "address": "/api011_native_packet_team/coordinator",
+                          "agentRunId": "api011_native_team_coordinator_7f4ff760eb0442df8bb5723650dbbaba",
+                          "platformAgentRunId": null
+                        },
+                        {
+                          "address": "/api011_native_packet_team/reader",
+                          "agentRunId": "api011_native_team_reader_946a16f2e7f948f7a428e26cecb1f6f5",
+                          "platformAgentRunId": null
+                        }
+                      ],
+                      "taskExecutions": [],
+                      "source": {
+                        "kind": "agent_team",
+                        "teamDefinitionId": "api011-native-packet-team",
+                        "coordinatorAddress": "/api011_native_packet_team/coordinator",
+                        "members": [
+                          {
+                            "address": "/api011_native_packet_team/coordinator",
+                            "agentDefinitionId": "api011-native-team-coordinator"
+                          },
+                          {
+                            "address": "/api011_native_packet_team/reader",
+                            "agentDefinitionId": "api011-native-team-reader"
+                          }
+                        ],
+                        "handoffs": [],
+                        "defaultLaunchConfiguration": {
+                          "runtimeKind": "autobyteus",
+                          "llmModelIdentifier": "deepseek-v4-flash",
+                          "llmConfig": {
+                            "thinking_type": "disabled"
+                          },
+                          "autoExecuteTools": true,
+                          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                        }
+                      }
+                    },
+                    {
+                      "address": "/api011_native_packet_team",
+                      "startedAt": "2026-10-04T03:36:02.115Z",
+                      "delegatorAgentRunId": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+                      "teamRunId": "api011_native_packet_team_781d11b07c3f474db457bd025e97b877",
+                      "members": [
+                        {
+                          "address": "/api011_native_packet_team/coordinator",
+                          "agentRunId": "api011_native_team_coordinator_d3a49b37f0a544a19fd1c2b0e3f5421a",
+                          "platformAgentRunId": null
+                        },
+                        {
+                          "address": "/api011_native_packet_team/reader",
+                          "agentRunId": "api011_native_team_reader_8640a6460652498cabbd747097afd11a",
+                          "platformAgentRunId": null
+                        }
+                      ],
+                      "taskExecutions": [],
+                      "source": {
+                        "kind": "agent_team",
+                        "teamDefinitionId": "api011-native-packet-team",
+                        "coordinatorAddress": "/api011_native_packet_team/coordinator",
+                        "members": [
+                          {
+                            "address": "/api011_native_packet_team/coordinator",
+                            "agentDefinitionId": "api011-native-team-coordinator"
+                          },
+                          {
+                            "address": "/api011_native_packet_team/reader",
+                            "agentDefinitionId": "api011-native-team-reader"
+                          }
+                        ],
+                        "handoffs": [],
+                        "defaultLaunchConfiguration": {
+                          "runtimeKind": "autobyteus",
+                          "llmModelIdentifier": "deepseek-v4-flash",
+                          "llmConfig": {
+                            "thinking_type": "disabled"
+                          },
+                          "autoExecuteTools": true,
+                          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                        }
+                      }
+                    },
+                    {
+                      "address": "/api011_native_team_coordinator",
+                      "startedAt": "2026-10-04T03:36:08.311Z",
+                      "delegatorAgentRunId": "api011_native_team_reader_8640a6460652498cabbd747097afd11a",
+                      "agentRunId": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+                      "platformAgentRunId": null,
+                      "source": {
+                        "kind": "agent",
+                        "agentDefinitionId": "api011-native-team-coordinator",
+                        "launchConfiguration": {
+                          "runtimeKind": "autobyteus",
+                          "llmModelIdentifier": "deepseek-v4-flash",
+                          "llmConfig": {
+                            "thinking_type": "disabled"
+                          },
+                          "autoExecuteTools": true,
+                          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "console": [],
+  "readOnly": false,
+  "teamControl": {
+    "success": true,
+    "message": "Agent team run created successfully.",
+    "teamRunId": "api011_native_packet_team_0d395ee5c772456d9008e7b9b1ba0196"
+  },
+  "unlinkedOrgControl": {
+    "success": true,
+    "message": "Agent organization run created successfully.",
+    "agentOrgRunId": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_b81d6aaeab13442eb51b0cde46418468"
+  },
+  "rows": [
+    {
+      "__typename": "AgentOrgRootHistoryObject",
+      "root_subject_kind": "agent_org",
+      "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_b81d6aaeab13442eb51b0cde46418468",
+      "created_at": "2026-10-04T03:37:08.133Z",
+      "archived_at": null,
+      "is_active": true,
+      "summary": "",
+      "org": {
+        "subjectKind": "agent_org",
+        "createdAt": "2026-10-04T03:37:08.133Z",
+        "archivedAt": null,
+        "applicationBinding": null,
+        "handoffs": [],
+        "rootOrg": {
+          "address": "/",
+          "orgDefinitionId": "api011-native-concrete-root-org-rerun-8216bff6-fc10-41f2-97e6-3e3831053459",
+          "orgDefinitionName": "API011_NATIVE Concrete Root Org Rerun 8216bff6-fc10-41f2-97e6-3e3831053459",
+          "orgRunId": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_b81d6aaeab13442eb51b0cde46418468",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "deepseek-v4-flash",
+            "llmConfig": {
+              "thinking_type": "disabled"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b"
+          },
+          "members": [
+            {
+              "address": "/manager",
+              "agentDefinitionId": "autobyteus-project-task-manager",
+              "role": null,
+              "description": null,
+              "agentRunId": "project_task_manager_ddfb6b8024d34a2dbb9a60aa0383540f",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "deepseek-v4-flash",
+                "llmConfig": {
+                  "thinking_type": "disabled"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b"
+              }
+            },
+            {
+              "address": "/borrowed",
+              "agentDefinitionId": "api011-native-packet-agent",
+              "role": null,
+              "description": null,
+              "agentRunId": "api011_native_packet_agent_6096c6a76042411a8dc1a4b367d5907c",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "deepseek-v4-flash",
+                "llmConfig": {
+                  "thinking_type": "disabled"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native/team-b"
+              }
+            }
+          ],
+          "collaborators": [],
+          "taskExecutions": []
+        }
+      }
+    },
+    {
+      "__typename": "AgentTeamRootHistoryObject",
+      "root_subject_kind": "agent_team",
+      "root_run_id": "api011_native_packet_team_0d395ee5c772456d9008e7b9b1ba0196"
+    },
+    {
+      "__typename": "AgentOrgRootHistoryObject",
+      "root_subject_kind": "agent_org",
+      "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+      "created_at": "2026-10-04T03:32:19.532Z",
+      "archived_at": null,
+      "is_active": true,
+      "summary": "Read ONLY /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe1...",
+      "org": {
+        "subjectKind": "agent_org",
+        "createdAt": "2026-10-04T03:32:19.532Z",
+        "archivedAt": null,
+        "applicationBinding": null,
+        "handoffs": [],
+        "rootOrg": {
+          "address": "/",
+          "orgDefinitionId": "api011-native-concrete-root-org-rerun-8216bff6-fc10-41f2-97e6-3e3831053459",
+          "orgDefinitionName": "API011_NATIVE Concrete Root Org Rerun 8216bff6-fc10-41f2-97e6-3e3831053459",
+          "orgRunId": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "deepseek-v4-flash",
+            "llmConfig": {
+              "thinking_type": "disabled"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+          },
+          "members": [
+            {
+              "address": "/manager",
+              "agentDefinitionId": "autobyteus-project-task-manager",
+              "role": null,
+              "description": null,
+              "agentRunId": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "deepseek-v4-flash",
+                "llmConfig": {
+                  "thinking_type": "disabled"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+              }
+            },
+            {
+              "address": "/borrowed",
+              "agentDefinitionId": "api011-native-packet-agent",
+              "role": null,
+              "description": null,
+              "agentRunId": "api011_native_packet_agent_55f2e60b73ce4e52bb427ff2cffb8071",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "deepseek-v4-flash",
+                "llmConfig": {
+                  "thinking_type": "disabled"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+              }
+            }
+          ],
+          "collaborators": [],
+          "taskExecutions": [
+            {
+              "address": "/borrowed",
+              "startedAt": "2026-10-04T03:35:44.739Z",
+              "delegatorAgentRunId": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+              "agentRunId": "api011_native_packet_agent_c7ee91f14a6846c7b2d6cc5d6974203f",
+              "platformAgentRunId": null
+            },
+            {
+              "address": "/api011_native_packet_team",
+              "startedAt": "2026-10-04T03:35:44.817Z",
+              "delegatorAgentRunId": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+              "teamRunId": "api011_native_packet_team_9877c0704a96466d96355aa66882402d",
+              "members": [
+                {
+                  "address": "/api011_native_packet_team/coordinator",
+                  "agentRunId": "api011_native_team_coordinator_7f4ff760eb0442df8bb5723650dbbaba",
+                  "platformAgentRunId": null
+                },
+                {
+                  "address": "/api011_native_packet_team/reader",
+                  "agentRunId": "api011_native_team_reader_946a16f2e7f948f7a428e26cecb1f6f5",
+                  "platformAgentRunId": null
+                }
+              ],
+              "taskExecutions": [],
+              "source": {
+                "kind": "agent_team",
+                "teamDefinitionId": "api011-native-packet-team",
+                "coordinatorAddress": "/api011_native_packet_team/coordinator",
+                "members": [
+                  {
+                    "address": "/api011_native_packet_team/coordinator",
+                    "agentDefinitionId": "api011-native-team-coordinator"
+                  },
+                  {
+                    "address": "/api011_native_packet_team/reader",
+                    "agentDefinitionId": "api011-native-team-reader"
+                  }
+                ],
+                "handoffs": [],
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "deepseek-v4-flash",
+                  "llmConfig": {
+                    "thinking_type": "disabled"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                }
+              }
+            },
+            {
+              "address": "/api011_native_packet_team",
+              "startedAt": "2026-10-04T03:36:02.115Z",
+              "delegatorAgentRunId": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+              "teamRunId": "api011_native_packet_team_781d11b07c3f474db457bd025e97b877",
+              "members": [
+                {
+                  "address": "/api011_native_packet_team/coordinator",
+                  "agentRunId": "api011_native_team_coordinator_d3a49b37f0a544a19fd1c2b0e3f5421a",
+                  "platformAgentRunId": null
+                },
+                {
+                  "address": "/api011_native_packet_team/reader",
+                  "agentRunId": "api011_native_team_reader_8640a6460652498cabbd747097afd11a",
+                  "platformAgentRunId": null
+                }
+              ],
+              "taskExecutions": [],
+              "source": {
+                "kind": "agent_team",
+                "teamDefinitionId": "api011-native-packet-team",
+                "coordinatorAddress": "/api011_native_packet_team/coordinator",
+                "members": [
+                  {
+                    "address": "/api011_native_packet_team/coordinator",
+                    "agentDefinitionId": "api011-native-team-coordinator"
+                  },
+                  {
+                    "address": "/api011_native_packet_team/reader",
+                    "agentDefinitionId": "api011-native-team-reader"
+                  }
+                ],
+                "handoffs": [],
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "deepseek-v4-flash",
+                  "llmConfig": {
+                    "thinking_type": "disabled"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                }
+              }
+            },
+            {
+              "address": "/api011_native_team_coordinator",
+              "startedAt": "2026-10-04T03:36:08.311Z",
+              "delegatorAgentRunId": "api011_native_team_reader_8640a6460652498cabbd747097afd11a",
+              "agentRunId": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+              "platformAgentRunId": null,
+              "source": {
+                "kind": "agent",
+                "agentDefinitionId": "api011-native-team-coordinator",
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "deepseek-v4-flash",
+                  "llmConfig": {
+                    "thinking_type": "disabled"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "strictOrgRows": 2,
+  "publicPrivateStamps": 0,
+  "internalPrivateStamps": 4,
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n4 !== 3\n",
+  "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n4 !== 3\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-history-product.mjs:26:147"
+}

@@ -1,0 +1,9 @@
+{
+  "admitted": [],
+  "diagnostics": {
+    "root-unresolved": "ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.",
+    "team-run-root": "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED: rootTeam is missing required field(s): address, defaultLaunchConfiguration."
+  },
+  "predecessorBytesUnchanged": true
+}
+OWNED_SCRATCH_REMOVED=true

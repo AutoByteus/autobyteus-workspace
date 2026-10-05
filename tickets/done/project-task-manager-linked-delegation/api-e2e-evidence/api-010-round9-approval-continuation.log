@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-approval-continuation.mjs
+Scoped Pass original real pending approval/DONE/release/typed Interrupted/empty input/live offline + exact stale actual invocation rejected RUN_NOT_ACTIVE with no wake/trace/tree/state/file change; API-owned text oracle corrected, not product Fail
+
+PROCESS_EXIT_CODE=0

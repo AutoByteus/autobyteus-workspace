@@ -1,0 +1,35 @@
+{
+  "priorCRR005PackageCount": 281,
+  "unchangedCount": 278,
+  "changed": [
+    "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+    "autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+    "autobyteus-server-ts/src/agent-team-execution/local/task-team-execution-factory.ts"
+  ],
+  "added": [
+    "autobyteus-server-ts/tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts"
+  ],
+  "priorSourceCount": 134,
+  "unchangedSourceCount": 131,
+  "maxEffectiveNonempty": 489,
+  "maxRawNonempty": 499,
+  "above220": [
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "effectiveNonempty": 322,
+      "rawNonempty": 324,
+      "headChangedLines": 299,
+      "cumulativeDeltaSignal": true,
+      "localCorrection": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+      "effectiveNonempty": 106,
+      "rawNonempty": 108,
+      "headChangedLines": 232,
+      "cumulativeDeltaSignal": true,
+      "localCorrection": false
+    }
+  ]
+}

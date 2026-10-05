@@ -1,0 +1,110 @@
+[
+  {
+    "id": "API-003@round13-e2e",
+    "label": "Deterministic actual Project/current-array/startup/Team/Org HTTP boundaries",
+    "at": "2026-10-04T05:48:59.885396+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/projects",
+      "tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts",
+      "tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts",
+      "tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts",
+      "tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 20.62,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round13-e2e.log"
+  },
+  {
+    "id": "API-004@round13-integration",
+    "label": "Current Native root/private/termination/compaction plus actual MCP tool Task lifecycle",
+    "at": "2026-10-04T05:49:20.544258+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+      "tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+      "tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 8.84,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round13-integration.log"
+  },
+  {
+    "id": "API-017@round13-tool-log",
+    "label": "Strict TOOL_LOG correlation and hosted Team noncollaboration controls",
+    "at": "2026-10-04T05:49:29.432442+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts",
+      "tests/unit/agent-team-execution/team-system-instruction-admission.test.ts",
+      "tests/unit/agent-team-execution/team-agent-file-change-admission.test.ts",
+      "tests/unit/agent-team-execution/team-agent-background-task-admission.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 4.69,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-017@round13-tool-log.log"
+  },
+  {
+    "id": "API-006@round13-web",
+    "label": "Actual stores/stream/selection/component affected consumers",
+    "at": "2026-10-04T05:49:34.159994+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts",
+      "services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+      "stores/__tests__/runHistoryStore.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts",
+      "--run"
+    ],
+    "exit": 0,
+    "elapsed": 11.24,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round13-web.log"
+  },
+  {
+    "id": "API-006@round13-native-input",
+    "label": "Unchanged web boundary guard then native/FIFO/saved hydration workspace surface",
+    "at": "2026-10-04T05:49:45.450029+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "test:native-input-history"
+    ],
+    "exit": 0,
+    "elapsed": 11.8,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round13-native-input.log"
+  }
+]

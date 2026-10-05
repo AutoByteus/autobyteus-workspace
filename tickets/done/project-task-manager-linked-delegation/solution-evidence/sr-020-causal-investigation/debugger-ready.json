@@ -1,0 +1,20 @@
+{
+  "verified": {
+    "pid": 14025,
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+  },
+  "instanceId": "iso-52225-3ea5",
+  "breakpoints": [
+    "root-begin",
+    "root-proofs",
+    "team-start",
+    "team-proofs",
+    "agent-manager",
+    "agent-backend",
+    "input-before-settle",
+    "input-assert",
+    "session-components",
+    "process-generations",
+    "sdk-children"
+  ]
+}

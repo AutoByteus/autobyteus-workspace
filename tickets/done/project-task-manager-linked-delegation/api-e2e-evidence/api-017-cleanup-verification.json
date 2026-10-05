@@ -1,0 +1,43 @@
+{
+  "at": "2026-10-05T04:59:34.320774+00:00",
+  "instanceId": "iso-63884-5507",
+  "recordAbsent": true,
+  "dataRootAbsent": true,
+  "capturedOwnPids": [
+    25861,
+    26265,
+    26266,
+    27206,
+    27219,
+    27222,
+    27223,
+    31004,
+    32968,
+    34638,
+    35284,
+    51594,
+    51595,
+    51596,
+    52527,
+    52538,
+    52542,
+    52543,
+    56890
+  ],
+  "capturedOwnPidsStillPresent": [],
+  "portsFreeBind": {
+    "63884": true,
+    "63885": true
+  },
+  "plainBindWaits": [],
+  "foreignRecordsUnchanged": true,
+  "priorForeignIds": [
+    "iso-52483-84f0",
+    "iso-52977-8d78"
+  ],
+  "independentlyNewForeignIds": [],
+  "archiveFiles": 18,
+  "archiveHashesExact": true,
+  "observerInstalled": false,
+  "scope": "Own exact app stopped once; final read-only verification after transient plain-bind EADDRINUSE, no additional stop/signal/REUSEADDR. Cleanup is not Task DONE/repair."
+}

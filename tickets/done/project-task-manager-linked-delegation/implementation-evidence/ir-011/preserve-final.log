@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-05T03:37:17.051108+00:00",
+  "head": "028cca2312eae25737f482d94f9f3c213d83c3b9",
+  "mergeHead": "4dee901d6163ca7053916fa1edc295afbfd7a6da",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "zeroUnmerged": true,
+  "mergeRemainsPending": true,
+  "indexHash": "6414814edfd1540fcab4e0bf4059c2a7cb5f20d6b90d5c5ecb5465accd5f0ae9",
+  "indexChangedOnlyThrough28IndividualPaths": true,
+  "untouchedStageRecordsExactCount": 46479,
+  "originalTicketFiles": 4129,
+  "originalTicketChangedOnlyImplementationCanonicals": [
+    "implementation-handoff.md",
+    "implementation-investigation.md",
+    "implementation-revision-record.md"
+  ],
+  "oldImplementationRevisionAndInvestigationPrefixesExact": true,
+  "currentPackageSnapshotCount": 545,
+  "noMergeCommitFinalizationPushReleaseDeployment": true,
+  "noProviderInferenceDesktopAppUserDataCredentialOperation": true
+}

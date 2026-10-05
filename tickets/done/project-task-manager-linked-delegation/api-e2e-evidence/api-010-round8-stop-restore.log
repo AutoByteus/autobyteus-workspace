@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-lifecycle-probe.mjs stop-restore
+Scoped Pass: normal exact Root Stop physically exits shared provider/captured children without deleting durable state; same root restore rejects old B and restores open A same ID with real fresh saved-byte read/no new seed/lifetime.
+
+PROCESS_EXIT_CODE=0

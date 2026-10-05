@@ -1,0 +1,22 @@
+[
+  {
+    "path": "agent-collaboration/execution/backends/root-team-execution-directory.js",
+    "installedSha256": "bd4ee8862dd16daf078253ff17d1957262b9a3fba2c36953a41e49bea8435519",
+    "sameCurrentDist": true
+  },
+  {
+    "path": "agent-team-execution/local/registries/task-agent-execution-registry.js",
+    "installedSha256": "d35fb390840aff8615725f8ddea2ce6ea89128cb51b2b65f666da9096f361f96",
+    "sameCurrentDist": true
+  },
+  {
+    "path": "agent-team-execution/local/task-team-execution-factory.js",
+    "installedSha256": "37c29f60b1dfa99c93a7bd955408404abd163585e58340bf933e46de050fb763",
+    "sameCurrentDist": true
+  },
+  {
+    "path": "services/agent-streaming/collaboration-execution-tree-dto-projection.js",
+    "installedSha256": "9bfa8ef6270b1b26a259fe27a87585b14ee8eaec79d9ab7e07a8f2b7b6733f84",
+    "sameCurrentDist": true
+  }
+]

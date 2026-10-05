@@ -1,0 +1,150 @@
+{
+  "instance": {
+    "instanceId": "iso-57942-2d9d",
+    "pid": 2081,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:57943",
+    "graphqlUrl": "http://127.0.0.1:57943/graphql",
+    "controlEndpoint": "http://127.0.0.1:57942",
+    "controlPort": 57942,
+    "serverPort": 57943,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-tdalBZ",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-tdalBZ/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-57942-2d9d.log"
+  },
+  "backend": {
+    "pid": 3011,
+    "ppid": 2081,
+    "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+  },
+  "ancestryRows": [
+    {
+      "pid": 2081,
+      "ppid": 1,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 2082,
+      "ppid": 2081,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 2083,
+      "ppid": 2081,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 3011,
+      "ppid": 2081,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+    },
+    {
+      "pid": 3022,
+      "ppid": 2081,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+    },
+    {
+      "pid": 3030,
+      "ppid": 2081,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 3031,
+      "ppid": 2081,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 3773,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 5436,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 5462,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 19121,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 20798,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 34667,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 35924,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 35950,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 40196,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 40557,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 40650,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 46064,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 48439,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 49596,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 50554,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 53635,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    },
+    {
+      "pid": 54664,
+      "ppid": 3011,
+      "comm": "/Users/normy/.local/bin/claude"
+    }
+  ],
+  "inspectorPort": 9229,
+  "freeBindBeforeSignal": true,
+  "signal": "SIGUSR1",
+  "at": 1791101441.3305118
+}

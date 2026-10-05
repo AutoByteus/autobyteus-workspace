@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-03T19:31:53.663215+00:00",
+  "round": "API-REV-009",
+  "references": 1597,
+  "incomingReferencesIncluded": 1329,
+  "reviewedSourceTestPackageIncluded": 287,
+  "durablePathsIncluded": 15,
+  "missing": [],
+  "outsideWorktree": [],
+  "purpose": "Complete cumulative actual upstream plus every round9 evidence/probe/archive/baseline file, carried15 durable tests and public history/stale fixture owners. Current Fail requests focused origin review, not successful-test review."
+}

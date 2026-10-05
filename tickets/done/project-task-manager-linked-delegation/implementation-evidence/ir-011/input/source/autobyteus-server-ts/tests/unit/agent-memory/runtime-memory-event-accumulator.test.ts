@@ -1,0 +1,1134 @@
+import fs from "node:fs/promises";
+import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
+import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
+import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
+import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
+import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+
+const tempDirs = new Set<string>();
+
+const mkTempDir = async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "runtime-memory-accumulator-"));
+  tempDirs.add(dir);
+  return dir;
+};
+
+afterEach(async () => {
+  await Promise.all([...tempDirs].map((dir) => fs.rm(dir, { recursive: true, force: true })));
+  tempDirs.clear();
+});
+
+const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): AgentRunEvent => ({
+  eventType,
+  runId: "run-1",
+  payload,
+  statusHint: null,
+});
+
+const readView = (memoryDir: string, includeArchive = false) =>
+  new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }))
+    .getRunMemoryView(path.basename(memoryDir), {
+      includeRawTraces: true,
+      includeArchive,
+      includeEpisodic: false,
+      includeSemantic: false,
+    });
+
+const createAccumulator = (
+  memoryDir: string,
+  writer: ExternalRuntimeMemoryWriter = new ExternalRuntimeMemoryWriter({ memoryDir }),
+) => new RuntimeMemoryEventAccumulator({
+  runId: "run-1",
+  writer,
+  toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
+});
+
+const startSegment = (
+  accumulator: RuntimeMemoryEventAccumulator,
+  input: {
+    id: string;
+    turnId: string;
+    segmentType: "text" | "reasoning";
+    timestamp?: number;
+  },
+) => accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_START, {
+  id: input.id,
+  turn_id: input.turnId,
+  segment_type: input.segmentType,
+  ...(input.timestamp === undefined ? {} : { timestamp: input.timestamp }),
+}));
+
+describe("RuntimeMemoryEventAccumulator", () => {
+  it("persists run-owned reasoning closure exactly once before the next tool", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      turnId: "turn-1",
+      turn_id: "turn-1",
+      invocation_id: "tool-1",
+      tool_name: "run_bash",
+      arguments: { command: "sleep 1" },
+    }));
+    startSegment(accumulator, {
+      id: "reasoning-block:test:1",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "A",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      result: "done",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "\n\nB",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-2",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-1" }));
+    const view = readView(memoryDir);
+    expect(view.rawTraces?.map((trace) => [trace.traceType, trace.content, trace.toolCallId]))
+      .toEqual([
+        ["tool_call", "", "tool-1"],
+        ["tool_result", "", "tool-1"],
+        ["reasoning", "A\n\nB", null],
+        ["tool_call", "", "tool-2"],
+      ]);
+    expect(view.rawTraces?.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
+    expect(view.workingContext).toBeNull();
+  });
+
+  it("rejects segment lifecycle without an exact turn instead of inventing a fallback turn", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_START, {
+      id: "text-without-turn",
+      segment_type: "text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-without-turn",
+      segment_type: "text",
+      delta: "must not be persisted",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-without-turn",
+    }));
+
+    const view = readView(memoryDir);
+    expect(view.rawTraces).toEqual([]);
+    expect(view.workingContext).toBeNull();
+  });
+
+  it("persists one trace for adjacent reasoning deltas and a new trace after a tool boundary", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    startSegment(accumulator, {
+      id: "reasoning-block:test:1",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "first",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "\n\nsecond",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }));
+    startSegment(accumulator, {
+      id: "reasoning-block:test:2",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:2",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "third",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-1" }));
+
+    const reasoningTraces = (readView(memoryDir).rawTraces ?? [])
+      .filter((trace) => trace.traceType === "reasoning");
+    expect(reasoningTraces.map((trace) => trace.content)).toEqual([
+      "first\n\nsecond",
+      "third",
+    ]);
+  });
+
+  it("tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    startSegment(accumulator, {
+      id: "reasoning-1",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "because ",
+    }));
+    startSegment(accumulator, {
+      id: "text-1",
+      turnId: "turn-1",
+      segmentType: "text",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-1",
+      turn_id: "turn-1",
+      segment_type: "text",
+      delta: "hello",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-1" }));
+
+    const view = readView(memoryDir);
+    expect(view.rawTraces?.map((trace) => [trace.traceType, trace.content, trace.turnId])).toEqual([
+      ["reasoning", "because ", "turn-1"],
+      ["assistant", "hello", "turn-1"],
+    ]);
+    expect(view.workingContext).toBeNull();
+  });
+
+  it("persists open reasoning before a following tool call without duplicating later flushes", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-tool" }));
+    startSegment(accumulator, {
+      id: "reasoning-before-tool",
+      turnId: "turn-reason-tool",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-tool",
+      turn_id: "turn-reason-tool",
+      segment_type: "reasoning",
+      delta: "inspect before tool",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-after-reasoning",
+      turn_id: "turn-reason-tool",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-tool",
+      turn_id: "turn-reason-tool",
+      segment_type: "reasoning",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-reason-tool" }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => [trace.traceType, trace.content, trace.toolCallId])).toEqual([
+      ["reasoning", "inspect before tool", null],
+      ["tool_call", "", "tool-after-reasoning"],
+    ]);
+    expect(traces.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
+  });
+
+  it("persists open reasoning before an inferred tool call from a terminal tool result", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-result" }));
+    startSegment(accumulator, {
+      id: "reasoning-before-result",
+      turnId: "turn-reason-result",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-result",
+      turn_id: "turn-reason-result",
+      segment_type: "reasoning",
+      delta: "tool result will imply a call",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "inferred-tool-after-reasoning",
+      turn_id: "turn-reason-result",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+      result: { stdout: "/tmp" },
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => [trace.traceType, trace.content, trace.toolCallId])).toEqual([
+      ["reasoning", "tool result will imply a call", null],
+      ["tool_call", "", "inferred-tool-after-reasoning"],
+      ["tool_result", "", "inferred-tool-after-reasoning"],
+    ]);
+    expect(traces[2]).toMatchObject({
+      toolName: "run_bash",
+      toolResult: { stdout: "/tmp" },
+      toolError: null,
+    });
+    expect(traces[2]?.toolArgs).toBeNull();
+  });
+
+  it("keeps reasoning open across a matching result and flushes one trace at the next tool", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "sleep 1" },
+    }));
+    startSegment(accumulator, {
+      id: "reasoning-block:test:1",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "A",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      result: { stdout: "done" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "\n\nB",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-2",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => [trace.traceType, trace.content, trace.toolCallId])).toEqual([
+      ["tool_call", "", "tool-1"],
+      ["tool_result", "", "tool-1"],
+      ["reasoning", "A\n\nB", null],
+      ["tool_call", "", "tool-2"],
+    ]);
+  });
+
+  it("preserves post-card reasoning when authoritative call arguments arrive only at result", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    startSegment(accumulator, {
+      id: "reasoning-before-card",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-card",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "before card",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "search-1",
+      turn_id: "turn-1",
+      tool_name: "search_web",
+    }));
+    startSegment(accumulator, {
+      id: "reasoning-after-card",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-after-card",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "A",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "search-1",
+      turn_id: "turn-1",
+      tool_name: "search_web",
+      arguments: { query: "AutoByteus" },
+      result: { query: "AutoByteus", status: "completed" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-after-card",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "\n\nB",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-2",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => [trace.traceType, trace.content, trace.toolCallId])).toEqual([
+      ["reasoning", "before card", null],
+      ["tool_call", "", "search-1"],
+      ["tool_result", "", "search-1"],
+      ["reasoning", "A\n\nB", null],
+      ["tool_call", "", "tool-2"],
+    ]);
+  });
+
+  it("keeps the first boundary for an unseen insufficient terminal when readiness arrives later", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    startSegment(accumulator, {
+      id: "reasoning-before-terminal-card",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-terminal-card",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "A",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "search-result-first",
+      turn_id: "turn-1",
+      tool_name: "search_web",
+      result: null,
+    }));
+    startSegment(accumulator, {
+      id: "reasoning-after-terminal-card",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-after-terminal-card",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "B",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "search-result-first",
+      turn_id: "turn-1",
+      arguments: { query: "AutoByteus" },
+      result: { query: "AutoByteus", status: "completed" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-2",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => [trace.traceType, trace.content, trace.toolCallId])).toEqual([
+      ["reasoning", "A", null],
+      ["tool_call", "", "search-result-first"],
+      ["tool_result", "", "search-result-first"],
+      ["reasoning", "B", null],
+      ["tool_call", "", "tool-2"],
+    ]);
+    warn.mockRestore();
+  });
+
+  it.each([
+    AgentRunEventType.TOOL_EXECUTION_FAILED,
+    AgentRunEventType.TOOL_DENIED,
+  ])("keeps reasoning open across matching %s updates", async (terminalEventType) => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const reasoningPayload = (delta: string) => ({
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta,
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "false" },
+    }));
+    startSegment(accumulator, {
+      id: "reasoning-block:test:1",
+      turnId: "turn-1",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(
+      AgentRunEventType.SEGMENT_CONTENT,
+      reasoningPayload("A"),
+    ));
+    accumulator.recordRunEvent(event(terminalEventType, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      error: "stopped",
+      reason: "not approved",
+    }));
+    accumulator.recordRunEvent(event(
+      AgentRunEventType.SEGMENT_CONTENT,
+      reasoningPayload("\n\nB"),
+    ));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-1" }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => trace.traceType)).toEqual([
+      "tool_call",
+      "tool_result",
+      "reasoning",
+    ]);
+    expect(traces[2]?.content).toBe("A\n\nB");
+  });
+
+  it("persists open reasoning before assistant text without requiring turn completion", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-text" }));
+    startSegment(accumulator, {
+      id: "reasoning-before-text",
+      turnId: "turn-reason-text",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-text",
+      turn_id: "turn-reason-text",
+      segment_type: "reasoning",
+      delta: "think before answer",
+    }));
+    startSegment(accumulator, {
+      id: "assistant-text-after-reasoning",
+      turnId: "turn-reason-text",
+      segmentType: "text",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "assistant-text-after-reasoning",
+      turn_id: "turn-reason-text",
+      segment_type: "text",
+      delta: "visible answer",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "assistant-text-after-reasoning",
+      turn_id: "turn-reason-text",
+      segment_type: "text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-text",
+      turn_id: "turn-reason-text",
+      segment_type: "reasoning",
+    }));
+
+    const view = readView(memoryDir);
+    expect(view.rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["reasoning", "think before answer"],
+      ["assistant", "visible answer"],
+    ]);
+    expect(view.workingContext).toBeNull();
+  });
+
+  it("persists open reasoning before assistant complete output", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-complete" }));
+    startSegment(accumulator, {
+      id: "reasoning-before-complete",
+      turnId: "turn-reason-complete",
+      segmentType: "reasoning",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-complete",
+      turn_id: "turn-reason-complete",
+      segment_type: "reasoning",
+      delta: "think before final complete",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.ASSISTANT_COMPLETE, {
+      turn_id: "turn-reason-complete",
+      content: "final complete answer",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-complete",
+      turn_id: "turn-reason-complete",
+      segment_type: "reasoning",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-reason-complete" }));
+
+    const view = readView(memoryDir);
+    expect(view.rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["reasoning", "think before final complete"],
+      ["assistant", "final complete answer"],
+    ]);
+    expect(view.rawTraces?.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
+    expect(view.workingContext).toBeNull();
+  });
+
+
+  it("records the sender of a forwarded agent-to-agent delivery on its user trace (RD-004)", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const forward = (message: AgentInputUserMessage, turnId: string) => accumulator.recordForwardedUserMessage({
+      runId: "run-1",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, agentDefinitionId: "agent-def-1", llmModelIdentifier: "claude",
+        autoExecuteTools: false, memoryDir,
+      }),
+      platformAgentRunId: "session-1",
+      message,
+      result: { accepted: true, turnId },
+      forwardedAt: new Date(1000),
+    });
+    forward(new AgentInputUserMessage("From the researcher", SenderType.AGENT, null, {
+      input_origin: "inter_agent_delivery", sender_agent_id: "run-researcher",
+    }), "turn-a");
+    forward(new AgentInputUserMessage("From the user"), "turn-b");
+    expect(readView(memoryDir).rawTraces?.map((trace) => [trace.traceType, trace.senderId ?? null]))
+      .toEqual([["user", "run-researcher"], ["user", null]]);
+  });
+
+  it("does not substitute an active turn when forwarded input lacks its exact turn identity", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-claude" }));
+    accumulator.recordForwardedUserMessage({
+      runId: "run-1",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        agentDefinitionId: "agent-def-1",
+        llmModelIdentifier: "claude",
+        autoExecuteTools: false,
+        memoryDir,
+      }),
+      platformAgentRunId: "session-1",
+      message: new AgentInputUserMessage("hello after lifecycle"),
+      result: { accepted: true, turnId: null },
+      forwardedAt: new Date(1000),
+    });
+
+    expect(readView(memoryDir).rawTraces).toEqual([]);
+  });
+
+  it("records tool traces once from lifecycle events when matching tool segments are present", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-tool-segment" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_START, {
+      id: "tool-claude-1",
+      turn_id: "turn-tool-segment",
+      segment_type: "tool_call",
+      metadata: {
+        tool_name: "Bash",
+        arguments: { command: "pwd" },
+      },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-claude-1",
+      turn_id: "turn-tool-segment",
+      tool_name: "Bash",
+      arguments: { command: "pwd" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "tool-claude-1",
+      turn_id: "turn-tool-segment",
+      segment_type: "tool_call",
+      metadata: {
+        tool_name: "Bash",
+        arguments: { command: "pwd" },
+        result: "workspace\n",
+      },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "tool-claude-1",
+      turn_id: "turn-tool-segment",
+      tool_name: "Bash",
+      arguments: { command: "pwd" },
+      result: "workspace\n",
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => trace.traceType)).toEqual(["tool_call", "tool_result"]);
+    expect(traces[0]).toMatchObject({
+      sourceEvent: AgentRunEventType.TOOL_EXECUTION_STARTED,
+      toolCallId: "tool-claude-1",
+      toolName: "Bash",
+      toolArgs: { command: "pwd" },
+    });
+    expect(traces[1]).toMatchObject({
+      sourceEvent: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      toolResult: "workspace\n",
+      toolError: null,
+    });
+  });
+
+  it("preserves assistant-tool-assistant raw trace order from distinct text segment ids", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-text-tool-text" }));
+    startSegment(accumulator, {
+      id: "turn-text-tool-text:claude-text:msg-pre:0",
+      turnId: "turn-text-tool-text",
+      segmentType: "text",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "turn-text-tool-text:claude-text:msg-pre:0",
+      turn_id: "turn-text-tool-text",
+      segment_type: "text",
+      delta: "Before tool.",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "turn-text-tool-text:claude-text:msg-pre:0",
+      turn_id: "turn-text-tool-text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-bash-text-order",
+      turn_id: "turn-text-tool-text",
+      tool_name: "Bash",
+      arguments: { command: "pwd" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "tool-bash-text-order",
+      turn_id: "turn-text-tool-text",
+      tool_name: "Bash",
+      arguments: { command: "pwd" },
+      result: "/tmp/project",
+    }));
+    startSegment(accumulator, {
+      id: "turn-text-tool-text:claude-text:msg-post:0",
+      turnId: "turn-text-tool-text",
+      segmentType: "text",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "turn-text-tool-text:claude-text:msg-post:0",
+      turn_id: "turn-text-tool-text",
+      segment_type: "text",
+      delta: "After tool.",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "turn-text-tool-text:claude-text:msg-post:0",
+      turn_id: "turn-text-tool-text",
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "tool_call",
+      "tool_result",
+      "assistant",
+    ]);
+    expect(traces[0]).toMatchObject({ content: "Before tool." });
+    expect(traces[1]).toMatchObject({ toolName: "Bash", toolCallId: "tool-bash-text-order" });
+    expect(traces[2]).toMatchObject({ toolName: "Bash", toolResult: "/tmp/project", toolError: null });
+    expect(traces[2]?.toolArgs).toBeNull();
+    expect(traces[3]).toMatchObject({ content: "After tool." });
+  });
+
+  it("does not create a fallback turn for a segment without exact turn identity", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-1",
+      segment_type: "text",
+      delta: "orphan text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, { id: "text-1" }));
+
+    expect(readView(memoryDir).rawTraces).toEqual([]);
+  });
+
+  it("ignores provider compaction/status payloads without local raw-trace pruning", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
+    startSegment(accumulator, {
+      id: "text-1",
+      turnId: "turn-compact",
+      segmentType: "text",
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-1",
+      turn_id: "turn-compact",
+      segment_type: "text",
+      delta: "durable text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-1",
+      turn_id: "turn-compact",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      status: "compacting",
+      compact_boundary: "provider-internal",
+      event_name: "thread/compacted",
+      response_item: { type: "compaction", encrypted_content: "opaque-provider-state" },
+      model_auto_compact_token_limit: 120_000,
+      token_usage: { input_tokens: 1000 },
+      candidate_trace_ids: ["rt-not-local"],
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces).toHaveLength(1);
+    expect(traces[0]).toMatchObject({ traceType: "assistant", content: "durable text" });
+    expect(new RunMemoryFileStore(memoryDir).getRawTraceArchiveRevisionInfo()).toBeNull();
+  });
+
+  it("persists optional provider compaction details only when the provider reports them", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const base = {
+      kind: "provider_compaction_boundary",
+      semantic_compaction: false,
+      rotation_eligible: false,
+      turn_id: "turn-1",
+    };
+
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      ...base,
+      runtime_kind: "CODEX",
+      provider: "codex",
+      source_surface: "codex.context_compaction_started",
+      boundary_key: "codex:thread-1:compaction-1:compacting",
+      provider_event_id: "compaction-1",
+      status: "compacting",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      ...base,
+      runtime_kind: "CLAUDE",
+      provider: "claude",
+      source_surface: "claude.compaction_failed",
+      boundary_key: "claude:session-1:claude.compaction_failed:op-1:turn-1",
+      provider_session_id: "session-1",
+      provider_event_id: "op-1",
+      status: "failed",
+      error_message: "too_few_groups",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      ...base,
+      runtime_kind: "CLAUDE",
+      provider: "claude",
+      source_surface: "claude.compact_boundary",
+      boundary_key: "claude:session-1:claude.compact_boundary:boundary-1:turn-1",
+      provider_session_id: "session-1",
+      provider_event_id: "op-2",
+      status: "compacted",
+      trigger: "auto",
+      pre_tokens: 128715,
+      post_tokens: 1546,
+      duration_ms: 16593,
+      rotation_eligible: true,
+    }));
+
+    const store = new RunMemoryFileStore(memoryDir);
+    const markers = [...store.listArchiveTurnRawTracesOrdered(), ...store.listTurnRawTracesOrdered()]
+      .map((trace) => trace.toolResult as Record<string, unknown>);
+    expect(markers).toHaveLength(3);
+    expect(markers[0]).not.toHaveProperty("post_tokens");
+    expect(markers[0]).not.toHaveProperty("duration_ms");
+    expect(markers[0]).not.toHaveProperty("error_message");
+    expect(markers[1]).toMatchObject({ status: "failed", error_message: "too_few_groups", rotation_eligible: false });
+    expect(markers[1]).not.toHaveProperty("post_tokens");
+    expect(markers[2]).toMatchObject({
+      status: "compacted",
+      trigger: "auto",
+      pre_tokens: 128715,
+      post_tokens: 1546,
+      duration_ms: 16593,
+      rotation_eligible: true,
+    });
+    expect(markers[2]).not.toHaveProperty("error_message");
+    expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);
+    expect(store.listTurnRawTracesOrdered()).toHaveLength(1);
+  });
+
+  it("rotates once for an Antigravity checkpoint boundary and ignores the same boundary again", async () => {
+    const memoryDir = await mkTempDir();
+    const writer = new ExternalRuntimeMemoryWriter({ memoryDir });
+    writer.appendRawTrace({ traceType: "assistant", turnId: "turn-4", content: "before compaction", sourceEvent: "test" });
+    const accumulator = createAccumulator(memoryDir, writer);
+    const checkpoint = event(AgentRunEventType.COMPACTION_STATUS, {
+      kind: "provider_compaction_boundary",
+      runtime_kind: "ANTIGRAVITY",
+      provider: "antigravity",
+      source_surface: "antigravity.checkpoint",
+      boundary_key: "agy:conversation-1:checkpoint:9",
+      provider_session_id: "conversation-1",
+      provider_event_id: "checkpoint:9",
+      provider_timestamp: null,
+      turn_id: "turn-5",
+      status: "compacted",
+      trigger: "auto",
+      rotation_eligible: true,
+      semantic_compaction: false,
+      duration_ms: 7293,
+    });
+
+    accumulator.recordRunEvent(checkpoint);
+    accumulator.recordRunEvent(checkpoint);
+    createAccumulator(memoryDir).recordRunEvent(checkpoint);
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);
+    expect(store.listArchiveTurnRawTracesOrdered().map((trace) => trace.traceType)).toEqual(["assistant"]);
+    const active = store.listTurnRawTracesOrdered();
+    expect(active).toHaveLength(1);
+    expect(active[0]).toMatchObject({
+      traceType: "provider_compaction_boundary",
+      content: "Provider-owned context compaction boundary: antigravity/antigravity.checkpoint",
+      toolResult: expect.objectContaining({ runtime_kind: "ANTIGRAVITY", status: "compacted", trigger: "auto",
+        duration_ms: 7293, provider_event_id: "checkpoint:9", rotation_eligible: true }),
+    });
+  });
+
+  it("writes provider compaction markers and rotates settled active traces into segmented archives", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
+    startSegment(accumulator, {
+      id: "text-before-boundary",
+      turnId: "turn-compact",
+      segmentType: "text",
+      timestamp: 1,
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-before-boundary",
+      turn_id: "turn-compact",
+      segment_type: "text",
+      delta: "before boundary",
+      timestamp: 1,
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-before-boundary",
+      turn_id: "turn-compact",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      kind: "provider_compaction_boundary",
+      runtime_kind: "CODEX",
+      provider: "codex",
+      source_surface: "codex.thread_compacted",
+      boundary_key: "codex:thread-1:compaction-1",
+      provider_thread_id: "thread-1",
+      provider_event_id: "compaction-1",
+      provider_timestamp: 2,
+      turn_id: "turn-compact",
+      trigger: "auto",
+      status: "compacted",
+      pre_tokens: 120000,
+      rotation_eligible: true,
+      semantic_compaction: false,
+    }));
+
+    const store = new RunMemoryFileStore(memoryDir);
+    const active = store.listTurnRawTracesOrdered();
+    expect(active.map((trace) => trace.traceType)).toEqual(["provider_compaction_boundary"]);
+    expect(active[0]).toMatchObject({
+      content: "Provider-owned context compaction boundary: codex/codex.thread_compacted",
+      correlationId: "codex:thread-1:compaction-1",
+    });
+
+    const manifest = store.readRawTraceArchiveManifest();
+    expect(manifest.segments).toHaveLength(1);
+    expect(manifest.segments[0]).toMatchObject({
+      boundary_type: "provider_compaction_boundary",
+      boundary_key: "codex:thread-1:compaction-1",
+      status: "complete",
+      record_count: 1,
+    });
+
+    const fullView = readView(memoryDir, true);
+    expect(fullView.rawTraces?.map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "provider_compaction_boundary",
+    ]);
+    expect(fullView.workingContext).toBeNull();
+  });
+
+  it("dedupes replayed provider boundaries without dropping post-boundary active records", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const boundaryPayload = {
+      kind: "provider_compaction_boundary",
+      runtime_kind: "CODEX",
+      provider: "codex",
+      source_surface: "codex.thread_compacted",
+      boundary_key: "codex:thread-1:compaction-1",
+      provider_thread_id: "thread-1",
+      provider_event_id: "compaction-1",
+      provider_timestamp: 2,
+      turn_id: "turn-compact",
+      rotation_eligible: true,
+      semantic_compaction: false,
+    };
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
+    startSegment(accumulator, {
+      id: "text-before-boundary",
+      turnId: "turn-compact",
+      segmentType: "text",
+      timestamp: 1,
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-before-boundary",
+      turn_id: "turn-compact",
+      segment_type: "text",
+      delta: "before boundary",
+      timestamp: 1,
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-before-boundary",
+      turn_id: "turn-compact",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, boundaryPayload));
+    startSegment(accumulator, {
+      id: "text-after-boundary",
+      turnId: "turn-compact",
+      segmentType: "text",
+      timestamp: 3,
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-after-boundary",
+      turn_id: "turn-compact",
+      segment_type: "text",
+      delta: "after boundary",
+      timestamp: 3,
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-after-boundary",
+      turn_id: "turn-compact",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, boundaryPayload));
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);
+    expect(store.listTurnRawTracesOrdered().map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
+      ["assistant", "after boundary"],
+    ]);
+
+    const fullView = readView(memoryDir, true);
+    expect(fullView.rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["assistant", "before boundary"],
+      ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
+      ["assistant", "after boundary"],
+    ]);
+  });
+
+  it("retries rotation from an existing provider boundary marker when no complete segment exists", async () => {
+    const memoryDir = await mkTempDir();
+    const boundaryKey = "codex:thread-1:marker-only";
+    const initialWriter = new ExternalRuntimeMemoryWriter({ memoryDir });
+    const accumulator = createAccumulator(memoryDir, initialWriter);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
+    startSegment(accumulator, {
+      id: "text-before-marker",
+      turnId: "turn-compact",
+      segmentType: "text",
+      timestamp: 1,
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-before-marker",
+      turn_id: "turn-compact",
+      segment_type: "text",
+      delta: "before marker",
+      timestamp: 1,
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-before-marker",
+      turn_id: "turn-compact",
+    }));
+    initialWriter.appendRawTrace({
+      traceType: "provider_compaction_boundary",
+      turnId: "turn-compact",
+      content: "Provider-owned context compaction boundary: codex/codex.thread_compacted",
+      sourceEvent: AgentRunEventType.COMPACTION_STATUS,
+      ts: 2,
+      correlationId: boundaryKey,
+    });
+
+    const replayAccumulator = createAccumulator(memoryDir);
+    replayAccumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      kind: "provider_compaction_boundary",
+      runtime_kind: "CODEX",
+      provider: "codex",
+      source_surface: "codex.thread_compacted",
+      boundary_key: boundaryKey,
+      provider_thread_id: "thread-1",
+      provider_event_id: "marker-only",
+      provider_timestamp: 2,
+      turn_id: "turn-compact",
+      rotation_eligible: true,
+      semantic_compaction: false,
+    }));
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.listTurnRawTracesOrdered().map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
+    ]);
+    expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);
+    expect(store.readRawTraceArchiveManifest().segments[0]).toMatchObject({
+      boundary_key: boundaryKey,
+      status: "complete",
+      record_count: 1,
+    });
+
+    const fullView = readView(memoryDir, true);
+    expect(fullView.rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["assistant", "before marker"],
+      ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
+    ]);
+    expect(fullView.rawTraces?.filter((trace) => trace.traceType === "provider_compaction_boundary")).toHaveLength(1);
+  });
+});

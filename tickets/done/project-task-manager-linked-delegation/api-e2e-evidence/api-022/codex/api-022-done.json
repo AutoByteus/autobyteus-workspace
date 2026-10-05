@@ -1,0 +1,137 @@
+{
+  "instanceId": "iso-52127-37fa",
+  "steps": [
+    {
+      "name": "root, project and tasks created",
+      "at": "2026-10-05T15:46:21.803Z",
+      "rootId": "project_task_manager_955dcea24da5423daf42e8ca67fa4b82"
+    },
+    {
+      "name": "assigned A → Agent W, B → Team T (coordinator + reader)",
+      "at": "2026-10-05T15:48:02.248Z",
+      "W": "api022d_packet_agent_bebbf4b8b6884a7c913f9f801e002f57",
+      "T": {
+        "kind": "team",
+        "teamRunId": "api022d_packet_team_abbe2035fff04859919e535ad6d7d347",
+        "coordinatorAgentRunId": "api022d_team_coordinator_802dd9e68f044e7d8396d606bab16c89"
+      },
+      "teamMembers": [
+        "api022d_team_coordinator_802dd9e68f044e7d8396d606bab16c89",
+        "api022d_team_reader_75b13207732b40e1af44f7bbb1dddf41"
+      ]
+    },
+    {
+      "name": "DONE closed both Tasks and stopped W, T coordinator and T reader (offline)",
+      "at": "2026-10-05T15:48:31.405Z",
+      "stopped": [
+        "api022d_packet_agent_bebbf4b8b6884a7c913f9f801e002f57",
+        "api022d_team_coordinator_802dd9e68f044e7d8396d606bab16c89",
+        "api022d_team_reader_75b13207732b40e1af44f7bbb1dddf41"
+      ]
+    },
+    {
+      "name": "closed input rejected TASK_AGENT_RESOURCE_CLOSED",
+      "at": "2026-10-05T15:48:38.418Z",
+      "rejected": {
+        "W": {
+          "root_subject_kind": "agent",
+          "root_run_id": "project_task_manager_955dcea24da5423daf42e8ca67fa4b82",
+          "command_id": "781c7920-b4bd-4b5c-a225-d6a910b1476e",
+          "command_type": "SEND_MESSAGE",
+          "target_agent_run_id": "api022d_packet_agent_bebbf4b8b6884a7c913f9f801e002f57",
+          "state": "rejected",
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task work for this agent run is closed (Task DONE)."
+        },
+        "coordinator": {
+          "root_subject_kind": "agent",
+          "root_run_id": "project_task_manager_955dcea24da5423daf42e8ca67fa4b82",
+          "command_id": "112ee940-f43d-45d0-bb8e-2f335ea104bf",
+          "command_type": "SEND_MESSAGE",
+          "target_agent_run_id": "api022d_team_coordinator_802dd9e68f044e7d8396d606bab16c89",
+          "state": "rejected",
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task work for this agent run is closed (Task DONE)."
+        }
+      }
+    },
+    {
+      "name": "repeat DONE: no file change, no new run",
+      "at": "2026-10-05T15:49:14.657Z",
+      "statusFramesAfterRepeat": []
+    },
+    {
+      "name": "Manager still answers",
+      "at": "2026-10-05T15:49:32.755Z"
+    }
+  ],
+  "rootId": "project_task_manager_955dcea24da5423daf42e8ca67fa4b82",
+  "project": {
+    "projectId": "project_a11ff49f-48d3-4b70-9bca-bdd9dda03d55"
+  },
+  "tasks": {
+    "A": {
+      "taskId": "project_task_d53d6180-1b8b-431e-88e8-45c76ba883a6"
+    },
+    "B": {
+      "taskId": "project_task_4f41d133-c549-4bdf-a962-3d1c4ab459e8"
+    }
+  },
+  "W": "api022d_packet_agent_bebbf4b8b6884a7c913f9f801e002f57",
+  "T": {
+    "kind": "team",
+    "teamRunId": "api022d_packet_team_abbe2035fff04859919e535ad6d7d347",
+    "coordinatorAgentRunId": "api022d_team_coordinator_802dd9e68f044e7d8396d606bab16c89"
+  },
+  "treeBeforeDone": [
+    "api022d_packet_agent_bebbf4b8b6884a7c913f9f801e002f57",
+    "api022d_team_coordinator_802dd9e68f044e7d8396d606bab16c89",
+    "api022d_team_reader_75b13207732b40e1af44f7bbb1dddf41",
+    "project_task_manager_955dcea24da5423daf42e8ca67fa4b82"
+  ],
+  "teamMembers": [
+    "api022d_team_coordinator_802dd9e68f044e7d8396d606bab16c89",
+    "api022d_team_reader_75b13207732b40e1af44f7bbb1dddf41"
+  ],
+  "doneNonce": "API022_e6bc849b-0ee1-4b10-8926-4df20fa2525f",
+  "offlineFrames": [
+    {
+      "at": "2026-10-05T15:48:17.998Z",
+      "type": "ROOT_EXECUTION_EVENT"
+    },
+    {
+      "at": "2026-10-05T15:48:18.020Z",
+      "type": "ROOT_EXECUTION_EVENT"
+    },
+    {
+      "at": "2026-10-05T15:48:18.020Z",
+      "type": "ROOT_EXECUTION_EVENT"
+    }
+  ],
+  "rejected": {
+    "W": {
+      "root_subject_kind": "agent",
+      "root_run_id": "project_task_manager_955dcea24da5423daf42e8ca67fa4b82",
+      "command_id": "781c7920-b4bd-4b5c-a225-d6a910b1476e",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "api022d_packet_agent_bebbf4b8b6884a7c913f9f801e002f57",
+      "state": "rejected",
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "The Task work for this agent run is closed (Task DONE)."
+    },
+    "coordinator": {
+      "root_subject_kind": "agent",
+      "root_run_id": "project_task_manager_955dcea24da5423daf42e8ca67fa4b82",
+      "command_id": "112ee940-f43d-45d0-bb8e-2f335ea104bf",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "api022d_team_coordinator_802dd9e68f044e7d8396d606bab16c89",
+      "state": "rejected",
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "The Task work for this agent run is closed (Task DONE)."
+    }
+  },
+  "repeatNonce": "API022_8c9cc56b-93e6-44d0-9b43-c1f600c3554a",
+  "statusFramesAfterRepeat": [],
+  "managerAlive": "API022_3a1b40a9-8607-4acd-b953-9225ad542318",
+  "result": "pass"
+}

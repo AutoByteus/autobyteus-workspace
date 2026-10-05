@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-05T04:37:25.294330+00:00",
+  "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+  "existing": true,
+  "sha256": "fdc70ab75b650832ec14228f57a8c705ef9ace01919f765b8bf54eef49593be4",
+  "openProcessEvidence": "",
+  "lsofExit": 1,
+  "scope": "Repository-defined disposable worktree Vitest database, explicitly named by prisma-test-config/global-setup; inherited current local test fixture, not application/user/production DB. Serial selected repository validation only."
+}

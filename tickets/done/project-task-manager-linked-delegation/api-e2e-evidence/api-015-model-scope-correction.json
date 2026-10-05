@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-04T09:38:20.299062+00:00",
+  "kind": "API-REV-015 reporting correction, not new execution result",
+  "trigger": "User challenged Gemini4.8, then explicitly requested a correct handoff message",
+  "priorCanonicals": {
+    "api-e2e-execution-coverage-report.md": {
+      "bytes": 223303,
+      "sha256": "983736205fe6ef1d11616ce2c510039d091f82297713fa24a26d8c3e4f8db279",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-before-model-scope-correction-api-e2e-execution-coverage-report.md"
+    },
+    "api-e2e-coverage-investigation.md": {
+      "bytes": 229793,
+      "sha256": "0676b571e44f764a4086798bb4ec43322f4ecbdced4f988ba0c141f9eaa0e113",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-before-model-scope-correction-api-e2e-coverage-investigation.md"
+    },
+    "api-e2e-revision-record.md": {
+      "bytes": 87473,
+      "sha256": "94012024c8fe9daf9b56317b7521ea9fb2b6d4f1997aad930a858f6e8b6ce490",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-before-model-scope-correction-api-e2e-revision-record.md"
+    },
+    "api-e2e-test-case-ledger.md": {
+      "bytes": 510847,
+      "sha256": "d813a17799a34f37e077cf431dad851195ec11ee7d681fc3c260fe8759b2a578",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-before-model-scope-correction-api-e2e-test-case-ledger.md"
+    }
+  },
+  "priorBlockedModelDependencyWithdrawn": true,
+  "prior88_57NotAValidCorrectedVerdict": true,
+  "newPassOrConfidenceAsserted": false,
+  "originalFailureAttributionRetained": true,
+  "noNewExecutionOrSourceTestEdit": true
+}

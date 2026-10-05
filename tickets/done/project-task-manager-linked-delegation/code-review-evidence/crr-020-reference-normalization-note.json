@@ -1,0 +1,7 @@
+{
+  "issue": "Outgoing primary input used worktree-relative aliases for new Reviewer evidence, despite absolute-path convention; all referred to existing files. No missing source/evidence or changed verdict.",
+  "primaryInputCount": 3848,
+  "relativeAliasCount": 0,
+  "aliases": [],
+  "correction": "Normalize current canonical manifest to unique absolute paths; preserve exact delivered message/receipts. No second work assignment or recipient polling."
+}

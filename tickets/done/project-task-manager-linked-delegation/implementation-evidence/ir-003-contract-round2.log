@@ -1,0 +1,737 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts (3 tests) 74ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession streaming lifecycle > closes the opened process and fails the turn when system-instruction persistence fails
+Claude input for run 'run-1' failed before send: Error: persist failed
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:239:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.handleProcessOpened (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:368:5)
+    at Object.onOpened (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:115:34)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:75:18)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:217:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:121:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:246:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession streaming lifecycle > enriches a failed process open with bounded redacted stderr diagnostics
+Claude input for run 'run-1' failed before send: Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:13)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:217:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:121:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:333:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > fails the active turn visibly on an unexpected exit and reopens with resume on the next input (AC-009)
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:771:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > treats a conflicting provider UUID as fatal for the process and fails the active turn
+Claude process for run 'run-1' exited: Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:82:13)
+    at ClaudeSession.handleFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:391:37)
+    at Object.onFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:116:32)
+    at ClaudeSessionProcess.runPump (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:91:26)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > marks still-running background tasks stopped on unexpected exit (REQ-009, AC-011)
+Claude process for run 'run-1' exited: Error: killed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:823:112
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:832:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession token usage > marks the first observation after a reopen following an unexpected exit, but never a create generation
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:941:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (41 tests) 74ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (18 tests) 34ms
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > keeps a new run private until synchronous candidate publication
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > claims the run id before the first backend await and rejects overlapping preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > allows retry only after candidate abort confirms inactivity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines an uncertain candidate cleanup and rejects same-process replacement
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores codex_app_server from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores claude_agent_sdk from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > aborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rolls back already-attached run resources when a later attachment fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates exactly once when a post-activation backend identity mismatch fails before attachment
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines attachment rollback when exact-run session deactivation fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation create failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation restore failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines with primary then deactivation cleanup evidence
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rejects another candidate after publication without replacing the active run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > detaches run resources and invokes exact-run MCP cleanup after accepted termination
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > allows only one non-waiting quiescence preparation attempt per exact run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > cancels through the exact run without releasing it and permits a fresh preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries only after a rejected finish and releases once after acceptance
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > coalesces one committed finish attempt and caches successful finalization
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches accepted-but-active failure without removing or retrying
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches cleanup failure after exact removal and never releases twice
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal not_found as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal identity_mismatch as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > rejects a missing or different exact instance before lower-level preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+AgentRunManager initialized.
+
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts (25 tests | 19 failed) 26ms
+     ✓ keeps a new run private until synchronous candidate publication 4ms
+     × claims the run id before the first backend await and rejects overlapping preparation 4ms
+     ✓ allows retry only after candidate abort confirms inactivity 1ms
+     × quarantines an uncertain candidate cleanup and rejects same-process replacement 1ms
+     ✓ strictly restores codex_app_server from the exact provider identity 1ms
+     ✓ strictly restores claude_agent_sdk from the exact provider identity 1ms
+     ✓ aborts a mismatched platform restore privately and leaves confirmed cleanup retryable 1ms
+     × rolls back already-attached run resources when a later attachment fails 3ms
+     × deactivates exactly once when a post-activation backend identity mismatch fails before attachment 2ms
+     × quarantines attachment rollback when exact-run session deactivation fails 1ms
+     × deactivates pre-attachment sessions after a post-activation create failure 1ms
+     × deactivates pre-attachment sessions after a post-activation restore failure 1ms
+     × quarantines with primary then deactivation cleanup evidence 1ms
+     × rejects another candidate after publication without replacing the active run 0ms
+     ✓ detaches run resources and invokes exact-run MCP cleanup after accepted termination 2ms
+     × allows only one non-waiting quiescence preparation attempt per exact run 0ms
+     × cancels through the exact run without releasing it and permits a fresh preparation 0ms
+     × retries only after a rejected finish and releases once after acceptance 0ms
+     × coalesces one committed finish attempt and caches successful finalization 0ms
+     × caches accepted-but-active failure without removing or retrying 0ms
+     × caches cleanup failure after exact removal and never releases twice 0ms
+     × treats exact-current removal not_found as terminal without resource cleanup 0ms
+     × treats exact-current removal identity_mismatch as terminal without resource cleanup 0ms
+     × rejects a missing or different exact instance before lower-level preparation 0ms
+     × routes stop-all active runs through the managed prepared boundary 0ms
+stdout | tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts (21 tests | 5 failed) 36ms
+     ✓ prepares and publishes one root-neutral configured Agent under agent_team 3ms
+     ✓ prepares and publishes one root-neutral configured Agent under agent_org 1ms
+     ✓ aborts a prepared candidate without publishing it 1ms
+     ✓ rejects identity, physical scope, and sender-bound context mismatches 0ms
+     ✓ publishes only genuinely accepted marked input through the shared autobyteus handle 10ms
+     ✓ publishes only genuinely accepted marked input through the shared claude_agent_sdk handle 1ms
+     ✓ publishes only genuinely accepted marked input through the shared codex_app_server handle 1ms
+     ✓ publishes only genuinely accepted marked input through the shared antigravity_cli handle 1ms
+     ✓ publishes only genuinely accepted marked input through the shared grok_build handle 4ms
+     ✓ plans later readiness from the committed binding, not the constructor's null binding 2ms
+     × marks publication failure after durability indeterminate and never repeats candidate preparation 3ms
+     ✓ retains cleanup quarantine as nonretryable even on a definite root rejection 0ms
+     ✓ terminates a published run through the AgentRunManager as before 1ms
+     × completes termination of a run the manager no longer publishes and disposes the handle 1ms
+     × completes quiescent termination of a stale run 1ms
+     × accepts the root-shutdown fence for a stale run and never re-activates it afterwards 2ms
+     ✓ fences a published run through the run as before 0ms
+     × surfaces a stale-discovery cleanup failure once, then completes on retry 3ms
+     ✓ resumes the persisted external conversation in a fresh-created Org instead of rejecting it 0ms
+     ✓ switches to restore after eager (prepared) publication too 0ms
+     ✓ keeps the constructor mode when the first activation fails 1ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts (9 tests) 9ms
+stdout | tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts (6 tests) 5ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts > retained SDK opening — actual pinned SDK / public hook > preserves SDK launch options and uses a distinct explicit debug log under test config root
+Claude CLI debug log: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-debug-owner-test-cTvLet/config/debug/autobyteus-cli-f8312fdd-6f25-4e86-9858-d9cb6280f7da.log
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts (4 tests) 105ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts (13 tests) 22ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts (26 tests) 9ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-background-task-registry.test.ts (23 tests) 5ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts (4 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts (6 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-user-message-builder.test.ts (3 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts (5 tests) 5ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts (6 tests) 4ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts (5 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-process-diagnostics.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts (2 tests) 2ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts (3 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-config.test.ts (3 tests) 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 24 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > on-demand binding readiness > marks publication failure after durability indeterminate and never repeats candidate preparation
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts:217:21
+    215|     expect(f.commitPlatformBindingChange).toHaveBeenCalledTimes(1);
+    216|     expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
+    217|     expect(f.abort).toHaveBeenCalledTimes(1);
+       |                     ^
+    218|   });
+    219| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/24]⎯
+
+ FAIL  tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > completes termination of a run the manager no longer publishes and disposes the handle
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'agent-run' ]
+
+Number of calls: 0
+
+ ❯ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts:248:28
+    246|     const prepared = await f.handle.prepareTermination();
+    247|     await expect(prepared.commit().finish()).resolves.toEqual({ accept…
+    248|     expect(f.getActiveRun).toHaveBeenCalledWith("agent-run");
+       |                            ^
+    249|     expect(f.prepareAgentRunTermination).not.toHaveBeenCalled();
+    250|     expect(f.handle.getStatusSnapshot().details.status).toBe("offline"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/24]⎯
+
+ FAIL  tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > completes quiescent termination of a stale run
+AssertionError: expected null not to be null
+ ❯ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts:259:26
+    257|     f.crash();
+    258|     const prepared = await f.handle.tryPrepareTerminationIfQuiescent();
+    259|     expect(prepared).not.toBeNull();
+       |                          ^
+    260|     await expect(prepared!.commit().finish()).resolves.toEqual({ accep…
+    261|     expect(f.tryPrepareAgentRunTerminationIfQuiescent).not.toHaveBeenC…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/24]⎯
+
+ FAIL  tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > accepts the root-shutdown fence for a stale run and never re-activates it afterwards
+AssertionError: expected [Function] to throw error including 'fenced for root shutdown' but got 'AgentRun \'agent-run\' is closed for …'
+
+Expected: "fenced for root shutdown"
+Received: "AgentRun 'agent-run' is closed for input."
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/24]⎯
+
+ FAIL  tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts > dead member (stale run) termination > surfaces a stale-discovery cleanup failure once, then completes on retry
+AssertionError: promise resolved "{ cancel: [Function cancel], …(1) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "cancel": [Function cancel],
++   "commit": [Function commit],
+  }
+
+ ❯ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts:289:49
+    287|       f.crash();
+    288|       f.getActiveRun.mockImplementationOnce(() => { throw new Error("r…
+    289|       await expect(f.handle.prepareTermination()).rejects.toThrow("res…
+       |                                                 ^
+    290|       expect(warn.mock.calls[0]?.[0]).toContain("COLLABORATION_STALE_R…
+    291|       const prepared = await f.handle.prepareTermination();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > claims the run id before the first backend await and rejects overlapping preparation
+AgentRunActivationError: Agent run 'run-overlap' already has a private activation candidate.
+ ❯ AgentRunActivationRegistry.claim src/agent-execution/runtime/agent-run-activation-registry.ts:101:13
+     99|     const existing = this.pending.get(runId);
+    100|     if (existing) {
+    101|       throw new AgentRunActivationError(
+       |             ^
+    102|         existing.state === "quarantined"
+    103|           ? "AGENT_RUN_ACTIVATION_CLEANUP_FAILED"
+ ❯ AgentRunManager.beginActivation src/agent-execution/services/agent-run-manager.ts:137:43
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:173:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines an uncertain candidate cleanup and rejects same-process replacement
+AgentRunActivationError: Agent run 'run-quarantine' is quarantined after uncertain cleanup.
+ ❯ AgentRunActivationRegistry.claim src/agent-execution/runtime/agent-run-activation-registry.ts:101:13
+     99|     const existing = this.pending.get(runId);
+    100|     if (existing) {
+    101|       throw new AgentRunActivationError(
+       |             ^
+    102|         existing.state === "quarantined"
+    103|           ? "AGENT_RUN_ACTIVATION_CLEANUP_FAILED"
+ ❯ AgentRunManager.beginActivation src/agent-execution/services/agent-run-manager.ts:137:43
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:214:26
+
+Caused by: AggregateError: Exact AgentRun 'run-quarantine' cleanup failed.
+ ❯ src/agent-execution/services/agent-run-activation-operation.ts:98:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errors: [ { stack: 'Error: Test backend release unproven.\n    at Object.releaseResources (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/agent-run-preparation-fixtures.ts:62:57)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-preparation.ts:46:11', message: 'Test backend release unproven.', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ] }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rolls back already-attached run resources when a later attachment fails
+AssertionError: expected AgentRunResourceAttachmentError: Failed t… { …(2) } to match object { Object (message) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "message": "Failed to prepare agent run 'run-attach-failure'.",
++ AgentRunResourceAttachmentError {
++   "message": "Failed to attach resources for agent run 'run-attach-failure'.",
++   "errors": [
++     Error {
++       "message": "artifact attachment failed",
++     },
++   ],
++   "runId": "run-attach-failure",
++   "name": "AgentRunResourceAttachmentError",
+  }
+
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:304:22
+    302|       config: createConfig(),
+    303|     }) }).prepare().catch((error: unknown) => error as Error & { cause…
+    304|     expect(rejected).toMatchObject({
+       |                      ^
+    305|       message: "Failed to prepare agent run 'run-attach-failure'.",
+    306|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates exactly once when a post-activation backend identity mismatch fails before attachment
+AssertionError: expected [Function] to throw error including 'different local run identity' but got 'Backend returned a different exact Ag…'
+
+Expected: "different local run identity"
+Received: "Backend returned a different exact AgentRun identity."
+
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:333:5
+    331|     });
+    332| 
+    333|     await expect(manager.beginActivation({ kind: "new", ...({
+       |     ^
+    334|       runId: "run-before-attachment",
+    335|       config: createConfig(),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines attachment rollback when exact-run session deactivation fails
+AssertionError: expected AggregateError: AgentRun preparation and … { errors: [ …(2) ] } to match object { Object (code) }
+
+- Expected
++ Received
+
+- {
+-   "code": "AGENT_RUN_ACTIVATION_CLEANUP_FAILED",
++ AggregateError {
++   "message": "AgentRun preparation and cleanup failed.",
++   "errors": [
++     AgentRunResourceAttachmentError {
++       "message": "Failed to attach resources for agent run 'run-attach-cleanup'.",
++       "errors": [
++         Error {
++           "message": "artifact attachment failed",
++         },
++         Error {
++           "message": "attached session deactivation failed",
++         },
++       ],
++       "runId": "run-attach-cleanup",
++       "name": "AgentRunResourceAttachmentError",
++     },
++     AggregateError {
++       "message": "Exact AgentRun 'run-attach-cleanup' cleanup failed.",
++       "errors": [
++         Error {
++           "message": "attached session deactivation failed",
++         },
++       ],
++     },
++   ],
+  }
+
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:364:19
+    362|     }) }).prepare().catch((caught: unknown) => caught as Error & { cau…
+    363| 
+    364|     expect(error).toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_…
+       |                   ^
+    365|     expect(error.cause?.errors).toEqual([
+    366|       expect.objectContaining({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation create failure
+AssertionError: expected Error: create failed after activation to match object { …(1) }
+
+- Expected
++ Received
+
+- {
+-   "cause": Error {
++ Error {
+    "message": "create failed after activation",
+-   },
+  }
+
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:396:7
+    394|           }) }).prepare();
+    395| 
+    396|       await expect(promise).rejects.toMatchObject({ cause: providerFai…
+       |       ^
+    397|       expect(recording.getDeactivatedRunIds()).toEqual(["run-post-acti…
+    398|     },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation restore failure
+AssertionError: expected Error: restore failed after activation to match object { …(1) }
+
+- Expected
++ Received
+
+- {
+-   "cause": Error {
++ Error {
+    "message": "restore failed after activation",
+-   },
+  }
+
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:396:7
+    394|           }) }).prepare();
+    395| 
+    396|       await expect(promise).rejects.toMatchObject({ cause: providerFai…
+       |       ^
+    397|       expect(recording.getDeactivatedRunIds()).toEqual(["run-post-acti…
+    398|     },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines with primary then deactivation cleanup evidence
+AssertionError: expected AggregateError: AgentRun preparation and … { errors: [ …(2) ] } to match object { Object (code) }
+
+- Expected
++ Received
+
+- {
+-   "code": "AGENT_RUN_ACTIVATION_CLEANUP_FAILED",
++ AggregateError {
++   "message": "AgentRun preparation and cleanup failed.",
++   "errors": [
++     Error {
++       "message": "provider failed after activation",
++     },
++     AggregateError {
++       "message": "Exact AgentRun 'run-cleanup-failure' cleanup failed.",
++       "errors": [
++         Error {
++           "message": "session deactivation failed",
++         },
++       ],
++     },
++   ],
+  }
+
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:419:19
+    417|       config: createConfig(),
+    418|     }) }).prepare().catch((caught: unknown) => caught as Error & { cau…
+    419|     expect(error).toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_…
+       |                   ^
+    420|     expect(error.cause).toMatchObject({
+    421|       name: "AggregateError",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rejects another candidate after publication without replacing the active run
+AgentRunActivationError: Agent run 'run-active' is already active.
+ ❯ AgentRunActivationRegistry.claim src/agent-execution/runtime/agent-run-activation-registry.ts:92:13
+     90|     }
+     91|     if (this.getActiveRun(runId)) {
+     92|       throw new AgentRunActivationError(
+       |             ^
+     93|         "AGENT_RUN_ACTIVATION_IN_PROGRESS_CONFLICT",
+     94|         `Agent run '${runId}' is already active.`,
+ ❯ AgentRunManager.beginActivation src/agent-execution/services/agent-run-manager.ts:137:43
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:437:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > allows only one non-waiting quiescence preparation attempt per exact run
+TypeError: fixture.manager.prepareNewAgentRun is not a function
+ ❯ publish tests/unit/agent-execution/agent-run-manager.test.ts:498:45
+    496|       agentToolMcpRunSessionDeactivator: input.deactivator,
+    497|     });
+    498|     const candidate = await fixture.manager.prepareNewAgentRun({
+       |                                             ^
+    499|       runId: input.runId,
+    500|       config: createConfig(),
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:506:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > cancels through the exact run without releasing it and permits a fresh preparation
+TypeError: fixture.manager.prepareNewAgentRun is not a function
+ ❯ publish tests/unit/agent-execution/agent-run-manager.test.ts:498:45
+    496|       agentToolMcpRunSessionDeactivator: input.deactivator,
+    497|     });
+    498|     const candidate = await fixture.manager.prepareNewAgentRun({
+       |                                             ^
+    499|       runId: input.runId,
+    500|       config: createConfig(),
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:524:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries only after a rejected finish and releases once after acceptance
+TypeError: fixture.manager.prepareNewAgentRun is not a function
+ ❯ publish tests/unit/agent-execution/agent-run-manager.test.ts:498:45
+    496|       agentToolMcpRunSessionDeactivator: input.deactivator,
+    497|     });
+    498|     const candidate = await fixture.manager.prepareNewAgentRun({
+       |                                             ^
+    499|       runId: input.runId,
+    500|       config: createConfig(),
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:552:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > coalesces one committed finish attempt and caches successful finalization
+TypeError: fixture.manager.prepareNewAgentRun is not a function
+ ❯ publish tests/unit/agent-execution/agent-run-manager.test.ts:498:45
+    496|       agentToolMcpRunSessionDeactivator: input.deactivator,
+    497|     });
+    498|     const candidate = await fixture.manager.prepareNewAgentRun({
+       |                                             ^
+    499|       runId: input.runId,
+    500|       config: createConfig(),
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:579:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches accepted-but-active failure without removing or retrying
+TypeError: fixture.manager.prepareNewAgentRun is not a function
+ ❯ publish tests/unit/agent-execution/agent-run-manager.test.ts:498:45
+    496|       agentToolMcpRunSessionDeactivator: input.deactivator,
+    497|     });
+    498|     const candidate = await fixture.manager.prepareNewAgentRun({
+       |                                             ^
+    499|       runId: input.runId,
+    500|       config: createConfig(),
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:609:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches cleanup failure after exact removal and never releases twice
+TypeError: fixture.manager.prepareNewAgentRun is not a function
+ ❯ publish tests/unit/agent-execution/agent-run-manager.test.ts:498:45
+    496|       agentToolMcpRunSessionDeactivator: input.deactivator,
+    497|     });
+    498|     const candidate = await fixture.manager.prepareNewAgentRun({
+       |                                             ^
+    499|       runId: input.runId,
+    500|       config: createConfig(),
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:628:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal not_found as terminal without resource cleanup
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal identity_mismatch as terminal without resource cleanup
+TypeError: fixture.manager.prepareNewAgentRun is not a function
+ ❯ publish tests/unit/agent-execution/agent-run-manager.test.ts:498:45
+    496|       agentToolMcpRunSessionDeactivator: input.deactivator,
+    497|     });
+    498|     const candidate = await fixture.manager.prepareNewAgentRun({
+       |                                             ^
+    499|       runId: input.runId,
+    500|       config: createConfig(),
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:649:67
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > rejects a missing or different exact instance before lower-level preparation
+TypeError: fixture.manager.prepareNewAgentRun is not a function
+ ❯ publish tests/unit/agent-execution/agent-run-manager.test.ts:498:45
+    496|       agentToolMcpRunSessionDeactivator: input.deactivator,
+    497|     });
+    498|     const candidate = await fixture.manager.prepareNewAgentRun({
+       |                                             ^
+    499|       runId: input.runId,
+    500|       config: createConfig(),
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:674:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/24]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+TypeError: fixture.manager.prepareNewAgentRun is not a function
+ ❯ publish tests/unit/agent-execution/agent-run-manager.test.ts:498:45
+    496|       agentToolMcpRunSessionDeactivator: input.deactivator,
+    497|     });
+    498|     const candidate = await fixture.manager.prepareNewAgentRun({
+       |                                             ^
+    499|       runId: input.runId,
+    500|       config: createConfig(),
+ ❯ tests/unit/agent-execution/agent-run-manager.test.ts:688:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/24]⎯
+
+
+ Test Files  2 failed | 19 passed (21)
+      Tests  24 failed | 204 passed (228)
+   Start at  09:24:11
+   Duration  12.70s (transform 2.62s, setup 88ms, import 10.05s, tests 433ms, environment 1ms)
+

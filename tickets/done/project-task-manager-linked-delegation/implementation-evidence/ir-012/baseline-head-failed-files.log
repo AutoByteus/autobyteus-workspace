@@ -1,0 +1,2098 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/private/tmp/ptm-ir012-baseline/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/tmp/ptm-ir012-baseline/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.19                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+ [31m❯[39m tests/unit/logging/prisma-query-log-policy.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[33m 562[2mms[22m[39m
+[31m     [31m×[31m installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code[39m[32m 4[2mms[22m[39m
+[31m     [31m×[31m esm import acquires no Prisma client or datasource[39m[32m 65[2mms[22m[39m
+     [32m✓[39m cjs import acquires no Prisma client or datasource[32m 36[2mms[22m[39m
+[31m     [31m×[31m esm defaults to non-query log kinds[39m[32m 63[2mms[22m[39m
+     [32m✓[39m cjs defaults to non-query log kinds[32m 36[2mms[22m[39m
+[31m     [31m×[31m esm honors explicit environment query-log policy only[39m[32m 61[2mms[22m[39m
+     [32m✓[39m cjs honors explicit environment query-log policy only[32m 67[2mms[22m[39m
+[31m     [31m×[31m esm honors typed policy and typed-false precedence[39m[32m 63[2mms[22m[39m
+     [32m✓[39m cjs honors typed policy and typed-false precedence[32m 71[2mms[22m[39m
+[31m     [31m×[31m esm rejects a conflicting post-bind logging policy[39m[32m 60[2mms[22m[39m
+     [32m✓[39m cjs rejects a conflicting post-bind logging policy[32m 33[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mstores media from a remote URL
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-7pID09/media
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mstores media from a remote URL
+[22m[39mProcessing media source URI: https://example.com/remote_image.png...
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mstores media from a remote URL
+[22m[39mSuccessfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-7pID09/media/images/downloaded.png. Server URL: /rest/files/images/downloaded.png
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mstores media from a data URI
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-S5pYyw/media
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mstores media from a data URI
+[22m[39mProcessing media source URI: data:image/png;base64,SGVsbG8sIFdvcmxkIQ==...
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mstores media from a data URI
+[22m[39mSuccessfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-S5pYyw/media/images/hello.png. Server URL: /rest/files/images/hello.png
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mstores media from a local file path
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-xGxFj5/media
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mstores media from a local file path
+[22m[39mProcessing media source URI: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-xGxFj5/local_file.jpg...
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mstores media from a local file path
+[22m[39mSuccessfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-xGxFj5/media/images/local_file.jpg. Server URL: /rest/files/images/local_file.jpg
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mthrows for unsupported sources
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-dbIE7j/media
+
+[90mstderr[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mthrows for unsupported sources
+[22m[39mUnrecognized or non-existent media source: ftp://example.com/file.txt
+
+[90mstdout[2m | tests/unit/services/media-storage-service.test.ts[2m > [22m[2mMediaStorageService[2m > [22m[2mthrows for unsupported sources
+[22m[39mProcessing media source URI: ftp://example.com/file.txt...
+
+ [31m❯[39m tests/unit/services/media-storage-service.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 14[2mms[22m[39m
+[31m     [31m×[31m stores media from a remote URL[39m[32m 7[2mms[22m[39m
+     [32m✓[39m stores media from a data URI[32m 2[2mms[22m[39m
+     [32m✓[39m stores media from a local file path[32m 2[2mms[22m[39m
+     [32m✓[39m throws for unsupported sources[32m 2[2mms[22m[39m
+ [31m❯[39m tests/unit/agent-packages/package-root-summary.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 9[2mms[22m[39m
+[31m     [31m×[31m validates package roots and counts shared agents, team-local agents, and teams[39m[32m 8[2mms[22m[39m
+     [32m✓[39m rejects directories that do not contain package content[32m 1[2mms[22m[39m
+ [31m❯[39m tests/unit/file-explorer/file-explorer.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m7 failed[39m[2m)[22m[32m 7[2mms[22m[39m
+[31m     [31m×[31m builds the workspace directory tree[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m reads file content within size limits[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m throws when reading a file that exceeds max size[39m[32m 0[2mms[22m[39m
+[31m     [31m×[31m returns the root tree node[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m serializes the tree to JSON[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m rejects reading files outside the workspace[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m produces shallow JSON with limited depth[39m[32m 1[2mms[22m[39m
+ [31m❯[39m tests/unit/agent-execution/agent-api-status-projectors.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 8[2mms[22m[39m
+     [32m✓[39m normalizes only canonical and supported persisted API status tokens[32m 1[2mms[22m[39m
+[31m     [31m×[31m serializes status without the removed interrupt capability[39m[32m 4[2mms[22m[39m
+[31m     [31m×[31m projects identified and anonymous Autobyteus turns as current running work[39m[32m 1[2mms[22m[39m
+     [32m✓[39m projects provider running phase without turn identity as initializing[32m 1[2mms[22m[39m
+     [32m✓[39m maps provider startup tokens while letting current turn identity win[32m 0[2mms[22m[39m
+     [32m✓[39m maps inactive runtime snapshots to offline and active empty snapshots to idle[32m 0[2mms[22m[39m
+[90mstdout[2m | tests/unit/config/streaming-content-flush-interval-setting.test.ts[2m > [22m[2mstreaming content flush interval setting[2m > [22m[2mfalls back for invalid runtime input undefined
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+
+ [31m❯[39m tests/unit/config/streaming-content-flush-interval-setting.test.ts [2m([22m[2m22 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 6[2mms[22m[39m
+     [32m✓[39m normalizes valid integer input 100[32m 1[2mms[22m[39m
+     [32m✓[39m normalizes valid integer input 500[32m 0[2mms[22m[39m
+     [32m✓[39m normalizes valid integer input 1000[32m 0[2mms[22m[39m
+     [32m✓[39m normalizes valid integer input 2000[32m 0[2mms[22m[39m
+     [32m✓[39m normalizes valid integer input 0500[32m 0[2mms[22m[39m
+[31m     [31m×[31m falls back for invalid runtime input undefined[39m[32m 3[2mms[22m[39m
+     [32m✓[39m falls back for invalid runtime input [32m 0[2mms[22m[39m
+     [32m✓[39m falls back for invalid runtime input    [32m 0[2mms[22m[39m
+     [32m✓[39m falls back for invalid runtime input 99[32m 0[2mms[22m[39m
+     [32m✓[39m falls back for invalid runtime input 2001[32m 0[2mms[22m[39m
+     [32m✓[39m falls back for invalid runtime input 500.5[32m 0[2mms[22m[39m
+     [32m✓[39m falls back for invalid runtime input 5e2[32m 0[2mms[22m[39m
+     [32m✓[39m falls back for invalid runtime input -500[32m 0[2mms[22m[39m
+     [32m✓[39m falls back for invalid runtime input abc[32m 0[2mms[22m[39m
+     [32m✓[39m rejects invalid persisted input [32m 0[2mms[22m[39m
+     [32m✓[39m rejects invalid persisted input    [32m 0[2mms[22m[39m
+     [32m✓[39m rejects invalid persisted input 99[32m 0[2mms[22m[39m
+     [32m✓[39m rejects invalid persisted input 2001[32m 0[2mms[22m[39m
+     [32m✓[39m rejects invalid persisted input 500.5[32m 0[2mms[22m[39m
+     [32m✓[39m rejects invalid persisted input 5e2[32m 0[2mms[22m[39m
+     [32m✓[39m rejects invalid persisted input -500[32m 0[2mms[22m[39m
+     [32m✓[39m rejects invalid persisted input abc[32m 0[2mms[22m[39m
+ [31m❯[39m tests/unit/agent-execution/backends/autobyteus/events/autobyteus-status-projector.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 7[2mms[22m[39m
+     [32m✓[39m maps native status bootstrapping to internal phase initializing without current-turn evidence[32m 1[2mms[22m[39m
+     [32m✓[39m maps native status uninitialized to internal phase initializing without current-turn evidence[32m 0[2mms[22m[39m
+     [32m✓[39m maps native status processing_user_input to internal phase initializing without current-turn evidence[32m 0[2mms[22m[39m
+     [32m✓[39m maps native status awaiting_llm_response to internal phase initializing without current-turn evidence[32m 0[2mms[22m[39m
+     [32m✓[39m maps native status interrupting to internal phase initializing without current-turn evidence[32m 0[2mms[22m[39m
+     [32m✓[39m maps native status idle to internal phase idle without current-turn evidence[32m 0[2mms[22m[39m
+     [32m✓[39m maps native status shutdown_complete to internal phase idle without current-turn evidence[32m 0[2mms[22m[39m
+     [32m✓[39m maps native status error to internal phase error without current-turn evidence[32m 0[2mms[22m[39m
+[31m     [31m×[31m lets current anonymous work establish running[39m[32m 4[2mms[22m[39m
+     [32m✓[39m uses inactive backend state as authoritative offline cleanup[32m 0[2mms[22m[39m
+ [31m❯[39m tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 6[2mms[22m[39m
+     [32m✓[39m exposes one concrete TeamRun identity and current runtime context[32m 2[2mms[22m[39m
+     [32m✓[39m forwards direct input and commands by the unchanged exact AgentRun ID[32m 1[2mms[22m[39m
+[31m     [31m×[31m forwards prepared task execution, restore, liveness, quiet shutdown, and termination capabilities without alternate ownership[39m[32m 2[2mms[22m[39m
+ [31m❯[39m tests/unit/api/graphql/studio-application-api-services.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 5[2mms[22m[39m
+[31m     [31m×[31m publishes one exact service set and releases it idempotently[39m[32m 2[2mms[22m[39m
+     [32m✓[39m rejects a missing agentDefinitionService before publishing any service[32m 1[2mms[22m[39m
+     [32m✓[39m rejects a missing agentTeamDefinitionService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing agentRunService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing teamRunService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing runModelConfigService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing bundleService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing capabilityService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing packageQueries before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing packageCommands before publishing any service[32m 0[2mms[22m[39m
+ [31m❯[39m tests/unit/api/graphql/converters/workspace-converter.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 3[2mms[22m[39m
+[31m     [31m×[31m sets isTemp false for regular workspace IDs[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m sets isTemp true for temp workspace ID[39m[32m 0[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts [2m([22m[2m14 tests[22m[2m | [22m[31m14 failed[39m[2m)[22m[32m 19[2mms[22m[39m
+[31m     [31m×[31m creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"][39m[32m 6[2mms[22m[39m
+[31m     [31m×[31m creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["codex_app_server"][39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["claude_agent_sdk"][39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus","codex_app_server","claude_agent_sdk"][39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m supplies only root-neutral local Team callbacks during materialization[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m restores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m emits root lifecycle transitions and unregisters only after accepted termination[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m holds one exact-ID transition lane across unmanaged deletion and restore registration[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m refuses Team archive and unarchive after Restore owns the exact-root lane[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m holds Team archive's manager lane through tree/index commit before Restore[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m holds Team unarchive's manager lane through tree/index commit before Restore[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m rejects active updates, then persists a stopped narrow patch for the next restore[39m[32m 0[2mms[22m[39m
+[31m     [31m×[31m orders an exact-ID Team restore after an in-flight Save and restores committed config[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m returns RUN_ACTIVE when an exact-ID Team restore completes before Save[39m[32m 1[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22m[2mfresh and restored configured scope use deferred readiness[2m > [22m[2mfresh standalone Team stays unstarted until exact input; concurrent first input shares readiness
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+
+ [31m❯[39m tests/integration/agent-team-execution/configured-scope-readiness.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[33m 3276[2mms[22m[39m
+[31m     [31m×[31m publishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none[39m[32m 59[2mms[22m[39m
+[31m     [31m×[31m fresh standalone Team stays unstarted until exact input; concurrent first input shares readiness[39m[33m 1033[2mms[22m[39m
+[31m     [31m×[31m restores full Offline scope and durably readies only each addressed member[39m[32m 40[2mms[22m[39m
+[31m     [31m×[31m readiness rejection remains an error for the exact worker, without starting other members[39m[32m 28[2mms[22m[39m
+     [32m✓[39m org Stop before first use fences all unused workers without startup[32m 31[2mms[22m[39m
+     [32m✓[39m team Stop before first use fences all unused workers without startup[32m 27[2mms[22m[39m
+[31m     [31m×[31m org Stop drains first readiness and leaves no published worker after success[39m[33m 1029[2mms[22m[39m
+[31m     [31m×[31m team Stop drains first readiness and leaves no published worker after success[39m[33m 1027[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22m[2msupported Team Agent Tools MCP lifecycle integration[2m > [22m[2mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22m[2msupported Team Agent Tools MCP lifecycle integration[2m > [22m[2mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[22m[39mAgentRunManager initialized.
+
+ [31m❯[39m tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 70[2mms[22m[39m
+[31m     [31m×[31m keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice[39m[32m 69[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mpreserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+[22m[39mAgent team websocket attached for team run team-run-1
+Created agent session 0f96742b-e3a4-434b-9ea5-0266dff6f6cc for run team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mpreserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+[22m[39mClosed agent session 0f96742b-e3a4-434b-9ea5-0266dff6f6cc
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mreturns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+[22m[39mAgent team websocket attached for team run team-run-1
+Created agent session f646f796-0a26-4802-a4bf-827aac2e7b18 for run team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mreturns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+[22m[39mClosed agent session f646f796-0a26-4802-a4bf-827aac2e7b18
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mrejects a legacy selector at the strict WebSocket contract before root execution
+[22m[39mAgent team websocket attached for team run team-run-1
+Created agent session 6ec19221-eeb5-4662-a3cc-b1e17fea0ebf for run team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mrejects a legacy selector at the strict WebSocket contract before root execution
+[22m[39mClosed agent session 6ec19221-eeb5-4662-a3cc-b1e17fea0ebf
+
+ [31m❯[39m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 4159[2mms[22m[39m
+[31m     [31m×[31m preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets[39m[33m 2028[2mms[22m[39m
+[31m     [31m×[31m returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution[39m[33m 2018[2mms[22m[39m
+     [32m✓[39m rejects a legacy selector at the strict WebSocket contract before root execution[32m 112[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/agent-memory-location-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/agent-memory/agent-memory-location-service.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[32m 141[2mms[22m[39m
+[31m     [31m×[31m derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs[39m[32m 31[2mms[22m[39m
+[31m     [31m×[31m resolves only one exact current address/run match while retaining its configured launch placement[39m[32m 19[2mms[22m[39m
+[31m     [31m×[31m reads only the requested root's tree when the team run ID is a stored root (REQ-005)[39m[32m 26[2mms[22m[39m
+[31m     [31m×[31m still resolves a nested team run ID by searching every root[39m[32m 13[2mms[22m[39m
+     [32m✓[39m does not resolve members of a stored root that the package readiness index did not admit[32m 13[2mms[22m[39m
+[31m     [31m×[31m resolves an AgentOrg member's own run inside the requested org root[39m[32m 24[2mms[22m[39m
+     [32m✓[39m keeps standalone and Team memory identity separate[32m 13[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/team-memory-explorer-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/agent-memory/team-memory-explorer-service.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[33m 444[2mms[22m[39m
+     [32m✓[39m uses one read per admitted root for each imported-style list request and leaves all files unchanged[32m 74[2mms[22m[39m
+     [32m✓[39m groups stored V1 roots by Team definition and exact configured Agent address[32m 57[2mms[22m[39m
+     [32m✓[39m lists and filters current run/member targets without route/path compatibility identity[32m 56[2mms[22m[39m
+     [32m✓[39m reads each root tree exactly once per request (AC-003)[32m 59[2mms[22m[39m
+     [32m✓[39m orders runs newest first and pages them[32m 60[2mms[22m[39m
+[31m     [31m×[31m reports a delegated task instance with its own run ID (AC-011)[39m[32m 22[2mms[22m[39m
+[31m     [31m×[31m lists the configured member and its task instance as separate runs[39m[32m 17[2mms[22m[39m
+[31m     [31m×[31m skips a corrupt root tree with a warning while other roots still list (AC-003)[39m[32m 16[2mms[22m[39m
+[31m     [31m×[31m skips a root folder whose tree names a different team run, while other roots still list[39m[32m 25[2mms[22m[39m
+     [32m✓[39m lists task agents, task-team members and nested-team members with kind, group path and structural order[32m 30[2mms[22m[39m
+     [32m✓[39m counts every member address and matches search on nested task-team members[32m 27[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/agent-execution/agent-run-provisioning-service.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 12[2mms[22m[39m
+     [32m✓[39m prepares a standalone run identity through the catalog without persisted live status[32m 6[2mms[22m[39m
+[31m     [31m×[31m does not persist activation failure state and permits retry from prepared facts[39m[32m 3[2mms[22m[39m
+     [32m✓[39m delegates prepared cancellation to the catalog boundary[32m 1[2mms[22m[39m
+     [32m✓[39m cleans up only expired prepared identities[32m 2[2mms[22m[39m
+(node:21815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 197[2mms[22m[39m
+     [32m✓[39m does not create platform or journal state while inspecting absent recovery state[32m 3[2mms[22m[39m
+     [32m✓[39m leaves an existing database without journal state byte-for-byte unchanged[32m 5[2mms[22m[39m
+     [32m✓[39m reads an appended pending record through a new read-only store without changing SQLite bytes[32m 107[2mms[22m[39m
+     [32m✓[39m projects old binding and producer supersets, then dispatches and acknowledges them[32m 63[2mms[22m[39m
+[31m     [31m×[31m lets lifecycle restart recovery reach ready and dispatch an existing pending event[39m[32m 11[2mms[22m[39m
+[31m     [31m×[31m lets reload/reentry inspect and dispatch existing journal state before activation[39m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts [2m([22m[2m9 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 17[2mms[22m[39m
+     [32m✓[39m fails K0 omission/null/undefined validation before authority assembly[32m 6[2mms[22m[39m
+     [32m✓[39m preserves a K1 begin failure without inventing cleanup[32m 1[2mms[22m[39m
+     [32m✓[39m unwinds the exact owned authority at K2[32m 1[2mms[22m[39m
+     [32m✓[39m unwinds the exact owned authority at K5[32m 1[2mms[22m[39m
+[31m     [31m×[31m unwinds the exact owned authority at K6[39m[32m 5[2mms[22m[39m
+[31m     [31m×[31m unwinds the exact owned authority at K7[39m[32m 1[2mms[22m[39m
+     [32m✓[39m aborts the incomplete K3 assembly when completion fails[32m 0[2mms[22m[39m
+     [32m✓[39m closes the completed authority at K4 and preserves primary then cleanup evidence[32m 0[2mms[22m[39m
+[31m     [31m×[31m transfers one complete frozen K8 kernel with fixed idempotent construction abort[39m[32m 1[2mms[22m[39m
+[90mstdout[2m | tests/unit/application-platform/application-execution-scope.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/application-platform/application-execution-scope.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m8 failed[39m[2m)[22m[32m 13[2mms[22m[39m
+[31m     [31m×[31m owns one complete graph-local kernel and freezes every outward capability[39m[32m 6[2mms[22m[39m
+[31m     [31m×[31m projects direct configured Team Agents, excludes task nodes, and deep-freezes[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m projects Agent launch identity without leaking the service result[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m authorizes configured and dynamic application Team producers through the live root topology[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m maps restore-aware Agent and Team input without changing target or errors[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m quiesces issue admission and closes run graph before authority exactly once[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m continues authority close after shutdown failure and aggregates both failures[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m delegates construction abort exactly once after kernel transfer[39m[32m 1[2mms[22m[39m
+(node:21819) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/application-platform/application-platform-lifecycle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/application-platform/application-platform-lifecycle.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 68[2mms[22m[39m
+     [32m✓[39m awaits named readiness and recovers only the selected canonical application[32m 5[2mms[22m[39m
+[31m     [31m×[31m materializes a fresh selected application runtime cwd before definition/provider readiness[39m[32m 8[2mms[22m[39m
+     [32m✓[39m keeps full lifecycle cleanup available when runtime directory preparation fails[32m 1[2mms[22m[39m
+     [32m✓[39m stops all owned boundaries in order, remains idempotent, and reports cleanup failures after continuing[32m 1[2mms[22m[39m
+     [32m✓[39m drains a real admitted application-tool call before stopping workers during shutdown[32m 52[2mms[22m[39m
+(node:21821) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/application-platform/application-platform-runtime-isolation.test.ts[2m > [22m[2mapplication platform runtime isolation[2m > [22m[2maborts a completed scope when later platform assembly fails without closing process owners
+[22m[39mAgentRunManager initialized.
+
+ [31m❯[39m tests/unit/application-platform/application-platform-runtime-isolation.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 9[2mms[22m[39m
+[31m     [31m×[31m builds isolated services without starting an agent or team run[39m[32m 3[2mms[22m[39m
+     [32m✓[39m aborts a completed scope when later platform assembly fails without closing process owners[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/llm-management/gemini-configuration-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/llm-management/gemini-configuration-service.test.ts[2m > [22m[2mGeminiConfigurationService explicit mode commands[2m > [22m[2mstarts with no selected mode and no implicit priority
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-1zXIsY
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-1zXIsY/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-1zXIsY/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-1zXIsY/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-1zXIsY
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-1zXIsY/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-1zXIsY/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-1zXIsY/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-1zXIsY/memory
+============================================================
+
+[90mstdout[2m | tests/unit/llm-management/gemini-configuration-service.test.ts[2m > [22m[2mGeminiConfigurationService explicit mode commands[2m > [22m[2msaves options independently and activates only through an explicit command
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-XwTNgS
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-XwTNgS/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-XwTNgS/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-XwTNgS/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-XwTNgS
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-XwTNgS/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-XwTNgS/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-XwTNgS/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-XwTNgS/memory
+============================================================
+
+[90mstdout[2m | tests/unit/llm-management/gemini-configuration-service.test.ts[2m > [22m[2mGeminiConfigurationService explicit mode commands[2m > [22m[2mkeeps active mode unchanged when its configuration is replaced
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-hoCdCU
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-hoCdCU/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-hoCdCU/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-hoCdCU/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-hoCdCU
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-hoCdCU/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-hoCdCU/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-hoCdCU/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-hoCdCU/memory
+============================================================
+
+[90mstdout[2m | tests/unit/llm-management/gemini-configuration-service.test.ts[2m > [22m[2mGeminiConfigurationService explicit mode commands[2m > [22m[2mrejects activating an incomplete option without persisting a selector
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-kPJ6Rb
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-kPJ6Rb/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-kPJ6Rb/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-kPJ6Rb/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-kPJ6Rb
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-kPJ6Rb/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-kPJ6Rb/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-kPJ6Rb/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-kPJ6Rb/memory
+============================================================
+
+[90mstdout[2m | tests/unit/llm-management/gemini-configuration-service.test.ts[2m > [22m[2mGeminiConfigurationService explicit mode commands[2m > [22m[2mreturns a truthful partial result when save succeeds but activation fails
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-3H8mkg
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-3H8mkg/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-3H8mkg/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-3H8mkg/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-3H8mkg
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-3H8mkg/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-3H8mkg/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-3H8mkg/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/gemini-configuration-3H8mkg/memory
+============================================================
+
+ [31m❯[39m tests/unit/llm-management/gemini-configuration-service.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 21[2mms[22m[39m
+[31m     [31m×[31m starts with no selected mode and no implicit priority[39m[32m 10[2mms[22m[39m
+     [32m✓[39m saves options independently and activates only through an explicit command[32m 4[2mms[22m[39m
+     [32m✓[39m keeps active mode unchanged when its configuration is replaced[32m 2[2mms[22m[39m
+     [32m✓[39m rejects activating an incomplete option without persisting a selector[32m 2[2mms[22m[39m
+     [32m✓[39m returns a truthful partial result when save succeeds but activation fails[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/workspaces/workspace-manager-skill-integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager-skill-integration.test.ts[2m > [22m[2mWorkspaceManager skill integration[2m > [22m[2mcreates and initializes a SkillWorkspace for skill_ws_ IDs
+[22m[39mCreating on-demand SkillWorkspace for: MySkill
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager-skill-integration.test.ts[2m > [22m[2mWorkspaceManager skill integration[2m > [22m[2mthrows for unknown workspace IDs
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+
+ [31m❯[39m tests/unit/workspaces/workspace-manager-skill-integration.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 7[2mms[22m[39m
+     [32m✓[39m returns existing workspace from cache[32m 1[2mms[22m[39m
+[31m     [31m×[31m creates and initializes a SkillWorkspace for skill_ws_ IDs[39m[32m 3[2mms[22m[39m
+     [32m✓[39m throws for unknown workspace IDs[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mcreates and registers a workspace
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+App data directory: /private/tmp/ptm-ir012-baseline/autobyteus-server-ts
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mcreates and registers a workspace
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3iwjq0
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3iwjq0.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mcreates and registers a workspace
+[22m[39mCreated and registered workspace ID: agent_ws_c15677b999f3570b2916f16968f5687879aa3d00c5b58876bd9c348fb284350a
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mcreates and registers a workspace
+[22m[39mClosing FileSystemWorkspace agent_ws_c15677b999f3570b2916f16968f5687879aa3d00c5b58876bd9c348fb284350a
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace with the same config
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-ViqAwp
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-ViqAwp.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace with the same config
+[22m[39mCreated and registered workspace ID: agent_ws_7b1890fe788edb561f56087c54171e1526190537ad60c4093145332fcac2d977
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace with the same config
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-ViqAwp
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-ViqAwp.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace with the same config
+[22m[39mReusing registered workspace ID: agent_ws_7b1890fe788edb561f56087c54171e1526190537ad60c4093145332fcac2d977
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace with the same config
+[22m[39mClosing FileSystemWorkspace agent_ws_7b1890fe788edb561f56087c54171e1526190537ad60c4093145332fcac2d977
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace when equivalent root paths normalize to the same workspace ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3dQiHf
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3dQiHf.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace when equivalent root paths normalize to the same workspace ID
+[22m[39mCreated and registered workspace ID: agent_ws_0d11188fd7713ec237bca8c8bbc82e2e61ea23e8f5fb9db3cb555f277e46601a
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace when equivalent root paths normalize to the same workspace ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3dQiHf/.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3dQiHf.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace when equivalent root paths normalize to the same workspace ID
+[22m[39mReusing registered workspace ID: agent_ws_0d11188fd7713ec237bca8c8bbc82e2e61ea23e8f5fb9db3cb555f277e46601a
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreuses an existing workspace when equivalent root paths normalize to the same workspace ID
+[22m[39mClosing FileSystemWorkspace agent_ws_0d11188fd7713ec237bca8c8bbc82e2e61ea23e8f5fb9db3cb555f277e46601a
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mroutes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Rr9hyj/.
+Resolved configured temp workspace root to TempWorkspace.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mroutes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Rr9hyj
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Rr9hyj.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Rr9hyj with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mroutes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mdecommissions persisted filesystem entries for the configured temp root
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-GjOtL1.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mdecommissions persisted filesystem entries for the configured temp root
+[22m[39mRemoved 1 persisted filesystem registry entry for the configured temp workspace root.
+Closing FileSystemWorkspace agent_ws_b852fc6cf9fcf1d18e9cfd8a4c7e20195f0985d9298bb2310f38b2ed6aa87db6
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mdecommissions persisted filesystem entries for the configured temp root
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-GjOtL1
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-GjOtL1.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-GjOtL1 with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mdecommissions persisted filesystem entries for the configured temp root
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-uiQjuJ.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mdecommissions persisted filesystem entries for the configured temp root
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreturns all active workspaces
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-cKvkJn
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-cKvkJn.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreturns all active workspaces
+[22m[39mCreated and registered workspace ID: agent_ws_e043a04b23a2f9390b7c81e628ddf825e0243110dfc9e7d5a90125d5ecaa4261
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreturns all active workspaces
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-vGk7ol
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-vGk7ol.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreturns all active workspaces
+[22m[39mCreated and registered workspace ID: agent_ws_7af5c6a6ef49fda936e58211d31744b7c3a677b8a62de64f4cc13ad9b8c8c901
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreturns all active workspaces
+[22m[39mClosing FileSystemWorkspace agent_ws_e043a04b23a2f9390b7c81e628ddf825e0243110dfc9e7d5a90125d5ecaa4261
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreturns all active workspaces
+[22m[39mClosing FileSystemWorkspace agent_ws_7af5c6a6ef49fda936e58211d31744b7c3a677b8a62de64f4cc13ad9b8c8c901
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mcreates the temp workspace on first call
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-dF9V9E
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-dF9V9E.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-dF9V9E with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mcreates the temp workspace on first call
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreturns cached temp workspace on subsequent calls
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-sT4Kk5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-sT4Kk5.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-sT4Kk5 with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mreturns cached temp workspace on subsequent calls
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrecreates an ordinary filesystem workspace from its deterministic ID after restart
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-q37oUC
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-q37oUC.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrecreates an ordinary filesystem workspace from its deterministic ID after restart
+[22m[39mCreated and registered workspace ID: agent_ws_b942944d0ee3848223c0400d12f61fe26526c29c51196d636033617f8858304f
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrecreates an ordinary filesystem workspace from its deterministic ID after restart
+[22m[39mClosing FileSystemWorkspace agent_ws_b942944d0ee3848223c0400d12f61fe26526c29c51196d636033617f8858304f
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrecreates an ordinary filesystem workspace from its deterministic ID after restart
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-q37oUC
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-q37oUC.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrecreates an ordinary filesystem workspace from its deterministic ID after restart
+[22m[39mCreated and registered workspace ID: agent_ws_b942944d0ee3848223c0400d12f61fe26526c29c51196d636033617f8858304f
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrecreates an ordinary filesystem workspace from its deterministic ID after restart
+[22m[39mClosing FileSystemWorkspace agent_ws_b942944d0ee3848223c0400d12f61fe26526c29c51196d636033617f8858304f
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mremoves a registered workspace entry without deleting workspace files
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3gRh4w
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3gRh4w.
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mremoves a registered workspace entry without deleting workspace files
+[22m[39mCreated and registered workspace ID: agent_ws_7633c2a399d36858d7e0186ac0ec00c50d1f6492178dbb406520c4c2070af6f9
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mremoves a registered workspace entry without deleting workspace files
+[22m[39mClosing FileSystemWorkspace agent_ws_7633c2a399d36858d7e0186ac0ec00c50d1f6492178dbb406520c4c2070af6f9
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrecreates the temp workspace from its stable workspace ID
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-NtHlmI
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-NtHlmI.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-NtHlmI with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrecreates the temp workspace from its stable workspace ID
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrebinds a cached skill workspace after generation publication and rejects a removed skill
+[22m[39mCreating on-demand SkillWorkspace for: writer
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrebinds a cached skill workspace after generation publication and rejects a removed skill
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-QLOEgE/g1.
+Initialized SkillWorkspace for skill 'writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-QLOEgE/g1
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrebinds a cached skill workspace after generation publication and rejects a removed skill
+[22m[39mClosing FileSystemWorkspace skill_ws_writer
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrebinds a cached skill workspace after generation publication and rejects a removed skill
+[22m[39mCreating on-demand SkillWorkspace for: writer
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrebinds a cached skill workspace after generation publication and rejects a removed skill
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-QLOEgE/g2.
+Initialized SkillWorkspace for skill 'writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-QLOEgE/g2
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrebinds a cached skill workspace after generation publication and rejects a removed skill
+[22m[39mClosing FileSystemWorkspace skill_ws_writer
+
+[90mstdout[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrebinds a cached skill workspace after generation publication and rejects a removed skill
+[22m[39mCreating on-demand SkillWorkspace for: writer
+
+[90mstderr[2m | tests/unit/workspaces/workspace-manager.test.ts[2m > [22m[2mWorkspaceManager[2m > [22m[2mrebinds a cached skill workspace after generation publication and rejects a removed skill
+[22m[39mFailed to create skill workspace skill_ws_writer: Error: SkillWorkspace creation failed for 'writer': Error: Skill 'writer' not found
+
+ [31m❯[39m tests/unit/workspaces/workspace-manager.test.ts [2m([22m[2m13 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 34[2mms[22m[39m
+     [32m✓[39m creates and registers a workspace[32m 6[2mms[22m[39m
+     [32m✓[39m reuses an existing workspace with the same config[32m 3[2mms[22m[39m
+     [32m✓[39m reuses an existing workspace when equivalent root paths normalize to the same workspace ID[32m 2[2mms[22m[39m
+     [32m✓[39m routes the configured temp root to TempWorkspace instead of registering a filesystem workspace[32m 2[2mms[22m[39m
+     [32m✓[39m decommissions persisted filesystem entries for the configured temp root[32m 3[2mms[22m[39m
+     [32m✓[39m returns undefined for unknown workspace IDs[32m 0[2mms[22m[39m
+     [32m✓[39m returns all active workspaces[32m 3[2mms[22m[39m
+     [32m✓[39m creates the temp workspace on first call[32m 1[2mms[22m[39m
+     [32m✓[39m returns cached temp workspace on subsequent calls[32m 1[2mms[22m[39m
+     [32m✓[39m recreates an ordinary filesystem workspace from its deterministic ID after restart[32m 2[2mms[22m[39m
+[31m     [31m×[31m removes a registered workspace entry without deleting workspace files[39m[32m 5[2mms[22m[39m
+     [32m✓[39m recreates the temp workspace from its stable workspace ID[32m 1[2mms[22m[39m
+     [32m✓[39m rebinds a cached skill workspace after generation publication and rejects a removed skill[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/published-artifact-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/run-history/services/published-artifact-projection-service.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 9[2mms[22m[39m
+[31m     [31m×[31m reads historical published-artifact summaries and revision text from durable projection storage[39m[32m 9[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/team-run-history-catalog-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/run-history/services/team-run-history-catalog-service.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[33m 319[2mms[22m[39m
+     [32m✓[39m records one derived catalog row without creating a fourth Team state authority[32m 29[2mms[22m[39m
+[31m     [31m×[31m records the first summary only and serializes current lifecycle updates[39m[32m 42[2mms[22m[39m
+[31m     [31m×[31m archives the exact V2 execution tree and derived catalog row together[39m[32m 48[2mms[22m[39m
+[31m     [31m×[31m restores the exact tree and index snapshot after an archive index failure[39m[32m 59[2mms[22m[39m
+     [32m✓[39m blocks active deletion and rejects unsafe identities before filesystem effects[32m 38[2mms[22m[39m
+[31m     [31m×[31m keeps the current row and package when the candidate index write fails[39m[32m 39[2mms[22m[39m
+     [32m✓[39m durably compensates and validates the original row before reporting package removal failure[32m 63[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts[2m > [22m[2mMediaUrlTransformerProcessor[2m > [22m[2mderives filenames from clean URLs
+[22m[39mAgent run 'test_agent': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts[2m > [22m[2mMediaUrlTransformerProcessor[2m > [22m[2mfalls back to media UUID for opaque URLs
+[22m[39mAgent run 'test_agent': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts[2m > [22m[2mMediaUrlTransformerProcessor[2m > [22m[2mprocesses multiple URLs concurrently
+[22m[39mAgent run 'test_agent': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts[2m > [22m[2mMediaUrlTransformerProcessor[2m > [22m[2memits media segment events
+[22m[39mAgent run 'test_agent': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+ [31m❯[39m tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 6[2mms[22m[39m
+     [32m✓[39m derives filenames from clean URLs[32m 1[2mms[22m[39m
+     [32m✓[39m falls back to media UUID for opaque URLs[32m 1[2mms[22m[39m
+     [32m✓[39m processes multiple URLs concurrently[32m 0[2mms[22m[39m
+[31m     [31m×[31m emits media segment events[39m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/memory-view-member-resolver.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 89[2mms[22m[39m
+[31m     [31m×[31m reads an org member run's memory through its resolved org location[39m[32m 38[2mms[22m[39m
+     [32m✓[39m returns an empty view for an unknown org member[32m 25[2mms[22m[39m
+[31m     [31m×[31m keeps reading team member runs through the shared member view read[39m[32m 25[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 82 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mcreates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"]
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mcreates exactly one admitted root and the two-file current package (tree V3 + messages) for ["codex_app_server"]
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mcreates exactly one admitted root and the two-file current package (tree V3 + messages) for ["claude_agent_sdk"]
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mcreates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus","codex_app_server","claude_agent_sdk"]
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22msupplies only root-neutral local Team callbacks during materialization
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mrestores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22memits root lifecycle transitions and unregisters only after accepted termination
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mholds one exact-ID transition lane across unmanaged deletion and restore registration
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mrefuses Team archive and unarchive after Restore owns the exact-root lane
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mholds Team archive's manager lane through tree/index commit before Restore
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mholds Team unarchive's manager lane through tree/index commit before Restore
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mrejects active updates, then persists a stopped narrow patch for the next restore
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22morders an exact-ID Team restore after an in-flight Save and restores committed config
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mreturns RUN_ACTIVE when an exact-ID Team restore completes before Save
+[31m[1mTypeError[22m: input.factory.beginMaterialization is not a function[39m
+[36m [2m❯[22m materializeTeamRoot src/agent-team-execution/services/team-root-materializer.ts:[2m92:40[22m[39m
+    [90m 90| [39m      : Promise.reject(new Error("RootTeamRun construction is incomple…
+    [90m 91| [39m  })[33m;[39m
+    [90m 92| [39m  [35mconst[39m prepared [33m=[39m [35mawait[39m input[33m.[39mfactory[33m.[39m[34mbeginMaterialization[39m({
+    [90m   | [39m                                       [31m^[39m
+    [90m 93| [39m    physicalScope[33m,[39m
+    [90m 94| [39m    teamNode[33m:[39m input[33m.[39mconfig[33m.[39mrootTeam[33m,[39m
+[90m [2m❯[22m src/agent-team-execution/services/agent-team-run-manager.ts:[2m136:26[22m[39m
+[90m [2m❯[22m AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:[2m472:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mpublishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none
+[31m[1mAssertionError[22m: expected { accepted: false, …(4) } to match object { accepted: true }
+(4 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "accepted": true,[39m
+[31m+   "accepted": false,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m120:5[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mfresh standalone Team stays unstarted until exact input; concurrent first input shares readiness
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called 1 times, but got 0 times[39m
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m134:57[22m[39m
+    [90m132| [39m    const send = () => run.executeAgentCommand('lead', { kind: 'post_m…
+    [90m133| [39m    [35mconst[39m a [33m=[39m [34msend[39m()[33m;[39m [35mconst[39m b [33m=[39m [34msend[39m()[33m;[39m
+    [90m134| [39m    await vi.waitFor(() => expect(f.prepareNewAgentRun).toHaveBeenCall…
+    [90m   | [39m                                                        [31m^[39m
+    [90m135| [39m    [34mexpect[39m(f[33m.[39mactive[33m.[39msize)[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m f[33m.[39m[34mrelease[39m()[33m;[39m
+    [90m136| [39m    expect((await Promise.all([a, b])).every(r => r.accepted)).toBe(tr…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mrestores full Offline scope and durably readies only each addressed member
+[31m[1mAssertionError[22m: expected { accepted: false, …(4) } to match object { accepted: true }
+(4 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "accepted": true,[39m
+[31m+   "accepted": false,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m146:5[22m[39m
+    [90m144| [39m    [34mexpect[39m(f[33m.[39mactive[33m.[39msize)[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+    [90m145| [39m
+    [90m146| [39m    [35mawait[39m [34mexpect[39m(run[33m.[39m[34mexecuteAgentCommand[39m([32m'lead'[39m[33m,[39m {
+    [90m   | [39m    [31m^[39m
+    [90m147| [39m      kind: 'post_message', message: new AgentInputUserMessage('first …
+    [90m148| [39m    }))[33m.[39mresolves[33m.[39m[34mtoMatchObject[39m({ accepted[33m:[39m [35mtrue[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mreadiness rejection remains an error for the exact worker, without starting other members
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called 1 times, but got 0 times[39m
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m165:65[22m[39m
+    [90m163| [39m    await expect(run.executeAgentCommand('director', { kind: 'post_mes…
+    [90m164| [39m    expect(run.getAgentStatusSnapshots().find(s => s.execution.agentRu…
+    [90m165| [39m    expect(f.active.size).toBe(0); expect(f.prepareNewAgentRun).toHave…
+    [90m   | [39m                                                                [31m^[39m
+    [90m166| [39m  })[33m;[39m
+    [90m167| [39m  it.each(['org', 'team'] as const)('%s Stop before first use fences a…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22morg Stop drains first readiness and leaves no published worker after success
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mteam Stop drains first readiness and leaves no published worker after success
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called 1 times, but got 0 times[39m
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m179:57[22m[39m
+    [90m177| [39m    [35mconst[39m id [33m=[39m kind [33m===[39m [32m'org'[39m [33m?[39m [32m'director'[39m [33m:[39m [32m'lead'[39m[33m;[39m f[33m.[39m[34mblock[39m(id)[33m;[39m
+    [90m178| [39m    const input = run.executeAgentCommand(id, { kind: 'post_message', …
+    [90m179| [39m    await vi.waitFor(() => expect(f.prepareNewAgentRun).toHaveBeenCall…
+    [90m   | [39m                                                        [31m^[39m
+    [90m180| [39m    [35mconst[39m stop [33m=[39m run[33m.[39m[34mterminate[39m()[33m;[39m f[33m.[39m[34mrelease[39m()[33m;[39m [35mawait[39m input[33m;[39m
+    [90m181| [39m    [35mawait[39m [34mexpect[39m(stop)[33m.[39mresolves[33m.[39m[34mtoMatchObject[39m({ accepted[33m:[39m [35mtrue[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts[2m > [22mFlatTeamRunBackend exact local facade integration[2m > [22mforwards prepared task execution, restore, liveness, quiet shutdown, and termination capabilities without alternate ownership
+[31m[1mTypeError[22m: backend.prepareTaskAgent is not a function[39m
+[36m [2m❯[22m tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts:[2m108:26[22m[39m
+    [90m106| [39m    manager[33m.[39mprepareTermination[33m.[39m[34mmockResolvedValue[39m(preparedTermination)[33m;[39m
+    [90m107| [39m
+    [90m108| [39m    await expect(backend.prepareTaskAgent(taskAgentInput)).resolves.to…
+    [90m   | [39m                         [31m^[39m
+    [90m109| [39m    await expect(backend.prepareTaskTeam(taskTeamInput)).resolves.toBe…
+    [90m110| [39m    const restoreInput = { address: "/reviewer", agentRunId: "task-age…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22msupported Team Agent Tools MCP lifecycle integration[2m > [22mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[31m[1mAssertionError[22m: expected { accepted: false, …(4) } to match object { accepted: true }
+(4 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "accepted": true,[39m
+[31m+   "accepted": false,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts:[2m240:7[22m[39m
+    [90m238| [39m      })[33m;[39m
+    [90m239| [39m      expect(agentRunManager.getActiveRun(memberNode.agentRunId)).toBe…
+    [90m240| [39m      await expect(freshTeam.postMessage(new AgentInputUserMessage("St…
+    [90m   | [39m      [31m^[39m
+    [90m241| [39m      const currentRun = agentRunManager.getActiveRun(memberNode.agent…
+    [90m242| [39m      [34mexpect[39m(currentRun)[33m.[39mnot[33m.[39m[34mtoBeNull[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22mTeam WebSocket exact AgentRun command integration[2m > [22mpreserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+[31m[1mError[22m: Timed out waiting for four exact AgentRun commands[39m
+[36m [2m❯[22m waitFor tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:[2m19:9[22m[39m
+    [90m 17| [39m    [35mawait[39m [34mwait[39m([34m10[39m)[33m;[39m
+    [90m 18| [39m  }
+    [90m 19| [39m  [35mthrow[39m [35mnew[39m [33mError[39m([32m`Timed out waiting for [39m[36m${[39mlabel[36m}[39m[32m`[39m)[33m;[39m
+    [90m   | [39m        [31m^[39m
+    [90m 20| [39m}[33m;[39m
+    [90m 21| [39m
+[90m [2m❯[22m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:[2m131:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22mTeam WebSocket exact AgentRun command integration[2m > [22mreturns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+[31m[1mError[22m: Timed out waiting for INVALID_TARGET[39m
+[36m [2m❯[22m waitFor tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:[2m19:9[22m[39m
+    [90m 17| [39m    [35mawait[39m [34mwait[39m([34m10[39m)[33m;[39m
+    [90m 18| [39m  }
+    [90m 19| [39m  [35mthrow[39m [35mnew[39m [33mError[39m([32m`Timed out waiting for [39m[36m${[39mlabel[36m}[39m[32m`[39m)[33m;[39m
+    [90m   | [39m        [31m^[39m
+    [90m 20| [39m}[33m;[39m
+    [90m 21| [39m
+[90m [2m❯[22m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:[2m150:19[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-memory/agent-memory-location-service.test.ts[2m > [22mAgentMemoryLocationService current V1 tree[2m > [22mderives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs
+[31m[1mAssertionError[22m: expected [] to deeply equal [ { address: '/writer', …(4) }, …(2) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [[39m
+[32m-   {[39m
+[32m-     "address": "/writer",[39m
+[32m-     "ancestors": [],[39m
+[32m-     "configured": true,[39m
+[32m-     "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-bxEtan/agent_teams/root-team-run/writer-run",[39m
+[32m-     "run": "writer-run",[39m
+[32m-   },[39m
+[32m-   {[39m
+[32m-     "address": "/writer",[39m
+[32m-     "ancestors": [],[39m
+[32m-     "configured": true,[39m
+[32m-     "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-bxEtan/agent_teams/root-team-run/task-writer-run",[39m
+[32m-     "run": "task-writer-run",[39m
+[32m-   },[39m
+[32m-   {[39m
+[32m-     "address": "/ReviewSquad/reviewer",[39m
+[32m-     "ancestors": [[39m
+[32m-       "review-team-run",[39m
+[32m-     ],[39m
+[32m-     "configured": false,[39m
+[32m-     "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-bxEtan/agent_teams/root-team-run/review-team-run/reviewer-run",[39m
+[32m-     "run": "reviewer-run",[39m
+[32m-   },[39m
+[32m- ][39m
+[31m+ [][39m
+
+[36m [2m❯[22m tests/unit/agent-memory/agent-memory-location-service.test.ts:[2m80:10[22m[39m
+    [90m 78| [39m      configured[33m:[39m item[33m.[39mconfiguredPlacement [33m!==[39m [35mnull[39m[33m,[39m
+    [90m 79| [39m      memoryDir[33m:[39m item[33m.[39mmemoryDir[33m,[39m
+    [90m 80| [39m    })))[33m.[39m[34mtoEqual[39m([
+    [90m   | [39m         [31m^[39m
+    [90m 81| [39m      {
+    [90m 82| [39m        address[33m:[39m [32m"/writer"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-memory/agent-memory-location-service.test.ts[2m > [22mAgentMemoryLocationService current V1 tree[2m > [22mresolves only one exact current address/run match while retaining its configured launch placement
+[31m[1mAssertionError[22m: expected null to match object { …(3) }[39m
+
+[32m- Expected:[39m 
+{
+  "agentRunId": "reviewer-run",
+  "ancestorTeamRunIds": [
+    "review-team-run",
+  ],
+  "memberAddress": "/ReviewSquad/reviewer",
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/agent-memory/agent-memory-location-service.test.ts:[2m108:5[22m[39m
+    [90m106| [39m    [35mconst[39m service [33m=[39m [35mnew[39m [33mAgentMemoryLocationService[39m({ memoryDir })[33m;[39m
+    [90m107| [39m
+    [90m108| [39m    [35mawait[39m [34mexpect[39m(service[33m.[39m[34mresolveTeamMemberLocation[39m({
+    [90m   | [39m    [31m^[39m
+    [90m109| [39m      teamRunId[33m:[39m [32m"root-team-run"[39m[33m,[39m
+    [90m110| [39m      memberAddress[33m:[39m [32m"/ReviewSquad/reviewer"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-memory/agent-memory-location-service.test.ts[2m > [22mAgentMemoryLocationService current V1 tree[2m > [22mreads only the requested root's tree when the team run ID is a stored root (REQ-005)
+[31m[1mAssertionError[22m: expected null to match object { kind: 'team_member', …(3) }[39m
+
+[32m- Expected:[39m 
+{
+  "agentRunId": "task-writer-run",
+  "kind": "team_member",
+  "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-Pv38g9/agent_teams/root-team-run/task-writer-run",
+  "rootTeamRunId": "root-team-run",
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/agent-memory/agent-memory-location-service.test.ts:[2m145:5[22m[39m
+    [90m143| [39m    })[33m;[39m
+    [90m144| [39m
+    [90m145| [39m    await expect(service.resolveTeamMemberLocation({ teamRunId: "root-…
+    [90m   | [39m    [31m^[39m
+    [90m146| [39m      [33m.[39mresolves[33m.[39m[34mtoMatchObject[39m({
+    [90m147| [39m        kind[33m:[39m [32m"team_member"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-memory/agent-memory-location-service.test.ts[2m > [22mAgentMemoryLocationService current V1 tree[2m > [22mstill resolves a nested team run ID by searching every root
+[31m[1mAssertionError[22m: expected null to match object { Object (rootTeamRunId, ancestorTeamRunIds, ...) }[39m
+
+[32m- Expected:[39m 
+{
+  "agentRunId": "reviewer-run",
+  "ancestorTeamRunIds": [
+    "review-team-run",
+  ],
+  "rootTeamRunId": "root-team-run",
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/agent-memory/agent-memory-location-service.test.ts:[2m157:5[22m[39m
+    [90m155| [39m  it("still resolves a nested team run ID by searching every root", as…
+    [90m156| [39m    [35mconst[39m service [33m=[39m [35mnew[39m [33mAgentMemoryLocationService[39m({ memoryDir })[33m;[39m
+    [90m157| [39m    await expect(service.resolveTeamMemberLocation({ teamRunId: "revie…
+    [90m   | [39m    [31m^[39m
+    [90m158| [39m      [33m.[39mresolves[33m.[39m[34mtoMatchObject[39m({
+    [90m159| [39m        rootTeamRunId[33m:[39m [32m"root-team-run"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-memory/agent-memory-location-service.test.ts[2m > [22mAgentMemoryLocationService current V1 tree[2m > [22mresolves an AgentOrg member's own run inside the requested org root
+[31m[1mAssertionError[22m: expected null to deeply equal { kind: 'agent_org_member', …(6) }[39m
+
+[32m- Expected:[39m 
+{
+  "agentRunId": "org-lead-run",
+  "ancestorTeamRunIds": [
+    "org-delivery-team",
+  ],
+  "configuredPlacement": ObjectContaining {
+    "agentRunId": "org-lead-run",
+  },
+  "kind": "agent_org_member",
+  "memberAddress": "/delivery/lead",
+  "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-lWyXmp/agent_orgs/org-root/org-delivery-team/org-lead-run",
+  "orgRunId": "org-root",
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/agent-memory/agent-memory-location-service.test.ts:[2m189:5[22m[39m
+    [90m187| [39m    [35mconst[39m service [33m=[39m [35mnew[39m [33mAgentMemoryLocationService[39m({ memoryDir })[33m;[39m
+    [90m188| [39m
+    [90m189| [39m    await expect(service.resolveAgentOrgMemberLocation({ orgRunId: "or…
+    [90m   | [39m    [31m^[39m
+    [90m190| [39m      [33m.[39mresolves[33m.[39m[34mtoEqual[39m({
+    [90m191| [39m        kind[33m:[39m [32m"agent_org_member"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-memory/team-memory-explorer-service.test.ts[2m > [22mTeamMemoryExplorerService member identity and invalid roots[2m > [22mreports a delegated task instance with its own run ID (AC-011)
+[31m[1mAssertionError[22m: expected undefined to deeply equal [ ObjectContaining{…} ][39m
+
+[32m- Expected:[39m 
+[
+  ObjectContaining {
+    "agentDefinitionId": "agent-Teacher",
+    "agentRunId": "task-writer-run",
+    "displayName": "Teacher",
+    "lastUpdatedAt": "2026-08-15T02:00:00Z",
+    "memberAddress": "/Teacher",
+    "memory": ObjectContaining {
+      "hasEpisodic": true,
+      "hasSemantic": false,
+    },
+  },
+]
+
+[31m+ Received:[39m 
+undefined
+
+[36m [2m❯[22m tests/unit/agent-memory/team-memory-explorer-service.test.ts:[2m211:44[22m[39m
+    [90m209| [39m    await touch(path.join(memoryDir, "agent_teams", "writer-root", "ta…
+    [90m210| [39m    const page = await serviceWithoutHistory().listAgentTeamRunsWithMe…
+    [90m211| [39m    expect(page.entries[0]?.memberTargets).toEqual([expect.objectConta…
+    [90m   | [39m                                           [31m^[39m
+    [90m212| [39m      memberAddress[33m:[39m [32m"/Teacher"[39m[33m,[39m
+    [90m213| [39m      displayName[33m:[39m [32m"Teacher"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-memory/team-memory-explorer-service.test.ts[2m > [22mTeamMemoryExplorerService member identity and invalid roots[2m > [22mlists the configured member and its task instance as separate runs
+[31m[1mAssertionError[22m: expected [] to deeply equal [ ObjectContaining{…} ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [[39m
+[32m-   ObjectContaining {[39m
+[32m-     "memberMemoryCount": 1,[39m
+[32m-     "teamDefinitionId": "writing-team",[39m
+[32m-     "teamRunCount": 1,[39m
+[32m-   },[39m
+[32m- ][39m
+[31m+ [][39m
+
+[36m [2m❯[22m tests/unit/agent-memory/team-memory-explorer-service.test.ts:[2m226:27[22m[39m
+    [90m224| [39m    await touch(path.join(memoryDir, "agent_teams", "writer-root", "ta…
+    [90m225| [39m    const teams = await serviceWithoutHistory().listAgentTeamsWithMemo…
+    [90m226| [39m    expect(teams.entries).toEqual([expect.objectContaining({ teamDefin…
+    [90m   | [39m                          [31m^[39m
+    [90m227| [39m    const page = await serviceWithoutHistory().listAgentTeamRunsWithMe…
+    [90m228| [39m    expect(page.entries[0]?.memberTargets.map((member) => member.agent…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-memory/team-memory-explorer-service.test.ts[2m > [22mTeamMemoryExplorerService member identity and invalid roots[2m > [22mskips a corrupt root tree with a warning while other roots still list (AC-003)
+[31m[1mAssertionError[22m: expected [] to deeply equal [ 'writing-team' ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [[39m
+[32m-   "writing-team",[39m
+[32m- ][39m
+[31m+ [][39m
+
+[36m [2m❯[22m tests/unit/agent-memory/team-memory-explorer-service.test.ts:[2m239:65[22m[39m
+    [90m237| [39m    const page = await serviceWithoutHistory().listAgentTeamsWithMemor…
+    [90m238| [39m
+    [90m239| [39m    expect(page.entries.map((entry) => entry.teamDefinitionId)).toEqua…
+    [90m   | [39m                                                                [31m^[39m
+    [90m240| [39m    expect(warn).toHaveBeenCalledWith(expect.stringContaining("Skippin…
+    [90m241| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-memory/team-memory-explorer-service.test.ts[2m > [22mTeamMemoryExplorerService member identity and invalid roots[2m > [22mskips a root folder whose tree names a different team run, while other roots still list
+[31m[1mAssertionError[22m: expected [] to deeply equal [ 'writing-team' ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [[39m
+[32m-   "writing-team",[39m
+[32m- ][39m
+[31m+ [][39m
+
+[36m [2m❯[22m tests/unit/agent-memory/team-memory-explorer-service.test.ts:[2m257:65[22m[39m
+    [90m255| [39m    const page = await serviceWithoutHistory().listAgentTeamsWithMemor…
+    [90m256| [39m
+    [90m257| [39m    expect(page.entries.map((entry) => entry.teamDefinitionId)).toEqua…
+    [90m   | [39m                                                                [31m^[39m
+    [90m258| [39m    expect(warn).toHaveBeenCalledWith(expect.stringContaining("Skippin…
+    [90m259| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/agent-api-status-projectors.test.ts[2m > [22magent API status and runtime lifecycle projectors[2m > [22mserializes status without the removed interrupt capability
+[31m[1mAssertionError[22m: expected { status: 'running', …(2) } to deeply equal { Object (status, agent_id) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "agent_id": "run-1",[22m
+[31m+   "recoverableBlock": null,[39m
+[2m    "status": "running",[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/agent-execution/agent-api-status-projectors.test.ts:[2m40:21[22m[39m
+    [90m 38| [39m    })[33m;[39m
+    [90m 39| [39m
+    [90m 40| [39m    [34mexpect[39m(payload)[33m.[39m[34mtoEqual[39m({ status[33m:[39m [32m"running"[39m[33m,[39m agent_id[33m:[39m [32m"run-1"[39m })[33m;[39m
+    [90m   | [39m                    [31m^[39m
+    [90m 41| [39m    [34mexpect[39m(payload)[33m.[39mnot[33m.[39m[34mtoHaveProperty[39m([32m"can_interrupt"[39m)[33m;[39m
+    [90m 42| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/agent-api-status-projectors.test.ts[2m > [22magent API status and runtime lifecycle projectors[2m > [22mprojects identified and anonymous Autobyteus turns as current running work
+[31m[1mAssertionError[22m: expected { availability: 'active', …(3) } to deeply equal { availability: 'active', …(2) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -3,6 +3,7 @@[39m
+[2m    "currentTurn": {[22m
+[2m      "kind": "IDENTIFIED",[22m
+[2m      "turnId": "turn-1",[22m
+[2m    },[22m
+[2m    "phase": "running",[22m
+[31m+   "recoverableBlock": null,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/agent-execution/agent-api-status-projectors.test.ts:[2m49:9[22m[39m
+    [90m 47| [39m      context[33m:[39m { state[33m:[39m { activeTurn[33m:[39m { turnId[33m:[39m [32m"turn-1"[39m } } }[33m,[39m
+    [90m 48| [39m      isActive[33m:[39m [35mtrue[39m[33m,[39m
+    [90m 49| [39m    }))[33m.[39m[34mtoEqual[39m({
+    [90m   | [39m        [31m^[39m
+    [90m 50| [39m      availability[33m:[39m [32m"active"[39m[33m,[39m
+    [90m 51| [39m      phase[33m:[39m [32m"running"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/agent-run-provisioning-service.test.ts[2m > [22mAgentRunProvisioningService[2m > [22mdoes not persist activation failure state and permits retry from prepared facts
+[31m[1mTypeError[22m: service.activatePreparedRun is not a function[39m
+[36m [2m❯[22m tests/unit/agent-execution/agent-run-provisioning-service.test.ts:[2m166:26[22m[39m
+    [90m164| [39m    [35mconst[39m service [33m=[39m [34mbuildService[39m()[33m;[39m
+    [90m165| [39m
+    [90m166| [39m    await expect(service.activatePreparedRun(runId)).rejects.toThrow("…
+    [90m   | [39m                         [31m^[39m
+    [90m167| [39m    expect(historyCatalogService.recordRunStarted).not.toHaveBeenCalle…
+    [90m168| [39m    [34mexpect[39m(metadataByRunId[33m.[39m[35mget[39m(runId))[33m.[39m[34mtoMatchObject[39m({
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-packages/package-root-summary.test.ts[2m > [22mpackage-root-summary[2m > [22mvalidates package roots and counts shared agents, team-local agents, and teams
+[31m[1mAssertionError[22m: expected { sharedAgentCount: 1, …(3) } to deeply equal { sharedAgentCount: 1, …(2) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "agentTeamCount": 1,[22m
+[31m+   "applicationCount": 0,[39m
+[2m    "sharedAgentCount": 1,[22m
+[2m    "teamLocalAgentCount": 1,[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/agent-packages/package-root-summary.test.ts:[2m59:43[22m[39m
+    [90m 57| [39m
+    [90m 58| [39m    [34mexpect[39m([34mvalidatePackageRoot[39m(rootPath))[33m.[39m[34mtoBe[39m(rootPath)[33m;[39m
+    [90m 59| [39m    [34mexpect[39m([34mbuildPackageSummary[39m(rootPath))[33m.[39m[34mtoEqual[39m({
+    [90m   | [39m                                          [31m^[39m
+    [90m 60| [39m      sharedAgentCount[33m:[39m [34m1[39m[33m,[39m
+    [90m 61| [39m      teamLocalAgentCount[33m:[39m [34m1[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts[2m > [22mapplication execution-event journal recovery[2m > [22mlets lifecycle restart recovery reach ready and dispatch an existing pending event
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'initializeFromBundleSnapshot')[39m
+[36m [2m❯[22m ApplicationPlatformLifecycle.runPreparation src/application-platform/runtime/application-platform-lifecycle.ts:[2m48:10[22m[39m
+    [90m 46| [39m      [35mthis[39m[33m.[39m[34massertSelectedCatalogIsValid[39m(snapshot)[33m;[39m
+    [90m 47| [39m      [35mthis[39m[33m.[39mdependencies[33m.[39mapplicationAgentToolCatalog
+    [90m 48| [39m        [33m.[39m[34minitializeFromBundleSnapshot[39m(snapshot)[33m;[39m
+    [90m   | [39m         [31m^[39m
+    [90m 49| [39m      [35mthis[39m[33m.[39mcatalogSnapshot [33m=[39m snapshot[33m;[39m
+    [90m 50| [39m      [35mthis[39m[33m.[39mstate [33m=[39m [32m"catalog_ready"[39m[33m;[39m
+[90m [2m❯[22m tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts:[2m298:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts[2m > [22mapplication execution-event journal recovery[2m > [22mlets reload/reentry inspect and dispatch existing journal state before activation
+[31m[1mTypeError[22m: service.reloadAndReenter is not a function[39m
+[36m [2m❯[22m tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts:[2m341:26[22m[39m
+    [90m339| [39m    })[33m;[39m
+    [90m340| [39m
+    [90m341| [39m    await expect(service.reloadAndReenter(APPLICATION_ID)).resolves.to…
+    [90m   | [39m                         [31m^[39m
+    [90m342| [39m      state[33m:[39m [32m"ACTIVE"[39m[33m,[39m
+    [90m343| [39m      detail[33m:[39m [35mnull[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts[2m > [22mbuildApplicationExecutionScopeKernel construction transaction[2m > [22munwinds the exact owned authority at K6
+[31m[1mAssertionError[22m: expected [Function] to throw error including 'K6 Team graph failed' but got 'AgentRunManager requires all executio…'[39m
+
+Expected: [32m"[7mK6 Team graph [27mfail[7med[27m"[39m
+Received: [31m"[7mAgentRunManager requires all execution-[27mfa[7mm[27mil[7my dependencies.[27m"[39m
+
+[36m [2m❯[22m tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts:[2m212:76[22m[39m
+    [90m210| [39m    [35mconst[39m harness [33m=[39m [34mcreateHarness[39m()[33m;[39m
+    [90m211| [39m    cutState[33m.[39mcut [33m=[39m cut[33m;[39m
+    [90m212| [39m    expect(() => buildApplicationExecutionScopeKernel(harness.buildInp…
+    [90m   | [39m                                                                           [31m^[39m
+    [90m213| [39m    [35mif[39m (cut [33m===[39m [32m"K2"[39m) {
+    [90m214| [39m      [34mexpect[39m(harness[33m.[39mcomplete)[33m.[39mnot[33m.[39m[34mtoHaveBeenCalled[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts[2m > [22mbuildApplicationExecutionScopeKernel construction transaction[2m > [22munwinds the exact owned authority at K7
+[31m[1mAssertionError[22m: expected [Function] to throw error including 'K7 kernel finalization failed' but got 'AgentRunManager requires all executio…'[39m
+
+Expected: [32m"[7mK7 kernel finaliza[27mtion[7m [27mfail[7med[27m"[39m
+Received: [31m"[7mAgentRunManager requires all execu[27mtion[7m-[27mfa[7mm[27mil[7my dependencies.[27m"[39m
+
+[36m [2m❯[22m tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts:[2m212:76[22m[39m
+    [90m210| [39m    [35mconst[39m harness [33m=[39m [34mcreateHarness[39m()[33m;[39m
+    [90m211| [39m    cutState[33m.[39mcut [33m=[39m cut[33m;[39m
+    [90m212| [39m    expect(() => buildApplicationExecutionScopeKernel(harness.buildInp…
+    [90m   | [39m                                                                           [31m^[39m
+    [90m213| [39m    [35mif[39m (cut [33m===[39m [32m"K2"[39m) {
+    [90m214| [39m      [34mexpect[39m(harness[33m.[39mcomplete)[33m.[39mnot[33m.[39m[34mtoHaveBeenCalled[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts[2m > [22mbuildApplicationExecutionScopeKernel construction transaction[2m > [22mtransfers one complete frozen K8 kernel with fixed idempotent construction abort
+[31m[1mError[22m: AgentRunManager requires all execution-family dependencies.[39m
+[36m [2m❯[22m new AgentRunManager src/agent-execution/services/agent-run-manager.ts:[2m103:13[22m[39m
+    [90m101| [39m    ][33m;[39m
+    [90m102| [39m    [35mif[39m (required[33m.[39m[34msome[39m((value) [33m=>[39m [33m![39mvalue)) {
+    [90m103| [39m      throw new Error("AgentRunManager requires all execution-family d…
+    [90m   | [39m            [31m^[39m
+    [90m104| [39m    }
+    [90m105| [39m    if (typeof options.providerInputNormalizer.normalizeForProvider !=…
+[90m [2m❯[22m new AgentRunManager tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts:[2m30:11[22m[39m
+[90m [2m❯[22m Module.buildApplicationExecutionScopeKernel src/application-platform/execution/application-execution-scope-kernel-builder.ts:[2m127:29[22m[39m
+[90m [2m❯[22m tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts:[2m250:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope.test.ts[2m > [22mApplicationExecutionScope[2m > [22mowns one complete graph-local kernel and freezes every outward capability
+[31m[1mError[22m: AgentRunManager requires all execution-family dependencies.[39m
+[36m [2m❯[22m new AgentRunManager src/agent-execution/services/agent-run-manager.ts:[2m103:13[22m[39m
+    [90m101| [39m    ][33m;[39m
+    [90m102| [39m    [35mif[39m (required[33m.[39m[34msome[39m((value) [33m=>[39m [33m![39mvalue)) {
+    [90m103| [39m      throw new Error("AgentRunManager requires all execution-family d…
+    [90m   | [39m            [31m^[39m
+    [90m104| [39m    }
+    [90m105| [39m    if (typeof options.providerInputNormalizer.normalizeForProvider !=…
+[90m [2m❯[22m buildApplicationExecutionScopeKernel src/application-platform/execution/application-execution-scope-kernel-builder.ts:[2m127:29[22m[39m
+[90m [2m❯[22m Function.create src/application-platform/execution/application-execution-scope.ts:[2m107:20[22m[39m
+[90m [2m❯[22m createScope tests/unit/application-platform/application-execution-scope.test.ts:[2m64:43[22m[39m
+[90m [2m❯[22m tests/unit/application-platform/application-execution-scope.test.ts:[2m113:9[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope.test.ts[2m > [22mApplicationExecutionScope[2m > [22mprojects direct configured Team Agents, excludes task nodes, and deep-freezes
+[31m[1mError[22m: AgentRunManager requires all execution-family dependencies.[39m
+[36m [2m❯[22m new AgentRunManager src/agent-execution/services/agent-run-manager.ts:[2m103:13[22m[39m
+    [90m101| [39m    ][33m;[39m
+    [90m102| [39m    [35mif[39m (required[33m.[39m[34msome[39m((value) [33m=>[39m [33m![39mvalue)) {
+    [90m103| [39m      throw new Error("AgentRunManager requires all execution-family d…
+    [90m   | [39m            [31m^[39m
+    [90m104| [39m    }
+    [90m105| [39m    if (typeof options.providerInputNormalizer.normalizeForProvider !=…
+[90m [2m❯[22m buildApplicationExecutionScopeKernel src/application-platform/execution/application-execution-scope-kernel-builder.ts:[2m127:29[22m[39m
+[90m [2m❯[22m Function.create src/application-platform/execution/application-execution-scope.ts:[2m107:20[22m[39m
+[90m [2m❯[22m createScope tests/unit/application-platform/application-execution-scope.test.ts:[2m64:43[22m[39m
+[90m [2m❯[22m tests/unit/application-platform/application-execution-scope.test.ts:[2m154:31[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope.test.ts[2m > [22mApplicationExecutionScope[2m > [22mprojects Agent launch identity without leaking the service result
+[31m[1mError[22m: AgentRunManager requires all execution-family dependencies.[39m
+[36m [2m❯[22m new AgentRunManager src/agent-execution/services/agent-run-manager.ts:[2m103:13[22m[39m
+    [90m101| [39m    ][33m;[39m
+    [90m102| [39m    [35mif[39m (required[33m.[39m[34msome[39m((value) [33m=>[39m [33m![39mvalue)) {
+    [90m103| [39m      throw new Error("AgentRunManager requires all execution-family d…
+    [90m   | [39m            [31m^[39m
+    [90m104| [39m    }
+    [90m105| [39m    if (typeof options.providerInputNormalizer.normalizeForProvider !=…
+[90m [2m❯[22m buildApplicationExecutionScopeKernel src/application-platform/execution/application-execution-scope-kernel-builder.ts:[2m127:29[22m[39m
+[90m [2m❯[22m Function.create src/application-platform/execution/application-execution-scope.ts:[2m107:20[22m[39m
+[90m [2m❯[22m createScope tests/unit/application-platform/application-execution-scope.test.ts:[2m64:43[22m[39m
+[90m [2m❯[22m tests/unit/application-platform/application-execution-scope.test.ts:[2m189:31[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope.test.ts[2m > [22mApplicationExecutionScope[2m > [22mauthorizes configured and dynamic application Team producers through the live root topology
+[31m[1mError[22m: AgentRunManager requires all execution-family dependencies.[39m
+[36m [2m❯[22m new AgentRunManager src/agent-execution/services/agent-run-manager.ts:[2m103:13[22m[39m
+    [90m101| [39m    ][33m;[39m
+    [90m102| [39m    [35mif[39m (required[33m.[39m[34msome[39m((value) [33m=>[39m [33m![39mvalue)) {
+    [90m103| [39m      throw new Error("AgentRunManager requires all execution-family d…
+    [90m   | [39m            [31m^[39m
+    [90m104| [39m    }
+    [90m105| [39m    if (typeof options.providerInputNormalizer.normalizeForProvider !=…
+[90m [2m❯[22m buildApplicationExecutionScopeKernel src/application-platform/execution/application-execution-scope-kernel-builder.ts:[2m127:29[22m[39m
+[90m [2m❯[22m Function.create src/application-platform/execution/application-execution-scope.ts:[2m107:20[22m[39m
+[90m [2m❯[22m createScope tests/unit/application-platform/application-execution-scope.test.ts:[2m64:43[22m[39m
+[90m [2m❯[22m tests/unit/application-platform/application-execution-scope.test.ts:[2m200:31[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope.test.ts[2m > [22mApplicationExecutionScope[2m > [22mmaps restore-aware Agent and Team input without changing target or errors
+[31m[1mError[22m: AgentRunManager requires all execution-family dependencies.[39m
+[36m [2m❯[22m new AgentRunManager src/agent-execution/services/agent-run-manager.ts:[2m103:13[22m[39m
+    [90m101| [39m    ][33m;[39m
+    [90m102| [39m    [35mif[39m (required[33m.[39m[34msome[39m((value) [33m=>[39m [33m![39mvalue)) {
+    [90m103| [39m      throw new Error("AgentRunManager requires all execution-family d…
+    [90m   | [39m            [31m^[39m
+    [90m104| [39m    }
+    [90m105| [39m    if (typeof options.providerInputNormalizer.normalizeForProvider !=…
+[90m [2m❯[22m buildApplicationExecutionScopeKernel src/application-platform/execution/application-execution-scope-kernel-builder.ts:[2m127:29[22m[39m
+[90m [2m❯[22m Function.create src/application-platform/execution/application-execution-scope.ts:[2m107:20[22m[39m
+[90m [2m❯[22m createScope tests/unit/application-platform/application-execution-scope.test.ts:[2m64:43[22m[39m
+[90m [2m❯[22m tests/unit/application-platform/application-execution-scope.test.ts:[2m229:31[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope.test.ts[2m > [22mApplicationExecutionScope[2m > [22mquiesces issue admission and closes run graph before authority exactly once
+[31m[1mError[22m: AgentRunManager requires all execution-family dependencies.[39m
+[36m [2m❯[22m new AgentRunManager src/agent-execution/services/agent-run-manager.ts:[2m103:13[22m[39m
+    [90m101| [39m    ][33m;[39m
+    [90m102| [39m    [35mif[39m (required[33m.[39m[34msome[39m((value) [33m=>[39m [33m![39mvalue)) {
+    [90m103| [39m      throw new Error("AgentRunManager requires all execution-family d…
+    [90m   | [39m            [31m^[39m
+    [90m104| [39m    }
+    [90m105| [39m    if (typeof options.providerInputNormalizer.normalizeForProvider !=…
+[90m [2m❯[22m buildApplicationExecutionScopeKernel src/application-platform/execution/application-execution-scope-kernel-builder.ts:[2m127:29[22m[39m
+[90m [2m❯[22m Function.create src/application-platform/execution/application-execution-scope.ts:[2m107:20[22m[39m
+[90m [2m❯[22m createScope tests/unit/application-platform/application-execution-scope.test.ts:[2m64:43[22m[39m
+[90m [2m❯[22m tests/unit/application-platform/application-execution-scope.test.ts:[2m272:65[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope.test.ts[2m > [22mApplicationExecutionScope[2m > [22mcontinues authority close after shutdown failure and aggregates both failures
+[31m[1mError[22m: AgentRunManager requires all execution-family dependencies.[39m
+[36m [2m❯[22m new AgentRunManager src/agent-execution/services/agent-run-manager.ts:[2m103:13[22m[39m
+    [90m101| [39m    ][33m;[39m
+    [90m102| [39m    [35mif[39m (required[33m.[39m[34msome[39m((value) [33m=>[39m [33m![39mvalue)) {
+    [90m103| [39m      throw new Error("AgentRunManager requires all execution-family d…
+    [90m   | [39m            [31m^[39m
+    [90m104| [39m    }
+    [90m105| [39m    if (typeof options.providerInputNormalizer.normalizeForProvider !=…
+[90m [2m❯[22m buildApplicationExecutionScopeKernel src/application-platform/execution/application-execution-scope-kernel-builder.ts:[2m127:29[22m[39m
+[90m [2m❯[22m Function.create src/application-platform/execution/application-execution-scope.ts:[2m107:20[22m[39m
+[90m [2m❯[22m createScope tests/unit/application-platform/application-execution-scope.test.ts:[2m64:43[22m[39m
+[90m [2m❯[22m tests/unit/application-platform/application-execution-scope.test.ts:[2m293:47[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-execution-scope.test.ts[2m > [22mApplicationExecutionScope[2m > [22mdelegates construction abort exactly once after kernel transfer
+[31m[1mError[22m: AgentRunManager requires all execution-family dependencies.[39m
+[36m [2m❯[22m new AgentRunManager src/agent-execution/services/agent-run-manager.ts:[2m103:13[22m[39m
+    [90m101| [39m    ][33m;[39m
+    [90m102| [39m    [35mif[39m (required[33m.[39m[34msome[39m((value) [33m=>[39m [33m![39mvalue)) {
+    [90m103| [39m      throw new Error("AgentRunManager requires all execution-family d…
+    [90m   | [39m            [31m^[39m
+    [90m104| [39m    }
+    [90m105| [39m    if (typeof options.providerInputNormalizer.normalizeForProvider !=…
+[90m [2m❯[22m buildApplicationExecutionScopeKernel src/application-platform/execution/application-execution-scope-kernel-builder.ts:[2m127:29[22m[39m
+[90m [2m❯[22m Function.create src/application-platform/execution/application-execution-scope.ts:[2m107:20[22m[39m
+[90m [2m❯[22m createScope tests/unit/application-platform/application-execution-scope.test.ts:[2m64:43[22m[39m
+[90m [2m❯[22m tests/unit/application-platform/application-execution-scope.test.ts:[2m307:46[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-platform-lifecycle.test.ts[2m > [22mApplicationPlatformLifecycle[2m > [22mmaterializes a fresh selected application runtime cwd before definition/provider readiness
+[31m[1mAssertionError[22m: expected { configured: false, …(1) } to deeply equal { configured: true, reason: null }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "configured": true,[39m
+[32m-   "reason": null,[39m
+[31m+   "configured": false,[39m
+[31m+   "reason": "Codex authentication is unavailable: this.dependencies.codexClientManager.beginAcquire is not a function",[39m
+[2m  }[22m
+
+[36m [2m❯[22m Object.<anonymous> tests/unit/application-platform/application-platform-lifecycle.test.ts:[2m163:9[22m[39m
+    [90m161| [39m          workspaceRootPath[33m:[39m layout[33m.[39mruntimeDir[33m,[39m
+    [90m162| [39m        })[33m;[39m
+    [90m163| [39m        [35mawait[39m [34mexpect[39m(credentialReadiness[33m.[39m[34mgetReadiness[39m(authority))
+    [90m   | [39m        [31m^[39m
+    [90m164| [39m          [33m.[39mresolves[33m.[39m[34mtoEqual[39m({ configured[33m:[39m [35mtrue[39m[33m,[39m reason[33m:[39m [35mnull[39m })[33m;[39m
+    [90m165| [39m        await expect(fs.access(layout.platformDatabasePath)).rejects.t…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/application-platform/application-platform-runtime-isolation.test.ts[2m > [22mapplication platform runtime isolation[2m > [22mbuilds isolated services without starting an agent or team run
+[31m[1mError[22m: The property "prepareNewAgentRun" is not defined on the object.[39m
+[36m [2m❯[22m tests/unit/application-platform/application-platform-runtime-isolation.test.ts:[2m39:35[22m[39m
+    [90m 37| [39m
+    [90m 38| [39m  it("builds isolated services without starting an agent or team run",…
+    [90m 39| [39m    [35mconst[39m prepareNewAgentRun [33m=[39m vi[33m.[39m[34mspyOn[39m(
+    [90m   | [39m                                  [31m^[39m
+    [90m 40| [39m      [33mAgentRunManager[39m[33m.[39mprototype[33m,[39m
+    [90m 41| [39m      [32m"prepareNewAgentRun"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/llm-management/gemini-configuration-service.test.ts[2m > [22mGeminiConfigurationService explicit mode commands[2m > [22mstarts with no selected mode and no implicit priority
+[31m[1mAssertionError[22m: expected { activeMode: 'VERTEX_EXPRESS', …(6) } to deeply equal { activeMode: null, …(6) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,7 +1,7 @@[39m
+[2m  {[22m
+[32m-   "activeMode": null,[39m
+[31m+   "activeMode": "VERTEX_EXPRESS",[39m
+[2m    "aiStudioStatus": "MISSING",[22m
+[2m    "location": null,[22m
+[2m    "project": null,[22m
+[2m    "selection": {[22m
+[2m      "kind": "unconfigured",[22m
+
+[36m [2m❯[22m tests/unit/llm-management/gemini-configuration-service.test.ts:[2m61:44[22m[39m
+    [90m 59| [39m
+    [90m 60| [39m  it('starts with no selected mode and no implicit priority', async ()…
+    [90m 61| [39m    [34mexpect[39m([35mawait[39m service[33m.[39m[34mgetSetupStatus[39m())[33m.[39m[34mtoEqual[39m({
+    [90m   | [39m                                           [31m^[39m
+    [90m 62| [39m      activeMode[33m:[39m [35mnull[39m[33m,[39m
+    [90m 63| [39m      selection[33m:[39m { kind[33m:[39m [32m'unconfigured'[39m }[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/config/streaming-content-flush-interval-setting.test.ts[2m > [22mstreaming content flush interval setting[2m > [22mfalls back for invalid runtime input undefined
+[31m[1mAssertionError[22m: expected 300 to be 500 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 500[39m
+[31m+ 300[39m
+
+[36m [2m❯[22m tests/unit/config/streaming-content-flush-interval-setting.test.ts:[2m23:59[22m[39m
+    [90m 21| [39m    [32m"falls back for invalid runtime input %s"[39m[33m,[39m
+    [90m 22| [39m    (raw) [33m=>[39m {
+    [90m 23| [39m      [34mexpect[39m([34mresolveStreamingContentFlushIntervalMs[39m(raw))[33m.[39m[34mtoBe[39m(
+    [90m   | [39m                                                          [31m^[39m
+    [90m 24| [39m        [33mDEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS[39m[33m,[39m
+    [90m 25| [39m      )[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/file-explorer/file-explorer.test.ts[2m > [22mFileExplorer[2m > [22mbuilds the workspace directory tree
+[41m[1m FAIL [22m[49m tests/unit/file-explorer/file-explorer.test.ts[2m > [22mFileExplorer[2m > [22mreads file content within size limits
+[41m[1m FAIL [22m[49m tests/unit/file-explorer/file-explorer.test.ts[2m > [22mFileExplorer[2m > [22mthrows when reading a file that exceeds max size
+[41m[1m FAIL [22m[49m tests/unit/file-explorer/file-explorer.test.ts[2m > [22mFileExplorer[2m > [22mreturns the root tree node
+[41m[1m FAIL [22m[49m tests/unit/file-explorer/file-explorer.test.ts[2m > [22mFileExplorer[2m > [22mserializes the tree to JSON
+[41m[1m FAIL [22m[49m tests/unit/file-explorer/file-explorer.test.ts[2m > [22mFileExplorer[2m > [22mrejects reading files outside the workspace
+[41m[1m FAIL [22m[49m tests/unit/file-explorer/file-explorer.test.ts[2m > [22mFileExplorer[2m > [22mproduces shallow JSON with limited depth
+[31m[1mTypeError[22m: __vite_ssr_import_4__.FileExplorer is not a constructor[39m
+[36m [2m❯[22m tests/unit/file-explorer/file-explorer.test.ts:[2m16:16[22m[39m
+    [90m 14| [39m  [34mbeforeEach[39m([35masync[39m () [33m=>[39m {
+    [90m 15| [39m    tempDir [33m=[39m [34mcreateTempDir[39m()[33m;[39m
+    [90m 16| [39m    explorer [33m=[39m [35mnew[39m [33mFileExplorer[39m(tempDir)[33m;[39m
+    [90m   | [39m               [31m^[39m
+    [90m 17| [39m    [35mawait[39m explorer[33m.[39m[34mbuildWorkspaceDirectoryTree[39m()[33m;[39m
+    [90m 18| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/logging/prisma-query-log-policy.test.ts[2m > [22mrepository_prisma installed package policy[2m > [22minstalls exact unpatched 1.0.9 entrypoints without dotenv acquisition code
+[31m[1mAssertionError[22m: expected '1.0.10' to be '1.0.9' // Object.is equality[39m
+
+Expected: [32m"1.0.[7m9[27m"[39m
+Received: [31m"1.0.[7m10[27m"[39m
+
+[36m [2m❯[22m tests/unit/logging/prisma-query-log-policy.test.ts:[2m200:30[22m[39m
+    [90m198| [39m
+    [90m199| [39m  it('installs exact unpatched 1.0.9 entrypoints without dotenv acquis…
+    [90m200| [39m    [34mexpect[39m(manifest[33m.[39mversion)[33m.[39m[34mtoBe[39m([32m'1.0.9'[39m)[33m;[39m
+    [90m   | [39m                             [31m^[39m
+    [90m201| [39m    [34mexpect[39m(manifest[33m.[39mdependencies)[33m.[39mnot[33m.[39m[34mtoHaveProperty[39m([32m'dotenv'[39m)[33m;[39m
+    [90m202| [39m    [35mfor[39m ([35mconst[39m entrypoint [35mof[39m [33mObject[39m[33m.[39m[34mvalues[39m(entrypoints)) {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/logging/prisma-query-log-policy.test.ts[2m > [22mrepository_prisma installed package policy[2m > [22mesm import acquires no Prisma client or datasource
+[31m[1mError[22m: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs import-only
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+[39m
+[90m [2m❯[22m ../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:[2m57:20[22m[39m
+[36m [2m❯[22m runProbe tests/unit/logging/prisma-query-log-policy.test.ts:[2m185:20[22m[39m
+    [90m183| [39m      ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    [90m184| [39m      [33m:[39m [[32m'--require'[39m[33m,[39m cjsPreloadPath[33m,[39m cjsProbePath][33m;[39m
+    [90m185| [39m    [35mconst[39m output [33m=[39m [34mexecFileSync[39m(
+    [90m   | [39m                   [31m^[39m
+    [90m186| [39m      process[33m.[39mexecPath[33m,[39m
+    [90m187| [39m      [[33m...[39mformatArguments[33m,[39m entrypoints[format][33m,[39m scenario][33m,[39m
+[90m [2m❯[22m tests/unit/logging/prisma-query-log-policy.test.ts:[2m211:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/logging/prisma-query-log-policy.test.ts[2m > [22mrepository_prisma installed package policy[2m > [22mesm defaults to non-query log kinds
+[31m[1mError[22m: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs default
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+[39m
+[90m [2m❯[22m ../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:[2m57:20[22m[39m
+[36m [2m❯[22m runProbe tests/unit/logging/prisma-query-log-policy.test.ts:[2m185:20[22m[39m
+    [90m183| [39m      ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    [90m184| [39m      [33m:[39m [[32m'--require'[39m[33m,[39m cjsPreloadPath[33m,[39m cjsProbePath][33m;[39m
+    [90m185| [39m    [35mconst[39m output [33m=[39m [34mexecFileSync[39m(
+    [90m   | [39m                   [31m^[39m
+    [90m186| [39m      process[33m.[39mexecPath[33m,[39m
+    [90m187| [39m      [[33m...[39mformatArguments[33m,[39m entrypoints[format][33m,[39m scenario][33m,[39m
+[90m [2m❯[22m tests/unit/logging/prisma-query-log-policy.test.ts:[2m222:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/logging/prisma-query-log-policy.test.ts[2m > [22mrepository_prisma installed package policy[2m > [22mesm honors explicit environment query-log policy only
+[31m[1mError[22m: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs environment
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+[39m
+[90m [2m❯[22m ../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:[2m57:20[22m[39m
+[36m [2m❯[22m runProbe tests/unit/logging/prisma-query-log-policy.test.ts:[2m185:20[22m[39m
+    [90m183| [39m      ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    [90m184| [39m      [33m:[39m [[32m'--require'[39m[33m,[39m cjsPreloadPath[33m,[39m cjsProbePath][33m;[39m
+    [90m185| [39m    [35mconst[39m output [33m=[39m [34mexecFileSync[39m(
+    [90m   | [39m                   [31m^[39m
+    [90m186| [39m      process[33m.[39mexecPath[33m,[39m
+    [90m187| [39m      [[33m...[39mformatArguments[33m,[39m entrypoints[format][33m,[39m scenario][33m,[39m
+[90m [2m❯[22m tests/unit/logging/prisma-query-log-policy.test.ts:[2m232:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/logging/prisma-query-log-policy.test.ts[2m > [22mrepository_prisma installed package policy[2m > [22mesm honors typed policy and typed-false precedence
+[31m[1mError[22m: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs typed-true
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+[39m
+[90m [2m❯[22m ../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:[2m57:20[22m[39m
+[36m [2m❯[22m runProbe tests/unit/logging/prisma-query-log-policy.test.ts:[2m185:20[22m[39m
+    [90m183| [39m      ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    [90m184| [39m      [33m:[39m [[32m'--require'[39m[33m,[39m cjsPreloadPath[33m,[39m cjsProbePath][33m;[39m
+    [90m185| [39m    [35mconst[39m output [33m=[39m [34mexecFileSync[39m(
+    [90m   | [39m                   [31m^[39m
+    [90m186| [39m      process[33m.[39mexecPath[33m,[39m
+    [90m187| [39m      [[33m...[39mformatArguments[33m,[39m entrypoints[format][33m,[39m scenario][33m,[39m
+[90m [2m❯[22m tests/unit/logging/prisma-query-log-policy.test.ts:[2m247:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/logging/prisma-query-log-policy.test.ts[2m > [22mrepository_prisma installed package policy[2m > [22mesm rejects a conflicting post-bind logging policy
+[31m[1mError[22m: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs conflict
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:57:20
+
+Node.js v22.23.1
+[39m
+[90m [2m❯[22m ../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-GLEw4k/probe.mjs:[2m57:20[22m[39m
+[36m [2m❯[22m runProbe tests/unit/logging/prisma-query-log-policy.test.ts:[2m185:20[22m[39m
+    [90m183| [39m      ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    [90m184| [39m      [33m:[39m [[32m'--require'[39m[33m,[39m cjsPreloadPath[33m,[39m cjsProbePath][33m;[39m
+    [90m185| [39m    [35mconst[39m output [33m=[39m [34mexecFileSync[39m(
+    [90m   | [39m                   [31m^[39m
+    [90m186| [39m      process[33m.[39mexecPath[33m,[39m
+    [90m187| [39m      [[33m...[39mformatArguments[33m,[39m entrypoints[format][33m,[39m scenario][33m,[39m
+[90m [2m❯[22m tests/unit/logging/prisma-query-log-policy.test.ts:[2m262:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/services/media-storage-service.test.ts[2m > [22mMediaStorageService[2m > [22mstores media from a remote URL
+[31m[1mAssertionError[22m: expected '/rest/files/images/downloaded.png' to be 'http://unittest.server:8000/rest/file…' // Object.is equality[39m
+
+Expected: [32m"[7mhttp://unittest.server:8000[27m/rest/files/images/downloaded.png"[39m
+Received: [31m"/rest/files/images/downloaded.png"[39m
+
+[36m [2m❯[22m tests/unit/services/media-storage-service.test.ts:[2m50:17[22m[39m
+    [90m 48| [39m      destinationDir[33m,[39m
+    [90m 49| [39m    )[33m;[39m
+    [90m 50| [39m    expect(url).toBe("http://unittest.server:8000/rest/files/images/do…
+    [90m   | [39m                [31m^[39m
+    [90m 51| [39m  })[33m;[39m
+    [90m 52| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/workspaces/workspace-manager-skill-integration.test.ts[2m > [22mWorkspaceManager skill integration[2m > [22mcreates and initializes a SkillWorkspace for skill_ws_ IDs
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called 1 times, but got 0 times[39m
+[36m [2m❯[22m tests/unit/workspaces/workspace-manager-skill-integration.test.ts:[2m60:38[22m[39m
+    [90m 58| [39m    [34mexpect[39m(result)[33m.[39m[34mtoBe[39m(mockWorkspace)[33m;[39m
+    [90m 59| [39m    [34mexpect[39m(createSpy)[33m.[39m[34mtoHaveBeenCalledWith[39m(skillName)[33m;[39m
+    [90m 60| [39m    [34mexpect[39m(mockWorkspace[33m.[39minitialize)[33m.[39m[34mtoHaveBeenCalledTimes[39m([34m1[39m)[33m;[39m
+    [90m   | [39m                                     [31m^[39m
+    [90m 61| [39m
+    [90m 62| [39m    const cached = (manager as unknown as { activeWorkspaces: Map<stri…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/workspaces/workspace-manager.test.ts[2m > [22mWorkspaceManager[2m > [22mremoves a registered workspace entry without deleting workspace files
+[31m[1mError[22m: The process AgentRunManager is not initialized.[39m
+[36m [2m❯[22m Function.getInstance src/agent-execution/services/agent-run-manager.ts:[2m73:13[22m[39m
+    [90m 71| [39m  [35mstatic[39m [34mgetInstance[39m()[33m:[39m [33mAgentRunManager[39m {
+    [90m 72| [39m    [35mif[39m ([33m![39m[33mAgentRunManager[39m[33m.[39minstance) {
+    [90m 73| [39m      throw new Error("The process AgentRunManager is not initialized.…
+    [90m   | [39m            [31m^[39m
+    [90m 74| [39m    }
+    [90m 75| [39m    [35mreturn[39m [33mAgentRunManager[39m[33m.[39minstance[33m;[39m
+[90m [2m❯[22m WorkspaceRemovalGuard.checkWorkspaceCanBeRemoved src/workspaces/workspace-removal-guard.ts:[2m35:69[22m[39m
+[90m [2m❯[22m WorkspaceManager.removeRegisteredWorkspace src/workspaces/workspace-manager.ts:[2m213:58[22m[39m
+[90m [2m❯[22m tests/unit/workspaces/workspace-manager.test.ts:[2m193:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/studio-application-api-services.test.ts[2m > [22mStudio application API service registration[2m > [22mpublishes one exact service set and releases it idempotently
+[31m[1mError[22m: Complete Studio application API services are required.[39m
+[36m [2m❯[22m configureStudioApplicationApiServices src/api/graphql/studio-application-api-services.ts:[2m51:11[22m[39m
+    [90m 49| [39m    [33m||[39m [33m![39mservices[33m.[39mpackageCommands
+    [90m 50| [39m  ) {
+    [90m 51| [39m    throw new Error("Complete Studio application API services are requ…
+    [90m   | [39m          [31m^[39m
+    [90m 52| [39m  }
+    [90m 53| [39m  [35mif[39m (configuredServices) {
+[90m [2m❯[22m tests/unit/api/graphql/studio-application-api-services.test.ts:[2m39:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/published-artifact-projection-service.test.ts[2m > [22mPublishedArtifactProjectionService[2m > [22mreads historical published-artifact summaries and revision text from durable projection storage
+[31m[1mError[22m: The process AgentRunManager is not initialized.[39m
+[36m [2m❯[22m Function.getInstance src/agent-execution/services/agent-run-manager.ts:[2m73:13[22m[39m
+    [90m 71| [39m  [35mstatic[39m [34mgetInstance[39m()[33m:[39m [33mAgentRunManager[39m {
+    [90m 72| [39m    [35mif[39m ([33m![39m[33mAgentRunManager[39m[33m.[39minstance) {
+    [90m 73| [39m      throw new Error("The process AgentRunManager is not initialized.…
+    [90m   | [39m            [31m^[39m
+    [90m 74| [39m    }
+    [90m 75| [39m    [35mreturn[39m [33mAgentRunManager[39m[33m.[39minstance[33m;[39m
+[90m [2m❯[22m new PublishedArtifactProjectionService src/run-history/services/published-artifact-projection-service.ts:[2m41:71[22m[39m
+[90m [2m❯[22m tests/unit/run-history/services/published-artifact-projection-service.test.ts:[2m70:21[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/team-run-history-catalog-service.test.ts[2m > [22mTeamRunHistoryCatalogService current V2 tree[2m > [22mrecords the first summary only and serializes current lifecycle updates
+[31m[1mAssertionError[22m: expected null to match object { summary: 'first', …(1) }[39m
+
+[32m- Expected:[39m 
+{
+  "summary": "first",
+  "terminatedAt": "2026-08-15T11:00:00.000Z",
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/run-history/services/team-run-history-catalog-service.test.ts:[2m74:5[22m[39m
+    [90m 72| [39m    ])[33m;[39m
+    [90m 73| [39m    await service.recordTeamRunTerminated({ teamRunId: "team-1", termi…
+    [90m 74| [39m    await expect(service.getCatalogRow("team-1")).resolves.toMatchObje…
+    [90m   | [39m    [31m^[39m
+    [90m 75| [39m      summary[33m:[39m [32m"first"[39m[33m,[39m
+    [90m 76| [39m      terminatedAt[33m:[39m [32m"2026-08-15T11:00:00.000Z"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/team-run-history-catalog-service.test.ts[2m > [22mTeamRunHistoryCatalogService current V2 tree[2m > [22marchives the exact V2 execution tree and derived catalog row together
+[31m[1mAssertionError[22m: expected null to match object { archivedAt: Any<String> }[39m
+
+[32m- Expected:[39m 
+{
+  "archivedAt": Any<String>,
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/run-history/services/team-run-history-catalog-service.test.ts:[2m91:5[22m[39m
+    [90m 89| [39m    await expect(new TeamRunExecutionTreeStore().read(rootDir, "team-1…
+    [90m 90| [39m      [33m.[39mresolves[33m.[39m[34mtoMatchObject[39m({ archivedAt[33m:[39m expect[33m.[39m[34many[39m([33mString[39m) })[33m;[39m
+    [90m 91| [39m    await expect(service.getCatalogRow("team-1")).resolves.toMatchObje…
+    [90m   | [39m    [31m^[39m
+    [90m 92| [39m  })[33m;[39m
+    [90m 93| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/team-run-history-catalog-service.test.ts[2m > [22mTeamRunHistoryCatalogService current V2 tree[2m > [22mrestores the exact tree and index snapshot after an archive index failure
+[31m[1mAssertionError[22m: expected null to match object { archivedAt: null }[39m
+
+[32m- Expected:[39m 
+{
+  "archivedAt": null,
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/run-history/services/team-run-history-catalog-service.test.ts:[2m108:5[22m[39m
+    [90m106| [39m    expect(await new TeamRunExecutionTreeStore().read(rootDir, "team-1…
+    [90m107| [39m    expect((await indexStore.readIndexStrict()).rows).toEqual(beforeIn…
+    [90m108| [39m    await expect(service.getCatalogRow("team-1")).resolves.toMatchObje…
+    [90m   | [39m    [31m^[39m
+    [90m109| [39m  })[33m;[39m
+    [90m110| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/team-run-history-catalog-service.test.ts[2m > [22mTeamRunHistoryCatalogService current V2 tree[2m > [22mkeeps the current row and package when the candidate index write fails
+[31m[1mAssertionError[22m: expected null to match object { teamRunId: 'team-1' }[39m
+
+[32m- Expected:[39m 
+{
+  "teamRunId": "team-1",
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/run-history/services/team-run-history-catalog-service.test.ts:[2m139:5[22m[39m
+    [90m137| [39m
+    [90m138| [39m    await expect(service.deleteTeamRun("team-1")).resolves.toMatchObje…
+    [90m139| [39m    await expect(service.getCatalogRow("team-1")).resolves.toMatchObje…
+    [90m   | [39m    [31m^[39m
+    [90m140| [39m    [35mawait[39m [34mexpect[39m(fs[33m.[39m[34mstat[39m(rootDir))[33m.[39mresolves[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m141| [39m    [34mexpect[39m(packageCatalog[33m.[39m[34misAdmitted[39m([32m"team-1"[39m))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts[2m > [22mMediaUrlTransformerProcessor[2m > [22memits media segment events
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts:[2m115:7[22m[39m
+    [90m113| [39m          event.payload?.metadata?.urls?.[0] === "http://server/happy_…
+    [90m114| [39m      )[33m,[39m
+    [90m115| [39m    )[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m      [31m^[39m
+    [90m116| [39m    [34mexpect[39m(
+    [90m117| [39m      startEvents[33m.[39m[34msome[39m(
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22mWorkspaceConverter[2m > [22msets isTemp false for regular workspace IDs
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'workspaceId')[39m
+[36m [2m❯[22m Function.toGraphql src/api/graphql/converters/workspace-converter.ts:[2m8:29[22m[39m
+    [90m  6| [39m    [35mconst[39m metadata [33m=[39m workspace[33m.[39mmetadata[33m;[39m
+    [90m  7| [39m    [35mreturn[39m {
+    [90m  8| [39m      workspaceId[33m:[39m metadata[33m.[39mworkspaceId[33m,[39m
+    [90m   | [39m                            [31m^[39m
+    [90m  9| [39m      name[33m:[39m metadata[33m.[39mname[33m,[39m
+    [90m 10| [39m      displayName[33m:[39m metadata[33m.[39mname[33m,[39m
+[90m [2m❯[22m tests/unit/api/graphql/converters/workspace-converter.test.ts:[2m17:43[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22mWorkspaceConverter[2m > [22msets isTemp true for temp workspace ID
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'workspaceId')[39m
+[36m [2m❯[22m Function.toGraphql src/api/graphql/converters/workspace-converter.ts:[2m8:29[22m[39m
+    [90m  6| [39m    [35mconst[39m metadata [33m=[39m workspace[33m.[39mmetadata[33m;[39m
+    [90m  7| [39m    [35mreturn[39m {
+    [90m  8| [39m      workspaceId[33m:[39m metadata[33m.[39mworkspaceId[33m,[39m
+    [90m   | [39m                            [31m^[39m
+    [90m  9| [39m      name[33m:[39m metadata[33m.[39mname[33m,[39m
+    [90m 10| [39m      displayName[33m:[39m metadata[33m.[39mname[33m,[39m
+[90m [2m❯[22m tests/unit/api/graphql/converters/workspace-converter.test.ts:[2m34:43[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts[2m > [22mMemoryViewResolver member run views[2m > [22mreads an org member run's memory through its resolved org location
+[31m[1mAssertionError[22m: expected null to deeply equal [ ObjectContaining{…} ][39m
+
+[32m- Expected:[39m 
+[
+  ObjectContaining {
+    "fact": "org fact",
+  },
+]
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts:[2m62:27[22m[39m
+    [90m 60| [39m    const view = await new MemoryViewResolver().getAgentOrgMemberRunMe…
+    [90m 61| [39m    [34mexpect[39m(view[33m.[39mrunId)[33m.[39m[34mtoBe[39m([32m"org-lead-run"[39m)[33m;[39m
+    [90m 62| [39m    expect(view.semantic).toEqual([expect.objectContaining({ fact: "or…
+    [90m   | [39m                          [31m^[39m
+    [90m 63| [39m  })[33m;[39m
+    [90m 64| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts[2m > [22mMemoryViewResolver member run views[2m > [22mkeeps reading team member runs through the shared member view read
+[31m[1mAssertionError[22m: expected null to deeply equal [ ObjectContaining{…} ][39m
+
+[32m- Expected:[39m 
+[
+  ObjectContaining {
+    "fact": "team fact",
+  },
+]
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts:[2m74:27[22m[39m
+    [90m 72| [39m    const view = await new MemoryViewResolver().getTeamMemberRunMemory…
+    [90m 73| [39m    [34mexpect[39m(view[33m.[39mrunId)[33m.[39m[34mtoBe[39m([32m"writer-run"[39m)[33m;[39m
+    [90m 74| [39m    expect(view.semantic).toEqual([expect.objectContaining({ fact: "te…
+    [90m   | [39m                          [31m^[39m
+    [90m 75| [39m  })[33m;[39m
+    [90m 76| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/82]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/autobyteus/events/autobyteus-status-projector.test.ts[2m > [22mprojectAutoByteusAgentLifecycleSnapshot[2m > [22mlets current anonymous work establish running
+[31m[1mAssertionError[22m: expected { availability: 'active', …(3) } to deeply equal { availability: 'active', …(2) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -2,6 +2,7 @@[39m
+[2m    "availability": "active",[22m
+[2m    "currentTurn": {[22m
+[2m      "kind": "ANONYMOUS",[22m
+[2m    },[22m
+[2m    "phase": "running",[22m
+[31m+   "recoverableBlock": null,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/agent-execution/backends/autobyteus/events/autobyteus-status-projector.test.ts:[2m30:9[22m[39m
+    [90m 28| [39m      isActive[33m:[39m [35mtrue[39m[33m,[39m
+    [90m 29| [39m      context[33m:[39m { state[33m:[39m { activeTurn[33m:[39m {} } }[33m,[39m
+    [90m 30| [39m    }))[33m.[39m[34mtoEqual[39m({
+    [90m   | [39m        [31m^[39m
+    [90m 31| [39m      availability[33m:[39m [32m"active"[39m[33m,[39m
+    [90m 32| [39m      phase[33m:[39m [32m"running"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/82]⎯[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Unhandled Errors [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+[31m[1m
+Vitest caught 4 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Current run package 'agent_team:team-1' could not be admitted.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.admitCurrent src/run-history/services/root-run-package-readiness-index.ts:[2m52:45[22m[39m
+    [90m 50| [39m    [35mthis[39m[33m.[39mstate[33m.[39mmutationRevision [33m+=[39m [34m1[39m[33m;[39m
+    [90m 51| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mrebuild[39m()[33m;[39m
+    [90m 52| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Current run pac…
+    [90m   | [39m                                            [31m^[39m
+    [90m 53| [39m  }
+    [90m 54| [39m  excludeCurrent(family: RootRunPackageFamily, id: string, reason: str…
+
+[31mThis error originated in "[1mtests/unit/run-history/services/team-run-history-catalog-service.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mrecords the first summary only and serializes current lifecycle updates[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Current run package 'agent_team:team-1' could not be admitted.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.admitCurrent src/run-history/services/root-run-package-readiness-index.ts:[2m52:45[22m[39m
+    [90m 50| [39m    [35mthis[39m[33m.[39mstate[33m.[39mmutationRevision [33m+=[39m [34m1[39m[33m;[39m
+    [90m 51| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mrebuild[39m()[33m;[39m
+    [90m 52| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Current run pac…
+    [90m   | [39m                                            [31m^[39m
+    [90m 53| [39m  }
+    [90m 54| [39m  excludeCurrent(family: RootRunPackageFamily, id: string, reason: str…
+
+[31mThis error originated in "[1mtests/unit/run-history/services/team-run-history-catalog-service.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1marchives the exact V2 execution tree and derived catalog row together[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Current run package 'agent_team:team-1' could not be admitted.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.admitCurrent src/run-history/services/root-run-package-readiness-index.ts:[2m52:45[22m[39m
+    [90m 50| [39m    [35mthis[39m[33m.[39mstate[33m.[39mmutationRevision [33m+=[39m [34m1[39m[33m;[39m
+    [90m 51| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mrebuild[39m()[33m;[39m
+    [90m 52| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Current run pac…
+    [90m   | [39m                                            [31m^[39m
+    [90m 53| [39m  }
+    [90m 54| [39m  excludeCurrent(family: RootRunPackageFamily, id: string, reason: str…
+
+[31mThis error originated in "[1mtests/unit/run-history/services/team-run-history-catalog-service.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mrestores the exact tree and index snapshot after an archive index failure[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Current run package 'agent_team:team-1' could not be admitted.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.admitCurrent src/run-history/services/root-run-package-readiness-index.ts:[2m52:45[22m[39m
+    [90m 50| [39m    [35mthis[39m[33m.[39mstate[33m.[39mmutationRevision [33m+=[39m [34m1[39m[33m;[39m
+    [90m 51| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mrebuild[39m()[33m;[39m
+    [90m 52| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Current run pac…
+    [90m   | [39m                                            [31m^[39m
+    [90m 53| [39m  }
+    [90m 54| [39m  excludeCurrent(family: RootRunPackageFamily, id: string, reason: str…
+
+[31mThis error originated in "[1mtests/unit/run-history/services/team-run-history-catalog-service.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mkeeps the current row and package when the candidate index write fails[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+
+
+[2m Test Files [22m [1m[31m29 failed[39m[22m[90m (29)[39m
+[2m      Tests [22m [1m[31m82 failed[39m[22m[2m | [22m[1m[32m109 passed[39m[22m[90m (191)[39m
+[2m     Errors [22m [1m[31m4 errors[39m[22m
+[2m   Start at [22m 09:47:34
+[2m   Duration [22m 29.59s[2m (transform 3.26s, setup 109ms, import 17.10s, tests 9.54s, environment 2ms)[22m
+

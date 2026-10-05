@@ -1,0 +1,32 @@
+[
+  {
+    "case": "API-003",
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-round12-e2e.log",
+    "summary": "Test Files  7 passed (7); Tests  21 passed (21); Duration  23.62s (transform 5.89s, setup 43ms, import 11.31s, tests 11.20s, environment 0ms); PROCESS_EXIT_CODE=0"
+  },
+  {
+    "case": "API-004",
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-004-round12-integration.log",
+    "summary": "Test Files  3 passed (3); Tests  24 passed (24); Duration  8.54s (transform 2.58s, setup 25ms, import 5.17s, tests 2.71s, environment 0ms); PROCESS_EXIT_CODE=0"
+  },
+  {
+    "case": "API-017",
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-round12-tool-log.log",
+    "summary": "Test Files  4 passed (4); Tests  12 passed (12); Duration  4.42s (transform 2.51s, setup 27ms, import 3.66s, tests 30ms, environment 0ms); PROCESS_EXIT_CODE=0"
+  },
+  {
+    "case": "API-006",
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-006-round12-web.log",
+    "summary": "Test Files  8 passed (8); Tests  99 passed (99); Duration  9.19s (transform 4.57s, setup 53.04s, collect 3.62s, tests 2.00s, environment 2.66s, prepare 1.73s); PROCESS_EXIT_CODE=0"
+  },
+  {
+    "case": "API-006",
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-006-round12-native-input.log",
+    "summary": "HEMA_REQUIRED: Token usage current-schema readiness has not been initialized.; Failed to fold token usage event '9f893158-c96d-471e-bac8-da89a5f5d68e' for run 'recovery_tester_9938': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.; Failed to fold token usage event '16ea28eb-4b21-438d-9c80-6252738b9bf7' for run 'recovery_tester_9938': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.; Failed to fold token usage event '0e6ef0dd-ae25-4077-ab9c-3719cca1ef57' for run 'recovery_tester_7537': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.; Failed to fold token usage event '204eef0d-b901-4789-93f7-11049c3fc163' for run 'recovery_tester_7537': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.; Failed to fold token usage event 'c9b9e550-b04f-4d0f-aadc-79531026727d' for run 'recovery_tester_7537': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.; Failed to fold token usage event 'f69abaf0-7b7e-4210-8deb-dde1f3e29db1' for run 'recovery_tester_7537': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.; Failed to fold token usage event '60c86a84-c74d-470b-9ff8-42aa9a70125d' for run 'recovery_tester_7537': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.; Failed to fold token usage event 'daa56b4a-4929-4ff8-a348-b4f63b3c1e62' for run 'recovery_tester_7537': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.; Test Files  1 passed (1); Tests  2 passed (2); Duration  10.71s (transform 6.37s, setup 4.91s, collect 4.80s, tests 447ms, environment 139ms, prepare 166ms); PROCESS_EXIT_CODE=0"
+  }
+]

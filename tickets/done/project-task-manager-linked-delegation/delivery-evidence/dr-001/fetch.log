@@ -1,0 +1,7 @@
+cwd: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+GIT_OPTIONAL_LOCKS=0 git fetch --no-tags origin +refs/heads/personal:refs/remotes/origin/personal
+exit: 0
+stdout/stderr: empty
+origin/personal before and after fetch: 4dee901d6163ca7053916fa1edc295afbfd7a6da
+HEAD at refresh: a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2
+HEAD...origin/personal: 0 ticket-only, 79 remote-only commits

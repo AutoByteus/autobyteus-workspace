@@ -1,0 +1,16 @@
+--- incoming-merge/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
++++ IR-011/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
+@@ -87,13 +87,10 @@
+         ),
+         workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
+       });
+-<<<<<<< HEAD
+     guard.assertAccepting();
+-=======
+     const materializedConfiguredSkills = preparedSkills.materializedSkills;
+     const configuredSkills = preparedSkills.effectiveRequests.flatMap((request) =>
+       request.kind === "reconcile-unresolved" ? [] : [request.skill]);
+->>>>>>> origin/personal
+     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
+       agentDefinition,
+       memberExecutionContext: runContext.config.memberExecutionContext,

@@ -1,0 +1,34 @@
+{
+  "at": "2026-10-03T15:38:29.224196+00:00",
+  "returnedRules": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"handoffs\":[{\"when\":\"When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.\",\"recipient_address\":\"/software_engineering_team/code_reviewer\"},{\"when\":\"When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.\",\"recipient_address\":\"/software_engineering_team/code_reviewer\"},{\"when\":\"When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work.\",\"recipient_address\":\"/software_engineering_team/delivery_engineer\"},{\"when\":\"When coverage investigation or test-validity analysis establishes a Requirement Gap, Design Impact or Unclear upstream issue before executable validation can proceed. Include the supported scenario basis and concrete evidence. Execution failures still follow the Code Reviewer failure-origin route.\",\"recipient_address\":\"/software_engineering_team/solution_designer\"}]}"
+      }
+    ],
+    "structuredContent": {
+      "handoffs": [
+        {
+          "when": "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+          "recipient_address": "/software_engineering_team/code_reviewer"
+        },
+        {
+          "when": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+          "recipient_address": "/software_engineering_team/code_reviewer"
+        },
+        {
+          "when": "When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+          "recipient_address": "/software_engineering_team/delivery_engineer"
+        },
+        {
+          "when": "When coverage investigation or test-validity analysis establishes a Requirement Gap, Design Impact or Unclear upstream issue before executable validation can proceed. Include the supported scenario basis and concrete evidence. Execution failures still follow the Code Reviewer failure-origin route.",
+          "recipient_address": "/software_engineering_team/solution_designer"
+        }
+      ]
+    }
+  },
+  "result": "Blocked",
+  "evaluation": "No current Blocked member rule; skill Blocked workflow asks user for exact causal dependency/different reproducing context. Original failure already focused-reviewed, no actual new rejected cause, no upstream intent gap, no Pass or Delivery. No unchanged generic-error handoff or human blame. Future decisive failed receipt follows focused Reviewer route; Designer on demonstrated upstream issue.",
+  "recipientNotified": false
+}

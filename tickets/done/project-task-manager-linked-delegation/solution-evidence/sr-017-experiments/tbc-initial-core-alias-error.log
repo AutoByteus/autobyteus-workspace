@@ -1,0 +1,25 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ❯ ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/discrimination.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/discrimination.test.ts [ ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/discrimination.test.ts ]
+Error: Cannot find package 'autobyteus-ts/agent/message/agent-input-user-message.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/discrimination.test.ts'
+ ❯ ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/discrimination.test.ts:6:1
+      4| import { fileURLToPath } from 'node:url';
+      5| import { describe, expect, it, vi } from 'vitest';
+      6| import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/age…
+       | ^
+      7| import { AgentRun } from '/Users/normy/autobyteus_org/autobyteus-workt…
+      8| import { AgentRunConfig } from '/Users/normy/autobyteus_org/autobyteus…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  19:17:30
+   Duration  164ms (transform 39ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+

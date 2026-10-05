@@ -1,0 +1,344 @@
+import { gql } from 'graphql-tag';
+
+export const ListWorkspaceRunHistory = gql`
+  query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {
+    listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {
+      workspaceRootPath
+      workspaceName
+      agentDefinitions {
+        agentDefinitionId
+        agentName
+        runs {
+          runId
+          summary
+          createdAt
+          archivedAt
+          terminatedAt
+          status
+          isActive
+          shouldConnectStream
+          statusSource
+          hasCollaboration
+        }
+      }
+      teamDefinitions {
+        teamDefinitionId
+        teamDefinitionName
+        runs {
+          teamRunId
+          teamDefinitionId
+          teamDefinitionName
+          coordinatorAddress
+          workspaceRootPath
+          summary
+          createdAt
+          archivedAt
+          terminatedAt
+          isActive
+          rootTeam
+          members {
+            memberAddress
+            displayName
+            agentRunId
+            status
+            runtimeKind
+            workspaceRootPath
+          }
+        }
+      }
+    }
+  }
+`;
+
+
+export const GetWorkspaceRunHistory = gql`
+  query GetWorkspaceRunHistory($workspaceId: String!, $limitPerAgent: Int = 6) {
+    workspaceRunHistory(workspaceId: $workspaceId, limitPerAgent: $limitPerAgent) {
+      workspaceRootPath
+      workspaceName
+      agentDefinitions {
+        agentDefinitionId
+        agentName
+        runs {
+          runId
+          summary
+          createdAt
+          archivedAt
+          terminatedAt
+          status
+          isActive
+          shouldConnectStream
+          statusSource
+          hasCollaboration
+        }
+      }
+      teamDefinitions {
+        teamDefinitionId
+        teamDefinitionName
+        runs {
+          teamRunId
+          teamDefinitionId
+          teamDefinitionName
+          coordinatorAddress
+          workspaceRootPath
+          summary
+          createdAt
+          archivedAt
+          terminatedAt
+          isActive
+          rootTeam
+          members {
+            memberAddress
+            displayName
+            agentRunId
+            status
+            runtimeKind
+            workspaceRootPath
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GetRunProjection = gql`
+  query GetRunProjection($runId: String!) {
+    getRunProjection(runId: $runId) {
+      runId
+      summary
+      lastActivityAt
+      conversation
+      activities
+      hasEarlierActiveTraceEvents
+    }
+  }
+`;
+
+export const GetRunFileChanges = gql`
+  query GetRunFileChanges($runId: String!) {
+    getRunFileChanges(runId: $runId) {
+      id
+      runId
+      path
+      type
+      status
+      sourceTool
+      sourceInvocationId
+      content
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const activeTracePageFields = gql`
+  fragment EventMonitorActiveTracePageFields on EventMonitorActiveTracePage {
+    beforeCursor
+    hasEarlier
+    loadedEarlierCount
+    activeGeneration
+    cursorStatus
+    events {
+      eventId
+      turnGroupId
+      occurredAtMs
+      visuals {
+        ... on EventMonitorUserVisual {
+          kind visualId eventId kindOrdinal text
+          attachments { attachmentId fileType fileName locator }
+        }
+        ... on EventMonitorInterAgentVisual {
+          kind visualId eventId kindOrdinal senderAgentRunId senderAddress text
+          attachments { attachmentId fileType fileName locator }
+        }
+        ... on EventMonitorAssistantTextVisual { kind visualId eventId kindOrdinal content }
+        ... on EventMonitorThinkingVisual { kind visualId eventId kindOrdinal content }
+        ... on EventMonitorToolCardVisual {
+          kind visualId eventId kindOrdinal invocationId cardKind toolName statusKey errorMessage
+          summaryArgs {
+            path file_path filepath filename target_path command cmd script query prompt url message text title name raw
+          }
+          approvalTarget {
+            agentRunId
+          }
+        }
+        ... on EventMonitorMediaVisual { kind visualId eventId kindOrdinal mediaType urls }
+        ... on EventMonitorCompactionVisual {
+          kind visualId eventId kindOrdinal activityId phase message turnId rawTraceCount semanticFactCount provider
+        }
+      }
+    }
+  }
+`;
+
+export const GetRunEventMonitorActiveTracePage = gql`
+  query GetRunEventMonitorActiveTracePage($runId: String!, $beforeCursor: String) {
+    getRunEventMonitorActiveTracePage(runId: $runId, beforeCursor: $beforeCursor) {
+      ...EventMonitorActiveTracePageFields
+    }
+  }
+  ${activeTracePageFields}
+`;
+
+export const GetTeamMemberEventMonitorActiveTracePage = gql`
+  query GetTeamMemberEventMonitorActiveTracePage(
+    $teamRunId: String!, $agentRunId: String!, $beforeCursor: String
+  ) {
+    getTeamMemberEventMonitorActiveTracePage(
+      teamRunId: $teamRunId, agentRunId: $agentRunId, beforeCursor: $beforeCursor
+    ) {
+      ...EventMonitorActiveTracePageFields
+    }
+  }
+  ${activeTracePageFields}
+`;
+
+/** A standalone run's collaborator or collaborator-Team member (its host keeps the run query). */
+export const GetAgentRunCollaborationMemberEventMonitorActiveTracePage = gql`
+  query GetAgentRunCollaborationMemberEventMonitorActiveTracePage(
+    $hostRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String
+  ) {
+    agentRunCollaborationMemberEventMonitorActiveTracePage(
+      hostRunId: $hostRunId, memberAddress: $memberAddress,
+      agentRunId: $agentRunId, beforeCursor: $beforeCursor
+    ) {
+      ...EventMonitorActiveTracePageFields
+    }
+  }
+  ${activeTracePageFields}
+`;
+
+export const GetAgentOrgMemberEventMonitorActiveTracePage = gql`
+  query GetAgentOrgMemberEventMonitorActiveTracePage(
+    $orgRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String
+  ) {
+    getAgentOrgMemberEventMonitorActiveTracePage(
+      orgRunId: $orgRunId, memberAddress: $memberAddress,
+      agentRunId: $agentRunId, beforeCursor: $beforeCursor
+    ) {
+      ...EventMonitorActiveTracePageFields
+    }
+  }
+  ${activeTracePageFields}
+`;
+
+export const GetTeamRunResumeConfig = gql`
+  query GetTeamRunResumeConfig($teamRunId: String!) {
+    getTeamRunResumeConfig(teamRunId: $teamRunId) {
+      teamRunId
+      isActive
+      executionTree
+      modelConfigEditability {
+        editable
+        reason
+      }
+    }
+  }
+`;
+
+export const GetTeamRunExecutionCheckpoint = gql`
+  query GetTeamRunExecutionCheckpoint($teamRunId: String!) {
+    getTeamRunExecutionCheckpoint(teamRunId: $teamRunId) {
+      rootTeamRunId
+      changeSequence
+      hasOpenExecutionWork
+    }
+  }
+`;
+
+export const GetTeamMemberRunProjection = gql`
+  query GetTeamMemberRunProjection($teamRunId: String!, $agentRunId: String!) {
+    getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $agentRunId) {
+      agentRunId
+      summary
+      lastActivityAt
+      conversation
+      activities
+      hasEarlierActiveTraceEvents
+    }
+  }
+`;
+
+export const GetAgentOrgMemberRunProjection = gql`
+  query GetAgentOrgMemberRunProjection(
+    $orgRunId: String!, $memberAddress: String!, $agentRunId: String!
+  ) {
+    getAgentOrgMemberRunProjection(
+      orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId
+    ) {
+      agentRunId
+      memberAddress
+      summary
+      lastActivityAt
+      conversation
+      activities
+      hasEarlierActiveTraceEvents
+    }
+  }
+`;
+
+export const GetAgentOrgExecutionCheckpoint = gql`
+  query GetAgentOrgExecutionCheckpoint($orgRunId: String!) {
+    getAgentOrgExecutionCheckpoint(orgRunId: $orgRunId) {
+      orgRunId
+      changeSequence
+      hasOpenExecutionWork
+    }
+  }
+`;
+
+
+export const GetTeamCommunicationMessages = gql`
+  query GetTeamCommunicationMessages($teamRunId: String!) {
+    getTeamCommunicationMessages(teamRunId: $teamRunId) {
+      messageId
+      senderAgentRunId
+      receiverAgentRunId
+      content
+      messageType
+      createdAt
+      referenceFiles {
+        referenceId
+        path
+        type
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+
+
+export const GetAgentRunResumeConfig = gql`
+  query GetAgentRunResumeConfig($runId: String!) {
+    getAgentRunResumeConfig(runId: $runId) {
+      runId
+      isActive
+      metadataConfig {
+        agentDefinitionId
+        workspaceRootPath
+        llmModelIdentifier
+        llmConfig
+        autoExecuteTools
+        runtimeKind
+        runtimeReference {
+          runtimeKind
+          sessionId
+          threadId
+          metadata
+        }
+      }
+      modelConfigEditability {
+        editable
+        reason
+      }
+    }
+  }
+`;
+
+export const GetAgentOrgRunInspection = gql`
+  query GetAgentOrgRunInspection($orgRunId: String!) {
+    getAgentOrgRunInspection(orgRunId: $orgRunId)
+  }
+`;

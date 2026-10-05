@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-04T04:46:16.211959+00:00",
+  "head": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "latestFetchedOriginPersonal": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "unmerged": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts"
+  ],
+  "guideSha256": "ff6d2e1ecad2f475f79b9581ade6cbe53c96f3e414323e0266762ac999cc9342",
+  "missingHistoricalPaths": [],
+  "currentReferences": 2400
+}

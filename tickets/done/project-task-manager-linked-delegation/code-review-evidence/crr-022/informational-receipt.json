@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /software_engineering_team/implementation_engineer.\",\"target_agent_run_id\":\"implementation_engineer_1e43277cb7f1437abb3cb117c3a3eba2\"}"
+    }
+  ],
+  "structuredContent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/implementation_engineer.",
+    "target_agent_run_id": "implementation_engineer_1e43277cb7f1437abb3cb117c3a3eba2"
+  }
+}

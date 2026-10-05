@@ -1,0 +1,157 @@
+{
+  "at": "2026-10-03T20:30:57.862690+00:00",
+  "instanceId": "iso-63749-7f67",
+  "current": [
+    {
+      "pid": 60228,
+      "ppid": 1,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 60230,
+      "ppid": 60228,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 60231,
+      "ppid": 60228,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 61166,
+      "ppid": 60228,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 61171,
+      "ppid": 60228,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+    },
+    {
+      "pid": 61225,
+      "ppid": 60228,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 61226,
+      "ppid": 60228,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 62721,
+      "ppid": 61166,
+      "comm": "codex"
+    },
+    {
+      "pid": 62970,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 62971,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 63075,
+      "ppid": 62971,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 64657,
+      "ppid": 62721,
+      "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+    },
+    {
+      "pid": 65339,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 65340,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 65389,
+      "ppid": 65339,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 68136,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 68137,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 68179,
+      "ppid": 68137,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 68399,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 68400,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 68455,
+      "ppid": 68400,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 68715,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 68718,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 68814,
+      "ppid": 68715,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 76739,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 76740,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 76767,
+      "ppid": 76740,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 76934,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 76935,
+      "ppid": 62721,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 77004,
+      "ppid": 76935,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    }
+  ],
+  "scope": "Own exact current app PID and ancestry only. Census/teardown not a Task release receipt."
+}

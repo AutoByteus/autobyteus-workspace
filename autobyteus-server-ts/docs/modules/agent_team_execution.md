@@ -358,10 +358,12 @@ stop-and-delete command, mutation, modal, or transport operation.
 ## Server-Owned Task Delegation
 
 The only first-party delegation tool is `delegate_task`. Delegation is a pure
-spawn: it starts a fresh child and hands back its run ID. There is no task
-record, task status, submission, review, or settlement; the retired
+spawn: it starts a fresh child and hands back its ingress run ID. It creates no
+separate delegation task-record/submission/review/settlement subsystem. Optional
+Project Task linkage uses the existing business Task authority; the retired
 `submit_task_result` / `review_task_result` tools, the task-records file, the
-task GraphQL/REST APIs, and the task UI no longer exist. Legacy task-plan tools
+delegation task GraphQL/REST APIs, and their task UI no longer exist. The current
+Projects APIs/UI are separate and are not retired. Legacy task-plan tools
 and runtime-specific delegation protocols are not part of this surface, and
 legacy configured tool names are ignored.
 
@@ -374,6 +376,14 @@ legacy configured tool names are ignored.
   reference_files?
 }
 ```
+
+Alternatively, `{recipient_address, task_id}` selects saved Project Task work.
+The parser rejects mixed description/reference overrides and a caller
+`project_id`. Described delegation without an ID keeps the contract above. Only
+non-owned runs, such as the Manager, may pass a `task_id`. A Task-owned run
+that does so is rejected with `TASK_AGENT_RESOURCE_OWNED_SENDER`. The saved
+text and context, the assignment record and permanent DONE closure belong to
+the [Project Task agent run resources contract](projects.md#saved-id-delegation-and-agent-run-resources).
 
 The address uses the same canonical absolute non-root `/...` grammar as
 `send_message_to`; relative addresses, bare names, and the structural root `/`
@@ -488,7 +498,23 @@ a second publisher or task-local sequence.
 ## Delegated Child Lifecycle
 
 Delegated children (task executions: a task Agent or a task Team) are managed
-as resources, not as tasks.
+as execution resources, distinct from business Tasks. **The execution tree
+carries no Task information.** Which copies, Team members and helpers belong to
+a Project Task is recorded only on the Task side, in that Task's
+`agent_run_resources.json`. The in-memory view loaded from it is reached
+through `TaskAgentResourcePort`. That Task record, not the physical subtree or
+the definition/address, decides what DONE stops. The Manager, borrowed unowned
+runs and other Tasks are outside that set.
+
+The idle/wake rules below apply to unowned children and to Task-owned children
+while their record is open. A closed record is final. Explicit DONE closes the
+Task's runs forever: they can never receive input, be woken or be restored,
+including after restart or after the Task is deleted. DONE cancels registered
+preparations and requests an exact stop of each closed run on every authority
+the root still holds. Stop failures are logged and kept in memory only, never
+persisted. Repeating DONE requests the stop again. A stop failure is never
+reported as success, and DONE never terminates the whole root. History remains
+inspectable. Reopening the Task starts nothing and does not revive old copies.
 
 - **Liveness (one predicate, runtime-only, never persisted).** A task Agent is
   live only while its registry holds a handle **and** that handle's AgentRun is
@@ -525,7 +551,9 @@ as resources, not as tasks.
 - **Status.** Non-live task Agents report the standard `offline` status; the UI
   has no separate shut-down state.
 - **Root reopen.** No handles exist after a restart, so every recorded child
-  starts shut down and is wakeable. There is no reopen repair.
+  starts shut down. Unowned children and children whose Task record is open
+  are wakeable. Children closed in their Task's `agent_run_resources.json`
+  stay fenced. There is no reopen repair.
 - **Root stop.** `closeExternalAdmission` / `enterRootFailStop` dispose every
   grace timer; the frozen termination scope stops every live execution.
 
@@ -655,7 +683,9 @@ replace the normal post-activation event-egress contract.
   recorded in the execution tree with their concrete execution address, run
   IDs, `startedAt`, and (for children created since the resource lifecycle)
   `delegatorAgentRunId`. The tree is the only persisted authority for them;
-  after reopen they start shut down and are woken on demand.
+  after reopen they start shut down and are woken on demand, unless their
+  Task's agent run resources record them as closed. The tree itself holds no
+  Task stamp. Task ownership comes only from the Task side.
 - `TeamRunService.resolveActiveTeamRun(teamRunId)` is the supported
   restore-aware root lookup for Team connection/send flows. It may restore an
   unmanaged persisted root, but it returns no replacement while the exact root
@@ -701,8 +731,8 @@ only complete, valid current packages. A root that still contains predecessor
 `team_run_metadata.json`, lacks a required package file, or has
 invalid/unsupported content is excluded from normal runtime and history instead
 of entering a compatibility path. `TeamRunStatePackageLoader` loads the package
-for restore; delegated children come back shut down and wakeable, with no
-repair step.
+for restore; delegated children come back shut down, with no repair step.
+Runs closed by a Task's DONE remain permanently non-wakeable.
 
 The required startup sequence has three distinct Team package stages:
 

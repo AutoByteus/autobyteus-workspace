@@ -1,0 +1,3 @@
+2026-10-04T08:17:44.733921+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["--", "python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-final-byte-guard.py"]

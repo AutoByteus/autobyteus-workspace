@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-04T05:32:01.650244+00:00",
+  "scope": "Pre-handoff preservation for complete CRR-017 source review only, not API acceptance",
+  "incomingCount": 2884,
+  "missing": [],
+  "changedIncomingReferences": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "onlyReviewerCanonicalsChanged": true,
+  "head": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "nonTicketDirtyCount": 299,
+  "all299SourceTestStatusesAndHashesExact": true,
+  "indexSHA256": "a4da3a80150f5b03c3fd5fc03fefd2efa5e59456944f5227a5d15e49ab5eb5d0",
+  "indexExact": true,
+  "stagesExact": true,
+  "unmerged": "",
+  "all20APICurrentDurablesExact": true,
+  "priorRevisionRecordSHA256Reconstructed": "cbe6f40f508c786d0bd7b33644fc5b84ab9f2a720247e4ba00b71b13303794fb",
+  "priorRevisionRecordExpected": "cbe6f40f508c786d0bd7b33644fc5b84ab9f2a720247e4ba00b71b13303794fb",
+  "reviewerChanges": "Canonical report/revision and new crr-017-* evidence only. No source/test/index/stash/app/provider/deployment operations."
+}

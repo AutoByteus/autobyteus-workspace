@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-65292-2dda",
+    "pid": 78730,
+    "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:65293",
+    "graphqlUrl": "http://127.0.0.1:65293/graphql",
+    "controlEndpoint": "http://127.0.0.1:65292",
+    "controlPort": 65292,
+    "serverPort": 65293,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-65292-2dda.log"
+  }
+}

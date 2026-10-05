@@ -1,0 +1,7 @@
+2026-10-04T06:01:17.228618+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round13-native-agent-probe.mjs", "done-a"]
+Scoped Pass: explicit user DONE, genuine terminal stream and retained offline rows LIVE before any repair reload; Manager/open other Task/workspaces protected. Physical per-Agent Native PID release is not applicable to shared backend process, not whole acceptance.
+
+INNER_EXIT=0
+ELAPSED=6.63

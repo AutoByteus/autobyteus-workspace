@@ -1,0 +1,10 @@
+{
+  "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-55024-a24c.log",
+  "searchedPatterns": [
+    "termination cannot settle",
+    "Owned Team exact release failed",
+    "TASK_RELEASE_FAILED",
+    "Exact Task execution cleanup failed"
+  ],
+  "matches": []
+}

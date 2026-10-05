@@ -1,0 +1,632 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ [32m✓[39m tests/architecture/agent-provider-composition-boundaries.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 4385[2mms[22m[39m
+     [33m[2m✓[22m[39m closes retired symbols and provider-specific construction below supported roots [33m 406[2mms[22m[39m
+     [33m[2m✓[22m[39m closes complete Agent manager and AgentRun construction to production roots [33m 1411[2mms[22m[39m
+     [33m[2m✓[22m[39m selects one host validator and propagates it to the two exact lifecycle roots [33m 1081[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps context translation provider-neutral and all path authority explicit [33m 1063[2mms[22m[39m
+ [32m✓[39m tests/architecture/application-framework-boundaries.test.ts [2m([22m[2m20 tests[22m[2m)[22m[33m 2569[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005 [33m 504[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps required tool registration behind the single lifecycle readiness owner [33m 952[2mms[22m[39m
+     [33m[2m✓[22m[39m guards the exact SR-011 host definition and public/general run authority [33m 503[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/configured-root-first-work.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-collaboration/configured-root-first-work.test.ts[2m > [22m[2mstandalone_team configured first work[2m > [22m[2mscope stays Offline; 'autobyteus' / 'none' / null readies only receivers
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/agent-collaboration/configured-root-first-work.test.ts [2m([22m[2m48 tests[22m[2m)[22m[33m 1570[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/project-task-context-store.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/projects/project-task-context-store.test.ts[2m > [22m[2mTask-owned context transaction[2m > [22m[2mreturns proven committed metadata even when subsequent lock finalization fails
+[22m[39mProjects data committed; lock finalization failed. Error: release failure
+    at Object.<anonymous> [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/[39mtests/unit/projects/project-task-context-store.test.ts:92:69[90m)[39m
+    at Object.unlink (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/[4m.pnpm[24m/@vitest+spy@4.0.18/node_modules/[4m@vitest/spy[24m/dist/index.js:285:34)
+    at code [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/[39msrc/persistence/file/store-utils.ts:55:20[90m)[39m
+    at withFilePathLock [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/[39msrc/persistence/file/store-utils.ts:123:9[90m)[39m
+    at ProjectStore.withCommitLock [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/[39msrc/projects/stores/project-store.ts:204:14[90m)[39m
+    at ProjectTaskService.createTask [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/[39msrc/projects/services/project-task-service.ts:78:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/[39mtests/unit/projects/project-task-context-store.test.ts:95:18
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/[4m.pnpm[24m/@vitest+runner@4.0.18/node_modules/[4m@vitest/runner[24m/dist/index.js:915:20
+
+[90mstderr[2m | tests/unit/projects/project-task-context-store.test.ts[2m > [22m[2mTask-owned context transaction[2m > [22m[2mcleanup failure cannot turn a confirmed file-removal commit into rollback
+[22m[39mTask context cleanup failed. Error: cleanup unavailable
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/[39mtests/unit/projects/project-task-context-store.test.ts:121:63
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/[4m.pnpm[24m/@vitest+runner@4.0.18/node_modules/[4m@vitest/runner[24m/dist/index.js:915:20
+
+ [32m✓[39m tests/unit/projects/project-task-context-store.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 925[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts[2m > [22m[2mcurrent delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message)[2m > [22m[2mkeeps two Task address bring-ins independent at /scope_helper, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ [32m✓[39m tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 929[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps two Task address bring-ins independent at /scope_helper, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013) [33m 337[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps two Task address bring-ins independent at /scope_helpers, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013) [33m 325[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/project-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/project-service.test.ts [2m([22m[2m30 tests[22m[2m)[22m[33m 768[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts[2m > [22m[2mAgentStreamHandler system-instruction diagnostics[2m > [22m[2mretains identifiers and derived length without serializing exact prompt content
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 761[2mms[22m[39m
+     [33m[2m✓[22m[39m retains identifiers and derived length without serializing exact prompt content [33m 760[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/task-agent-resource-dispatch.test.ts [2m([22m[2m30 tests[22m[2m)[22m[33m 642[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 548[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 524[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/task-agent-resources.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/task-agent-resources.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 502[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/project-task-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/project-task-service.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 430[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts [2m([22m[2m39 tests[22m[2m)[22m[32m 198[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mshares business reads and compact TODO create/known-ID status acknowledgements
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-VKxZ0q
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_projects
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-65alP2
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_projects
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-LylBg9
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-BW8RNU
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-nrzPGB
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-1arrVv
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-eDUDz8
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-HDaY6r
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-bzByRz
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_or_update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2munknown Task IDs fail without creating and aborted native execution stays a transport error
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-3VmwMY
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2munknown Task IDs fail without creating and aborted native execution stays a transport error
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mexposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-mohCww
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mexposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+ [32m✓[39m tests/unit/agent-tools/project-tasks/project-task-tools.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 201[2mms[22m[39m
+ [32m✓[39m tests/unit/projects/project-store-per-folder.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 176[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:60587) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts[2m > [22m[2mprojects-per-folder-v1 migration (SR-024)[2m > [22m[2mis a registered required STARTUP_ONLY definition
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 129[2mms[22m[39m
+ [32m✓[39m tests/architecture/projects-boundaries.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 73[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/task-agent-resource-quiet-generation.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-collaboration/task-agent-resource-quiet-generation.test.ts[2m > [22m[2magent quiet-generation exact Task release[2m > [22m[2mcoordinator-only follow-up preserves verified nested Agent/Team/grandchild proof and separately stops sibling helper
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/agent-collaboration/task-agent-resource-quiet-generation.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m tests/architecture/application-agent-addressing-boundaries.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+[22m[39mCreated agent session b378c4d2-a835-41c1-be14-9efe19ee933f for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+[22m[39mAgent Team WebSocket connected: session=b378c4d2-a835-41c1-be14-9efe19ee933f, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+[22m[39mClosed agent session b378c4d2-a835-41c1-be14-9efe19ee933f
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mCreated agent session 14fa8bb2-2edb-4585-ad83-3390877ef850 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mAgent Team WebSocket connected: session=14fa8bb2-2edb-4585-ad83-3390877ef850, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mClosed agent session 14fa8bb2-2edb-4585-ad83-3390877ef850
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mCreated agent session 80e9f7e6-8f57-446d-b23d-6192bbcff986 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mAgent Team WebSocket connected: session=80e9f7e6-8f57-446d-b23d-6192bbcff986, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mClosed agent session 80e9f7e6-8f57-446d-b23d-6192bbcff986
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mCreated agent session 6fdb8401-688f-4327-ad58-108c166f339d for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mAgent Team WebSocket connected: session=6fdb8401-688f-4327-ad58-108c166f339d, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mClosed agent session 6fdb8401-688f-4327-ad58-108c166f339d
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mCreated agent session 18bc4055-6ff8-4204-a827-ff3a05182f21 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mAgent Team WebSocket connected: session=18bc4055-6ff8-4204-a827-ff3a05182f21, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mClosed agent session 18bc4055-6ff8-4204-a827-ff3a05182f21
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mCreated agent session 53d3c522-aa4d-4f74-b9f6-7bee44be2aa9 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mAgent Team WebSocket connected: session=53d3c522-aa4d-4f74-b9f6-7bee44be2aa9, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mClosed agent session 53d3c522-aa4d-4f74-b9f6-7bee44be2aa9
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/task-agent-resource-tree-scope.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to a run identity and sends CONNECTED plus projected status without restoring runtime
+[22m[39mCreated agent session a0157fc2-57cc-44ea-8ef1-9e335fa9418c for run agent-123
+Agent WebSocket connected: session=a0157fc2-57cc-44ea-8ef1-9e335fa9418c, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to run events through the AgentRun subject for active runtime-managed runs
+[22m[39mCreated agent session c098afca-eae9-4edb-b9fb-e8c679ea22fb for run runtime-run-1
+Agent WebSocket connected: session=c098afca-eae9-4edb-b9fb-e8c679ea22fb, run=runtime-run-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps Codex AgentRunEvents directly to websocket messages for single-agent runs
+[22m[39mCreated agent session 73006103-5342-4344-94b4-7d4faf630d34 for run runtime-run-2
+Agent WebSocket connected: session=73006103-5342-4344-94b4-7d4faf630d34, run=runtime-run-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps turn lifecycle AgentRunEvents directly to websocket messages
+[22m[39mCreated agent session b44e833b-ca99-41f3-8aad-3c261820403f for run runtime-run-3
+Agent WebSocket connected: session=b44e833b-ca99-41f3-8aad-3c261820403f, run=runtime-run-3
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mregisters the websocket connection for run-scoped live message broadcasts
+[22m[39mCreated agent session 2e6838e8-a574-4a01-80de-48eb6fb441f3 for run agent-123
+Agent WebSocket connected: session=2e6838e8-a574-4a01-80de-48eb6fb441f3, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mpublishes terminal offline status to an already-connected websocket when a run terminates
+[22m[39mCreated agent session 222a41f7-bdc3-4273-b787-ec4f60b277e0 for run run-terminate-1
+Agent WebSocket connected: session=222a41f7-bdc3-4273-b787-ec4f60b277e0, run=run-terminate-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles SEND_MESSAGE through the command coordinator and returns an ACK
+[22m[39mCreated agent session 0b7c07a6-f546-4c28-a291-1d586b22ce2d for run agent-123
+Agent WebSocket connected: session=0b7c07a6-f546-4c28-a291-1d586b22ce2d, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mdefers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+[22m[39mCreated agent session fd3ed13d-9148-4b73-974f-e2256e0799ac for run agent-123
+Agent WebSocket connected: session=fd3ed13d-9148-4b73-974f-e2256e0799ac, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mCreated agent session dddaea7d-f91c-4042-8c17-f9ff3c58bca1 for run agent-123
+Agent WebSocket connected: session=dddaea7d-f91c-4042-8c17-f9ff3c58bca1, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mINTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mCreated agent session bb3ad041-c532-44da-80c8-938e1cfe9155 for run agent-123
+Agent WebSocket connected: session=bb3ad041-c532-44da-80c8-938e1cfe9155, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mAgent websocket session 'bb3ad041-c532-44da-80c8-938e1cfe9155' lost its active run subscription for run 'agent-123'.
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mAgent websocket session 'bb3ad041-c532-44da-80c8-938e1cfe9155' lost its active run subscription for run 'agent-123'.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mreturns exactly one same-socket acknowledgement for an accepted interrupt
+[22m[39mCreated agent session 6c367355-15a9-42bd-a714-7f84028add25 for run agent-123
+Agent WebSocket connected: session=6c367355-15a9-42bd-a714-7f84028add25, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mrejects an empty interrupt command id before runtime execution
+[22m[39mCreated agent session 392581bc-b0b1-4610-b15e-e79da5fceda3 for run agent-123
+Agent WebSocket connected: session=392581bc-b0b1-4610-b15e-e79da5fceda3, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mCreated agent session 0c469c65-eb94-47f7-a371-31e34b1e73a2 for run agent-123
+Agent WebSocket connected: session=0c469c65-eb94-47f7-a371-31e34b1e73a2, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mINTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles tool approvals for active sessions
+[22m[39mCreated agent session c3a7aa5f-5d69-414a-881c-f078a51b9d33 for run agent-123
+Agent WebSocket connected: session=c3a7aa5f-5d69-414a-881c-f078a51b9d33, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mignores messages for unknown sessions
+[22m[39mMessage for unknown session: missing
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+[90mstdout[2m | tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mowns one Agent, standalone Team, and AgentOrg process manager family
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.468Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mcontinues the exact Org, Team, Agent shutdown order and aggregates failures
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.474Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mreleases AgentRunManager when exclusive Team manager initialization fails
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.476Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.476Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2munwinds both root managers when process AgentRunService binding fails
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.477Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mrejects validator-only capabilities before manager mutation
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.477Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mrejects each required construction input before manager mutation
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.478Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.478Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.478Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.478Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.478Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.478Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.479Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.479Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.479Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T13:58:53.479Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+ [32m✓[39m tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/team-execution-view-projector.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcreates sessions successfully
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mthrows when creating a duplicate session
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mallows multiple sessions for the same agent
+[22m[39mCreated agent session s1 for run agent-123
+Created agent session s2 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions by ID
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses sessions and removes them
+[22m[39mCreated agent session s1 for run agent-123
+Closed agent session s1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mlists active sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session-manager.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaborators/catalog-address-map.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/frozen-root-termination-scope.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/payload-serialization.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/projects-capability-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/projects-capability-service.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/root-task-execution-command-queue.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/execution/root-communication-runtime-builder.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mconnects and reports connected state
+[22m[39mAgentSession s1 connected to run agent-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mprevents connecting a closed session
+[22m[39mAgentSession s2 closed
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mcloses and resets connected state
+[22m[39mAgentSession s3 connected to run agent-3
+AgentSession s3 closed
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaboration-logical-address.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/execution/member-instance-scope.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-broadcaster.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaboration-launch-configuration-resolver.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaborators/catalog-copy-execution-source.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/execution/task-copy-host.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m51 passed[39m[22m[90m (51)[39m
+[2m      Tests [22m [1m[32m553 passed[39m[22m[90m (553)[39m
+[2m   Start at [22m 15:58:17
+[2m   Duration [22m 42.22s[2m (transform 3.84s, setup 203ms, import 21.59s, tests 15.69s, environment 4ms)[22m
+

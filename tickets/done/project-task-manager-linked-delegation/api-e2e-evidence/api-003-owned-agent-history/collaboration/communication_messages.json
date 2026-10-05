@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent",
+  "hostRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+  "messages": [
+    {
+      "messageId": "collabmsg_TWfL7SVMKqy_HSU9SvypmOk-gDmDozQ_",
+      "senderAgentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768",
+      "receiverAgentRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+      "content": "API003_ATTACHMENT_ORIGINAL_project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-10-03T09:54:48.254Z"
+    }
+  ]
+}

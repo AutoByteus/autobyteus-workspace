@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-04T18:39:55.665643+00:00",
+  "instanceId": "iso-55595-c9e4",
+  "recordAbsent": true,
+  "dataRootAbsent": true,
+  "foreignRecordsUnchanged": true,
+  "meaning": "All three pre-existing foreign records byte-for-field unchanged; independent added foreign record not operated on",
+  "independentlyAddedForeignIds": [
+    "iso-55988-b4c4"
+  ],
+  "capturedOwnPidsStillPresent": [],
+  "portsFreeBind": {
+    "55595": true,
+    "55596": true
+  },
+  "archiveFilesVerified": 4,
+  "observerInstalled": false
+}

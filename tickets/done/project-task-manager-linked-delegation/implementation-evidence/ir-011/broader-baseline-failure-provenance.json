@@ -1,0 +1,50 @@
+[
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-api-status-projectors.test.ts",
+    "current": "3da3364ae62eef44fddcef1cdc472f6cac16d21274a70ae27afe959411f87a45",
+    "HEAD": "3da3364ae62eef44fddcef1cdc472f6cac16d21274a70ae27afe959411f87a45",
+    "HEADExact": true,
+    "MERGE_HEAD": "3da3364ae62eef44fddcef1cdc472f6cac16d21274a70ae27afe959411f87a45",
+    "MERGE_HEADExact": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts",
+    "current": "f4f2304f9357db855328dc43af5975376b887143b28510304ad8f49b63a4aefd",
+    "HEAD": "f4f2304f9357db855328dc43af5975376b887143b28510304ad8f49b63a4aefd",
+    "HEADExact": true,
+    "MERGE_HEAD": "f4f2304f9357db855328dc43af5975376b887143b28510304ad8f49b63a4aefd",
+    "MERGE_HEADExact": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-status-projector.test.ts",
+    "current": "5e113580dd9afd2f66377333532a1b6f887a2d7da61b832812ac261fa61e6b05",
+    "HEAD": "5e113580dd9afd2f66377333532a1b6f887a2d7da61b832812ac261fa61e6b05",
+    "HEADExact": true,
+    "MERGE_HEAD": "5e113580dd9afd2f66377333532a1b6f887a2d7da61b832812ac261fa61e6b05",
+    "MERGE_HEADExact": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts",
+    "current": "40a2dfc13de13ac9ae36acb7fc96e77bc5764817ea4fc2f34e9e95db33d90a46",
+    "HEAD": "40a2dfc13de13ac9ae36acb7fc96e77bc5764817ea4fc2f34e9e95db33d90a46",
+    "HEADExact": true,
+    "MERGE_HEAD": "223d2e4b7349c92bbbc9ea18b1ee7db908bc6792732413f5d429902a69469ec7",
+    "MERGE_HEADExact": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+    "current": "6813c743382fb6cfd2034adb871555591c1d5dd3b069f46712d9344f419d77cc",
+    "HEAD": "6813c743382fb6cfd2034adb871555591c1d5dd3b069f46712d9344f419d77cc",
+    "HEADExact": true,
+    "MERGE_HEAD": "6813c743382fb6cfd2034adb871555591c1d5dd3b069f46712d9344f419d77cc",
+    "MERGE_HEADExact": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts",
+    "current": "ddcc4e5c0b48674e01c7f54ecbaf204670684bee5e1d59ef3d0b124cb3e9a8b1",
+    "HEAD": "ddcc4e5c0b48674e01c7f54ecbaf204670684bee5e1d59ef3d0b124cb3e9a8b1",
+    "HEADExact": true,
+    "MERGE_HEAD": "ddcc4e5c0b48674e01c7f54ecbaf204670684bee5e1d59ef3d0b124cb3e9a8b1",
+    "MERGE_HEADExact": true
+  }
+]

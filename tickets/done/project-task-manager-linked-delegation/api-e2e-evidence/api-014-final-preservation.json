@@ -1,0 +1,68 @@
+{
+  "at": "2026-10-04T06:42:33.076101+00:00",
+  "phase": "final",
+  "head": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "indexExact": true,
+  "semanticIndexExact": true,
+  "indexStatAudit": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-index-stat-audit.json",
+  "flagsAndPathsExact": true,
+  "stagesExact": true,
+  "unmerged": "",
+  "inputDirtyCount": 299,
+  "currentDirtyCount": 299,
+  "dirtyStatusHashesExact": true,
+  "dirtyDifferences": [],
+  "inputReferenceCount": 3136,
+  "missingIncomingReferences": [],
+  "changedIncomingReferences": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-coverage-investigation.md",
+      "inputSha256": "154135a9410eb16927a3de827529b32f0e7d9f9189bad6ee9e6bededec67c01e",
+      "currentSha256": "564278c6c7c022b3682b428d1ba8bbed97bc113dd926d02431e8bf85f5198d8c",
+      "authorizedAPICanonical": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-execution-coverage-report.md",
+      "inputSha256": "9438f42177defd1a43e00786572cba50bfad2e959ced88813dadc29aee8d5f82",
+      "currentSha256": "e8c938ecfcd51775b3c14d4b386dae957a82a3257d56e8a74405604dedf6a620",
+      "authorizedAPICanonical": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-revision-record.md",
+      "inputSha256": "359f8545d40c5f16674f32d530d398d92b87f8ea86cbaabccd5c81bc16fb5cf8",
+      "currentSha256": "813eac9ce485991f0e8104205f48421433403a7cfb5682008f3dcda2df382477",
+      "authorizedAPICanonical": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-case-ledger.md",
+      "inputSha256": "a99784bc37bcd2770153c198572b3034f344c671605223cf0ad25fce556b2bef",
+      "currentSha256": "bc2c839f5cee50d0fc0e7c8832b92cc592c02460e6b44e90a9145df3f36feddf",
+      "authorizedAPICanonical": true
+    }
+  ],
+  "cumulative20DurableCurrentHashesExact": true,
+  "durableHashes": {
+    "autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs": true,
+    "autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts": true,
+    "autobyteus-server-ts/tests/e2e/projects/projects-startup-no-write.e2e.test.ts": true,
+    "autobyteus-server-ts/tests/fixtures/projects-released-array.json": true,
+    "autobyteus-server-ts/tests/fixtures/projects-released-array.provenance.json": true,
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts": true,
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts": true,
+    "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts": true,
+    "autobyteus-server-ts/tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts": true,
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts": true,
+    "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts": true,
+    "autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts": true,
+    "autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts": true,
+    "autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts": true,
+    "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts": true,
+    "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts": true,
+    "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts": true,
+    "autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts": true,
+    "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts": true,
+    "autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts": true
+  },
+  "noAPIProductionDurableOrGitEdit": true
+}

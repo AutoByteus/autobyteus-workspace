@@ -1,0 +1,102 @@
+{
+  "at": "2026-10-04T06:48:31.011464+00:00",
+  "scope": "Independent read-only archive/frame/trace comparison, no live reproduction or physical-owner attribution",
+  "rootId": "api014_claude_concrete_root_org_rerun_169281f2_8f8b_48f6_a709_41da495ed0f2_05e8277c90044361b6e98d99c8e01d35",
+  "managerId": "project_task_manager_dabaeb11823148cf83c3718326eb31d0",
+  "teamId": "api014_claude_packet_team_7e12197fa5174475918ba29fbda9586e",
+  "readerId": "api014_claude_team_reader_290ff120d050475081b9b8918de5ad5c",
+  "businessTurns": [
+    {
+      "callId": "toolu_01Fq7cSQKimJhbKkUQyvSdE9",
+      "timestamp": "2026-10-04T06:30:33.928000+00:00",
+      "turnId": "project_task_manager_dabaeb11823148cf83c3718326eb31d0:turn:1cf2a12a-ebd1-4b61-be6f-37e66b968941",
+      "tools": [
+        "create_or_update_task",
+        "list_project_tasks"
+      ],
+      "ack": {
+        "task": {
+          "projectId": "project_21a1825a-d700-4416-8aa2-3ee0a3151fca",
+          "taskId": "project_task_16dbaf7c-684a-4a5a-afae-cf6430fed02b",
+          "status": "DONE"
+        }
+      },
+      "assistantTimestamp": 1791095440.743,
+      "nonceMatched": true
+    },
+    {
+      "callId": "toolu_01RZMPhji79WyLZnXUk6w7zS",
+      "timestamp": "2026-10-04T06:33:05.596000+00:00",
+      "turnId": "project_task_manager_dabaeb11823148cf83c3718326eb31d0:turn:595d4645-766c-4111-9be2-5f65ca5b47e5",
+      "tools": [
+        "create_or_update_task",
+        "list_project_tasks"
+      ],
+      "ack": {
+        "task": {
+          "projectId": "project_21a1825a-d700-4416-8aa2-3ee0a3151fca",
+          "taskId": "project_task_16dbaf7c-684a-4a5a-afae-cf6430fed02b",
+          "status": "DONE"
+        }
+      },
+      "assistantTimestamp": 1791095592.979,
+      "nonceMatched": true
+    }
+  ],
+  "failedLifetimeExactAcrossFiveIndependentCaptures": true,
+  "closedLifetime": {
+    "lifetimeId": "project_task_lifetime_98bb8acf-8a4d-4266-bf0f-6d4f3f7be0d6",
+    "projectId": "project_21a1825a-d700-4416-8aa2-3ee0a3151fca",
+    "taskId": "project_task_16dbaf7c-684a-4a5a-afae-cf6430fed02b",
+    "openedAt": "2026-10-04T06:30:10.928Z",
+    "completedAt": "2026-10-04T06:30:33.945Z",
+    "executions": [
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "api014_claude_concrete_root_org_rerun_169281f2_8f8b_48f6_a709_41da495ed0f2_05e8277c90044361b6e98d99c8e01d35"
+        },
+        "execution": {
+          "teamRunId": "api014_claude_packet_team_7e12197fa5174475918ba29fbda9586e"
+        },
+        "ingressAgentRunId": "api014_claude_team_coordinator_48f3584ea135473d93a5729505cafed4",
+        "purpose": "assignment",
+        "reservedAt": "2026-10-04T06:30:10.936Z",
+        "dispatch": "delivered",
+        "cleanup": "failed",
+        "error": {
+          "code": "TASK_RELEASE_FAILED",
+          "message": "Exact Task execution cleanup failed."
+        }
+      }
+    ]
+  },
+  "wholePrivateTreeExactAcrossRetryAndArchive": true,
+  "AAndBusinessContentProtected": true,
+  "canonicalChildStatusCount": 31,
+  "lastCapturedStatus": {
+    "api014_claude_team_coordinator_48f3584ea135473d93a5729505cafed4": "offline",
+    "api014_claude_team_reader_290ff120d050475081b9b8918de5ad5c": "running"
+  },
+  "readerRawLastEvent": {
+    "ts": 1791095430.923,
+    "type": "tool_result",
+    "tool": "Read"
+  },
+  "readerNoAssistantOrOfflineNotPhysicalLeakProof": true,
+  "publicListScopedEqualAndInspectionTreeEqual": true,
+  "privateStampCount": 2,
+  "publicStampCount": 0,
+  "sourceChangedSinceCRR017": [],
+  "allNonTicketHashDeltasSinceCRR017": [],
+  "runtimeComponentCause": "UNOBSERVED: aggregate/inner exception and exact child/IO/attachment/component receipts unavailable",
+  "inputHashes": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-claude-concrete-agent_org.json": "1655e44359e4cb6a8e5863017b8ef0e45947b681ba3caf519c08e59af858e7ed",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-claude-failed-exact-retry.json": "4f6143757fcc43161dddd37c60e3cb505088a4c02d35999471645845fe9c445c",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-claude-failure-witness.json": "c092d999cdda7ea9799bb089ad1ceb2cdc2e0b5ab172933b1c8a5fb136538ca6",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-owned-data/server-data/memory/agent_orgs/api014_claude_concrete_root_org_rerun_169281f2_8f8b_48f6_a709_41da495ed0f2_05e8277c90044361b6e98d99c8e01d35/project_task_manager_dabaeb11823148cf83c3718326eb31d0/raw_traces_active.jsonl": "fb085e19f6f6741bbfec3cdb5396a2ee1aeca7fa1c1591fce5af20b4d62ed8c9",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-owned-data/server-data/memory/agent_orgs/api014_claude_concrete_root_org_rerun_169281f2_8f8b_48f6_a709_41da495ed0f2_05e8277c90044361b6e98d99c8e01d35/api014_claude_packet_team_7e12197fa5174475918ba29fbda9586e/api014_claude_team_reader_290ff120d050475081b9b8918de5ad5c/raw_traces_active.jsonl": "42a51fe04194b124f6a1d411de7a3043ce0e0444ac1df19524d5176cf3ff700f",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-owned-data/server-data/memory/agent_orgs/api014_claude_concrete_root_org_rerun_169281f2_8f8b_48f6_a709_41da495ed0f2_05e8277c90044361b6e98d99c8e01d35/agent_org_run_execution_tree.json": "fbe5bea65f47241d5057b0a8f26623bd01cf646d3665e61650bb2f3c836d760f",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-owned-data/server-data/projects/projects.json": "5aa3b06adde59426a3278161f93d0146f1832e7c5d5cc75becde8cfcc470c131"
+  }
+}

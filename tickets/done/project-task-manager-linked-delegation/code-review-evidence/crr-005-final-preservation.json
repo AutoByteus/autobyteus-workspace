@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-10-03T12:15:41.901856+00:00",
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "manifestTotal": 281,
+  "manifestUnchanged": 281,
+  "priorApiTotal": 13,
+  "priorApiUnchanged": 13,
+  "missing": [],
+  "reviewerSourceEdits": false
+}

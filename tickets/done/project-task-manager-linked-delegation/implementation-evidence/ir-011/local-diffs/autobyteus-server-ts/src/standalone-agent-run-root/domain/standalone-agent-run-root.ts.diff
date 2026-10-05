@@ -1,0 +1,234 @@
+--- incoming-merge/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
++++ IR-011/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+@@ -1,12 +1,7 @@
+-<<<<<<< HEAD:autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+ import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
+ import type { TaskExecutionLifetimePort, TaskExecutionReleaseOutcome } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+ import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+-import { collectAgentRootInputSnapshots } from "../services/agent-run-collaboration-input-snapshot.js";
+-import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+-=======
+ import { collectStandaloneRootInputSnapshots } from "../services/standalone-root-input-snapshot.js";
+->>>>>>> origin/personal:autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+ import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
+ import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+ import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
+@@ -25,12 +20,7 @@
+ } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+ import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
+ import { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
+-<<<<<<< HEAD:autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+-import { TaskDelegationError, type DelegateTaskInput, type DelegateTaskResult, type TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+-import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+-=======
+ import type { DelegateTaskInput, DelegateTaskResult, TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+->>>>>>> origin/personal:autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+ import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
+ import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
+ import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+@@ -137,17 +127,7 @@
+       replaceTree: (tree) => this.replaceTree(tree),
+       publish: (event) => options.publisher.publish(event),
+     });
+-<<<<<<< HEAD:autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+-    this.recipients = new AgentRunCollaborationRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
+-      taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
+-        resolvePlacement: address => this.recipients.resolveDelegationPlacement(sender, address),
+-        getAgent: id => this.index.requireAgent(id),
+-      }),
+-    });
+-    this.taskExecutions = new RootTaskExecutionLifecycle(new AgentRunCollaborationTaskExecutionAdapter({
+-=======
+     this.taskExecutions = new RootTaskExecutionLifecycle(new StandaloneRootTaskExecutionAdapter({
+->>>>>>> origin/personal:autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+       root: options.root,
+       taskExecutionIdentity: options.taskExecutionIdentity,
+       rootAgents: options.rootAgents,
+@@ -167,16 +147,18 @@
+       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
+       memoryLocator: options.memoryLocator,
+       activityInspector: options.activityInspector,
+-<<<<<<< HEAD:autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+     }), { ...options.taskExecutionIdleShutdown, lifetimePort: options.lifetimePort });
+-    this.communication = new RootCommunicationEngine(new AgentRunCollaborationCommunicationAdapter({
+-=======
+-    }), options.taskExecutionIdleShutdown ?? {});
++    const recipients: StandaloneRootRecipientResolver = new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
++      taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
++        resolvePlacement: address => recipients.resolveDelegationPlacement(sender, address),
++        getAgent: id => this.index.requireAgent(id),
++      }),
++    });
+     this.delivery = new StandaloneRootMessageDelivery({
+       hostRunId: this.hostRunId,
+       root: options.root,
+       getIndex: () => this.index,
+-      recipients: new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators }),
++      recipients,
+       collaborators: this.collaborators,
+       taskExecutions: this.taskExecutions,
+       getCommunication: () => this.communication,
+@@ -187,7 +169,6 @@
+       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
+     });
+     this.communication = new RootCommunicationEngine(new StandaloneRootCommunicationAdapter({
+->>>>>>> origin/personal:autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+       root: options.root,
+       initial: options.messages,
+       persistence: options.persistence,
+@@ -286,67 +267,18 @@
+ 
+   /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
+   deliverLogicalMessage(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
+-<<<<<<< HEAD:autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+-    return this.operationGate.run(() => this.taskExecutions.withLiveLease(sender.agentRunId, async () => {
+-      this.authorizeIdentity(sender);
+-      const resolution = await this.recipients.resolveMessageRecipient(sender, input.recipientAddress);
+-      if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
+-      return this.deliverTo(resolution.placement.receiver.agentRunId, {
+-        senderIdentity: sender,
+-        senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
+-        content: input.content,
+-        messageType: input.messageType,
+-        referenceFiles: input.referenceFiles,
+-      });
+-    }));
++    return this.operationGate.run(() => this.taskExecutions.withLiveLease(sender.agentRunId, () => this.delivery.deliverToAddress(sender, input)));
+   }
+ 
+   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
+-    return this.operationGate.run(() => this.taskExecutions.withLiveLease(input.sender.identity.agentRunId, async () => {
+-      this.authorizeIdentity(input.sender.identity);
+-      if (!this.index.getAgent(input.targetAgentRunId)) {
+-        return { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `AgentRun '${input.targetAgentRunId}' is not in this Agent run.` };
+-      }
+-      return this.deliverTo(input.targetAgentRunId, {
+-        senderIdentity: input.sender.identity,
+-        senderDisplayName: input.sender.displayName,
+-        content: input.content,
+-        messageType: input.messageType,
+-        referenceFiles: input.referenceFiles,
+-      });
+-    }));
+-=======
+-    return this.operationGate.run(() => this.delivery.deliverToAddress(sender, input));
+-  }
+-
+-  deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
+-    return this.operationGate.run(() => this.delivery.deliverToRunId(input));
+->>>>>>> origin/personal:autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
++    return this.operationGate.run(() => this.taskExecutions.withLiveLease(input.sender.identity.agentRunId, () => this.delivery.deliverToRunId(input)));
+   }
+ 
+   /** Commands for children only; the host's commands come through its own Agent stream. */
+   executeAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+     return this.operationGate.run(async () => {
+       this.assertAdmitting();
+-<<<<<<< HEAD:autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+-      const agent = this.index.getAgent(agentRunId);
+-      if (!agent) return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not in Agent root '${this.hostRunId}'.` };
+-      if (agent.executionKind === "host") {
+-        return { accepted: false, code: "AGENT_ROOT_HOST_COMMAND_REJECTED", message: "Commands for the run's own agent go through its Agent stream." };
+-      }
+-      const execute = () => agent.host.hostKind === "root"
+-        ? this.options.rootAgents.executeCommand(agentRunId, command)
+-        : this.options.teams.require(agent.host.hostRunId).executeDirectAgentCommand(agentRunId, command);
+-      if (command.kind !== "post_message") {
+-        return this.isLiveChild(agentRunId)
+-          ? this.taskExecutions.withLiveLease(agentRunId, execute, false)
+-          : { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in Agent root '${this.hostRunId}'.` };
+-      }
+-      // Operator input wakes a shut-down child exactly like send_message_to.
+-      return this.taskExecutions.withLiveLease(agentRunId, execute);
+-=======
+       return this.delivery.executeChildCommand(agentRunId, command);
+->>>>>>> origin/personal:autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+     });
+   }
+ 
+@@ -446,85 +378,6 @@
+     return { accepted: true };
+   }
+ 
+-<<<<<<< HEAD:autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+-  /** The host is woken through the standalone lifecycle; a child through its live lease. */
+-  private async deliverTo(
+-    targetAgentRunId: string,
+-    input: Readonly<{
+-      senderIdentity: CollaborationMemberExecutionIdentity;
+-      senderDisplayName: string;
+-      content: string;
+-      messageType?: string | null;
+-      referenceFiles?: readonly string[] | null;
+-    }>,
+-  ): Promise<AgentOperationResult> {
+-    const receiver = this.index.requireAgent(targetAgentRunId);
+-    const deliver = () => this.communication.deliver({
+-      ...input,
+-      receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
+-      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
+-    });
+-    if (receiver.executionKind !== "host") return this.taskExecutions.withLiveLease(receiver.agentRunId, deliver);
+-    try {
+-      await this.options.host.resolveCommandReadyRun();
+-    } catch (error) {
+-      return { accepted: false, code: "AGENT_ROOT_HOST_UNAVAILABLE", message: error instanceof Error ? error.message : String(error) };
+-    }
+-    return deliver();
+-  }
+-
+-  private async reserveAgentInput(agentRunId: string, message: AgentInputUserMessage): Promise<AgentRunInputReservationResult> {
+-    const agent = this.index.getAgent(agentRunId);
+-    if (agent?.executionKind === "host") {
+-      const run = this.options.host.getActiveRun();
+-      return run
+-        ? run.reserveUserMessage(message)
+-        : { reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `The run's own agent '${agentRunId}' is not active.` };
+-    }
+-    if (!agent || !this.isLiveChild(agentRunId)) {
+-      return { reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `AgentRun '${agentRunId}' is not live in Agent root '${this.hostRunId}'.` };
+-    }
+-    return agent.host.hostKind === "root"
+-      ? this.options.rootAgents.reserveInput(agentRunId, message)
+-      : this.options.teams.require(agent.host.hostRunId).reserveDirectAgentInput(agentRunId, message);
+-  }
+-
+-  private presentCommittedCommunication(message: CollaborationCommunicationMessageV1, receiverInput: AgentInputUserMessage): void {
+-    const receiver = this.index.requireAgent(message.receiverAgentRunId);
+-    if (receiver.executionKind === "host") {
+-      // The host's conversation lives on its own Agent stream: show the delivery there.
+-      const sender = this.index.requireAgent(message.senderAgentRunId);
+-      void this.options.host.getActiveRun()?.publishEvent(buildDirectAgentRunInterAgentEvent({
+-        sender: { senderRunId: sender.agentRunId, senderName: getAgentTeamAddressBasename(sender.address) ?? sender.agentRunId, runtimeKind: null, memberExecutionContext: null },
+-        targetAgentRunId: receiver.agentRunId,
+-        content: message.content,
+-        messageType: message.messageType,
+-        referenceFiles: [...message.referenceFiles],
+-        createdAt: message.createdAt,
+-        messageId: message.messageId,
+-      })).catch((error: unknown) => console.error(`Agent root '${this.hostRunId}' host message presentation failed:`, error));
+-      return;
+-    }
+-    const identity = this.identityFor(receiver.agentRunId, receiver.address);
+-    const event = buildMemberInputPresentationEvent({ execution: identity, message: receiverInput, receivedAt: message.createdAt });
+-    this.options.publisher.publish({ kind: "agent_presentation", execution: identity, message: projectAgentPresentationMessage(event) });
+-  }
+-
+-
+-
+-  private isLiveChild(agentRunId: string): boolean {
+-    const agent = this.index.getAgent(agentRunId);
+-    if (!agent || agent.executionKind === "host") return false;
+-    if (agent.host.hostKind === "root") {
+-      // A collaborator Agent keeps its handle (it starts lazily); a task Agent is live while active.
+-      return agent.executionKind === "task" ? this.options.rootAgents.isTaskLive(agentRunId) : this.options.rootAgents.get(agentRunId) !== null;
+-    }
+-    const host = this.options.teams.get(agent.host.hostRunId);
+-    return Boolean(host && (agent.executionKind !== "task" || host.hasLiveDirectTaskExecution({ agentRunId })));
+-  }
+-
+-=======
+->>>>>>> origin/personal:autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+   private authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void {
+     this.assertAdmitting();
+     this.authorizeCurrentIdentity(identity);

@@ -1,0 +1,62 @@
+{
+  "at": "2026-10-04T06:41:01.344719+00:00",
+  "round": "API-REV-014",
+  "result": "Fail",
+  "postRepository": {
+    "scores": [
+      75,
+      95,
+      90,
+      90,
+      75,
+      95,
+      95
+    ],
+    "overall": 87.86,
+    "broader": "Required",
+    "reason": "Retained current API13 direct Native/Codex plus12SDKfiles88Pass; Sonnet5 authorization not authentication/live proof. Critical originalFAPI007/fullprovider matrix unresolved; live Sonnet targeted gap."
+  },
+  "finalScores": {
+    "Requirement and acceptance-criteria proof": 50,
+    "Changed-boundary execution directness": 95,
+    "Cross-boundary integration realism and mock gap": 90,
+    "Environment, configuration, identity, and fixture fidelity": 95,
+    "Failure, edge-case, lifecycle, and recovery evidence": 50,
+    "User-surface, browser, and desktop-shell confidence": 90,
+    "Durable regression coverage quality and relevance": 95
+  },
+  "finalOverall": 80.71,
+  "calculation": "simple average7applicable",
+  "criticalACPass": false,
+  "rationale": {
+    "Requirement and acceptance-criteria proof": {
+      "support": "Current Native/Codex API13 positives and new Sonnet saved-ID/actual reads, scope/data/projection remain valid.",
+      "uncertainty": "Critical new assigned-Team cleanup plus exact retry fails; all critical AC cannot pass."
+    },
+    "Changed-boundary execution directness": {
+      "support": "Actual current compiled/packaged SDK child/MCP/OrgWS/public list+scoped/DTO/renderer boundaries exercised, including genuine negative.",
+      "uncertainty": "Underlying aggregate exception/physical exact firstB release not observed; installed AGY/remote still unproven."
+    },
+    "Cross-boundary integration realism and mock gap": {
+      "support": "Actual Sonnet SDK inference/native Read/Bash and actual scoped MCP, plus unchanged current API13 Native/Codex inference.",
+      "uncertainty": "All-provider/failure windows remain partly emulated; no full matrix claim."
+    },
+    "Environment, configuration, identity, and fixture fidelity": {
+      "support": "Exact user-authorized sonnet canonicalClaudeSonnet5, unchanged1.4.94beta2 package proven current, fresh own ports/profile, importer/default CLI mode actual successful calls.",
+      "uncertainty": "AGY4.8/remote individually unprovided; no different auth/model inference."
+    },
+    "Failure, edge-case, lifecycle, and recovery evidence": {
+      "support": "Truthful failed closure retained after sole exact retry, scope/bytes protected; controlled real-child samechild retry12files88Pass.",
+      "uncertainty": "Actual normal SDK assigned-Team release does not settle on retry; originalFAPI007 remains open and independently distinct."
+    },
+    "User-surface, browser, and desktop-shell confidence": {
+      "support": "Existing LIVE packaged UI shows actual business reply, coordinatoroffline/reader-running and stable selected Manager without repair; API13 actual wholeapp Native/Codex resume retained.",
+      "uncertainty": "Claude wholeapp/SAMEworker/Manager resume/finalA and separateTeam root not entered after failure; no UI repair/teardown proof."
+    },
+    "Durable regression coverage quality and relevance": {
+      "support": "All20 current durables Still Valid exact preserved; fresh12SDKfiles88Pass and production final gates; unchanged current API13 broader affected evidence.",
+      "uncertainty": "Successful proportional review pending; historical wholebaseline52failedfiles136tests4unhandled5liveskips never claimed Pass."
+    }
+  },
+  "broaderValidation": "Required\u2014executed; stop further unrelated paid journeys after material FAPI011; focused failure-origin review"
+}

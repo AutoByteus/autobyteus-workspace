@@ -1,0 +1,1 @@
+tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts(43,36): error TS2322: Type '"claude_agent_sdk"' is not assignable to type 'RuntimeKind'.

@@ -1,0 +1,92 @@
+{
+  "head": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "stash": "c0d5140aeee1902f46993237433436152b2472ee",
+  "stashParent": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "incomingDirty": 297,
+  "currentDirty": 299,
+  "unchanged": 291,
+  "changed": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+    "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+    "autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts",
+    "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts"
+  ],
+  "new": [
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts"
+  ],
+  "indexChanges": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts"
+  ],
+  "unmerged": "",
+  "originalInputIndexMatchesCRR016": true,
+  "all20CurrentFingerprintExact": true,
+  "apiDurableChangedFromIR009Input": [
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts"
+  ],
+  "backupSHA256": "01daa1167c4c731b00a3b2704d75c97e7479af2fffa4c338c24b2a03e4660838",
+  "eightOriginalBackupStashChecks": [
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "backupSHA256": "b0c4715a874f06284ea82d3c41119607aa7721bfeb76a20b83c371562e28574a",
+      "stashSHA256": "b0c4715a874f06284ea82d3c41119607aa7721bfeb76a20b83c371562e28574a",
+      "preRefreshSHA256": "b0c4715a874f06284ea82d3c41119607aa7721bfeb76a20b83c371562e28574a",
+      "equal": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+      "backupSHA256": "9c188c898170aa50ed009a30e584cd100602c761cdae225fab69d1e72beb2d1d",
+      "stashSHA256": "9c188c898170aa50ed009a30e584cd100602c761cdae225fab69d1e72beb2d1d",
+      "preRefreshSHA256": "9c188c898170aa50ed009a30e584cd100602c761cdae225fab69d1e72beb2d1d",
+      "equal": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "backupSHA256": "daa8284478d806370c10f8af1f87bd4d19f4dc28e9dbfddf43536812ed2ecb8b",
+      "stashSHA256": "daa8284478d806370c10f8af1f87bd4d19f4dc28e9dbfddf43536812ed2ecb8b",
+      "preRefreshSHA256": "daa8284478d806370c10f8af1f87bd4d19f4dc28e9dbfddf43536812ed2ecb8b",
+      "equal": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+      "backupSHA256": "051b34e4912ca6d3a1c0f2db2d74c40d27e92129e2c8783cbe8a82fb0c0a2a12",
+      "stashSHA256": "051b34e4912ca6d3a1c0f2db2d74c40d27e92129e2c8783cbe8a82fb0c0a2a12",
+      "preRefreshSHA256": "051b34e4912ca6d3a1c0f2db2d74c40d27e92129e2c8783cbe8a82fb0c0a2a12",
+      "equal": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "backupSHA256": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "stashSHA256": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "preRefreshSHA256": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "equal": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+      "backupSHA256": "6e291ecfb474adbb71fa6f951da54109d7ba6a1ca99fc263102deb833159908e",
+      "stashSHA256": "6e291ecfb474adbb71fa6f951da54109d7ba6a1ca99fc263102deb833159908e",
+      "preRefreshSHA256": "6e291ecfb474adbb71fa6f951da54109d7ba6a1ca99fc263102deb833159908e",
+      "equal": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+      "backupSHA256": "9e1a34ee2d01cf785956747a32494830284f7db2622fefe0c016466208c99277",
+      "stashSHA256": "9e1a34ee2d01cf785956747a32494830284f7db2622fefe0c016466208c99277",
+      "preRefreshSHA256": "9e1a34ee2d01cf785956747a32494830284f7db2622fefe0c016466208c99277",
+      "equal": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+      "backupSHA256": "fdd5e14bcb91a262017bc35c682998d4b8de478df9a6516fae0f51586dcca029",
+      "stashSHA256": "fdd5e14bcb91a262017bc35c682998d4b8de478df9a6516fae0f51586dcca029",
+      "preRefreshSHA256": "fdd5e14bcb91a262017bc35c682998d4b8de478df9a6516fae0f51586dcca029",
+      "equal": true
+    }
+  ],
+  "harnessNote": "Initial read-only stdin audit had quadratic grouping across 45,338 index entries; its exact owned PID was stopped before any product test or provenance conclusion. This linear replacement changes only reviewer evidence. Not a candidate/source/API failure."
+}

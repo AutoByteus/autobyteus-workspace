@@ -1,0 +1,7 @@
+2026-10-04T06:06:09.059312+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round13-byte-guard.py", "before"]
+Scoped Pass before 54 allowlisted own files
+
+INNER_EXIT=0
+ELAPSED=0.05

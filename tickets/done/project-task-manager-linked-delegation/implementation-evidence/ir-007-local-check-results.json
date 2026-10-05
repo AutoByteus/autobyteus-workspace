@@ -1,0 +1,124 @@
+{
+  "ir-007-causal-before.log": {
+    "summary": [
+      "Test Files  1 failed (1)",
+      "Tests  2 failed (2)",
+      "Duration  9.97s (transform 2.79s, setup 17ms, import 4.18s, tests 5.17s, environment 0ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 1
+  },
+  "ir-007-causal-thread-only.log": {
+    "summary": [
+      "Test Files  1 failed (1)",
+      "Tests  2 failed (2)",
+      "Duration  5.33s (transform 3.01s, setup 18ms, import 4.30s, tests 430ms, environment 0ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 1
+  },
+  "ir-007-causal-after-initial.log": {
+    "summary": [
+      "Test Files  1 passed (1)",
+      "Tests  2 passed (2)",
+      "Duration  4.95s (transform 2.68s, setup 17ms, import 3.86s, tests 372ms, environment 0ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 0
+  },
+  "ir-007-owner-neighbors-initial.log": {
+    "summary": [
+      "Test Files  1 failed | 6 passed (7)",
+      "Tests  1 failed | 163 passed (164)",
+      "Duration  18.89s (transform 2.80s, setup 44ms, import 5.46s, tests 12.21s, environment 1ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 1
+  },
+  "ir-007-owner-neighbors-final.log": {
+    "summary": [
+      "Test Files  1 failed | 6 passed (7)",
+      "Tests  1 failed | 163 passed (164)",
+      "Duration  19.04s (transform 2.79s, setup 51ms, import 5.60s, tests 12.17s, environment 1ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 1
+  },
+  "ir-007-backend-existing-before.log": {
+    "summary": [
+      "Test Files  1 passed (1)",
+      "Tests  10 passed (10)",
+      "Duration  893ms (transform 270ms, setup 17ms, import 317ms, tests 14ms, environment 0ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 0
+  },
+  "ir-007-cumulative-focused-final.log": {
+    "summary": [
+      "Test Files  1 failed | 145 passed | 3 skipped (149)",
+      "Tests  4 failed | 1453 passed | 5 skipped (1462)",
+      "Duration  128.95s (transform 6.92s, setup 743ms, import 71.43s, tests 40.51s, environment 13ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 1
+  },
+  "ir-007-causal-before-certified.log": {
+    "summary": [
+      "Test Files  1 failed (1)",
+      "Tests  1 failed | 6 skipped (7)",
+      "Duration  4.75s (transform 2.88s, setup 19ms, import 3.97s, tests 162ms, environment 0ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 1
+  },
+  "ir-007-event-baseline-comparison.log": {
+    "summary": [
+      "Test Files  1 failed (1)",
+      "Tests  4 failed | 1 passed (5)",
+      "Duration  1.20s (transform 471ms, setup 18ms, import 601ms, tests 19ms, environment 0ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 1
+  },
+  "ir-007-cumulative-selected-final.log": {
+    "summary": [
+      "Test Files  141 passed | 3 skipped (144)",
+      "Tests  1379 passed | 5 skipped (1384)",
+      "Duration  126.95s (transform 6.07s, setup 663ms, import 69.98s, tests 40.88s, environment 13ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 0
+  },
+  "ir-007-cumulative-selected-proof-final.log": {
+    "summary": [
+      "Test Files  141 passed | 3 skipped (144)",
+      "Tests  1379 passed | 5 skipped (1384)",
+      "Duration  137.60s (transform 6.00s, setup 654ms, import 70.65s, tests 50.79s, environment 13ms)"
+    ],
+    "scope": "local selected Vitest, evolving new test fixture; not API/E2E acceptance",
+    "exit": 0
+  },
+  "ir-007-production-typecheck.log": {
+    "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+    "exit": 0,
+    "stdoutBytes": 0
+  },
+  "ir-007-server-build.log": {
+    "command": "pnpm -C autobyteus-server-ts run build:full",
+    "exit": 0,
+    "scope": "server compile/assets/sanitized bootstrap, no desktop/provider acceptance"
+  },
+  "ir-007-diffcheck.log": {
+    "command": "git diff --check",
+    "exit": 0
+  },
+  "stageAcceptance": {
+    "API-REV-008": "Fail67.86% (post-repository65.00%) unchanged",
+    "CRF-005": "Implementation-proposed correction, independent source closure pending",
+    "FAPI-008": "Actual rebuilt product repair pending",
+    "FAPI-007": "Open / Unclear / Not Reproduced, relation unestablished"
+  },
+  "testTeardown": "Actual test-owned Node child closed and owned mkdtemp removed in finally; not Task repair",
+  "selectionOverlap": "Counts overlap and are not summed",
+  "artifactAuditInitialFailure": "git status collapsed untracked directories ->224; --untracked-files=all fixed enumeration only"
+}

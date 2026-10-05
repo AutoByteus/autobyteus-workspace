@@ -1,0 +1,616 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts (30 tests | 22 failed) 1146ms
+     ✓ forwards exact terminal transitions and keeps successful release idempotent 7ms
+     ✓ retains live event delivery and exact authority across pending stop and retry 2ms
+     ✓ retains live event delivery and exact authority across failed stop and retry 2ms
+     × forwards exact terminal transitions and keeps successful release idempotent 6ms
+     × retains live event delivery and exact authority across pending stop and retry 2ms
+     × retains live event delivery and exact authority across failed stop and retry 1ms
+     × forwards exact terminal transitions and keeps successful release idempotent 1ms
+     × retains live event delivery and exact authority across pending stop and retry 1ms
+     × retains live event delivery and exact authority across failed stop and retry 1ms
+     × forwards exact terminal transitions and keeps successful release idempotent 1ms
+     × retains live event delivery and exact authority across pending stop and retry 1ms
+     × retains live event delivery and exact authority across failed stop and retry 3ms
+     × forwards exact terminal transitions and keeps successful release idempotent 1ms
+     × retains live event delivery and exact authority across pending stop and retry 1ms
+     × retains live event delivery and exact authority across failed stop and retry 1ms
+     × forwards exact terminal transitions and keeps successful release idempotent 0ms
+     × retains live event delivery and exact authority across pending stop and retry 1ms
+     × retains live event delivery and exact authority across failed stop and retry 1ms
+     ✓ forwards exact terminal transitions and keeps successful release idempotent 1ms
+     ✓ retains live event delivery and exact authority across pending stop and retry 1ms
+     ✓ retains live event delivery and exact authority across failed stop and retry 1ms
+     × forwards exact terminal transitions and keeps successful release idempotent 1ms
+     × retains live event delivery and exact authority across pending stop and retry 1ms
+     × retains live event delivery and exact authority across failed stop and retry 1ms
+     × forwards exact terminal transitions and keeps successful release idempotent 1ms
+     × retains live event delivery and exact authority across pending stop and retry 1ms
+     × retains live event delivery and exact authority across failed stop and retry 1ms
+   ✓ agent published Team initiates independent member stops before slow first drain without fabricating terminal status 52ms
+   × agent_team published Team initiates independent member stops before slow first drain without fabricating terminal status 1002ms
+   ✓ agent_org published Team initiates independent member stops before slow first drain without fabricating terminal status 52ms
+stdout | tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts (2 tests) 7ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 22 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent nested-team terminal publication > forwards exact terminal transitions and keeps successful release idempotent
+AssertionError: expected [] to deeply equal [ { id: 'target-lead', …(3) }, …(1) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Workers/Lead",
+-     "id": "target-lead",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent",
+-     },
+-     "status": "offline",
+-   },
+-   {
+-     "address": "/Host/Workers/Reader",
+-     "id": "target-reader",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:114:26
+    112|     const f = await fixture(kind, placement);
+    113|     expect(await f.release()).toEqual({ accepted: true });
+    114|     expect(f.statuses()).toEqual(f.idle.map(s => ({ ...s, status: 'off…
+       |                          ^
+    115|     f.assertProtected();
+    116|     const stops = f.manager.releaseExactRun.mock.calls.length;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent nested-team terminal publication > retains live event delivery and exact authority across pending stop and retry
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent nested-team terminal publication > retains live event delivery and exact authority across failed stop and retry
+AssertionError: expected [] to deeply equal [ { id: 'target-reader', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Workers/Reader",
+-     "id": "target-reader",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:129:26
+    127|     if (mode === 'pending') expect(await f.release()).toMatchObject({ …
+    128|     else await expect(f.release()).rejects.toBeInstanceOf(Error);
+    129|     expect(f.statuses()).toEqual(f.idle.slice(1).map(s => ({ ...s, sta…
+       |                          ^
+    130|     expect(f.active.get(f.targetIds[0])?.isActive()).toBe(true);
+    131|     if (f.prepared.preparedTeamRuns.length) expect(f.prepared.prepared…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent nested-agent terminal publication > forwards exact terminal transitions and keeps successful release idempotent
+AssertionError: expected [] to deeply equal [ { id: 'target-agent', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Worker",
+-     "id": "target-agent",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:114:26
+    112|     const f = await fixture(kind, placement);
+    113|     expect(await f.release()).toEqual({ accepted: true });
+    114|     expect(f.statuses()).toEqual(f.idle.map(s => ({ ...s, status: 'off…
+       |                          ^
+    115|     f.assertProtected();
+    116|     const stops = f.manager.releaseExactRun.mock.calls.length;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent nested-agent terminal publication > retains live event delivery and exact authority across pending stop and retry
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent nested-agent terminal publication > retains live event delivery and exact authority across failed stop and retry
+AssertionError: expected [] to deeply equal [ { id: 'target-agent', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Worker",
+-     "id": "target-agent",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:138:26
+    136|     expect(f.manager.releaseExactRun.mock.calls.length).toBeGreaterTha…
+    137|     expect(f.manager.releaseExactRun.mock.calls.every(([run]) => run =…
+    138|     expect(f.statuses()).toEqual([...f.idle.slice(1), f.idle[0]].map(s…
+       |                          ^
+    139|     const stops = f.manager.releaseExactRun.mock.calls.length;
+    140|     expect(await f.release()).toEqual({ accepted: true });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team root-team terminal publication > forwards exact terminal transitions and keeps successful release idempotent
+AssertionError: expected [] to deeply equal [ { id: 'target-lead', …(3) }, …(1) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Workers/Lead",
+-     "id": "target-lead",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_team",
+-     },
+-     "status": "offline",
+-   },
+-   {
+-     "address": "/Workers/Reader",
+-     "id": "target-reader",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_team",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:114:26
+    112|     const f = await fixture(kind, placement);
+    113|     expect(await f.release()).toEqual({ accepted: true });
+    114|     expect(f.statuses()).toEqual(f.idle.map(s => ({ ...s, status: 'off…
+       |                          ^
+    115|     f.assertProtected();
+    116|     const stops = f.manager.releaseExactRun.mock.calls.length;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team root-team terminal publication > retains live event delivery and exact authority across pending stop and retry
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team root-team terminal publication > retains live event delivery and exact authority across failed stop and retry
+AssertionError: expected [] to deeply equal [ { id: 'target-reader', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Workers/Reader",
+-     "id": "target-reader",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_team",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:129:26
+    127|     if (mode === 'pending') expect(await f.release()).toMatchObject({ …
+    128|     else await expect(f.release()).rejects.toBeInstanceOf(Error);
+    129|     expect(f.statuses()).toEqual(f.idle.slice(1).map(s => ({ ...s, sta…
+       |                          ^
+    130|     expect(f.active.get(f.targetIds[0])?.isActive()).toBe(true);
+    131|     if (f.prepared.preparedTeamRuns.length) expect(f.prepared.prepared…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team nested-team terminal publication > forwards exact terminal transitions and keeps successful release idempotent
+AssertionError: expected [] to deeply equal [ { id: 'target-lead', …(3) }, …(1) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Workers/Lead",
+-     "id": "target-lead",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_team",
+-     },
+-     "status": "offline",
+-   },
+-   {
+-     "address": "/Host/Workers/Reader",
+-     "id": "target-reader",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_team",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:114:26
+    112|     const f = await fixture(kind, placement);
+    113|     expect(await f.release()).toEqual({ accepted: true });
+    114|     expect(f.statuses()).toEqual(f.idle.map(s => ({ ...s, status: 'off…
+       |                          ^
+    115|     f.assertProtected();
+    116|     const stops = f.manager.releaseExactRun.mock.calls.length;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team nested-team terminal publication > retains live event delivery and exact authority across pending stop and retry
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team nested-team terminal publication > retains live event delivery and exact authority across failed stop and retry
+AssertionError: expected [] to deeply equal [ { id: 'target-reader', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Workers/Reader",
+-     "id": "target-reader",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_team",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:129:26
+    127|     if (mode === 'pending') expect(await f.release()).toMatchObject({ …
+    128|     else await expect(f.release()).rejects.toBeInstanceOf(Error);
+    129|     expect(f.statuses()).toEqual(f.idle.slice(1).map(s => ({ ...s, sta…
+       |                          ^
+    130|     expect(f.active.get(f.targetIds[0])?.isActive()).toBe(true);
+    131|     if (f.prepared.preparedTeamRuns.length) expect(f.prepared.prepared…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team nested-agent terminal publication > forwards exact terminal transitions and keeps successful release idempotent
+AssertionError: expected [] to deeply equal [ { id: 'target-agent', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Worker",
+-     "id": "target-agent",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_team",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:114:26
+    112|     const f = await fixture(kind, placement);
+    113|     expect(await f.release()).toEqual({ accepted: true });
+    114|     expect(f.statuses()).toEqual(f.idle.map(s => ({ ...s, status: 'off…
+       |                          ^
+    115|     f.assertProtected();
+    116|     const stops = f.manager.releaseExactRun.mock.calls.length;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team nested-agent terminal publication > retains live event delivery and exact authority across pending stop and retry
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team nested-agent terminal publication > retains live event delivery and exact authority across failed stop and retry
+AssertionError: expected [] to deeply equal [ { id: 'target-agent', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Worker",
+-     "id": "target-agent",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_team",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:138:26
+    136|     expect(f.manager.releaseExactRun.mock.calls.length).toBeGreaterTha…
+    137|     expect(f.manager.releaseExactRun.mock.calls.every(([run]) => run =…
+    138|     expect(f.statuses()).toEqual([...f.idle.slice(1), f.idle[0]].map(s…
+       |                          ^
+    139|     const stops = f.manager.releaseExactRun.mock.calls.length;
+    140|     expect(await f.release()).toEqual({ accepted: true });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_org nested-team terminal publication > forwards exact terminal transitions and keeps successful release idempotent
+AssertionError: expected [] to deeply equal [ { id: 'target-lead', …(3) }, …(1) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Workers/Lead",
+-     "id": "target-lead",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_org",
+-     },
+-     "status": "offline",
+-   },
+-   {
+-     "address": "/Host/Workers/Reader",
+-     "id": "target-reader",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_org",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:114:26
+    112|     const f = await fixture(kind, placement);
+    113|     expect(await f.release()).toEqual({ accepted: true });
+    114|     expect(f.statuses()).toEqual(f.idle.map(s => ({ ...s, status: 'off…
+       |                          ^
+    115|     f.assertProtected();
+    116|     const stops = f.manager.releaseExactRun.mock.calls.length;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_org nested-team terminal publication > retains live event delivery and exact authority across pending stop and retry
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_org nested-team terminal publication > retains live event delivery and exact authority across failed stop and retry
+AssertionError: expected [] to deeply equal [ { id: 'target-reader', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Workers/Reader",
+-     "id": "target-reader",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_org",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:129:26
+    127|     if (mode === 'pending') expect(await f.release()).toMatchObject({ …
+    128|     else await expect(f.release()).rejects.toBeInstanceOf(Error);
+    129|     expect(f.statuses()).toEqual(f.idle.slice(1).map(s => ({ ...s, sta…
+       |                          ^
+    130|     expect(f.active.get(f.targetIds[0])?.isActive()).toBe(true);
+    131|     if (f.prepared.preparedTeamRuns.length) expect(f.prepared.prepared…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_org nested-agent terminal publication > forwards exact terminal transitions and keeps successful release idempotent
+AssertionError: expected [] to deeply equal [ { id: 'target-agent', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Worker",
+-     "id": "target-agent",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_org",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:114:26
+    112|     const f = await fixture(kind, placement);
+    113|     expect(await f.release()).toEqual({ accepted: true });
+    114|     expect(f.statuses()).toEqual(f.idle.map(s => ({ ...s, status: 'off…
+       |                          ^
+    115|     f.assertProtected();
+    116|     const stops = f.manager.releaseExactRun.mock.calls.length;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_org nested-agent terminal publication > retains live event delivery and exact authority across pending stop and retry
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_org nested-agent terminal publication > retains live event delivery and exact authority across failed stop and retry
+AssertionError: expected [] to deeply equal [ { id: 'target-agent', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Host/Worker",
+-     "id": "target-agent",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_org",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:138:26
+    136|     expect(f.manager.releaseExactRun.mock.calls.length).toBeGreaterTha…
+    137|     expect(f.manager.releaseExactRun.mock.calls.every(([run]) => run =…
+    138|     expect(f.statuses()).toEqual([...f.idle.slice(1), f.idle[0]].map(s…
+       |                          ^
+    139|     const stops = f.manager.releaseExactRun.mock.calls.length;
+    140|     expect(await f.release()).toEqual({ accepted: true });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/22]⎯
+
+ FAIL  tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts > agent_team published Team initiates independent member stops before slow first drain without fabricating terminal status
+AssertionError: expected [] to deeply equal [ { id: 'target-reader', …(3) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/Workers/Reader",
+-     "id": "target-reader",
+-     "root": {
+-       "rootRunId": "root",
+-       "rootSubjectKind": "agent_team",
+-     },
+-     "status": "offline",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts:153:49
+    151|   const release = f.release(); void release.then(() => { settled = tru…
+    152|   try {
+    153|     await vi.waitFor(() => expect(f.statuses()).toEqual(f.idle.slice(1…
+       |                                                 ^
+    154|     expect(settled).toBe(false); expect(f.active.get(f.targetIds[0])?.…
+    155|     f.assertProtected();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/22]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  22 failed | 10 passed (32)
+   Start at  15:05:12
+   Duration  6.27s (transform 2.51s, setup 18ms, import 4.53s, tests 1.15s, environment 0ms)
+

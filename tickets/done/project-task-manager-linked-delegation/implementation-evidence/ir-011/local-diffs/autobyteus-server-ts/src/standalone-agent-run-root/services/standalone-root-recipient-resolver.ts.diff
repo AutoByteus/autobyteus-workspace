@@ -1,0 +1,17 @@
+--- incoming-merge/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts
++++ IR-011/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts
+@@ -18,14 +18,9 @@
+  */
+ export class StandaloneRootRecipientResolver {
+   constructor(private readonly options: Readonly<{
+-<<<<<<< HEAD:autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts
+     taskScope(sender: CollaborationMemberExecutionIdentity): NonNullable<Parameters<typeof resolveMessageRecipient>[0]["taskScope"]>;
+-    getIndex(): AgentRunCollaborationExecutionIndex;
+-    collaborators: AgentRunCollaborationCollaborators;
+-=======
+     getIndex(): StandaloneRootExecutionIndex;
+     collaborators: StandaloneRootCollaborators;
+->>>>>>> origin/personal:autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts
+   }>) {}
+ 
+   /**

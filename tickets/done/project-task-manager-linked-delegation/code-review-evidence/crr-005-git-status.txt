@@ -1,0 +1,561 @@
+ M autobyteus-server-ts/docs/modules/prompt_engineering.md
+ M autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+ M autobyteus-server-ts/src/agent-collaboration/collaborators/message-recipient-resolution.ts
+ M autobyteus-server-ts/src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/services/active-collaboration-root-directory.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-adapter.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-input.ts
+ M autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-tree-projection.ts
+ M autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts
+ M autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts
+ M autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-process-groups.ts
+ M autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts
+ M autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-cleanup.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
+ M autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts
+ M autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+ M autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts
+ M autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts
+ M autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
+ M autobyteus-server-ts/src/agent-execution/services/managed-agent-run-termination.ts
+ M autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+ M autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts
+ M autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts
+ M autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/prepared-task-execution.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/task-agent-execution.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/task-team-execution.ts
+ M autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-callbacks.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/registries/task-team-execution-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/local/task-team-execution-factory.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service-contract.ts
+ M autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts
+ M autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts
+ M autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts
+ M autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts
+ M autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts
+ M autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+ M autobyteus-server-ts/src/llm-management/services/codex-model-catalog.ts
+ M autobyteus-server-ts/src/persistence/file/store-utils.ts
+ M autobyteus-server-ts/src/projects/context/project-task-context-store.ts
+ M autobyteus-server-ts/src/projects/domain/models.ts
+ M autobyteus-server-ts/src/projects/domain/project-errors.ts
+ M autobyteus-server-ts/src/projects/services/project-task-service.ts
+ M autobyteus-server-ts/src/projects/stores/project-store.ts
+ M autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts
+ M autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts
+ M autobyteus-server-ts/src/runtime-management/acp/acp-agent-process.ts
+ M autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts
+ M autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-streaming-session.ts
+ M autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts
+ M autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts
+ M autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
+ M autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts
+ M autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts
+ M autobyteus-server-ts/tests/fixtures/configured-root-first-work-fixture.ts
+ M autobyteus-server-ts/tests/helpers/fake-claude-streaming-sdk.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/configured-root-first-work.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-scope.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-task-publication.test.ts
+ M autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-execution-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-liveness.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-root-agent-initiated-collaborators.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+ M autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+ M autobyteus-server-ts/tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts
+ M autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/projects/project-service.test.ts
+ M autobyteus-server-ts/tests/unit/projects/project-task-service.test.ts
+ M autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+ M autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts
+ M autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts
+ M autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts
+ M autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts
+ M autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts
+ M autobyteus-ts/src/agent/factory/agent-factory.ts
+ M autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts
+?? autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts
+?? autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map
+?? autobyteus-application-backend-sdk/dist/application-agent-target-address.js
+?? autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map
+?? autobyteus-application-backend-sdk/dist/index.d.ts
+?? autobyteus-application-backend-sdk/dist/index.d.ts.map
+?? autobyteus-application-backend-sdk/dist/index.js
+?? autobyteus-application-backend-sdk/dist/index.js.map
+?? autobyteus-application-backend-sdk/dist/launch-profile.d.ts
+?? autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map
+?? autobyteus-application-backend-sdk/dist/launch-profile.js
+?? autobyteus-application-backend-sdk/dist/launch-profile.js.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts
+?? autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-bindings.js
+?? autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts
+?? autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-communication.js
+?? autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts
+?? autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-events.js
+?? autobyteus-application-sdk-contracts/dist/application-agent-events.js.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts
+?? autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-member-address.js
+?? autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts
+?? autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-target-url.js
+?? autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts
+?? autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/application-agent-tools.js
+?? autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map
+?? autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts
+?? autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/application-iframe-contract.js
+?? autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map
+?? autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts
+?? autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js
+?? autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map
+?? autobyteus-application-sdk-contracts/dist/application-websockets.d.ts
+?? autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/application-websockets.js
+?? autobyteus-application-sdk-contracts/dist/application-websockets.js.map
+?? autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+?? autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/execution-resources.js
+?? autobyteus-application-sdk-contracts/dist/execution-resources.js.map
+?? autobyteus-application-sdk-contracts/dist/index.d.ts
+?? autobyteus-application-sdk-contracts/dist/index.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/index.js
+?? autobyteus-application-sdk-contracts/dist/index.js.map
+?? autobyteus-application-sdk-contracts/dist/manifests.d.ts
+?? autobyteus-application-sdk-contracts/dist/manifests.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/manifests.js
+?? autobyteus-application-sdk-contracts/dist/manifests.js.map
+?? autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts
+?? autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map
+?? autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js
+?? autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map
+?? autobyteus-server-ts/src/agent-collaboration/collaborators/task-scoped-message-recipient.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-dispatch.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-lifetime.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-seed-admission.ts
+?? autobyteus-server-ts/src/agent-collaboration/execution/task/task-lifetime-operation-gate.ts
+?? autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-preparation.ts
+?? autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-input-submission.ts
+?? autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-release-scope.ts
+?? autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts
+?? autobyteus-server-ts/src/agent-execution/input/agent-run-execution-admission-fence.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-activation-operation.ts
+?? autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts
+?? autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager-options.ts
+?? autobyteus-server-ts/src/agent-team-execution/local/owned-flat-team-runtime-release.ts
+?? autobyteus-server-ts/src/agent-team-execution/local/prepare-flat-team-configured-activation.ts
+?? autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent-config.json
+?? autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md
+?? autobyteus-server-ts/src/projects/domain/project-task-execution-state.ts
+?? autobyteus-server-ts/src/projects/domain/project-task-execution.ts
+?? autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts
+?? autobyteus-server-ts/src/projects/stores/project-metadata-schema.ts
+?? autobyteus-server-ts/src/projects/stores/project-state-schema.ts
+?? autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts
+?? autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-session-opening.ts
+?? autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts
+?? autobyteus-server-ts/tests/e2e/projects/projects-startup-no-write.e2e.test.ts
+?? autobyteus-server-ts/tests/fixtures/agent-run-preparation-fixtures.ts
+?? autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs
+?? autobyteus-server-ts/tests/fixtures/collaboration-public-projection-fixtures.ts
+?? autobyteus-server-ts/tests/fixtures/projects-released-array.json
+?? autobyteus-server-ts/tests/fixtures/projects-released-array.provenance.json
+?? autobyteus-server-ts/tests/fixtures/task-release-generation-fixtures.ts
+?? autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-dispatch-races.test.ts
+?? autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-quiet-generation.test.ts
+?? autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-tree-scope.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/services/agent-run-activation-operation.test.ts
+?? autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-private-release-independence.test.ts
+?? autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts
+?? autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-work-source.test.ts
+?? autobyteus-server-ts/tests/unit/projects/project-state-schema.test.ts
+?? autobyteus-server-ts/tests/unit/projects/project-task-lifetime.test.ts
+?? autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts
+?? autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts
+?? autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts
+?? autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts
+?? autobyteus-server-ts/tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-coverage-investigation.md
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-coverage-inventory.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-diffcheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-durable-coverage.diff
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-final-git-status.txt
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-final-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-git-status.txt
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-handoff-receipt.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-handoff-rules.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-input-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-production-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001-reference-files.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-001.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-correction.diff
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-cumulative-coverage.diff
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-diffcheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-final-git-status.txt
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-final-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-handoff-rules.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-input-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-isolated-instances.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-preflight-before.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-preflight-cleanup.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-production-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002-reference-files.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-002.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-agent-tree-closed.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-agent-tree-open.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-cleanup-verification.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-contract-build.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-desktop-runtime.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-diffcheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-durable-coverage.diff
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-final-git-status.txt
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-final-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-handoff-receipt.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-handoff-rules.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-import-execute.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-import-preview.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-import-tty.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-initial-model-catalogs.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-input-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-instance.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-instances-after.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-instances-before.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-last-project-delete.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-live-setup.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-live-setup.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-manager-complete.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-manager-complete.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-manager-done.png
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-manager-in-progress.png
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-manager-start-checkpoint.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-manager-start.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-manager-start.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-owned-agent-history/collaboration/api003_packet_worker_d8a619938caa4106a4812182603d4768/raw_traces_active.jsonl
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-owned-agent-history/collaboration/collaboration_tree.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-owned-agent-history/collaboration/communication_messages.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-owned-agent-history/raw_traces_active.jsonl
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-owned-agent-history/run_metadata.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-physical-state-closed.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-physical-state-collection-only.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-production-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-reference-files.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-restart-after-import.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-stop.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-stream-stamp-origin.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-stream-stamp-origin.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003-user-missing-sidebar.png
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-003.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-004-initial.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-004.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-005.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-006.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-baseline-meta.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-baseline-setup-failed.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-baseline.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-fixtures.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-focused-baseline-comparison.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-migrations-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-model-fixture.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-round2-broader.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-round2-four-file.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-round2-order-diagnostics.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-round2-sql-prisma.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-cleanup.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-initial.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round2-preflight.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-catalog-before-restart.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-cleanup-verification.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-desktop-runtime.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-instance.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-instances-after.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-instances-before.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-manager-probe.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-manager-selection.png
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-mention-discovery.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-restart.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-stop.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-ui-oracle-error.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-ui-placeholder-error.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-ui-selector-error.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-ui.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-durable-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-fixture-producer.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-fixture-provenance.json
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-fixture.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round2-cumulative.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round3-stamped-projection-corrected.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round3-stamped-projection.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round3-stream-regression-neighbors.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-round3-last-project-delete.log
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/authorized-live-manager-probe.mjs
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/baseline-check.py
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/create-released-project-fixture.py
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/finalize-round2.py
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/isolated-manager-probe.mjs
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/last-project-delete-probe.mjs
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/run-case.py
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/stream-stamp-origin-probe.mjs
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-revision-record.md
+?? tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-case-ledger.md
+?? tickets/in-progress/project-task-manager-linked-delegation/architecture-review-revision-record.md
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/README.md
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/cleanup-witness-assertion-failure.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/cleanup-witness-fixture-failure.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/cleanup-witness-initial-config-failure.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/cleanup-witness-source-fixture-failure.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/cleanup-witness.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/cleanup-witness.test.ts
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-002-corrections.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-002-diffcheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-002-final-preservation-check.json
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-002-package-comparison.json
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-002-package-fingerprints.tsv
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-002-production-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-002-source-audit.md
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-003-catalog-diagnostic-probe.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-003-catalog-diagnostic-probe.mjs
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-003-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-003-schema-prerequisite-probe.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-003-schema-prerequisite-probe.mjs
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-003-unchanged-failure-authorities.diff
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-004-diffcheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-004-final-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-004-handoff-receipt.json
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-004-handoff-rules.json
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-004-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-004-projection-authorities.diff
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-004-reference-files.json
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-004-stamped-projection.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/diffcheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/package-fingerprints.tsv
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/preservation-check.json
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/production-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/source-audit.md
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md
+?? tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md
+?? tickets/in-progress/project-task-manager-linked-delegation/design-review-report.md
+?? tickets/in-progress/project-task-manager-linked-delegation/design-spec.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/build-check.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/claude-sdk-close-authority-probe.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/claude-sdk-close-authority-probe.mjs
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/current-tsc.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/dependency-install.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/focused-initial.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/focused-round2.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-002-implementation-handoff.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-002-production-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-002-source-inventory.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-changed-contract-check.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-child-proof.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-component-mcp-unit-initial.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-component-mcp-unit.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-contract-round1.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-contract-round2.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-contract-round4.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-contract-round5.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-contract-round6.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-contract-round7.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-core-build-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-core-build.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-core-factory-unit-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-core-factory-unit.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-current-unit-audit.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-current-unit-audit2.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-focused-current.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-focused-final-initial.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-focused-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-implementation-handoff.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-lifetime-dispatch-races.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-local-check-commands.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-manager-contract.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-new-lifetime-witnesses.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-production-typecheck-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-production-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-project-array-check.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-real-child-startup.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-root-contract-audit.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-root-contract-round2.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-root-contract-round3.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-sdk-unit.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-source-inventory.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-stores-startup-unit.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-tree-scope-unit.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-unchanged-startup-migrations.diff
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-003-work-source-unit.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-completed-handoff.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-diffcheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-focused-command.sh
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-focused-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-local-check-commands.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-local-fix-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-local-fix-initial.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-local-fix-round2.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-package-fingerprints.tsv
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-package-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-production-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-source-inventory.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-004-unchanged-startup-migrations.diff
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-changed-boundary-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-changed-boundary-final2.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-cumulative-focused-command.sh
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-cumulative-focused-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-cumulative-focused.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-diffcheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-focus-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-focus-final2.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-focus-initial.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-focus-round2.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-focus-round3.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-focus-round4.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-handoff-receipt.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-handoff-rules.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-input-fingerprints.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-local-check-commands.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-local-check-results.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-local-delta-files.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-package-fingerprints.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-package-preservation.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-preserved-authorities.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-production-typecheck-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-production-typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-projection-before.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-reference-files.json
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-server-build-final.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-server-build.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-source-inventory.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-typecheck-initial.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-unchanged-startup-contracts-migrations.diff
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-005-web-store-control.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/pre-di-002-build-check.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/prisma-generate.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/private-candidate-abort-probe.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/private-candidate-abort-probe.mjs
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/shared-build.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/typecheck.log
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-handoff.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-investigation.md
+?? tickets/in-progress/project-task-manager-linked-delegation/implementation-revision-record.md
+?? tickets/in-progress/project-task-manager-linked-delegation/investigation-notes.md
+?? tickets/in-progress/project-task-manager-linked-delegation/requirements-discovery-result.md
+?? tickets/in-progress/project-task-manager-linked-delegation/requirements-doc.md
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-design-handoff.md
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-history/req-bl-006-sr-011-approved-requirements.md
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-history/req-bl-007-sr-013-unapproved-proposal.md
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-history/sr-013-held-design.md
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-history/sr-014-handoff-receipt.json
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-history/sr-014-handoff-rules.json
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-history/sr-014-reference-files.json
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-history/sr-015-handoff-rules.json
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-revision-record.md
+?? tickets/in-progress/project-task-manager-linked-delegation/solution-scope-clarification.md

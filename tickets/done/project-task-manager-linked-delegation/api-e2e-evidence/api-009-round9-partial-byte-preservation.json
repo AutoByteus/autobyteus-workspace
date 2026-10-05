@@ -1,0 +1,922 @@
+{
+  "at": "2026-10-03T19:18:44.201802+00:00",
+  "instanceId": "iso-58861-449a",
+  "result": "Scoped Pass data preservation + already-offline Team A once-DONE exact released lifetime. Not three-root final A or new live terminal proof. Original temporary oracle failures retained.",
+  "initialATerminalSnapshot": {
+    "agent_run_id": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+    "member_address": "/borrowed",
+    "status": "offline",
+    "trigger": null,
+    "tool_name": null,
+    "error_message": null,
+    "error_details": null,
+    "recoverableBlock": null
+  },
+  "newGenuineTargetTerminalCount": 0,
+  "checks": [
+    {
+      "path": "server-data/memory/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/agent_org_run_execution_tree.json",
+      "beforeSha256": "75b9b26679a89a24c015e561d6b4ce5f1b6477c5a0c731d42fc1be76f5940de6",
+      "afterSha256": "75b9b26679a89a24c015e561d6b4ce5f1b6477c5a0c731d42fc1be76f5940de6",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099/raw_traces_active.jsonl",
+      "beforeSha256": "8f2a9dd5d2f638b46d55756af21b0e374b481930372317d516a0731e3c598039",
+      "afterSha256": "8f2a9dd5d2f638b46d55756af21b0e374b481930372317d516a0731e3c598039",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/project_task_manager_72233ae14c094337881006e94c43379d/raw_traces_active.jsonl",
+      "beforeSha256": "b68b0e8ce252d61e05d98d55fab1c9204fe3d0b88401386c9eed024c46303130",
+      "afterSha256": "b68b0e8ce252d61e05d98d55fab1c9204fe3d0b88401386c9eed024c46303130",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/agent_org_run_execution_tree.json",
+      "beforeSha256": "6ecde47d99d41b82673fe21680a1301c7fd7b27d938a277087d825d988568918",
+      "afterSha256": "6ecde47d99d41b82673fe21680a1301c7fd7b27d938a277087d825d988568918",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_agent_9cb0c12b1c564ae097517e7bc92c1b23/raw_traces_active.jsonl",
+      "beforeSha256": "bfece35ad6ff221eea77594b1229065caba4acae1b9d15e43ee257470463d5fa",
+      "afterSha256": "bfece35ad6ff221eea77594b1229065caba4acae1b9d15e43ee257470463d5fa",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a/raw_traces_active.jsonl",
+      "beforeSha256": "357a1958d3c428f982f0160b1e8286a670273543297df1c7914e6de310b2d29f",
+      "afterSha256": "357a1958d3c428f982f0160b1e8286a670273543297df1c7914e6de310b2d29f",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe/api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b/raw_traces_active.jsonl",
+      "beforeSha256": "1f76a0085e25bf24b878d75990d82d9b780e4e5fe78b2bbe16d8283f9dfae079",
+      "afterSha256": "1f76a0085e25bf24b878d75990d82d9b780e4e5fe78b2bbe16d8283f9dfae079",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe/api009_team_reader_0a6c9e981db043a28d9b851cfa76ead5/raw_traces_active.jsonl",
+      "beforeSha256": "8e8cf558d441760cac07fbb147670d26db0683705fee9ff685226685d9bec185",
+      "afterSha256": "8e8cf558d441760cac07fbb147670d26db0683705fee9ff685226685d9bec185",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d/api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d/raw_traces_active.jsonl",
+      "beforeSha256": "306d25972802eff625b00933f7507bb4f75235a5aab7ae763688d8f2dcf972f4",
+      "afterSha256": "306d25972802eff625b00933f7507bb4f75235a5aab7ae763688d8f2dcf972f4",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d/api009_team_reader_5239c53dc5ec4e659542c1e092d9512e/raw_traces_active.jsonl",
+      "beforeSha256": "4b115f5e9b41afeb9a88def3bae408f054e2646aaf6d19e59523f43a3ed65b3c",
+      "afterSha256": "4b115f5e9b41afeb9a88def3bae408f054e2646aaf6d19e59523f43a3ed65b3c",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119/raw_traces_active.jsonl",
+      "beforeSha256": "e40cd16a525073337ca850789871723ce3a7453366310cac0cbca3f71ddf8c09",
+      "afterSha256": "e40cd16a525073337ca850789871723ce3a7453366310cac0cbca3f71ddf8c09",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/agent_org_run_execution_tree.json",
+      "beforeSha256": "8e3696324c50f5ef7222d30bb1205a7cc507c0261327826986f731505e7e8e91",
+      "afterSha256": "8e3696324c50f5ef7222d30bb1205a7cc507c0261327826986f731505e7e8e91",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914/raw_traces_active.jsonl",
+      "beforeSha256": "431572468f5a7c6e92dda22f3d9d9bb9b3ca17096016b16cb393f99412d8f301",
+      "afterSha256": "431572468f5a7c6e92dda22f3d9d9bb9b3ca17096016b16cb393f99412d8f301",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420/api009p_physical_helper_coordinator_01368906dcfe4fe3899f6131325072df/raw_traces_active.jsonl",
+      "beforeSha256": "bc789d332717115e9a3db932d6ff4b20d823798ccdd0874448283790e6a03a33",
+      "afterSha256": "bc789d332717115e9a3db932d6ff4b20d823798ccdd0874448283790e6a03a33",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420/api009p_physical_reader_5043594e9f894d6a87ee4237a242c5be/raw_traces_active.jsonl",
+      "beforeSha256": "59494b73f771994d1f725e10f090880bcf86326c9897cd50edf1b65b7df640c4",
+      "afterSha256": "59494b73f771994d1f725e10f090880bcf86326c9897cd50edf1b65b7df640c4",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493/raw_traces_active.jsonl",
+      "beforeSha256": "834ee0fcf5d079203760954f33bb0d550046ee54158a7347955c3f66588bffc0",
+      "afterSha256": "834ee0fcf5d079203760954f33bb0d550046ee54158a7347955c3f66588bffc0",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_workers_7e30647905394883b46755a70ba3ee53/api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d/raw_traces_active.jsonl",
+      "beforeSha256": "59ede4011ddccab6b6e5625e9c9672bf198107167dd10eef428dbac37432dc47",
+      "afterSha256": "59ede4011ddccab6b6e5625e9c9672bf198107167dd10eef428dbac37432dc47",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_workers_7e30647905394883b46755a70ba3ee53/api009p_physical_reader_c538f1aded884cb7978aa345d9bf695a/raw_traces_active.jsonl",
+      "beforeSha256": "2158246b09e22adc74d747542b05037063ac7d6c2f6e3fa1ee21d076b240efa9",
+      "afterSha256": "2158246b09e22adc74d747542b05037063ac7d6c2f6e3fa1ee21d076b240efa9",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/project_task_manager_358fa68fd9e541818e26e8275fa38fae/raw_traces_active.jsonl",
+      "beforeSha256": "aa40b1a27f78b67b51875c88495380396faabeccae727b0cb79fab3f1904ef0d",
+      "afterSha256": "aa40b1a27f78b67b51875c88495380396faabeccae727b0cb79fab3f1904ef0d",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_agent_1fe4483413c44722afaba6859b6da377/raw_traces_active.jsonl",
+      "beforeSha256": "3bcc0ebc90aec2ea0ceaed32b1aa180c6b66d4e9be51c7065ee91d00ef9e10c5",
+      "afterSha256": "3bcc0ebc90aec2ea0ceaed32b1aa180c6b66d4e9be51c7065ee91d00ef9e10c5",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_agent_6375a9f260524202910f7dd9aaedaeae/raw_traces_active.jsonl",
+      "beforeSha256": "d85de6adad3fe02c687f70081e0d6ff38f6a4a77485e863e7a76b53a6f380821",
+      "afterSha256": "d85de6adad3fe02c687f70081e0d6ff38f6a4a77485e863e7a76b53a6f380821",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_3c57e63cef5143529c038caceeded3fd/api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d/raw_traces_active.jsonl",
+      "beforeSha256": "9d25eda76379229fe55d111b297022558835720e60b083e7868740fe5f7d6bbb",
+      "afterSha256": "9d25eda76379229fe55d111b297022558835720e60b083e7868740fe5f7d6bbb",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_3c57e63cef5143529c038caceeded3fd/api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6/raw_traces_active.jsonl",
+      "beforeSha256": "43daa5520fb0edf4d85675708a2888c767a1abfb5488102d7c35a8bb156f1f1c",
+      "afterSha256": "43daa5520fb0edf4d85675708a2888c767a1abfb5488102d7c35a8bb156f1f1c",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362/api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3/raw_traces_active.jsonl",
+      "beforeSha256": "17cc78aa9d6f2a2f4ad5ba378be29f08a83a1040d1d5f5d420e0b32d8c9315bc",
+      "afterSha256": "17cc78aa9d6f2a2f4ad5ba378be29f08a83a1040d1d5f5d420e0b32d8c9315bc",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362/api009_team_reader_38ab69888cee460390d221ebd61ba91a/raw_traces_active.jsonl",
+      "beforeSha256": "78321a9d5febebb3d0f0c1f767753b53386d7cd409cb4c52a5a67c34e20208b9",
+      "afterSha256": "78321a9d5febebb3d0f0c1f767753b53386d7cd409cb4c52a5a67c34e20208b9",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c/raw_traces_active.jsonl",
+      "beforeSha256": "b13a68930b615555712eb94d5a9fbc29736755d26a4eb05699b44aace145b452",
+      "afterSha256": "63033c5369da36123ebcc4af71a978ccf4c8a64f4d1d82e0e35013e7e6146ded",
+      "addedBytes": 6366,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/team_run_execution_tree.json",
+      "beforeSha256": "3e44d9e97a7ca3a5e8949294b9db24c91b6470b41ca7640b8a366d3279663368",
+      "afterSha256": "3e44d9e97a7ca3a5e8949294b9db24c91b6470b41ca7640b8a366d3279663368",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1/raw_traces_active.jsonl",
+      "beforeSha256": "89b0dc615b1ff1f932fd1edd724e6b6325f4fbff33acbd39c1480a5990a35da2",
+      "afterSha256": "89b0dc615b1ff1f932fd1edd724e6b6325f4fbff33acbd39c1480a5990a35da2",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_22eda17c57834896a26b58557ccb302a/api009_team_coordinator_a160ecdb871441df89b23c812e00eced/raw_traces_active.jsonl",
+      "beforeSha256": "01a0865ec80b3d22855d039ee6558a16023b4b191ec1e8cd09dff0aba12a5d7e",
+      "afterSha256": "01a0865ec80b3d22855d039ee6558a16023b4b191ec1e8cd09dff0aba12a5d7e",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_22eda17c57834896a26b58557ccb302a/api009_team_reader_83fbc07510a54c33bc0dc4d17ace5154/raw_traces_active.jsonl",
+      "beforeSha256": "85d6a5d81bf1cbf7995240f4f864e33fbc197283671f5711a0d7c22945e5997e",
+      "afterSha256": "85d6a5d81bf1cbf7995240f4f864e33fbc197283671f5711a0d7c22945e5997e",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e/api009_team_coordinator_55733fe6784e411e963c147b02bc9d1a/raw_traces_active.jsonl",
+      "beforeSha256": "9c49a16e1e84d7615655d2f833f773c20b0840a6ddede8b38b182f7aab20aa63",
+      "afterSha256": "9c49a16e1e84d7615655d2f833f773c20b0840a6ddede8b38b182f7aab20aa63",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e/api009_team_reader_2155997629a84347bd6dc68feea7605f/raw_traces_active.jsonl",
+      "beforeSha256": "37f380396c0347718704cf9c6ca6278aacbfd5ac5778cfdfe4f7573218152aaa",
+      "afterSha256": "37f380396c0347718704cf9c6ca6278aacbfd5ac5778cfdfe4f7573218152aaa",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/collaboration_tree.json",
+      "beforeSha256": "e4bc7ea4ed8bf79ebada8d9a2b17e5764eb48beccf97ef9a9365dcda893953b4",
+      "afterSha256": "e4bc7ea4ed8bf79ebada8d9a2b17e5764eb48beccf97ef9a9365dcda893953b4",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/raw_traces_active.jsonl",
+      "beforeSha256": "2da4b25d4cfc6ea71ec54e0bcd1a09dde683c64a73e0f21114c3d256efe17efb",
+      "afterSha256": "2da4b25d4cfc6ea71ec54e0bcd1a09dde683c64a73e0f21114c3d256efe17efb",
+      "addedBytes": 0,
+      "mode": "prefix",
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09/ctx_f7e3cce89fad__saved-agent_org-A.txt",
+      "beforeSha256": "8fffc5e76113af6d10466cca5f758ce1173a565bdfe0bcca0c5d8a30cf81c9d3",
+      "afterSha256": "8fffc5e76113af6d10466cca5f758ce1173a565bdfe0bcca0c5d8a30cf81c9d3",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43/ctx_99eee1d8e605__saved-agent_org-B.txt",
+      "beforeSha256": "071ed3f771102708c94936533b2b2834803b6d36e106c4ef6abe4f8d40c6b0f5",
+      "afterSha256": "071ed3f771102708c94936533b2b2834803b6d36e106c4ef6abe4f8d40c6b0f5",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_7c37013f-5c5b-410f-a042-293e5b812957/project_task_71004b62-543c-4aee-a1e1-b069e60a83f3/ctx_795cf61bddd7__saved-agent_team-A.txt",
+      "beforeSha256": "5dff5a134b282405e207e6691f3b79a78a1308c8a1117b4d5bfc6ff684ef123a",
+      "afterSha256": "5dff5a134b282405e207e6691f3b79a78a1308c8a1117b4d5bfc6ff684ef123a",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_7c37013f-5c5b-410f-a042-293e5b812957/project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424/ctx_a512c9606a5b__saved-agent_team-B.txt",
+      "beforeSha256": "e87abf3df089e6079072713dd15b96526a33748f149188df805484e31b5abb91",
+      "afterSha256": "e87abf3df089e6079072713dd15b96526a33748f149188df805484e31b5abb91",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_8984965a-aa0b-45d4-8ace-ef86642eee2d/project_task_c256315e-eb41-41b6-a61a-f3f7507519eb/ctx_cb7464c25341__manual-packet.txt",
+      "beforeSha256": "1a780d91fa8fc201da1eb737daad4b50ede9a3525ef41a11299f3c3670f709ff",
+      "afterSha256": "1a780d91fa8fc201da1eb737daad4b50ede9a3525ef41a11299f3c3670f709ff",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_b543993a-d51e-4a0d-8683-1dc3c3560aa2/project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649/ctx_e144d4aeb7a4__saved-packet-A.txt",
+      "beforeSha256": "bfcb49bc203835fd4584aaf09e699d2619ec9c4291c153e5db5e040e4b2b1941",
+      "afterSha256": "bfcb49bc203835fd4584aaf09e699d2619ec9c4291c153e5db5e040e4b2b1941",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_b543993a-d51e-4a0d-8683-1dc3c3560aa2/project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e/ctx_2248e72cb7e8__saved-packet-B.txt",
+      "beforeSha256": "9d2e288f15c3a031ee6e9d7d804ba286884d1767530fe27346156590d8dbbadf",
+      "afterSha256": "9d2e288f15c3a031ee6e9d7d804ba286884d1767530fe27346156590d8dbbadf",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e/project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e/ctx_bd7ac0a3441e__physical-B.txt",
+      "beforeSha256": "a143ea4635c3953290e43e9ba357f79201498e99dbe6eee2cb5ccd663ed05b38",
+      "afterSha256": "a143ea4635c3953290e43e9ba357f79201498e99dbe6eee2cb5ccd663ed05b38",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e/project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb/ctx_ee4feb5e86f7__physical-A.txt",
+      "beforeSha256": "eaf01259c28dd9002c9f0bb4fa003f88b2c1b03289f13d75928aa24ffc389d57",
+      "afterSha256": "eaf01259c28dd9002c9f0bb4fa003f88b2c1b03289f13d75928aa24ffc389d57",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/agent-a/protected-sentinel.txt",
+      "beforeSha256": "be4f17b8b8b37672312805f518f4ddf73d49840de772f345e55b2099872bdd9e",
+      "afterSha256": "be4f17b8b8b37672312805f518f4ddf73d49840de772f345e55b2099872bdd9e",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/concrete-agent_org/protected-sentinel.txt",
+      "beforeSha256": "cfc230cf2a7d95458a18f56c6175770358663422ab6bc357ec6915aeb51b8b8d",
+      "afterSha256": "cfc230cf2a7d95458a18f56c6175770358663422ab6bc357ec6915aeb51b8b8d",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/concrete-agent_team/protected-sentinel.txt",
+      "beforeSha256": "cd00473661f7961816816c9e0fc8ed33211560e61d2b4f25c0cdbbe4bb6eada4",
+      "afterSha256": "cd00473661f7961816816c9e0fc8ed33211560e61d2b4f25c0cdbbe4bb6eada4",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/manager/protected-sentinel.txt",
+      "beforeSha256": "351aa0b317446a26ad09b23ccac1bfd0f009a7f37667fc002ea92883d941e4d7",
+      "afterSha256": "351aa0b317446a26ad09b23ccac1bfd0f009a7f37667fc002ea92883d941e4d7",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/manual-approval/protected-sentinel.txt",
+      "beforeSha256": "57cb7052870ee68f637dd8422142f018d09a048203e53f4d7a5e5372947c155a",
+      "afterSha256": "57cb7052870ee68f637dd8422142f018d09a048203e53f4d7a5e5372947c155a",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/physical-manager-round9/protected-sentinel.txt",
+      "beforeSha256": "9793585949afe7dc3d9de18661bfab2e8015aa0ae9b9f01b6052e584439d199c",
+      "afterSha256": "9793585949afe7dc3d9de18661bfab2e8015aa0ae9b9f01b6052e584439d199c",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/physical-task-workers-round9/protected-sentinel.txt",
+      "beforeSha256": "9793585949afe7dc3d9de18661bfab2e8015aa0ae9b9f01b6052e584439d199c",
+      "afterSha256": "9793585949afe7dc3d9de18661bfab2e8015aa0ae9b9f01b6052e584439d199c",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/team-b/protected-sentinel.txt",
+      "beforeSha256": "330c135932b1d3af83f08aa43ddeeeed00faafa10fe003cf2fcaa70fe757734c",
+      "afterSha256": "330c135932b1d3af83f08aa43ddeeeed00faafa10fe003cf2fcaa70fe757734c",
+      "addedBytes": 0,
+      "mode": "exact",
+      "passed": true
+    }
+  ],
+  "finalProjectState": [
+    {
+      "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+      "name": "API009 saved-ID visible workers",
+      "description": "Owned current real-provider validation",
+      "createdAt": "2026-10-03T17:49:38.747Z",
+      "updatedAt": "2026-10-03T17:49:38.747Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649",
+          "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API009_ATTACHMENT_A_project_b543993a-d51e-4a0d-8683-1dc3c3560aa2 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T17:49:38.788Z",
+          "updatedAt": "2026-10-03T18:10:52.011Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_e144d4aeb7a4__saved-packet-A.txt",
+              "displayName": "saved-packet-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e",
+          "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API009_ATTACHMENT_B_project_b543993a-d51e-4a0d-8683-1dc3c3560aa2 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T17:49:38.847Z",
+          "updatedAt": "2026-10-03T18:13:45.374Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_2248e72cb7e8__saved-packet-B.txt",
+              "displayName": "saved-packet-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+      "name": "API009 agent_team saved-IDs 14718ede-7075-4066-9de6-82a2ac7b590a",
+      "description": "Actual root-bound task proof",
+      "createdAt": "2026-10-03T17:57:04.369Z",
+      "updatedAt": "2026-10-03T17:57:04.369Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_71004b62-543c-4aee-a1e1-b069e60a83f3",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T17:57:04.433Z",
+          "updatedAt": "2026-10-03T19:11:45.502Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_795cf61bddd7__saved-agent_team-A.txt",
+              "displayName": "saved-agent_team-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 57
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T17:57:04.529Z",
+          "updatedAt": "2026-10-03T17:59:47.232Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_a512c9606a5b__saved-agent_team-B.txt",
+              "displayName": "saved-agent_team-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 57
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+      "name": "API009 agent_org saved-IDs 046e9474-7589-4734-8074-2fec8563d772",
+      "description": "Actual root-bound task proof",
+      "createdAt": "2026-10-03T18:03:25.685Z",
+      "updatedAt": "2026-10-03T18:03:25.685Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T18:03:25.724Z",
+          "updatedAt": "2026-10-03T18:04:07.201Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_f7e3cce89fad__saved-agent_org-A.txt",
+              "displayName": "saved-agent_org-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T18:03:25.779Z",
+          "updatedAt": "2026-10-03T18:05:58.684Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_99eee1d8e605__saved-agent_org-B.txt",
+              "displayName": "saved-agent_org-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e",
+      "name": "API009P physical recursive d9d52f36-38b8-4aa7-acaf-89084dcae2c9",
+      "description": "Owned physical scope witness",
+      "createdAt": "2026-10-03T18:07:13.479Z",
+      "updatedAt": "2026-10-03T18:07:13.479Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb",
+          "description": "Read actual saved packet; coordinator follows its bounded one unlinked Leaf + one helper Team + configured reader work instructions. Preserve bytes; no more delegation/status/root Stop.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T18:07:13.517Z",
+          "updatedAt": "2026-10-03T18:08:48.400Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_ee4feb5e86f7__physical-A.txt",
+              "displayName": "physical-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e",
+          "description": "Read actual saved packet using native read-only cat; report exact marker; no copies/status/file changes.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T18:07:13.571Z",
+          "updatedAt": "2026-10-03T18:07:37.495Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_bd7ac0a3441e__physical-B.txt",
+              "displayName": "physical-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_8984965a-aa0b-45d4-8ace-ef86642eee2d",
+      "name": "API009 actual manual 5f205af2-4e73-4843-930d-d91f33ed2597",
+      "description": "Own actual approval only",
+      "createdAt": "2026-10-03T18:14:34.395Z",
+      "updatedAt": "2026-10-03T18:14:34.395Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_c256315e-eb41-41b6-a61a-f3f7507519eb",
+          "description": "First read supplied saved Task attachment with native read-only cat and retain exact actual marker. Then invoke list_available_agents once to list current capabilities; wait for real manual tool approval. Report marker and results afterward. No copies, status/file changes, other paths or credentials/HOME.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T18:14:34.433Z",
+          "updatedAt": "2026-10-03T18:15:12.446Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_cb7464c25341__manual-packet.txt",
+              "displayName": "manual-packet.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskLifetimes": [
+        {
+          "lifetimeId": "project_task_lifetime_dc8613bc-2609-449a-9a10-d3ec87534b8e",
+          "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+          "taskId": "project_task_71004b62-543c-4aee-a1e1-b069e60a83f3",
+          "openedAt": "2026-10-03T17:57:54.423Z",
+          "completedAt": "2026-10-03T19:11:45.502Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "execution": {
+                "agentRunId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae"
+              },
+              "ingressAgentRunId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T17:57:54.436Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_b370343a-d8f0-4250-8e9b-add88b64c0a5",
+          "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+          "taskId": "project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424",
+          "openedAt": "2026-10-03T17:58:05.690Z",
+          "completedAt": "2026-10-03T17:58:39.058Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T17:58:05.699Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_01de9b25-69b4-44ed-85fc-f710c7004637",
+          "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+          "taskId": "project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424",
+          "openedAt": "2026-10-03T17:59:04.767Z",
+          "completedAt": "2026-10-03T17:59:47.232Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T17:59:04.782Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_935d7411-d069-4da7-9e0c-3c81a158f708",
+          "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+          "taskId": "project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09",
+          "openedAt": "2026-10-03T18:03:59.150Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476"
+              },
+              "execution": {
+                "agentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a"
+              },
+              "ingressAgentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:03:59.161Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_120a3d8e-770a-4cfe-afc2-4c493dad9aa0",
+          "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+          "taskId": "project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43",
+          "openedAt": "2026-10-03T18:04:07.220Z",
+          "completedAt": "2026-10-03T18:04:48.503Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:04:07.227Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_58c71667-96ea-43e9-811f-982458efee15",
+          "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+          "taskId": "project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43",
+          "openedAt": "2026-10-03T18:05:12.463Z",
+          "completedAt": "2026-10-03T18:05:58.684Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:05:12.471Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_c3519214-70b4-4770-9753-34ac01b5ffe6",
+          "projectId": "project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e",
+          "taskId": "project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb",
+          "openedAt": "2026-10-03T18:07:36.847Z",
+          "completedAt": "2026-10-03T18:08:48.400Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "teamRunId": "api009p_physical_workers_7e30647905394883b46755a70ba3ee53"
+              },
+              "ingressAgentRunId": "api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:07:36.860Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "agentRunId": "api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493"
+              },
+              "ingressAgentRunId": "api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493",
+              "purpose": "delegation",
+              "reservedAt": "2026-10-03T18:08:12.562Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "teamRunId": "api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420"
+              },
+              "ingressAgentRunId": "api009p_physical_helper_coordinator_01368906dcfe4fe3899f6131325072df",
+              "purpose": "helper",
+              "reservedAt": "2026-10-03T18:08:12.752Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_9a1ad4b8-3483-4bac-bbbd-1da44bb75d0e",
+          "projectId": "project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e",
+          "taskId": "project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e",
+          "openedAt": "2026-10-03T18:07:37.273Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "agentRunId": "api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914"
+              },
+              "ingressAgentRunId": "api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:07:37.283Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_87304bee-c33c-4a06-8b3f-a7885fe45c97",
+          "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+          "taskId": "project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649",
+          "openedAt": "2026-10-03T18:10:44.825Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_a21bcb295adf444ab47bef61b55aed31"
+              },
+              "execution": {
+                "agentRunId": "api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1"
+              },
+              "ingressAgentRunId": "api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:10:44.836Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_2fd7f587-a52e-4d3d-b57d-f0a8c62ce5fb",
+          "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+          "taskId": "project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e",
+          "openedAt": "2026-10-03T18:10:52.026Z",
+          "completedAt": "2026-10-03T18:12:38.752Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_a21bcb295adf444ab47bef61b55aed31"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_22eda17c57834896a26b58557ccb302a"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_a160ecdb871441df89b23c812e00eced",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:10:52.035Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_11636e1c-5422-4ffd-b65f-b530c74ff520",
+          "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+          "taskId": "project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e",
+          "openedAt": "2026-10-03T18:13:04.454Z",
+          "completedAt": "2026-10-03T18:13:45.374Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_a21bcb295adf444ab47bef61b55aed31"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_55733fe6784e411e963c147b02bc9d1a",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:13:04.466Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_816f47df-5ecc-49e9-950e-93fe52f5eb71",
+          "projectId": "project_8984965a-aa0b-45d4-8ace-ef86642eee2d",
+          "taskId": "project_task_c256315e-eb41-41b6-a61a-f3f7507519eb",
+          "openedAt": "2026-10-03T18:14:48.505Z",
+          "completedAt": "2026-10-03T18:15:12.446Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298"
+              },
+              "execution": {
+                "agentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099"
+              },
+              "ingressAgentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:14:48.516Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "held": "Final Org A unstarted; final Agent A unsent. New FAPI009 history projection failure holds new runtime cases."
+}

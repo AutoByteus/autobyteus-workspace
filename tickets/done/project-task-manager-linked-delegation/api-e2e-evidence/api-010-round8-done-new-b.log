@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-lifecycle-probe.mjs done-new-b
+Scoped Pass: reopened B explicit DONE releases new exact lifetime and genuine two offline events LIVE; old history/A/Manager retained. Shared provider physical release not inferred.
+
+PROCESS_EXIT_CODE=0

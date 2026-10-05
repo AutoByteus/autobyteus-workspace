@@ -1,0 +1,25 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/reviewer/cleanup-witness.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/reviewer/cleanup-witness.test.ts [ tests/unit/reviewer/cleanup-witness.test.ts ]
+Error: Cannot find package 'autobyteus-ts/agent/message/agent-input-user-message.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/reviewer/cleanup-witness.test.ts'
+ ❯ tests/unit/reviewer/cleanup-witness.test.ts:3:1
+      1| /** Evidence only. Execute from temporary server tests/unit/reviewer; …
+      2| import { expect, it, vi } from 'vitest';
+      3| import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/age…
+       | ^
+      4| import { FlatTeamExecutionFactory } from '../../../src/agent-team-exec…
+      5| import { TeamRunResolver } from '../../../src/agent-team-execution/ser…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  10:27:32
+   Duration  151ms (transform 34ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+

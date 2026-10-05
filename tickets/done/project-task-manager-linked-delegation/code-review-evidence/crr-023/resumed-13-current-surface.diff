@@ -1,0 +1,28 @@
+--- /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+@@ -152,10 +152,20 @@
+       REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID,
+     );
+     expect(externalIndex).toBeGreaterThanOrEqual(0);
+-    expect([
+-      definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID),
+-      definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID),
+-      definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID),
+-    ]).toEqual([externalIndex + 1, externalIndex + 2, externalIndex + 3]);
++    for (const id of [
++      REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID,
++      RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID,
++      RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID,
++      MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID,
++    ]) {
++      expect(definitionIds.filter((registeredId) => registeredId === id)).toHaveLength(1);
++    }
++    const rotationIndex = definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID);
++    const activeIndex = definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID);
++    const nativeIndex = definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID);
++    // Other legitimate migrations may interpose; these dependencies must stay ordered.
++    expect(rotationIndex).toBeGreaterThan(externalIndex);
++    expect(activeIndex).toBeGreaterThan(rotationIndex);
++    expect(nativeIndex).toBeGreaterThan(activeIndex);
+   });
+ });

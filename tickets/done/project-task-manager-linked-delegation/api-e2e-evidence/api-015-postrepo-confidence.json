@@ -1,0 +1,18 @@
+{
+  "round": "API-REV-015",
+  "at": "2026-10-04T07:54:47.134012+00:00",
+  "scores": {
+    "Requirement and acceptance-criteria proof": 75,
+    "Changed-boundary execution directness": 95,
+    "Cross-boundary integration realism and mock gap": 90,
+    "Environment, configuration, identity, and fixture fidelity": 95,
+    "Failure, edge-case, lifecycle, and recovery evidence": 75,
+    "User-surface, browser, and desktop-shell confidence": 90,
+    "Durable regression coverage quality and relevance": 95
+  },
+  "overall": 87.86,
+  "method": "simple average seven applicable",
+  "broaderValidation": "Required",
+  "criticalACPass": false,
+  "reason": "Current narrow actual Session/Manager/AgentRun proves terminal consumer correction and no weakened guard, once-only/approval/failed-component retry/finite queue;32owner and selected cumulative units, actual test-owned SDK child/IO and native/Task integration/API/web/FIFO pass. Controlled SDK acquisition/proof bypasses actual Sonnet live child/IO and fresh corrected packaged Task acceptance; priorFAPI011 failure requires live rerun. Prior Native/Codex scoped API13 evidence retained but not new corrected package proof. All20 durability and current300/index/HEAD bytes exact. No wholebaseline/live-skip acceptance."
+}

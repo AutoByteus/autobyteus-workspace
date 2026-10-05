@@ -1,0 +1,6 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-cleanup-current.py after
+{"at": "2026-10-03T19:21:15.987183+00:00", "instanceId": "iso-58861-449a", "ownCurrentPidCount": 31, "ownCapturedPidCount": 163, "ownAliveAfterStop": [], "freeBind": {"58861": true, "58862": true, "9229": true}, "ownRootDatabaseImportedKeyRemoved": true, "foreignImmediatelyBeforeVsAfterExactlyUnchanged": 4, "entryFourForeignRecordsExactlyUnchanged": true, "scope": "OWN app teardown after evidence only; never successful Task-release or history facade repair. Generated build and allowlisted evidence retained; no foreign/user app/data/profile mutation."}
+
+PROCESS_EXIT_CODE=0

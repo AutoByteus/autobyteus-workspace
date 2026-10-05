@@ -1,0 +1,6 @@
+case=API-014
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round12-native-cold-inspection.mjs
+Scoped Pass: real shutdown/restart retains current standalone Native Agent whole public forest (private2/public0) and exact model; cold observational single inspection inactive/empty/no implicit restore or Project/private-tree write.
+
+PROCESS_EXIT_CODE=0

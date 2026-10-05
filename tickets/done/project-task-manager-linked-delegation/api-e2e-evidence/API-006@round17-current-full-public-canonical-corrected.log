@@ -1,0 +1,13 @@
+START 2026-10-05T04:57:18.433619+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-public.mjs"]
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-public.mjs:17
+const st=JSON.parse(await fs.readFile(path.join(i.dataRoot,'server-data/projects/projects.json')));const p=st.find(p=>p.projectId===j.project.projectId);assert(p);assert(p.tasks.every(t=>t.status==='DONE'));assert.equal(p.taskLifetimes.length,3);assert(p.taskLifetimes.every(l=>l.completedAt&&l.executions.every(e=>e.cleanup==='released')));
+                                                                                                                                                                                                                                            ^
+
+TypeError: Cannot read properties of undefined (reading 'length')
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-public.mjs:17:237
+
+Node.js v22.23.1
+
+INNER_EXIT_CODE=1

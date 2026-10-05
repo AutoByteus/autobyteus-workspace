@@ -1,0 +1,7 @@
+2026-10-04T08:18:00.805175+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-restart-proof.py"]
+Scoped Pass actual SAME instance profile/ports with new desktop PID and all 15 captured old desktop/provider descendant PIDs gone; old inspector backend gone
+
+INNER_EXIT=0
+ELAPSED=0.06

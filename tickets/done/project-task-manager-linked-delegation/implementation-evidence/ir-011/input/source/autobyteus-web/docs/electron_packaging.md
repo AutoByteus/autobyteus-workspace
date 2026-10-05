@@ -1,0 +1,1030 @@
+# Electron Packaging and Server Management
+
+This document describes the design and implementation of the **Electron desktop packaging** in autobyteus-web, which bundles and manages a local Node.js backend server for a fully self-contained desktop application.
+
+## Overview
+
+AutoByteus is packaged as an Electron application that:
+
+- Provides a native desktop experience across Windows, macOS, and Linux
+- Bundles a prepared Node.js backend server with production dependencies and native modules
+- Manages the server lifecycle automatically
+- Uses IPC for secure communication between main and renderer processes
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph Electron
+        Main[Main Process<br/>main.ts]
+        Preload[Preload Script<br/>preload.ts]
+        Renderer[Renderer Process<br/>Nuxt App]
+    end
+
+    subgraph ServerManagement
+        Factory[ServerManagerFactory]
+        Status[ServerStatusManager]
+        Base[BaseServerManager]
+        Linux[LinuxServerManager]
+        Mac[MacOSServerManager]
+        Win[WindowsServerManager]
+    end
+
+    subgraph Resources
+        Server[Bundled Server<br/>Node.js app]
+        Data[Profile-selected Mutable State Root]
+    end
+
+    Main --> Factory
+    Factory --> Linux & Mac & Win
+    Linux & Mac & Win --> Base
+    Main --> Status
+    Status --> Base
+    Main <--> Preload
+    Preload <--> Renderer
+    Base --> Server
+    Base --> Data
+```
+
+## Directory Structure
+
+```
+autobyteus-web/
+├── electron/
+│   ├── main.ts                 # Main process entry point
+│   ├── preload.ts              # Secure API bridge to renderer
+│   ├── logger.ts               # File and console logging
+│   ├── types.d.ts              # TypeScript definitions
+│   ├── application/
+│   │   └── electronApplication.ts  # Post-profile app lifecycle owner
+│   ├── launch-profile/             # Early production/E2E profile and path safety
+│   ├── shared/
+│   │   └── embeddedServerConfig.ts  # Stable embedded server URL/port defaults
+│   ├── server/
+│   │   ├── baseServerManager.ts      # Abstract base class
+│   │   ├── linuxServerManager.ts     # Linux implementation
+│   │   ├── macOSServerManager.ts     # macOS implementation
+│   │   ├── windowsServerManager.ts   # Windows implementation
+│   │   ├── serverManagerFactory.ts   # Factory pattern
+│   │   ├── serverStatusManager.ts    # Status bridge/events
+│   │   ├── serverStatusEnum.ts       # Status enum
+│   │   ├── services/                 # Extracted services
+│   │   │   ├── AppDataService.ts     # Directory/config management
+│   │   │   ├── HealthChecker.ts      # Health polling logic
+│   │   │   └── index.ts              # Service exports
+│   │   └── __tests__/                # Server tests
+│   └── utils/
+│       ├── shellEnv.ts         # PATH from login shell
+│       └── __tests__/          # Utils tests
+├── scripts/
+│   ├── run-electron-e2e.mjs        # Thin packaged E2E command
+│   └── electron-e2e/                # Preparation, adapters, process ownership, cleanup
+├── tests/e2e/
+│   └── electron-launch-profile-probe.mjs  # Durable packaged isolation probe
+├── build/
+│   ├── scripts/
+│   │   ├── build.ts                # electron-builder script
+│   │   ├── macSign.ts              # macOS signing adapter
+│   │   ├── macSigningPolicy.ts     # macOS entitlement classifier
+│   │   ├── macSigningDiscovery.ts  # macOS signing subject discovery
+│   │   └── generateIcons.ts        # Icon generation
+│   └── icons/                      # Platform-specific icons
+└── resources/
+    └── server/                 # Bundled Node.js server
+```
+
+---
+
+## Server Manager System
+
+### BaseServerManager
+
+Abstract class providing platform-agnostic server lifecycle management:
+
+| Method            | Description                             |
+| ----------------- | --------------------------------------- |
+| `startServer()`   | Initialize and start the backend server |
+| `stopServer()`    | Gracefully stop the server process      |
+| `isRunning()`     | Check if server is running and ready    |
+| `getServerUrls()` | Get all API endpoint URLs               |
+| `getServerPort()` | Return the active profile-selected port |
+| `getAppDataDir()` | Application data directory              |
+
+Key features:
+
+- **EventEmitter-based**: Emits `ready`, `error`, and `stopped` events
+- **Profile-selected port**: Uses `29695` in production and the validated
+  non-default port in an explicit E2E launch
+- **First-run initialization**: Copies required config files on first launch
+- **Validation**: Checks for required server files before starting
+- **Port waiting**: Ensures port is free before binding
+
+### Delayed startup is informational
+
+Startup calls share one pending attempt, including port preflight. After 100 seconds
+of waiting for child health, the process owner emits a one-time delayed-start notice;
+it does not fail, kill/restart the backend, or launch another child. The existing
+status snapshot carries that message while remaining STARTING or RESTARTING.
+Only current-child health establishes readiness. Genuine setup, structured fatal,
+and process failures still terminate startup; explicit stop cancels pending
+observations, including the Windows no-close cleanup path. Old attempt cleanup
+cannot clear a successor.
+
+The loading overlay and server monitor display the notice with existing diagnostics.
+Ready, error, or a new attempt clears it. A living but unresponsive backend may stay
+pending: elapsed time is not proof of either failure or migration progress.
+Per-request health, port-release, and shutdown deadlines remain operation-specific.
+This does not change backend migrations or data readiness policy. Validate delayed
+desktop behavior with disposable data in a normal window-first Electron launch,
+not by launching against a user's existing profile.
+
+### Platform-Specific Managers
+
+| Platform | Class                  | Entrypoint              |
+| -------- | ---------------------- | ----------------------- |
+| Linux    | `LinuxServerManager`   | `dist/app.js` (Node)    |
+| macOS    | `MacOSServerManager`   | `dist/app.js` (Node)    |
+| Windows  | `WindowsServerManager` | `dist/app.js` (Node)    |
+
+Each extends `BaseServerManager` and implements:
+
+- `getServerRoot()` - Returns path to the bundled server root directory
+- `launchServerProcess()` - Spawns the server with correct environment
+
+### ServerStatusManager
+
+Bridges server events to the renderer process:
+
+```typescript
+// Events emitted to renderer via IPC
+interface ServerStatusEvent {
+  status: "starting" | "running" | "error" | "restarting" | "shutting-down";
+  urls: { graphql; rest; ws; transcription; health };
+  message?: string;
+  healthCheckStatus?: string;
+}
+```
+
+Methods:
+
+- `initializeServer()` - Start server on app launch
+- `restartServer()` - Stop and restart the server
+- `checkServerHealth()` - Ping health endpoint
+- `getStatus()` - Return current status object
+
+---
+
+## Main Process (main.ts)
+
+Startup is ordered so no path-owning service can write before the launch profile
+is known. The entry registers the privileged scheme, resolves and validates the
+`production` or `e2e` profile, applies verified Electron paths, configures the
+logger, checks the selected listener port in E2E mode, and only then dynamically
+loads the application lifecycle owner. A malformed or partial E2E profile fails
+before a backend, persistent session, or renderer window is created.
+
+### Window Creation
+
+- Creates a secure `BrowserWindow` with sandbox enabled
+- Blocks unintended navigations and new windows for security
+- Registers the privileged `local-file://` scheme before Electron becomes
+  ready, then installs its request gate and response handler on the default
+  session after readiness
+
+#### Trusted Local File Preview Boundary
+
+Event Monitor absolute-path previews may use local Electron access only after
+explicit user activation and only when the trusted `electronAPI` bridge is
+present. The renderer does not read the filesystem directly. Both the
+`read-local-text-file` IPC handler and the `local-file://` protocol call the
+shared `electron/localFileValidation.ts` boundary, which rejects malformed or
+non-absolute paths and revalidates existence, regular-file status, and read
+access immediately before text or media bytes are returned. Validation failures
+are returned as stable local-preview error codes so the renderer can show a
+localized, non-destructive Files state rather than native OS error text.
+
+Binary local previews use one process-neutral URL contract owned by
+`shared/localFileUrl.ts`: `local-file://local/<encoded-absolute-path>`. The
+fixed lowercase `local` authority prevents Electron's standard-scheme parser
+from reinterpreting the first POSIX path segment as a host. The full path stays
+in the pathname so case, spaces, Unicode, `%`, `#`, Windows drive letters, and
+other URL-significant characters survive a renderer/main round trip. Raw
+context-locator ingress rejects a wrong authority, credentials, port, query,
+fragment, malformed encoding, null byte, or noncanonical path before viewer
+assignment. The main handler rechecks the canonical attributes still observable
+on the request Electron delivers and requires the path to round-trip through
+the shared builder. Electron's standard-scheme normalization can erase authored
+credentials and ports before handler delivery, so handler parsing must not be
+described as proof of the raw authored URL; the exact-frame gate and filesystem
+validation remain authoritative. Do not add a second inline serializer or
+response-local path decoder.
+
+Event Monitor `file:` Markdown URIs are input tokens, not trusted local URLs.
+The renderer classifies the raw token and emits only a transient action ID plus
+the preserved raw provenance needed by the existing launcher. Electron binary
+preview assignment then uses the canonical `local-file://local/...` builder
+above; the authored `file:` URI is never assigned directly to a viewer or
+persisted as a File Explorer locator.
+
+The scheme has exactly four Electron privileges:
+
+- `standard: true` for stable URL parsing and relative-resolution semantics;
+- `stream: true` for native audio/video streaming and later-byte seeks;
+- `supportFetchAPI: true` for the established Excel Fetch path; and
+- `corsEnabled: true` for the established PDF.js XHR path and cross-protocol
+  main-frame document requests.
+
+Those capabilities are coupled to a fail-closed default-session
+`webRequest.onBeforeRequest` gate. A request may reach `protocol.handle` only
+when its `webContentsId` identifies a live registered `WorkspaceShellWindow`
+and its exact `WebFrameMain` object is that window's current main frame.
+Missing, destroyed, stale, unregistered, child-frame, and main-process
+identities are canceled before any handler or filesystem access. Browser-tab
+content remains in its separate Browser-owned session and does not acquire this
+default-session capability. Never enable the four privileges without the gate,
+replace exact frame identity with origin/header checks, or install the handler
+in an ordinary browser session.
+
+After authorization, `local-file-response.ts` owns the complete response
+contract. It permits `GET` and `HEAD` only, revalidates and opens the file, sets
+MIME type, `Accept-Ranges: bytes`, `Cache-Control: no-store`, and exact content
+length, and returns:
+
+- `200` for a full response;
+- `206` with `Content-Range` for one valid closed, open-ended, or suffix byte
+  range;
+- `416` with `Content-Range: bytes */<size>` and no body for malformed,
+  multi-range, empty-file-range, or unsatisfiable requests;
+- `405` with `Allow: GET, HEAD` for another method; or
+- `404` with no body when URL parsing, validation, open/stat, or response setup
+  fails.
+
+`HEAD` returns the same selected full/range status and headers without a body.
+`file-byte-stream.ts` reads only the selected window in bounded chunks and
+closes its file handle on completion, cancellation, and error. PDF.js XHR,
+Excel Fetch, images, audio, and video all use this same authorized response
+owner; do not add viewer-specific filesystem, IPC, Blob, or full-buffer
+fallbacks.
+
+This boundary is separate from browser/remote workspace access. A browser or
+Phone Access client must first map a recognized host path into the active
+workspace and use the existing authorized relative content route; it must not
+send an arbitrary absolute path to the server. The `local-file://` protocol is
+not an authorization mechanism for remote clients and must not be exposed as an
+unvalidated renderer URL path.
+
+### IPC Handlers
+
+| Handler                | Purpose                          |
+| ---------------------- | -------------------------------- |
+| `get-server-status`    | Return current server status     |
+| `restart-server`       | Restart the backend server       |
+| `check-server-health`  | Ping server health endpoint      |
+| `get-log-file-path`    | Get path to app log file         |
+| `open-log-file`        | Open log file in system editor   |
+| `read-log-file`        | Read last 500 lines of log       |
+| `read-local-text-file` | Securely read local file content |
+| `open-external-link`   | Open URL in system browser       |
+| `reset-server-data`    | Destructively clear the entire server app-data directory, including the application DB and derived vault key |
+| `get-platform`         | Return OS platform string        |
+
+### App Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant App as Electron App
+    participant Window as BrowserWindow
+    participant Status as ServerStatusManager
+    participant Server as ServerManager
+
+    App->>App: whenReady()
+    App->>Window: createWindow()
+    App->>Status: initializeServer()
+    Status->>Server: startServer()
+    Server->>Server: waitForPortToBeFree()
+    Server->>Server: launchServerProcess()
+    Server->>Server: waitForServerReady()
+    Server-->>Status: emit('ready')
+    Status-->>Window: IPC 'server-status'
+
+    Note over Window: User closes window
+    Window->>App: 'close' event
+    App->>Window: send 'app-quitting'
+    Window->>App: IPC 'start-shutdown'
+    App->>App: app.quit()
+    App->>Server: stopServer()
+    Server-->>App: resolved
+    App->>App: logger.close()
+```
+
+---
+
+## Preload Script (preload.ts)
+
+Exposes a secure `electronAPI` to the renderer process via `contextBridge`:
+
+```typescript
+window.electronAPI = {
+  // Server control
+  getServerStatus: () => Promise<ServerStatus>,
+  restartServer: () => Promise<ServerStatus>,
+  checkServerHealth: () => Promise<HealthStatus>,
+  onServerStatus: (callback) => () => void,
+
+  // App updates
+  getAppUpdateState: () => Promise<AppUpdateState>,
+  checkForAppUpdates: () => Promise<AppUpdateState>,
+  downloadAppUpdate: () => Promise<AppUpdateState>,
+  installAppUpdateAndRestart: () => Promise<{ accepted: boolean }>,
+  onAppUpdateState: (callback) => () => void,
+
+  // File operations
+  getLogFilePath: () => Promise<string>,
+  openLogFile: (path) => Promise<Result>,
+  readLogFile: (path) => Promise<Result>,
+  readLocalTextFile: (path) => Promise<Result>,
+  getPathForFile: (file: File) => string,
+
+  // System
+  openExternalLink: (url) => Promise<Result>,
+  getPlatform: () => Promise<string>,
+
+  // Recovery
+  clearAppCache: () => Promise<Result>,
+  resetServerData: () => Promise<Result>,
+
+  // Shutdown
+  onAppQuitting: (callback) => void,
+  startShutdown: () => void,
+}
+```
+
+---
+
+## Build System
+
+### electron-builder Configuration
+
+Located in `build/scripts/build.ts`:
+
+```typescript
+const options: Configuration = {
+  appId: "com.autobyteus.app",
+  productName: "AutoByteus",
+  directories: { output: "electron-dist" },
+  files: ["dist/**/*", "package.json"],
+  extraMetadata: { main: "dist/electron/main.js" },
+  asar: true,
+  mac: {
+    hardenedRuntime: true,
+    entitlements: "build/entitlements.mac.plist",
+    sign: "./build/dist/macSign.js",
+  },
+  extraResources: [
+    { from: "resources/server", to: "server" },
+    { from: "build/icons", to: "icons" },
+    NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
+  ],
+  // Platform-specific configurations...
+};
+```
+
+### Platform Targets
+
+| Platform | Target         | Artifact Pattern                        |
+| -------- | -------------- | --------------------------------------- |
+| Linux    | AppImage       | `AutoByteus_<flavor>_linux-x64-{version}.AppImage` / `AutoByteus_<flavor>_linux-arm64-{version}.AppImage` |
+| Windows  | NSIS installer | `AutoByteus_<flavor>_windows-{version}.exe`      |
+| macOS    | DMG + ZIP      | `AutoByteus_<flavor>_macos-{arch}-{version}.dmg/.zip` |
+
+Flavor resolution:
+
+- `personal` -> `AutoByteus_personal`
+- `enterprise` -> `AutoByteus_enterprise`
+- Resolution order in `build/scripts/build.ts`:
+  1. `AUTOBYTEUS_BUILD_FLAVOR` env override (`personal` or `enterprise`)
+  2. Git context inference (`personal` / `enterprise` branch detection)
+  3. Safe fallback: `enterprise`
+
+### Electron Runtime Baseline
+
+The desktop runtime is pinned in `autobyteus-web/package.json` as exact
+`electron@42.4.1`. Keep this as an explicit, reviewed runtime baseline instead
+of a semver range or minimum-fixed-version pin because Electron major upgrades
+change Chromium, Node.js, native-module ABI, packaging behavior, and updater
+behavior together.
+
+When the Electron baseline changes:
+
+- update `autobyteus-web/package.json` and the root workspace `pnpm-lock.yaml`
+  together;
+- treat the repository-root `pnpm-lock.yaml` as the canonical lockfile for the
+  workspace and do not reintroduce a package-local `autobyteus-web/pnpm-lock.yaml`;
+- validate the installed Electron package metadata and the packaged app bundle
+  report the intended Electron version;
+- rebuild native modules for the target Electron ABI before packaging;
+- run focused Electron tests plus at least one desktop package smoke build before
+  claiming release readiness.
+
+### noVNC Runtime and Third-Party Notice Packaging
+
+The VNC viewer uses the official package-root `@novnc/novnc` export rather than a
+checked-in provider source tree. The dependency is intentionally pinned to exact
+development build `1.7.0-g7c36fab` because that build preserves the approved
+automatic asynchronous clipboard behavior. Do not replace it with stable
+`1.7.0`, a floating tag/range, a deep import, or a local fallback without a
+separate behavior review.
+
+`public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` is the canonical
+distributable notice for this exact provider build. It contains the upstream
+notice, authorship and embedded-component attribution, the MPL-2.0 text, and
+links to the exact corresponding source commit and archive.
+
+The notice has three packaging projections owned by
+`build/scripts/noVncThirdPartyNotice.ts`:
+
+- normal Nuxt generation copies it to
+  `dist/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt`;
+- Electron generation copies it to
+  `dist/renderer/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt`;
+- electron-builder copies the canonical source into the packaged application's
+  `THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` resource path.
+
+The desktop build preflight requires both the canonical source and the generated
+Electron renderer copy before invoking electron-builder. The `extraResources`
+mapping deliberately uses the canonical source, so the application resource is
+not coupled to a Nuxt output directory while the preflight still proves that the
+Electron renderer distribution contains the same notice.
+
+Treat every noVNC provider upgrade as one atomic change. Update and verify all of
+the following together:
+
+1. the exact dependency version and root workspace lockfile integrity;
+2. the package-root import contract and the narrow ambient declaration in
+   `types/novnc.d.ts` (remove the local declaration if upstream eventually ships
+   sufficient root types; never keep two type authorities);
+3. required clipboard behavior and the absence of a vendored/deep/fallback
+   provider path;
+4. the versioned notice filename, package/commit provenance, corresponding-source
+   links, upstream license contents, and helper constants;
+5. generic web, Electron renderer, and packaged application notice outputs; and
+6. `tests/integration/novnc-package-contract.integration.test.ts`, focused VNC
+   lifecycle coverage, Nuxt generation, and a desktop package smoke build.
+
+Do not move to a future stable noVNC release merely because its version is newer.
+First prove that it contains the automatic clipboard path represented by the
+currently selected upstream build, or explicitly redesign and approve clipboard
+ownership before changing the pin.
+
+### Build Commands
+
+```bash
+# Build for current platform
+npx ts-node build/scripts/build.ts
+
+# Build for specific platform
+npx ts-node build/scripts/build.ts --linux
+npx ts-node build/scripts/build.ts --linux --x64
+npx ts-node build/scripts/build.ts --linux --arm64
+npx ts-node build/scripts/build.ts --windows
+npx ts-node build/scripts/build.ts --mac
+
+# Build for all platforms. The Linux target uses the native Linux host architecture
+# and fails if a Linux package is requested from a non-Linux host.
+npx ts-node build/scripts/build.ts
+```
+
+The package keeps the ordinary `AutoByteus` product name, app ID, signing
+configuration, and release/update channel in both runtime profiles. E2E values
+are launch inputs; there is no separate E2E artifact or artifact naming scheme.
+
+`scripts/prepare-server.sh` / `scripts/prepare-server.mjs` build the Node server, deploy it into `resources/server`, and rebuild native modules (e.g., `node-pty`) for the Electron runtime. Native rebuilds use the direct `@electron/rebuild` dev dependency, exposed through the `electron-rebuild` CLI, and the scripts fail if that workspace-provided CLI is unavailable. Do not add a `pnpm dlx electron-rebuild` fallback: ad-hoc fallback installs can resolve a rebuild stack that is not reviewed with the pinned Electron ABI.
+The web project only calls the server packaging boundary; any shared server-side prerequisites remain owned by `autobyteus-server-ts` rather than being prepared directly from `autobyteus-web`.
+
+Renderer contract packages that Nuxt consumes only while generating the renderer
+belong in `devDependencies`, not the Electron production dependency graph. In
+particular, `@autobyteus/team-stream-contracts` must remain available as
+`workspace:*` for install/typecheck/generation but must not appear in
+`dependencies` or be imported by Electron main-process code. Otherwise server
+preparation can mistake its workspace link for an Electron runtime module and
+try to stage a package outside the web packaging boundary. The web boundary
+guard and its integration test enforce the manifest, root-lockfile, and Electron
+runtime-import sides of this rule before packaging. A successful package must
+leave the installed workspace link unchanged; the builder consumes generated
+renderer output rather than materializing that link into the Electron runtime.
+
+For macOS terminal packaging, every `node-pty` `spawn-helper` found under the staged server `node_modules` must be executable before the app is packed. The packaging hooks normalize all matching helper files rather than only one architecture-specific path, because `node-pty` may select `prebuilds/darwin-x64`, `prebuilds/darwin-arm64`, or a build directory depending on the packaged runtime. The runtime guard in `autobyteus-ts/src/tools/terminal/node-pty-bootstrap.ts` still repairs the selected helper at startup, but packaging should ship the selected helper already executable.
+
+`scripts/verify-packaged-terminal-runtime.mjs` is the release-time validator for this invariant. It checks the staged `resources/server` tree and the final `.app/Contents/Resources/server` tree for the target Darwin architecture, verifies that the selected and target `node-pty` helpers are executable, checks Darwin architecture tokens when the `file` tool is available, and runs a real `node-pty` spawn probe when the build host matches the target architecture.
+
+### macOS Signing Policy
+
+macOS release artifacts use an explicit least-privilege signing policy instead of
+letting every nested binary inherit the top-level app entitlements.
+`build/scripts/macSign.ts` is the `electron-builder` signing adapter, and
+`build/scripts/macSigningPolicy.ts` classifies each signing subject:
+
+- the top-level `AutoByteus.app/Contents/MacOS/AutoByteus` executable uses the
+  root app entitlement profile in `build/entitlements.mac.plist`;
+- Electron helper app executables use narrow helper entitlement plists
+  (`build/entitlements.mac.helper*.plist`);
+- non-app nested Mach-O code is signed with the hardened runtime but without an
+  entitlement payload. This includes Squirrel/ShipIt, framework executables and
+  libraries, `.dylib` files, `.node` native modules, and bundled server native
+  binaries.
+
+`build/scripts/afterPack.ts` must stay limited to pre-signing resource
+normalization such as `node-pty` `spawn-helper` execute bits. Do not reintroduce
+server-native codesigning with `build/entitlements.mac.plist` from `afterPack`,
+and do not restore `mac.entitlementsInherit` for child code; both patterns can
+put app-only entitlements on updater-critical nested binaries.
+
+`scripts/verify-macos-signing-policy.mjs` is the release-time guard for this
+invariant. It verifies the signed `.app`, fails if any non-app nested signing
+subject carries entitlement keys, explicitly checks Squirrel and ShipIt, and
+confirms the root app executable still has the expected root app entitlement
+keys. The `Desktop Release` GitHub Actions workflow runs this verifier for both
+macOS ARM64 and macOS x64 before uploading artifacts.
+
+For a local signed macOS package, compile the build scripts and run:
+
+```bash
+pnpm transpile-build
+APP_BUNDLE="$(find electron-dist -path '*/AutoByteus.app' -type d -print -quit)"
+node scripts/verify-macos-signing-policy.mjs --app "$APP_BUNDLE"
+```
+
+The verifier requires macOS `codesign` and a signed app bundle. Unsigned local
+builds are useful for packaging iteration, but they are not release-policy proof.
+
+On Linux packaging, the script validates that server resources match the native Linux target architecture. Linux x64 packages require the Debian OpenSSL engine targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`); Linux ARM64 packages require `linux-arm64-openssl-3.0.x`. Unsupported Linux cross-architecture packaging fails before Electron artifacts are emitted. Validation covers:
+
+- packaged CLI engines directory (`@prisma/engines`)
+- packaged Prisma Client runtime directory (`.prisma/client`)
+
+---
+
+## Auto-Update Delivery
+
+Auto-updates are powered by `electron-updater` in the main process via `electron/updater/appUpdater.ts`.
+
+### Runtime Behavior
+
+- `AppUpdater` implements `AppUpdateController`. Isolated (`e2e`) launches register `DisabledAppUpdater` instead, which reports `status: 'disabled'` (see [Updates in isolated launches](#updates-in-isolated-launches)).
+- Startup auto-check runs only for packaged apps (dev/unpackaged mode is skipped).
+- Renderer windows receive normalized updater state via IPC channel `app-update-state`.
+- Manual check entrypoint is exposed in `Settings > Updates` (canonical UI location).
+- User actions from UI trigger IPC handlers:
+  - `app-update:check`
+  - `app-update:download`
+  - `app-update:install`
+  - `app-update:set-channel`
+
+### Update Channel (Stable / Beta)
+
+- `Settings > Updates` has a "Receive beta updates" switch, off by default.
+  The value is saved locally in `userData/app-update-channel.v1.json`
+  (`{ "channel": "stable" | "beta" }`) by `electron/updater/appUpdateChannelStore.ts`.
+  A missing, unreadable or invalid file means `stable`. The value is never sent
+  to a server.
+- `AppUpdater` applies the channel before **every** check:
+  `autoUpdater.allowPrerelease = channel === 'beta'` and
+  `autoUpdater.allowDowngrade = false`. Never set `autoUpdater.channel`: its
+  setter forces `allowDowngrade = true`.
+- Stable installs read only GitHub `/releases/latest`, which excludes
+  pre-releases. This also protects older installs that predate the switch.
+  Beta installs take the newest entry in the releases feed, beta or stable.
+- `app-update:set-channel` returns `{ accepted, persisted, state }`:
+  - It is refused (`accepted: false`) for an invalid value, or when
+    `isAppUpdateChannelLocked(state)` (in `shared/appUpdateTypes.ts`) is
+    true. That means the status is `checking`, `downloading` or
+    `installing`, or `updateStaged` is true.
+  - `updateStaged` becomes `true` on `update-downloaded` and stays true
+    until the app restarts. A staged update installs on quit, and a later
+    manual or failed check does not unstage it, so the lock cannot key on
+    the transient `downloaded` status.
+  - The About switch is disabled on the same rule. While `updateStaged` is
+    true, whatever the status, a hint asks the user to install or restart
+    first.
+  - Accepted limitation: if a replacement download fails after an earlier
+    update was staged, the switch stays locked until restart.
+  - Otherwise the value is saved and applied. If the save fails, the channel
+    still applies for this session, `persisted` is `false`, and the renderer
+    shows a save-failed toast.
+  - Packaged apps then re-check when idle, `no-update`, `available` or
+    `error`, so an offer from the previous channel is replaced.
+- Turning Beta off never downgrades. The install stays on its current version
+  until a newer stable release exists.
+- `AppUpdateState.currentVersionIsPrerelease` drives the Beta badge next to
+  the version in the About card.
+
+### Updater Error Safety
+
+`electron/updater/appUpdater.ts` is the only boundary that should inspect raw
+`electron-updater` failures. It classifies failures before broadcasting renderer
+state and keeps dependency diagnostics in the Electron main log instead of in
+normal UI.
+
+Renderer-visible update state must stay safe for display:
+
+- `shared/appUpdateTypes.ts` carries `errorKind` and `errorOperation`.
+- The renderer contract must not reintroduce a raw `error` / provider-message
+  field for normal UI, Settings, or toast copy.
+- `utils/appUpdateErrorDisplay.ts` maps `errorKind` to localized notice,
+  Settings, and toast messages.
+- `stores/appUpdateStore.ts` suppresses visible card/toast noise for startup
+  `network` and `release-preparing` failures, while manual checks and
+  download/install failures still show concise recovery copy.
+- Raw provider details such as `net::ERR_*`, `ERR_UPDATER_*`, provider URLs,
+  YAML, stack traces, or file lists belong in the Electron main log with
+  classification context, not in user-facing renderer text.
+
+Current safe error categories are:
+
+- `network` — transient connection/server reachability failures.
+- `release-preparing` — the latest GitHub release is visible but required
+  desktop updater metadata/assets are not available yet.
+- `metadata` — update metadata/package information is incomplete or invalid.
+- `download` — an available update could not be downloaded.
+- `install` — a downloaded update could not be applied/restarted.
+- `unavailable` — update actions are unavailable in the current runtime.
+- `unknown` — fallback safe copy for unrecognized updater failures.
+
+### Provider Configuration
+
+- Build-time publish metadata is generated in `build/scripts/build.ts`.
+- Provider is GitHub Releases only.
+- Optional override:
+  - `AUTOBYTEUS_UPDATER_REPOSITORY` (`owner/repo`) when repository auto-detection is not available.
+
+### Release Asset Requirements
+
+For updater compatibility, published release assets must include:
+
+- Linux:
+  - x64: `*linux-x64*.AppImage`, `latest-linux.yml`
+  - ARM64: `*linux-arm64*.AppImage`, `latest-linux-arm64.yml`
+  - AppImage blockmaps are embedded in the AppImage and represented by numeric
+    `blockMapSize` entries in `latest-linux*.yml`; standalone Linux
+    `*.AppImage.blockmap` files are not release assets.
+- macOS:
+  - `*.dmg`, `*.dmg.blockmap`
+  - `*.zip`, `*.zip.blockmap`
+  - `latest-mac.yml`
+
+The desktop release workflow (`.github/workflows/release-desktop.yml`) is aligned to upload these files.
+
+### Release-Preparation Window
+
+The repository uses multiple `v*` tag-triggered release workflows that publish
+different asset families to the same GitHub Release. During a release, the
+GitHub Release can become visible before the Desktop Release workflow has
+uploaded every desktop updater asset and metadata file listed above. A packaged
+app that checks for updates during that window can receive missing
+`latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, `latest.yml`, or asset-not-found provider
+errors even though the final release will become complete after the desktop
+workflow finishes.
+
+App-side behavior for that condition is intentionally `release-preparing`: show
+calm retry guidance such as "The latest update is still being prepared on
+GitHub. Try again in a few minutes," suppress startup/background noise, and
+preserve the raw provider diagnostic in Electron logs for troubleshooting.
+
+Release workflow orchestration that prevents public/latest GitHub Releases from
+appearing before desktop updater assets are ready is a separate release-process
+follow-up. Do not work around the deployment window by exposing raw updater
+diagnostics in renderer state or UI.
+
+### Fixed-DMG Recovery After Broken macOS Updaters
+
+If an already-installed macOS app has Squirrel or ShipIt signed with app-level
+entitlement keys, macOS can block that installed source app before it can apply a
+future update. The durable recovery path is to install a fixed DMG once, replacing
+the source app with a corrected signing layout. After that manual fixed-DMG
+install, future auto-updates can run from a source app whose updater helpers are
+signed without entitlement keys.
+
+Do not try to repair this class of failure in renderer UI or updater runtime code:
+`electron/updater/appUpdater.ts` should continue to classify install failures and
+log diagnostics, while release engineering provides a fixed signed DMG and the
+manual-install recovery instruction.
+
+---
+
+## Server Resource Packaging
+
+The bundled server is located at `resources/server/` and includes:
+
+| File/Directory       | Purpose                                   |
+| -------------------- | ----------------------------------------- |
+| `dist/`              | Compiled Node.js server output            |
+| `prisma/`            | Prisma schema + migrations                |
+| `node_modules/`      | Production dependencies (incl. prisma)   |
+| `package.json`       | Server package metadata                   |
+| `.env`               | Default environment configuration         |
+| `download/`          | Pre-packaged downloadable assets (optional) |
+
+On macOS, the packaged server's `node_modules` includes `node-pty` native binaries and `spawn-helper` files. Keep `prepare-server`, `afterPack`, and `verify-packaged-terminal-runtime.mjs` aligned so the helper adjacent to the `node-pty` native module selected for the packaged architecture is present, executable, and architecture-compatible in both the staged resources and final `.app` resources.
+
+At runtime, the server:
+
+1. Runs on the active launch-profile port: production uses `29695`; explicit
+   E2E uses its required non-default port
+2. Stores data in the active launch-profile server-data directory: production
+   uses `~/.autobyteus/server-data/`; E2E uses `<isolated-root>/server-data/`
+3. Runs the normal Prisma/vault/app-data startup sequence before provider
+   consumers
+4. Provides endpoints: `/graphql`, `/rest`, `/transcribe`
+
+An existing supported version-1 custom-provider file is handled during that
+startup sequence. A complete valid set is migrated atomically to secret-free v2
+metadata plus encrypted vault entries. Invalid or colliding v1 content follows
+the delete-and-reconfigure path; built-in Settings remains available. If the
+legacy file cannot be deleted safely, custom-provider creation remains
+unavailable until the filesystem issue is corrected and the app restarts.
+There is no runtime v1 reader, backup/quarantine copy, partial migration, or
+automatic `.env` import.
+
+For one-time migration of an existing SQLite DB into `server-data`, use:
+
+```bash
+scripts/migrate-legacy-db.sh --from /path/to/production.db --to ~/.autobyteus/server-data
+```
+
+---
+
+## Utilities
+
+### Embedded Server Config (`shared/embeddedServerConfig.ts`)
+
+- Defines the stable production embedded-server loopback host and port defaults
+- Provides shared production HTTP/WS defaults; an active E2E endpoint comes
+  from the resolved main-process profile and is not synthesized by renderer code
+
+### Shell Environment (`shellEnv.ts`)
+
+- `getLoginShellPath()` - Inherits PATH from user's login shell
+- Essential for macOS/Linux where GUI apps have minimal PATH
+- Supports both bash and zsh
+- Embedded-server and terminal launchers preserve their established inherited
+  environment/runtime-discriminator behavior. That continuity is required for
+  account-backed tools and packaged Node-mode helpers; it is not a
+  child-process isolation boundary. Secret Management's `LOCAL_HARDENED` claim
+  is limited to vault/file-root/value-safe custody.
+
+### Logger (`logger.ts`)
+
+- Writes to both console and the active profile log path: production uses
+  `~/.autobyteus/logs/app.log`; E2E uses `<isolated-root>/logs/app.log`
+- Overwrites log on each app start
+- Methods: `debug()`, `info()`, `warn()`, `error()`
+
+---
+
+## Data Directories
+
+### Production Profile
+
+| Directory                             | Purpose                                               |
+| ------------------------------------- | ----------------------------------------------------- |
+| `~/.autobyteus/`                      | Canonical AutoByteus desktop data root                |
+| `~/.autobyteus/server-data/`          | Server runtime data                                   |
+| `~/.autobyteus/extensions/`           | Managed extension install root                        |
+| `~/.autobyteus/extensions/voice-input/` | Voice Input runtime, model, temp, and download assets |
+| `~/.autobyteus/server-data/db/`       | SQLite databases                                      |
+| `~/.autobyteus/server-data/logs/`     | Server logs                                           |
+| `~/.autobyteus/server-data/download/` | Downloaded assets                                     |
+
+Where:
+
+- **Linux**: `~/.autobyteus/`
+- **macOS**: `~/.autobyteus/`
+- **Windows**: `%USERPROFILE%\\.autobyteus\\`
+
+Electron/Chromium production `userData` remains in the normal product-named OS
+application-data directory. Existing production state is directly usable; this
+launch-profile change does not relocate or migrate it.
+
+### E2E Profile
+
+For `AUTOBYTEUS_ELECTRON_DATA_ROOT=<isolated-root>`, the application creates
+only these verified descendants of the already-authorized root:
+
+| Directory | Purpose |
+| --- | --- |
+| `<isolated-root>/server-data/` | Backend database, config, logs, downloads, memory, skills, and workspaces |
+| `<isolated-root>/logs/` | Electron main-process logs |
+| `<isolated-root>/extensions/` | Managed extension state |
+| `<isolated-root>/browser-artifacts/` | Application-owned browser artifacts |
+| `<isolated-root>/electron/user-data/` | Chromium profile, registry, local storage, cookies, caches, and persistent partitions |
+| `<isolated-root>/electron/session-data/` | Electron session data |
+| `<isolated-root>/electron/crash-dumps/` | Crash diagnostics |
+| `<isolated-root>/electron/downloads/` | Electron downloads |
+
+### Packaged E2E Launch Profile
+
+The production profile is selected when no E2E-only values are present. The
+explicit E2E profile requires all three process environment values:
+
+```text
+AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE=e2e
+AUTOBYTEUS_ELECTRON_SERVER_PORT=<1024..65535, except 29695>
+AUTOBYTEUS_ELECTRON_DATA_ROOT=<existing absolute safe directory>
+```
+
+The selected root must already exist, must not be a symlink or filesystem root,
+and must not overlap the canonical AutoByteus root or an Electron production
+profile/log root. Supplying only a port/root, selecting the production port,
+using a relative or missing root, or choosing an occupied listener fails closed
+before stateful startup. The backend keeps its current listener-bind policy;
+Electron and renderer clients use `127.0.0.1:<selected-port>`. E2E mode disables
+automatic update checks, downloads, and install-on-quit side effects, while the
+production updater remains unchanged.
+
+Do not persist these values in repository or production-data `.env` files, bake
+them into Nuxt/electron-builder output, or create an alternate app/product name.
+The supported caller is the process-neutral preparation boundary:
+
+```bash
+# Build a host-native package, allocate port/root, launch directly, wait, clean up.
+pnpm test:e2e:electron --adapter direct
+
+# Use Playwright as the process adapter.
+pnpm test:e2e:electron --adapter playwright
+
+# Reuse one exact current-worktree artifact and a caller-owned existing root.
+pnpm test:e2e:electron \
+  --skip-build \
+  --adapter playwright \
+  --executable /absolute/path/to/AutoByteus \
+  --port 31001 \
+  --data-root /absolute/path/to/existing-safe-e2e-root
+
+# Run the durable five-scenario packaged isolation probe and record evidence.
+pnpm test:e2e:electron:isolation \
+  --skip-build \
+  --executable /absolute/path/to/AutoByteus \
+  --output-dir test-results/electron-launch-profile
+```
+
+`prepareElectronE2ELaunch()` builds by default or reuses the selected exact
+artifact, chooses or validates a non-default port, and creates a unique safe
+temporary root when the caller does not provide one. It returns one single-use
+prepared resource consumed unchanged by either the direct or Playwright adapter.
+The desktop launch environment starts with the caller environment (plus
+caller-supplied extras), removes an inherited `ELECTRON_RUN_AS_NODE` (which
+would make the binary run as plain Node), and forces the three isolation keys.
+The shared launch mechanics (environment overlay, ports, executable resolution,
+process-group control) live in `scripts/electron-launch/` and are used by both
+this harness and the `isolated-app` lifecycle.
+
+#### Isolated server environment
+
+`buildServerProcessEnv` (`electron/server/serverRuntimeEnv.ts`) is the only
+place that composes the embedded server's environment. `ElectronApplication`
+maps the launch profile to a policy:
+
+- `production` → `inherit-caller`: the complete caller environment, exactly as
+  before, plus the Electron-owned values below.
+- `e2e` → `isolated-baseline`: only the variables in
+  `ISOLATED_SERVER_BASELINE_ENV_NAMES` plus every `LC_*`. These are OS/user
+  identity, locale, terminal, temp directories, proxies and certificates,
+  display/session buses, `CODEX_HOME`, and Windows system paths, matched
+  case-insensitively.
+
+Both add the Electron-owned values: login-shell `PATH` when available,
+`ELECTRON_RUN_AS_NODE=1`, `PORT`/`SERVER_PORT`, `DATABASE_URL` and
+`AUTOBYTEUS_DATA_DIR` under the data root, `AUTOBYTEUS_SERVER_HOST`, `DB_TYPE`,
+and the browser-bridge runtime overrides. In `e2e` mode, production
+`AUTOBYTEUS_*`, `DB_NAME`, provider keys and runtime settings that a caller
+inherited (for example an agent shell inside AutoByteus) therefore never reach
+the isolated server. Its settings come from its own data root's `.env`.
+Credentials for an isolated instance are provisioned with
+`pnpm secrets:import` against its database. If a server feature needs another
+system variable in isolated mode, add it to the baseline list; never spread
+`process.env` in a platform manager.
+
+#### Updates in isolated launches
+
+Every launch registers one `AppUpdateController` for the `app-update:*` IPC
+contract. Production uses `AppUpdater`. The `e2e` profile uses
+`DisabledAppUpdater`, which answers with `status: 'disabled'`, refuses download,
+install and channel changes, and never checks. The renderer store keeps the
+update notice hidden and shows no toast. Settings → Updates shows a neutral
+"turned off" line without update controls.
+
+#### Agent lifecycle (`pnpm isolated-app`) and the control port
+
+`scripts/isolated-app/` provides the long-lived agent lifecycle
+(`start|list|stop|restart`, JSON output) on top of the same launch mechanics.
+It launches the app detached as its own process group with
+`--remote-debugging-port=<control port>` (a free port unless `--control-port`
+is given; Chromium binds it to `127.0.0.1`), `--disable-backgrounding-occluded-windows`,
+`--disable-renderer-backgrounding` and an identity marker switch. It records
+the instance under `<OS temp dir>/autobyteus-isolated-app/`, verifies identity
+before signalling, and deletes only the data roots it created. The control
+port exists only for instances started this way; production launches never
+open one. See [isolated app instances](../../docs/isolated-app-instances.md).
+
+Every desktop build ships the isolated-launch capability marker
+`build/isolated-launch/isolated-launch.json` (`{"isolatedLaunchContract": 1}`)
+via `extraResources` to `<resources>/isolated-launch.json`. That is
+`Contents/Resources/` on macOS and `resources/` in Linux unpacked output and
+inside the AppImage. `start` and `restart` read it before any port, data-root or
+spawn work and refuse builds without a contract of at least 1
+(`APP_ISOLATION_UNSUPPORTED`). A packed AppImage is detected by suffix or its
+type-2 magic without being executed and must be extracted first
+(`APPIMAGE_EXTRACTION_REQUIRED`). Bump the contract only when the isolated
+server-environment or updates-disabled contract changes incompatibly
+(`build/scripts/isolatedLaunchMarker.ts`,
+`scripts/electron-launch/appExecutable.mjs`). The E2E harness does not check
+the marker.
+
+Cleanup is process-identity based. The adapter first requests graceful shutdown,
+then confirms the entire owned process group/tree and may target only that same
+tree if escalation is needed. A preparation-owned temporary root is removed
+only after affirmative whole-tree completion; a caller-provided root is retained.
+Selected-port availability after shutdown is diagnostic only: it does not
+identify an owner, authorize a signal, or veto disposal of an otherwise-owned
+root. Never replace this contract with product-name or port-based process killing.
+
+Deterministic Windows process-history and `taskkill` contracts are covered in
+the repository, but a real supported Windows-host CIM/`taskkill` run is still a
+platform validation responsibility rather than an inferred pass.
+
+### Managed Voice Input Extension
+
+- Voice Input is delivered as a managed extension instead of being bundled into the base desktop installer.
+- Release provenance is pinned to the dedicated runtime repository:
+  - `AutoByteus/autobyteus-voice-runtime`
+- The extension lifecycle is:
+  - `Install` downloads the platform runtime bundle into `~/.autobyteus/extensions/voice-input` and then performs local backend/model bootstrap for that machine
+  - `Enable` turns on shared composer/Project/Task dictation without re-downloading
+  - `Disable` turns off dictation while keeping the installed assets on disk
+  - `Remove` deletes the managed extension assets and resets Voice Input-specific state
+- The published runtime release stays lightweight:
+  - release assets include platform runtime bundles plus `voice-input-runtime-manifest.json`
+  - bilingual model archives are not published as release assets
+- The installed runtime owns backend-specific local bootstrap:
+  - macOS arm64 downloads the MLX model locally during install
+  - macOS x64, Linux x64, and Windows x64 download the `faster-whisper` model locally during install
+- Backend policy:
+  - macOS arm64 uses the MLX worker bundle
+  - macOS x64, Linux x64, and Windows x64 use the `faster-whisper` worker bundle
+
+#### Capture Startup And Ownership
+
+The renderer's `voiceInputStore` owns one shared capture lifecycle for composer,
+Project description, Project Task draft and Settings test controls:
+
+- activation sets isStarting synchronously before permission, device,
+  getUserMedia, AudioContext or AudioWorklet initialization. Pending resources
+  remain local until the same attempt and destination are current; denial,
+  startup failure, cancellation and unmount dispose partially acquired capture;
+- recordingSource distinguishes composer, project-description, project-task and
+  settings-test. Composer/Project/Task callers supply a VoiceTranscriptTarget with key, isCurrent and
+  appendTranscript. useComposerVoiceTarget adapts the actual composer context;
+  ProjectEditor and the Task draft each own their editable text. No active-AgentContext lookup, fake run
+  identity, auto-save/run launch or automatic audio attachment is involved;
+- each mounted useComposerVoiceTarget owns one current destination lifetime.
+  An eligible exact context object under the same node binding revision retains
+  the same sink object and key even when Team publications recreate presentation
+  wrappers. Background updates alone must not cancel startup, recording, audio
+  flush or pending transcription. The key is not a run ID or a per-render ID;
+- an observed null/read-only target, exact context replacement (even with the
+  same run ID), node rebinding or unmount retires that lifetime. Returning to a
+  previously observed destination creates a new sink; retired sinks cannot
+  become current again. Separate mounted owners have separate keys;
+- generic `components/voiceInput/VoiceInputButton.vue` cancels only the matching
+  target on replacement/unmount. `cancelOperationForTarget(key)` cannot cancel
+  another destination. Settings uses source-scoped cancellation without a text
+  sink. Source cancellation can invalidate a matching pending transcription too;
+- `disposeCapture()` releases streams/worklet/context without invalidating the
+  operation generation. Stop can release capture before local IPC transcription
+  and still deliver to a current target. It is not interchangeable with cleanup;
+- cancellation/cleanup increments the generation, clears the text sink and
+  settles a pending audio flush. An already dispatched uncancellable IPC remains
+  globally busy until its finally block settles; late text/error is ignored.
+  This avoids starting competing capture while pretending the worker stopped.
+
+Unavailable browser/extension/device capability leaves typed and file authoring
+usable, without sample-transcript fallback. Transcribed text remains editable
+and requires explicit Task Save/composer Send. Capture/IPC/fake-worker repository
+fixtures prove these contracts, not real microphone permissions, official worker
+installation or live Electron transcription capability.
+
+Managed-extension HTTP test fixtures should build one immutable archive before
+listening and serve the captured bytes whose SHA appears in the manifest. Do not
+regenerate archives per request, retry checksum failures or weaken verification.
+Synthetic archive-timestamp hazards are not proof of an actual installed failure.
+
+These destination/resource rules do not change managed release assets, local
+model policy, IPC result shape or persisted extension settings. See
+[Projects](projects.md#optional-local-voice-destination) for Project/Task authoring scope
+and the [composer voice lifetime regression](../../TESTING.md#composer-voice-lifetime-regression)
+for repeatable renderer/native-browser coverage and its evidence limits.
+
+## Related Documentation
+
+- **[System Architecture](../ARCHITECTURE.md)**: High-level overview of the system including the Electron integration.
+- **[Settings](./settings.md)**: Server status and logs can be monitored via the Settings page.

@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-03T14:46:33.529481+00:00",
+  "instanceId": "iso-65323-9445",
+  "ownedOriginalLog": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-65323-9445.log",
+  "exists": false,
+  "scope": "Read only recorded original owned log; no stopped API or production logs",
+  "matches": []
+}

@@ -1,0 +1,21 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/durable-current.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/durable-current.test.ts > REQ-007/009/013 exact Codex input outcome before Task-owned release > retains the exact reader/router/lease through idle and awaits the genuine native terminal
+test-owned idle boundary receipt {"receipt":null,"backendReceipts":[],"threadRetained":true,"activeTurn":"owned-thread-1-turn","lastTerminal":null,"input":[{"state":"forwarded","turn":"owned-thread-1-turn"}]}
+
+stdout | ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/durable-current.test.ts > REQ-007/009/013 exact Codex input outcome before Task-owned release > retains missing-terminal proof, then retries only the same fenced exact generation
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thread-1","sameTurn":"owned-thread-1-turn","facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}]}
+
+ ✓ ../tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/durable-current.test.ts (7 tests) 21187ms
+     ✓ retains timed-out async delivery proof and retries the same backend after provider release  10180ms
+     ✓ retains missing-terminal proof, then retries only the same fenced exact generation  10188ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  19:18:22
+   Duration  24.80s (transform 2.51s, setup 0ms, import 3.51s, tests 21.19s, environment 0ms)
+

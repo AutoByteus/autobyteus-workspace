@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-03T19:21:15.987183+00:00",
+  "instanceId": "iso-58861-449a",
+  "stop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-58861-449a",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "ownCurrentPidCount": 31,
+  "ownCapturedPidCount": 163,
+  "ownAliveAfterStop": [],
+  "freeBind": {
+    "58861": true,
+    "58862": true,
+    "9229": true
+  },
+  "ownRootDatabaseImportedKeyRemoved": true,
+  "foreignImmediatelyBeforeVsAfterExactlyUnchanged": 4,
+  "entryFourForeignRecordsExactlyUnchanged": true,
+  "observerDetached": {
+    "at": "2026-10-03T18:02:11.648Z",
+    "event": "detached"
+  },
+  "scope": "OWN app teardown after evidence only; never successful Task-release or history facade repair. Generated build and allowlisted evidence retained; no foreign/user app/data/profile mutation."
+}

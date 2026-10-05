@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "incomingReferences": 3352,
+  "dirty": 299,
+  "indexExact": true,
+  "priorHistoryExact": true,
+  "diffChecks": {
+    "diffHEAD": {
+      "exit": 0,
+      "output": ""
+    },
+    "diffIndex": {
+      "exit": 0,
+      "output": ""
+    }
+  }
+}

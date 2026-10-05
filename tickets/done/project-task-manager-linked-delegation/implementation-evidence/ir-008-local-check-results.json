@@ -1,0 +1,88 @@
+{
+  "scope": "Local implementation only; overlapping counts, no API/E2E/provider/desktop acceptance",
+  "historyBefore": {
+    "exit": 1,
+    "filesFailed": 1,
+    "testsFailed": 2,
+    "testsPassed": 4
+  },
+  "historyAfter": {
+    "exit": 0,
+    "filesPassed": 4,
+    "testsPassed": 35
+  },
+  "retainedSelectedUnits": {
+    "exit": 0,
+    "filesPassed": 143,
+    "filesSkipped": 3,
+    "testsPassed": 1386,
+    "testsSkipped": 5
+  },
+  "webStoreAndBoundaryGuard": {
+    "exit": 0,
+    "filesPassed": 2,
+    "testsPassed": 48,
+    "storeTests": 45,
+    "guardTests": 3
+  },
+  "productionSourceTypecheck": {
+    "exit": 0
+  },
+  "serverFullBuildSanitizedBootstrap": {
+    "exit": 0
+  },
+  "offlineArchivedCompiledFacadeControls": [
+    {
+      "rootRunId": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298",
+      "branch": "real stored tree",
+      "privateStamps": 1,
+      "publicStamps": 0,
+      "positionedFacts": 14,
+      "strict": true,
+      "bytesUnchanged": true
+    },
+    {
+      "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c",
+      "branch": "real stored tree",
+      "privateStamps": 4,
+      "publicStamps": 0,
+      "positionedFacts": 55,
+      "strict": true,
+      "bytesUnchanged": true
+    },
+    {
+      "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+      "branch": "active snapshot seam",
+      "privateStamps": 3,
+      "publicStamps": 0,
+      "positionedFacts": 44,
+      "strict": true,
+      "bytesUnchanged": true
+    }
+  ],
+  "previewFinal": {
+    "exit": 0,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "cacheWarnings": 1,
+    "openInspect": "recorded callbacks only",
+    "cleanup": {
+      "browserClosed": true,
+      "nuxtExitCode": null,
+      "nuxtSignal": "SIGTERM",
+      "temporaryRouteRemoved": true
+    }
+  },
+  "earlierPreviewAttempts": [
+    "initial exit1 own cleanup ESRCH; original log/images retained",
+    "second controls exit0 but12Apolloerrors from missing union __typename; original evidence retained"
+  ],
+  "notRun": [
+    "API/E2E",
+    "real provider/model",
+    "packaged desktop/restart",
+    "full native-to-web",
+    "whole-unit/component suites"
+  ],
+  "authoritativeAPI": "API-REV-009 Fail65.71% unchanged; CRF-006/FAPI-009 independent source/rebuilt API closure pending"
+}

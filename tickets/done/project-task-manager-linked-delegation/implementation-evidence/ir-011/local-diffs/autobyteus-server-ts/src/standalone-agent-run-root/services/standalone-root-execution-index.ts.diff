@@ -1,0 +1,21 @@
+--- incoming-merge/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts
++++ IR-011/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts
+@@ -191,7 +191,6 @@
+   }
+ 
+   /** The agent's own task execution (task Agent), then each enclosing task Team outward. */
+-<<<<<<< HEAD:autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts
+   taskLifetimeFor(agentRunId: string): TaskExecutionLifetimeStamp | undefined {
+     const stamps = this.listTaskExecutionChainForAgent(agentRunId).flatMap((entry) => entry.source.taskLifetime ? [entry.source.taskLifetime] : []);
+     if (stamps.some((stamp) => stamp.lifetimeId !== stamps[0]?.lifetimeId)) throw new Error("TASK_LIFETIME_CONFLICT: owned containment crosses lifetimes.");
+@@ -209,10 +208,7 @@
+       && entry.source.taskLifetime?.lifetimeId === lifetimeId && entry.source.taskLifetime.purpose === "helper") ?? null;
+   }
+ 
+-  listTaskExecutionChainForAgent(agentRunId: string): readonly AgentRunCollaborationIndexedTaskExecution[] {
+-=======
+   listTaskExecutionChainForAgent(agentRunId: string): readonly StandaloneRootIndexedTaskExecution[] {
+->>>>>>> origin/personal:autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-execution-index.ts
+     const agent = this.getAgent(agentRunId);
+     if (!agent || agent.executionKind === "host") return Object.freeze([]);
+     const chain: StandaloneRootIndexedTaskExecution[] = [];

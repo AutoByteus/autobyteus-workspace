@@ -1,0 +1,14 @@
+[
+  {
+    "path": "collaboration/api004_packet_team_2cd38d86f65144f09ab76c5072d0d436/api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827/raw_traces_active.jsonl",
+    "record": {
+      "id": "rt_1791030831391_48ffcc81-2d6a-4a90-b9de-67f022afb535",
+      "ts": 1791030831.39,
+      "turn_id": "01a101c1-a910-7642-a9e6-564fb5d0afab",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "I explicitly approve and instruct you to mark saved Task project_task_0352e556-c4cc-493c-83ab-a478e75f70ca in Project project_865580da-5cef-4545-84d0-493db4819067 DONE now using create_or_update_task. Keep its description/context unchanged. Do not change any other Task, do not delegate, do not stop this Manager/root, and do not delete anything. Then list the Project Tasks and report recorded business statuses. Return API004_A_DONE_RECORDED. Do not infer that accepted work is completed unless I instruct it; this is my explicit business instruction.",
+      "source_event": "AgentRun.postUserMessage"
+    }
+  }
+]

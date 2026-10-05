@@ -1,0 +1,34 @@
+{
+  "taskId": "project_task_c71d33af-a706-4b1d-9dc5-6a00dd9d59bd",
+  "agentRunResources": [
+    {
+      "role": "assigned",
+      "assignedBy": "project_task_manager_43c17bd2f7c1466fa69faac7e8caaaf2",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "project_task_manager_43c17bd2f7c1466fa69faac7e8caaaf2"
+      },
+      "agentRun": {
+        "kind": "agent",
+        "agentRunId": "api020_packet_agent_a59f966eb88446e1a4362621bbc34591"
+      },
+      "linkedAt": "2026-10-05T14:38:52.167Z",
+      "start": "started",
+      "closedAt": "2026-10-05T14:39:55.409Z"
+    },
+    {
+      "role": "delegated",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "project_task_manager_43c17bd2f7c1466fa69faac7e8caaaf2"
+      },
+      "agentRun": {
+        "kind": "agent",
+        "agentRunId": "api020_delegate_helper_ce3df6b0c0e44be3ae544055d794ae73"
+      },
+      "linkedAt": "2026-10-05T14:38:58.531Z",
+      "start": "started",
+      "closedAt": "2026-10-05T14:39:55.409Z"
+    }
+  ]
+}

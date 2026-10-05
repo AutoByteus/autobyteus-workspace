@@ -1,0 +1,6 @@
+case=API-011
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-byte-guard.py before
+Scoped Pass before snapshot 19 allowlisted owned exact/prefix files
+
+PROCESS_EXIT_CODE=0

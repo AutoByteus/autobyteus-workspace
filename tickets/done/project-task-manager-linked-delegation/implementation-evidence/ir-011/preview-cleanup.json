@@ -1,0 +1,20 @@
+[
+  {
+    "dir": "rendered-preview-initial",
+    "pid": 25368,
+    "pidGone": true,
+    "port": 56287,
+    "portFree": true,
+    "routeRemoved": true,
+    "browserClosed": true
+  },
+  {
+    "dir": "rendered-preview",
+    "pid": 32462,
+    "pidGone": true,
+    "port": 56421,
+    "portFree": true,
+    "routeRemoved": true,
+    "browserClosed": true
+  }
+]

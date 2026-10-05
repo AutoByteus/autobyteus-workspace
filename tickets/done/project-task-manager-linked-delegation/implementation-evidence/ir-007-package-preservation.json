@@ -1,0 +1,36 @@
+{
+  "originalDirty": 284,
+  "unchangedOriginal": 282,
+  "intentionalModifiedOriginal": [
+    "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts"
+  ],
+  "newDirtyPaths": [
+    "autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts",
+    "autobyteus-server-ts/tests/fixtures/codex-owned-terminal-cli.mjs",
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts"
+  ],
+  "specialistSnapshot": 789,
+  "specialistChanged": [],
+  "upstreamCanonicalChanged": [],
+  "reviewerProtected679Changed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-handoff.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-revision-record.md"
+  ],
+  "reviewerProtectedUnchanged": 676,
+  "reviewerProtectedChangeExplanation": "Only owned implementation canonicals are updated; all historical specialist artifacts and upstream canonicals unchanged.",
+  "recordPrefixExact": true,
+  "investigationPrefixExact": true,
+  "sdkOutputsPreserved": 64,
+  "currentDirty": 287,
+  "currentCategories": {
+    "other": 66,
+    "source/template": 135,
+    "tests/fixtures": 86
+  },
+  "diffcheckExit": 0,
+  "invariantHEADDiffBytes": 0,
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "branch": "codex/project-task-manager-linked-delegation"
+}

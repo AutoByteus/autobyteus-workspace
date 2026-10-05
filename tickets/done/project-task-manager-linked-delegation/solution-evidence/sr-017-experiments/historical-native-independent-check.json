@@ -1,0 +1,28 @@
+{
+  "path": "/Users/normy/.codex/sessions/2026/10/03/rollout-2026-10-03T17-59-49-01a1027e-3ae7-75f2-ac7a-96b5d899d188.jsonl",
+  "sha256": "c965a7c1c16cc30a9e8205a931bfa0801a6d4f89be6e27c05d1c13a657db2751",
+  "sameAsIR007": true,
+  "lineCount": 28,
+  "sessionIdentity": {
+    "id": "01a1027e-3ae7-75f2-ac7a-96b5d899d188",
+    "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team",
+    "originator": "autobyteus-server-ts",
+    "cli_version": "0.160.0"
+  },
+  "turnEvents": [
+    {
+      "line": 2,
+      "timestamp": "2026-10-03T16:00:15.348Z",
+      "type": "task_started",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+      "reason": null
+    },
+    {
+      "line": 28,
+      "timestamp": "2026-10-03T16:00:36.646Z",
+      "type": "turn_aborted",
+      "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+      "reason": "interrupted"
+    }
+  ]
+}

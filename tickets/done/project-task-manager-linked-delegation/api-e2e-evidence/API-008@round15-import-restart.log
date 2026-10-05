@@ -1,0 +1,27 @@
+2026-10-04T08:01:13.795600+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-import.py", "restart"]
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "restart",
+  "result": {
+    "instanceId": "iso-57942-2d9d",
+    "pid": 96254,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:57943",
+    "graphqlUrl": "http://127.0.0.1:57943/graphql",
+    "controlEndpoint": "http://127.0.0.1:57942",
+    "controlPort": 57942,
+    "serverPort": 57943,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-tdalBZ",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-tdalBZ/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-57942-2d9d.log"
+  }
+}
+ 
+
+INNER_EXIT=0
+ELAPSED=10.93

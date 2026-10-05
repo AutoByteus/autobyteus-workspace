@@ -1,0 +1,41 @@
+{
+  "instanceId": "iso-53056-963c",
+  "steps": [
+    {
+      "name": "root, project and Task created",
+      "at": "2026-10-05T15:57:23.283Z",
+      "rootId": "project_task_manager_78901be9fdaa4b978c1627787f343812",
+      "task": {
+        "taskId": "project_task_b4fa6a20-4796-48bd-adee-94fc35bc4d83"
+      }
+    },
+    {
+      "name": "Task R assigned to W",
+      "at": "2026-10-05T15:59:04.443Z",
+      "W": "api022r_packet_agent_03d246723bb14f2fb80e0020d9e5a99e"
+    }
+  ],
+  "packetAgent": {
+    "id": "api022r-packet-agent",
+    "name": "API022R Packet Agent"
+  },
+  "helper": {
+    "id": "api022r-delegate-helper",
+    "name": "API022R Delegate Helper"
+  },
+  "manager": {
+    "id": "autobyteus-project-task-manager",
+    "name": "Project Task Manager"
+  },
+  "rootId": "project_task_manager_78901be9fdaa4b978c1627787f343812",
+  "project": {
+    "projectId": "project_aa3146d1-51c2-4401-995f-a71c284e14cb"
+  },
+  "task": {
+    "taskId": "project_task_b4fa6a20-4796-48bd-adee-94fc35bc4d83"
+  },
+  "W": "api022r_packet_agent_03d246723bb14f2fb80e0020d9e5a99e",
+  "runIdMarker": "API022R_RUNID_REPLY_5143146d-4d46-4cee-83ae-2f46f868b539",
+  "error": "Error: TIMEOUT run-ID reply received",
+  "stack": "Error: TIMEOUT run-ID reply received\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-022/rt-reply.mjs:33:167)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-022/rt-reply.mjs:109:3"
+}

@@ -1,0 +1,215 @@
+{
+  "at": "2026-10-03T14:28:13.692316+00:00",
+  "beforeLife": {
+    "lifetimeId": "project_task_lifetime_61ff437a-57be-422c-a5d8-cfbad1396921",
+    "projectId": "project_02025d18-9aa5-4d42-b7a5-cce334d5382f",
+    "taskId": "project_task_a040bd83-43d7-45a4-9e72-a2cbc6b02f0d",
+    "openedAt": "2026-10-03T13:57:12.950Z",
+    "completedAt": "2026-10-03T13:58:17.394Z",
+    "executions": [
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "api005_physical_org_a67967e3_3aba_480f_93f7_859b932cf6a7_d557d5ae7531415a9955f65ed1bd4e56"
+        },
+        "execution": {
+          "teamRunId": "api005_physical_workers_67b93cc2dbdd43849e6e713c6853947f"
+        },
+        "ingressAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+        "purpose": "assignment",
+        "reservedAt": "2026-10-03T13:57:12.958Z",
+        "dispatch": "delivered",
+        "cleanup": "released"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "api005_physical_org_a67967e3_3aba_480f_93f7_859b932cf6a7_d557d5ae7531415a9955f65ed1bd4e56"
+        },
+        "execution": {
+          "agentRunId": "api005_physical_leaf_1f2c647f2a4148c7a360246ef2bcfc39"
+        },
+        "ingressAgentRunId": "api005_physical_leaf_1f2c647f2a4148c7a360246ef2bcfc39",
+        "purpose": "delegation",
+        "reservedAt": "2026-10-03T13:57:39.730Z",
+        "dispatch": "delivered",
+        "cleanup": "released"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "api005_physical_org_a67967e3_3aba_480f_93f7_859b932cf6a7_d557d5ae7531415a9955f65ed1bd4e56"
+        },
+        "execution": {
+          "teamRunId": "api005_physical_helper_team_92afdfb505fc465e981dec5a31ae6085"
+        },
+        "ingressAgentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+        "purpose": "helper",
+        "reservedAt": "2026-10-03T13:57:39.893Z",
+        "dispatch": "delivered",
+        "cleanup": "failed",
+        "error": {
+          "code": "TASK_RELEASE_FAILED",
+          "message": "Exact Task execution cleanup failed."
+        }
+      }
+    ]
+  },
+  "afterLife": {
+    "lifetimeId": "project_task_lifetime_61ff437a-57be-422c-a5d8-cfbad1396921",
+    "projectId": "project_02025d18-9aa5-4d42-b7a5-cce334d5382f",
+    "taskId": "project_task_a040bd83-43d7-45a4-9e72-a2cbc6b02f0d",
+    "openedAt": "2026-10-03T13:57:12.950Z",
+    "completedAt": "2026-10-03T13:58:17.394Z",
+    "executions": [
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "api005_physical_org_a67967e3_3aba_480f_93f7_859b932cf6a7_d557d5ae7531415a9955f65ed1bd4e56"
+        },
+        "execution": {
+          "teamRunId": "api005_physical_workers_67b93cc2dbdd43849e6e713c6853947f"
+        },
+        "ingressAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+        "purpose": "assignment",
+        "reservedAt": "2026-10-03T13:57:12.958Z",
+        "dispatch": "delivered",
+        "cleanup": "released"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "api005_physical_org_a67967e3_3aba_480f_93f7_859b932cf6a7_d557d5ae7531415a9955f65ed1bd4e56"
+        },
+        "execution": {
+          "agentRunId": "api005_physical_leaf_1f2c647f2a4148c7a360246ef2bcfc39"
+        },
+        "ingressAgentRunId": "api005_physical_leaf_1f2c647f2a4148c7a360246ef2bcfc39",
+        "purpose": "delegation",
+        "reservedAt": "2026-10-03T13:57:39.730Z",
+        "dispatch": "delivered",
+        "cleanup": "released"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "api005_physical_org_a67967e3_3aba_480f_93f7_859b932cf6a7_d557d5ae7531415a9955f65ed1bd4e56"
+        },
+        "execution": {
+          "teamRunId": "api005_physical_helper_team_92afdfb505fc465e981dec5a31ae6085"
+        },
+        "ingressAgentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+        "purpose": "helper",
+        "reservedAt": "2026-10-03T13:57:39.893Z",
+        "dispatch": "delivered",
+        "cleanup": "failed",
+        "error": {
+          "code": "TASK_RELEASE_FAILED",
+          "message": "Exact Task execution cleanup failed."
+        }
+      }
+    ]
+  },
+  "sameClosedLifetimeAndAllExactAuthorityFields": true,
+  "sameDurableTree": true,
+  "actualCompactAck": {
+    "task": {
+      "projectId": "project_02025d18-9aa5-4d42-b7a5-cce334d5382f",
+      "taskId": "project_task_a040bd83-43d7-45a4-9e72-a2cbc6b02f0d",
+      "status": "DONE"
+    }
+  },
+  "actualBusinessFinal": "Applied DONE to A again once. Listed recorded statuses:\n- A: **DONE**\n- B: **IN_PROGRESS**\n\nAPI005_FAILED_EXACT_RETRY_276f38c0-3f70-4a03-86d5-63a5d9795e4e",
+  "helperCoordinatorLastFrames": [
+    {
+      "sequence": 2111,
+      "agentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+      "type": "AGENT_STATUS",
+      "status": "running",
+      "entries": []
+    },
+    {
+      "sequence": 2112,
+      "agentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+      "type": "TOKEN_USAGE_UPDATED",
+      "status": null,
+      "entries": []
+    },
+    {
+      "sequence": 2113,
+      "agentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+      "type": "AGENT_INPUT_STATE",
+      "status": null,
+      "entries": [
+        {
+          "state": "forwarded",
+          "turnId": "01a1020e-64e4-7452-bcae-9848760a4dca"
+        }
+      ]
+    },
+    {
+      "sequence": 2155,
+      "agentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+      "type": "AGENT_STATUS",
+      "status": "running",
+      "entries": []
+    },
+    {
+      "sequence": 2156,
+      "agentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+      "type": "TOKEN_USAGE_UPDATED",
+      "status": null,
+      "entries": []
+    },
+    {
+      "sequence": 2157,
+      "agentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+      "type": "AGENT_INPUT_STATE",
+      "status": null,
+      "entries": [
+        {
+          "state": "forwarded",
+          "turnId": "01a1020e-64e4-7452-bcae-9848760a4dca"
+        }
+      ]
+    },
+    {
+      "sequence": 2158,
+      "agentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+      "type": "AGENT_STATUS",
+      "status": "idle",
+      "entries": []
+    },
+    {
+      "sequence": 2159,
+      "agentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+      "type": "AGENT_INPUT_STATE",
+      "status": null,
+      "entries": [
+        {
+          "state": "forwarded",
+          "turnId": "01a1020e-64e4-7452-bcae-9848760a4dca"
+        }
+      ]
+    }
+  ],
+  "remainingExactScopePids": [],
+  "protectedW1ProvidersPresent": [
+    {
+      "pid": 68061,
+      "ppid": 579,
+      "comm": "codex",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/physical-manager"
+    }
+  ],
+  "limitations": [
+    "First stream did not capture helper coordinator offline; retry snapshot already reports it offline. No claim that its PID remained active or that all five workers failed physical stop.",
+    "Exclusive W2 provider and seven captured native children physically gone. Catalog Leaf/helper Team use shared W1 provider; retaining it is not a leak or complete five-worker release proof.",
+    "Generic TASK_RELEASE_FAILED aggregate omits underlying cause. Empty selected runtime log extract supplies no causal proof.",
+    "Current Task B public offline after normal idle interval is not proof of being stopped by A DONE; B lifetime remains open, shared provider/root/Manager preserved.",
+    "Current state/archive checks are read-only failure evidence, not a source patch or additional full acceptance."
+  ],
+  "innerRejectedProofCaptured": false,
+  "classification": "Unclear; no confirmed Local Fix or Design Impact",
+  "snapshotCaveat": "Terminating Team excluded from live statuses; Org fills unreported durable members offline. Not accepted physical release proof."
+}

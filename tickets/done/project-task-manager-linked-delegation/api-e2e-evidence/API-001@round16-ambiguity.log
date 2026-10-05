@@ -1,0 +1,10 @@
+2026-10-04T18:37:39.339564+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round16-ambiguity.mjs"]
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(out.ws.some(r=>r.message.type==='AGENT_STATUS'&&r.message.payload.status==='idle')||out.ws.some(r=>r.message.type==='ROOT_EXECUTION_EVENT'&&JSON.stringify(r.message.payload).includes('idle')))
+
+
+INNER_EXIT=1
+ELAPSED=3.22

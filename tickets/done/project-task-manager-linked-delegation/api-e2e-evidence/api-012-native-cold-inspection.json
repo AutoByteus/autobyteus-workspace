@@ -1,0 +1,164 @@
+{
+  "instanceId": "iso-59466-55bb",
+  "root": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+  "readOnly": true,
+  "at": "2026-10-04T04:40:42.075Z",
+  "httpStatus": 200,
+  "response": {
+    "data": {
+      "agentRunCollaboration": {
+        "root_subject_kind": "agent",
+        "root_run_id": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+        "root_agent": {
+          "base_change_sequence": 0,
+          "is_active": false,
+          "execution_tree": {
+            "subjectKind": "agent",
+            "createdAt": "2026-10-04T04:29:12.815Z",
+            "host": {
+              "address": "/project_task_manager",
+              "agentRunId": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+              "agentDefinitionId": "autobyteus-project-task-manager"
+            },
+            "collaborators": [],
+            "taskExecutions": [
+              {
+                "address": "/api012n_packet_agent",
+                "agentRunId": "api012n_packet_agent_1f052c6667f943cfa29973b983c288ee",
+                "platformAgentRunId": null,
+                "delegatorAgentRunId": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+                "startedAt": "2026-10-04T04:29:16.766Z",
+                "source": {
+                  "kind": "agent",
+                  "agentDefinitionId": "api012n-packet-agent",
+                  "launchConfiguration": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "deepseek-v4-flash",
+                    "llmConfig": {
+                      "thinking_type": "disabled"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/manager"
+                  }
+                }
+              },
+              {
+                "address": "/api012n_packet_team",
+                "teamRunId": "api012n_packet_team_c75b2cee1e9b469ab74b8fd6353911c0",
+                "members": [
+                  {
+                    "address": "/api012n_packet_team/coordinator",
+                    "agentRunId": "api012n_team_coordinator_d5114705e61c41a68e2d407d3489439b",
+                    "platformAgentRunId": null
+                  },
+                  {
+                    "address": "/api012n_packet_team/reader",
+                    "agentRunId": "api012n_team_reader_d7628b8335964279bc8d46ffc2f7cc56",
+                    "platformAgentRunId": null
+                  }
+                ],
+                "taskExecutions": [],
+                "delegatorAgentRunId": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+                "startedAt": "2026-10-04T04:29:16.858Z",
+                "source": {
+                  "kind": "agent_team",
+                  "teamDefinitionId": "api012n-packet-team",
+                  "coordinatorAddress": "/api012n_packet_team/coordinator",
+                  "members": [
+                    {
+                      "address": "/api012n_packet_team/coordinator",
+                      "agentDefinitionId": "api012n-team-coordinator"
+                    },
+                    {
+                      "address": "/api012n_packet_team/reader",
+                      "agentDefinitionId": "api012n-team-reader"
+                    }
+                  ],
+                  "handoffs": [],
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "deepseek-v4-flash",
+                    "llmConfig": {
+                      "thinking_type": "disabled"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/manager"
+                  }
+                }
+              }
+            ]
+          },
+          "communication_messages": {
+            "schemaVersion": 1,
+            "subjectKind": "agent",
+            "hostRunId": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+            "messages": [
+              {
+                "messageId": "collabmsg_sbqGXSYSDgjd2h0AUWeltRTncPiaeAKe",
+                "senderAgentRunId": "api012n_packet_agent_1f052c6667f943cfa29973b983c288ee",
+                "receiverAgentRunId": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+                "content": "API012N attachment read complete. Exact marker from /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98/project_task_d9120d37-726c-4a3d-96c0-1e0f914ca3ae/ctx_a96e8402a21f__saved-packet-A.txt:\n\nAPI012N_ATTACHMENT_A_project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98\n\nNo files were modified, no copies created, and no Task status changed.",
+                "messageType": "result",
+                "referenceFiles": [],
+                "createdAt": "2026-10-04T04:29:19.829Z"
+              },
+              {
+                "messageId": "collabmsg_EvO0QPqUELZK5sI0jxpRy5-5BsLRKvYE",
+                "senderAgentRunId": "api012n_team_coordinator_d5114705e61c41a68e2d407d3489439b",
+                "receiverAgentRunId": "api012n_team_reader_d7628b8335964279bc8d46ffc2f7cc56",
+                "content": "Work request: read the supplied saved Task attachment (read-only) and return its exact marker.\n\nAttachment path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98/project_task_27c038ca-b9cb-4ccd-9add-cefd61057534/ctx_e35a133ae656__saved-packet-B.txt\n\nUse read_file or a runtime-native read-only cat command. Do not modify files, create copies, or change any Task status. Reply with the exact marker string contained in the file (expected form: API012N_ATTACHMENT_B_project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98).",
+                "messageType": "work_request",
+                "referenceFiles": [
+                  "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98/project_task_27c038ca-b9cb-4ccd-9add-cefd61057534/ctx_e35a133ae656__saved-packet-B.txt"
+                ],
+                "createdAt": "2026-10-04T04:29:20.126Z"
+              },
+              {
+                "messageId": "collabmsg_thr3m1OroLoRVyxMIzYPrcERODR2-jGN",
+                "senderAgentRunId": "api012n_team_reader_d7628b8335964279bc8d46ffc2f7cc56",
+                "receiverAgentRunId": "api012n_team_coordinator_d5114705e61c41a68e2d407d3489439b",
+                "content": "Result: read the supplied saved Task attachment read-only. Exact marker string:\n\nAPI012N_ATTACHMENT_B_project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98\n\nSource file: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98/project_task_27c038ca-b9cb-4ccd-9add-cefd61057534/ctx_e35a133ae656__saved-packet-B.txt\n\nNo files were modified, no copies created, no Task status changed.",
+                "messageType": "agent_message",
+                "referenceFiles": [],
+                "createdAt": "2026-10-04T04:29:23.866Z"
+              },
+              {
+                "messageId": "collabmsg_Z1pPSdCtyuWV9Efg9p1olu35746Mfhaz",
+                "senderAgentRunId": "api012n_team_coordinator_d5114705e61c41a68e2d407d3489439b",
+                "receiverAgentRunId": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+                "content": "API012N validation result.\n\nMarker read directly from the supplied saved Task attachment (read-only, no modifications, no copies, no Task status changes):\nAPI012N_ATTACHMENT_B_project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98\n\nAttachment path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98/project_task_27c038ca-b9cb-4ccd-9add-cefd61057534/ctx_e35a133ae656__saved-packet-B.txt\n\nNote: the work message with this exact path was delivered to the reader member at /api012n_packet_team/reader (target AgentRun api012n_team_reader_d7628b8335964279bc8d46ffc2f7cc56); no reader reply had arrived at the time of this report. The marker above is my own verified read of the attachment.",
+                "messageType": "result",
+                "referenceFiles": [],
+                "createdAt": "2026-10-04T04:30:41.888Z"
+              },
+              {
+                "messageId": "collabmsg_MnED6l4KO5S03myUvNFuy_aFf328pgUD",
+                "senderAgentRunId": "api012n_team_coordinator_d5114705e61c41a68e2d407d3489439b",
+                "receiverAgentRunId": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+                "content": "API012N confirmation update.\n\nReader member (/api012n_packet_team/reader, AgentRun api012n_team_reader_d7628b8335964279bc8d46ffc2f7cc56) independently read the supplied saved Task attachment read-only and returned the exact marker:\n\nAPI012N_ATTACHMENT_B_project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98\n\nSource file: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_926f20ec-5a2e-42c6-b6ca-d83ee91e5a98/project_task_27c038ca-b9cb-4ccd-9add-cefd61057534/ctx_e35a133ae656__saved-packet-B.txt\n\nThis matches my own verified read. No files modified, no copies created, no Task status changed.",
+                "messageType": "result",
+                "referenceFiles": [],
+                "createdAt": "2026-10-04T04:30:45.112Z"
+              }
+            ]
+          },
+          "agent_statuses": [],
+          "agent_input_states": []
+        }
+      },
+      "getAgentRunResumeConfig": {
+        "isActive": false,
+        "metadataConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          }
+        }
+      }
+    }
+  },
+  "positionedFacts": 45,
+  "privateStamps": 2,
+  "result": "Scoped Pass: real shutdown/restart retains current standalone Native Agent whole public forest (private2/public0) and exact model; cold observational single inspection inactive/empty/no implicit restore or Project/private-tree write."
+}

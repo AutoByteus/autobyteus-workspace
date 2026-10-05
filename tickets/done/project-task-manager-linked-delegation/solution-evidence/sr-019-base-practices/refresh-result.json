@@ -1,0 +1,43 @@
+{
+  "oldHead": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "newHead": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "latestFetchedOriginPersonal": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "retainedAutostash": "c0d5140aeee1902f46993237433436152b2472ee",
+  "fullBackup": "/Users/normy/autobyteus_org/autobyteus-worktrees/.task-safety-backups/project-task-manager-linked-delegation/sr-019-latest-base",
+  "unmerged": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts"
+  ],
+  "missingPreRefreshFiles": [],
+  "preservation": "all original bytes retained in verified tar and tracked autostash; no conflict manually resolved; current branch fast-forwarded, working tree not build-ready",
+  "observedChangedSinceSnapshot": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+    "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+    "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+    "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+    "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+    "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-coverage-investigation.md",
+    "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-012-captured-own-pids.json",
+    "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-case-ledger.md"
+  ],
+  "automaticIntegrationChangedPaths": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+    "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+    "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+    "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+    "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+    "autobyteus-web/stores/__tests__/runHistoryStore.spec.ts"
+  ],
+  "externalTicketUpdatesObserved": [
+    "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-coverage-investigation.md",
+    "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-012-captured-own-pids.json",
+    "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-case-ledger.md"
+  ],
+  "at": "2026-10-04T04:45:22.681938+00:00"
+}

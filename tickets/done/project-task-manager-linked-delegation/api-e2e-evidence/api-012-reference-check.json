@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-04T04:53:45.444375+00:00",
+  "referenceCount": 2425,
+  "absolute": true,
+  "allExist": true,
+  "incomingReferenceCount": 2224,
+  "allIncomingIncluded": true,
+  "allCurrentTicketArtifactsIncluded": true,
+  "cumulativeAPIDurableFilesIncluded": 20,
+  "removedIncoming": [],
+  "currentExpectedIncomingChanges": 26,
+  "sourceGuideline": 17,
+  "designerCanonical": 5,
+  "apiCanonical": 4,
+  "notAnAcceptanceCertificate": true,
+  "handoff": "Confirmed accepted=true / DELIVERED; 2425 references actually sent. Receipt created afterward, not an invented earlier attachment.",
+  "receipt": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-012-handoff-receipt.json",
+  "targetAgentRunId": "code_reviewer_324c9986b1b745749a92256d790995c4",
+  "confirmedAt": "2026-10-04T04:54:51.749478+00:00"
+}

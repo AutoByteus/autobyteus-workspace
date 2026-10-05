@@ -1,0 +1,20 @@
+{
+  "api-017-target-setup.mjs": {
+    "recipe": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-target-setup.mjs",
+    "recipeSha256": "d5afbec72dd943ec48315ebcf70cd9562d52b1c3a749682c947141835f73d259",
+    "changes": "own revision/markers/IDs/output namespace; initial own start not historical restart; bounded Claude-only selection",
+    "currentSha256": "f99798637505d7039aa711a7ba31f2f3b0dca1f9ddf85643ed143dc7c783e85b"
+  },
+  "api-017-concrete-lifecycle-probe.mjs": {
+    "recipe": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-concrete-lifecycle-probe.mjs",
+    "recipeSha256": "452d73acef383e88fc93c5899623b483a98c68664857d6c9c85b99bbcbd4f744",
+    "changes": "own revision/markers/IDs/output namespace; initial own start not historical restart; bounded Claude-only selection",
+    "currentSha256": "8fb7e829dc91a96d100664bfc0ab5a8a2d84d86635cf9b0405413449ac71e3a7"
+  },
+  "api-017-resume.mjs": {
+    "recipe": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-resume.mjs",
+    "recipeSha256": "346d2f33ab361bd7ee7e918c4768f7bfe61db7793b2dd639799e3ab1843a9c2c",
+    "changes": "own revision/markers/IDs/output namespace; initial own start not historical restart; bounded Claude-only selection",
+    "currentSha256": "e9b0e535fd00b0202af7f23aa3e9728ad3c2e57a73fe2a51cba3511c4c5237b9"
+  }
+}

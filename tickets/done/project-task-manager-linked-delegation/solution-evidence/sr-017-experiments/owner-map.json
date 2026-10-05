@@ -1,0 +1,17 @@
+{
+  "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts": {
+    "flag": "t",
+    "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/baseline-t.ts",
+    "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-007-baseline-owners/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts"
+  },
+  "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts": {
+    "flag": "b",
+    "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/baseline-b.ts",
+    "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-007-baseline-owners/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts"
+  },
+  "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts": {
+    "flag": "c",
+    "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-017-experiments/baseline-c.ts",
+    "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-007-baseline-owners/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts"
+  }
+}

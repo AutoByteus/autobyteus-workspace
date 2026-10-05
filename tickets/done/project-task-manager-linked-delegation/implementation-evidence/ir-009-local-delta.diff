@@ -1,0 +1,414 @@
+--- incoming/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts
++++ current/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts
+@@ -77,7 +77,7 @@
+       if (this.active) {
+         this.cancelled = true; this.active = false; this.processAlive = false; this.phase = "error";
+         this.argumentLookup?.abort();
+-        this.process.stop();
++        void this.process.stop().catch((error) => console.warn("AGY_EXACT_STOP_FAILED", error));
+         this.enqueue(async () => { await this.deliver(this.converter.interrupt()); this.turnId = null; });
+         this.backgroundTasks.stopAll();
+       }
+@@ -94,26 +94,22 @@
+     if (!turnId || this.turnId !== turnId) return { accepted: false, code: "NO_ACTIVE_TURN", message: "AGY has no matching active turn." };
+     this.cancelled = true; this.active = false; this.processAlive = false;
+     this.argumentLookup?.abort();
+-    this.process.stop();
++    const stopped = this.process.stop();
+     this.enqueue(async () => {
+       await this.deliver(this.converter.interrupt());
+       this.turnId = null; this.phase = "error";
+     });
+     this.backgroundTasks.stopAll();
+-    await this.eventQueue;
++    await Promise.all([stopped, this.eventQueue]);
+     return { accepted: true, turnId };
+   }
+ 
+   async terminate(): Promise<AgentOperationResult> {
+-<<<<<<< Updated upstream
+     if (this.turnId) return this.interrupt(this.turnId);
+-    this.active = false; this.processAlive = false; this.process.stop();
++    this.active = false;
+     this.argumentLookup?.abort();
+-=======
+-    this.active = false;
+     await this.process.stop();
+     this.processAlive = false;
+->>>>>>> Stashed changes
+     this.backgroundTasks.stopAll();
+     await this.eventQueue;
+     return { accepted: true };
+@@ -157,7 +153,7 @@
+       // Source-listener failures stop this backend; the app still owns public delivery.
+       this.active = false; this.processAlive = false; this.phase = "error";
+       this.argumentLookup?.abort();
+-      this.process.stop();
++      void this.process.stop().catch((error) => console.warn("AGY_EXACT_STOP_FAILED", error));
+       this.backgroundTasks.stopAll();
+     });
+   }
+--- incoming/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts
++++ current/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts
+@@ -41,24 +41,8 @@
+       team,
+     }));
+     for (const row of orgRows) {
+-<<<<<<< Updated upstream
+       const item = await this.projectAgentOrg(row);
+       if (item) items.push(item);
+-=======
+-      const active = this.dependencies.orgRuns.getActive(row.orgRunId);
+-      const tree = active?.getExecutionTreeSnapshot()
+-        ?? await this.orgTrees.read(this.layout.getOrgDirPath(row.orgRunId), row.orgRunId);
+-      if (!tree || (row.archivedAt && !active)) continue;
+-      items.push(Object.freeze({
+-        root_subject_kind: "agent_org",
+-        root_run_id: row.orgRunId,
+-        created_at: row.createdAt,
+-        archived_at: row.archivedAt,
+-        is_active: Boolean(active),
+-        summary: row.summary,
+-        org: projectAgentOrgExecutionTree(tree),
+-      }));
+->>>>>>> Stashed changes
+     }
+     return Object.freeze(items.sort((left, right) => right.created_at.localeCompare(left.created_at)));
+   }
+@@ -83,7 +67,7 @@
+       archived_at: row.archivedAt,
+       is_active: Boolean(active),
+       summary: row.summary,
+-      org: tree,
++      org: projectAgentOrgExecutionTree(tree),
+     });
+   }
+ }
+--- incoming/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
++++ current/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
+@@ -27,87 +27,9 @@
+  */
+ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', postResponse: boolean) {
+   const native = await createRecoveryFixture(postResponse);
+-<<<<<<< Updated upstream
+   let memoryDir: string | undefined;
+   let manager: AgentRunCollaborationRootManager | undefined;
+   let handler: AgentCollaborationStreamHandler | undefined;
+-=======
+-  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'native-root-compaction-'));
+-  const agents = ['host', 'reviewer', 'lead', 'peer'].map(id =>
+-    new AgentDefinition({ id, name: id, description: id, instructions: 'Keep scope.' }));
+-  const team = new AgentTeamDefinition({
+-    id: 'team', name: 'team', description: 'team', instructions: 'Work together.',
+-    nodes: ['lead', 'peer'].map(id => new TeamMember({ memberName: id, ref: id, refScope: 'shared' })),
+-    coordinatorMemberName: 'lead', handoffs: [],
+-  });
+-  const catalog = {
+-    listAgentDefinitions: async () => agents,
+-    listTeamDefinitions: async () => [team],
+-    getAgentDefinition: async (id: string) => agents.find(a => a.id === id) ?? null,
+-    getTeamDefinition: async (id: string) => id === 'team' ? team : null,
+-  };
+-  const active = new Map<string, AgentRun>();
+-  const prepare = vi.fn(async ({ runId }: { runId: string }) => {
+-    expect(runId).toBe(native.run.runId);
+-    return { runId, runtimeKind: 'autobyteus', platformAgentRunId: null,
+-      commitPublication: () => { active.set(runId, native.run); return native.run; },
+-      abort: async () => ({ kind: 'aborted' }) };
+-  });
+-  const runManager = testActivationManager({
+-    newPreparation: prepare,
+-    getActiveRun: (id: string) => active.get(id) ?? null,
+-    prepareAgentRunTermination: (run: AgentRun) => run.prepareTermination(),
+-    releaseExactRun: async (run: AgentRun) => {
+-      expect(active.get(run.runId)).toBe(run);
+-      const result = await run.forceReleaseRuntime();
+-      if (result.accepted) {
+-        expect(run.isActive()).toBe(false);
+-        active.delete(run.runId);
+-      }
+-      return result;
+-    },
+-  });
+-  const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+-  const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
+-  const restoreHost = vi.fn(async () => hostRun);
+-  const metadata = {
+-    runId: HOST, agentDefinitionId: 'host', memoryDir: path.join(memoryDir, 'agents', HOST),
+-    workspaceRootPath: null, llmModelIdentifier: 'parent', llmConfig: null,
+-    autoExecuteTools: false, runtimeKind: 'autobyteus', platformAgentRunId: null,
+-    startedAt: '2026-10-01T00:00:00.000Z',
+-  };
+-  const manager = new AgentRunCollaborationRootManager({
+-    memoryDir, activeRootDirectory: new ActiveCollaborationRootDirectory(),
+-    definitions: { getAgentDefinitionById: catalog.getAgentDefinition },
+-    host: {
+-      getActiveRun: () => hostRun as unknown as AgentRun,
+-      resolveCommandReadyAgentRun: restoreHost as never,
+-      readMetadata: async () => metadata as never,
+-      recordCollaborationPackageCreated: async () => {},
+-    },
+-    rootDependencies: {
+-      agentRunManager: runManager as never,
+-      memoryLocator,
+-      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ agentRunManager: runManager as never, memoryLocator }),
+-      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
+-        allocateForAgentDefinition: async id =>
+-          id === (kind === 'agent' ? 'reviewer' : 'lead') ? native.run.runId : 'dormant-' + id,
+-      }),
+-      teamDefinitions: { getDefinitionById: catalog.getTeamDefinition },
+-      collaboratorAdmission: createCollaboratorAdmission(catalog, {
+-        validateMany: async (inputs: unknown[]) => inputs.map(() => ({
+-          kind: 'valid', selection: { llmModelIdentifier: 'parent', llmConfig: null },
+-        })),
+-      } as never),
+-    },
+-  });
+-  const root = (await manager.ensureRoot(metadata as never))!;
+-  expect((await root.admitCollaboratorMentions({
+-    focusedAgentRunId: HOST, content: 'Please help',
+-    mentions: [{ kind, definitionId: kind === 'agent' ? 'reviewer' : 'team' }],
+-  })).admitted).toBe(true);
+-  const handler = new AgentCollaborationStreamHandler(manager);
+->>>>>>> Stashed changes
+   const sessions = new Set<string>();
+   const close = async () => {
+     const errors: unknown[] = [];
+@@ -144,11 +66,20 @@
+         commitPublication: () => { active.set(runId, native.run); return native.run; },
+         abort: async () => ({ kind: 'aborted' }) };
+     });
+-    const runManager = {
+-      prepareNewAgentRun: prepare,
++    const runManager = testActivationManager({
++      newPreparation: prepare,
+       getActiveRun: (id: string) => active.get(id) ?? null,
+       prepareAgentRunTermination: (run: AgentRun) => run.prepareTermination(),
+-    };
++      releaseExactRun: async (run: AgentRun) => {
++        expect(active.get(run.runId)).toBe(run);
++        const result = await run.forceReleaseRuntime();
++        if (result.accepted) {
++          expect(run.isActive()).toBe(false);
++          active.delete(run.runId);
++        }
++        return result;
++      },
++    });
+     const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+     const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
+     const restoreHost = vi.fn(async () => hostRun);
+--- incoming/autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
++++ current/autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+@@ -405,6 +405,7 @@
+       expect(definition?.toolNames).toContain("list_available_agents");
+       expect((await fs.readdir(path.join(tempDataDir, "agents"))).sort()).toEqual([
+         DAILY_ASSISTANT_AGENT_DEFINITION_ID,
++        PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
+         RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+       ].sort());
+     });
+--- incoming/autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts
++++ current/autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts
+@@ -35,7 +35,7 @@
+   const service = new CollaborationRootHistoryService({
+     memoryDir,
+     teams: { listTeamRunHistory: async () => [] },
+-    orgs: { listCatalogRows: async () => catalog },
++    orgs: { listCatalogRows: async () => catalog, getCatalogRow: async (id: string) => catalog.find(row => row.orgRunId === id) ?? null },
+     orgRuns: { getActive: vi.fn(() => active ? { getExecutionTreeSnapshot } : null) } as never,
+     orgTrees: store,
+   });
+@@ -44,8 +44,9 @@
+ 
+ describe("mixed public history Org projection", () => {
+   it.each([
+-    [false, true], [true, true], [false, false], [true, false],
+-  ])("strictly projects stored/active=%s linked=%s without losing any concrete worker or private bytes", async (active, linked) => {
++    [false, true, "list"], [true, true, "list"], [false, false, "list"], [true, false, "list"],
++    [false, true, "scoped"], [true, true, "scoped"], [false, false, "scoped"], [true, false, "scoped"],
++  ] as const)("strictly projects active=%s linked=%s via %s without losing any concrete worker or private bytes", async (active, linked, surface) => {
+     const current = await setup(active, linked);
+     const privateBefore = JSON.stringify(current.tree);
+     if (linked) {
+@@ -54,7 +55,7 @@
+     }
+     // Repeated normal reads have the same result, never a write/migration/restore.
+     for (let attempt = 0; attempt < 2; attempt++) {
+-      const rows = await current.service.list();
++      const rows = surface === "list" ? await current.service.list() : [await current.service.getAgentOrg(" org-root ")];
+       expect(rows).toHaveLength(1);
+       const row = rows[0]!;
+       expect(row).toMatchObject({ root_subject_kind: "agent_org", root_run_id: "org-root", is_active: active });
+@@ -76,6 +77,7 @@
+     current.getExecutionTreeSnapshot.mockReturnValue({ ...current.tree, rootOrg: { ...current.tree.rootOrg, orgDefinitionName: "Active current name" } });
+     const rows = await current.service.list();
+     expect(rows[0]).toMatchObject({ org: { rootOrg: { orgDefinitionName: "Active current name" } } });
++    expect(await current.service.getAgentOrg("org-root")).toEqual(rows[0]);
+     expect(current.read).not.toHaveBeenCalled();
+     expect(current.write).not.toHaveBeenCalled();
+     expect(await fs.readFile(current.file)).toEqual(current.bytes);
+@@ -86,7 +88,7 @@
+     const team = { teamRunId: "team-root", createdAt: "2026-10-04T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Team" };
+     const service = new CollaborationRootHistoryService({
+       memoryDir: roots.at(-1)!, teams: { listTeamRunHistory: async () => [team] } as never,
+-      orgs: { listCatalogRows: async () => current.catalog },
++      orgs: { listCatalogRows: async () => current.catalog, getCatalogRow: async (id: string) => current.catalog.find(row => row.orgRunId === id) ?? null },
+       orgRuns: { getActive: () => null }, orgTrees: current.store,
+     });
+     const rows = await service.list();
+@@ -95,6 +97,23 @@
+     expect(rows[0]?.root_subject_kind === "agent_team" && rows[0].team).toBe(team);
+     current.catalog[0] = { ...current.catalog[0]!, archivedAt: "2026-10-03T02:00:00.000Z" };
+     expect((await service.list()).map(row => row.root_run_id)).toEqual(["team-root"]);
++    expect(await service.getAgentOrg("org-root")).toBeNull();
++    expect(current.write).not.toHaveBeenCalled();
++    expect(await fs.readFile(current.file)).toEqual(current.bytes);
++  });
++
++  it("keeps scoped lookup selected, rejects wrong root identity, and preserves archived active visibility", async () => {
++    const current = await setup(true, true);
++    const list = vi.spyOn(current.service, "list");
++    expect(await current.service.getAgentOrg("missing")).toBeNull();
++    await expect(current.service.getAgentOrg(" ")).rejects.toThrow("orgRunId is required");
++    expect(list).not.toHaveBeenCalled();
++    current.catalog[0] = { ...current.catalog[0]!, archivedAt: "2026-10-03T02:00:00.000Z" };
++    expect(await current.service.getAgentOrg("org-root")).toMatchObject({ is_active: true, archived_at: current.catalog[0].archivedAt });
++    current.getExecutionTreeSnapshot.mockReturnValue({ ...current.tree, rootOrg: { ...current.tree.rootOrg, orgRunId: "other-root" } });
++    await expect(current.service.getAgentOrg("org-root")).rejects.toThrow("history root mismatch");
++    await expect(current.service.list()).rejects.toThrow("history root mismatch");
++    expect(current.read).not.toHaveBeenCalled();
+     expect(current.write).not.toHaveBeenCalled();
+     expect(await fs.readFile(current.file)).toEqual(current.bytes);
+   });
+--- incoming/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
++++ current/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+@@ -725,6 +725,44 @@
+       query: 'ListCollaborationRootHistory', fetchPolicy: 'network-only', context: { queryDeduplication: false },
+     }));
+     expect(agentOrgContextsStoreMock.reconcileRetainedHistory).toHaveBeenCalledWith(linkedOrgHistory.map(row => row.root_run_id));
++  });
++
++  it.each(['private-stamp', 'wrong-root'] as const)('scoped public Org refresh keeps the complete forest and rejects %s without replacing other rows', async invalid => {
++    queryMock.mockImplementation(async ({ query }: { query: string }) => {
++      if (query === 'ListWorkspaceRunHistory') return { data: { listWorkspaceRunHistory: [] }, errors: [] };
++      return { data: { listCollaborationRootHistory: linkedOrgHistory }, errors: [] };
++    });
++    const store = useRunHistoryStore();
++    await store.fetchTree();
++    const id = linkedOrgHistory[0]!.root_run_id;
++    const others = store.agentOrgHistory.filter(row => row.rootRunId !== id);
++    queryMock.mockReset();
++    const updated = { ...linkedOrgHistory[0]!, summary: 'Scoped current summary' };
++    queryMock.mockResolvedValueOnce({ data: { getAgentOrgRootHistory: updated }, errors: [] });
++    await store.refreshAgentOrgHistoryItem(id);
++    expect(queryMock).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
++      query: 'GetAgentOrgRootHistory', variables: { orgRunId: id }, fetchPolicy: 'network-only',
++      context: { queryDeduplication: false },
++    }));
++    expect(store.agentOrgHistory).toHaveLength(3);
++    const selected = store.agentOrgHistory.find(row => row.rootRunId === id)!;
++    expect(selected.summary).toBe('Scoped current summary');
++    expect(selected.executionTree).toEqual(updated.org);
++    for (const row of others) expect(store.agentOrgHistory.find(next => next.rootRunId === row.rootRunId)).toBe(row);
++    const retained = store.agentOrgHistory;
++    const bad = structuredClone(updated);
++    if (invalid === 'private-stamp') Object.assign(bad.org.rootOrg.taskExecutions[0]!, {
++      taskLifetime: { lifetimeId: 'negative-scoped-control', purpose: 'assignment' },
++    });
++    else bad.org.rootOrg.orgRunId = 'not-selected-root';
++    queryMock.mockResolvedValueOnce({ data: { getAgentOrgRootHistory: bad }, errors: [] });
++    await store.refreshAgentOrgHistoryItem(id);
++    expect(store.agentOrgHistory).toBe(retained);
++    expect(store.agentOrgHistoryItemErrors[id]).toContain(invalid === 'private-stamp' ? 'taskLifetime' : 'does not match');
++    expect(store.historyFamilyErrors.agentOrg).toBeNull();
++    queryMock.mockResolvedValueOnce({ data: { getAgentOrgRootHistory: updated }, errors: [] });
++    await store.refreshAgentOrgHistoryItem(id);
++    expect(store.agentOrgHistoryItemErrors[id]).toBeUndefined();
+   });
+ 
+   it('still rejects a private-stamped Org history reply and keeps the last valid complete family', async () => {
+--- incoming/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts
++++ current/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts
+@@ -5,6 +5,7 @@
+ vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-task-exit-message-reader.js", () => ({
+   scanAgyTaskExitMessages: () => ({ settledFiles: [], exits: [], problem: null }),
+ }));
++import { AgentRun } from "../../../../../src/agent-execution/domain/agent-run.js";
+ import { AgyAgentRunBackend } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.js";
+ import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
+ import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
+@@ -19,7 +20,7 @@
+ class FakeProcess {
+   private listener: (message: AgyStreamMessage) => void = () => undefined;
+   private closed: () => void = () => undefined;
+-  readonly stop = vi.fn();
++  readonly stop = vi.fn(async () => {});
+   subscribe(listener: typeof this.listener) { this.listener = listener; }
+   onClose(listener: typeof this.closed) { this.closed = listener; }
+   async sendUserMessage() {}
+@@ -152,4 +153,53 @@
+     await waitFor(() => !conflict.backend.isActive());
+     expect(readAgyNativeToolArguments).not.toHaveBeenCalled();
+   });
++
++  it.each([false, true])("force release (activeTurn=%s) waits for exact stop, not early offline/terminal delivery", async activeTurn => {
++    const current = setup();
++    const run = new AgentRun({ context: current.backend.getContext(), backend: current.backend,
++      providerInputNormalizer: { normalizeForProvider: input => input } });
++    if (activeTurn) await start(current.backend);
++    let resolve!: () => void;
++    current.process.stop.mockImplementationOnce(() => new Promise<void>(done => { resolve = done; }));
++    let settled = false;
++    const release = run.forceReleaseRuntime().then(value => { settled = true; return value; });
++    await waitFor(() => current.process.stop.mock.calls.length === 1);
++    expect(run.isActive()).toBe(false);
++    if (activeTurn) await waitFor(() => current.events.some(event => event.eventType === AgentRunEventType.TURN_INTERRUPTED));
++    expect(settled).toBe(false);
++    expect((await current.backend.dispatchUserInput({ kind: "start_turn", message: { content: "late" } } as never)).forwarded).toBe(false);
++    resolve();
++    expect((await release).accepted).toBe(true);
++  });
++
++  it.each([false, true])("force release (activeTurn=%s) retains failed exact stop for explicit same-owner retry", async activeTurn => {
++    const current = setup();
++    const run = new AgentRun({ context: current.backend.getContext(), backend: current.backend,
++      providerInputNormalizer: { normalizeForProvider: input => input } });
++    if (activeTurn) await start(current.backend);
++    const failure = new Error("owned stop unconfirmed");
++    current.process.stop.mockRejectedValueOnce(failure);
++    await expect(run.forceReleaseRuntime()).rejects.toBe(failure);
++    expect(current.process.stop).toHaveBeenCalledTimes(1);
++    expect(run.isActive()).toBe(false); // still not release proof
++    expect((await run.forceReleaseRuntime()).accepted).toBe(true);
++    expect(current.process.stop).toHaveBeenCalledTimes(2);
++    expect((await run.forceReleaseRuntime()).accepted).toBe(true);
++    expect(current.process.stop).toHaveBeenCalledTimes(2); // AgentRun caches proven release only
++    if (activeTurn) expect(current.events.filter(event => event.eventType === AgentRunEventType.TURN_INTERRUPTED)).toHaveLength(1);
++  });
++
++  it("records automatic send-error stop failure without an unhandled rejection or invented release", async () => {
++    const current = setup();
++    const failure = new Error("owned stop unconfirmed");
++    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
++    try {
++      vi.spyOn(current.process, "sendUserMessage").mockRejectedValueOnce(new Error("send rejected"));
++      current.process.stop.mockRejectedValueOnce(failure);
++      expect((await start(current.backend)).forwarded).toBe(false);
++      expect(warn).toHaveBeenCalledWith("AGY_EXACT_STOP_FAILED", failure);
++      expect((await current.backend.terminate()).accepted).toBe(true);
++      expect(current.process.stop).toHaveBeenCalledTimes(2);
++    } finally { warn.mockRestore(); }
++  });
+ });
+--- incoming/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts
++++ current/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts
+@@ -26,7 +26,7 @@
+     if (this.failSend) throw new Error("private stdin failure");
+     this.sent.push(content);
+   }
+-  stop() { /* no provider process in this fixture */ }
++  async stop() { /* no provider process in this fixture */ }
+   emit(message: AgyStreamMessage) { this.listeners.forEach((listener) => listener(message)); }
+   close() { this.closeListeners.forEach((listener) => listener(new Error("private stderr marker"))); }
+ }

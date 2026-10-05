@@ -1,0 +1,220 @@
+--- before/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
++++ after/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
+@@ -4,7 +4,7 @@
+ import { expect, vi } from 'vitest';
+ import { AgentDefinition } from '../../../src/agent-definition/domain/models.js';
+ import { AgentTeamDefinition, TeamMember } from '../../../src/agent-team-definition/domain/agent-team-definition.js';
+-import { createCollaboratorMentionAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js';
++import { createCollaboratorAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js';
+ import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
+ import { RootedAgentMemoryLocator } from '../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js';
+ import { AgentRunCollaborationRootManager } from '../../../src/agent-run-collaboration/services/agent-run-collaboration-root-manager.js';
+@@ -12,6 +12,7 @@
+ import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
+ import { AgentCollaborationStreamHandler } from '../../../src/services/agent-streaming/agent-collaboration-stream-handler.js';
+ import { CollaborationStreamServerMessageSchema } from '@autobyteus/collaboration-stream-contracts';
++import { testActivationManager } from '../../fixtures/agent-run-preparation-fixtures.js';
+ import type { AgentRun } from '../../../src/agent-execution/domain/agent-run.js';
+ import { createRecoveryFixture } from '../../unit/agent-execution/recovery-native-fixture.js';
+ 
+@@ -47,11 +48,20 @@
+       commitPublication: () => { active.set(runId, native.run); return native.run; },
+       abort: async () => ({ kind: 'aborted' }) };
+   });
+-  const runManager = {
+-    prepareNewAgentRun: prepare,
++  const runManager = testActivationManager({
++    newPreparation: prepare,
+     getActiveRun: (id: string) => active.get(id) ?? null,
+     prepareAgentRunTermination: (run: AgentRun) => run.prepareTermination(),
+-  };
++    releaseExactRun: async (run: AgentRun) => {
++      expect(active.get(run.runId)).toBe(run);
++      const result = await run.forceReleaseRuntime();
++      if (result.accepted) {
++        expect(run.isActive()).toBe(false);
++        active.delete(run.runId);
++      }
++      return result;
++    },
++  });
+   const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+   const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
+   const restoreHost = vi.fn(async () => hostRun);
+@@ -79,7 +89,7 @@
+           id === (kind === 'agent' ? 'reviewer' : 'lead') ? native.run.runId : 'dormant-' + id,
+       }),
+       teamDefinitions: { getDefinitionById: catalog.getTeamDefinition },
+-      collaboratorAdmission: createCollaboratorMentionAdmission(catalog, {
++      collaboratorAdmission: createCollaboratorAdmission(catalog, {
+         validateMany: async (inputs: unknown[]) => inputs.map(() => ({
+           kind: 'valid', selection: { llmModelIdentifier: 'parent', llmConfig: null },
+         })),
+--- before/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts
++++ after/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts
+@@ -7,6 +7,7 @@
+   for (const kind of ['agent', 'agent_team'] as const) {
+     it.each(['success', 'child-finish-failure', 'later-host-failure'] as const)(`${kind}: %s`, async mode => {
+       const f = await createNativeRootFixture(kind, false);
++      let finishFault: ReturnType<typeof vi.spyOn> | undefined;
+       try {
+         const connection = await f.connect();
+         f.request();
+@@ -14,7 +15,7 @@
+         await f.send(connection.session, 'A');
+         await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user');
+         if (mode === 'child-finish-failure') {
+-          vi.spyOn(f.runManager, 'prepareAgentRunTermination').mockImplementation(async run => {
++          finishFault = vi.spyOn(f.runManager, 'prepareAgentRunTermination').mockImplementation(async run => {
+             const prepared = await run.prepareTermination();
+             return {
+               ...prepared,
+@@ -46,6 +47,16 @@
+           await expect(service.terminateAgentRun(HOST)).rejects.toThrow('controlled child finish uncertainty');
+           expect(hostStop).not.toHaveBeenCalled();
+           expect(history).not.toHaveBeenCalled();
++          // Native stop alone is not an enclosing cleanup certificate.
++          expect(connection.frames.some(frame => frame.type === 'ROOT_LIFECYCLE' && frame.payload.is_active === false)).toBe(false);
++          expect(f.manager.getActive(HOST)).toBeNull();
++          expect(f.manager.hasRoot(HOST)).toBe(true);
++          expect(f.native.isRunning).toBe(false);
++          finishFault!.mockRestore(); // remove only the explicitly injected test fault
++          expect((await service.terminateAgentRun(HOST)).success).toBe(true);
++          expect(hostStop).toHaveBeenCalledOnce();
++          expect(history).toHaveBeenCalledOnce();
++          expect(f.manager.hasRoot(HOST)).toBe(false);
+         } else {
+           expect((await service.terminateAgentRun(HOST)).success).toBe(mode === 'success');
+           expect(hostStop).toHaveBeenCalledOnce();
+@@ -54,7 +65,7 @@
+         expect(connection.frames.some(frame => frame.type === 'ROOT_LIFECYCLE' && frame.payload.is_active === false)).toBe(true);
+         expect(f.native.isRunning).toBe(false);
+         expect(f.parent.requests).toHaveLength(3); // held A never reached parent
+-      } finally { await f.close(); }
++      } finally { finishFault?.mockRestore(); await f.close(); }
+     }, 20000);
+   }
+ });
+--- before/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
++++ after/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+@@ -220,6 +220,7 @@
+       removeWorkspace: vi.fn().mockResolvedValue({ workspaceRootPath: '/ws/a', message: 'removed' }),
+     },
+     selectionStoreMock: {
++      beginSelectionIntent: vi.fn(),
+       selectedType: null as 'agent' | 'team' | null,
+       selectedRunId: null as string | null,
+       selectRun: vi.fn(),
+@@ -318,6 +319,12 @@
+     runHistoryState.workspaceHistoryErrorById = {};
+     runHistoryState.workspaceGroups = [];
+     runHistoryState.teamNodesByWorkspace = {};
++    let currentIntent: symbol | null = null;
++    selectionStoreMock.beginSelectionIntent.mockImplementation(() => {
++      const token = Symbol('test-selection');
++      currentIntent = token;
++      return { isCurrent: () => currentIntent === token };
++    });
+     selectionStoreMock.selectedType = null;
+     selectionStoreMock.selectedRunId = null;
+     selectionStoreMock.selectRun.mockImplementation((runId: string, type: 'agent' | 'team') => {
+@@ -328,12 +335,13 @@
+       if ('teamRunId' in row) {
+         selectionStoreMock.selectedType = 'team';
+         selectionStoreMock.selectedRunId = row.teamRunId;
+-        return;
++        return { disposition: 'committed' };
+       }
+ 
+       selectionStoreMock.selectedType = 'agent';
+       selectionStoreMock.selectedRunId = row.runId;
+       runHistoryState.selectedRunId = row.runId;
++      return { disposition: 'committed' };
+     });
+   });
+ 
+@@ -430,7 +438,10 @@
+         teamRunId: 'team-1',
+         memberAddress: '/super_agent',
+       }),
++      { selectionIntent: selectionStoreMock.beginSelectionIntent.mock.results[0].value },
+     );
++    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledTimes(1);
++    expect(selectionStoreMock.beginSelectionIntent).toHaveBeenCalledTimes(1);
+   });
+ 
+   it('keeps a previously selected team expanded when another team row is opened', async () => {
+--- before/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
++++ after/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+@@ -32,7 +32,7 @@
+   view.agent_statuses = active
+     ? view.agent_statuses.map(status => status.agent_run_id.startsWith('agent-task-') ? { ...status, status: 'offline' as const } : status)
+       .concat(second.members.map(member => ({ member_address: member.address, agent_run_id: (member as { agentRunId: string }).agentRunId,
+-        status: 'offline' as const, trigger: null, tool_name: null, error_message: null, error_details: null })))
++        status: 'offline' as const, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })))
+     : []
+   return view
+ }
+--- before/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts
++++ after/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts
+@@ -5,11 +5,23 @@
+ import { TeamAgentEventAdapter } from "../../../../../../src/agent-team-execution/services/team-agent-event-adapter.js";
+ import { createCodexThreadEventHarness } from "../../../../../fixtures/codex-thread-event-harness.js";
+ 
+-const strictTeamAdapter = new TeamAgentEventAdapter(() => null);
++import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
++import { createTeamAgentExecutionBinding } from "../../../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
++
++const createStrictTeamAdapter = (agentRunId: string): TeamAgentEventAdapter => {
++  const execution = createTeamAgentExecutionBinding({
++    root: createTeamRootExecutionIdentity("tool-log-root-team"),
++    memberAddress: "/worker",
++    agentRunId,
++  });
++  return new TeamAgentEventAdapter(
++    (runId) => runId === execution.agentRunId ? execution : null,
++  );
++};
+ 
+ const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): void => {
+   for (const event of events) {
+-    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publish" });
++    expect(createStrictTeamAdapter(event.runId).adapt(event)).toMatchObject({ kind: "publish" });
+   }
+ };
+ 
+@@ -63,6 +75,25 @@
+ });
+ 
+ describe("Codex TOOL_LOG correlation", () => {
++  it("rejects valid correlated TOOL_LOG when the run has no Team identity", () => {
++    const harness = createCodexThreadEventHarness("run-unregistered-tool-log");
++    emitMcpStarted(harness);
++    const output = emitRawToolOutput(harness, {
++      turnId: "turn-1",
++      item: {
++        type: "functionCallOutput",
++        call_id: "call-1",
++        output: "exact unregistered tool output",
++      },
++    });
++    expect(output).toHaveLength(1);
++    expect(output[0].eventType).toBe(AgentRunEventType.TOOL_LOG);
++    expect(new TeamAgentEventAdapter(() => null).adapt(output[0])).toMatchObject({
++      kind: "rejected",
++      code: "TEAM_AGENT_EVENT_ADMISSION_FAILED",
++    });
++  });
++
+   it("retains exact tool identity across a retry diagnostic", () => {
+     const harness = createCodexThreadEventHarness("run-retry-tool-log");
+     const started = emitMcpStarted(
+@@ -146,7 +177,7 @@
+         log_entry: "{\"task_id\":\"task-1\",\"status\":\"active\"}",
+       },
+     });
+-    expect(strictTeamAdapter.adapt(rawOutput[0]!)).toEqual(expect.objectContaining({
++    expect(createStrictTeamAdapter(rawOutput[0]!.runId).adapt(rawOutput[0]!)).toEqual(expect.objectContaining({
+       kind: "publish",
+       event: expect.objectContaining({
+         eventType: "TOOL_LOG",

@@ -1,0 +1,6 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-final-witness.py
+{"archives": 22, "ownCurrentPids": 38, "allCapturedOwnPids": 74, "causalMember": "api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148", "generation": "06c3bcb3-80d8-4229-a311-f18673ab85e2", "pauses": 10, "pauseTotalMs": 10, "protectedSentinels": 4, "sameFailedAuthority": true}
+
+PROCESS_EXIT_CODE=0

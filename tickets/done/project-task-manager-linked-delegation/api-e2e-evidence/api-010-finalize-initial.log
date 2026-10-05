@@ -1,0 +1,1 @@
+Report writer completed. First finalization metadata attempt failed before inventory output: TypeError: list indices must be integers or slices, not str; prior API9 currentHashes is a list of path/sha256 records, not a map. No preservation assertion failed or product operation performed. Original tool command exit1.

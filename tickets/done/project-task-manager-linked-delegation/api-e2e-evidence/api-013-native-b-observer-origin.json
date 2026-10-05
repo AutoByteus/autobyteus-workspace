@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-04T06:00:58.575624+00:00",
+  "originalAttempt": "API-010@round13-native-b-done",
+  "classification": "Local Fix \u2014 temporary observer subscribed only future page websocket creation, existing renderer sockets already open at attach; no canonical frames were captured at all",
+  "currentEvidence": "Original same explicit DONE, closed/released exact lifetime, current LIVE DOM offline two retained members, business assistant/host settled and A protected passed before last assertion",
+  "canonicalBTerminal": "UNOBSERVED, not source absence or recovered backfill",
+  "resend": false,
+  "prospectiveCorrection": "Explicit public /ws/agent-collaboration own observer connected before next sole user instruction; retain original failed attempt/script",
+  "result": "Scoped positive prior assertions; missing canonical observation remains separately limited"
+}

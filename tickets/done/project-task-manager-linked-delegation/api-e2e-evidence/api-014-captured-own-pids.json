@@ -1,0 +1,396 @@
+{
+  "instanceId": "iso-65469-85e7",
+  "captures": [
+    {
+      "at": "2026-10-04T06:28:56.424262+00:00",
+      "phase": "after-import-restart",
+      "current": [
+        {
+          "pid": 59584,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 59585,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 59586,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 60514,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 60599,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-04T06:37:06.690248+00:00",
+      "phase": "failed-case-allowlisted-PID-receipt:api-014-claude-concrete-agent_org.json",
+      "current": [
+        {
+          "pid": 59584,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 59585,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 59586,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 60514,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 60599,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        },
+        {
+          "pid": 61052,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 61054,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 64406,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 72385,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 73217,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 81450,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 82432,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 82512,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 85178,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 85237,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 85594,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 89810,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 89826,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 92858,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 97723,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-04T06:37:06.695365+00:00",
+      "phase": "failed-case-allowlisted-PID-receipt:api-014-round14-physical-recursive.json",
+      "current": [
+        {
+          "pid": 59584,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation"
+        },
+        {
+          "pid": 59585,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper",
+          "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation"
+        },
+        {
+          "pid": 59586,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper",
+          "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation"
+        },
+        {
+          "pid": 60514,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+        },
+        {
+          "pid": 60599,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)",
+          "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation"
+        },
+        {
+          "pid": 61052,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper",
+          "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation"
+        },
+        {
+          "pid": 61054,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper",
+          "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation"
+        },
+        {
+          "pid": 64406,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/claude-concrete-agent_org"
+        },
+        {
+          "pid": 72385,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/claude-concrete-agent_org"
+        },
+        {
+          "pid": 73217,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/claude-concrete-agent_org"
+        },
+        {
+          "pid": 81450,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-manager-round14"
+        },
+        {
+          "pid": 82432,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-task-workers-round14"
+        },
+        {
+          "pid": 82512,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-manager-round14"
+        },
+        {
+          "pid": 85178,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-task-workers-round14"
+        },
+        {
+          "pid": 85237,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-manager-round14"
+        },
+        {
+          "pid": 85594,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-manager-round14"
+        },
+        {
+          "pid": 89810,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-manager-round14"
+        },
+        {
+          "pid": 89826,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-task-workers-round14"
+        },
+        {
+          "pid": 92858,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-manager-round14"
+        },
+        {
+          "pid": 97723,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU/validation-workspace/physical-manager-round14"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-04T06:37:06.823634+00:00",
+      "phase": "before-cleanup",
+      "current": [
+        {
+          "pid": 59584,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 59585,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 59586,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 60514,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 60599,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        },
+        {
+          "pid": 61052,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 61054,
+          "ppid": 59584,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 64406,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 72385,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 73217,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 81450,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 82432,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 82512,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 85178,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 85237,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 85594,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 89810,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 89826,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 92858,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 97723,
+          "ppid": 60514,
+          "comm": "/Users/normy/.local/bin/claude"
+        }
+      ]
+    }
+  ],
+  "capturedIds": [
+    59584,
+    59585,
+    59586,
+    60514,
+    60599,
+    61052,
+    61054,
+    64406,
+    72385,
+    73217,
+    81450,
+    82432,
+    82512,
+    85178,
+    85237,
+    85594,
+    89810,
+    89826,
+    92858,
+    97723
+  ]
+}

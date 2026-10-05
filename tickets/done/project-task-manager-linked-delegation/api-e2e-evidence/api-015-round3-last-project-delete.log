@@ -1,0 +1,6 @@
+case=API-015
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/last-project-delete-probe.mjs
+Pass — normal last Project Delete retains exact lifetime-only array, root history bytes, active Manager/workspace; no active-deletion/restart/whole-scope proof
+
+PROCESS_EXIT_CODE=0

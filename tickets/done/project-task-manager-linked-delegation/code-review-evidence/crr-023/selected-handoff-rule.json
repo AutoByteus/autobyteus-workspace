@@ -1,0 +1,4 @@
+{
+  "when": "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+  "recipient_address": "/software_engineering_team/delivery_engineer"
+}

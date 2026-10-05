@@ -1,0 +1,784 @@
+diff --git a/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts b/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts
+index ba9694ea1..201bba7d4 100644
+--- a/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts
++++ b/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts
+@@ -7,8 +7,8 @@ export const isProjectTaskToolName = (name: string): name is ProjectTaskToolName
+ const statuses = ["TODO", "IN_PROGRESS", "DONE"];
+ export const PROJECT_TASK_TOOL_DESCRIPTIONS: Record<ProjectTaskToolName, string> = {
+   list_projects: "List every Project on the current node with its stable projectId, name and description. Does not select or change a Project.",
+-  list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS or DONE status. Returns full descriptions and saved Task context references.",
+-  create_or_update_task: "Create or explicitly patch one Project Task. Omit task_id to create a required-description TODO Task (omit status). Supply a known task_id to patch description and/or TODO/IN_PROGRESS/DONE status. Unknown IDs fail; omitted fields and context are preserved. Does not launch, stop or assess executions.",
++  list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS or DONE status. Returns descriptions, saved context-file references and exact assignment identities with dispatch outcomes; accepted work is not necessarily finished.",
++  create_or_update_task: "Create or explicitly patch one Project Task. Omit task_id to create a required-description TODO Task (omit status). Supply a known task_id to patch description and/or TODO/IN_PROGRESS/DONE status. Unknown IDs fail; omitted fields and saved context are preserved. Returns the recorded Task identity and status, not a work-completion assessment. Does not delegate work.",
+ };
+ export function buildProjectTaskToolSchema(name: ProjectTaskToolName): ParameterSchema {
+   const p = (name: string, description: string, required = false, enumValues?: string[]) => new ParameterDefinition({
+
+diff --git a/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts b/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts
+index 1485b6de6..28909c7e8 100644
+--- a/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts
++++ b/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts
+@@ -1,25 +1,63 @@
+ import { getProjectService } from "../../projects/services/project-service.js";
+ import { getProjectTaskService } from "../../projects/services/project-task-service.js";
+ import type { ProjectTaskStatus, ProjectTaskView } from "../../projects/domain/models.js";
++import type { ProjectTaskExecutionLink } from "../../projects/domain/project-task-execution.js";
++import type { TaskExecutionLinkIdentity } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+ import { ProjectError } from "../../projects/domain/project-errors.js";
+ import { PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseProjectTaskToolInput, type ProjectTaskToolName } from "./project-task-tool-contract.js";
+-const taskResult = ({projectId, taskId, description, status, contextFiles}: ProjectTaskView) => ({projectId, taskId, description, status, contextFiles});
++
++type TaskAcknowledgement = Pick<ProjectTaskView, "projectId" | "taskId" | "status">;
++type TaskAssignment = Pick<TaskExecutionLinkIdentity, "root" | "execution" | "ingressAgentRunId"> & {
++  dispatchOutcome: "accepted" | "not_confirmed" | "failed";
++};
++type TaskBusinessRead = Pick<ProjectTaskView, "projectId" | "taskId" | "description" | "status" | "contextFiles"> & {
++  assignments: TaskAssignment[];
++};
++const dispatchOutcomes: Record<ProjectTaskExecutionLink["dispatch"], TaskAssignment["dispatchOutcome"]> = {
++  delivered: "accepted", reserved: "not_confirmed", admitted: "not_confirmed", failed: "failed",
++};
++const taskAcknowledgement = ({ projectId, taskId, status }: ProjectTaskView): TaskAcknowledgement => ({ projectId, taskId, status });
++const taskBusinessRead = ({ projectId, taskId, description, status, contextFiles, executionLifetimes }: ProjectTaskView): TaskBusinessRead => ({
++  projectId, taskId, description, status, contextFiles,
++  assignments: executionLifetimes.flatMap(lifetime => lifetime.executions
++    .filter(link => link.purpose !== "helper")
++    .map(link => ({ root: { rootSubjectKind: link.root.rootSubjectKind, rootRunId: link.root.rootRunId },
++      execution: "agentRunId" in link.execution ? { agentRunId: link.execution.agentRunId } : { teamRunId: link.execution.teamRunId }, ingressAgentRunId: link.ingressAgentRunId,
++      dispatchOutcome: dispatchOutcomes[link.dispatch] }))),
++});
++
++const isInternalStateError = (error: ProjectError): boolean =>
++  error.code === "PROJECT_STATE_UNAVAILABLE" || error.code.startsWith("TASK_LIFETIME_");
++class TaskMutationUnconfirmed extends Error {
++  constructor(cause: unknown) { super("Task change could not be confirmed. Check the saved Task before repeating.", { cause }); }
++}
+ export const projectTaskToolError = (error: unknown) => {
+-  if (error instanceof ProjectError) return {error: {code: error.code, message: error.message}};
++  if (error instanceof TaskMutationUnconfirmed) {
++    console.error("Project Task mutation result unavailable.", error);
++    return { error: { code: "PROJECT_OPERATION_UNCONFIRMED", message: error.message } };
++  }
++  if (error instanceof ProjectError && !isInternalStateError(error)) return { error: { code: error.code, message: error.message } };
+   console.error("Project tool operation failed.", error);
+-  return {error: {code: "PROJECT_OPERATION_FAILED", message: "Project operation failed."}};
++  return { error: { code: error instanceof ProjectError ? error.code : "PROJECT_OPERATION_FAILED", message: "Project data could not be read." } };
+ };
+ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unknown): Promise<unknown> {
+   const input = parseProjectTaskToolInput(name, raw);
+-  if (name === "list_projects") return {projects: await getProjectService().listProjectSummaries()};
++  if (name === "list_projects") return { projects: await getProjectService().listProjectSummaries() };
+   const projectId = input.project_id as string;
+-  if (name === "list_project_tasks") return {projectId, tasks: (await getProjectTaskService().listTasks(projectId, input.status as ProjectTaskStatus | undefined)).map(taskResult)};
+-  const task = Object.hasOwn(input, "task_id")
+-    ? await getProjectTaskService().updateTask({projectId, taskId: input.task_id as string,
+-      ...(Object.hasOwn(input, "description") ? {description: input.description as string} : {}),
+-      ...(Object.hasOwn(input, "status") ? {status: input.status as ProjectTaskStatus} : {})})
+-    : await getProjectTaskService().createTask({projectId, description: input.description as string});
+-  return {task: taskResult(task)};
++  if (name === "list_project_tasks") return { projectId, tasks: (await getProjectTaskService().listTasks(projectId, input.status as ProjectTaskStatus | undefined)).map(taskBusinessRead) };
++  // The service may fail while producing its view AFTER the write. Neither a
++  // fabricated acknowledgement nor a rollback claim is safe without its result.
++  try {
++    const task = Object.hasOwn(input, "task_id")
++      ? await getProjectTaskService().updateTask({ projectId, taskId: input.task_id as string,
++        ...(Object.hasOwn(input, "description") ? { description: input.description as string } : {}),
++        ...(Object.hasOwn(input, "status") ? { status: input.status as ProjectTaskStatus } : {}) })
++      : await getProjectTaskService().createTask({ projectId, description: input.description as string });
++    return { task: taskAcknowledgement(task) };
++  } catch (error) {
++    if (error instanceof ProjectError && !isInternalStateError(error)) throw error;
++    throw new TaskMutationUnconfirmed(error);
++  }
+ }
+ export const PROJECT_TASK_TOOL_MANIFEST = [...PROJECT_TASK_TOOL_NAMES].map((name) => ({
+   name, description: PROJECT_TASK_TOOL_DESCRIPTIONS[name], parameterSchema: buildProjectTaskToolSchema(name),
+
+--- NEW / UNTRACKED autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md ---
+---
+name: Project Task Manager
+description: Reusable assistant for planning saved Project Tasks, delegating linked work, checking results, and explicitly completing Tasks.
+role: Project Task Manager
+---
+
+You are the Project Task Manager. Help the user plan saved Project Tasks, delegate work, and maintain their business status.
+
+1. Use list_projects to resolve the user's Project and its real projectId. Ask a concise clarification when the Project or requested Task is ambiguous; never invent IDs or select unrelated work.
+2. Use list_project_tasks to inspect and reuse an appropriate saved Task, or create a TODO Task with create_or_update_task. Save clear, self-contained work instructions before delegation. Read relevant saved context files when needed; the saved Task description and context accompany its delegation.
+3. Consult list_available_agents to choose a suitable Agent or Team. Delegate with only recipient_address and task_id; do not add project_id, description or reference_files overrides.
+4. Confirm the successful target_agent_run_id, then explicitly update the Task to IN_PROGRESS. Do not resend the initial work. Use send_message_to with that exact target_agent_run_id for follow-up. A failed or uncertain dispatch is not success; check existing assignments before repeating so work is not blindly duplicated.
+5. Maintain status from results, artifacts and user instructions actually available. Explicitly set DONE when completion is justified. If completion information is missing, do not claim the work has finished; ask for business clarification or report the blocker.
+
+
+diff --git a/autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts b/autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+index e2625d159..92e889548 100644
+--- a/autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
++++ b/autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+@@ -7,7 +7,7 @@ import { AgentDefinitionService } from "../../../src/agent-definition/services/a
+ import { serializeAgentMd } from "../../../src/agent-definition/utils/agent-md-parser.js";
+ import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
+ import {
+-  DAILY_ASSISTANT_AGENT_DEFINITION_ID,
++  DAILY_ASSISTANT_AGENT_DEFINITION_ID, PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
+   RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+ } from "../../../src/built-in-agents/built-in-agent-registry.js";
+ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+@@ -80,6 +80,18 @@ describe("BuiltInAgentBootstrapper", () => {
+     agentDefinitionId,
+   );
+ 
++  it("ships the business-only Manager prompt and unchanged ordinary tools through real bootstrap", async () => {
++    const services = createServices();
++    await bootstrapBuiltInAgents(services);
++    const prompt = await fs.readFile(path.join(agentDir(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID), "agent.md"), "utf8");
++    expect(prompt).toBe(await readTemplate("project-task-manager", "agent.md"));
++    for (const businessDuty of ["list_projects", "list_project_tasks", "TODO", "recipient_address and task_id", "IN_PROGRESS", "target_agent_run_id", "send_message_to", "results, artifacts and user instructions", "DONE", "completion information is missing"]) expect(prompt).toContain(businessDuty);
++    expect(prompt).not.toMatch(/runtime|resource|cleanup|lifetime|cascade|restore|global Stop|scheduler|polling|notifier|self-DONE|completion[- ]report/i);
++    const config = await readJson(path.join(agentDir(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID), "agent-config.json"));
++    expect(config.toolNames).toEqual(["list_projects", "list_project_tasks", "create_or_update_task", "list_available_agents", "delegate_task", "send_message_to", "read_file"]);
++    for (const key of ["inputProcessorNames", "llmResponseProcessorNames", "toolExecutionResultProcessorNames", "toolInvocationPreprocessorNames", "lifecycleProcessorNames"]) expect(config[key]).toEqual([]);
++  });
++
+   const compactorAgentDir = (): string => agentDir(MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
+   const skillImproverAgentDir = (): string => agentDir(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
+   const skillImproverPrivateSkillDir = (): string => path.join(
+@@ -109,7 +121,8 @@ describe("BuiltInAgentBootstrapper", () => {
+       agentsDir: path.join(tempDataDir, "agents"),
+       refreshedCache: true,
+     });
+-    expect(result.builtInAgents).toHaveLength(2);
++    expect(result.builtInAgents).toHaveLength(3);
++    expect(result.builtInAgents.some(item => item.agentDefinitionId === PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID)).toBe(true);
+     expect(result.builtInAgents.some(item => item.agentDefinitionId === MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toBe(false);
+     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
+       agentDefinitionId: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+
+diff --git a/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts b/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
+index a7f83f7d2..1d6b7f1f1 100644
+--- a/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
++++ b/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
+@@ -1,3 +1,4 @@
++import { projectAgentCollaborationTree, projectCollaborationTaskExecution, projectCollaborationCollaborator } from "./collaboration-execution-tree-dto-projection.js";
+ import {
+   RootExecutionEventDtoSchema,
+   RootExecutionViewDtoSchema,
+@@ -23,7 +24,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
+   root_agent: {
+     base_change_sequence: input.baseChangeSequence,
+     is_active: input.isActive,
+-    execution_tree: input.snapshot.tree,
++    execution_tree: projectAgentCollaborationTree(input.snapshot.tree),
+     communication_messages: input.snapshot.messages,
+     agent_input_states: input.snapshot.inputStates,
+     agent_statuses: input.snapshot.statuses.map((status) => ({
+@@ -42,7 +43,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
+ const requireStartedExecution = (tree: AgentRunCollaborationTreeSnapshot, reference: TaskExecutionReference) => {
+   const execution = new AgentRunCollaborationExecutionIndex(tree).getTaskExecution(reference);
+   if (!execution) throw new Error("Started Agent-root task execution is not in the current execution tree.");
+-  return execution.source;
++  return projectCollaborationTaskExecution(execution.source);
+ };
+ 
+ export const projectAgentCollaborationEvent = (
+@@ -70,7 +71,7 @@ export const projectAgentCollaborationEvent = (
+       event = { kind: "communication" as const, message: source.message };
+       break;
+     case "collaborator_added":
+-      event = { kind: "collaborator_added" as const, collaborator: source.collaborator };
++      event = { kind: "collaborator_added" as const, collaborator: projectCollaborationCollaborator(source.collaborator) };
+       break;
+   }
+   return RootExecutionEventDtoSchema.parse({
+
+diff --git a/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts b/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts
+index 8b9f7ac89..8d8e15e5f 100644
+--- a/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts
++++ b/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts
+@@ -1,3 +1,4 @@
++import { projectAgentOrgExecutionTree, projectCollaborationTaskExecution, projectCollaborationCollaborator } from "./collaboration-execution-tree-dto-projection.js";
+ import {
+   RootExecutionEventDtoSchema,
+   RootExecutionViewDtoSchema,
+@@ -13,7 +14,7 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
+ const requireStartedExecution = (run: AgentOrgRun, reference: TaskExecutionReference) => {
+   const execution = new AgentOrgExecutionIndex(run.getExecutionTreeSnapshot()).getTaskExecution(reference);
+   if (!execution) throw new Error("Started AgentOrg task execution is not in the current execution tree.");
+-  return execution.source;
++  return projectCollaborationTaskExecution(execution.source);
+ };
+ 
+ export const projectAgentOrgExecutionView = (
+@@ -37,7 +38,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
+   root_org: {
+     base_change_sequence: baseChangeSequence,
+     is_active: isActive,
+-    execution_tree: snapshot.tree,
++    execution_tree: projectAgentOrgExecutionTree(snapshot.tree),
+     communication_messages: snapshot.messages,
+     agent_input_states: snapshot.inputStates,
+     agent_statuses: snapshot.statuses.map((status) => ({
+@@ -82,7 +83,7 @@ export const projectAgentOrgExecutionEvent = (
+       event = { kind: "communication" as const, message: source.message };
+       break;
+     case "collaborator_added":
+-      event = { kind: "collaborator_added" as const, collaborator: source.collaborator };
++      event = { kind: "collaborator_added" as const, collaborator: projectCollaborationCollaborator(source.collaborator) };
+       break;
+   }
+   return RootExecutionEventDtoSchema.parse({
+
+--- NEW / UNTRACKED autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts ---
+import {
+  agentOrgLaunchConfigurationDtoSchema,
+  type AgentOrgExecutionTreeDto,
+  type AgentRunCollaborationTreeDto,
+  type CollaborationTaskExecutionDto,
+  type CollaboratorEntryDto,
+  type TaskAgentExecutionSourceDto,
+  type TaskTeamExecutionSourceDto,
+} from "@autobyteus/collaboration-stream-contracts";
+import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
+import type { AgentRunCollaborationTreeSnapshot } from "../../agent-run-collaboration/domain/agent-run-collaboration-tree.js";
+import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
+import type {
+  CollaboratorEntry, ConfiguredAgentExecutionNode, ConfiguredExecutionNode,
+  TaskExecution, TaskTeamMemberExecution,
+} from "../../run-history/domain/run-execution-tree-shared-records.js";
+
+type TaskTeamDto = Extract<CollaborationTaskExecutionDto, { teamRunId: string }>;
+
+// Agent/Org camel-case wire ownership only. Internal lifetime stamps remain in
+// the current tree; every public concrete child is projected, never filtered.
+const projectLaunch = (value: AgentLaunchConfiguration): TaskAgentExecutionSourceDto["launchConfiguration"] =>
+  agentOrgLaunchConfigurationDtoSchema.parse({
+    runtimeKind: value.runtimeKind, llmModelIdentifier: value.llmModelIdentifier,
+    llmConfig: value.llmConfig, autoExecuteTools: value.autoExecuteTools,
+    workspaceRootPath: value.workspaceRootPath,
+  });
+const projectHandoff = ({ from, to, rules }: CollaborationHandoff) => ({ from, to, rules: [...rules] });
+
+const projectTaskMember = (member: TaskTeamMemberExecution): TaskTeamDto["members"][number] =>
+  "agentRunId" in member
+    ? { address: member.address, agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId }
+    : { address: member.address, teamRunId: member.teamRunId,
+        members: member.members.map(projectTaskMember), taskExecutions: member.taskExecutions.map(projectCollaborationTaskExecution) };
+
+export const projectCollaborationTaskExecution = (execution: TaskExecution): CollaborationTaskExecutionDto => {
+  const identity = {
+    address: execution.address, startedAt: execution.startedAt,
+    ...(execution.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: execution.delegatorAgentRunId }),
+  };
+  if ("agentRunId" in execution) {
+    const source: TaskAgentExecutionSourceDto | undefined = execution.source && {
+      kind: "agent", agentDefinitionId: execution.source.agentDefinitionId,
+      launchConfiguration: projectLaunch(execution.source.launchConfiguration),
+    };
+    return { ...identity, agentRunId: execution.agentRunId, platformAgentRunId: execution.platformAgentRunId,
+      ...(source === undefined ? {} : { source }) };
+  }
+  const source: TaskTeamExecutionSourceDto | undefined = execution.source && {
+    kind: "agent_team", teamDefinitionId: execution.source.teamDefinitionId,
+    coordinatorAddress: execution.source.coordinatorAddress,
+    members: execution.source.members.map(({ address, agentDefinitionId }) => ({ address, agentDefinitionId })),
+    handoffs: execution.source.handoffs.map(projectHandoff),
+    defaultLaunchConfiguration: projectLaunch(execution.source.defaultLaunchConfiguration),
+  };
+  return { ...identity, teamRunId: execution.teamRunId, members: execution.members.map(projectTaskMember),
+    taskExecutions: execution.taskExecutions.map(projectCollaborationTaskExecution), ...(source === undefined ? {} : { source }) };
+};
+
+export const projectCollaborationCollaborator = (entry: CollaboratorEntry): CollaboratorEntryDto => {
+  const identity = { address: entry.address, addedAt: entry.addedAt, addedViaAgentRunId: entry.addedViaAgentRunId };
+  if (entry.kind === "agent") return {
+    ...identity, kind: "agent", agentDefinitionId: entry.agentDefinitionId, agentRunId: entry.agentRunId,
+    platformAgentRunId: entry.platformAgentRunId, launchConfiguration: projectLaunch(entry.launchConfiguration),
+  };
+  return {
+    ...identity, kind: "agent_team", teamDefinitionId: entry.teamDefinitionId, teamRunId: entry.teamRunId,
+    coordinatorAddress: entry.coordinatorAddress,
+    members: entry.members.map(({ address, agentDefinitionId, agentRunId, platformAgentRunId }) =>
+      ({ address, agentDefinitionId, agentRunId, platformAgentRunId })),
+    handoffs: entry.handoffs.map(projectHandoff), defaultLaunchConfiguration: projectLaunch(entry.defaultLaunchConfiguration),
+    taskExecutions: entry.taskExecutions.map(projectCollaborationTaskExecution),
+  };
+};
+
+const projectConfiguredAgent = (member: ConfiguredAgentExecutionNode) => ({
+  address: member.address, agentDefinitionId: member.agentDefinitionId, role: member.role, description: member.description,
+  agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId, launchConfiguration: projectLaunch(member.launchConfiguration),
+});
+const projectConfigured = (member: ConfiguredExecutionNode): AgentOrgExecutionTreeDto["rootOrg"]["members"][number] =>
+  "agentRunId" in member ? projectConfiguredAgent(member) : {
+    address: member.address, teamDefinitionId: member.teamDefinitionId, role: member.role, description: member.description,
+    teamRunId: member.teamRunId, coordinatorAddress: member.coordinatorAddress,
+    defaultLaunchConfiguration: projectLaunch(member.defaultLaunchConfiguration), members: member.members.map(projectConfiguredAgent),
+    taskExecutions: member.taskExecutions.map(projectCollaborationTaskExecution),
+  };
+
+export const projectAgentCollaborationTree = (tree: AgentRunCollaborationTreeSnapshot): AgentRunCollaborationTreeDto => ({
+  subjectKind: "agent", createdAt: tree.createdAt,
+  host: { address: tree.host.address, agentRunId: tree.host.agentRunId, agentDefinitionId: tree.host.agentDefinitionId },
+  collaborators: tree.collaborators.map(projectCollaborationCollaborator),
+  taskExecutions: tree.taskExecutions.map(projectCollaborationTaskExecution),
+});
+
+export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnapshot): AgentOrgExecutionTreeDto => ({
+  subjectKind: "agent_org", createdAt: tree.createdAt, archivedAt: tree.archivedAt,
+  applicationBinding: tree.applicationBinding === null ? null : {
+    applicationId: tree.applicationBinding.applicationId, bindingId: tree.applicationBinding.bindingId,
+  },
+  handoffs: tree.handoffs.map(projectHandoff),
+  rootOrg: {
+    address: tree.rootOrg.address, orgDefinitionId: tree.rootOrg.orgDefinitionId, orgDefinitionName: tree.rootOrg.orgDefinitionName,
+    orgRunId: tree.rootOrg.orgRunId, defaultLaunchConfiguration: projectLaunch(tree.rootOrg.defaultLaunchConfiguration),
+    members: tree.rootOrg.members.map(projectConfigured), collaborators: tree.rootOrg.collaborators.map(projectCollaborationCollaborator),
+    taskExecutions: tree.rootOrg.taskExecutions.map(projectCollaborationTaskExecution),
+  },
+});
+
+
+--- NEW / UNTRACKED autobyteus-server-ts/tests/fixtures/collaboration-public-projection-fixtures.ts ---
+import { validateAgentRunCollaborationTreePayload } from "../../src/run-history/store/agent-run-collaboration-tree-schema.js";
+import { validateAgentOrgRunExecutionTreePayload } from "../../src/run-history/store/agent-org-run-execution-tree-schema.js";
+import { testOrgAgentNode, testOrgTeamNode, testAgentOrgExecutionTree } from "./current-agent-org-run-fixtures.js";
+
+export const projectionLaunch = {
+  runtimeKind: "codex_app_server", llmModelIdentifier: "test-only-model",
+  llmConfig: { reasoning_effort: "low", nested: { enabled: true, budget: 2, options: [null, "x"] } },
+  autoExecuteTools: true, workspaceRootPath: "/tmp/test-owned-projection-workspace",
+};
+const startedAt = "2026-10-03T00:00:01.000Z";
+const stamp = (linked: boolean, purpose: "assignment" | "delegation" | "helper" = "delegation") =>
+  linked ? { taskLifetime: { lifetimeId: "task-owned-lifetime", purpose } } : {};
+const taskAgent = (address: string, id: string, linked: boolean, delegatorAgentRunId?: string) => ({
+  address, agentRunId: id, platformAgentRunId: `provider-${id}`, startedAt,
+  ...(delegatorAgentRunId ? { delegatorAgentRunId } : {}), ...stamp(linked),
+  source: { kind: "agent", agentDefinitionId: `definition-${id}`, launchConfiguration: projectionLaunch },
+});
+// Reader/DTO contract fixture: nested recorded members exercise recursive wire
+// preservation, not real-provider reachability or completion certification.
+const team = (linked: boolean) => ({
+  address: "/packet", teamRunId: "packet-copy", startedAt, delegatorAgentRunId: "manager", ...stamp(linked, "assignment"),
+  members: [
+    { address: "/packet/lead", agentRunId: "packet-lead", platformAgentRunId: "provider-lead" },
+
+  ],
+  taskExecutions: [{ address: "/packet/subteam", teamRunId: "nested-task-team", startedAt, ...stamp(linked),
+    members: [{ address: "/packet/nested", teamRunId: "nested-member",
+      members: [{ address: "/packet/nested/worker", agentRunId: "nested-worker", platformAgentRunId: "provider-nested" }],
+      taskExecutions: [taskAgent("/packet/nested/helper", "nested-helper", linked, "nested-worker")] }], taskExecutions: [] }, taskAgent("/packet/researcher", "follow-on-agent", linked, "packet-lead"), {
+    address: "/packet/review", teamRunId: "follow-on-team", startedAt, ...stamp(linked, "helper"),
+    members: [{ address: "/packet/review/lead", agentRunId: "review-lead", platformAgentRunId: null }],
+    taskExecutions: [taskAgent("/packet/review/helper", "review-helper", linked, "review-lead")],
+    source: { kind: "agent_team", teamDefinitionId: "review-definition", coordinatorAddress: "/packet/review/lead",
+      members: [{ address: "/packet/review/lead", agentDefinitionId: "reviewer" }], handoffs: [], defaultLaunchConfiguration: projectionLaunch },
+  }],
+  source: { kind: "agent_team", teamDefinitionId: "packet-definition", coordinatorAddress: "/packet/lead",
+    members: [{ address: "/packet/lead", agentDefinitionId: "lead-definition" }], handoffs: [], defaultLaunchConfiguration: projectionLaunch },
+
+});
+const collaborators = (linked: boolean) => [{
+  kind: "agent", address: "/borrowed", agentDefinitionId: "borrowed-definition", agentRunId: "borrowed-run",
+  platformAgentRunId: "borrowed-provider", launchConfiguration: projectionLaunch, addedAt: startedAt, addedViaAgentRunId: "manager",
+}, {
+  kind: "agent_team", address: "/shared", teamDefinitionId: "shared-definition", teamRunId: "shared-team",
+  coordinatorAddress: "/shared/lead", members: [{ address: "/shared/lead", agentDefinitionId: "shared-lead-definition", agentRunId: "shared-lead", platformAgentRunId: "shared-provider" }],
+  handoffs: [{ from: "/shared/lead", to: "/shared/lead", rules: ["deliver"] }], defaultLaunchConfiguration: projectionLaunch,
+  taskExecutions: [taskAgent("/shared/helper", "shared-helper", linked, "shared-lead")],
+  addedAt: startedAt, addedViaAgentRunId: "manager",
+}];
+export const agentProjectionTree = (linked: boolean) => validateAgentRunCollaborationTreePayload({
+  subjectKind: "agent", createdAt: startedAt,
+  host: { address: "/manager", agentRunId: "manager", agentDefinitionId: "manager-definition" },
+  collaborators: collaborators(linked),
+  taskExecutions: [taskAgent("/solo", "solo-copy", linked, "manager"), team(linked)],
+}, "manager");
+export const orgProjectionTree = (linked: boolean) => {
+  const base = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/manager", "manager"), {
+    ...testOrgTeamNode({ address: "/configured", teamRunId: "configured-team", coordinatorAddress: "/configured/lead",
+      members: [testOrgAgentNode("/configured/lead", "configured-lead")] }),
+    role: "Delivery", description: "Configured Team", defaultLaunchConfiguration: projectionLaunch,
+    taskExecutions: [taskAgent("/configured/helper", "configured-helper", linked, "configured-lead")],
+  }] });
+  return validateAgentOrgRunExecutionTreePayload({
+    ...base, archivedAt: "2026-10-03T01:00:00.000Z", applicationBinding: { applicationId: "app", bindingId: "binding" },
+    handoffs: [{ from: "/manager", to: "/configured/lead", rules: ["coordinate"] }],
+    rootOrg: { ...base.rootOrg, defaultLaunchConfiguration: projectionLaunch, collaborators: collaborators(linked),
+      taskExecutions: [taskAgent("/solo", "solo-copy", linked, "manager"), team(linked)] },
+  }, "org-root");
+};
+
+
+--- NEW / UNTRACKED autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts ---
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { Readable } from "node:stream";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ProjectStore } from "../../../../src/projects/stores/project-store.js";
+import { ProjectService } from "../../../../src/projects/services/project-service.js";
+import * as taskServices from "../../../../src/projects/services/project-task-service.js";
+import { ProjectTaskService } from "../../../../src/projects/services/project-task-service.js";
+import { ProjectTaskContextStore } from "../../../../src/projects/context/project-task-context-store.js";
+import { ProjectTaskContextLayout } from "../../../../src/projects/context/project-task-context-layout.js";
+import { ProjectError } from "../../../../src/projects/domain/project-errors.js";
+import { createRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import type { TaskExecutionLinkIdentity } from "../../../../src/agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { TaskRootReleaseRequest } from "../../../../src/projects/runtime/project-task-runtime-release.js";
+import { CreateOrUpdateTaskTool, ListProjectTasksTool } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
+import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
+
+const mcp = async (name: string, args: Record<string, unknown>) => {
+  const result = await new ProjectTaskToolsMcpAdapterProvider().getAdapters().find(a => a.definition.name === name)!
+    .execute({ rawArguments: args, session: {} as never });
+  if (result.kind !== "mcp_tool_result") throw new Error("Expected structured result");
+  return result.result;
+};
+const link = (kind: "agent" | "agent_team" | "agent_org", id: string, team = false, purpose: TaskExecutionLinkIdentity["purpose"] = "assignment"): TaskExecutionLinkIdentity => ({
+  root: createRootExecutionIdentity({ rootSubjectKind: kind, rootRunId: `root-${kind}` }),
+  execution: team ? { teamRunId: id } : { agentRunId: id }, ingressAgentRunId: team ? `${id}-coordinator` : id, purpose,
+});
+let dir: string, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, projectId: string;
+let release: ReturnType<typeof vi.fn<TaskRootReleaseRequest>>;
+beforeEach(async () => {
+  dir = await fs.mkdtemp(path.join(os.tmpdir(), "project-business-tools-"));
+  store = new ProjectStore({ getAppDataDir: () => dir });
+  context = new ProjectTaskContextStore(new ProjectTaskContextLayout(path.join(dir, "projects")));
+  projectId = (await new ProjectService({ store, contextStore: context }).createProject({ name: "Business fixture" })).projectId;
+  release = vi.fn<TaskRootReleaseRequest>(async (_root, _id, refs) => refs.map(execution => ({ execution, cleanup: "released" })));
+  tasks = new ProjectTaskService({ store, contextStore: context, requestRuntimeRelease: release });
+  vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
+});
+afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
+
+describe("shared native/MCP business Task result boundary", () => {
+  it("lists full saved work/context and every exact assignment/delegation across roots/lifetimes, but no helper or cleanup error", async () => {
+    const draft = await tasks.beginContextDraft(projectId);
+    const upload = await tasks.uploadContextFile(projectId, draft.draftId, { filename: "instructions.txt", mimetype: "text/plain", file: Readable.from(["saved context"]) } as never);
+    const task = await tasks.createTask({ projectId, description: "Full saved work description",
+      contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
+    const old = await tasks.resolveDelegationWork(task.taskId);
+    const links = [link("agent", "accepted-agent"), link("agent_team", "failed-team", true), link("agent_org", "admitted-agent", false, "delegation"),
+      link("agent", "reserved-agent", false, "delegation"), link("agent_org", "owned-helper", false, "helper")];
+    for (const identity of links) await tasks.reserveExecution(old.lifetimeId, identity, task.taskId);
+    await tasks.recordDispatch(old.lifetimeId, links[0], "delivered");
+    await tasks.recordDispatch(old.lifetimeId, links[1], "failed", { code: "DISPATCH_FAILED", message: "Internal dispatch detail" });
+    await tasks.recordDispatch(old.lifetimeId, links[2], "admitted");
+    release.mockImplementationOnce(async (_root, _id, refs) => refs.map(execution => ({ execution, cleanup: "failed", error: { code: "PRIVATE_PROVIDER_DETAIL", message: "provider/process cleanup detail" } })));
+    await tasks.updateTask({ projectId, taskId: task.taskId, status: "DONE" }); await tasks.drainRuntimeReleases();
+    await tasks.updateTask({ projectId, taskId: task.taskId, status: "TODO" });
+    const current = await tasks.resolveDelegationWork(task.taskId), fresh = link("agent_team", "fresh-team", true);
+    await tasks.reserveExecution(current.lifetimeId, fresh, task.taskId);
+    await tasks.recordDispatch(current.lifetimeId, fresh, "delivered");
+    const native = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
+    expect((await mcp("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(native);
+    expect(native).toEqual({ projectId, tasks: [{ projectId, taskId: task.taskId, description: task.description, status: "TODO",
+      contextFiles: task.contextFiles, assignments: [...links.slice(0, 4), fresh].map((l, i) => ({
+        root: l.root, execution: l.execution, ingressAgentRunId: l.ingressAgentRunId,
+        dispatchOutcome: ["accepted", "failed", "not_confirmed", "not_confirmed", "accepted"][i],
+      })) }] });
+    expect(await fs.readFile(native.tasks[0].contextFiles[0].localPath, "utf8")).toBe("saved context");
+    for (const privateDetail of ["lifetimeId", "completedAt", "cleanup", "PRIVATE_PROVIDER_DETAIL", "Internal dispatch detail", "owned-helper"]) expect(JSON.stringify(native)).not.toContain(privateDetail);
+    const patch = { project_id: projectId, task_id: task.taskId, description: "Revised saved work" };
+    expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, patch))).toEqual({ task: { projectId, taskId: task.taskId, status: "TODO" } });
+    expect((await mcp("create_or_update_task", patch)).structuredContent).toEqual({ task: { projectId, taskId: task.taskId, status: "TODO" } });
+    const reread = (await mcp("list_project_tasks", { project_id: projectId })).structuredContent as typeof native;
+    expect(reread.tasks[0]).toEqual({ ...native.tasks[0], description: "Revised saved work" });
+
+    const full = await tasks.listTasks(projectId);
+    expect(full[0].executionLifetimes).toHaveLength(2);
+    expect(full[0].executionLifetimes[0].executions[0]).toMatchObject({ cleanup: "failed", error: { code: "PRIVATE_PROVIDER_DETAIL" } });
+  });
+
+  it.each(["agent", "agent_team", "agent_org"] as const)("acknowledges recorded DONE only, preserving %s pending/failure/exact explicit retry and Task B", async kind => {
+    const created = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, { project_id: projectId, description: "A" }));
+    expect(created).toEqual({ task: { projectId, taskId: expect.any(String), status: "TODO" } });
+    const taskId = created.task.taskId, work = await tasks.resolveDelegationWork(taskId), identity = link(kind, "A", true);
+    await tasks.reserveExecution(work.lifetimeId, identity, taskId); await tasks.recordDispatch(work.lifetimeId, identity, "delivered");
+    const b = await tasks.createTask({ projectId, description: "B protected" }), workB = await tasks.resolveDelegationWork(b.taskId);
+    const bLink = link(kind, "B"); await tasks.reserveExecution(workB.lifetimeId, bLink, b.taskId);
+    let finish!: (value: Awaited<ReturnType<TaskRootReleaseRequest>>) => void;
+    release.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    const done = { task: { projectId, taskId, status: "DONE" } }, args = { project_id: projectId, task_id: taskId, status: "DONE" };
+    expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, args))).toEqual(done);
+    expect((await store.readState()).taskLifetimes.find(l => l.lifetimeId === work.lifetimeId)).toMatchObject({ completedAt: expect.any(String), executions: [expect.objectContaining({ cleanup: "pending" })] });
+    expect((await mcp("create_or_update_task", args)).structuredContent).toEqual(done);
+    expect(release).toHaveBeenCalledTimes(1);
+    finish([{ execution: identity.execution, cleanup: "failed", error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } }]);
+    await tasks.drainRuntimeReleases();
+    const failed = await store.readState();
+    expect(failed.taskLifetimes.find(l => l.lifetimeId === work.lifetimeId)?.executions[0]).toMatchObject({ cleanup: "failed", error: { code: "EXACT_CLOSE_FAILED" } });
+    expect((await mcp("create_or_update_task", args)).structuredContent).toEqual(done); await tasks.drainRuntimeReleases();
+    expect(release).toHaveBeenLastCalledWith(identity.root, work.lifetimeId, [identity.execution]);
+    const closed = (await store.readState()).taskLifetimes.find(l => l.lifetimeId === work.lifetimeId)!;
+    expect(closed.executions[0].cleanup).toBe("released");
+    expect(closed.completedAt).toBe(failed.taskLifetimes.find(l => l.lifetimeId === work.lifetimeId)!.completedAt);
+    expect((await mcp("create_or_update_task", args)).structuredContent).toEqual(done); await tasks.drainRuntimeReleases();
+    expect(release).toHaveBeenCalledTimes(2);
+    expect((await store.readState()).taskLifetimes.find(l => l.lifetimeId === workB.lifetimeId)).toMatchObject({ completedAt: null, executions: [expect.objectContaining({ cleanup: "not_requested" })] });
+    const listing = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId, status: "DONE" }));
+    expect(listing.tasks[0].assignments).toEqual([{ root: identity.root, execution: identity.execution, ingressAgentRunId: identity.ingressAgentRunId, dispatchOutcome: "accepted" }]);
+  });
+
+  it.each(["native", "mcp"] as const)("does not fabricate a create acknowledgement after %s postcommit read failure", async mode => {
+    tasks = new ProjectTaskService({ store: { listRecords: store.listRecords.bind(store), updateRecords: store.updateRecords.bind(store),
+      updateState: store.updateState.bind(store), readState: async () => { throw new Error("test-owned view failure"); } }, contextStore: context });
+    const diagnostics = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const args = { project_id: projectId, description: "Recorded but view unavailable" };
+    const result = mode === "native"
+      ? await new CreateOrUpdateTaskTool().execute(null, args).then(() => { throw new Error("Must not acknowledge"); }, e => JSON.parse(e.message))
+      : (await mcp("create_or_update_task", args)).structuredContent;
+    expect(result).toMatchObject({ error: { code: "PROJECT_OPERATION_UNCONFIRMED" } });
+    expect(result).not.toHaveProperty("task");
+    expect((await store.readState()).projects[0].tasks).toEqual([expect.objectContaining({ description: args.description, status: "TODO" })]);
+    expect(diagnostics).toHaveBeenCalled();
+  });
+
+  it.each(["native", "mcp"] as const)("returns truthful postcommit uncertainty through %s instead of inventing success or rollback", async mode => {
+    const task = await tasks.createTask({ projectId, description: "Saved" }), work = await tasks.resolveDelegationWork(task.taskId), identity = link("agent", "owned");
+    await tasks.reserveExecution(work.lifetimeId, identity, task.taskId);
+    const stateRead = vi.fn(async () => {
+      const state = await store.readState();
+      if (state.projects[0].tasks[0].status === "DONE") throw new ProjectError("PROJECT_STATE_UNAVAILABLE", "private postcommit view detail");
+      return state;
+    });
+    tasks = new ProjectTaskService({ store: { listRecords: store.listRecords.bind(store), updateRecords: store.updateRecords.bind(store),
+      updateState: store.updateState.bind(store), readState: stateRead }, contextStore: context, requestRuntimeRelease: release });
+    const diagnostics = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const args = { project_id: projectId, task_id: task.taskId, status: "DONE" };
+    const mcpResult = mode === "mcp" ? await mcp("create_or_update_task", args) : null;
+    if (mcpResult) expect(mcpResult.isError).toBe(true);
+    const result = mode === "native" ? await new CreateOrUpdateTaskTool().execute(null, args).then(() => { throw new Error("Must not acknowledge"); }, e => JSON.parse(e.message))
+      : mcpResult!.structuredContent;
+    expect(result).toEqual({ error: { code: "PROJECT_OPERATION_UNCONFIRMED", message: "Task change could not be confirmed. Check the saved Task before repeating." } });
+    await tasks.drainRuntimeReleases();
+    expect(diagnostics).toHaveBeenCalled();
+    const persisted = await store.readState();
+    expect(persisted.projects[0].tasks[0].status).toBe("DONE");
+    expect(persisted.taskLifetimes[0]).toMatchObject({ completedAt: expect.any(String), executions: [expect.objectContaining({ cleanup: "released" })] });
+    expect(JSON.stringify(result)).not.toMatch(/private|released|rollback/);
+  });
+});
+
+
+diff --git a/autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts b/autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
+index d397cab52..82e218d02 100644
+--- a/autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
+@@ -32,17 +32,17 @@ describe("Project data tools — actual native preparation/execute and selected
+     await fs.rm(root, {recursive: true, force: true});
+     appConfigProvider.resetForTests(); resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
+   });
+-  it("shares complete reads, TODO create and known-ID description/status patches", async () => {
++  it("shares business reads and compact TODO create/known-ID status acknowledgements", async () => {
+     const catalog = JSON.parse(await new ListProjectsTool().execute(null));
+     expect((await mcp("list_projects", {})).structuredContent).toEqual(catalog);
+     expect(catalog.projects).toEqual([{projectId, name: "Tools fixture", description: ""}]);
+     const created = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, {project_id: projectId, description: " hello "}));
+-    expect(created.task).toMatchObject({projectId, description: "hello", status: "TODO", contextFiles: []});
++    expect(created.task).toEqual({projectId, taskId: expect.any(String), status: "TODO"});
+     const patched = await mcp("create_or_update_task", {project_id: projectId, task_id: created.task.taskId, status: "DONE"});
+     expect(patched.structuredContent).toMatchObject({task: {...created.task, status: "DONE"}});
+     const listed = JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId, status: "DONE"}));
+     expect((await mcp("list_project_tasks", {project_id: projectId, status: "DONE"})).structuredContent).toEqual(listed);
+-    expect(listed.tasks).toEqual([patched.structuredContent!.task]);
++    expect(listed.tasks).toEqual([{...patched.structuredContent!.task, description: "hello", contextFiles: [], assignments: []}]);
+     expect((await mcp("list_project_tasks", {project_id: projectId, status: "TODO"})).structuredContent).toEqual({projectId, tasks: []});
+   });
+   it.each([
+
+--- NEW / UNTRACKED autobyteus-server-ts/tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts ---
+import "reflect-metadata";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { agentRunCollaborationTreeDtoSchema, agentOrgExecutionTreeDtoSchema, CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
+import { agentProjectionTree, orgProjectionTree } from "../../../fixtures/collaboration-public-projection-fixtures.js";
+import { projectAgentCollaborationView, projectAgentCollaborationEvent } from "../../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+import { projectAgentOrgExecutionSnapshot, projectAgentOrgExecutionEvent } from "../../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
+import { AgentRunCollaborationExecutionIndex } from "../../../../src/agent-run-collaboration/services/agent-run-collaboration-execution-index.js";
+import { AgentOrgExecutionIndex } from "../../../../src/agent-org-execution/services/agent-org-execution-index.js";
+import { AgentCollaborationStreamHandler } from "../../../../src/services/agent-streaming/agent-collaboration-stream-handler.js";
+import { AgentOrgStreamHandler } from "../../../../src/services/agent-streaming/agent-org-stream-handler.js";
+import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import type { AgentRunCollaborationRootEvent } from "../../../../src/agent-run-collaboration/domain/agent-run-collaboration-root-event.js";
+import { AgentRunCollaborationResolver } from "../../../../src/api/graphql/types/agent-run-collaboration.js";
+import { AgentOrgRunService } from "../../../../src/agent-org-execution/services/agent-org-run-service.js";
+import { AgentRunCollaborationRootManager } from "../../../../src/agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
+
+import { createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+
+const packageSnapshot = <T>(tree: T, kind: "agent" | "agent_org") => ({
+  tree, messages: kind === "agent"
+    ? { schemaVersion: 1 as const, subjectKind: "agent" as const, hostRunId: "manager", messages: [] }
+    : { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: "org-root", messages: [] },
+  statuses: [], inputStates: [],
+});
+const setup = (kind: "agent" | "agent_org", linked = true) => {
+  const tree = kind === "agent" ? agentProjectionTree(linked) : orgProjectionTree(linked);
+
+  const run = { orgRunId: "org-root", isActive: () => true, getExecutionTreeSnapshot: () => tree };
+  const index = kind === "agent" ? new AgentRunCollaborationExecutionIndex(tree as ReturnType<typeof agentProjectionTree>)
+    : new AgentOrgExecutionIndex(tree as ReturnType<typeof orgProjectionTree>);
+  const snapshot = { ...packageSnapshot(tree, kind), statuses: index.listAgents().filter(agent => kind !== "agent" || agent.agentRunId !== "manager").map(agent => ({
+    execution: createCollaborationMemberExecutionIdentity({ root: index.root, memberAddress: agent.address, agentRunId: agent.agentRunId }),
+    details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
+  })) };
+  const projectView = () => kind === "agent"
+    ? projectAgentCollaborationView({ hostRunId: "manager", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7 })
+    : projectAgentOrgExecutionSnapshot({ orgRunId: "org-root", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7 });
+  const projectEvent = (event: AgentRunCollaborationRootEvent) => kind === "agent"
+    ? projectAgentCollaborationEvent("manager", tree as ReturnType<typeof agentProjectionTree>, { event, changeSequence: 8 })
+    : projectAgentOrgExecutionEvent(run as never, { event, changeSequence: 8 });
+  return { tree, snapshot, index, run, projectView, projectEvent };
+};
+afterEach(() => vi.restoreAllMocks());
+
+describe.each(["agent", "agent_org"] as const)("%s camel-case public projection", kind => {
+  it("keeps the entire public nested forest, source/member/provider/launch identity and internal stamps", () => {
+    const current = setup(kind), before = JSON.stringify(current.tree), view = current.projectView();
+    const publicTree = view.root_subject_kind === "agent" ? view.root_agent.execution_tree : view.root_org.execution_tree;
+    // Unstamped current trees already ARE the strict public shape. Exact equality
+    // catches dropped children, members, sources, settings or identity fields.
+    expect(publicTree).toEqual(kind === "agent"
+      ? agentRunCollaborationTreeDtoSchema.parse(agentProjectionTree(false))
+      : agentOrgExecutionTreeDtoSchema.parse(orgProjectionTree(false)));
+    expect(JSON.stringify(publicTree)).not.toContain("taskLifetime");
+    expect(JSON.stringify(current.tree)).toBe(before);
+    expect(before.match(/taskLifetime/g)?.length).toBe(kind === "agent" ? 8 : 9);
+    const schema = kind === "agent" ? agentRunCollaborationTreeDtoSchema : agentOrgExecutionTreeDtoSchema;
+    expect(() => schema.parse(current.tree)).toThrow(); // strict DTO NOT relaxed
+  });
+  it.each(["solo-copy", "packet-copy", "nested-task-team", "nested-helper", "follow-on-agent", "follow-on-team", "review-helper", "shared-helper"])("projects the actual indexed started execution %s", id => {
+    const current = setup(kind), unlinked = setup(kind, false);
+    const reference = id.endsWith("team") || id === "packet-copy" ? { teamRunId: id } : { agentRunId: id };
+    const indexed = current.index.getTaskExecution(reference)!;
+    expect(indexed, id).toBeTruthy();
+    const event = { kind: "task_execution_started" as const, host: indexed.host, taskExecution: reference };
+    expect(current.projectEvent(event)).toEqual(unlinked.projectEvent(event));
+    expect(current.projectEvent(event)).toMatchObject({ change_sequence: 8, event: {
+      kind: "task_execution_started", host_kind: indexed.host.hostKind, host_run_id: indexed.host.hostRunId,
+      execution: unlinked.index.getTaskExecution(reference)!.source,
+    } });
+    expect(indexed.source.taskLifetime).toBeDefined();
+  });
+  it("projects collaborator events recursively without exposing lifetime ownership", () => {
+    const current = setup(kind), unlinked = setup(kind, false);
+    const entries = current.tree.subjectKind === "agent" ? current.tree.collaborators : current.tree.rootOrg.collaborators;
+    const publicEntries = unlinked.tree.subjectKind === "agent" ? unlinked.tree.collaborators : unlinked.tree.rootOrg.collaborators;
+    entries.forEach((collaborator, i) => expect(current.projectEvent({ kind: "collaborator_added", collaborator }))
+      .toMatchObject({ event: { kind: "collaborator_added", collaborator: publicEntries[i] } }));
+  });
+  it("still rejects invalid public critical fields and missing started references", () => {
+    const current = setup(kind);
+    expect(() => current.projectEvent({ kind: "task_execution_started", host: current.index.getTaskExecution({ agentRunId: "solo-copy" })!.host,
+      taskExecution: { agentRunId: "absent" } })).toThrow(/not in the current execution tree/);
+    const entries = current.tree.subjectKind === "agent" ? current.tree.collaborators : current.tree.rootOrg.collaborators;
+    expect(() => current.projectEvent({ kind: "collaborator_added", collaborator: { ...entries[0], agentRunId: "" } as never })).toThrow();
+  });
+  it("streams stamped snapshot/start/collaborator and reconnect through actual subscription boundary without false close1011", async () => {
+    const current = setup(kind), publisher = new RootEventPublisher<AgentRunCollaborationRootEvent>();
+    const run = { ...current.run, openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => current.snapshot) };
+    const handler = kind === "agent"
+      ? new AgentCollaborationStreamHandler({ resolveCommandReadyRoot: async () => run as never, getActive: () => run as never })
+      : new AgentOrgStreamHandler({ getActive: () => run as never, recordRunActivity: async () => undefined });
+    const wire: unknown[] = [], close = vi.fn();
+    const connection = { send: (raw: string) => wire.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(raw))), close };
+    const session = await handler.connect(connection, kind === "agent" ? "manager" : "org-root");
+    expect(session, JSON.stringify(wire)).toBeTruthy();
+    const indexed = current.index.getTaskExecution({ teamRunId: "packet-copy" })!;
+    publisher.publish({ kind: "task_execution_started", host: indexed.host, taskExecution: { teamRunId: "packet-copy" } });
+    const entries = current.tree.subjectKind === "agent" ? current.tree.collaborators : current.tree.rootOrg.collaborators;
+    publisher.publish({ kind: "collaborator_added", collaborator: entries[1] });
+    await Promise.resolve();
+    expect(wire).toHaveLength(5);
+    expect(wire.at(-2)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { event: { execution: { teamRunId: "packet-copy" } } } });
+    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { event: { collaborator: { teamRunId: "shared-team" } } } });
+    expect(close).not.toHaveBeenCalled();
+    handler.disconnect(session!);
+    const reconnect = await handler.connect(connection, kind === "agent" ? "manager" : "org-root");
+    expect(reconnect).toBeTruthy();
+    expect(wire.at(-2)).toMatchObject({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT" });
+    expect(close).not.toHaveBeenCalled();
+    handler.disconnect(reconnect!);
+  });
+});
+
+it("GraphQL Agent inspection reuses the exact public view without materialization or stamp loss", async () => {
+  const current = setup("agent"), inspection = { hostRunId: "manager", isActive: false, snapshot: current.snapshot, baseChangeSequence: 7 };
+  const getInspection = vi.fn(async () => inspection), restore = vi.fn();
+  vi.spyOn(AgentRunCollaborationRootManager, "getInstance").mockReturnValue({ getInspection, resolveCommandReadyRoot: restore } as never);
+  const result = await new AgentRunCollaborationResolver().agentRunCollaboration("manager");
+  expect(result).toEqual(projectAgentCollaborationView(inspection as never));
+  expect(getInspection).toHaveBeenCalledWith("manager");
+  expect(restore).not.toHaveBeenCalled();
+  expect(JSON.stringify(current.tree)).toContain("taskLifetime");
+});
+
+it("Org GraphQL inspection service reuses strict public snapshot projection without restoring", async () => {
+  const current = setup("agent_org"), inspection = { orgRunId: "org-root", isActive: false,
+    snapshot: { ...current.snapshot, statuses: [] }, baseChangeSequence: 7 };
+  const getInspection = vi.fn(async () => inspection), restore = vi.fn();
+  const service = new AgentOrgRunService({ manager: { getInspection, restore } } as never);
+  expect(await service.getInspection("org-root")).toEqual(projectAgentOrgExecutionSnapshot(inspection as never));
+  expect(getInspection).toHaveBeenCalledWith("org-root");
+  expect(restore).not.toHaveBeenCalled();
+  expect(JSON.stringify(current.tree)).toContain("taskLifetime");
+});
+
+
+diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts
+index 09e7099bc..84d4bba69 100644
+--- a/autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts
++++ b/autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts
+@@ -40,7 +40,7 @@ describe("Team execution view strict projection", () => {
+       details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
+     });
+     const projected = projectTeamExecutionViewSnapshot("team-run-root", {
+-      tree, messages, statuses: [status],
++      tree, messages, statuses: [status], inputStates: [],
+     }, 17);
+ 
+     expect(projected).toMatchObject({
+@@ -75,6 +75,26 @@ describe("Team execution view strict projection", () => {
+     });
+   });
+ 
++  it("keeps the separate snake-case Team protocol identical for private stamped nested children", () => {
++    const stamped = JSON.parse(JSON.stringify(tree));
++    const parent = stamped.rootTeam.taskExecutions[0];
++    parent.taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "assignment" };
++    const nested = parent.members.find((member: { teamRunId?: string }) => member.teamRunId === "task-team-run-automation-001");
++    nested.taskExecutions[0].taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "delegation" };
++    const current = validateTeamRunExecutionTreePayload(stamped, "team-run-root"), before = JSON.stringify(current);
++    expect(projectTeamExecutionViewSnapshot("team-run-root", { tree: current, messages, statuses: [], inputStates: [] }, 17))
++      .toEqual(projectTeamExecutionViewSnapshot("team-run-root", { tree, messages, statuses: [], inputStates: [] }, 17));
++    const event = { changeSequence: 19, event: {
++      eventSourceType: TeamRunEventSourceType.TASK_EXECUTION,
++      taskExecution: { agentRunId: "nested-task-agent-run-001" },
++      payload: { eventType: "TASK_EXECUTION_STARTED", details: { parentTeamRunId: "task-team-run-automation-001" } },
++    } };
++    expect(projectSequencedTeamRunEvent({ getExecutionTreeSnapshot: () => current } as never, event as never))
++      .toEqual(projectSequencedTeamRunEvent(root as never, event as never));
++    expect(JSON.stringify(current)).toBe(before);
++    expect(before).toContain("taskLifetime");
++  });
++
+   it("keeps snapshot placement identity out of the exact live status payload", () => {
+     const status = createTeamAgentStatusSnapshot({
+       execution: createTeamAgentExecutionBinding({
+@@ -93,6 +113,7 @@ describe("Team execution view strict projection", () => {
+       tool_name: null,
+       error_message: null,
+       error_details: null,
++      recoverableBlock: null,
+     });
+     expect(projectLiveTeamAgentStatusMessage(status, 18)).toEqual({
+       type: "AGENT_STATUS",
+@@ -104,6 +125,7 @@ describe("Team execution view strict projection", () => {
+         tool_name: null,
+         error_message: null,
+         error_details: null,
++        recoverableBlock: null,
+       },
+     });
+   });

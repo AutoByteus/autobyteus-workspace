@@ -1,0 +1,59 @@
+# Code Review Report
+
+## Review Round Meta / Latest Result
+- **CRR-014 / round14 — focused failure-origin continuation: Unclear design-clarity assessment → Solution Designer**, 2026-10-03. Trigger: user challenges why the identified boundary concern was not sent for a design update after asking whether the design is over-engineered.
+- **Actual FAPI-009 / CRF-006 P2 remains Open, implementation-owned Local Fix confirmed by CRR-013; API-REV-009 remains Fail65.71%.** This new upstream assessment is not a retroactive reclassification of that proved implementation defect, a demonstrated Design Impact, or approval for a larger redesign.
+- Authority unchanged: **REQ-BL-008 = SD-AP-001(SR-007) + scoped SD-AP-002**, **SR-014 / ARCH-REV-005**, cumulative **IR-007** completed basis. SR-015–017 evidence-only; withdrawn REQ-BL-007/held SR-013 not approval. **Large / High / Reviewed** retained. Delivery **N/A — not reached**.
+- Requirements/discovery/investigation/scope/solution revision, completed design/design handoff/architecture review/history, implementation handoff/history and canonical API investigation/execution/ledger/revision are carried in the complete cumulative package. Current user feedback and exact affected design map reread. No new behavior-defining UI supplement.
+- Prior completed CRR-013 report archived exactly at `code-review-evidence/crr-013-completed-report.md`; CRR-001 through CRR-013 retained in `code-review-revision-record.md`. CRR-012 historical source9.20 is unchanged, not today's Pass.
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation`; HEAD/base `806907faeb567d2b703e10fe984fcd01be0b41fd`; branch `codex/project-task-manager-linked-delegation` / finalization origin/personal unchanged. References below are relative to this ticket.
+
+## Scope / Why The Earlier Route Was Implementation
+CRR-013 established a concrete missed public history projection, not the necessity of a new architecture. The existing approved design already requires typed recursive public projection, preserved worker identities and private internal stamps. Its existing mapper independently handles all three actual failed trees without dropping children. That justified a bounded Implementation Local Fix rather than inventing a structural Design Impact.
+
+My subsequent answer raised **design-clarity/fragmentation risk**, not a proved systemic over-engineering finding. The user now explicitly requests upstream treatment of that concern. This round routes **design adequacy/simplification assessment** to the design owner rather than leaving it as conversational commentary. No source or test fix is implemented by reviewer, and no full structural audit/scorecard or successful-test review is repeated.
+
+Implementation correction is visibly **in progress, not a completed reviewed package**: current history service, web store test, new public-history regression and linked Org fixture/provenance are being changed after CRR-013. They are carried as WIP context only; no reset/rollback, pause instruction, source Pass or executable closure inferred. `code-review-evidence/crr-014-input-context.json` records the observed status and history. The user has not asked to pause work.
+
+## Independent Scenario / Contract Basis
+**FO-SCN-013 retained — Supported Normal Scenario.** User inspects previously delegated Org workers via ordinary sidebar/history after linked work/restart. REQ-005 AC-006 and preserved REQ-008/010 independently establish concrete retained worker visibility; SR-014/strict DTO contract requires public/private separation. Actual mounted history panel → store/query → mixed history resolver/service → active or stored tree → strict Org parser/family supplies the demonstrated forward path. No contradictory concurrent action, arbitrary endpoint or synthetic scenario defines the requirement.
+
+CRR-013 actual HTTP200/no GraphQL errors supplied two inactive stored stamped Org trees (1/4 stamps) and one active restored tree (3 stamps); strict parser rejected all and fresh packaged renderer showed the private-key error/zero Org open controls. Read-only Project-array hash unchanged. Original command/log/witness/screenshot and unchanged-current offline discriminator are retained. Diagnostic projection control is not repaired product acceptance. Only Org history failure certified; no Agent-navigation/all-history allegation.
+
+## Candidate Gate / Design Question
+| Candidate | Independent contract / forward consequence | Evidence / current disposition | Proportionate outcome |
+|---|---|---|---|
+|FO-CAND-014 / CRF-006|FO-SCN-013 private internal tree reached public history before strict parser|**Promoted implementation Local Fix remains confirmed**, CRR-013 actual rows, raw-return/type/source audit and existing mapper control. New WIP fix not yet reviewed.|Implementation owns concrete correction; its ordinary source/API gates remain.|
+|FO-CAND-017 — public-projection design ownership/map sufficiency|Same supported history contract; technical design must identify each relevant public return boundary and accountable reusable projection, rather than assume every GraphQL caller uses one wrapper|**Unclear architectural adequacy — investigate, not a Design Impact finding/deduction.** Design-spec responsibility mapping and SR-014 section describe Agent/Org stream/inspection mapping and “existing GraphQL wrapper reuses public view”; the distinct mixed history facade was missed in the reviewed trace. That proves a trace/implementation omission, not that current architecture cannot absorb it.|Solution Designer evaluates whether canonical technical design needs clearer public-boundary inventory/ownership/type responsibility or actual simplification. No speculative new serializer/framework/relocation mandated.|
+|FO-CAND-018 — systemic over-engineering|Approved three-root/provider/nested ownership/exact proof/retry/protection requirements justify real complexity, but unnecessary duplicated responsibility could still be demonstrated|**Unclear / not demonstrated.** Number of files, layers or recurring failures alone is not proof; no identified unsupported machinery promoted by this round.|Designer must distinguish necessary lifecycle ownership from unnecessary coordination/duplication using actual supported paths. Do not demand architecture expansion just to answer this concern.|
+
+No new behavioral requirement, root/provider scenario, migration, recovery policy or Manager duty is approved or proposed. No score deduction or source mechanism follows from the two uncertain architectural candidates.
+
+## Requested Solution-Owner Assessment / Update
+1. Inspect the exact existing Agent/Org public stream, single-run inspection and mixed-history paths, including active/stored inputs and strict consumers. Identify the public DTO/projection owner and where internal persistence shapes cease to be legitimate public return types.
+2. Determine whether the existing design plus bounded history fix is sufficient, whether the canonical design map needs a concrete clarification, or whether a genuinely structural ownership issue merits a demonstrated Design Impact. **Update the canonical technical design if warranted**, with the actual affected path/owner and concise rationale; otherwise explain evidence-backed why no design change is needed.
+3. Evaluate simplification, not added machinery: reuse current typed recursive capability where appropriate; examine unnecessary duplication/coupling or fragmented ownership only where supported paths prove it. Do not manufacture a universal serializer, new coordinator, compatibility layer or recovery system for hypothetical cases.
+4. Return the classification and complete cumulative package through the normal solution/architecture/source workflow as applicable. Any behavior/scope expansion requires its normal approval; this user request is not blanket approval for one. Coordinate any design change against in-progress Implementation work without undoing reviewed fixes or accepting an unfinished correction.
+
+## Prior Finding Resolution / Preserved Limits
+| Finding / gate | Current status |
+|---|---|
+|CRF-001/002|Prior scoped source closures retained.|
+|CRF-003/FAPI-005|Original stream/inspection scoped repair retained; distinct mixed-history CRF-006 does not reopen the working mapper.|
+|CRF-004/FAPI-006|Committed terminal source/scoped actual repair retained.|
+|CRF-005/FAPI-008|Fresh executable scoped repair verified in CRR-013/API-REV-009; original backend/wire/stage gaps remain.|
+|CRF-006/FAPI-009|Open P2; confirmed Implementation Local Fix, current work unreviewed; design assessment requested separately.|
+|FAPI-007 / FO-CAND-010/011|Independently Open/Unclear/NotReproduced, no causal equivalence or original failed-retry recertification.|
+
+SR-017 actual default-FIFO negative control, finite admitted-work proof distinction, immediate5/5 timing/label limits and original historical receipts remain. Separate API-owned fixture/mocks Needs Update, strict TOOL_LOG/wider mock/unhandled/live-skip limits, held cold/unstarted/unsent final-A guards and API confidence scopes preserved. Exact AGY4.8 absent/native/Claude authorization/remote dependencies remain individually Blocked. No provider substitution or successful-test/Delivery acceptance. Preserve Manager business-only role, compact mutations/full reads, strict public DTOs/private stamped facts, all protected roots/Tasks/borrowed/shared/history/packet/workspace and current Project-array/no-startup-converter contracts.
+
+## Classification / Handoff
+**Unclear design-clarity/over-engineering assessment → Solution Designer**, explicitly requested by user. Original product failure still **Fail / Implementation Local Fix**, not replaced by an unsupported structural finding. No new CRF/severity, full scorecard, source/test Pass or Delivery result.
+
+Complete1619 incoming references exist; current WIP additions and reviewer context accompany them. Reviewer changed ticket reports/history/evidence only, no source/test/runtime/profile/credential action or pausing of implementation. Fresh completed-result rules and sole upstream assessment handoff will be recorded after tools confirm them. No duplicate Implementation notification for this new request and no recipient polling.
+
+### Fresh completed-result rule selection — CRR-014
+Selected **“When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.”** Exact sole new recipient **/software_engineering_team/solution_designer**. Here this is user-requested **Unclear technical-design adequacy/simplification assessment** with update if warranted, not a demonstrated Design Impact or new behavior approval. Earlier confirmed Implementation Local Fix remains a separate already-delivered outcome. No duplicate Implementation notification, API acceptance or Delivery route applies. Actual rules saved at code-review-evidence/crr-014-handoff-rules.json; delivery receipt pending.
+
+### Confirmed sole upstream design-assessment handoff — CRR-014
+send_message_to confirmed **accepted=true / DELIVERED** to **/software_engineering_team/solution_designer**, exact AgentRun **solution_designer_4369c3e671e34a2dadd670c5b652afaa**, with complete1659 existing cumulative references, current canonical review report/history and explicitly unreviewed in-progress IR-008 context. Actual receipt/message: code-review-evidence/crr-014-handoff-{receipt.json,message.txt}. Design owner requested to assess simplification/public-boundary ownership and update canonical technical design if warranted, not ordered to add speculative machinery. Actual FAPI-009 Implementation Local Fix/Open and all API confidence/acceptance limits remain. No additional recipient notified, no pause/reset/Delivery advance; reviewer stage ends without polling.

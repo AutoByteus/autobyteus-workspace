@@ -1,0 +1,28 @@
+{
+  "instanceId": "iso-63749-7f67",
+  "backend": "http://127.0.0.1:63750",
+  "control": "http://127.0.0.1:63749",
+  "startedAt": "2026-10-03T20:22:39.280Z",
+  "noModelRequest": true,
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "manager": {
+    "id": "autobyteus-project-task-manager",
+    "name": "Project Task Manager",
+    "instructions": "You are the Project Task Manager. Help the user plan saved Project Tasks, delegate work, and maintain their business status.\n\n1. Use list_projects to resolve the user's Project and its real projectId. Ask a concise clarification when the Project or requested Task is ambiguous; never invent IDs or select unrelated work.\n2. Use list_project_tasks to inspect and reuse an appropriate saved Task, or create a TODO Task with create_or_update_task. Save clear, self-contained work instructions before delegation. Read relevant saved context files when needed; the saved Task description and context accompany its delegation.\n3. Consult list_available_agents to choose a suitable Agent or Team. Delegate with only recipient_address and task_id; do not add project_id, description or reference_files overrides.\n4. Confirm the successful target_agent_run_id, then explicitly update the Task to IN_PROGRESS. Do not resend the initial work. Use send_message_to with that exact target_agent_run_id for follow-up. A failed or uncertain dispatch is not success; check existing assignments before repeating so work is not blindly duplicated.\n5. Maintain status from results, artifacts and user instructions actually available. Explicitly set DONE when completion is justified. If completion information is missing, do not claim the work has finished; ask for business clarification or report the blocker.\n",
+    "toolNames": [
+      "list_projects",
+      "list_project_tasks",
+      "create_or_update_task",
+      "list_available_agents",
+      "delegate_task",
+      "send_message_to",
+      "read_file"
+    ],
+    "defaultLaunchConfig": null
+  },
+  "mentionMenu": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nconcrete-agent_org\nSettings\nWhat should we work on?\n\nAll your skills are available. Type / to use a skill, or @ to chat with an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\n\nChat with @Project · ↑↓ to move, Enter to choose\n\nAgents\nPT\nProject Task Manager\nReusable assistant for planning saved Project Tasks, delegating linked work, checking results, and explicitly completing Tasks.\nTeams: your message goes to the coordinator\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff\n\nFiles are saved in the temp workspace · /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/server-data/temp_workspace",
+  "afterSelection": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nconcrete-agent_org\nSettings\nWhat should we work on?\n\nChat with Project Task Manager, using its own tools and skills.\n\nContext Files (0)\n(drag, paste, or upload)\nPT\nProject Task Manager\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff\n\nFiles are saved in the temp workspace · /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/server-data/temp_workspace",
+  "inputValue": "",
+  "engine": "148.0.7778.265",
+  "result": "Pass — ordinary packaged @ discovery/selection and real catalog only"
+}

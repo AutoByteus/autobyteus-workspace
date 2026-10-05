@@ -1,0 +1,54 @@
+{
+  "at": "2026-10-05T03:37:17.051108+00:00",
+  "head": "028cca2312eae25737f482d94f9f3c213d83c3b9",
+  "mergeHead": "4dee901d6163ca7053916fa1edc295afbfd7a6da",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "stash": "c0d5140aeee1902f46993237433436152b2472ee stash@{0} autostash\n108a93df281ddf4a498ec837d9d56d78d7ef9e91 stash@{1} On codex/runtime-lifecycle-usability: runtime-lifecycle-reconcile-20261004T032444Z\n86fa5f5445364220cb5c4e3b55fa5040a329f6ea stash@{2} On codex/context-compaction-simplification-analysis: sr018 preserve all owners before latest personal refresh\ndba3b62524050b93b319cb9e76d6c2bf5c9cf3a8 stash@{3} On codex/context-compaction-simplification-analysis: compaction-preserve-before-base-refresh-20260930T093850Z\na79d3229bd3db18a676e3046fb8a739194cbecda stash@{4} On personal: personal: pre-ff backup of ticket edits/untracked already present upstream 2026-09-28\n7d5d58049503a74b8f836842231ea3d20bc20c12 stash@{5} On codex/context-compaction-simplification-analysis: compaction-preserve-before-base-refresh-20260928T045609Z\n892ac5e95c9226683443f150ba725cee2bab6386 stash@{6} On codex/context-compaction-simplification-analysis: context-compaction pre-base-refresh 20260927T093100Z\n5f6e6f75bc642511a389f7cf02c6a956593611d7 stash@{7} On personal: stray root package.json overwrite (web manifest copy) preserved before ff to origin/personal 2026-09-26\nd13667337bc3c0c8b31dbd45fcbc0cffe317b96f stash@{8} On codex/autobyteus-runtime-streaming-ui-performance: Preserve autobyteus-runtime-streaming-ui-performance before finished worktree removal 2026-09-02\n866a6983204b8fbf9d73c16190fa510dede024b9 stash@{9} On codex/team-agent-instruction-composition: Preserve team-agent-instruction-composition before finished worktree removal 2026-09-02\ne5a77d947ef6a91f048a1fc36405a7761ec8001a stash@{10} On codex/live-run-stream-reconnect-after-reload: Preserve live-run-stream-reconnect-after-reload before finished worktree removal 2026-09-02\nc9989c105d524854e0cc030904cf0a1f68b555d4 stash@{11} On codex/universal-application-framework-proposal-analysis: Preserve universal-application-framework-proposal-analysis before finished worktree removal 2026-09-02\n8d372026d457278790bde0212ff362dfa92fa987 stash@{12} On codex/external-turn-reply-aggregation: Preserve external-turn-reply-aggregation before finished worktree removal 2026-09-02\n75e205549569483510315ab8714ad4a88a1d3c79 stash@{13} On codex/run-history-worktree-live-stream-loss: Preserve run-history-worktree-live-stream-loss before finished worktree removal 2026-09-02\nc047e321cef842e75278f65497108b6492211761 stash@{14} On codex/external-channel-receipt-state-machine: Preserve external-channel-receipt-state-machine before finished worktree removal 2026-09-02\n045af3b2a55d5811f73fcd5489b4033a87391801 stash@{15} On codex/file-explorer-move-stale-children: Preserve file-explorer-move-stale-children before finished worktree removal 2026-09-02\n7a4fcdb8198c2d71161c5fed7d70bca23c359fad stash@{16} On codex/task-agent-monitor-visibility: Preserve task-agent-monitor-visibility before finished worktree removal 2026-09-02\n2d8cd6c1ec56e21bfa4efc3ddf2fb97040d4ae48 stash@{17} On codex/hierarchical-team-run-launch-config: temporary pre-rebase archive restore 2026-08-24\na106d4e0011ee83608c77c91bd6984febf0e7ddf stash@{18} On codex/agent-team-universal-task-delegation: safety: UTD working tree before origin/personal merge 20260815T103300Z\n143e29eafadcb6d7cdb233e61d3f92a1bdbf77ee stash@{19} On codex/agent-team-hierarchical-handoffs: delivery DR-007 protect delivery artifacts before CRR-072 integration\n2c7f3140e36c2fddc80ff1a4a28d9da9c6b33964 stash@{20} On codex/agent-team-hierarchical-handoffs: delivery DR-006 protect unrelated web-ticket deletions and delivery artifacts\n8a46238a0e7480df845f32992f8a281be7ca9e38 stash@{21} On codex/agent-team-hierarchical-handoffs: solution SR-016 protect CRR-050/API state before origin-personal refresh 20260811-102826\n92fe82e95eb123bdfa259c74eeb1c534b26d909b stash@{22} On codex/agent-team-hierarchical-handoffs: delivery DR-004 protect pre-SR-015 docs and delivery artifacts\n88fbe8331d472f08678c9588766023c19d044fc6 stash@{23} On codex/agent-team-hierarchical-handoffs: delivery re-entry protect DR-001 docs and handoff artifacts\n75ac08606b3289ea7e8ffa8bf803283da3b0605e stash@{24} On codex/agent-idle-status-lifecycle: preserve api-e2e round6 artifacts before 2026-07-29 rebase\nc4ee4ad846608a9be11d4f9cfa9a2bd8a56f75b3 stash@{25} On personal: delivery preserve ignored main worktree files before release\nd2e0a8347a9b5e540934a96e192952a487df0e1a stash@{26} On personal: delivery preserve unrelated main worktree before event monitor file URI finalization\nba7597ece66ffcf3880ee692b5c0168b2f2f9fb2 stash@{27} On personal: safety: stash partial send-message global routing WIP from main checkout before refreshing personal 2026-06-12T02:43:33Z\n46cbb525bdd3a04922deb6aade405a7f30fc7c84 stash@{28} On personal: delivery-protect-main-personal-before-refresh-20260606\n5c45418dd1746e0fbbb99616fcaf2ccd6a77e35a stash@{29} On codex/mobile-remote-access-requirements: pre-rebase-mobile-remote-access-20260519-095946\n2381de084512eaed1ae5dae13ed1f231179b7953 stash@{30} On personal: pre-release preserve docs/future-features before claude tool args release\n34a114b2d83bcbe5dcfac52b49ef7ae55d30c0bd stash@{31} On personal: pre-sync-personal-before-reset-20260423-082934\n7dda370b1ee1c519b6adae93fce51b1428b22505 stash@{32} On personal: move current llm-runtime-compaction work to dedicated worktree 20260410-123853\n7b6d701ee5ee6442538a605209229e6ca3f0bf7f stash@{33} On codex/messaging-agent-team-support: codex/messaging-agent-team-support pre-origin-personal-merge 2026-03-11\n698787e1cf2671ed9495f607812e27ce69d00eb8 stash@{34} On codex/messaging-runtime-visibility: codex pre-merge personal sync\nafb33236be4639cfc51f69c070169f0cce1a7976 stash@{35} On codex/claude-agent-sdk-runtime-workflow: retarget-to-personal-20260228-133731\n",
+  "zeroUnmerged": true,
+  "mergeRemainsPending": true,
+  "indexHash": "6414814edfd1540fcab4e0bf4059c2a7cb5f20d6b90d5c5ecb5465accd5f0ae9",
+  "indexChangedOnlyThrough28IndividualPaths": true,
+  "untouchedStageRecordsExactCount": 46479,
+  "originalTicketFiles": 4129,
+  "originalTicketChangedOnlyImplementationCanonicals": [
+    "implementation-handoff.md",
+    "implementation-investigation.md",
+    "implementation-revision-record.md"
+  ],
+  "oldImplementationRevisionAndInvestigationPrefixesExact": true,
+  "currentPackageSnapshotCount": 545,
+  "noMergeCommitFinalizationPushReleaseDeployment": true,
+  "noProviderInferenceDesktopAppUserDataCredentialOperation": true,
+  "previewsClosed": [
+    {
+      "dir": "rendered-preview-initial",
+      "pid": 25368,
+      "pidGone": true,
+      "port": 56287,
+      "portFree": true,
+      "routeRemoved": true,
+      "browserClosed": true
+    },
+    {
+      "dir": "rendered-preview",
+      "pid": 32462,
+      "pidGone": true,
+      "port": 56421,
+      "portFree": true,
+      "routeRemoved": true,
+      "browserClosed": true
+    }
+  ],
+  "authority": {
+    "REQ": "REQ-BL-008",
+    "semanticSR": "SR-014",
+    "ARCH": "ARCH-REV-005",
+    "IR": "IR-011",
+    "CRR": "prior CRR-020 source; CRR-021 successful tests",
+    "API": "prior API-REV-016 Pass95.00%, not integrated acceptance",
+    "DR": "DR-001",
+    "taskSize": "Large",
+    "architecturalRisk": "High",
+    "route": "Reviewed"
+  }
+}

@@ -1,0 +1,6 @@
+case=API-013
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round5-concrete-root-probe.mjs agent_org
+AssertionError [ERR_ASSERTION]: [{"message":"A project named 'API005 agent_org saved-IDs' already exists.","locations":[{"line":1,"column":34}],"path":["createProject"],"extensions":{"code":"PROJECT_NAME_TAKEN"}}]
+
+PROCESS_EXIT_CODE=1

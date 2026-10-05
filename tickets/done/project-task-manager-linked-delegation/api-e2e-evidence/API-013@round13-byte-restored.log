@@ -1,0 +1,7 @@
+2026-10-04T06:07:43.933544+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round13-byte-guard.py", "restored"]
+Scoped Pass restored 54 whole Project/private trees/packets/workspace and raw-prefix protection; addedbytes 38459
+
+INNER_EXIT=0
+ELAPSED=0.04

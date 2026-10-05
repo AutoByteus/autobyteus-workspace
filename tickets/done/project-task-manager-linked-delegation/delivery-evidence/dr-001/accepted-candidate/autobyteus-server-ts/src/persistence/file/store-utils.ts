@@ -1,0 +1,264 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import { appConfigProvider } from "../../config/app-config-provider.js";
+
+const lockByPath = new Map<string, Promise<void>>();
+const LOCK_RETRY_MS = 15;
+const LOCK_TIMEOUT_MS = 10_000;
+const STALE_LOCK_MS = 60_000;
+
+const encodeJson = (value: unknown): string => `${JSON.stringify(value, null, 2)}\n`;
+
+const wait = async (ms: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+const ensureParentDir = async (filePath: string): Promise<void> => {
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+};
+
+const isLiveProcess = (pid: number): boolean => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code !== "ESRCH";
+  }
+};
+
+const getTempPath = (filePath: string): string =>
+  `${filePath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
+
+const acquireCrossProcessLock = async (
+  filePath: string,
+): Promise<() => Promise<void>> => {
+  const lockPath = `${filePath}.lock`;
+  await ensureParentDir(filePath);
+  const start = Date.now();
+
+  while (true) {
+    try {
+      const handle = await fs.open(lockPath, "wx");
+      try {
+        await handle.writeFile(`${process.pid}\n`, "utf8");
+        await handle.sync();
+      } catch (error) {
+        await handle.close().catch(() => undefined);
+        await fs.unlink(lockPath).catch(() => undefined);
+        throw error;
+      }
+      return async () => {
+        try {
+          await handle.close();
+        } finally {
+          await fs.unlink(lockPath).catch((error) => {
+            if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+              throw error;
+            }
+          });
+        }
+      };
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code !== "EEXIST") {
+        throw error;
+      }
+
+      const now = Date.now();
+      if (now - start >= LOCK_TIMEOUT_MS) {
+        throw new Error(`Timed out acquiring file lock for ${filePath}`);
+      }
+
+      try {
+        const stat = await fs.stat(lockPath);
+        const ownerText = await fs.readFile(lockPath, "utf8").catch(() => "");
+        const ownerPid = Number(ownerText.trim());
+        const hasPidOwner = Number.isSafeInteger(ownerPid) && ownerPid > 0;
+        const deadOwner = hasPidOwner && !isLiveProcess(ownerPid);
+        const ownerMissingAndStale = !hasPidOwner
+          && now - stat.mtimeMs > STALE_LOCK_MS;
+        if (deadOwner || ownerMissingAndStale) {
+          await fs.unlink(lockPath).catch((unlinkError) => {
+            if ((unlinkError as NodeJS.ErrnoException).code !== "ENOENT") {
+              throw unlinkError;
+            }
+          });
+          continue;
+        }
+      } catch (statError) {
+        const statCode = (statError as NodeJS.ErrnoException).code;
+        if (statCode !== "ENOENT") {
+          throw statError;
+        }
+      }
+
+      await wait(LOCK_RETRY_MS);
+    }
+  }
+};
+
+export const withFilePathLock = async <T>(
+  filePath: string,
+  operation: () => Promise<T>,
+): Promise<T> => {
+  const previous = lockByPath.get(filePath) ?? Promise.resolve();
+
+  let release!: () => void;
+  const marker = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+
+  const current = previous.then(() => marker);
+  lockByPath.set(filePath, current);
+
+  await previous;
+  let releaseCrossProcessLock: (() => Promise<void>) | null = null;
+  try {
+    releaseCrossProcessLock = await acquireCrossProcessLock(filePath);
+    return await operation();
+  } finally {
+    try {
+      if (releaseCrossProcessLock) {
+        await releaseCrossProcessLock();
+      }
+    } finally {
+      release();
+      if (lockByPath.get(filePath) === current) {
+        lockByPath.delete(filePath);
+      }
+    }
+  }
+};
+
+export const getPersistenceRootDir = (): string =>
+  path.join(appConfigProvider.config.getMemoryDir(), "persistence");
+
+export const resolvePersistencePath = (...segments: string[]): string =>
+  path.join(getPersistenceRootDir(), ...segments);
+
+export const readJsonArrayFile = async <T>(filePath: string): Promise<T[]> => {
+  try {
+    const raw = await fs.readFile(filePath, "utf-8");
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      return parsed as T[];
+    }
+    return [];
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
+};
+
+export const readJsonFile = async <T>(filePath: string, fallback: T): Promise<T> => {
+  try {
+    const raw = await fs.readFile(filePath, "utf-8");
+    return JSON.parse(raw) as T;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return fallback;
+    }
+    throw error;
+  }
+};
+
+export const writeJsonArrayFile = async <T>(filePath: string, rows: T[]): Promise<void> => {
+  await withFilePathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    const tempPath = getTempPath(filePath);
+    await fs.writeFile(tempPath, encodeJson(rows), "utf-8");
+    await fs.rename(tempPath, filePath);
+  });
+};
+
+export const writeJsonFile = async <T>(filePath: string, value: T): Promise<void> => {
+  await withFilePathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    const tempPath = getTempPath(filePath);
+    await fs.writeFile(tempPath, encodeJson(value), "utf-8");
+    await fs.rename(tempPath, filePath);
+  });
+};
+
+export const writeRawFile = async (filePath: string, content: string): Promise<void> => {
+  await withFilePathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    const tempPath = getTempPath(filePath);
+    await fs.writeFile(tempPath, content, "utf-8");
+    await fs.rename(tempPath, filePath);
+  });
+};
+
+export const updateJsonArrayFile = async <T>(
+  filePath: string,
+  updater: (rows: T[]) => Promise<T[]> | T[],
+  onCommitted?: (rows: T[]) => void,
+): Promise<T[]> =>
+  withFilePathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    const existing = await readJsonArrayFile<T>(filePath);
+    const nextRows = await updater(existing);
+    const tempPath = getTempPath(filePath);
+    await fs.writeFile(tempPath, encodeJson(nextRows), "utf-8");
+    await fs.rename(tempPath, filePath);
+    // Observers must be synchronous and non-throwing. Other callers are unchanged.
+    onCommitted?.(nextRows);
+    return nextRows;
+  });
+
+export const updateJsonFile = async <T>(
+  filePath: string,
+  fallback: T,
+  updater: (value: T) => Promise<T> | T,
+  onCommitted?: (value: T) => void,
+): Promise<T> =>
+  withFilePathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    const existing = await readJsonFile<T>(filePath, fallback);
+    const nextValue = await updater(existing);
+    const tempPath = getTempPath(filePath);
+    await fs.writeFile(tempPath, encodeJson(nextValue), "utf-8");
+    await fs.rename(tempPath, filePath);
+    onCommitted?.(nextValue);
+    return nextValue;
+  });
+
+export const appendJsonlFile = async <T>(filePath: string, row: T): Promise<void> => {
+  await withFilePathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    await fs.appendFile(filePath, `${JSON.stringify(row)}\n`, "utf-8");
+  });
+};
+
+export const readJsonlFile = async <T>(filePath: string): Promise<T[]> => {
+  try {
+    const raw = await fs.readFile(filePath, "utf-8");
+    const lines = raw.split(/\r?\n/);
+    const result: T[] = [];
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) {
+        continue;
+      }
+      const parsed = JSON.parse(trimmed);
+      result.push(parsed as T);
+    }
+    return result;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
+};
+
+export const normalizeRequiredString = (value: string, field: string): string => {
+  const normalized = value.trim();
+  if (!normalized) {
+    throw new Error(`${field} must be a non-empty string.`);
+  }
+  return normalized;
+};

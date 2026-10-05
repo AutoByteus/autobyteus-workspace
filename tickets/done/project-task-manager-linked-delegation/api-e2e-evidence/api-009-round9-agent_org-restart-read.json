@@ -1,0 +1,1824 @@
+{
+  "instanceId": "iso-58861-449a",
+  "kind": "agent_org",
+  "mode": "restart-read",
+  "root": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+  "started": "2026-10-03T18:56:02.929Z",
+  "frames": [
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ORG_NOT_ACTIVE",
+        "message": "AgentOrg run 'api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476' is not active."
+      }
+    }
+  ],
+  "commands": [],
+  "beforeState": [
+    {
+      "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+      "name": "API009 saved-ID visible workers",
+      "description": "Owned current real-provider validation",
+      "createdAt": "2026-10-03T17:49:38.747Z",
+      "updatedAt": "2026-10-03T17:49:38.747Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649",
+          "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API009_ATTACHMENT_A_project_b543993a-d51e-4a0d-8683-1dc3c3560aa2 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T17:49:38.788Z",
+          "updatedAt": "2026-10-03T18:10:52.011Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_e144d4aeb7a4__saved-packet-A.txt",
+              "displayName": "saved-packet-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e",
+          "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API009_ATTACHMENT_B_project_b543993a-d51e-4a0d-8683-1dc3c3560aa2 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T17:49:38.847Z",
+          "updatedAt": "2026-10-03T18:13:45.374Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_2248e72cb7e8__saved-packet-B.txt",
+              "displayName": "saved-packet-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+      "name": "API009 agent_team saved-IDs 14718ede-7075-4066-9de6-82a2ac7b590a",
+      "description": "Actual root-bound task proof",
+      "createdAt": "2026-10-03T17:57:04.369Z",
+      "updatedAt": "2026-10-03T17:57:04.369Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_71004b62-543c-4aee-a1e1-b069e60a83f3",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T17:57:04.433Z",
+          "updatedAt": "2026-10-03T17:58:05.672Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_795cf61bddd7__saved-agent_team-A.txt",
+              "displayName": "saved-agent_team-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 57
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T17:57:04.529Z",
+          "updatedAt": "2026-10-03T17:59:47.232Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_a512c9606a5b__saved-agent_team-B.txt",
+              "displayName": "saved-agent_team-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 57
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+      "name": "API009 agent_org saved-IDs 046e9474-7589-4734-8074-2fec8563d772",
+      "description": "Actual root-bound task proof",
+      "createdAt": "2026-10-03T18:03:25.685Z",
+      "updatedAt": "2026-10-03T18:03:25.685Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T18:03:25.724Z",
+          "updatedAt": "2026-10-03T18:04:07.201Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_f7e3cce89fad__saved-agent_org-A.txt",
+              "displayName": "saved-agent_org-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T18:03:25.779Z",
+          "updatedAt": "2026-10-03T18:05:58.684Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_99eee1d8e605__saved-agent_org-B.txt",
+              "displayName": "saved-agent_org-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e",
+      "name": "API009P physical recursive d9d52f36-38b8-4aa7-acaf-89084dcae2c9",
+      "description": "Owned physical scope witness",
+      "createdAt": "2026-10-03T18:07:13.479Z",
+      "updatedAt": "2026-10-03T18:07:13.479Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb",
+          "description": "Read actual saved packet; coordinator follows its bounded one unlinked Leaf + one helper Team + configured reader work instructions. Preserve bytes; no more delegation/status/root Stop.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T18:07:13.517Z",
+          "updatedAt": "2026-10-03T18:08:48.400Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_ee4feb5e86f7__physical-A.txt",
+              "displayName": "physical-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e",
+          "description": "Read actual saved packet using native read-only cat; report exact marker; no copies/status/file changes.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T18:07:13.571Z",
+          "updatedAt": "2026-10-03T18:07:37.495Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_bd7ac0a3441e__physical-B.txt",
+              "displayName": "physical-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_8984965a-aa0b-45d4-8ace-ef86642eee2d",
+      "name": "API009 actual manual 5f205af2-4e73-4843-930d-d91f33ed2597",
+      "description": "Own actual approval only",
+      "createdAt": "2026-10-03T18:14:34.395Z",
+      "updatedAt": "2026-10-03T18:14:34.395Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_c256315e-eb41-41b6-a61a-f3f7507519eb",
+          "description": "First read supplied saved Task attachment with native read-only cat and retain exact actual marker. Then invoke list_available_agents once to list current capabilities; wait for real manual tool approval. Report marker and results afterward. No copies, status/file changes, other paths or credentials/HOME.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T18:14:34.433Z",
+          "updatedAt": "2026-10-03T18:15:12.446Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_cb7464c25341__manual-packet.txt",
+              "displayName": "manual-packet.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskLifetimes": [
+        {
+          "lifetimeId": "project_task_lifetime_dc8613bc-2609-449a-9a10-d3ec87534b8e",
+          "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+          "taskId": "project_task_71004b62-543c-4aee-a1e1-b069e60a83f3",
+          "openedAt": "2026-10-03T17:57:54.423Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "execution": {
+                "agentRunId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae"
+              },
+              "ingressAgentRunId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T17:57:54.436Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_b370343a-d8f0-4250-8e9b-add88b64c0a5",
+          "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+          "taskId": "project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424",
+          "openedAt": "2026-10-03T17:58:05.690Z",
+          "completedAt": "2026-10-03T17:58:39.058Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T17:58:05.699Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_01de9b25-69b4-44ed-85fc-f710c7004637",
+          "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+          "taskId": "project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424",
+          "openedAt": "2026-10-03T17:59:04.767Z",
+          "completedAt": "2026-10-03T17:59:47.232Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T17:59:04.782Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_935d7411-d069-4da7-9e0c-3c81a158f708",
+          "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+          "taskId": "project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09",
+          "openedAt": "2026-10-03T18:03:59.150Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476"
+              },
+              "execution": {
+                "agentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a"
+              },
+              "ingressAgentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:03:59.161Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_120a3d8e-770a-4cfe-afc2-4c493dad9aa0",
+          "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+          "taskId": "project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43",
+          "openedAt": "2026-10-03T18:04:07.220Z",
+          "completedAt": "2026-10-03T18:04:48.503Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:04:07.227Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_58c71667-96ea-43e9-811f-982458efee15",
+          "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+          "taskId": "project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43",
+          "openedAt": "2026-10-03T18:05:12.463Z",
+          "completedAt": "2026-10-03T18:05:58.684Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:05:12.471Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_c3519214-70b4-4770-9753-34ac01b5ffe6",
+          "projectId": "project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e",
+          "taskId": "project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb",
+          "openedAt": "2026-10-03T18:07:36.847Z",
+          "completedAt": "2026-10-03T18:08:48.400Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "teamRunId": "api009p_physical_workers_7e30647905394883b46755a70ba3ee53"
+              },
+              "ingressAgentRunId": "api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:07:36.860Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "agentRunId": "api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493"
+              },
+              "ingressAgentRunId": "api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493",
+              "purpose": "delegation",
+              "reservedAt": "2026-10-03T18:08:12.562Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "teamRunId": "api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420"
+              },
+              "ingressAgentRunId": "api009p_physical_helper_coordinator_01368906dcfe4fe3899f6131325072df",
+              "purpose": "helper",
+              "reservedAt": "2026-10-03T18:08:12.752Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_9a1ad4b8-3483-4bac-bbbd-1da44bb75d0e",
+          "projectId": "project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e",
+          "taskId": "project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e",
+          "openedAt": "2026-10-03T18:07:37.273Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "agentRunId": "api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914"
+              },
+              "ingressAgentRunId": "api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:07:37.283Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_87304bee-c33c-4a06-8b3f-a7885fe45c97",
+          "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+          "taskId": "project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649",
+          "openedAt": "2026-10-03T18:10:44.825Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_a21bcb295adf444ab47bef61b55aed31"
+              },
+              "execution": {
+                "agentRunId": "api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1"
+              },
+              "ingressAgentRunId": "api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:10:44.836Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_2fd7f587-a52e-4d3d-b57d-f0a8c62ce5fb",
+          "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+          "taskId": "project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e",
+          "openedAt": "2026-10-03T18:10:52.026Z",
+          "completedAt": "2026-10-03T18:12:38.752Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_a21bcb295adf444ab47bef61b55aed31"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_22eda17c57834896a26b58557ccb302a"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_a160ecdb871441df89b23c812e00eced",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:10:52.035Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_11636e1c-5422-4ffd-b65f-b530c74ff520",
+          "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+          "taskId": "project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e",
+          "openedAt": "2026-10-03T18:13:04.454Z",
+          "completedAt": "2026-10-03T18:13:45.374Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_a21bcb295adf444ab47bef61b55aed31"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_55733fe6784e411e963c147b02bc9d1a",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:13:04.466Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_816f47df-5ecc-49e9-950e-93fe52f5eb71",
+          "projectId": "project_8984965a-aa0b-45d4-8ace-ef86642eee2d",
+          "taskId": "project_task_c256315e-eb41-41b6-a61a-f3f7507519eb",
+          "openedAt": "2026-10-03T18:14:48.505Z",
+          "completedAt": "2026-10-03T18:15:12.446Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298"
+              },
+              "execution": {
+                "agentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099"
+              },
+              "ingressAgentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:14:48.516Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "beforeTree": {
+    "subjectKind": "agent_org",
+    "createdAt": "2026-10-03T18:03:25.632Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "api009-concrete-root-org-rerun-861fe254-2e56-495d-8639-190c065a1ecc",
+      "orgDefinitionName": "API009 Concrete Root Org Rerun 861fe254-2e56-495d-8639-190c065a1ecc",
+      "orgRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-6.1-sol",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        },
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+      },
+      "members": [
+        {
+          "address": "/manager",
+          "agentDefinitionId": "autobyteus-project-task-manager",
+          "role": null,
+          "description": null,
+          "agentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+          "platformAgentRunId": "01a102ef-a412-70d0-a85a-18f7209f45b8",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+          }
+        },
+        {
+          "address": "/borrowed",
+          "agentDefinitionId": "api009-packet-agent",
+          "role": null,
+          "description": null,
+          "agentRunId": "api009_packet_agent_9cb0c12b1c564ae097517e7bc92c1b23",
+          "platformAgentRunId": "01a102ef-6735-7fb2-9e87-159d90d1d2ea",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+          }
+        }
+      ],
+      "collaborators": [],
+      "taskExecutions": [
+        {
+          "address": "/borrowed",
+          "agentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
+          "platformAgentRunId": "01a102ef-e751-7610-ac5b-15b932034e94",
+          "taskLifetime": {
+            "lifetimeId": "project_task_lifetime_935d7411-d069-4da7-9e0c-3c81a158f708",
+            "purpose": "assignment"
+          },
+          "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+          "startedAt": "2026-10-03T18:03:59.152Z"
+        },
+        {
+          "address": "/api009_packet_team",
+          "teamRunId": "api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d",
+          "members": [
+            {
+              "address": "/api009_packet_team/coordinator",
+              "agentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+              "platformAgentRunId": "01a102f0-06ca-7521-9626-0cda8a85ba07"
+            },
+            {
+              "address": "/api009_packet_team/reader",
+              "agentRunId": "api009_team_reader_5239c53dc5ec4e659542c1e092d9512e",
+              "platformAgentRunId": "01a102f0-0743-7b62-9fa3-f64c9460f7f9"
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+          "startedAt": "2026-10-03T18:04:07.221Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "api009-packet-team",
+            "coordinatorAddress": "/api009_packet_team/coordinator",
+            "members": [
+              {
+                "address": "/api009_packet_team/coordinator",
+                "agentDefinitionId": "api009-team-coordinator"
+              },
+              {
+                "address": "/api009_packet_team/reader",
+                "agentDefinitionId": "api009-team-reader"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+            }
+          },
+          "taskLifetime": {
+            "lifetimeId": "project_task_lifetime_120a3d8e-770a-4cfe-afc2-4c493dad9aa0",
+            "purpose": "assignment"
+          }
+        },
+        {
+          "address": "/api009_packet_team",
+          "teamRunId": "api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe",
+          "members": [
+            {
+              "address": "/api009_packet_team/coordinator",
+              "agentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
+              "platformAgentRunId": "01a102f1-05a7-7642-ae5a-b106da515ad0"
+            },
+            {
+              "address": "/api009_packet_team/reader",
+              "agentRunId": "api009_team_reader_0a6c9e981db043a28d9b851cfa76ead5",
+              "platformAgentRunId": "01a102f1-0625-7bf3-9c02-a76a623770d1"
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+          "startedAt": "2026-10-03T18:05:12.464Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "api009-packet-team",
+            "coordinatorAddress": "/api009_packet_team/coordinator",
+            "members": [
+              {
+                "address": "/api009_packet_team/coordinator",
+                "agentDefinitionId": "api009-team-coordinator"
+              },
+              {
+                "address": "/api009_packet_team/reader",
+                "agentDefinitionId": "api009-team-reader"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+            }
+          },
+          "taskLifetime": {
+            "lifetimeId": "project_task_lifetime_58c71667-96ea-43e9-811f-982458efee15",
+            "purpose": "assignment"
+          }
+        }
+      ]
+    }
+  },
+  "beforeInspection": {
+    "root_subject_kind": "agent_org",
+    "root_run_id": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+    "root_org": {
+      "base_change_sequence": 0,
+      "is_active": false,
+      "execution_tree": {
+        "subjectKind": "agent_org",
+        "createdAt": "2026-10-03T18:03:25.632Z",
+        "archivedAt": null,
+        "applicationBinding": null,
+        "handoffs": [],
+        "rootOrg": {
+          "address": "/",
+          "orgDefinitionId": "api009-concrete-root-org-rerun-861fe254-2e56-495d-8639-190c065a1ecc",
+          "orgDefinitionName": "API009 Concrete Root Org Rerun 861fe254-2e56-495d-8639-190c065a1ecc",
+          "orgRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+          },
+          "members": [
+            {
+              "address": "/manager",
+              "agentDefinitionId": "autobyteus-project-task-manager",
+              "role": null,
+              "description": null,
+              "agentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+              "platformAgentRunId": "01a102ef-a412-70d0-a85a-18f7209f45b8",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+              }
+            },
+            {
+              "address": "/borrowed",
+              "agentDefinitionId": "api009-packet-agent",
+              "role": null,
+              "description": null,
+              "agentRunId": "api009_packet_agent_9cb0c12b1c564ae097517e7bc92c1b23",
+              "platformAgentRunId": "01a102ef-6735-7fb2-9e87-159d90d1d2ea",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+              }
+            }
+          ],
+          "collaborators": [],
+          "taskExecutions": [
+            {
+              "address": "/borrowed",
+              "agentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
+              "platformAgentRunId": "01a102ef-e751-7610-ac5b-15b932034e94",
+              "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+              "startedAt": "2026-10-03T18:03:59.152Z"
+            },
+            {
+              "address": "/api009_packet_team",
+              "teamRunId": "api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d",
+              "members": [
+                {
+                  "address": "/api009_packet_team/coordinator",
+                  "agentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+                  "platformAgentRunId": "01a102f0-06ca-7521-9626-0cda8a85ba07"
+                },
+                {
+                  "address": "/api009_packet_team/reader",
+                  "agentRunId": "api009_team_reader_5239c53dc5ec4e659542c1e092d9512e",
+                  "platformAgentRunId": "01a102f0-0743-7b62-9fa3-f64c9460f7f9"
+                }
+              ],
+              "taskExecutions": [],
+              "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+              "startedAt": "2026-10-03T18:04:07.221Z",
+              "source": {
+                "kind": "agent_team",
+                "teamDefinitionId": "api009-packet-team",
+                "coordinatorAddress": "/api009_packet_team/coordinator",
+                "members": [
+                  {
+                    "address": "/api009_packet_team/coordinator",
+                    "agentDefinitionId": "api009-team-coordinator"
+                  },
+                  {
+                    "address": "/api009_packet_team/reader",
+                    "agentDefinitionId": "api009-team-reader"
+                  }
+                ],
+                "handoffs": [],
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+                }
+              }
+            },
+            {
+              "address": "/api009_packet_team",
+              "teamRunId": "api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe",
+              "members": [
+                {
+                  "address": "/api009_packet_team/coordinator",
+                  "agentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
+                  "platformAgentRunId": "01a102f1-05a7-7642-ae5a-b106da515ad0"
+                },
+                {
+                  "address": "/api009_packet_team/reader",
+                  "agentRunId": "api009_team_reader_0a6c9e981db043a28d9b851cfa76ead5",
+                  "platformAgentRunId": "01a102f1-0625-7bf3-9c02-a76a623770d1"
+                }
+              ],
+              "taskExecutions": [],
+              "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+              "startedAt": "2026-10-03T18:05:12.464Z",
+              "source": {
+                "kind": "agent_team",
+                "teamDefinitionId": "api009-packet-team",
+                "coordinatorAddress": "/api009_packet_team/coordinator",
+                "members": [
+                  {
+                    "address": "/api009_packet_team/coordinator",
+                    "agentDefinitionId": "api009-team-coordinator"
+                  },
+                  {
+                    "address": "/api009_packet_team/reader",
+                    "agentDefinitionId": "api009-team-reader"
+                  }
+                ],
+                "handoffs": [],
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "communication_messages": {
+        "schemaVersion": 1,
+        "subjectKind": "agent_org",
+        "orgRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+        "messages": [
+          {
+            "messageId": "collabmsg_ymQos9uPkVi4ZFcbiL5xKAXBGDLUkZIV",
+            "senderAgentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
+            "receiverAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+            "content": "Read the supplied saved Task attachment with read-only cat. Exact actual read marker: API009_agent_org_A_c693991f-daca-4a64-bdce-05e5071dbdfb. No files modified, copies created, or Task statuses changed.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T18:04:16.334Z"
+          },
+          {
+            "messageId": "collabmsg_Li5zJ6p3KO7RW_pwqZA2PXxYjV_vQi2L",
+            "senderAgentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+            "receiverAgentRunId": "api009_team_reader_5239c53dc5ec4e659542c1e092d9512e",
+            "content": "Read the supplied saved Task attachment using read-only cat or read_file and report its exact actual read marker. Do not modify files, create copies, delegate, or change Task status. Exact readable path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/server-data/projects/task_context_files/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43/ctx_99eee1d8e605__saved-agent_org-B.txt",
+            "messageType": "agent_message",
+            "referenceFiles": [
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/server-data/projects/task_context_files/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43/ctx_99eee1d8e605__saved-agent_org-B.txt"
+            ],
+            "createdAt": "2026-10-03T18:04:29.999Z"
+          },
+          {
+            "messageId": "collabmsg_D5ZLRrWRKDM8AyrNAB-I-USde6PvA-Zq",
+            "senderAgentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+            "receiverAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+            "content": "Read the supplied saved Task attachment using runtime-native read-only cat. Exact actual read marker: API009_agent_org_B_9f96c5d5-3fa4-4598-83ba-c5be440d44a0. Sent the exact attachment path to the configured copied-Team reader /api009_packet_team/reader requesting its exact read marker. No files modified, copies created, or Task status changed.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T18:04:36.985Z"
+          },
+          {
+            "messageId": "collabmsg_3uF4V_TcMT6GvQRnYyY6LOG6PNdTRa5S",
+            "senderAgentRunId": "api009_team_reader_5239c53dc5ec4e659542c1e092d9512e",
+            "receiverAgentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+            "content": "Read the supplied saved Task attachment using read-only cat. Exact actual read marker: API009_agent_org_B_9f96c5d5-3fa4-4598-83ba-c5be440d44a0",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T18:04:47.513Z"
+          },
+          {
+            "messageId": "collabmsg_SGkBWyBtIRYZCOEewePCPOSAzSXQomE0",
+            "senderAgentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
+            "receiverAgentRunId": "api009_team_reader_0a6c9e981db043a28d9b851cfa76ead5",
+            "content": "Read only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/server-data/projects/task_context_files/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43/ctx_99eee1d8e605__saved-agent_org-B.txt using read_file or runtime-native read-only cat. Return the exact actual read marker. Do not modify files, create copies, delegate, or change Task status.",
+            "messageType": "agent_message",
+            "referenceFiles": [
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/server-data/projects/task_context_files/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43/ctx_99eee1d8e605__saved-agent_org-B.txt"
+            ],
+            "createdAt": "2026-10-03T18:05:36.642Z"
+          },
+          {
+            "messageId": "collabmsg_arMDh6rKbbWJuJ1m9y1WMuB0ak_6HDDM",
+            "senderAgentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
+            "receiverAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+            "content": "Coordinator read the supplied saved Task attachment using read-only cat. Exact actual read marker: API009_agent_org_B_9f96c5d5-3fa4-4598-83ba-c5be440d44a0. One work message was delivered to the configured reader at /api009_packet_team/reader requesting its exact read marker. No files modified, copies created, or Task status changed.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T18:05:44.449Z"
+          },
+          {
+            "messageId": "collabmsg_Q3tXItN1NOgFVSJxiHzUjqp1YYdWbfCO",
+            "senderAgentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
+            "receiverAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+            "content": "Actually reread the existing saved Task attachment bytes with native read-only cat. Exact marker: API009_agent_org_A_c693991f-daca-4a64-bdce-05e5071dbdfb\nAPI009_RECOVERED_A_bdaca5c3-b8d4-43c5-90e7-9c5766cf4f61\nNo copies, status changes, file changes, or other paths read.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-03T18:09:58.349Z"
+          }
+        ]
+      },
+      "agent_statuses": [],
+      "agent_input_states": []
+    }
+  },
+  "beforeProcesses": [
+    {
+      "pid": 3971,
+      "ppid": 1,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 3972,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 3973,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 4910,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 5196,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+    },
+    {
+      "pid": 5557,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 5558,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 5636,
+      "ppid": 4910,
+      "comm": "codex",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/manager"
+    },
+    {
+      "pid": 5752,
+      "ppid": 5636,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 5755,
+      "ppid": 5636,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 5828,
+      "ppid": 5755,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 6720,
+      "ppid": 5636,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 6721,
+      "ppid": 5636,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 6819,
+      "ppid": 6720,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 8185,
+      "ppid": 5636,
+      "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+    },
+    {
+      "pid": 8312,
+      "ppid": 4910,
+      "comm": "codex",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team"
+    },
+    {
+      "pid": 8324,
+      "ppid": 8312,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 8325,
+      "ppid": 8312,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 8346,
+      "ppid": 8324,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 9934,
+      "ppid": 8312,
+      "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+    },
+    {
+      "pid": 11229,
+      "ppid": 8312,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 11230,
+      "ppid": 8312,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 11270,
+      "ppid": 11229,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    }
+  ],
+  "beforeProjectBytes": "[\n  {\n    \"projectId\": \"project_b543993a-d51e-4a0d-8683-1dc3c3560aa2\",\n    \"name\": \"API009 saved-ID visible workers\",\n    \"description\": \"Owned current real-provider validation\",\n    \"createdAt\": \"2026-10-03T17:49:38.747Z\",\n    \"updatedAt\": \"2026-10-03T17:49:38.747Z\",\n    \"workspaces\": [],\n    \"tasks\": [\n      {\n        \"taskId\": \"project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649\",\n        \"description\": \"Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API009_ATTACHMENT_A_project_b543993a-d51e-4a0d-8683-1dc3c3560aa2 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.\",\n        \"status\": \"IN_PROGRESS\",\n        \"createdAt\": \"2026-10-03T17:49:38.788Z\",\n        \"updatedAt\": \"2026-10-03T18:10:52.011Z\",\n        \"contextFiles\": [\n          {\n            \"storedFilename\": \"ctx_e144d4aeb7a4__saved-packet-A.txt\",\n            \"displayName\": \"saved-packet-A.txt\",\n            \"mimeType\": \"text/plain\",\n            \"sizeBytes\": 65\n          }\n        ]\n      },\n      {\n        \"taskId\": \"project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e\",\n        \"description\": \"Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API009_ATTACHMENT_B_project_b543993a-d51e-4a0d-8683-1dc3c3560aa2 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.\",\n        \"status\": \"DONE\",\n        \"createdAt\": \"2026-10-03T17:49:38.847Z\",\n        \"updatedAt\": \"2026-10-03T18:13:45.374Z\",\n        \"contextFiles\": [\n          {\n            \"storedFilename\": \"ctx_2248e72cb7e8__saved-packet-B.txt\",\n            \"displayName\": \"saved-packet-B.txt\",\n            \"mimeType\": \"text/plain\",\n            \"sizeBytes\": 65\n          }\n        ]\n      }\n    ]\n  },\n  {\n    \"projectId\": \"project_7c37013f-5c5b-410f-a042-293e5b812957\",\n    \"name\": \"API009 agent_team saved-IDs 14718ede-7075-4066-9de6-82a2ac7b590a\",\n    \"description\": \"Actual root-bound task proof\",\n    \"createdAt\": \"2026-10-03T17:57:04.369Z\",\n    \"updatedAt\": \"2026-10-03T17:57:04.369Z\",\n    \"workspaces\": [],\n    \"tasks\": [\n      {\n        \"taskId\": \"project_task_71004b62-543c-4aee-a1e1-b069e60a83f3\",\n        \"description\": \"Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.\",\n        \"status\": \"IN_PROGRESS\",\n        \"createdAt\": \"2026-10-03T17:57:04.433Z\",\n        \"updatedAt\": \"2026-10-03T17:58:05.672Z\",\n        \"contextFiles\": [\n          {\n            \"storedFilename\": \"ctx_795cf61bddd7__saved-agent_team-A.txt\",\n            \"displayName\": \"saved-agent_team-A.txt\",\n            \"mimeType\": \"text/plain\",\n            \"sizeBytes\": 57\n          }\n        ]\n      },\n      {\n        \"taskId\": \"project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424\",\n        \"description\": \"Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.\",\n        \"status\": \"DONE\",\n        \"createdAt\": \"2026-10-03T17:57:04.529Z\",\n        \"updatedAt\": \"2026-10-03T17:59:47.232Z\",\n        \"contextFiles\": [\n          {\n            \"storedFilename\": \"ctx_a512c9606a5b__saved-agent_team-B.txt\",\n            \"displayName\": \"saved-agent_team-B.txt\",\n            \"mimeType\": \"text/plain\",\n            \"sizeBytes\": 57\n          }\n        ]\n      }\n    ]\n  },\n  {\n    \"projectId\": \"project_34f4870f-5493-4125-8742-da3b4fe994dd\",\n    \"name\": \"API009 agent_org saved-IDs 046e9474-7589-4734-8074-2fec8563d772\",\n    \"description\": \"Actual root-bound task proof\",\n    \"createdAt\": \"2026-10-03T18:03:25.685Z\",\n    \"updatedAt\": \"2026-10-03T18:03:25.685Z\",\n    \"workspaces\": [],\n    \"tasks\": [\n      {\n        \"taskId\": \"project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09\",\n        \"description\": \"Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.\",\n        \"status\": \"IN_PROGRESS\",\n        \"createdAt\": \"2026-10-03T18:03:25.724Z\",\n        \"updatedAt\": \"2026-10-03T18:04:07.201Z\",\n        \"contextFiles\": [\n          {\n            \"storedFilename\": \"ctx_f7e3cce89fad__saved-agent_org-A.txt\",\n            \"displayName\": \"saved-agent_org-A.txt\",\n            \"mimeType\": \"text/plain\",\n            \"sizeBytes\": 56\n          }\n        ]\n      },\n      {\n        \"taskId\": \"project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43\",\n        \"description\": \"Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.\",\n        \"status\": \"DONE\",\n        \"createdAt\": \"2026-10-03T18:03:25.779Z\",\n        \"updatedAt\": \"2026-10-03T18:05:58.684Z\",\n        \"contextFiles\": [\n          {\n            \"storedFilename\": \"ctx_99eee1d8e605__saved-agent_org-B.txt\",\n            \"displayName\": \"saved-agent_org-B.txt\",\n            \"mimeType\": \"text/plain\",\n            \"sizeBytes\": 56\n          }\n        ]\n      }\n    ]\n  },\n  {\n    \"projectId\": \"project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e\",\n    \"name\": \"API009P physical recursive d9d52f36-38b8-4aa7-acaf-89084dcae2c9\",\n    \"description\": \"Owned physical scope witness\",\n    \"createdAt\": \"2026-10-03T18:07:13.479Z\",\n    \"updatedAt\": \"2026-10-03T18:07:13.479Z\",\n    \"workspaces\": [],\n    \"tasks\": [\n      {\n        \"taskId\": \"project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb\",\n        \"description\": \"Read actual saved packet; coordinator follows its bounded one unlinked Leaf + one helper Team + configured reader work instructions. Preserve bytes; no more delegation/status/root Stop.\",\n        \"status\": \"DONE\",\n        \"createdAt\": \"2026-10-03T18:07:13.517Z\",\n        \"updatedAt\": \"2026-10-03T18:08:48.400Z\",\n        \"contextFiles\": [\n          {\n            \"storedFilename\": \"ctx_ee4feb5e86f7__physical-A.txt\",\n            \"displayName\": \"physical-A.txt\",\n            \"mimeType\": \"text/plain\",\n            \"sizeBytes\": 56\n          }\n        ]\n      },\n      {\n        \"taskId\": \"project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e\",\n        \"description\": \"Read actual saved packet using native read-only cat; report exact marker; no copies/status/file changes.\",\n        \"status\": \"IN_PROGRESS\",\n        \"createdAt\": \"2026-10-03T18:07:13.571Z\",\n        \"updatedAt\": \"2026-10-03T18:07:37.495Z\",\n        \"contextFiles\": [\n          {\n            \"storedFilename\": \"ctx_bd7ac0a3441e__physical-B.txt\",\n            \"displayName\": \"physical-B.txt\",\n            \"mimeType\": \"text/plain\",\n            \"sizeBytes\": 56\n          }\n        ]\n      }\n    ]\n  },\n  {\n    \"projectId\": \"project_8984965a-aa0b-45d4-8ace-ef86642eee2d\",\n    \"name\": \"API009 actual manual 5f205af2-4e73-4843-930d-d91f33ed2597\",\n    \"description\": \"Own actual approval only\",\n    \"createdAt\": \"2026-10-03T18:14:34.395Z\",\n    \"updatedAt\": \"2026-10-03T18:14:34.395Z\",\n    \"workspaces\": [],\n    \"tasks\": [\n      {\n        \"taskId\": \"project_task_c256315e-eb41-41b6-a61a-f3f7507519eb\",\n        \"description\": \"First read supplied saved Task attachment with native read-only cat and retain exact actual marker. Then invoke list_available_agents once to list current capabilities; wait for real manual tool approval. Report marker and results afterward. No copies, status/file changes, other paths or credentials/HOME.\",\n        \"status\": \"DONE\",\n        \"createdAt\": \"2026-10-03T18:14:34.433Z\",\n        \"updatedAt\": \"2026-10-03T18:15:12.446Z\",\n        \"contextFiles\": [\n          {\n            \"storedFilename\": \"ctx_cb7464c25341__manual-packet.txt\",\n            \"displayName\": \"manual-packet.txt\",\n            \"mimeType\": \"text/plain\",\n            \"sizeBytes\": 51\n          }\n        ]\n      }\n    ]\n  },\n  {\n    \"taskLifetimes\": [\n      {\n        \"lifetimeId\": \"project_task_lifetime_dc8613bc-2609-449a-9a10-d3ec87534b8e\",\n        \"projectId\": \"project_7c37013f-5c5b-410f-a042-293e5b812957\",\n        \"taskId\": \"project_task_71004b62-543c-4aee-a1e1-b069e60a83f3\",\n        \"openedAt\": \"2026-10-03T17:57:54.423Z\",\n        \"completedAt\": null,\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_team\",\n              \"rootRunId\": \"api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb\"\n            },\n            \"execution\": {\n              \"agentRunId\": \"api009_packet_agent_6375a9f260524202910f7dd9aaedaeae\"\n            },\n            \"ingressAgentRunId\": \"api009_packet_agent_6375a9f260524202910f7dd9aaedaeae\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T17:57:54.436Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"not_requested\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_b370343a-d8f0-4250-8e9b-add88b64c0a5\",\n        \"projectId\": \"project_7c37013f-5c5b-410f-a042-293e5b812957\",\n        \"taskId\": \"project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424\",\n        \"openedAt\": \"2026-10-03T17:58:05.690Z\",\n        \"completedAt\": \"2026-10-03T17:58:39.058Z\",\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_team\",\n              \"rootRunId\": \"api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb\"\n            },\n            \"execution\": {\n              \"teamRunId\": \"api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362\"\n            },\n            \"ingressAgentRunId\": \"api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T17:58:05.699Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_01de9b25-69b4-44ed-85fc-f710c7004637\",\n        \"projectId\": \"project_7c37013f-5c5b-410f-a042-293e5b812957\",\n        \"taskId\": \"project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424\",\n        \"openedAt\": \"2026-10-03T17:59:04.767Z\",\n        \"completedAt\": \"2026-10-03T17:59:47.232Z\",\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_team\",\n              \"rootRunId\": \"api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb\"\n            },\n            \"execution\": {\n              \"teamRunId\": \"api009_packet_team_3c57e63cef5143529c038caceeded3fd\"\n            },\n            \"ingressAgentRunId\": \"api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T17:59:04.782Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_935d7411-d069-4da7-9e0c-3c81a158f708\",\n        \"projectId\": \"project_34f4870f-5493-4125-8742-da3b4fe994dd\",\n        \"taskId\": \"project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09\",\n        \"openedAt\": \"2026-10-03T18:03:59.150Z\",\n        \"completedAt\": null,\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_org\",\n              \"rootRunId\": \"api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476\"\n            },\n            \"execution\": {\n              \"agentRunId\": \"api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a\"\n            },\n            \"ingressAgentRunId\": \"api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T18:03:59.161Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"not_requested\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_120a3d8e-770a-4cfe-afc2-4c493dad9aa0\",\n        \"projectId\": \"project_34f4870f-5493-4125-8742-da3b4fe994dd\",\n        \"taskId\": \"project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43\",\n        \"openedAt\": \"2026-10-03T18:04:07.220Z\",\n        \"completedAt\": \"2026-10-03T18:04:48.503Z\",\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_org\",\n              \"rootRunId\": \"api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476\"\n            },\n            \"execution\": {\n              \"teamRunId\": \"api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d\"\n            },\n            \"ingressAgentRunId\": \"api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T18:04:07.227Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_58c71667-96ea-43e9-811f-982458efee15\",\n        \"projectId\": \"project_34f4870f-5493-4125-8742-da3b4fe994dd\",\n        \"taskId\": \"project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43\",\n        \"openedAt\": \"2026-10-03T18:05:12.463Z\",\n        \"completedAt\": \"2026-10-03T18:05:58.684Z\",\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_org\",\n              \"rootRunId\": \"api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476\"\n            },\n            \"execution\": {\n              \"teamRunId\": \"api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe\"\n            },\n            \"ingressAgentRunId\": \"api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T18:05:12.471Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_c3519214-70b4-4770-9753-34ac01b5ffe6\",\n        \"projectId\": \"project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e\",\n        \"taskId\": \"project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb\",\n        \"openedAt\": \"2026-10-03T18:07:36.847Z\",\n        \"completedAt\": \"2026-10-03T18:08:48.400Z\",\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_org\",\n              \"rootRunId\": \"api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c\"\n            },\n            \"execution\": {\n              \"teamRunId\": \"api009p_physical_workers_7e30647905394883b46755a70ba3ee53\"\n            },\n            \"ingressAgentRunId\": \"api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T18:07:36.860Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          },\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_org\",\n              \"rootRunId\": \"api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c\"\n            },\n            \"execution\": {\n              \"agentRunId\": \"api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493\"\n            },\n            \"ingressAgentRunId\": \"api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493\",\n            \"purpose\": \"delegation\",\n            \"reservedAt\": \"2026-10-03T18:08:12.562Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          },\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_org\",\n              \"rootRunId\": \"api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c\"\n            },\n            \"execution\": {\n              \"teamRunId\": \"api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420\"\n            },\n            \"ingressAgentRunId\": \"api009p_physical_helper_coordinator_01368906dcfe4fe3899f6131325072df\",\n            \"purpose\": \"helper\",\n            \"reservedAt\": \"2026-10-03T18:08:12.752Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_9a1ad4b8-3483-4bac-bbbd-1da44bb75d0e\",\n        \"projectId\": \"project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e\",\n        \"taskId\": \"project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e\",\n        \"openedAt\": \"2026-10-03T18:07:37.273Z\",\n        \"completedAt\": null,\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_org\",\n              \"rootRunId\": \"api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c\"\n            },\n            \"execution\": {\n              \"agentRunId\": \"api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914\"\n            },\n            \"ingressAgentRunId\": \"api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T18:07:37.283Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"not_requested\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_87304bee-c33c-4a06-8b3f-a7885fe45c97\",\n        \"projectId\": \"project_b543993a-d51e-4a0d-8683-1dc3c3560aa2\",\n        \"taskId\": \"project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649\",\n        \"openedAt\": \"2026-10-03T18:10:44.825Z\",\n        \"completedAt\": null,\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent\",\n              \"rootRunId\": \"project_task_manager_a21bcb295adf444ab47bef61b55aed31\"\n            },\n            \"execution\": {\n              \"agentRunId\": \"api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1\"\n            },\n            \"ingressAgentRunId\": \"api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T18:10:44.836Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"not_requested\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_2fd7f587-a52e-4d3d-b57d-f0a8c62ce5fb\",\n        \"projectId\": \"project_b543993a-d51e-4a0d-8683-1dc3c3560aa2\",\n        \"taskId\": \"project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e\",\n        \"openedAt\": \"2026-10-03T18:10:52.026Z\",\n        \"completedAt\": \"2026-10-03T18:12:38.752Z\",\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent\",\n              \"rootRunId\": \"project_task_manager_a21bcb295adf444ab47bef61b55aed31\"\n            },\n            \"execution\": {\n              \"teamRunId\": \"api009_packet_team_22eda17c57834896a26b58557ccb302a\"\n            },\n            \"ingressAgentRunId\": \"api009_team_coordinator_a160ecdb871441df89b23c812e00eced\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T18:10:52.035Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_11636e1c-5422-4ffd-b65f-b530c74ff520\",\n        \"projectId\": \"project_b543993a-d51e-4a0d-8683-1dc3c3560aa2\",\n        \"taskId\": \"project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e\",\n        \"openedAt\": \"2026-10-03T18:13:04.454Z\",\n        \"completedAt\": \"2026-10-03T18:13:45.374Z\",\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent\",\n              \"rootRunId\": \"project_task_manager_a21bcb295adf444ab47bef61b55aed31\"\n            },\n            \"execution\": {\n              \"teamRunId\": \"api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e\"\n            },\n            \"ingressAgentRunId\": \"api009_team_coordinator_55733fe6784e411e963c147b02bc9d1a\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T18:13:04.466Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          }\n        ]\n      },\n      {\n        \"lifetimeId\": \"project_task_lifetime_816f47df-5ecc-49e9-950e-93fe52f5eb71\",\n        \"projectId\": \"project_8984965a-aa0b-45d4-8ace-ef86642eee2d\",\n        \"taskId\": \"project_task_c256315e-eb41-41b6-a61a-f3f7507519eb\",\n        \"openedAt\": \"2026-10-03T18:14:48.505Z\",\n        \"completedAt\": \"2026-10-03T18:15:12.446Z\",\n        \"executions\": [\n          {\n            \"root\": {\n              \"rootSubjectKind\": \"agent_org\",\n              \"rootRunId\": \"api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298\"\n            },\n            \"execution\": {\n              \"agentRunId\": \"api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099\"\n            },\n            \"ingressAgentRunId\": \"api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099\",\n            \"purpose\": \"assignment\",\n            \"reservedAt\": \"2026-10-03T18:14:48.516Z\",\n            \"dispatch\": \"delivered\",\n            \"cleanup\": \"released\"\n          }\n        ]\n      }\n    ]\n  }\n]\n",
+  "error": "Error: TIMEOUT Supported current root WS ready",
+  "stack": "Error: TIMEOUT Supported current root WS ready\n    at wait (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs:8:153)\n    at async connect (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs:15:235)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs:25:2",
+  "failureState": [
+    {
+      "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+      "name": "API009 saved-ID visible workers",
+      "description": "Owned current real-provider validation",
+      "createdAt": "2026-10-03T17:49:38.747Z",
+      "updatedAt": "2026-10-03T17:49:38.747Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649",
+          "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API009_ATTACHMENT_A_project_b543993a-d51e-4a0d-8683-1dc3c3560aa2 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T17:49:38.788Z",
+          "updatedAt": "2026-10-03T18:10:52.011Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_e144d4aeb7a4__saved-packet-A.txt",
+              "displayName": "saved-packet-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e",
+          "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API009_ATTACHMENT_B_project_b543993a-d51e-4a0d-8683-1dc3c3560aa2 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T17:49:38.847Z",
+          "updatedAt": "2026-10-03T18:13:45.374Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_2248e72cb7e8__saved-packet-B.txt",
+              "displayName": "saved-packet-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+      "name": "API009 agent_team saved-IDs 14718ede-7075-4066-9de6-82a2ac7b590a",
+      "description": "Actual root-bound task proof",
+      "createdAt": "2026-10-03T17:57:04.369Z",
+      "updatedAt": "2026-10-03T17:57:04.369Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_71004b62-543c-4aee-a1e1-b069e60a83f3",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T17:57:04.433Z",
+          "updatedAt": "2026-10-03T17:58:05.672Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_795cf61bddd7__saved-agent_team-A.txt",
+              "displayName": "saved-agent_team-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 57
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T17:57:04.529Z",
+          "updatedAt": "2026-10-03T17:59:47.232Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_a512c9606a5b__saved-agent_team-B.txt",
+              "displayName": "saved-agent_team-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 57
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+      "name": "API009 agent_org saved-IDs 046e9474-7589-4734-8074-2fec8563d772",
+      "description": "Actual root-bound task proof",
+      "createdAt": "2026-10-03T18:03:25.685Z",
+      "updatedAt": "2026-10-03T18:03:25.685Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T18:03:25.724Z",
+          "updatedAt": "2026-10-03T18:04:07.201Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_f7e3cce89fad__saved-agent_org-A.txt",
+              "displayName": "saved-agent_org-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43",
+          "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T18:03:25.779Z",
+          "updatedAt": "2026-10-03T18:05:58.684Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_99eee1d8e605__saved-agent_org-B.txt",
+              "displayName": "saved-agent_org-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e",
+      "name": "API009P physical recursive d9d52f36-38b8-4aa7-acaf-89084dcae2c9",
+      "description": "Owned physical scope witness",
+      "createdAt": "2026-10-03T18:07:13.479Z",
+      "updatedAt": "2026-10-03T18:07:13.479Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb",
+          "description": "Read actual saved packet; coordinator follows its bounded one unlinked Leaf + one helper Team + configured reader work instructions. Preserve bytes; no more delegation/status/root Stop.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T18:07:13.517Z",
+          "updatedAt": "2026-10-03T18:08:48.400Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_ee4feb5e86f7__physical-A.txt",
+              "displayName": "physical-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e",
+          "description": "Read actual saved packet using native read-only cat; report exact marker; no copies/status/file changes.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T18:07:13.571Z",
+          "updatedAt": "2026-10-03T18:07:37.495Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_bd7ac0a3441e__physical-B.txt",
+              "displayName": "physical-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "projectId": "project_8984965a-aa0b-45d4-8ace-ef86642eee2d",
+      "name": "API009 actual manual 5f205af2-4e73-4843-930d-d91f33ed2597",
+      "description": "Own actual approval only",
+      "createdAt": "2026-10-03T18:14:34.395Z",
+      "updatedAt": "2026-10-03T18:14:34.395Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_c256315e-eb41-41b6-a61a-f3f7507519eb",
+          "description": "First read supplied saved Task attachment with native read-only cat and retain exact actual marker. Then invoke list_available_agents once to list current capabilities; wait for real manual tool approval. Report marker and results afterward. No copies, status/file changes, other paths or credentials/HOME.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T18:14:34.433Z",
+          "updatedAt": "2026-10-03T18:15:12.446Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_cb7464c25341__manual-packet.txt",
+              "displayName": "manual-packet.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskLifetimes": [
+        {
+          "lifetimeId": "project_task_lifetime_dc8613bc-2609-449a-9a10-d3ec87534b8e",
+          "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+          "taskId": "project_task_71004b62-543c-4aee-a1e1-b069e60a83f3",
+          "openedAt": "2026-10-03T17:57:54.423Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "execution": {
+                "agentRunId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae"
+              },
+              "ingressAgentRunId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T17:57:54.436Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_b370343a-d8f0-4250-8e9b-add88b64c0a5",
+          "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+          "taskId": "project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424",
+          "openedAt": "2026-10-03T17:58:05.690Z",
+          "completedAt": "2026-10-03T17:58:39.058Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T17:58:05.699Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_01de9b25-69b4-44ed-85fc-f710c7004637",
+          "projectId": "project_7c37013f-5c5b-410f-a042-293e5b812957",
+          "taskId": "project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424",
+          "openedAt": "2026-10-03T17:59:04.767Z",
+          "completedAt": "2026-10-03T17:59:47.232Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T17:59:04.782Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_935d7411-d069-4da7-9e0c-3c81a158f708",
+          "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+          "taskId": "project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09",
+          "openedAt": "2026-10-03T18:03:59.150Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476"
+              },
+              "execution": {
+                "agentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a"
+              },
+              "ingressAgentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:03:59.161Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_120a3d8e-770a-4cfe-afc2-4c493dad9aa0",
+          "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+          "taskId": "project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43",
+          "openedAt": "2026-10-03T18:04:07.220Z",
+          "completedAt": "2026-10-03T18:04:48.503Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:04:07.227Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_58c71667-96ea-43e9-811f-982458efee15",
+          "projectId": "project_34f4870f-5493-4125-8742-da3b4fe994dd",
+          "taskId": "project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43",
+          "openedAt": "2026-10-03T18:05:12.463Z",
+          "completedAt": "2026-10-03T18:05:58.684Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:05:12.471Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_c3519214-70b4-4770-9753-34ac01b5ffe6",
+          "projectId": "project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e",
+          "taskId": "project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb",
+          "openedAt": "2026-10-03T18:07:36.847Z",
+          "completedAt": "2026-10-03T18:08:48.400Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "teamRunId": "api009p_physical_workers_7e30647905394883b46755a70ba3ee53"
+              },
+              "ingressAgentRunId": "api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:07:36.860Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "agentRunId": "api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493"
+              },
+              "ingressAgentRunId": "api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493",
+              "purpose": "delegation",
+              "reservedAt": "2026-10-03T18:08:12.562Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "teamRunId": "api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420"
+              },
+              "ingressAgentRunId": "api009p_physical_helper_coordinator_01368906dcfe4fe3899f6131325072df",
+              "purpose": "helper",
+              "reservedAt": "2026-10-03T18:08:12.752Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_9a1ad4b8-3483-4bac-bbbd-1da44bb75d0e",
+          "projectId": "project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e",
+          "taskId": "project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e",
+          "openedAt": "2026-10-03T18:07:37.273Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c"
+              },
+              "execution": {
+                "agentRunId": "api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914"
+              },
+              "ingressAgentRunId": "api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:07:37.283Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_87304bee-c33c-4a06-8b3f-a7885fe45c97",
+          "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+          "taskId": "project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649",
+          "openedAt": "2026-10-03T18:10:44.825Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_a21bcb295adf444ab47bef61b55aed31"
+              },
+              "execution": {
+                "agentRunId": "api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1"
+              },
+              "ingressAgentRunId": "api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:10:44.836Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_2fd7f587-a52e-4d3d-b57d-f0a8c62ce5fb",
+          "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+          "taskId": "project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e",
+          "openedAt": "2026-10-03T18:10:52.026Z",
+          "completedAt": "2026-10-03T18:12:38.752Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_a21bcb295adf444ab47bef61b55aed31"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_22eda17c57834896a26b58557ccb302a"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_a160ecdb871441df89b23c812e00eced",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:10:52.035Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_11636e1c-5422-4ffd-b65f-b530c74ff520",
+          "projectId": "project_b543993a-d51e-4a0d-8683-1dc3c3560aa2",
+          "taskId": "project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e",
+          "openedAt": "2026-10-03T18:13:04.454Z",
+          "completedAt": "2026-10-03T18:13:45.374Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_a21bcb295adf444ab47bef61b55aed31"
+              },
+              "execution": {
+                "teamRunId": "api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e"
+              },
+              "ingressAgentRunId": "api009_team_coordinator_55733fe6784e411e963c147b02bc9d1a",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:13:04.466Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_816f47df-5ecc-49e9-950e-93fe52f5eb71",
+          "projectId": "project_8984965a-aa0b-45d4-8ace-ef86642eee2d",
+          "taskId": "project_task_c256315e-eb41-41b6-a61a-f3f7507519eb",
+          "openedAt": "2026-10-03T18:14:48.505Z",
+          "completedAt": "2026-10-03T18:15:12.446Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_org",
+                "rootRunId": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298"
+              },
+              "execution": {
+                "agentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099"
+              },
+              "ingressAgentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T18:14:48.516Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "failureTree": {
+    "subjectKind": "agent_org",
+    "createdAt": "2026-10-03T18:03:25.632Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "api009-concrete-root-org-rerun-861fe254-2e56-495d-8639-190c065a1ecc",
+      "orgDefinitionName": "API009 Concrete Root Org Rerun 861fe254-2e56-495d-8639-190c065a1ecc",
+      "orgRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-6.1-sol",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        },
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+      },
+      "members": [
+        {
+          "address": "/manager",
+          "agentDefinitionId": "autobyteus-project-task-manager",
+          "role": null,
+          "description": null,
+          "agentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+          "platformAgentRunId": "01a102ef-a412-70d0-a85a-18f7209f45b8",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+          }
+        },
+        {
+          "address": "/borrowed",
+          "agentDefinitionId": "api009-packet-agent",
+          "role": null,
+          "description": null,
+          "agentRunId": "api009_packet_agent_9cb0c12b1c564ae097517e7bc92c1b23",
+          "platformAgentRunId": "01a102ef-6735-7fb2-9e87-159d90d1d2ea",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+          }
+        }
+      ],
+      "collaborators": [],
+      "taskExecutions": [
+        {
+          "address": "/borrowed",
+          "agentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
+          "platformAgentRunId": "01a102ef-e751-7610-ac5b-15b932034e94",
+          "taskLifetime": {
+            "lifetimeId": "project_task_lifetime_935d7411-d069-4da7-9e0c-3c81a158f708",
+            "purpose": "assignment"
+          },
+          "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+          "startedAt": "2026-10-03T18:03:59.152Z"
+        },
+        {
+          "address": "/api009_packet_team",
+          "teamRunId": "api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d",
+          "members": [
+            {
+              "address": "/api009_packet_team/coordinator",
+              "agentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+              "platformAgentRunId": "01a102f0-06ca-7521-9626-0cda8a85ba07"
+            },
+            {
+              "address": "/api009_packet_team/reader",
+              "agentRunId": "api009_team_reader_5239c53dc5ec4e659542c1e092d9512e",
+              "platformAgentRunId": "01a102f0-0743-7b62-9fa3-f64c9460f7f9"
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+          "startedAt": "2026-10-03T18:04:07.221Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "api009-packet-team",
+            "coordinatorAddress": "/api009_packet_team/coordinator",
+            "members": [
+              {
+                "address": "/api009_packet_team/coordinator",
+                "agentDefinitionId": "api009-team-coordinator"
+              },
+              {
+                "address": "/api009_packet_team/reader",
+                "agentDefinitionId": "api009-team-reader"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+            }
+          },
+          "taskLifetime": {
+            "lifetimeId": "project_task_lifetime_120a3d8e-770a-4cfe-afc2-4c493dad9aa0",
+            "purpose": "assignment"
+          }
+        },
+        {
+          "address": "/api009_packet_team",
+          "teamRunId": "api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe",
+          "members": [
+            {
+              "address": "/api009_packet_team/coordinator",
+              "agentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
+              "platformAgentRunId": "01a102f1-05a7-7642-ae5a-b106da515ad0"
+            },
+            {
+              "address": "/api009_packet_team/reader",
+              "agentRunId": "api009_team_reader_0a6c9e981db043a28d9b851cfa76ead5",
+              "platformAgentRunId": "01a102f1-0625-7bf3-9c02-a76a623770d1"
+            }
+          ],
+          "taskExecutions": [],
+          "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+          "startedAt": "2026-10-03T18:05:12.464Z",
+          "source": {
+            "kind": "agent_team",
+            "teamDefinitionId": "api009-packet-team",
+            "coordinatorAddress": "/api009_packet_team/coordinator",
+            "members": [
+              {
+                "address": "/api009_packet_team/coordinator",
+                "agentDefinitionId": "api009-team-coordinator"
+              },
+              {
+                "address": "/api009_packet_team/reader",
+                "agentDefinitionId": "api009-team-reader"
+              }
+            ],
+            "handoffs": [],
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+            }
+          },
+          "taskLifetime": {
+            "lifetimeId": "project_task_lifetime_58c71667-96ea-43e9-811f-982458efee15",
+            "purpose": "assignment"
+          }
+        }
+      ]
+    }
+  },
+  "failureProcesses": [
+    {
+      "pid": 3971,
+      "ppid": 1,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 3972,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 3973,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 4910,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+    },
+    {
+      "pid": 5196,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+    },
+    {
+      "pid": 5557,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 5558,
+      "ppid": 3971,
+      "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+    },
+    {
+      "pid": 5636,
+      "ppid": 4910,
+      "comm": "codex",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/manager"
+    },
+    {
+      "pid": 5752,
+      "ppid": 5636,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 5755,
+      "ppid": 5636,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 5828,
+      "ppid": 5755,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 6720,
+      "ppid": 5636,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 6721,
+      "ppid": 5636,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 6819,
+      "ppid": 6720,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 8185,
+      "ppid": 5636,
+      "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+    },
+    {
+      "pid": 8312,
+      "ppid": 4910,
+      "comm": "codex",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team"
+    },
+    {
+      "pid": 8324,
+      "ppid": 8312,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 8325,
+      "ppid": 8312,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 8346,
+      "ppid": 8324,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 9934,
+      "ppid": 8312,
+      "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+    },
+    {
+      "pid": 11229,
+      "ppid": 8312,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+    },
+    {
+      "pid": 11230,
+      "ppid": 8312,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    },
+    {
+      "pid": 11270,
+      "ppid": 11229,
+      "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+    }
+  ]
+}

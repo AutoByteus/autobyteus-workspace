@@ -1,0 +1,282 @@
+[
+  {
+    "pid": 31710,
+    "ppid": 73104,
+    "comm": "codex"
+  },
+  {
+    "pid": 31812,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 31813,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 31852,
+    "ppid": 31812,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 33258,
+    "ppid": 31710,
+    "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+  },
+  {
+    "pid": 35205,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 35211,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 35290,
+    "ppid": 35211,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 39857,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 39858,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 39906,
+    "ppid": 39858,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 40056,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 40057,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 40127,
+    "ppid": 40056,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 40336,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 40340,
+    "ppid": 31710,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 40432,
+    "ppid": 40340,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 45410,
+    "ppid": 73104,
+    "comm": "codex"
+  },
+  {
+    "pid": 45425,
+    "ppid": 45410,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 45426,
+    "ppid": 45410,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 45455,
+    "ppid": 45425,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 46950,
+    "ppid": 45410,
+    "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+  },
+  {
+    "pid": 47567,
+    "ppid": 45410,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 47568,
+    "ppid": 45410,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 47604,
+    "ppid": 47568,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 50565,
+    "ppid": 73104,
+    "comm": "codex"
+  },
+  {
+    "pid": 50573,
+    "ppid": 50565,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 50575,
+    "ppid": 50565,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 50613,
+    "ppid": 50573,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 51511,
+    "ppid": 50565,
+    "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+  },
+  {
+    "pid": 51523,
+    "ppid": 50565,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 51524,
+    "ppid": 50565,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 51560,
+    "ppid": 51524,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 72171,
+    "ppid": 1,
+    "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+  },
+  {
+    "pid": 72172,
+    "ppid": 72171,
+    "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+  },
+  {
+    "pid": 72173,
+    "ppid": 72171,
+    "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+  },
+  {
+    "pid": 73104,
+    "ppid": 72171,
+    "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+  },
+  {
+    "pid": 73109,
+    "ppid": 72171,
+    "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+  },
+  {
+    "pid": 73161,
+    "ppid": 72171,
+    "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+  },
+  {
+    "pid": 73162,
+    "ppid": 72171,
+    "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+  },
+  {
+    "pid": 74464,
+    "ppid": 73104,
+    "comm": "codex"
+  },
+  {
+    "pid": 74476,
+    "ppid": 74464,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 74477,
+    "ppid": 74464,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 74515,
+    "ppid": 74477,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 75276,
+    "ppid": 74464,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 75277,
+    "ppid": 74464,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 75356,
+    "ppid": 75276,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 76950,
+    "ppid": 74464,
+    "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+  },
+  {
+    "pid": 78297,
+    "ppid": 73104,
+    "comm": "codex"
+  },
+  {
+    "pid": 78394,
+    "ppid": 78297,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 78395,
+    "ppid": 78297,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 78439,
+    "ppid": 78395,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 79245,
+    "ppid": 78297,
+    "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+  },
+  {
+    "pid": 79946,
+    "ppid": 78297,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 79948,
+    "ppid": 78297,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+  },
+  {
+    "pid": 79998,
+    "ppid": 79948,
+    "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  }
+]

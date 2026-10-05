@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-05T03:09:40.632789+00:00",
+  "raw": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /software_engineering_team/implementation_engineer.\",\"target_agent_run_id\":\"implementation_engineer_1e43277cb7f1437abb3cb117c3a3eba2\"}"
+      }
+    ],
+    "structuredContent": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to /software_engineering_team/implementation_engineer.",
+      "target_agent_run_id": "implementation_engineer_1e43277cb7f1437abb3cb117c3a3eba2"
+    }
+  },
+  "accepted": true,
+  "recipient_address": "/software_engineering_team/implementation_engineer",
+  "target_agent_run_id": "implementation_engineer_1e43277cb7f1437abb3cb117c3a3eba2",
+  "reference_files_count": 54,
+  "cumulative_manifest_reference_count": 4597,
+  "result": "Blocked \u2014 Local Fix source-integration recovery",
+  "successfulTerminalCompletion": false,
+  "sourceAPIAndTestReviewResultsUnchanged": true
+}

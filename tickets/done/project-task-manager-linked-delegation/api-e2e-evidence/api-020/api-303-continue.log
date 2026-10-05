@@ -1,0 +1,3 @@
+STEP (b) unlinked control (corrected oracle): address reply brought in a new root-wide run; Wu not reached; no Task entry
+STEP DONE R closed and stopped exactly W and H; unlinked worker and collaborator still answer
+exit 0

@@ -1,0 +1,34 @@
+{
+  "agent-execution/backends/codex/thread/codex-thread.js": {
+    "currentDist": "2d96462c4f83a60cc097cc338487cb776a9277828f946d5c4095a70476d49ffa",
+    "packaged": "2d96462c4f83a60cc097cc338487cb776a9277828f946d5c4095a70476d49ffa"
+  },
+  "agent-execution/backends/codex/backend/codex-agent-run-backend.js": {
+    "currentDist": "0cd978b8751a98bfa9ac7009bf24e316a41f7598fbc25801c681511c4c7e95d5",
+    "packaged": "0cd978b8751a98bfa9ac7009bf24e316a41f7598fbc25801c681511c4c7e95d5"
+  },
+  "agent-execution/backends/codex/events/codex-turn-event-converter.js": {
+    "currentDist": "bd9d38d59d6d2828429431efbeb3daded27b325544b55f83d5cd6e0ff95c8a53",
+    "packaged": "bd9d38d59d6d2828429431efbeb3daded27b325544b55f83d5cd6e0ff95c8a53"
+  },
+  "agent-execution/domain/agent-run.js": {
+    "currentDist": "e2da41fb38c3cfa50cc591135634d814a1de590eebe27e002727a20a34549388",
+    "packaged": "e2da41fb38c3cfa50cc591135634d814a1de590eebe27e002727a20a34549388"
+  },
+  "agent-execution/input/agent-run-input-admission-state.js": {
+    "currentDist": "5e988169216248957c175602d763639fc3d6e2f37d8aa60f1cecc0d753c4b233",
+    "packaged": "5e988169216248957c175602d763639fc3d6e2f37d8aa60f1cecc0d753c4b233"
+  },
+  "agent-execution/services/agent-run-manager.js": {
+    "currentDist": "912d2a43fd227295f25ef352d875bc92566cae97cfa002ad44a0dad1cc5c3c68",
+    "packaged": "912d2a43fd227295f25ef352d875bc92566cae97cfa002ad44a0dad1cc5c3c68"
+  },
+  "agent-team-execution/local/flat-team-execution-manager.js": {
+    "currentDist": "f913f4090277bbd7b6e7bb1d959ff8a748edda400384d86657feffa8d3fa8f5f",
+    "packaged": "f913f4090277bbd7b6e7bb1d959ff8a748edda400384d86657feffa8d3fa8f5f"
+  },
+  "agent-team-execution/local/owned-flat-team-runtime-release.js": {
+    "currentDist": "5fec6b9b1e8292312ad402b0678af7ce743d0127ce806364a6d99c4ba3481349",
+    "packaged": "5fec6b9b1e8292312ad402b0678af7ce743d0127ce806364a6d99c4ba3481349"
+  }
+}

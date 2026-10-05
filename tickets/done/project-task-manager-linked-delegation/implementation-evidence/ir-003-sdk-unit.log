@@ -1,0 +1,239 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts > retained SDK opening — actual pinned SDK / public hook > preserves SDK launch options and uses a distinct explicit debug log under test config root
+Claude CLI debug log: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-debug-owner-test-JVys9f/config/debug/autobyteus-cli-cf9c29b3-2ca7-424d-941d-ac7a1fd8f3d7.log
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts (4 tests) 102ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (18 tests | 5 failed) 40ms
+     ✓ resolves the selected value only from the open session's supported-model metadata and fails closed 21ms
+     ✓ preserves the auto, cli, and api-key selector with cli as the default 1ms
+     ✓ does not resolve a vault key for auto and preserves caller-supplied launch environment 2ms
+     ✓ does not resolve a vault key for cli and preserves caller-supplied launch environment 0ms
+     ✓ sets neither v1.4.78 policy variable, so Claude CLI background-task and Bash timeout defaults apply (AC-010) 1ms
+     × warns once per open when the operator's environment disables CLI background tasks, without overriding it (OBS-2) 5ms
+     ✓ resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY 1ms
+     ✓ fails value-free before SDK launch when explicit api-key resolution fails 1ms
+     ✓ keeps original cli process-environment filtering separate from vault resolution 0ms
+     × passes stable query options for project skills, exact resume, MCP, and send_message_to tooling 2ms
+     ✓ passes only SDK sessionId for a caller-reserved first conversation 1ms
+     × loads user, project, and local Claude Code settings for normal turns 1ms
+     ✓ forwards typed thinking and effort options to the pinned Claude SDK 1ms
+     × forwards stderr diagnostics callback to Claude SDK query options when provided 1ms
+     ✓ uses user settings-source policy for model discovery 1ms
+     ✓ lists every SDK row with its canonical model ID and picker presentation hint 0ms
+     × passes the session's canUseTool callback through and injects no approval of its own 1ms
+     ✓ returns null when getSessionMessages is unavailable or session id is empty 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts (40 tests) 125ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts (6 tests) 4ms
+ ✓ tests/unit/agent-execution/services/agent-run-activation-operation.test.ts (3 tests) 4ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts (4 tests) 4ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts (5 tests) 2ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts (3 tests) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > warns once per open when the operator's environment disables CLI background tasks, without overriding it (OBS-2)
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:153:24
+    151| 
+    152|       const warnings = warn.mock.calls.filter((call) => String(call[0]…
+    153|       expect(warnings).toHaveLength(1);
+       |                        ^
+    154|       expect((queryFn.mock.calls[0]?.[0] as { options: { env: Record<s…
+    155|         .toEqual(env);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > passes stable query options for project skills, exact resume, MCP, and send_message_to tooling
+Error: CLAUDE_QUERY_INVALID: Public initialization observation missing.
+ ❯ Object.registerQuery src/runtime-management/claude/client/claude-sdk-session-opening.ts:54:21
+     52|             if (typeof candidate?.initializationResult !== "function")…
+     53|               malformedQuery = true;
+     54|               throw new Error("CLAUDE_QUERY_INVALID: Public initializa…
+       |                     ^
+     55|             }
+     56|             initializationSettled = false;
+ ❯ src/runtime-management/claude/client/claude-sdk-client.ts:283:21
+ ❯ withGuardedProcessCwd src/runtime-management/claude/client/claude-sdk-client.ts:130:12
+ ❯ src/runtime-management/claude/client/claude-sdk-client.ts:280:18
+ ❯ runInClaudeSdkSessionSpawnCriticalSection src/runtime-management/claude/client/claude-sdk-client.ts:160:18
+ ❯ Object.createQuery src/runtime-management/claude/client/claude-sdk-client.ts:278:9
+ ❯ src/runtime-management/claude/client/claude-sdk-session-opening.ts:48:9
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:245:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > loads user, project, and local Claude Code settings for normal turns
+Error: CLAUDE_QUERY_INVALID: Public initialization observation missing.
+ ❯ Object.registerQuery src/runtime-management/claude/client/claude-sdk-session-opening.ts:54:21
+     52|             if (typeof candidate?.initializationResult !== "function")…
+     53|               malformedQuery = true;
+     54|               throw new Error("CLAUDE_QUERY_INVALID: Public initializa…
+       |                     ^
+     55|             }
+     56|             initializationSettled = false;
+ ❯ src/runtime-management/claude/client/claude-sdk-client.ts:283:21
+ ❯ withGuardedProcessCwd src/runtime-management/claude/client/claude-sdk-client.ts:130:12
+ ❯ src/runtime-management/claude/client/claude-sdk-client.ts:280:18
+ ❯ runInClaudeSdkSessionSpawnCriticalSection src/runtime-management/claude/client/claude-sdk-client.ts:160:18
+ ❯ Object.createQuery src/runtime-management/claude/client/claude-sdk-client.ts:278:9
+ ❯ src/runtime-management/claude/client/claude-sdk-session-opening.ts:48:9
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:321:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > forwards stderr diagnostics callback to Claude SDK query options when provided
+Error: CLAUDE_QUERY_INVALID: Public initialization observation missing.
+ ❯ Object.registerQuery src/runtime-management/claude/client/claude-sdk-session-opening.ts:54:21
+     52|             if (typeof candidate?.initializationResult !== "function")…
+     53|               malformedQuery = true;
+     54|               throw new Error("CLAUDE_QUERY_INVALID: Public initializa…
+       |                     ^
+     55|             }
+     56|             initializationSettled = false;
+ ❯ src/runtime-management/claude/client/claude-sdk-client.ts:283:21
+ ❯ withGuardedProcessCwd src/runtime-management/claude/client/claude-sdk-client.ts:130:12
+ ❯ src/runtime-management/claude/client/claude-sdk-client.ts:280:18
+ ❯ runInClaudeSdkSessionSpawnCriticalSection src/runtime-management/claude/client/claude-sdk-client.ts:160:18
+ ❯ Object.createQuery src/runtime-management/claude/client/claude-sdk-client.ts:278:9
+ ❯ src/runtime-management/claude/client/claude-sdk-session-opening.ts:48:9
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:369:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > passes the session's canUseTool callback through and injects no approval of its own
+AssertionError: expected [AsyncFunction] to be [AsyncFunction Mock] // Object.is equality
+
+- Expected
++ Received
+
+- [Function Mock]
++ [Function anonymous]
+
+ ❯ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts:469:101
+    467|     await client.beginStreamingSession({ resolveOptions: () => ({ ...b…
+    468| 
+    469|     expect((queryFn.mock.calls[0]?.[0] as { options: Record<string, un…
+       |                                                                                                     ^
+    470|     expect((queryFn.mock.calls[1]?.[0] as { options: Record<string, un…
+    471|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  5 failed | 78 passed (83)
+   Start at  09:10:51
+   Duration  5.09s (transform 1.20s, setup 40ms, import 3.77s, tests 282ms, environment 1ms)
+

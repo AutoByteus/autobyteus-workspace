@@ -1,0 +1,11 @@
+case=API-017
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json
+src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts(108,1): error TS1185: Merge conflict marker encountered.
+src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts(112,1): error TS1185: Merge conflict marker encountered.
+src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts(116,1): error TS1185: Merge conflict marker encountered.
+src/run-history/services/collaboration-root-history-service.ts(44,1): error TS1185: Merge conflict marker encountered.
+src/run-history/services/collaboration-root-history-service.ts(47,1): error TS1185: Merge conflict marker encountered.
+src/run-history/services/collaboration-root-history-service.ts(61,1): error TS1185: Merge conflict marker encountered.
+
+PROCESS_EXIT_CODE=2

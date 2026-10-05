@@ -5,8 +5,12 @@
 Projects are node-local durable containers with names, optional descriptions,
 described workspace links and embedded Tasks. Tasks have full text, read-only
 business status and optional saved context files. Users create/edit/delete;
-selected agent tools can create or change text/status. Status does not launch,
-assign, stop or assess an execution. Project Tasks are not delegated children.
+selected agent tools can create or change text/status. Project Tasks remain
+business records, distinct from execution children. Saved-ID delegation starts
+fresh copies for a Task, and the server records them as the Task's agent run
+resources. Explicit DONE closes those runs forever and asks the platform to
+stop only them. Other status writes do not start work. DONE is neither
+engineering acceptance nor proof that the stop has finished.
 
 The per-node ENABLE_PROJECTS visibility capability remains **default-off**.
 Settings › Server Settings › Basics or Advanced can change it on that node;
@@ -199,13 +203,46 @@ Exactly `list_projects`, `list_project_tasks`, `create_or_update_task` are selec
 independently per agent/node. List requires explicit Project ID after discovery;
 omitted Task ID creates TODO with text and no status, known Task ID patches text
 and/or exact status, unknown ID fails. Full text and saved context references
-are available; omitted fields/files persist. No batch or Task attachment mutation
-tool. See [server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-three-agent-tools).
+are available from listing. Each Task also carries its current (open)
+assignments `{targetAgentRunId, kind, assignedBy, outcome}` for follow-up, or
+`assignmentsUnavailable: true` if that Task's run file is damaged. Omitted
+fields and files persist. A mutation returns a compact recorded-status
+acknowledgement, not raw resource diagnostics or a work assessment. There is no
+batch or Task attachment mutation tool. See the
+[server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-three-agent-tools).
 
-Manager/team definition remains user-owned externally. No scheduler, assignment/
-run linkage, automatic completion assessment, sidebar/run-history changes,
-resource stopping, new client/scripts/skills, mobile delivery or feature-default
-change is part of this module's current slice.
+The shipped Project Task Manager is an ordinary reusable Agent available through
+existing Chat/`@`; no Project-page chat or assignment panel is added. It selects
+real saved Tasks, delegates with `{recipient_address, task_id}`, follows the exact
+returned ingress run ID and explicitly updates status from available results or
+user instructions. It does not supervise physical resources or guarantee worker
+completion reports. Linked dispatch loads saved Task text/context internally;
+caller description/reference overrides are rejected, and later edits do not
+rewrite delivered work. See the server's
+[saved-ID / agent run resources contract](../../autobyteus-server-ts/docs/modules/projects.md#saved-id-delegation-and-agent-run-resources).
+
+Manual Refresh and the existing concrete worker/history surfaces remain the
+visibility paths. This change adds no automatic board synchronization,
+scheduler, auto-DONE, new status UI, mobile delivery, client/script/skill, or
+feature-default change.
+
+Reopening a Task to TODO or IN_PROGRESS starts nothing. A later deliberate
+delegation adds new runs, and old ones stay closed. Task and Project Delete
+remove metadata and context only. They do not cancel work, and they keep the
+Task's `agent_run_resources.json` and the run history.
+
+Errors appear through the existing surfaces only; there is no new UI:
+- **Migration pending.** While the one-time Projects migration has not
+  completed, only the Projects screens show the server's
+  `PROJECTS_MIGRATION_PENDING` message ("restart the app to finish"). The rest
+  of the app keeps working.
+- **Damaged Task run file (Q-3).** The web UI has no status mutation, so DONE
+  and assignment come only from agent tools. When a Task's
+  `agent_run_resources.json` is damaged, assign and DONE for that Task fail
+  with the server's `TASK_AGENT_RESOURCES_UNAVAILABLE` message ("fix the file
+  and restart"). The agent receives it as the tool result and relays it in
+  chat. A rejected message or wake shows as the existing rejected-command
+  result. The Projects screens and every other Task keep working.
 
 ## Testing
 

@@ -1,0 +1,34 @@
+{
+  "instanceId": "iso-52127-37fa",
+  "steps": [
+    {
+      "name": "root, project and Task created",
+      "at": "2026-10-05T15:53:49.557Z",
+      "rootId": "project_task_manager_a1e177728adb4870aa2ad113c70a6195",
+      "task": {
+        "taskId": "project_task_cf2f3bc2-66c7-4e90-a4df-55ead0511a5e"
+      }
+    }
+  ],
+  "packetAgent": {
+    "id": "api022r-packet-agent-2",
+    "name": "API022R Packet Agent"
+  },
+  "helper": {
+    "id": "api022r-delegate-helper-2",
+    "name": "API022R Delegate Helper"
+  },
+  "manager": {
+    "id": "autobyteus-project-task-manager",
+    "name": "Project Task Manager"
+  },
+  "rootId": "project_task_manager_a1e177728adb4870aa2ad113c70a6195",
+  "project": {
+    "projectId": "project_b0953e43-ba78-4aeb-ad36-cb1e320d6e67"
+  },
+  "task": {
+    "taskId": "project_task_cf2f3bc2-66c7-4e90-a4df-55ead0511a5e"
+  },
+  "error": "Error: TIMEOUT Manager assigns R",
+  "stack": "Error: TIMEOUT Manager assigns R\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-022/rt-reply.mjs:33:167)\n    at async ask (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-022/rt-reply.mjs:49:158)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-022/rt-reply.mjs:100:3"
+}

@@ -1,0 +1,984 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-2uRgGF
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Agent definition cache populated with 3 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-CyaFsp
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
+Agent definition cache populated with 3 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-KOlRBJ
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+Agent definition cache populated with 5 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-MjemoE
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-MjemoE
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Agent definition cache populated with 4 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite even invalid historical compactor instructions
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-2531js
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite even invalid historical compactor instructions
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite even invalid historical compactor instructions
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite even invalid historical compactor instructions
+Populating agent definition cache for the first time...
+
+stderr | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite even invalid historical compactor instructions
+Skipping agent 'autobyteus-memory-compactor' due to parse error: agent.md must start with '---' frontmatter delimiter (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-2531js/agents/autobyteus-memory-compactor/agent.md)
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite even invalid historical compactor instructions
+Agent definition cache populated with 3 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > creates the Daily Assistant from the template with read_file and all installed skills
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-0x0O6m
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > creates the Daily Assistant from the template with read_file and all installed skills
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > creates the Daily Assistant from the template with read_file and all installed skills
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > creates the Daily Assistant from the template with read_file and all installed skills
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > creates the Daily Assistant from the template with read_file and all installed skills
+Agent definition cache populated with 3 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-p8rtGW
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+Agent definition cache populated with 3 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+In-memory cache: Updated agent definition with ID autobyteus-daily-assistant.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+Agent Definition with ID autobyteus-daily-assistant updated successfully.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+Agent definition cache populated with 3 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > recreates a missing file from the template
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-YCArOE
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > recreates a missing file from the template
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > recreates a missing file from the template
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > recreates a missing file from the template
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > recreates a missing file from the template
+Agent definition cache populated with 3 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > recreates a missing file from the template
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > recreates a missing file from the template
+Agent definition cache populated with 3 items.
+
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts (8 tests) 185ms
+ ✓ tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts (16 tests) 51ms
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts (9 tests | 2 failed) 15ms
+     ✓ keeps a silent turn alive past five minutes and completes it on the later result 3ms
+     × still fails and stops the process when AGY exits mid-turn 3ms
+     ✓ keeps the startup readiness timeout 2ms
+     × SIGTERMs AGY's background groups before AGY, then SIGKILLs the same groups after a short delay 3ms
+     ✓ does not look for groups when AGY already exited on its own, but still reports the failure 1ms
+     ✓ cleans up groups when AutoByteus stops a live AGY after a stream protocol failure 0ms
+     ✓ still stops its exact child independently when group discovery fails; keeps failed ownership proof 1ms
+     ✓ always passes --dangerously-skip-permissions for a new conversation 0ms
+     ✓ always passes --dangerously-skip-permissions for a resumed conversation 0ms
+stdout | tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts (6 tests) 7ms
+ ❯ tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts (5 tests | 1 failed) 8ms
+     ✓ requires skill-governed work and preserves intermediate handoffs and requester fallback 1ms
+     × keeps the documented Team example identical to the rendered collaboration section 5ms
+     ✓ pins the exact approved prompt, tool descriptions, and field descriptions 1ms
+     ✓ describes the one instance at an address, a new copy per delegation, and run-ID follow-up (REQ-009) 0ms
+     ✓ encodes SCN-001 as one most-specific rule and at most one recipient 0ms
+stdout | tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts (3 tests) 6ms
+stdout | tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts > TaskAgentExecutionRegistry task-agent memory > keeps a fresh task Agent as a leaf in its containing nested TeamRun scope and releases work only after commit
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts (3 tests | 1 failed) 8ms
+     ✓ drains prepared and synchronous reentrant events in FIFO order before forwarding live events 1ms
+     ✓ drops retained and future events when aborted and never releases 0ms
+     × keeps a fresh task Agent as a leaf in its containing nested TeamRun scope and releases work only after commit 6ms
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > composes the selected application-owned tool through the real AutoByteus provider factory
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > composes the selected application-owned tool through the real AutoByteus provider factory
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > filters mixed task-management tools, composes server team prompts, and injects primitive team context
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > filters mixed task-management tools, composes server team prompts, and injects primitive team context
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps the exact-run send_message_to selector on the canonical Team binding
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps the exact-run send_message_to selector on the canonical Team binding
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > binds the exact AutoByteus task Agent identity and root capability into the task tool
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > binds the exact AutoByteus task Agent identity and root capability into the task tool
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a lazy direct summarizer without a child AgentRun factory
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a lazy direct summarizer without a child AgentRun factory
+Using temp workspace (ID: workspace-1) for agent.
+
+ ✓ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts (10 tests) 19ms
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts (1 test) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts > approved AgentTeam collaboration LLM contract > keeps the documented Team example identical to the rendered collaboration section
+AssertionError: expected '# Prompt Engineering And Runtime Inst…' to contain '## AgentTeam Collaboration\n\n### Wor…'
+
+- Expected
++ Received
+
+@@ -1,5 +1,201 @@
++ # Prompt Engineering And Runtime Instruction Composition
++
++ ## Scope
++
++ This module covers two separate boundaries:
++
++ 1. persisted/versioned prompt lookup under `src/prompt-engineering`; and
++ 2. the platform-owned Carpenter composition used to construct the stable runtime
++    instructions for native AutoByteus, Codex App Server, and Claude Agent SDK
++    runs.
++
++ The Carpenter boundary supplies shared identity and team context to every
++ runtime. Native AutoByteus additionally receives workspace facts and the
++ platform-owned Bash/file operating practice. It does not turn agent definitions
++ into an open-ended prompt processor pipeline and does not encode tool schemas in
++ text.
++
++ ## TS Source
++
++ - `src/prompt-engineering`
++ - `src/api/graphql/types/prompt.ts`
++ - `src/agent-tools/prompt-engineering`
++ - `src/agent-execution/prompt/carpenter-prompt-composer.ts`
++ - `src/agent-execution/prompt/carpenter-prompt-sections.ts`
++ - `src/agent-execution/prompt/markdown-heading-containment.ts`
++ - `src/agent-team-execution/services/team-collaboration-instruction-renderer.ts`
++ - native `autobyteus-ts` `SystemPromptProcessingStep` and
++   `appendConfiguredSkillsCatalog`
++
++ ## Main Services
++
++ - `src/prompt-engineering/services/prompt-service.ts`
++ - `composeSharedCarpenterPrompt(...)`
++ - `composeNativeAutoByteusPrompt(...)`
++
++ The prompt service and cached provider are singleton-backed to avoid repeated
++ cache initialization. Carpenter composition is pure and fail-fast. Shared
++ composition accepts the selected agent definition and optional validated
++ `MemberTeamContext`; native composition adds the exact absolute workspace.
++
++ ## Runtime Instruction Ownership
++
++ Each section has one owner:
++
++ | Section | Source / owner | Presence |
++ | --- | --- | --- |
++ | `Agent Identity` | Selected `AgentDefinition`: required name, optional description, optional `agent.md` body | Always |
++ | `Team Instruction` | Exact non-blank selected `team.md` body | Team runs only, when non-blank |
++ | `AgentTeam Addressing` then `AgentTeam Collaboration` | Validated `MemberTeamContext` and one fixed canonical-address, collaboration, handoff, and task-eligibility renderer | Team runs only, shared across runtimes |
++ | `Working Environment` | Exact absolute effective workspace selected for the run | Native AutoByteus only |
++ | `Bash Operating Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
++ | `File And Directory Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
++ | `Skills` | Ordinary configured skill resolver and provider-specific skill projection | Only when configured skills apply |
++
++ The shared logical order is Agent Identity, optional Team Instruction,
++ AgentTeam Addressing, and AgentTeam Collaboration. Native AutoByteus appends
++ Working Environment, Bash Operating Practice, and File And Directory Practice
++ in that order, then the native core appends its terminal configured-skills
++ catalog. Blank optional values omit their line, subsection, or section; they do
++ not produce empty headings. An invalid required name, native workspace, Team
++ identity/delivery binding, or unresolved Carpenter placeholder stops bootstrap
++ before provider invocation.
++
++ Authored ATX headings in `agent.md` and `team.md` are shifted beneath their
++ owning section. A heading inside a same-or-longer Markdown fence remains content,
++ not structure. This keeps authored bodies intact without allowing them to escape
++ `Responsibilities and Boundaries` or `Team Instruction`.
++
++ ## Agent Authoring Contract
++
++ Use `agent.md` for agent-specific responsibilities and boundaries. Do not repeat
++ platform foundation text, skill bodies, temporary run state, or tool schemas.
++ For example:
++
++ ```markdown
++ ---
++ name: Release Reviewer
++ description: Reviews release readiness and rollback evidence.
++ category: delivery
++ ---
++
++ Check that the tested candidate, durable documentation, and release notes agree.
++ Block publication when required evidence or a rollback path is missing.
++ ```
++
++ This yields identity content shaped as:
++
++ ```markdown
++ ## Agent Identity
++
++ - Name: Release Reviewer
++ - Description: Reviews release readiness and rollback evidence.
++
++ ### Responsibilities and Boundaries
++
++ Check that the tested candidate, durable documentation, and release notes agree.
++ Block publication when required evidence or a rollback path is missing.
++ ```
++
++ The optional persisted `role` field is not rendered in Agent Identity. A team
++ member alias is separate current-run context and never replaces the agent
++ name. A blank `agent.md` body does not cause description to be copied into
++ Responsibilities and Boundaries.
++
++ Agent definitions select ordinary skills through `agent-config.json.skillNames`
++ and explicitly configured non-team tools through `toolNames`. They do not select
++ system-prompt processors: no current agent-definition field, core processor
++ list/default, registry, pipeline, or public extension export exists for mutating
++ this closed composition.
++
++ ## Native AutoByteus Foundation Example
++
++ For a standalone native AutoByteus `Release Reviewer` running in
++ `/work/releases`, the native foundation begins as follows (the file-practice
++ list continues with the same platform-owned deterministic
++ inspection/edit/verification rules):
++
++ ```markdown
++ ## Agent Identity
++
++ - Name: Release Reviewer
++ - Description: Reviews release readiness and rollback evidence.
++
++ ### Responsibilities and Boundaries
++
++ Check that the tested candidate, durable documentation, and release notes agree.
++ Block publication when required evidence or a rollback path is missing.
++
++ ## Working Environment
++
++ - Agent workspace: `/work/releases`
++ - Use skills from their skill package directories to work on tasks in the agent workspace.
++ - A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
++ - Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
++ - Do not modify a skill package unless the task explicitly targets that skill package.
++ - With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
++
++ ## Bash Operating Practice
++
++ - Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
++ - For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
++ - Prefer non-interactive, small, composable, project-native commands.
++
++ ## File And Directory Practice
++
++ - Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
++ - When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
++ - Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
++ - Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
++ - Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
++ ```
++
++ The authoritative full fixed text is
++ `src/agent-execution/prompt/carpenter-prompt-sections.ts`. Project or task
++ instructions can narrow the work, but agent authors must not replace this
++ platform foundation with a second generic advice block.
++
++ ## Team Instruction And AgentTeam Collaboration
++
++ A team run inserts the exact non-blank `team.md` body under `Team Instruction`
++ and then renders two sibling sections from the validated current member context:
++ `AgentTeam Addressing` followed by `AgentTeam Collaboration`. They appear before
++ native `Working Environment`. The first teaches one canonical absolute non-root
++ address grammar and the member's exact address. The second explains universal
++ collaboration through an intent-first distinction (REQ-009 wording):
++ `send_message_to` reaches the one instance at an address, and an available
++ agent or team that is not yet in the run is brought in on first use;
++ `delegate_task` always spawns a new copy of an Agent or AgentTeam and delivers
++ its complete assignment as the first message. A "Work Requests and Results"
++ subsection covers Agent and AgentTeam (coordinator) addresses, teammates inside
++ the sender's own team instance, first-use bring-in, and run-ID selection, which
++ never brings anything in. A "Delegated Agents" subsection explains that every
++ call spawns another copy (copies can work in parallel), the returned
++ `target_agent_run_id` (or null plus `message` when nothing started), follow-up
++ on a copy only through `send_message_to` with its run ID, and that a quiet copy
++ is shut down and restored with its conversation on the next message. The section also
++ covers duplicate-dispatch prohibition, Agent-side evaluation of possible `get_handoff_rules` conditions, selection of
++ the single rule whose condition most specifically applies, notification of only
++ that rule's recipient, requester-return when no rule applies to incoming work, and delivery confirmation. The
++ renderer contains no flat recipient or delegation-target roster.
++
++ For example, a Team-bound Agent can receive this shape:
++
++ ```markdown
++ ## AgentTeam Addressing
++
++ (The directory/file analogy and the `/A`…`/C/E` example are omitted here.)
++
++ Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.
++
++ Your Agent address is:
++
++ /release_team/release_reviewer
++
++ Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.
++
+  ## AgentTeam Collaboration
+
+  ### Work Requests and Outcomes
+
+  On receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.
+@@ -47,14 +243,180 @@
+    the failure.
+
+  Follow up on a copy only through `send_message_to` with its
+  `target_agent_run_id`, in both directions. A copy that stays quiet is shut
+  down after a while; a message to its run ID restores it with its
+- conversation, unless its Task lifetime has been permanently closed by DONE.
+- Task-owned workers reuse lifetime-local helpers before borrowing existing unowned runs; helpers inherit ownership.
++ conversation, so follow-ups remain possible at any time.
+
+  ### Rule-Based Handoffs
+
+  When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies to an incoming work request, return the result or specific blocker to the requesting agent using `send_message_to`; otherwise, finish normally.
+
+  Do not claim that a message, delegation, or handoff succeeded unless the
+  corresponding tool confirms success.
++ ```
++
++ The runtime renderer owns the complete exact wording and is shared by
++ AutoByteus, Codex App Server, and Claude Agent SDK composition. Agent/team
++ authors should not copy dynamic member addresses or tool schemas into `agent.md`
++ or `team.md`. Standalone runs render neither Team Instruction nor either
++ AgentTeam section. An eligible standalone run (not a server helper or
++ application-owned run), and an Agent directly under its Agent root, instead get
++ one short `## Collaboration` section
++ (`src/agent-run-collaboration/prompt/standalone-collaboration-instruction.ts`).
++ Both renderers reuse the same `Work Requests and Outcomes` paragraph: assigned work
++ follows the recipient’s instructions and applicable skills, without acknowledgement-only
++ replies. Skill-defined intermediate handoffs and blockers remain valid. This guidance
++ does not turn informational notifications into new assignments.
++ The standalone section also covers the `[Mentioned collaborators]` note, `send_message_to` reaching the
++ one instance at an address (brought in on first use), `delegate_task` always
++ spawning a new copy, `list_available_agents` when selected, and the member's
++ own address. It does not instruct standalone agents to call `get_handoff_rules`;
++ without applicable rules, results or specific blockers return to the requesting agent.
++
++ The shared wording owner is `WORK_REQUEST_EXECUTION_LLM_INSTRUCTION` in
++ `src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts`.
++ The `send_message_to` tool and content-field descriptions likewise frame work
++ requests, results, and blockers; argument fields and runtime dispatch are unchanged.
++ This is model guidance, not runtime enforcement or a guarantee of compliance.
++ Saved prompts/history are not rewritten, and this change does not force already
++ running sessions to refresh their instructions.
++
++ The shared composition used by Codex App Server and Claude Agent SDK stops
++ after the shared identity/team sections. Those adapters place the resulting
++ string into Codex `baseInstructions` or Claude SDK `systemPrompt`; their
++ provider-native workspace, skills, tools, approval, and sandbox guidance stays
++ in the existing provider boundary. They do not receive the native Working
++ Environment, Bash Operating Practice, or File And Directory Practice sections.
++
++ ## Ordinary Configured Skills
++
++ Skills remain an ordinary, configured, lazy domain layer rather than a special
++ foundation/system-skill kind. Configuring a skill does not change agent identity,
++ workspace identity, or tool authorization.
++
++ For native AutoByteus, the core appends one terminal metadata/path catalog after
++ Carpenter composition. For example:
++
++ ```markdown
++ ## Skills
++
++ ### Skill Catalog
++
++ - **release-checklist**: Checks versioning, artifacts, and rollback readiness.
++   - **SKILL.md:** `/opt/autobyteus/skills/release-checklist/SKILL.md`
++
++ ### Rules for Using Skills
++
++ - Use a configured skill whenever it applies to the task.
++ - Before beginning work governed by a skill, read its `SKILL.md` from the exact path listed above.
++ - Resolve every relative path mentioned by a skill from the directory containing that skill's `SKILL.md`.
++ ```
++
++ The catalog contains metadata and the exact manifest locator, not the
++ `SKILL.md` body. Work still happens in `/work/releases`; relative bundled skill
++ assets resolve from `/opt/autobyteus/skills/release-checklist/`. Codex can reuse
++ a provider-discoverable configured skill or materialize a configured fallback
++ under `.codex/skills`; Claude materializes configured packages under
++ `.claude/skills`. Both preserve configured-only, lazy skill semantics. See
++ [Skills](./skills.md) and the core
++ [Agent Skills Design](../../../autobyteus-ts/docs/skills_design.md).
++
++ ## Tool Contract And Examples
++
++ Tools are authorized and projected independently of prompt prose. Provider tool
++ schemas—not an `Available Tools` section—define capability, arguments, path
++ rules, and result shape.
++
++ - A standalone run receives its explicitly configured effective tool set.
++ - Every valid team member context automatically unions exactly
++   `get_handoff_rules`, `send_message_to`, and `delegate_task` into runtime
++   exposure, even when the selected agent definition omitted those names.
++   Duplicate configured names are normalized and deduplicated.
++ - Browser, media, publishing, and configured MCP tools remain explicitly
++   configured and availability-gated. There are no task result/review tools.
++
++ Concrete team tool calls still follow their out-of-band schemas:
++
++ ```text
++ get_handoff_rules({})
++
++ send_message_to({ recipient_address: "/release_manager", content: "Checks passed." })
++
++ delegate_task({
++   recipient_address: "/release_manager",
++   description: "Verify the release notes against the tested change and report mismatches.",
++   reference_files: ["/work/releases/release-notes.md"]
++ })
++ ```
++
++ `send_message_to` accepts exactly one of `recipient_address` or an exact
++ `target_agent_run_id` (any AgentRun in the sender's root, including a shut-down
++ delegated agent, or a currently active AgentRun elsewhere). `recipient_address` is a canonical absolute
++ non-root logical address; relative addresses and `/` are invalid. Accepted
++ messaging returns the exact existing receiver as flat `target_agent_run_id`,
++ while rejection returns null identity. Successful delegation returns only the
++ fresh child ingress as `target_agent_run_id`; if nothing started,
++ `target_agent_run_id` is null and `message` explains why. Delegation references are absolute local paths.
++ The runtime exposes native AutoByteus schemas locally and routes Codex/Claude
++ through the session-scoped `autobyteus_agent_tools` MCP descriptor. Provider
++ wire names are normalized back to canonical application tool names.
++
++ There is no text-rendered `Available Tools` section, text tool manifest, or
++ fallback model-authored tool syntax.
++
++ ## Provider Projection
++
++ The semantic foundation is composed once and projected without provider-local
++ rewording:
++
++ | Runtime | Instruction boundary | Skills | Team tools |
++ | --- | --- | --- | --- |
++ | Native AutoByteus | `composeNativeAutoByteusPrompt` -> `AgentConfig.systemPrompt`, then the closed core terminal Skills append | Native metadata/path catalog | Server-owned local native schemas |
++ | Codex App Server | `composeSharedCarpenterPrompt` -> thread `baseInstructions` | Provider discovery plus configured workspace materialization when needed | Session-scoped `autobyteus_agent_tools` MCP |
++ | Claude Agent SDK | `composeSharedCarpenterPrompt` -> SDK query `options.systemPrompt` custom string | Configured `.claude/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP |
++ | Grok Build | `composeSharedCarpenterPrompt` -> ACP `session/new` `_meta.rules` (Grok `<human_rules>` block; harness guidance kept; not re-injected on `session/load`) | Configured `.grok/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP over HTTP, reached through Grok `search_tool`/`use_tool`; see [Grok Build Runtime](./grok_build_runtime.md) |
++
++ Claude user turns remain user/context-file content; stable Carpenter instructions
++ are not rebuilt as XML inside every user message.
++
++ ## Runtime Instruction Transparency
++
++ The product records the exact AutoByteus-owned string at the final runtime
++ handoff boundary, not a reconstruction from current definitions:
++
++ - Native records the processed prompt only after
++   `configureSystemPrompt(...)` succeeds, including the appended configured-skill
++   catalog.
++ - Codex records the exact `baseInstructions` supplied to a successful
++   thread start or resume after the thread ID is valid.
++ - Grok Build records the exact `_meta.rules` string after `session/new`
++   succeeds and the Grok `sessionId` is bound.
++ - Claude records the exact SDK `options.systemPrompt` after the query has
++   started successfully and before output iteration.
++
++ The record is a strict run-scoped `system_instruction` raw trace and the matching
++ live fact is `SYSTEM_INSTRUCTIONS_SUPPLIED { trace_id, content, ts }`. Exact
++ content is intentionally available to users already authorized to inspect the
++ selected run through Activity and Memory Inspector. The implementation does not
++ capture provider-owned hidden prompts, injected provider context, or the final
++ effective context after provider processing; runtime labels must describe only
++ the AutoByteus-owned handoff string.
++
++ Capture is first-change-only within active raw storage. An unchanged latest
++ valid value reuses the existing trace without a second live event, while changed
++ content appends a new trace. Failed configuration/query/thread setup writes and
++ publishes nothing. Existing runs are not backfilled, absence is displayed as no
++ recorded Activity, and archived instruction rows are available only through
++ explicit raw-trace inspection rather than normal Activity or Event Monitor.
++
++ ## Historical And Failure Boundaries
++
++ - Historical native working-context snapshots remain exact and may retain the
++   prompt content they captured; restore does not rewrite history.
++ - Missing required values, failed team-definition lookup, absent required team
++   delivery binding, invalid configured skill metadata, or unresolved
++   double-brace Carpenter syntax fails bootstrap before provider invocation.
++ - A provider/materialization failure is surfaced by its owning adapter; it does
++   not fall back to eager skill bodies, a text tool manifest, or an alternate
++   workspace.
++
+
+ ❯ tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts:39:27
+     37|   it("keeps the documented Team example identical to the rendered coll…
+     38|     const documentation = readFileSync(new URL("../../../docs/modules/…
+     39|     expect(documentation).toContain(AGENT_TEAM_COLLABORATION_LLM_INSTR…
+       |                           ^
+     40|   });
+     41| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts > TaskAgentExecutionRegistry task-agent memory > keeps a fresh task Agent as a leaf in its containing nested TeamRun scope and releases work only after commit
+AssertionError: expected "vi.fn()" to be called 2 times, but got 3 times
+ ❯ tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts:223:21
+    221|     await committed.releaseWork(() => undefined);
+    222|     expect(postedMessages).toEqual([message]);
+    223|     expect(publish).toHaveBeenCalledTimes(2);
+       |                     ^
+    224|     expect(publish.mock.calls[0]?.[0]).toEqual(expect.objectContaining…
+    225|       root: expect.objectContaining({ rootRunId: config.rootTeam.teamR…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts > AgyStreamProcess turn liveness > still fails and stops the process when AGY exits mid-turn
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'SIGTERM' ]
+
+Number of calls: 0
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts:81:28
+     79|     expect(run.closes).toHaveLength(1);
+     80|     expect(run.closes[0]?.message).toContain("AGY process exited (1)");
+     81|     expect(run.child.kill).toHaveBeenCalledWith("SIGTERM");
+       |                            ^
+     82|   });
+     83| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts > AgyStreamProcess stop cleans up AGY background process groups > SIGTERMs AGY's background groups before AGY, then SIGKILLs the same groups after a short delay
+AssertionError: expected last "vi.fn()" call to have been called with [ [ 300, 400 ], 'SIGKILL' ]
+
+- Expected
++ Received
+
+  [
+    [
+      300,
+      400,
+    ],
+-   "SIGKILL",
++   "SIGTERM",
+  ]
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts:110:27
+    108|     expect(groups.signal).toHaveBeenCalledTimes(1);
+    109|     await vi.advanceTimersByTimeAsync(1_500);
+    110|     expect(groups.signal).toHaveBeenLastCalledWith([300, 400], "SIGKIL…
+       |                           ^
+    111|     run.process.stop();
+    112|     expect(groups.list).toHaveBeenCalledTimes(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  3 failed | 6 passed (9)
+      Tests  4 failed | 57 passed (61)
+   Start at  09:51:08
+   Duration  8.28s (transform 2.72s, setup 45ms, import 6.75s, tests 302ms, environment 1ms)
+

@@ -1,0 +1,14 @@
+{
+  "revision": "API-REV-017",
+  "result": "Pass",
+  "confidence": 95,
+  "classification": "Large / High / Reviewed",
+  "broaderValidation": "Required — completed",
+  "selectedRule": {
+    "when": "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+    "recipient_address": "/software_engineering_team/code_reviewer"
+  },
+  "reason": "Current independently validated IR-011 integration passes; current cumulative all20 durable paths require proportional test-code review before Delivery resumes. No source re-review, failure-origin review, direct low-risk Delivery or upstream issue rule applies.",
+  "authorization": "User 'then do the handoff' authorizes normal workflow routing, not blanket merge/push/release/deploy/paid reruns.",
+  "deliverySent": false
+}

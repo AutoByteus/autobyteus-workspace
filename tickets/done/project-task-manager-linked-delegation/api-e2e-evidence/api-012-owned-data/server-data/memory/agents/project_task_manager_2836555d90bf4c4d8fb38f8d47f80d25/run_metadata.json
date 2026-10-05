@@ -1,0 +1,17 @@
+{
+  "runId": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+  "agentDefinitionId": "autobyteus-project-task-manager",
+  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/manager",
+  "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/memory/agents/project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "llmConfig": {
+    "thinking_type": "disabled"
+  },
+  "autoExecuteTools": true,
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "project_task_manager_2836555d90bf4c4d8fb38f8d47f80d25",
+  "preparedAt": "2026-10-04T04:29:12.684Z",
+  "preparedExpiresAt": "2026-10-05T04:29:12.684Z",
+  "startedAt": "2026-10-04T04:29:12.802Z",
+  "applicationExecutionContext": null
+}

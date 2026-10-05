@@ -1,0 +1,1832 @@
+{
+  "instanceId": "iso-58861-449a",
+  "at": "2026-10-03T19:15:15.090Z",
+  "query": "query ListCollaborationRootHistory {listCollaborationRootHistory {__typename ... on AgentOrgRootHistoryObject {root_subject_kind root_run_id created_at archived_at is_active summary org} ... on AgentTeamRootHistoryObject {root_subject_kind root_run_id}}}",
+  "readOnly": true,
+  "httpStatus": 200,
+  "response": {
+    "data": {
+      "listCollaborationRootHistory": [
+        {
+          "__typename": "AgentOrgRootHistoryObject",
+          "root_subject_kind": "agent_org",
+          "root_run_id": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298",
+          "created_at": "2026-10-03T18:14:34.347Z",
+          "archived_at": null,
+          "is_active": false,
+          "summary": "Resolve own Project project_8984965a-aa0b-45d4-8ace-ef86642eee2d, inspect saved Task project_task...",
+          "org": {
+            "subjectKind": "agent_org",
+            "createdAt": "2026-10-03T18:14:34.347Z",
+            "archivedAt": null,
+            "applicationBinding": null,
+            "handoffs": [],
+            "rootOrg": {
+              "address": "/",
+              "orgDefinitionId": "api009-approval-org-a6f2d91c-63ef-4f55-87dd-385d81448edc",
+              "orgDefinitionName": "API009 Approval Org a6f2d91c-63ef-4f55-87dd-385d81448edc",
+              "orgRunId": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/manual-approval"
+              },
+              "members": [
+                {
+                  "address": "/manager",
+                  "agentDefinitionId": "autobyteus-project-task-manager",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "project_task_manager_72233ae14c094337881006e94c43379d",
+                  "platformAgentRunId": "01a102f9-9b6c-7590-9227-bc1246dfa135",
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/manual-approval"
+                  }
+                },
+                {
+                  "address": "/manual",
+                  "agentDefinitionId": "api009-manual-reader-1a14b6ff-17b9-47c8-9432-ac8deea1bd41",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_aec762b899854c1784b3b3ad7614fcf9",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": false,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/manual-approval"
+                  }
+                }
+              ],
+              "collaborators": [],
+              "taskExecutions": [
+                {
+                  "address": "/manual",
+                  "agentRunId": "api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099",
+                  "platformAgentRunId": "01a102f9-cfe0-75a0-856f-be57e1aa39ae",
+                  "taskLifetime": {
+                    "lifetimeId": "project_task_lifetime_816f47df-5ecc-49e9-950e-93fe52f5eb71",
+                    "purpose": "assignment"
+                  },
+                  "delegatorAgentRunId": "project_task_manager_72233ae14c094337881006e94c43379d",
+                  "startedAt": "2026-10-03T18:14:48.506Z"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "__typename": "AgentOrgRootHistoryObject",
+          "root_subject_kind": "agent_org",
+          "root_run_id": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c",
+          "created_at": "2026-10-03T18:07:13.196Z",
+          "archived_at": null,
+          "is_active": false,
+          "summary": "Authorized own isolated validation. Resolve Project project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e;...",
+          "org": {
+            "subjectKind": "agent_org",
+            "createdAt": "2026-10-03T18:07:13.196Z",
+            "archivedAt": null,
+            "applicationBinding": null,
+            "handoffs": [],
+            "rootOrg": {
+              "address": "/",
+              "orgDefinitionId": "api009p-physical-org-0890dca9-8e56-436c-9bc3-f5119f4abede",
+              "orgDefinitionName": "API009P Physical Org 0890dca9-8e56-436c-9bc3-f5119f4abede",
+              "orgRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
+              },
+              "members": [
+                {
+                  "address": "/manager",
+                  "agentDefinitionId": "autobyteus-project-task-manager",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "project_task_manager_358fa68fd9e541818e26e8275fa38fae",
+                  "platformAgentRunId": "01a102f2-e183-77e3-b6e6-af832848d67c",
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
+                  }
+                },
+                {
+                  "address": "/borrowed",
+                  "agentDefinitionId": "api009p-borrowed-packet-agent",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api009p_borrowed_packet_agent_b3f9b376293b40abb759f84d03c5fa60",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
+                  }
+                },
+                {
+                  "address": "/workers",
+                  "teamDefinitionId": "api009p-physical-workers",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "api009p_physical_workers_cc33fae78ec14f91b5c06b1e341dc8c2",
+                  "coordinatorAddress": "/workers/coordinator",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-task-workers-round9"
+                  },
+                  "members": [
+                    {
+                      "address": "/workers/coordinator",
+                      "agentDefinitionId": "api009p-physical-coordinator",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api009p_physical_coordinator_1cec5f6a4e6548fa97ae725c6d02a6df",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-task-workers-round9"
+                      }
+                    },
+                    {
+                      "address": "/workers/reader",
+                      "agentDefinitionId": "api009p-physical-reader",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api009p_physical_reader_bb3ff3391d744e36990ba0075b9c06c7",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-task-workers-round9"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                }
+              ],
+              "collaborators": [],
+              "taskExecutions": [
+                {
+                  "address": "/workers",
+                  "teamRunId": "api009p_physical_workers_7e30647905394883b46755a70ba3ee53",
+                  "members": [
+                    {
+                      "address": "/workers/coordinator",
+                      "agentRunId": "api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d",
+                      "platformAgentRunId": "01a102f3-39f8-7e60-b749-67107ca18cd0"
+                    },
+                    {
+                      "address": "/workers/reader",
+                      "agentRunId": "api009p_physical_reader_c538f1aded884cb7978aa345d9bf695a",
+                      "platformAgentRunId": "01a102f3-3a80-74e3-886f-1cc435779313"
+                    }
+                  ],
+                  "taskExecutions": [],
+                  "delegatorAgentRunId": "project_task_manager_358fa68fd9e541818e26e8275fa38fae",
+                  "startedAt": "2026-10-03T18:07:36.850Z",
+                  "taskLifetime": {
+                    "lifetimeId": "project_task_lifetime_c3519214-70b4-4770-9753-34ac01b5ffe6",
+                    "purpose": "assignment"
+                  }
+                },
+                {
+                  "address": "/borrowed",
+                  "agentRunId": "api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914",
+                  "platformAgentRunId": "01a102f3-3b53-71d0-81b8-57c36c4ee9d9",
+                  "taskLifetime": {
+                    "lifetimeId": "project_task_lifetime_9a1ad4b8-3483-4bac-bbbd-1da44bb75d0e",
+                    "purpose": "assignment"
+                  },
+                  "delegatorAgentRunId": "project_task_manager_358fa68fd9e541818e26e8275fa38fae",
+                  "startedAt": "2026-10-03T18:07:37.274Z"
+                },
+                {
+                  "address": "/api009p_physical_leaf",
+                  "agentRunId": "api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493",
+                  "platformAgentRunId": "01a102f3-c523-7bd0-b013-58742babd6cf",
+                  "taskLifetime": {
+                    "lifetimeId": "project_task_lifetime_c3519214-70b4-4770-9753-34ac01b5ffe6",
+                    "purpose": "delegation"
+                  },
+                  "delegatorAgentRunId": "api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d",
+                  "startedAt": "2026-10-03T18:08:12.548Z",
+                  "source": {
+                    "kind": "agent",
+                    "agentDefinitionId": "api009p-physical-leaf",
+                    "launchConfiguration": {
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-6.1-sol",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      },
+                      "autoExecuteTools": true,
+                      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
+                    }
+                  }
+                },
+                {
+                  "address": "/api009p_physical_helper_team",
+                  "teamRunId": "api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420",
+                  "members": [
+                    {
+                      "address": "/api009p_physical_helper_team/coordinator",
+                      "agentRunId": "api009p_physical_helper_coordinator_01368906dcfe4fe3899f6131325072df",
+                      "platformAgentRunId": "01a102f3-c5df-75f3-94e0-369ed6871f61"
+                    },
+                    {
+                      "address": "/api009p_physical_helper_team/reader",
+                      "agentRunId": "api009p_physical_reader_5043594e9f894d6a87ee4237a242c5be",
+                      "platformAgentRunId": "01a102f3-c673-7302-8c43-547fcf1ac803"
+                    }
+                  ],
+                  "taskExecutions": [],
+                  "delegatorAgentRunId": "api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d",
+                  "startedAt": "2026-10-03T18:08:12.744Z",
+                  "source": {
+                    "kind": "agent_team",
+                    "teamDefinitionId": "api009p-physical-helper-team",
+                    "coordinatorAddress": "/api009p_physical_helper_team/coordinator",
+                    "members": [
+                      {
+                        "address": "/api009p_physical_helper_team/coordinator",
+                        "agentDefinitionId": "api009p-physical-helper-coordinator"
+                      },
+                      {
+                        "address": "/api009p_physical_helper_team/reader",
+                        "agentDefinitionId": "api009p-physical-reader"
+                      }
+                    ],
+                    "handoffs": [],
+                    "defaultLaunchConfiguration": {
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-6.1-sol",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      },
+                      "autoExecuteTools": true,
+                      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/physical-manager-round9"
+                    }
+                  },
+                  "taskLifetime": {
+                    "lifetimeId": "project_task_lifetime_c3519214-70b4-4770-9753-34ac01b5ffe6",
+                    "purpose": "helper"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "__typename": "AgentOrgRootHistoryObject",
+          "root_subject_kind": "agent_org",
+          "root_run_id": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+          "created_at": "2026-10-03T18:03:25.632Z",
+          "archived_at": null,
+          "is_active": true,
+          "summary": "Read ONLY /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5W...",
+          "org": {
+            "subjectKind": "agent_org",
+            "createdAt": "2026-10-03T18:03:25.632Z",
+            "archivedAt": null,
+            "applicationBinding": null,
+            "handoffs": [],
+            "rootOrg": {
+              "address": "/",
+              "orgDefinitionId": "api009-concrete-root-org-rerun-861fe254-2e56-495d-8639-190c065a1ecc",
+              "orgDefinitionName": "API009 Concrete Root Org Rerun 861fe254-2e56-495d-8639-190c065a1ecc",
+              "orgRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+              },
+              "members": [
+                {
+                  "address": "/manager",
+                  "agentDefinitionId": "autobyteus-project-task-manager",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+                  "platformAgentRunId": "01a102ef-a412-70d0-a85a-18f7209f45b8",
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+                  }
+                },
+                {
+                  "address": "/borrowed",
+                  "agentDefinitionId": "api009-packet-agent",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api009_packet_agent_9cb0c12b1c564ae097517e7bc92c1b23",
+                  "platformAgentRunId": "01a102ef-6735-7fb2-9e87-159d90d1d2ea",
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+                  }
+                }
+              ],
+              "collaborators": [],
+              "taskExecutions": [
+                {
+                  "address": "/borrowed",
+                  "agentRunId": "api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a",
+                  "platformAgentRunId": "01a102ef-e751-7610-ac5b-15b932034e94",
+                  "taskLifetime": {
+                    "lifetimeId": "project_task_lifetime_935d7411-d069-4da7-9e0c-3c81a158f708",
+                    "purpose": "assignment"
+                  },
+                  "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+                  "startedAt": "2026-10-03T18:03:59.152Z"
+                },
+                {
+                  "address": "/api009_packet_team",
+                  "teamRunId": "api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d",
+                  "members": [
+                    {
+                      "address": "/api009_packet_team/coordinator",
+                      "agentRunId": "api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d",
+                      "platformAgentRunId": "01a102f0-06ca-7521-9626-0cda8a85ba07"
+                    },
+                    {
+                      "address": "/api009_packet_team/reader",
+                      "agentRunId": "api009_team_reader_5239c53dc5ec4e659542c1e092d9512e",
+                      "platformAgentRunId": "01a102f0-0743-7b62-9fa3-f64c9460f7f9"
+                    }
+                  ],
+                  "taskExecutions": [],
+                  "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+                  "startedAt": "2026-10-03T18:04:07.221Z",
+                  "source": {
+                    "kind": "agent_team",
+                    "teamDefinitionId": "api009-packet-team",
+                    "coordinatorAddress": "/api009_packet_team/coordinator",
+                    "members": [
+                      {
+                        "address": "/api009_packet_team/coordinator",
+                        "agentDefinitionId": "api009-team-coordinator"
+                      },
+                      {
+                        "address": "/api009_packet_team/reader",
+                        "agentDefinitionId": "api009-team-reader"
+                      }
+                    ],
+                    "handoffs": [],
+                    "defaultLaunchConfiguration": {
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-6.1-sol",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      },
+                      "autoExecuteTools": true,
+                      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+                    }
+                  },
+                  "taskLifetime": {
+                    "lifetimeId": "project_task_lifetime_120a3d8e-770a-4cfe-afc2-4c493dad9aa0",
+                    "purpose": "assignment"
+                  }
+                },
+                {
+                  "address": "/api009_packet_team",
+                  "teamRunId": "api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe",
+                  "members": [
+                    {
+                      "address": "/api009_packet_team/coordinator",
+                      "agentRunId": "api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b",
+                      "platformAgentRunId": "01a102f1-05a7-7642-ae5a-b106da515ad0"
+                    },
+                    {
+                      "address": "/api009_packet_team/reader",
+                      "agentRunId": "api009_team_reader_0a6c9e981db043a28d9b851cfa76ead5",
+                      "platformAgentRunId": "01a102f1-0625-7bf3-9c02-a76a623770d1"
+                    }
+                  ],
+                  "taskExecutions": [],
+                  "delegatorAgentRunId": "project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119",
+                  "startedAt": "2026-10-03T18:05:12.464Z",
+                  "source": {
+                    "kind": "agent_team",
+                    "teamDefinitionId": "api009-packet-team",
+                    "coordinatorAddress": "/api009_packet_team/coordinator",
+                    "members": [
+                      {
+                        "address": "/api009_packet_team/coordinator",
+                        "agentDefinitionId": "api009-team-coordinator"
+                      },
+                      {
+                        "address": "/api009_packet_team/reader",
+                        "agentDefinitionId": "api009-team-reader"
+                      }
+                    ],
+                    "handoffs": [],
+                    "defaultLaunchConfiguration": {
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-6.1-sol",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      },
+                      "autoExecuteTools": true,
+                      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_org"
+                    }
+                  },
+                  "taskLifetime": {
+                    "lifetimeId": "project_task_lifetime_58c71667-96ea-43e9-811f-982458efee15",
+                    "purpose": "assignment"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "__typename": "AgentTeamRootHistoryObject",
+          "root_subject_kind": "agent_team",
+          "root_run_id": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+        }
+      ]
+    }
+  },
+  "rows": [
+    {
+      "rootRunId": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298",
+      "isActive": false,
+      "success": false,
+      "issues": [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            0
+          ],
+          "message": "Invalid input"
+        }
+      ],
+      "privateStampCount": 1
+    },
+    {
+      "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c",
+      "isActive": false,
+      "success": false,
+      "issues": [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            0
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            1
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent_team"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent_team\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "teamDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "coordinatorAddress"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "handoffs"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "defaultLaunchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentDefinitionId",
+                  "launchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"agentDefinitionId\", \"launchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            2
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "agentDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "launchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamDefinitionId",
+                  "coordinatorAddress",
+                  "members",
+                  "handoffs",
+                  "defaultLaunchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"teamDefinitionId\", \"coordinatorAddress\", \"members\", \"handoffs\", \"defaultLaunchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            3
+          ],
+          "message": "Invalid input"
+        }
+      ],
+      "privateStampCount": 4
+    },
+    {
+      "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+      "isActive": true,
+      "success": false,
+      "issues": [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            0
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "agentDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "launchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamDefinitionId",
+                  "coordinatorAddress",
+                  "members",
+                  "handoffs",
+                  "defaultLaunchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"teamDefinitionId\", \"coordinatorAddress\", \"members\", \"handoffs\", \"defaultLaunchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            1
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "agentDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "launchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamDefinitionId",
+                  "coordinatorAddress",
+                  "members",
+                  "handoffs",
+                  "defaultLaunchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"teamDefinitionId\", \"coordinatorAddress\", \"members\", \"handoffs\", \"defaultLaunchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            2
+          ],
+          "message": "Invalid input"
+        }
+      ],
+      "privateStampCount": 3
+    }
+  ],
+  "ui": {
+    "route": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\n[ { \"code\": \"invalid_union\", \"errors\": [ [ { \"code\": \"unrecognized_keys\", \"keys\": [ \"taskLifetime\" ], \"path\": [], \"message\": \"Invalid input\" } ], [ { \"expected\": \"string\", \"code\": \"invalid_type\", \"path\": [ \"teamRunId\" ], \"message\": \"Invalid input\" }, { \"expected\": \"array\", \"code\": \"invalid_type\", \"path\": [ \"members\" ], \"message\": \"Invalid input\" }, { \"expected\": \"array\", \"code\": \"invalid_type\", \"path\": [ \"taskExecutions\" ], \"message\": \"Invalid input\" }, { \"code\": \"unrecognized_keys\", \"keys\": [ \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\" ], \"path\": [], \"message\": \"Invalid input\" } ] ], \"path\": [ \"rootOrg\", \"taskExecutions\", 0 ], \"message\": \"Invalid input\" } ]\nconcrete-agent_org\nconcrete-agent_team\nmanager\nmanual-approval\nphysical-manager-round9\nphysical-task-workers-round9\nTemp Workspace\nSettings\nWhat should we work on?\n\nAll your skills are available. Type / to use a skill, or @ to chat with an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nGPT-6.1-Sol (default reasoning: low)\nCodex\nLow\n\nFiles are saved in the temp workspace · /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/server-data/temp_workspace",
+    "orgRunButtons": 0,
+    "workspaceCount": 0,
+    "privateSchemaErrorVisible": true
+  },
+  "boundaryHashes": {
+    "run-history/services/collaboration-root-history-service.js": {
+      "currentDist": "82c0d40ece2c17a702e28e62ccc2dabcf1eb900700fd26e28c8ba5c36aea9632",
+      "packaged": "82c0d40ece2c17a702e28e62ccc2dabcf1eb900700fd26e28c8ba5c36aea9632"
+    },
+    "api/graphql/types/collaboration-root-history.js": {
+      "currentDist": "f363225a564948f4279c4653d395f979db42af97cc68fef85d4dca0d3bd11b0b",
+      "packaged": "f363225a564948f4279c4653d395f979db42af97cc68fef85d4dca0d3bd11b0b"
+    }
+  },
+  "projectArrayReadNoWrite": {
+    "beforeSha256": "f1204f6e2236c998e59112cc3682b503bda822db1368ee2c8939d83fa2da8dd9",
+    "afterSha256": "f1204f6e2236c998e59112cc3682b503bda822db1368ee2c8939d83fa2da8dd9",
+    "equal": true
+  },
+  "failedRows": [
+    {
+      "rootRunId": "api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298",
+      "isActive": false,
+      "success": false,
+      "issues": [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            0
+          ],
+          "message": "Invalid input"
+        }
+      ],
+      "privateStampCount": 1
+    },
+    {
+      "rootRunId": "api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c",
+      "isActive": false,
+      "success": false,
+      "issues": [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            0
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            1
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent_team"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent_team\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "teamDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "coordinatorAddress"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "handoffs"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "defaultLaunchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentDefinitionId",
+                  "launchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"agentDefinitionId\", \"launchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            2
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "agentDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "launchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamDefinitionId",
+                  "coordinatorAddress",
+                  "members",
+                  "handoffs",
+                  "defaultLaunchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"teamDefinitionId\", \"coordinatorAddress\", \"members\", \"handoffs\", \"defaultLaunchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            3
+          ],
+          "message": "Invalid input"
+        }
+      ],
+      "privateStampCount": 4
+    },
+    {
+      "rootRunId": "api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476",
+      "isActive": true,
+      "success": false,
+      "issues": [
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "teamRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "members"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "expected": "array",
+                "code": "invalid_type",
+                "path": [
+                  "taskExecutions"
+                ],
+                "message": "Invalid input: expected array, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "agentRunId",
+                  "platformAgentRunId",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            0
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "agentDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "launchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamDefinitionId",
+                  "coordinatorAddress",
+                  "members",
+                  "handoffs",
+                  "defaultLaunchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"teamDefinitionId\", \"coordinatorAddress\", \"members\", \"handoffs\", \"defaultLaunchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            1
+          ],
+          "message": "Invalid input"
+        },
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "agentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "platformAgentRunId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "code": "invalid_value",
+                "values": [
+                  "agent"
+                ],
+                "path": [
+                  "source",
+                  "kind"
+                ],
+                "message": "Invalid input: expected \"agent\""
+              },
+              {
+                "expected": "string",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "agentDefinitionId"
+                ],
+                "message": "Invalid input: expected string, received undefined"
+              },
+              {
+                "expected": "object",
+                "code": "invalid_type",
+                "path": [
+                  "source",
+                  "launchConfiguration"
+                ],
+                "message": "Invalid input: expected object, received undefined"
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamDefinitionId",
+                  "coordinatorAddress",
+                  "members",
+                  "handoffs",
+                  "defaultLaunchConfiguration"
+                ],
+                "path": [
+                  "source"
+                ],
+                "message": "Unrecognized keys: \"teamDefinitionId\", \"coordinatorAddress\", \"members\", \"handoffs\", \"defaultLaunchConfiguration\""
+              },
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "teamRunId",
+                  "members",
+                  "taskExecutions",
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"taskLifetime\""
+              }
+            ],
+            [
+              {
+                "code": "unrecognized_keys",
+                "keys": [
+                  "taskLifetime"
+                ],
+                "path": [],
+                "message": "Unrecognized key: \"taskLifetime\""
+              }
+            ]
+          ],
+          "path": [
+            "rootOrg",
+            "taskExecutions",
+            2
+          ],
+          "message": "Invalid input"
+        }
+      ],
+      "privateStampCount": 3
+    }
+  ],
+  "scope": "Actual unchanged public strict schema, real GraphQL reader and current actual packaged renderer; no private-field stripping, source mutation, reload, Root Stop, new fixture, model/input call or forged event. Only Org history-family failure certified; Agent final A unsent/current landing navigation prerequisite separate.",
+  "result": "Fail FAPI-009: public Org history exposes private Task lifetime stamps and violates strict renderer history contract",
+  "error": "AssertionError [ERR_ASSERTION]: Supported public Org history rows must satisfy strict current renderer contract without private Task lifetime stamps",
+  "stack": "AssertionError [ERR_ASSERTION]: Supported public Org history rows must satisfy strict current renderer contract without private Task lifetime stamps\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-org-history-witness.mjs:9:762"
+}

@@ -1,0 +1,144 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/agent-run.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/agent-run.test.ts (34 tests) 1019ms
+stdout | tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts > REQ-007/009/013 exact Codex input outcome before Task-owned release > retains the exact reader/router/lease through idle and awaits the genuine native terminal
+test-owned idle boundary receipt {"receipt":null,"threadRetained":true,"activeTurn":"owned-thread-1-turn","lastTerminal":null,"input":[{"state":"forwarded","turn":"owned-thread-1-turn"}]}
+
+ ❯ tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts (6 tests | 1 failed) 10958ms
+     ✓ retains the exact reader/router/lease through idle and awaits the genuine native terminal 170ms
+     ✓ does not outrun admitted async source-event delivery after provider release 201ms
+     × retains missing-terminal proof, then retries only the same fenced exact generation 10113ms
+     ✓ settles the actual native completed outcome, not idle or teardown 155ms
+     ✓ settles the actual native failed outcome, not idle or teardown 152ms
+     ✓ drains a real late start RPC and its terminal while forced release fences subsequent ingress 165ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts (42 tests) 172ms
+stderr | tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > does not map token-usage telemetry into AGENT_STATUS
+Run 'run-1': Codex token-usage update arrived without a turn id. Skipping persistence.
+
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts (64 tests) 36ms
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts (8 tests) 11ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-client-thread-router.test.ts (5 tests) 6ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-user-input-mapper.test.ts (5 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts > REQ-007/009/013 exact Codex input outcome before Task-owned release > retains missing-terminal proof, then retries only the same fenced exact generation
+AssertionError: expected 'Failed to terminate run for runtime \…' to contain 'Codex exact input/turn close proof pe…'
+
+Expected: "Codex exact input/turn close proof pending."
+Received: "Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."
+
+ ❯ tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts:140:29
+    138|       const first = await run.forceReleaseRuntime();
+    139|       expect(first).toMatchObject({ accepted: false, code: 'RUNTIME_CO…
+    140|       expect(first.message).toContain('Codex exact input/turn close pr…
+       |                             ^
+    141|       expect(h.manager.getThread(run.runId)).toBe(h.thread);
+    142|       expect(h.thread.activeTurnId).toBe(turnId);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  1 failed | 163 passed (164)
+   Start at  18:50:08
+   Duration  18.89s (transform 2.80s, setup 44ms, import 5.46s, tests 12.21s, environment 1ms)
+

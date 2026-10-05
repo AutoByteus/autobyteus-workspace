@@ -1,0 +1,18 @@
+{
+  "scope": "Current local server build only; packaged app not rebuilt or certified",
+  "matches": {
+    "source": {
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts": true
+    },
+    "built": {
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session-cleanup.js": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session-cleanup.d.ts": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session-cleanup.d.ts.map": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.js": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.d.ts": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.d.ts.map": true
+    }
+  },
+  "packagedCandidate": "Not rebuilt / NOT corrected source; fresh API build required"
+}

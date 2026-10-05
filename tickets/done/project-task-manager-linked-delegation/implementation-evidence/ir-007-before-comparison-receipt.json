@@ -1,0 +1,13 @@
+{
+  "ir-007-causal-before-certified.log": {
+    "exit": 1
+  },
+  "ir-007-event-baseline-comparison.log": {
+    "exit": 1
+  },
+  "restoredExactCurrentOwners": {
+    "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts": true,
+    "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts": true,
+    "autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts": true
+  }
+}

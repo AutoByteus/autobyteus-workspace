@@ -1,0 +1,36 @@
+{
+  "subjectKind": "agent",
+  "createdAt": "2026-10-03T09:54:06.170Z",
+  "host": {
+    "address": "/project_task_manager",
+    "agentRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+    "agentDefinitionId": "autobyteus-project-task-manager"
+  },
+  "collaborators": [],
+  "taskExecutions": [
+    {
+      "address": "/api003_packet_worker",
+      "agentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768",
+      "platformAgentRunId": "01a1012f-b7ac-7ef1-a78e-05df924e9778",
+      "taskLifetime": {
+        "lifetimeId": "project_task_lifetime_9da7a658-dd62-4ad9-b5f8-1ffd683fdc03",
+        "purpose": "assignment"
+      },
+      "delegatorAgentRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a",
+      "startedAt": "2026-10-03T09:54:26.824Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api003-packet-worker",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Zws3Z6/validation-workspace"
+        }
+      }
+    }
+  ]
+}

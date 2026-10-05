@@ -1,0 +1,4 @@
+app-data-migrations/migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js ae39f0df0c7f9332 ae39f0df0c7f9332
+compositions/project-task-agent-resource-composition.js 82ba3866c075cde9 82ba3866c075cde9
+projects/stores/project-store.js 05c397e8bf1c1fb4 05c397e8bf1c1fb4
+projects/services/task-agent-resource-service.js 68f051f4cf61202a 68f051f4cf61202a

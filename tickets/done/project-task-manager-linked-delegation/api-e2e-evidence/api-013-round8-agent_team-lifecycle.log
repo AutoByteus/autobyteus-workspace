@@ -1,0 +1,6 @@
+case=API-013
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-concrete-lifecycle-probe.mjs agent_team
+Error: TIMEOUT New B exact release
+
+PROCESS_EXIT_CODE=1

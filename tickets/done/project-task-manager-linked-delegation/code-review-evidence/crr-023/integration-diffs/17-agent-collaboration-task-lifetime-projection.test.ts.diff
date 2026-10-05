@@ -1,0 +1,29 @@
+--- /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/accepted-candidate/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts
+@@ -1,13 +1,13 @@
+ import { describe, expect, it } from "vitest";
+ import { projectAgentCollaborationView } from "../../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+-import { emptyAgentRunCollaborationMessages, emptyAgentRunCollaborationTree } from "../../../../src/agent-run-collaboration/domain/agent-run-collaboration-tree.js";
+-import { validateAgentRunCollaborationTreePayload } from "../../../../src/run-history/store/agent-run-collaboration-tree-schema.js";
++import { emptyStandaloneRootMessages, emptyStandaloneRootTree } from "../../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
++import { validateStandaloneRootTreePayload } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
+ 
+ const HOST = "manager-run";
+ const CHILD = "saved-task-worker-run";
+ const snapshot = (linked: boolean) => ({
+-  tree: validateAgentRunCollaborationTreePayload({
+-    ...emptyAgentRunCollaborationTree({
++  tree: validateStandaloneRootTreePayload({
++    ...emptyStandaloneRootTree({
+       host: { address: "/manager" as never, agentRunId: HOST, agentDefinitionId: "manager" },
+       createdAt: "2026-10-03T00:00:00.000Z",
+     }),
+@@ -31,7 +31,7 @@
+       },
+     }],
+   }),
+-  messages: emptyAgentRunCollaborationMessages(HOST),
++  messages: emptyStandaloneRootMessages(HOST),
+   statuses: [],
+   inputStates: [],
+ });

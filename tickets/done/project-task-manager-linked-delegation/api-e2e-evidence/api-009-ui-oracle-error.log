@@ -1,0 +1,50 @@
+case=API-009
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/isolated-manager-probe.mjs
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    'create_or_update_task',
+    'delegate_task',
++   'list_available_agents',
+    'list_project_tasks',
+    'list_projects',
+    'read_file',
+    'send_message_to',
+-   'wait_for_messages'
+  ]
+
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/isolated-manager-probe.mjs:15:153
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'create_or_update_task',
+    'delegate_task',
+    'list_available_agents',
+    'list_project_tasks',
+    'list_projects',
+    'read_file',
+    'send_message_to'
+  ],
+  expected: [
+    'create_or_update_task',
+    'delegate_task',
+    'list_project_tasks',
+    'list_projects',
+    'read_file',
+    'send_message_to',
+    'wait_for_messages'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.1
+
+PROCESS_EXIT_CODE=1

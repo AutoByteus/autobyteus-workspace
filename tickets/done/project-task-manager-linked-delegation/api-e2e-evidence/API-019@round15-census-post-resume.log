@@ -1,0 +1,3 @@
+2026-10-04T08:17:44.649035+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["--", "python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-own-census.py", "post-resume"]

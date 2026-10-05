@@ -1,0 +1,45 @@
+--- accepted/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
++++ integrated/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
+@@ -7,16 +7,16 @@
+ } from "@autobyteus/collaboration-stream-contracts";
+ import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+ import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+-import type { AgentRunCollaborationPackageSnapshot } from "../../agent-run-collaboration/domain/agent-run-collaboration-root.js";
+-import type { AgentRunCollaborationRootEvent } from "../../agent-run-collaboration/domain/agent-run-collaboration-root-event.js";
+-import type { AgentRunCollaborationTreeSnapshot } from "../../agent-run-collaboration/domain/agent-run-collaboration-tree.js";
+-import { AgentRunCollaborationExecutionIndex } from "../../agent-run-collaboration/services/agent-run-collaboration-execution-index.js";
++import type { StandaloneRootPackageSnapshot } from "../../standalone-agent-run-root/domain/standalone-agent-run-root.js";
++import type { StandaloneRootEvent } from "../../standalone-agent-run-root/domain/standalone-root-event.js";
++import type { StandaloneRootTreeSnapshot } from "../../standalone-agent-run-root/domain/standalone-root-tree.js";
++import { StandaloneRootExecutionIndex } from "../../standalone-agent-run-root/services/standalone-root-execution-index.js";
+ 
+ /** Agent-root view (root kind `agent`) on the collaboration-stream contracts. */
+ export const projectAgentCollaborationView = (input: Readonly<{
+   hostRunId: string;
+   isActive: boolean;
+-  snapshot: AgentRunCollaborationPackageSnapshot;
++  snapshot: StandaloneRootPackageSnapshot;
+   baseChangeSequence: number;
+ }>): RootExecutionViewDto => RootExecutionViewDtoSchema.parse({
+   root_subject_kind: "agent",
+@@ -40,16 +40,16 @@
+   },
+ });
+ 
+-const requireStartedExecution = (tree: AgentRunCollaborationTreeSnapshot, reference: TaskExecutionReference) => {
+-  const execution = new AgentRunCollaborationExecutionIndex(tree).getTaskExecution(reference);
++const requireStartedExecution = (tree: StandaloneRootTreeSnapshot, reference: TaskExecutionReference) => {
++  const execution = new StandaloneRootExecutionIndex(tree).getTaskExecution(reference);
+   if (!execution) throw new Error("Started Agent-root task execution is not in the current execution tree.");
+   return projectCollaborationTaskExecution(execution.source);
+ };
+ 
+ export const projectAgentCollaborationEvent = (
+   hostRunId: string,
+-  tree: AgentRunCollaborationTreeSnapshot,
+-  sequenced: SequencedRootEvent<AgentRunCollaborationRootEvent>,
++  tree: StandaloneRootTreeSnapshot,
++  sequenced: SequencedRootEvent<StandaloneRootEvent>,
+ ): RootExecutionEventDto | null => {
+   const source = sequenced.event;
+   let event;

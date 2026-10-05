@@ -1,0 +1,6 @@
+START 2026-10-05T04:50:05.171966+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-concrete-lifecycle-probe.mjs", "claude", "agent_org", "--keep-a-open"]
+Scoped Pass A stays open for independent whole-app same-worker resumption; B old/new copies closed with real terminals, reopen/fences/protection retained. Final A closure is a separate planned post-restart case, not tested here.
+
+INNER_EXIT_CODE=0

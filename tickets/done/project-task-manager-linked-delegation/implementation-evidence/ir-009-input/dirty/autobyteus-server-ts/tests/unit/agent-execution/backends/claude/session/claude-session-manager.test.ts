@@ -1,0 +1,231 @@
+import { describe, expect, it, vi } from "vitest";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
+import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
+import { ClaudeAgentRunContext } from "../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
+import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
+import { buildClaudeSessionConfig } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-config.js";
+import { ClaudeSessionManager } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
+import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
+import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../../helpers/fake-claude-streaming-sdk.js";
+
+const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
+
+const createManager = (sdkClient: unknown, activator = { activateForRun: vi.fn(), deactivateForRun: vi.fn(() => 0) }) =>
+  new ClaudeSessionManager(
+    activator as never,
+    {} as never,
+    sdkClient as never,
+    { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) } as never,
+  );
+
+const createRunContext = (input: { runId: string; sessionId?: string }) =>
+  new AgentRunContext({
+    runId: input.runId,
+    config: new AgentRunConfig({
+      agentDefinitionId: "agent-1",
+      llmModelIdentifier: "haiku",
+      autoExecuteTools: false,
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+    }),
+    runtimeContext: new ClaudeAgentRunContext({
+      carpenterSystemPrompt: "## Agent Identity\n\n- Name: Test agent",
+      sessionConfig: buildClaudeSessionConfig({
+        model: "haiku",
+        workingDirectory: "/tmp",
+        permissionMode: "default",
+      }),
+      runtimeToolExposure: buildRuntimeAgentToolExposure([]),
+      sessionId: input.sessionId,
+    }),
+  });
+
+describe("ClaudeSessionManager", () => {
+  it("propagates the exact run-session activator into every created and restored session", async () => {
+    const activator = { activateForRun: vi.fn(), deactivateForRun: vi.fn(() => 0) };
+    const manager = createManager({
+      getSessionMessages: vi.fn(async () => []),
+      listModels: vi.fn(async () => []),
+    }, activator);
+
+    const created = await manager.createRunSession(createRunContext({ runId: "run-create-activator" }) as never, () => undefined);
+    const restored = await manager.restoreRunSession(createRunContext({ runId: "run-restore-activator" }) as never, RESTORED_SESSION_ID, () => undefined);
+
+    for (const session of [created, restored]) {
+      expect((session as unknown as {
+        dependencies: { agentToolMcpRunSessions: unknown };
+      }).dependencies.agentToolMcpRunSessions).toBe(activator);
+    }
+  });
+
+  it("creates a run session with a reserved provider UUID and no local-id placeholder", async () => {
+    const manager = createManager({
+      getSessionMessages: vi.fn(async () => []),
+      listModels: vi.fn(async () => []),
+    });
+    const runContext = createRunContext({ runId: "run-create" });
+
+    const session = await manager.createRunSession(runContext as never, () => undefined);
+
+    expect(manager.hasRunSession("run-create")).toBe(true);
+    expect(session.sessionId).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
+    expect(session.sessionId).not.toBe("run-create");
+    expect(session.runContext.runtimeContext.sessionId).toBeNull();
+    expect(session.runContext.runtimeContext.hasCompletedTurn).toBe(false);
+    expect(session.runContext.runtimeContext.activeTurnId).toBe(null);
+  });
+
+  it("restores a run session with the exact persisted provider UUID ready for resume", async () => {
+    const manager = createManager({
+      getSessionMessages: vi.fn(async () => []),
+      listModels: vi.fn(async () => []),
+    });
+    const runContext = createRunContext({ runId: "run-restore" });
+
+    const session = await manager.restoreRunSession(runContext as never, RESTORED_SESSION_ID, () => undefined);
+
+    expect(manager.hasRunSession("run-restore")).toBe(true);
+    expect(session.sessionId).toBe(RESTORED_SESSION_ID);
+    expect(session.runContext.runtimeContext.sessionId).toBeNull();
+    expect(session.runContext.runtimeContext.hasCompletedTurn).toBe(false);
+    expect(session.runContext.runtimeContext.activeTurnId).toBe(null);
+  });
+
+  it("uses the provided session id directly when fetching session messages", async () => {
+    const sdkClient = {
+      getSessionMessages: vi.fn(async () => []),
+      listModels: vi.fn(async () => []),
+    } as const;
+    const manager = createManager(sdkClient);
+
+    await manager.getSessionMessages("session-123");
+
+    expect(sdkClient.getSessionMessages).toHaveBeenCalledWith("session-123");
+  });
+
+  it("falls back to cached messages when the SDK returns no history", async () => {
+    const sdkClient = {
+      getSessionMessages: vi.fn(async () => []),
+      listModels: vi.fn(async () => []),
+    } as const;
+    const manager = createManager(sdkClient);
+    const cache = (manager as any).sessionMessageCache;
+    cache.appendMessage("claude-session-1", {
+      role: "user",
+      content: "cached message",
+      createdAt: 1,
+    });
+
+    const messages = await manager.getSessionMessages("claude-session-1");
+
+    expect(messages).toEqual([
+      {
+        role: "user",
+        content: "cached message",
+        createdAt: 1,
+      },
+    ]);
+  });
+
+  it("merges normalized SDK history with cached messages when both are available", async () => {
+    const sdkClient = {
+      getSessionMessages: vi.fn(async () => [
+        {
+          role: "assistant",
+          content: "sdk message",
+          createdAt: 2,
+        },
+      ]),
+      listModels: vi.fn(async () => []),
+    } as const;
+    const manager = createManager(sdkClient);
+    const cache = (manager as any).sessionMessageCache;
+    cache.appendMessage("claude-session-2", {
+      role: "user",
+      content: "cached message",
+      createdAt: 1,
+    });
+
+    const messages = await manager.getSessionMessages("claude-session-2");
+
+    expect(messages).toEqual([
+      {
+        role: "assistant",
+        content: "sdk message",
+        createdAt: 2,
+      },
+      {
+        role: "user",
+        content: "cached message",
+        createdAt: 1,
+      },
+    ]);
+  });
+
+  it("terminates a run session, emits SESSION_TERMINATED, and removes the run session", async () => {
+    const manager = createManager({
+      getSessionMessages: vi.fn(async () => []),
+      listModels: vi.fn(async () => []),
+    });
+    const session = await manager.createRunSession(createRunContext({ runId: "run-terminate" }) as never, () => undefined);
+    const events: string[] = [];
+    session.subscribeRuntimeEvents((event) => {
+      events.push(event.method);
+    });
+
+    await manager.terminateRun("run-terminate");
+
+    expect(events).toContain(ClaudeSessionEventName.SESSION_TERMINATED);
+    expect(manager.hasRunSession("run-terminate")).toBe(false);
+  });
+
+  it("settles an active turn as interrupted, then closes the run's Claude process before SESSION_TERMINATED (AC-008)", async () => {
+    const sdkClient = createFakeClaudeSdkClient({});
+    const manager = createManager(sdkClient);
+    const session = await manager.createRunSession(createRunContext({ runId: "run-active-terminate" }) as never, () => undefined);
+    const events: Array<{ method: string; activeTurnId: string | null }> = [];
+    session.subscribeRuntimeEvents((event) => {
+      events.push({ method: event.method, activeTurnId: session.activeTurnId });
+    });
+    const clearPendingToolApprovals = vi.fn();
+    (manager as any).toolingCoordinator.clearPendingToolApprovals = clearPendingToolApprovals;
+
+    const started = await session.submitInput(new AgentInputUserMessage("hello"), { kind: "start_turn" });
+    await flushClaudeSession();
+    expect(started.accepted).toBe(true);
+    sdkClient.current.init();
+    await flushClaudeSession();
+
+    await manager.terminateRun("run-active-terminate");
+
+    expect(clearPendingToolApprovals).toHaveBeenCalledWith(
+      "run-active-terminate",
+      "Tool approval cancelled because run was closed.",
+    );
+    const eventMethods = events.map((event) => event.method);
+    const interruptedIndex = eventMethods.indexOf(ClaudeSessionEventName.TURN_INTERRUPTED);
+    const terminatedIndex = eventMethods.indexOf(ClaudeSessionEventName.SESSION_TERMINATED);
+    expect(interruptedIndex).toBeGreaterThanOrEqual(0);
+    expect(terminatedIndex).toBeGreaterThan(interruptedIndex);
+    expect(events[interruptedIndex]?.activeTurnId).toBeNull();
+    expect(sdkClient.current.requestClose).toHaveBeenCalledTimes(1);
+    expect(sdkClient.current.interruptAndCancelQueued).not.toHaveBeenCalled();
+    expect(manager.hasRunSession("run-active-terminate")).toBe(false);
+  });
+
+  it("closes the previous run process when a run session is replaced", async () => {
+    const sdkClient = createFakeClaudeSdkClient({});
+    const manager = createManager(sdkClient);
+    const session = await manager.createRunSession(createRunContext({ runId: "run-replaced" }) as never, () => undefined);
+    await session.submitInput(new AgentInputUserMessage("hello"), { kind: "start_turn" });
+    await flushClaudeSession();
+    const first = sdkClient.current;
+
+    await manager.createRunSession(createRunContext({ runId: "run-replaced" }) as never, () => undefined);
+
+    expect(first.requestClose).toHaveBeenCalledTimes(1);
+  });
+});

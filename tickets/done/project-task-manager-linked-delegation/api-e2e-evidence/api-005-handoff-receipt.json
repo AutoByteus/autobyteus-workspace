@@ -1,0 +1,16 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /software_engineering_team/code_reviewer.\",\"target_agent_run_id\":\"code_reviewer_324c9986b1b745749a92256d790995c4\"}"
+    }
+  ],
+  "structuredContent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/code_reviewer.",
+    "target_agent_run_id": "code_reviewer_324c9986b1b745749a92256d790995c4"
+  },
+  "attachedReferenceCount": 800,
+  "confirmedAt": "2026-10-03T14:16:29.823486+00:00"
+}

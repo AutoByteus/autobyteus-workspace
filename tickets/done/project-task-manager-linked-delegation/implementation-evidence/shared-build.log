@@ -1,0 +1,14 @@
+Scope: 6 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-agent-presentation-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-agent-presentation-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-team-stream-contracts build$ tsc -p tsconfig.build.json
+...byteus-collaboration-stream-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+...byteus-collaboration-stream-contracts build: Done
+autobyteus-team-stream-contracts build: Done

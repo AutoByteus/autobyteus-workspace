@@ -1,0 +1,19 @@
+2026-10-04T18:30:09.637148+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["pnpm", "-C", "autobyteus-server-ts", "exec", "tsc", "--noEmit", "-p", "../tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-tests-tsconfig.json"]
+tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts(123,56): error TS2345: Argument of type '{ memberContexts: FlatAgentExecutionContext[]; }' is not assignable to parameter of type '{ memberContexts: FlatAgentExecutionContext[]; configuredMemberActivationMode: ConfiguredMemberActivationMode; }'.
+  Property 'configuredMemberActivationMode' is missing in type '{ memberContexts: FlatAgentExecutionContext[]; }' but required in type '{ memberContexts: FlatAgentExecutionContext[]; configuredMemberActivationMode: ConfiguredMemberActivationMode; }'.
+tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts(334,115): error TS2352: Conversion of type '{ eventSourceType: TeamRunEventSourceType.AGENT; execution: Readonly<{ root: RootExecutionIdentity; memberAddress: AgentTeamAddress; agentRunId: string; }>; payload: { ...; }; }' to type 'TeamRunEvent' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ eventSourceType: TeamRunEventSourceType.AGENT; execution: Readonly<{ root: RootExecutionIdentity; memberAddress: AgentTeamAddress; agentRunId: string; }>; payload: { ...; }; }' is not comparable to type 'Readonly<{ eventSourceType: TeamRunEventSourceType.AGENT; execution: Readonly<{ root: RootExecutionIdentity; memberAddress: AgentTeamAddress; agentRunId: string; }>; payload: TeamAgentEvent; }>'.
+    Types of property 'payload' are incompatible.
+      Type '{ eventType: "AGENT_STATUS"; statusHint: "idle" | "running"; details: Readonly<{ status: AgentApiStatus; trigger: string | null; toolName: string | null; errorMessage: string | null; errorDetails: string | null; recoverableBlock: CompactionRecoveryBlockDto | null; }>; }' is not comparable to type 'TeamAgentEvent'.
+        Type '{ eventType: "AGENT_STATUS"; statusHint: "idle" | "running"; details: Readonly<{ status: AgentApiStatus; trigger: string | null; toolName: string | null; errorMessage: string | null; errorDetails: string | null; recoverableBlock: CompactionRecoveryBlockDto | null; }>; }' is not comparable to type 'Readonly<{ eventType: "AGENT_STATUS"; details: Readonly<Readonly<{ status: AgentApiStatus; trigger: string | null; toolName: string | null; errorMessage: string | null; errorDetails: string | null; recoverableBlock: { ...; } | null; }>>; statusHint: AgentRunStatusHint; }>'.
+          Types of property 'statusHint' are incompatible.
+            Type '"idle" | "running"' is not comparable to type 'AgentRunStatusHint'.
+              Type '"running"' is not comparable to type 'AgentRunStatusHint'.
+tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts(336,104): error TS2322: Type 'string' is not assignable to type 'AgentTeamAddress'.
+  Type 'string' is not assignable to type '{ readonly [agentTeamAddressBrand]: true; }'.
+tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts(602,12): error TS2532: Object is possibly 'undefined'.
+
+INNER_EXIT=2
+ELAPSED=4.53

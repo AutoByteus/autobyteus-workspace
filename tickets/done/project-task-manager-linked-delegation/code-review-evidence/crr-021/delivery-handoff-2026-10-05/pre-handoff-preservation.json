@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-05T03:00:36.759610+00:00",
+  "purpose": "Administrative preservation only; no new review or executable validation",
+  "incomingReferences": 4194,
+  "exactIncomingReferences": 4192,
+  "onlyAuthorizedReviewerAdministrativeAppends": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "priorCanonicalBodiesAndChronologyByteExactAsPrefixes": true,
+  "all20DurableHashesExact": true,
+  "sourceReportExact": true,
+  "HEADBranchStashBinaryIndexStagesExact": true,
+  "all300NonTicketDirtyStatusesExact": true,
+  "noOtherDirtyStatusChangeOutsideNewAdministrativeEvidenceDirectory": true,
+  "zeroUnmerged": true,
+  "diffHEADAndCachedChecksExit0": true,
+  "newSourceOrTestReviewResult": false,
+  "newAPITestPaidOrApplicationExecution": false,
+  "currentCanonicalHashes": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-review-report.md": "ab8e4447f980ceccb0c27ebb1437f02e0fff74c2bf14e26d718418910163990f",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md": "992365905c314529ed3ac68c7da2b66168555ed9cae4cb534a8d1bdc64b99e31"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "subjectKind": "agent",
+  "createdAt": "2026-10-03T12:27:33.688Z",
+  "host": {
+    "address": "/project_task_manager",
+    "agentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+    "agentDefinitionId": "autobyteus-project-task-manager"
+  },
+  "collaborators": [],
+  "taskExecutions": [
+    {
+      "address": "/api004_packet_agent",
+      "agentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+      "platformAgentRunId": "01a101bc-3d28-7db0-9642-ab859c89cba7",
+      "taskLifetime": {
+        "lifetimeId": "project_task_lifetime_64732eee-8554-4d08-83a0-433a21ff0061",
+        "purpose": "assignment"
+      },
+      "delegatorAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+      "startedAt": "2026-10-03T12:27:56.045Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api004-packet-agent",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+        }
+      }
+    },
+    {
+      "address": "/api004_packet_team",
+      "teamRunId": "api004_packet_team_2cd38d86f65144f09ab76c5072d0d436",
+      "members": [
+        {
+          "address": "/api004_packet_team/coordinator",
+          "agentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+          "platformAgentRunId": "01a101bc-583d-7be2-8cb7-e323d87e1e95"
+        },
+        {
+          "address": "/api004_packet_team/reader",
+          "agentRunId": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+          "platformAgentRunId": "01a101bc-58b7-7a51-bc0b-268b0ca71d2b"
+        }
+      ],
+      "taskExecutions": [],
+      "delegatorAgentRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+      "startedAt": "2026-10-03T12:28:02.977Z",
+      "source": {
+        "kind": "agent_team",
+        "teamDefinitionId": "api004-packet-team",
+        "coordinatorAddress": "/api004_packet_team/coordinator",
+        "members": [
+          {
+            "address": "/api004_packet_team/coordinator",
+            "agentDefinitionId": "api004-team-coordinator"
+          },
+          {
+            "address": "/api004_packet_team/reader",
+            "agentDefinitionId": "api004-team-reader"
+          }
+        ],
+        "handoffs": [],
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+        }
+      },
+      "taskLifetime": {
+        "lifetimeId": "project_task_lifetime_548ac8bd-e0f9-49e3-b085-675c0adce9ce",
+        "purpose": "assignment"
+      }
+    },
+    {
+      "address": "/api004_team_reader",
+      "agentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+      "platformAgentRunId": "01a101bd-0d55-7f51-973c-97a9e349c576",
+      "taskLifetime": {
+        "lifetimeId": "project_task_lifetime_548ac8bd-e0f9-49e3-b085-675c0adce9ce",
+        "purpose": "helper"
+      },
+      "delegatorAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+      "startedAt": "2026-10-03T12:28:49.335Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api004-team-reader",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-KNLcN9/validation-workspace/manager"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "at": "2026-10-04T06:13:35.507679+00:00",
+  "round": "API-REV-013",
+  "postRepositoryScores": {
+    "Requirement and acceptance-criteria proof": 75,
+    "Changed-boundary execution directness": 90,
+    "Cross-boundary integration realism and mock gap": 75,
+    "Environment, configuration, identity, and fixture fidelity": 90,
+    "Failure, edge-case, lifecycle, and recovery evidence": 75,
+    "User-surface, browser, and desktop-shell confidence": 50,
+    "Durable regression coverage quality and relevance": 95
+  },
+  "postRepositoryOverall": 78.57,
+  "finalScores": {
+    "Requirement and acceptance-criteria proof": 75,
+    "Changed-boundary execution directness": 95,
+    "Cross-boundary integration realism and mock gap": 90,
+    "Environment, configuration, identity, and fixture fidelity": 90,
+    "Failure, edge-case, lifecycle, and recovery evidence": 75,
+    "User-surface, browser, and desktop-shell confidence": 95,
+    "Durable regression coverage quality and relevance": 95
+  },
+  "finalOverall": 87.86,
+  "calculation": "simple average7applicable",
+  "result": "Blocked",
+  "broaderValidation": "Required\u2014executed; remaining exact-provider legs Blocked",
+  "everyCriticalDirectlyProven": false,
+  "rationale": {
+    "Requirement and acceptance-criteria proof": {
+      "support": "All selected current Native/Codex real journeys and deterministic matrix pass; exact requested Claude cannot run.",
+      "uncertainty": "Entire required provider/protection matrix is not directly certified; original FAPI007 remains open/unclear."
+    },
+    "Changed-boundary execution directness": {
+      "support": "Actual current built HTTP/WS/scoped MCP, public list AND scoped facade, pure-map consumers, owned AGY process boundary and packaged live callbacks.",
+      "uncertainty": "Installed AGY/remote provider actor is not proven; no global-runtime certificate."
+    },
+    "Cross-boundary integration realism and mock gap": {
+      "support": "Actual DeepSeekV4Flash Native and Sol6.1low Codex inference/read results plus owned real child/process controls.",
+      "uncertainty": "AGY external actor is emulated; all-provider physical preparation/failure windows are not live certified."
+    },
+    "Environment, configuration, identity, and fixture fidelity": {
+      "support": "Fresh own 1.4.94-beta.2 worktree package, exact reported ports/profile/models/configs, importer, faithful current array.",
+      "uncertainty": "Requested Sonnet5.5 absent; catalog/configured state is not authentication proof; AGY4.8/remote individually unprovided."
+    },
+    "Failure, edge-case, lifecycle, and recovery evidence": {
+      "support": "Submitted-reader DONE, borrowed/sibling protection, TODO/no-spawn/new copy, closed fences, real private failure/exact retry units, actual whole-app same-worker/Manager resumption.",
+      "uncertainty": "Original FAPI007 exact failed-authority retry not reproduced/closed; controlled failure windows do not certify every provider."
+    },
+    "User-surface, browser, and desktop-shell confidence": {
+      "support": "Actual ordinary Chat/@ Manager, live retained offline rows, active/cold full forest selection, same-worker assistant DOM and real whole software restart.",
+      "uncertainty": "One Native standalone B canonical observer missed existing sockets; no B-event backfill. No full mobile/accessibility or mid-turn crash certificate."
+    },
+    "Durable regression coverage quality and relevance": {
+      "support": "All20 cumulative durables current-valid and unchanged by API, affected150-file unit selection plus current HTTP/native/web/actual owned child checks.",
+      "uncertainty": "No successful proportional review yet; historical wider52failedfiles136tests4unhandled5live skips not a whole-baseline Pass."
+    }
+  }
+}

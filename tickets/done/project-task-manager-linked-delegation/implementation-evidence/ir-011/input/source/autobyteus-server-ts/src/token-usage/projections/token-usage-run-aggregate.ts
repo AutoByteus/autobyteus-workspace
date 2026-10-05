@@ -1,0 +1,180 @@
+import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
+import {
+  distinctValueLabel,
+  mergeDistinctValue,
+  unknownDistinctValue,
+  type DistinctValueSummary,
+} from "../domain/token-usage-distinct-value-summary.js";
+import type {
+  TokenUsageAccountingSummarySource,
+  TokenUsagePricingSummary,
+} from "../domain/token-usage-accounting-summary.js";
+import type { TokenUsageRunRecord } from "../domain/token-usage-run-record.js";
+import { compareAdmissionMarkers } from "../domain/token-usage-snapshot-checkpoint.js";
+import {
+  buildTokenUsageCostSummaryAggregate,
+  tokenUsageSafeNumber,
+  TokenUsageSafeIntegerExceededError,
+  type TokenUsageCostSummaryAggregate,
+} from "./token-usage-cost-summary-aggregate.js";
+import {
+  emptyTokenUsagePricingSummary,
+  mergeTokenUsagePricingSummaries,
+} from "./token-usage-pricing-summary.js";
+import { latestSelectedClaudeSdkRawIdFromState } from "./claude-sdk-model-usage-reconciler.js";
+
+export { TokenUsageSafeIntegerExceededError };
+
+const asAggregateSource = (record: TokenUsageRunRecord): TokenUsageAccountingSummarySource => ({
+  tokenTotals: record.tokenTotals,
+  costTotals: record.costTotals,
+  cacheState: record.cacheState,
+  pricingSummary: record.pricingSummary,
+  usageReportCount: record.usageReportCount,
+  latestObservedAt: record.latestObservedAt,
+  observedRuntimeKinds: [],
+  observedModelProviders: [],
+  observedModelIdentifiers: [],
+});
+
+const mergeRunIdentity = (
+  records: readonly TokenUsageRunRecord[],
+  select: (record: TokenUsageRunRecord) => DistinctValueSummary<string>,
+): string[] => {
+  const summary = records.reduce(
+    (current, record) => mergeDistinctValue(current, select(record)),
+    unknownDistinctValue<string>(),
+  );
+  return summary.status === "unknown" ? [] : [distinctValueLabel(summary)];
+};
+
+const latestRecord = (records: readonly TokenUsageRunRecord[]): TokenUsageRunRecord | null =>
+  records.reduce<TokenUsageRunRecord | null>((latest, record) => (
+    !latest || compareAdmissionMarkers(record.latestObservation, latest.latestObservation) > 0 ? record : latest
+  ), null);
+
+const safeClaudeMetric = (value: bigint | null): number | null =>
+  value !== null && value >= 0n && value <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(value) : null;
+
+const latestContext = (record: TokenUsageRunRecord | null): {
+  prompt: number | null; capacity: number | null; percent: number | null;
+} => {
+  if (!record) return { prompt: null, capacity: null, percent: null };
+  if (record.latestRuntimeKind !== "claude_agent_sdk") return {
+    prompt: record.latestPromptTokens === null ? null : tokenUsageSafeNumber(record.latestPromptTokens, "latest_prompt_tokens"),
+    capacity: record.effectiveContextWindowTokens === null ? null
+      : tokenUsageSafeNumber(record.effectiveContextWindowTokens, "effective_context_window_tokens"),
+    percent: record.contextWindowUsagePercent,
+  };
+  const prompt = safeClaudeMetric(record.latestPromptTokens);
+  const rawCapacity = safeClaudeMetric(record.effectiveContextWindowTokens);
+  const capacity = rawCapacity !== null && rawCapacity > 0 ? rawCapacity : null;
+  const savedPercent = record.contextWindowUsagePercent;
+  return { prompt, capacity, percent: savedPercent !== null && Number.isFinite(savedPercent)
+    ? savedPercent : prompt !== null && capacity !== null ? 100 * (prompt / capacity) : null };
+};
+
+export const buildTokenUsageRunAggregate = (
+  records: readonly TokenUsageRunRecord[],
+): TokenUsageCostSummaryAggregate => ({
+  ...buildTokenUsageCostSummaryAggregate(records.map(asAggregateSource)),
+  observed_runtime_kinds: mergeRunIdentity(records, (record) => record.identitySummary.runtimeKinds),
+  observed_model_providers: mergeRunIdentity(records, (record) => record.identitySummary.modelProviders),
+  observed_model_identifiers: mergeRunIdentity(records, (record) => record.identitySummary.modelIdentifiers.status === "unknown"
+    ? record.identitySummary.modelValues
+    : record.identitySummary.modelIdentifiers),
+});
+
+export const buildTokenUsageRunSummaryFromRecords = (input: {
+  runId: string;
+  records: readonly TokenUsageRunRecord[];
+}): TokenUsageRunSummaryPayload => {
+  const aggregate = buildTokenUsageRunAggregate(input.records);
+  const latest = latestRecord(input.records);
+  const context = latestContext(latest);
+  return {
+    run_id: input.runId,
+    root_team_run_id: latest?.rootTeamRunId ?? null,
+    agent_definition_id: latest?.agentDefinitionId ?? null,
+    workspace_id: latest?.workspaceId ?? null,
+    gross_input_tokens: aggregate.gross_input_tokens,
+    standard_input_tokens: aggregate.standard_input_tokens,
+    cache_miss_input_tokens: aggregate.cache_miss_input_tokens,
+    cache_read_input_tokens: aggregate.cache_read_input_tokens,
+    cache_creation_input_tokens: aggregate.cache_creation_input_tokens,
+    cache_creation_5m_input_tokens: aggregate.cache_creation_5m_input_tokens,
+    cache_creation_1h_input_tokens: aggregate.cache_creation_1h_input_tokens,
+    output_tokens: aggregate.output_tokens,
+    reasoning_output_tokens: aggregate.reasoning_output_tokens,
+    billable_output_tokens: aggregate.billable_output_tokens,
+    total_tokens: aggregate.total_tokens,
+    cache_read_input_token_rate: aggregate.cache_read_input_token_rate,
+    standard_input_token_rate: aggregate.standard_input_token_rate,
+    cache_creation_input_token_rate: aggregate.cache_creation_input_token_rate,
+    cache_state: aggregate.cache_state,
+    estimated_api_input_cost: aggregate.estimated_api_input_cost,
+    estimated_api_standard_input_cost: aggregate.estimated_api_standard_input_cost,
+    estimated_api_cache_read_input_cost: aggregate.estimated_api_cache_read_input_cost,
+    estimated_api_cache_creation_input_cost: aggregate.estimated_api_cache_creation_input_cost,
+    estimated_api_cache_creation_5m_input_cost: aggregate.estimated_api_cache_creation_5m_input_cost,
+    estimated_api_cache_creation_1h_input_cost: aggregate.estimated_api_cache_creation_1h_input_cost,
+    estimated_api_output_cost: aggregate.estimated_api_output_cost,
+    estimated_api_reasoning_output_cost: aggregate.estimated_api_reasoning_output_cost,
+    estimated_api_total_cost: aggregate.estimated_api_total_cost,
+    currency: aggregate.currency,
+    api_cost_status: aggregate.api_cost_status,
+    missing_price_dimensions: aggregate.missing_price_dimensions,
+    pricing_policy_key: aggregate.pricing_policy_key,
+    selected_pricing_tier_id: aggregate.selected_pricing_tier_id,
+    unit_prices: aggregate.unit_prices,
+    usage_report_count: aggregate.usage_report_count,
+    updated_at: aggregate.updated_at,
+    latest_prompt_tokens: context.prompt,
+    effective_context_window_tokens: context.capacity,
+    context_window_usage_percent: context.percent,
+    latest_model_provider: latest?.latestModelProvider ?? null,
+    latest_model_identifier: latest?.latestModelIdentifier ?? null,
+    latest_runtime_kind: latest?.latestRuntimeKind ?? null,
+    latest_selected_raw_model_id: latest?.latestRuntimeKind === "claude_agent_sdk"
+      ? latestSelectedClaudeSdkRawIdFromState(latest.claudeSdkUsageStateJson) : null,
+    has_cache_write_rate_assumption: input.records.some((record) =>
+      record.qualityFlags.includes("claude_sdk_cache_write_1h_assumed")),
+  };
+};
+
+/**
+ * A standalone run's roll-up (REQ-006): the totals cover every given record (the host and its
+ * collaborators, collaborator-Team members and task copies), while the latest prompt, context
+ * window, model and run identity stay those of the run's own agent (the host record), so the
+ * context meter keeps describing the agent the user is talking to.
+ */
+export const buildStandaloneRunTokenUsageSummaryFromRecords = (input: {
+  hostRunId: string;
+  records: readonly TokenUsageRunRecord[];
+}): TokenUsageRunSummaryPayload => {
+  const total = buildTokenUsageRunSummaryFromRecords({ runId: input.hostRunId, records: input.records });
+  const host = buildTokenUsageRunSummaryFromRecords({
+    runId: input.hostRunId,
+    records: input.records.filter((record) => record.runId === input.hostRunId),
+  });
+  return {
+    ...total,
+    root_team_run_id: host.root_team_run_id,
+    agent_definition_id: host.agent_definition_id,
+    workspace_id: host.workspace_id,
+    latest_prompt_tokens: host.latest_prompt_tokens,
+    effective_context_window_tokens: host.effective_context_window_tokens,
+    context_window_usage_percent: host.context_window_usage_percent,
+    latest_model_provider: host.latest_model_provider,
+    latest_model_identifier: host.latest_model_identifier,
+    latest_runtime_kind: host.latest_runtime_kind,
+    latest_selected_raw_model_id: host.latest_selected_raw_model_id,
+  };
+};
+
+export const mergePricingSummariesForRecords = (
+  records: readonly TokenUsageRunRecord[],
+): TokenUsagePricingSummary => records.reduce(
+  (summary, record) => mergeTokenUsagePricingSummaries(summary, record.pricingSummary),
+  emptyTokenUsagePricingSummary(),
+);

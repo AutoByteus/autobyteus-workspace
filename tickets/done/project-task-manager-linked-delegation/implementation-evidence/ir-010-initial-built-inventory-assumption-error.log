@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-finalize.py", line 24, in <module>
+    d=Path(p.replace('/src/','/dist/')).with_suffix(ext);assert (w/d).is_file();built[str(w/d)]=sha(w/d)
+AssertionError

@@ -1,0 +1,152 @@
+{
+  "at": "2026-10-04T08:06:37.904499+00:00",
+  "instanceId": "iso-57942-2d9d",
+  "rootId": "api015_claude_concrete_root_org_rerun_895a652b_31e0_439d_8dd3_2c7c51a85f4f_033ccdb0c0fa4b6a94189876e296e508",
+  "preFirstDoneInputStates": [
+    {
+      "agent_run_id": "api015_claude_team_coordinator_0af2809748834bffb4c2269ed04bd430",
+      "state": {
+        "run_instance_id": "997d5774-c8cf-4a2a-8b85-1bdbe6841c7a",
+        "revision": 5,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "agent_run_id": "api015_claude_team_reader_1d0ad0d07f984d81b649fc4769dcdacc",
+      "state": {
+        "run_instance_id": "4b77e23b-857e-4cbb-acf1-457af793185e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "memberinput_WJCymITZ12c1tAeSwGhToHhqZvSgrf_L",
+            "dedupe_key": "member_input:agent_org\u0000api015_claude_concrete_root_org_rerun_895a652b_31e0_439d_8dd3_2c7c51a85f4f_033ccdb0c0fa4b6a94189876e296e508:api015_claude_team_reader_1d0ad0d07f984d81b649fc4769dcdacc:memberinput_WJCymITZ12c1tAeSwGhToHhqZvSgrf_L",
+            "turn_id": "api015_claude_team_reader_1d0ad0d07f984d81b649fc4769dcdacc:turn:6c40b5c7-db16-4014-a8df-9da567293beb",
+            "state": "forwarded",
+            "content": "You received a message from sender name: coordinator, sender id: api015_claude_team_coordinator_0af2809748834bffb4c2269ed04bd430\nmessage:\nPlease perform a runtime-native read-only read (cat or read_file) of the following saved Task attachment file, and report back the exact marker/content you actually read. Do not modify the file, create copies, or change any Task status.\n\nFile path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-tdalBZ/server-data/projects/task_context_files/project_64f15627-63bd-4309-8024-831836a3585d/project_task_cb7ba5ff-db15-4f82-8ddd-5e141f95614d/ctx_c1005af1a9df__saved-agent_org-B.txt\n\nFor reference, my own exact read marker from this file was: API015_CLAUDE_agent_org_B_cd2c5ef1-5359-4eb7-8393-ae2fac36ca51",
+            "sender_type": "agent",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    }
+  ],
+  "canonical": {
+    "api015_claude_team_coordinator_0af2809748834bffb4c2269ed04bd430": {
+      "turnStarted": [
+        {
+          "turn_id": "api015_claude_team_coordinator_0af2809748834bffb4c2269ed04bd430:turn:eed0339b-8330-446b-8aed-65352c823d57"
+        }
+      ],
+      "turnInterrupted": [],
+      "turnCompleted": [
+        {
+          "turn_id": "api015_claude_team_coordinator_0af2809748834bffb4c2269ed04bd430:turn:eed0339b-8330-446b-8aed-65352c823d57",
+          "reason": null
+        }
+      ],
+      "lastInputState": {
+        "run_instance_id": "997d5774-c8cf-4a2a-8b85-1bdbe6841c7a",
+        "revision": 5,
+        "entries": [],
+        "recoverableBlock": null
+      },
+      "lastStatus": {
+        "recoverableBlock": null,
+        "status": "offline",
+        "trigger": null,
+        "tool_name": null,
+        "error_message": null,
+        "error_details": null
+      }
+    },
+    "api015_claude_team_reader_1d0ad0d07f984d81b649fc4769dcdacc": {
+      "turnStarted": [
+        {
+          "turn_id": "api015_claude_team_reader_1d0ad0d07f984d81b649fc4769dcdacc:turn:6c40b5c7-db16-4014-a8df-9da567293beb"
+        }
+      ],
+      "turnInterrupted": [
+        {
+          "turn_id": "api015_claude_team_reader_1d0ad0d07f984d81b649fc4769dcdacc:turn:6c40b5c7-db16-4014-a8df-9da567293beb",
+          "reason": null
+        }
+      ],
+      "turnCompleted": [],
+      "lastInputState": {
+        "run_instance_id": "4b77e23b-857e-4cbb-acf1-457af793185e",
+        "revision": 4,
+        "entries": [],
+        "recoverableBlock": null
+      },
+      "lastStatus": {
+        "recoverableBlock": null,
+        "status": "offline",
+        "trigger": null,
+        "tool_name": null,
+        "error_message": null,
+        "error_details": null
+      }
+    },
+    "api015_claude_team_coordinator_80559e9f6f2c40f89b947ae24836c86a": {
+      "turnStarted": [
+        {
+          "turn_id": "api015_claude_team_coordinator_80559e9f6f2c40f89b947ae24836c86a:turn:bbba1cde-139e-4461-8de8-3aa3ec07607c"
+        }
+      ],
+      "turnInterrupted": [],
+      "turnCompleted": [
+        {
+          "turn_id": "api015_claude_team_coordinator_80559e9f6f2c40f89b947ae24836c86a:turn:bbba1cde-139e-4461-8de8-3aa3ec07607c",
+          "reason": null
+        }
+      ],
+      "lastInputState": {
+        "run_instance_id": "d9f9e2e7-d314-4d70-b35c-1bf5267e0600",
+        "revision": 5,
+        "entries": [],
+        "recoverableBlock": null
+      },
+      "lastStatus": {
+        "recoverableBlock": null,
+        "status": "offline",
+        "trigger": null,
+        "tool_name": null,
+        "error_message": null,
+        "error_details": null
+      }
+    },
+    "api015_claude_team_reader_ca0d711b9df144059da0783ca9997c4b": {
+      "turnStarted": [
+        {
+          "turn_id": "api015_claude_team_reader_ca0d711b9df144059da0783ca9997c4b:turn:2e5c1086-b02c-4cd0-afe8-5114cd9c9b44"
+        }
+      ],
+      "turnInterrupted": [
+        {
+          "turn_id": "api015_claude_team_reader_ca0d711b9df144059da0783ca9997c4b:turn:2e5c1086-b02c-4cd0-afe8-5114cd9c9b44",
+          "reason": null
+        }
+      ],
+      "turnCompleted": [],
+      "lastInputState": {
+        "run_instance_id": "bc1958a2-cddf-4441-bdb3-f651ed61b9bc",
+        "revision": 6,
+        "entries": [],
+        "recoverableBlock": null
+      },
+      "lastStatus": {
+        "recoverableBlock": null,
+        "status": "offline",
+        "trigger": null,
+        "tool_name": null,
+        "error_message": null,
+        "error_details": null
+      }
+    }
+  },
+  "activeFirstAndReopenedReaderInterruptionProven": true,
+  "scope": "Genuine uninstrumented public canonical turn/input/state and current closure acceptance, NOT originalAPI14 inner/physical/solecause or universalPID/IO certificate"
+}

@@ -944,7 +944,8 @@ For standalone Team runs:
    `agentRunId` identifies its opaque persisted AgentRun/storage subtree.
 4. Task Agents and task Teams retain exact task execution identities beneath
    the flat root. They do not become configured membership. After restore they
-   are shut down and wake on the next same-root message.
+   are shut down and wake on the next same-root message, unless their Project
+   Task's `agent_run_resources.json` records them as closed. Those stay fenced.
 5. The stored effective `handoffs` array is the collaboration-guidance source;
    restore does not recompile handoffs from the current definition.
 6. `TeamRunStatePackageLoader` reads the execution tree with the communication
@@ -964,6 +965,28 @@ For AgentOrg runs:
    no coordinator or first-member fallback.
 4. `listCollaborationRootHistory` exposes explicit Team/Org root kinds while
    family loaders and indexes retain on-disk authority.
+
+### Task-linked history and public projection
+
+Execution trees (Team, Org and standalone) carry **no Task information**. They
+record runs, nesting, creator (`delegatorAgentRunId`) and source only. Which
+runs belong to a Project Task is recorded only in that Task's
+`<appData>/projects/<projectId>/tasks/<taskId>/agent_run_resources.json`. That
+file survives Task and Project Delete. See
+[Projects](projects.md#agent-run-resources).
+
+Neither Delete nor DONE removes conversations, concrete child identities or
+retained execution history. Reading inactive history does not authorize waking
+closed work.
+
+Agent-root and Org public tree facades use the shared recursive
+`services/agent-streaming/collaboration-execution-tree-dto-projection.ts` mapper.
+Live, inspection and resume views, and mixed list/scoped Org history, must
+project every concrete Agent/Team copy, nested Team member, collaborator and
+task descendant through the strict public DTO. They must not pass private
+fields through, and must not drop children to make schema parsing succeed. Run
+IDs, source/configuration and delegator identities are kept. This is a
+visibility/projection contract, not a standalone privacy certification.
 
 For both families, `platformAgentRunId` identifies only the exact external
 Codex thread or Claude session. Native nodes keep it null and restore from local

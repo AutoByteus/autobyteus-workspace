@@ -1,0 +1,164 @@
+import type { ContextAttachment, UserMessage } from '~/types/conversation';
+import type { InterAgentMessageSegment, MediaSegment, ToolApprovalTarget } from '~/types/segments';
+import { parseInterAgentDelivery } from '~/utils/collaboration/interAgentDelivery';
+import type { CompactionActivity } from '~/types/activity/RunActivity';
+import { isCompactionPhase, type CompactionStatusPhase } from '~/types/activity/compactionPhase';
+import type { ToolCardPresentation, ToolCardStatusPresentationKey } from '~/utils/toolCardPresentation';
+import { buildEventMonitorPageToolCardPresentation } from '~/utils/toolCardPresentation';
+import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import type {
+  EventMonitorActiveTracePageEventDto,
+  EventMonitorActiveTracePageVisualDto,
+} from './eventMonitorActiveTracePageService';
+
+export type EventMonitorBrowseAssistantVisual =
+  | { kind: 'text'; visualId: string; content: string }
+  | { kind: 'thinking'; visualId: string; content: string }
+  | { kind: 'tool'; visualId: string; presentation: ToolCardPresentation }
+  | { kind: 'media'; visualId: string; segment: MediaSegment }
+  | { kind: 'inter_agent'; visualId: string; segment: InterAgentMessageSegment };
+
+export type EventMonitorActiveTraceBrowsePresentationItem =
+  | { kind: 'user'; key: string; visualId: string; message: UserMessage }
+  | { kind: 'assistant'; key: string; turnGroupId: string; visuals: EventMonitorBrowseAssistantVisual[] }
+  | { kind: 'compaction'; key: string; visualId: string; activity: CompactionActivity };
+
+const toAttachment = (
+  attachment: Extract<EventMonitorActiveTracePageVisualDto, { __typename?: 'EventMonitorUserVisual' }>['attachments'][number],
+): ContextAttachment => ({
+  ...hydrateContextAttachment({
+    locator: attachment.locator,
+    type: attachment.fileType,
+    displayName: attachment.fileName,
+  }),
+  id: attachment.attachmentId,
+});
+
+const STATUS_KEYS = new Set<ToolCardStatusPresentationKey>([
+  'running', 'success', 'error', 'approved', 'awaiting-approval', 'denied', 'default',
+]);
+
+const toAssistantVisual = (
+  visual: EventMonitorActiveTracePageVisualDto,
+): EventMonitorBrowseAssistantVisual | null => {
+  if (visual.__typename === 'EventMonitorAssistantTextVisual') {
+    return { kind: 'text', visualId: visual.visualId, content: visual.content };
+  }
+  if (visual.__typename === 'EventMonitorThinkingVisual') {
+    return { kind: 'thinking', visualId: visual.visualId, content: visual.content };
+  }
+  if (visual.__typename === 'EventMonitorMediaVisual') {
+    if (!['image', 'audio', 'video'].includes(visual.mediaType)) {
+      throw new Error(`Unsupported active-trace media type '${visual.mediaType}'.`);
+    }
+    return {
+      kind: 'media',
+      visualId: visual.visualId,
+      segment: { type: 'media', mediaType: visual.mediaType as MediaSegment['mediaType'], urls: [...visual.urls] },
+    };
+  }
+  if (visual.__typename === 'EventMonitorToolCardVisual') {
+    if (!STATUS_KEYS.has(visual.statusKey as ToolCardStatusPresentationKey)) {
+      throw new Error(`Unsupported active-trace tool status '${visual.statusKey}'.`);
+    }
+    return {
+      kind: 'tool',
+      visualId: visual.visualId,
+      presentation: buildEventMonitorPageToolCardPresentation({
+        invocationId: visual.invocationId,
+        toolName: visual.toolName,
+        statusKey: visual.statusKey as ToolCardStatusPresentationKey,
+        summaryArgs: visual.summaryArgs,
+        approvalTarget: (visual.approvalTarget ?? null) as ToolApprovalTarget | null,
+      }),
+    };
+  }
+  return null;
+};
+
+/** An agent-to-agent delivery: "From <Sender>:" as in the live conversation and replay (RD-004). */
+const toInterAgentSegment = (
+  visual: Extract<EventMonitorActiveTracePageVisualDto, { __typename?: 'EventMonitorInterAgentVisual' }>,
+): InterAgentMessageSegment => {
+  const delivery = parseInterAgentDelivery(visual.text);
+  return {
+    type: 'inter_agent_message',
+    senderAgentRunId: visual.senderAgentRunId,
+    senderAddress: visual.senderAddress ?? null,
+    senderName: delivery.senderName,
+    recipientRoleName: '',
+    messageType: 'agent_message',
+    content: delivery.body,
+  };
+};
+
+const toCompaction = (
+  visual: Extract<EventMonitorActiveTracePageVisualDto, { __typename?: 'EventMonitorCompactionVisual' }>,
+  occurredAtMs: number | null | undefined,
+): CompactionActivity => {
+  if (!isCompactionPhase(visual.phase)) {
+    throw new Error(`Unsupported active-trace compaction phase '${visual.phase}'.`);
+  }
+  const timestamp = new Date(occurredAtMs ?? 0);
+  return {
+    kind: 'compaction',
+    activityId: visual.activityId,
+    phase: visual.phase as CompactionStatusPhase,
+    message: visual.message,
+    turnId: visual.turnId,
+    rawTraceCount: visual.rawTraceCount,
+    semanticFactCount: visual.semanticFactCount,
+    provider: visual.provider,
+    timestamp,
+    updatedAt: timestamp,
+    centerTimelineTimestamp: timestamp,
+  };
+};
+
+export const buildEventMonitorActiveTraceBrowsePresentation = (
+  events: readonly EventMonitorActiveTracePageEventDto[],
+): EventMonitorActiveTraceBrowsePresentationItem[] => {
+  const items: EventMonitorActiveTraceBrowsePresentationItem[] = [];
+  for (const event of events) {
+    for (const visual of event.visuals) {
+      if (visual.__typename === 'EventMonitorUserVisual') {
+        items.push({
+          kind: 'user', key: visual.visualId, visualId: visual.visualId,
+          message: {
+            type: 'user', text: visual.text, timestamp: new Date(event.occurredAtMs ?? 0),
+            messageId: event.eventId, contextFilePaths: visual.attachments.map(toAttachment),
+          },
+        });
+        continue;
+      }
+      if (visual.__typename === 'EventMonitorInterAgentVisual') {
+        // A delivery opens the receiving agent's message block; its reply joins it.
+        items.push({
+          kind: 'assistant', key: `browse-assistant-group:${event.turnGroupId}:${visual.visualId}`,
+          turnGroupId: event.turnGroupId,
+          visuals: [{ kind: 'inter_agent', visualId: visual.visualId, segment: toInterAgentSegment(visual) }],
+        });
+        continue;
+      }
+      if (visual.__typename === 'EventMonitorCompactionVisual') {
+        items.push({
+          kind: 'compaction', key: visual.visualId, visualId: visual.visualId,
+          activity: toCompaction(visual, event.occurredAtMs),
+        });
+        continue;
+      }
+      const assistantVisual = toAssistantVisual(visual);
+      if (!assistantVisual) continue;
+      const previous = items.at(-1);
+      if (previous?.kind === 'assistant' && previous.turnGroupId === event.turnGroupId) {
+        previous.visuals.push(assistantVisual);
+      } else {
+        items.push({
+          kind: 'assistant', key: `browse-assistant-group:${event.turnGroupId}`,
+          turnGroupId: event.turnGroupId, visuals: [assistantVisual],
+        });
+      }
+    }
+  }
+  return items;
+};

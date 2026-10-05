@@ -1,0 +1,6 @@
+migrationId=20260803_custom_provider_readable_identity
+displayName=Custom provider readable identity reset
+statusSummary={"scannedCount":1,"migratedCount":0,"skippedCount":1,"failedCount":0}
+error=
+details=
+{"itemId":"readable-provider-reset","status":"SKIPPED","message":"CUSTOM_PROVIDER_READABLE_ID_NOT_REQUIRED","filePath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/server-data/llm/custom-llm-providers.json"}

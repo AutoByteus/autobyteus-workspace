@@ -1,0 +1,32 @@
+[
+  {
+    "path": "autobyteus-server-ts/tests/architecture/projects-boundaries.test.ts",
+    "sha256": "c255c09628104ec1b89112f2e5e4e28689ee6399ed443306961e6e8b90871ea5",
+    "checkpointExact": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/domain/project-task-execution-state.ts",
+    "sha256": "93e890c2e59fcda1e239bb4f3881afea77e56784c8fed71e02364622ad55fdcf",
+    "checkpointExact": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/domain/project-task-execution.ts",
+    "sha256": "c744e0cf86ef8f3c0a74be6ad387508775a0baa23858f6676184e519d3060f64",
+    "checkpointExact": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts",
+    "sha256": "a97ebf7a44a59e98df4cd378f49615db96f8988d09f1bd5d2ded02e53b932f44",
+    "checkpointExact": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/services/project-task-service.ts",
+    "sha256": "39b7846415bb7f023527eab1043b799177e12b80e75b64d9fb5879cd50884377",
+    "checkpointExact": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/stores/project-state-schema.ts",
+    "sha256": "227e0556717fc7ccbe8c6eb976984611314218077b6cbdd73ed1b42a1736a54f",
+    "checkpointExact": true
+  }
+]

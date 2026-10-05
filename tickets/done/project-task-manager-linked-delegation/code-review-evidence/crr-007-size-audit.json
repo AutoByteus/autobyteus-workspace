@@ -1,0 +1,1074 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/message-recipient-resolution.ts",
+    "effectiveNonempty": 95,
+    "rawNonempty": 124,
+    "headChangedLines": 33,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/task-scoped-message-recipient.ts",
+    "effectiveNonempty": 30,
+    "rawNonempty": 31,
+    "headChangedLines": 31,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts",
+    "effectiveNonempty": 118,
+    "rawNonempty": 118,
+    "headChangedLines": 15,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts",
+    "effectiveNonempty": 169,
+    "rawNonempty": 170,
+    "headChangedLines": 51,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+    "effectiveNonempty": 423,
+    "rawNonempty": 433,
+    "headChangedLines": 106,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts",
+    "effectiveNonempty": 53,
+    "rawNonempty": 54,
+    "headChangedLines": 4,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+    "effectiveNonempty": 279,
+    "rawNonempty": 297,
+    "headChangedLines": 67,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+    "effectiveNonempty": 278,
+    "rawNonempty": 294,
+    "headChangedLines": 111,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts",
+    "effectiveNonempty": 38,
+    "rawNonempty": 39,
+    "headChangedLines": 1,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts",
+    "effectiveNonempty": 80,
+    "rawNonempty": 81,
+    "headChangedLines": 10,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/active-collaboration-root-directory.ts",
+    "effectiveNonempty": 93,
+    "rawNonempty": 95,
+    "headChangedLines": 3,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-dispatch.ts",
+    "effectiveNonempty": 69,
+    "rawNonempty": 70,
+    "headChangedLines": 70,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-adapter.ts",
+    "effectiveNonempty": 93,
+    "rawNonempty": 96,
+    "headChangedLines": 110,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts",
+    "effectiveNonempty": 234,
+    "rawNonempty": 256,
+    "headChangedLines": 142,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts",
+    "effectiveNonempty": 86,
+    "rawNonempty": 89,
+    "headChangedLines": 89,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts",
+    "effectiveNonempty": 47,
+    "rawNonempty": 50,
+    "headChangedLines": 20,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-input.ts",
+    "effectiveNonempty": 35,
+    "rawNonempty": 36,
+    "headChangedLines": 2,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-lifetime.ts",
+    "effectiveNonempty": 34,
+    "rawNonempty": 34,
+    "headChangedLines": 34,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-seed-admission.ts",
+    "effectiveNonempty": 10,
+    "rawNonempty": 11,
+    "headChangedLines": 11,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-tree-projection.ts",
+    "effectiveNonempty": 53,
+    "rawNonempty": 55,
+    "headChangedLines": 5,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-lifetime-operation-gate.ts",
+    "effectiveNonempty": 26,
+    "rawNonempty": 27,
+    "headChangedLines": 27,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts",
+    "effectiveNonempty": 217,
+    "rawNonempty": 225,
+    "headChangedLines": 74,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts",
+    "effectiveNonempty": 107,
+    "rawNonempty": 115,
+    "headChangedLines": 9,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-factory.ts",
+    "effectiveNonempty": 9,
+    "rawNonempty": 10,
+    "headChangedLines": 10,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-preparation.ts",
+    "effectiveNonempty": 58,
+    "rawNonempty": 59,
+    "headChangedLines": 59,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts",
+    "effectiveNonempty": 117,
+    "rawNonempty": 119,
+    "headChangedLines": 32,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+    "effectiveNonempty": 142,
+    "rawNonempty": 144,
+    "headChangedLines": 5,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-process-groups.ts",
+    "effectiveNonempty": 63,
+    "rawNonempty": 76,
+    "headChangedLines": 18,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts",
+    "effectiveNonempty": 138,
+    "rawNonempty": 144,
+    "headChangedLines": 65,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+    "effectiveNonempty": 485,
+    "rawNonempty": 485,
+    "headChangedLines": 50,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts",
+    "effectiveNonempty": 63,
+    "rawNonempty": 63,
+    "headChangedLines": 11,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts",
+    "effectiveNonempty": 58,
+    "rawNonempty": 58,
+    "headChangedLines": 88,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+    "effectiveNonempty": 122,
+    "rawNonempty": 122,
+    "headChangedLines": 16,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts",
+    "effectiveNonempty": 36,
+    "rawNonempty": 37,
+    "headChangedLines": 27,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts",
+    "effectiveNonempty": 173,
+    "rawNonempty": 173,
+    "headChangedLines": 45,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts",
+    "effectiveNonempty": 112,
+    "rawNonempty": 116,
+    "headChangedLines": 174,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts",
+    "effectiveNonempty": 23,
+    "rawNonempty": 23,
+    "headChangedLines": 4,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts",
+    "effectiveNonempty": 463,
+    "rawNonempty": 484,
+    "headChangedLines": 35,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts",
+    "effectiveNonempty": 57,
+    "rawNonempty": 57,
+    "headChangedLines": 80,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+    "effectiveNonempty": 228,
+    "rawNonempty": 228,
+    "headChangedLines": 4,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+    "effectiveNonempty": 390,
+    "rawNonempty": 393,
+    "headChangedLines": 27,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-cleanup.ts",
+    "effectiveNonempty": 38,
+    "rawNonempty": 38,
+    "headChangedLines": 16,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts",
+    "effectiveNonempty": 110,
+    "rawNonempty": 110,
+    "headChangedLines": 5,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-input-submission.ts",
+    "effectiveNonempty": 99,
+    "rawNonempty": 99,
+    "headChangedLines": 99,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts",
+    "effectiveNonempty": 233,
+    "rawNonempty": 233,
+    "headChangedLines": 160,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-release-scope.ts",
+    "effectiveNonempty": 47,
+    "rawNonempty": 48,
+    "headChangedLines": 48,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts",
+    "effectiveNonempty": 429,
+    "rawNonempty": 430,
+    "headChangedLines": 122,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts",
+    "effectiveNonempty": 7,
+    "rawNonempty": 8,
+    "headChangedLines": 8,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts",
+    "effectiveNonempty": 312,
+    "rawNonempty": 328,
+    "headChangedLines": 77,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+    "effectiveNonempty": 489,
+    "rawNonempty": 499,
+    "headChangedLines": 32,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts",
+    "effectiveNonempty": 48,
+    "rawNonempty": 48,
+    "headChangedLines": 7,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-execution-admission-fence.ts",
+    "effectiveNonempty": 13,
+    "rawNonempty": 14,
+    "headChangedLines": 14,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+    "effectiveNonempty": 210,
+    "rawNonempty": 210,
+    "headChangedLines": 6,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts",
+    "effectiveNonempty": 288,
+    "rawNonempty": 288,
+    "headChangedLines": 31,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts",
+    "effectiveNonempty": 60,
+    "rawNonempty": 64,
+    "headChangedLines": 18,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-activation-operation.ts",
+    "effectiveNonempty": 114,
+    "rawNonempty": 115,
+    "headChangedLines": 115,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+    "effectiveNonempty": 322,
+    "rawNonempty": 324,
+    "headChangedLines": 299,
+    "cumulativeDeltaSignal": true,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts",
+    "effectiveNonempty": 124,
+    "rawNonempty": 124,
+    "headChangedLines": 53,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/managed-agent-run-termination.ts",
+    "effectiveNonempty": 54,
+    "rawNonempty": 55,
+    "headChangedLines": 11,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+    "effectiveNonempty": 409,
+    "rawNonempty": 412,
+    "headChangedLines": 10,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts",
+    "effectiveNonempty": 35,
+    "rawNonempty": 36,
+    "headChangedLines": 36,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+    "effectiveNonempty": 445,
+    "rawNonempty": 464,
+    "headChangedLines": 86,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts",
+    "effectiveNonempty": 75,
+    "rawNonempty": 76,
+    "headChangedLines": 4,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts",
+    "effectiveNonempty": 308,
+    "rawNonempty": 326,
+    "headChangedLines": 18,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+    "effectiveNonempty": 213,
+    "rawNonempty": 223,
+    "headChangedLines": 5,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts",
+    "effectiveNonempty": 59,
+    "rawNonempty": 73,
+    "headChangedLines": 2,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts",
+    "effectiveNonempty": 357,
+    "rawNonempty": 359,
+    "headChangedLines": 162,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+    "effectiveNonempty": 457,
+    "rawNonempty": 480,
+    "headChangedLines": 59,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts",
+    "effectiveNonempty": 76,
+    "rawNonempty": 77,
+    "headChangedLines": 4,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts",
+    "effectiveNonempty": 263,
+    "rawNonempty": 279,
+    "headChangedLines": 18,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts",
+    "effectiveNonempty": 56,
+    "rawNonempty": 67,
+    "headChangedLines": 2,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts",
+    "effectiveNonempty": 168,
+    "rawNonempty": 179,
+    "headChangedLines": 5,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts",
+    "effectiveNonempty": 341,
+    "rawNonempty": 347,
+    "headChangedLines": 153,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts",
+    "effectiveNonempty": 41,
+    "rawNonempty": 42,
+    "headChangedLines": 10,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/prepared-task-execution.ts",
+    "effectiveNonempty": 64,
+    "rawNonempty": 67,
+    "headChangedLines": 53,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+    "effectiveNonempty": 436,
+    "rawNonempty": 451,
+    "headChangedLines": 52,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/task-agent-execution.ts",
+    "effectiveNonempty": 15,
+    "rawNonempty": 17,
+    "headChangedLines": 2,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/task-team-execution.ts",
+    "effectiveNonempty": 16,
+    "rawNonempty": 18,
+    "headChangedLines": 3,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts",
+    "effectiveNonempty": 83,
+    "rawNonempty": 87,
+    "headChangedLines": 55,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts",
+    "effectiveNonempty": 187,
+    "rawNonempty": 188,
+    "headChangedLines": 19,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-callbacks.ts",
+    "effectiveNonempty": 23,
+    "rawNonempty": 25,
+    "headChangedLines": 1,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+    "effectiveNonempty": 164,
+    "rawNonempty": 168,
+    "headChangedLines": 97,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager-options.ts",
+    "effectiveNonempty": 14,
+    "rawNonempty": 15,
+    "headChangedLines": 15,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+    "effectiveNonempty": 453,
+    "rawNonempty": 462,
+    "headChangedLines": 171,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts",
+    "effectiveNonempty": 50,
+    "rawNonempty": 50,
+    "headChangedLines": 8,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/owned-flat-team-runtime-release.ts",
+    "effectiveNonempty": 13,
+    "rawNonempty": 14,
+    "headChangedLines": 14,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/prepare-flat-team-configured-activation.ts",
+    "effectiveNonempty": 25,
+    "rawNonempty": 26,
+    "headChangedLines": 26,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts",
+    "effectiveNonempty": 67,
+    "rawNonempty": 73,
+    "headChangedLines": 7,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+    "effectiveNonempty": 236,
+    "rawNonempty": 256,
+    "headChangedLines": 67,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-team-execution-registry.ts",
+    "effectiveNonempty": 185,
+    "rawNonempty": 189,
+    "headChangedLines": 114,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/task-team-execution-factory.ts",
+    "effectiveNonempty": 80,
+    "rawNonempty": 81,
+    "headChangedLines": 59,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts",
+    "effectiveNonempty": 355,
+    "rawNonempty": 376,
+    "headChangedLines": 18,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts",
+    "effectiveNonempty": 91,
+    "rawNonempty": 93,
+    "headChangedLines": 2,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+    "effectiveNonempty": 131,
+    "rawNonempty": 133,
+    "headChangedLines": 9,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts",
+    "effectiveNonempty": 102,
+    "rawNonempty": 111,
+    "headChangedLines": 9,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts",
+    "effectiveNonempty": 95,
+    "rawNonempty": 96,
+    "headChangedLines": 12,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts",
+    "effectiveNonempty": 300,
+    "rawNonempty": 302,
+    "headChangedLines": 160,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service-contract.ts",
+    "effectiveNonempty": 37,
+    "rawNonempty": 38,
+    "headChangedLines": 2,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts",
+    "effectiveNonempty": 50,
+    "rawNonempty": 51,
+    "headChangedLines": 21,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts",
+    "effectiveNonempty": 227,
+    "rawNonempty": 227,
+    "headChangedLines": 6,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts",
+    "effectiveNonempty": 54,
+    "rawNonempty": 55,
+    "headChangedLines": 4,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts",
+    "effectiveNonempty": 61,
+    "rawNonempty": 63,
+    "headChangedLines": 60,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts",
+    "effectiveNonempty": 28,
+    "rawNonempty": 28,
+    "headChangedLines": 6,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts",
+    "effectiveNonempty": 43,
+    "rawNonempty": 43,
+    "headChangedLines": 4,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts",
+    "effectiveNonempty": 246,
+    "rawNonempty": 246,
+    "headChangedLines": 8,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+    "effectiveNonempty": 31,
+    "rawNonempty": 35,
+    "headChangedLines": 2,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent-config.json",
+    "effectiveNonempty": 12,
+    "rawNonempty": 12,
+    "headChangedLines": 12,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md",
+    "effectiveNonempty": 11,
+    "rawNonempty": 11,
+    "headChangedLines": 11,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/llm-management/services/codex-model-catalog.ts",
+    "effectiveNonempty": 51,
+    "rawNonempty": 51,
+    "headChangedLines": 5,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/persistence/file/store-utils.ts",
+    "effectiveNonempty": 236,
+    "rawNonempty": 237,
+    "headChangedLines": 2,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/context/project-task-context-store.ts",
+    "effectiveNonempty": 177,
+    "rawNonempty": 181,
+    "headChangedLines": 1,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/domain/models.ts",
+    "effectiveNonempty": 83,
+    "rawNonempty": 90,
+    "headChangedLines": 2,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/domain/project-errors.ts",
+    "effectiveNonempty": 30,
+    "rawNonempty": 30,
+    "headChangedLines": 8,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/domain/project-task-execution-state.ts",
+    "effectiveNonempty": 47,
+    "rawNonempty": 47,
+    "headChangedLines": 47,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/domain/project-task-execution.ts",
+    "effectiveNonempty": 13,
+    "rawNonempty": 13,
+    "headChangedLines": 13,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts",
+    "effectiveNonempty": 43,
+    "rawNonempty": 44,
+    "headChangedLines": 44,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/services/project-task-service.ts",
+    "effectiveNonempty": 269,
+    "rawNonempty": 271,
+    "headChangedLines": 125,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/stores/project-metadata-schema.ts",
+    "effectiveNonempty": 50,
+    "rawNonempty": 54,
+    "headChangedLines": 54,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/stores/project-state-schema.ts",
+    "effectiveNonempty": 93,
+    "rawNonempty": 95,
+    "headChangedLines": 95,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/projects/stores/project-store.ts",
+    "effectiveNonempty": 47,
+    "rawNonempty": 49,
+    "headChangedLines": 148,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts",
+    "effectiveNonempty": 128,
+    "rawNonempty": 152,
+    "headChangedLines": 3,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts",
+    "effectiveNonempty": 426,
+    "rawNonempty": 448,
+    "headChangedLines": 3,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/runtime-management/acp/acp-agent-process.ts",
+    "effectiveNonempty": 71,
+    "rawNonempty": 79,
+    "headChangedLines": 25,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts",
+    "effectiveNonempty": 450,
+    "rawNonempty": 457,
+    "headChangedLines": 109,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts",
+    "effectiveNonempty": 179,
+    "rawNonempty": 187,
+    "headChangedLines": 187,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-session-opening.ts",
+    "effectiveNonempty": 97,
+    "rawNonempty": 99,
+    "headChangedLines": 99,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-streaming-session.ts",
+    "effectiveNonempty": 131,
+    "rawNonempty": 140,
+    "headChangedLines": 19,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+    "effectiveNonempty": 106,
+    "rawNonempty": 108,
+    "headChangedLines": 232,
+    "cumulativeDeltaSignal": true,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts",
+    "effectiveNonempty": 355,
+    "rawNonempty": 358,
+    "headChangedLines": 61,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "effectiveNonempty": 79,
+    "rawNonempty": 80,
+    "headChangedLines": 7,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+    "effectiveNonempty": 91,
+    "rawNonempty": 91,
+    "headChangedLines": 7,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts",
+    "effectiveNonempty": 98,
+    "rawNonempty": 100,
+    "headChangedLines": 100,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts",
+    "effectiveNonempty": 101,
+    "rawNonempty": 102,
+    "headChangedLines": 4,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/factory/agent-factory.ts",
+    "effectiveNonempty": 213,
+    "rawNonempty": 214,
+    "headChangedLines": 11,
+    "cumulativeDeltaSignal": false,
+    "localCorrection": false
+  }
+]

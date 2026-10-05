@@ -1,0 +1,154 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts > REQ-007/009/013 exact Codex input outcome before Task-owned release > retains the exact reader/router/lease through idle and awaits the genuine native terminal
+test-owned idle boundary receipt {"receipt":null,"threadRetained":true,"activeTurn":"owned-thread-1-turn","lastTerminal":null,"input":[{"state":"forwarded","turn":"owned-thread-1-turn"}]}
+
+ ❯ tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts (2 tests | 2 failed) 430ms
+     × retains the exact reader/router/lease through idle and awaits the genuine native terminal 203ms
+     × does not outrun admitted async source-event delivery after provider release 226ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts > REQ-007/009/013 exact Codex input outcome before Task-owned release > retains the exact reader/router/lease through idle and awaits the genuine native terminal
+AssertionError: expected [ { kind: 'completed', …(1) } ] to deeply equal [ { kind: 'interrupted', …(1) } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "kind": "interrupted",
++     "kind": "completed",
+      "turnId": "owned-thread-1-turn",
+    },
+  ]
+
+ ❯ tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts:88:90
+     86|       expect(await release).toEqual({ accepted: true });
+     87|       expect(run.getInputStateSnapshot().entries).toEqual([]);
+     88|       expect(facts.filter(f => ['completed', 'interrupted', 'failed'].…
+       |                                                                                          ^
+     89|       expect(events).toContain(AgentRunEventType.TURN_INTERRUPTED);
+     90|       expect(h.manager.getThread(run.runId)).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts > REQ-007/009/013 exact Codex input outcome before Task-owned release > does not outrun admitted async source-event delivery after provider release
+AssertionError: expected { Object (error) } to be null
+
+- Expected: 
+null
+
++ Received: 
+{
+  "error": "AgentRun termination cannot settle while submitted input remains unresolved.",
+}
+
+ ❯ tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts:122:23
+    120|       await vi.waitFor(() => expect(h.cleanup.cleanupPreparedWorkspace…
+    121|       await h.client.request('test/barrier', {});
+    122|       expect(receipt).toBeNull();
+       |                       ^
+    123|       expect(run.getInputStateSnapshot().entries).toHaveLength(1);
+    124|       held.resolve();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  18:48:09
+   Duration  5.33s (transform 3.01s, setup 18ms, import 4.30s, tests 430ms, environment 0ms)
+

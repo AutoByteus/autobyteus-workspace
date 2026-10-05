@@ -1,0 +1,200 @@
+{
+  "authority": "REQ-BL-008 / SR-014 / ARCH-REV-005 / IR-010 / CRR-020 source only",
+  "acceptance": [
+    {
+      "ac": "AC-001",
+      "scenarios": "SCN-001",
+      "result": "Pass",
+      "basis": "Current Manager exact seven-tool template/bootstrap and API13 genuine named-Project Chat invocation; API16 same original paid fresh Chat ambiguity turn asks which of two public-created Projects, successful list_projects, exact original trace prefix plus sole final assistant append, idle/empty input and no Project/Task write/dispatch.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-ambiguity.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-ambiguity-settled-corrected.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-ambiguity.png",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round16-import.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-native-agent-start.json"
+      ]
+    },
+    {
+      "ac": "AC-002",
+      "scenarios": "SCN-002",
+      "result": "Pass",
+      "basis": "Real saved create/reuse/ID-only Agent and Team delegation, exact links/ingress and explicit IN_PROGRESS in Native ordinary Chat and current uninstrumented Claude Org/Team. Current actual Project/MCP E2E and root admission persist each exact copy.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-native-agent-start.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-concrete-agent_org.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-concrete-agent_team.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round16-project-e2e.log"
+      ]
+    },
+    {
+      "ac": "AC-003",
+      "scenarios": "SCN-002/003",
+      "result": "Pass",
+      "basis": "Actual native saved attachment byte reads and immutable delivered packet/edits; missing saved bytes and mixed work admission fail before provider preparation. Current actual multipart/context ownership reader reconstruction E2E, unchanged work-source suite.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-concrete-agent_org.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-resume.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round16-project-e2e.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-business-lifecycle.log"
+      ]
+    },
+    {
+      "ac": "AC-004",
+      "scenarios": "SCN-004",
+      "result": "Pass",
+      "basis": "Blank/unknown/ambiguous/mixed ID and failed dispatch fail closed with no fallback, false success or false IN_PROGRESS; shared native/MCP contract and root dispatch/ProjectStore controlled failures.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-business-lifecycle.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round16-project-e2e.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-005@round16-durables.log"
+      ]
+    },
+    {
+      "ac": "AC-005",
+      "scenarios": "SCN-004",
+      "result": "Pass",
+      "basis": "All original eight no-ID lifecycle cases retained and freshly passing, including fresh copy, exact packet, reference validation, idle wake/missing conversation, foreign/relative/root/self rejects and ordinary nested copy.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-helper-final.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-durable-local-delta.diff"
+      ]
+    },
+    {
+      "ac": "AC-006",
+      "scenarios": "SCN-002",
+      "result": "Pass",
+      "basis": "Exact Agent/TeamRun versus ingress association in real saved Task reads/private persistence; valid workers visible in existing LIVE/cold/reconnected views. BOTH list/scoped public full forests strict and private-free; same whole-app reread, exact cold noncoordinator inspection. Existing bare array normal startup no-write.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-postfinal-history.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-resume.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round16-project-e2e.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round16-web.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-fidelity-and-evidence-audit.json"
+      ]
+    },
+    {
+      "ac": "AC-007",
+      "scenarios": "SCN-005",
+      "result": "Pass",
+      "basis": "Explicit actual Manager DONE immediately scopes Task cascade, not grace/whole-root stop. Uninstrumented active submitted reader terminal/empty input/offline/all-released/LIVE row plus eight exact SDK owners physical child/native descendants/IO/component/input before app teardown; nine protected complement SDKs, root/Manager/open B and saved bytes retained.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-canonical-terminal-proof.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-Claude-Team-terminal-proof.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-retained-physical.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-final-a.json"
+      ]
+    },
+    {
+      "ac": "AC-008",
+      "scenarios": "SCN-006",
+      "result": "Pass",
+      "basis": "Repeated DONE does not spawn; exact per-reference diagnostic pending/failed/released and failed-only retry through real Project/root owners across3roots; actual pinned SDK child physical failed retry SAME child and no duplicate input/terminal/replay. Real Session six-case physical/component/input consumers and new repeated-DONE guards.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-business-lifecycle.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-001@round16-narrow.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-integration.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-helper-final.log"
+      ]
+    },
+    {
+      "ac": "AC-009",
+      "scenarios": "SCN-006",
+      "result": "Pass",
+      "basis": "Each open A successful call creates distinct linked copy; closure releases all and late input rejects. Controlled generation/microtask/preparation/fence cases across3roots, actual Org/Team TODO starts nothing/new B fresh IDs/old closures stable, actual normal whole-app restore closed ingress remains fenced.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-helper-final.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-business-lifecycle.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-concrete-agent_org.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-concrete-agent_team.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-resume.json"
+      ]
+    },
+    {
+      "ac": "AC-010",
+      "scenarios": "SCN-007",
+      "result": "Pass",
+      "basis": "Actual metadata/owned context HTTP/GraphQL deletion preservation; active B Delete in new real root/ProjectStore cases makes no hidden runtime stop and preserves exact tree/lifetime bytes. Unknown deleted DONE fails TASK_NOT_FOUND/no recreation while B existing address still usable. No new Delete guard/workflow.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round16-project-e2e.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-helper-final.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-business-lifecycle.log"
+      ]
+    },
+    {
+      "ac": "AC-011",
+      "scenarios": "SCN-008",
+      "result": "Pass",
+      "basis": "Real model/public address bring-ins helper Team and further task delegation in retained Codex6 and current Claude8 recursive actual families; full task ownership outside physical subtree included, not fixed cwd subset. Root-wide3kind gates/late preparation/quiet generation controls prevent escape; no borrowed/root/B ownership adopted.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-round13-physical-recursive.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-retained-physical.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-business-lifecycle.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-integration.log"
+      ]
+    },
+    {
+      "ac": "AC-012",
+      "scenarios": "SCN-009",
+      "result": "Pass",
+      "basis": "NEW two real root-address admission cases explicitly same catalog Agent or Team definition: A/B normal send_message_to(address) produce separate stamped lifetimes/helper IDs; subsequent own messages reuse own helper; borrowed configured reviewer never adopted; A DONE leaves open B/root/reviewer usable. Unlinked prior contracts retained. Backend double controls runtime, not OS/model proof.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-helper-final.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-durable-local-delta.diff",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-business-lifecycle.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-retained-physical.json"
+      ]
+    },
+    {
+      "ac": "AC-013",
+      "scenarios": "SCN-010",
+      "result": "Pass",
+      "basis": "NEW A/A/B successful same definition delegate calls exact different IDs/links and A-only cleanup/protected B/source; actual saved Agent/Team fresh-copy/reopen/model paths and root ownership controls preserve catalog definition. Not confused with address reuse.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-helper-final.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-concrete-agent_org.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-concrete-agent_team.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-integration.log"
+      ]
+    },
+    {
+      "ac": "AC-014",
+      "scenarios": "SCN-011",
+      "result": "Pass",
+      "basis": "Exact shipped business-only prompt/seven tools, actual native/scoped-MCP compact mutation/full business assignment/context reads, actual Manager list/native saved reads/exact followup; no private mechanics or unnecessary mutation echo, resource-monitor duty/notifier/selfDONE.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round16-project-e2e.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-005@round16-durables.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-resume.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-ambiguity-settled-corrected.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round16-import.log"
+      ]
+    },
+    {
+      "ac": "AC-015",
+      "scenarios": "SCN-006/011",
+      "result": "Pass",
+      "basis": "Precommit business failure/uncertainty and postcommit closure/failed exact release separately truthful; real Project diagnostics plus3root failure/retry gates, actual SDK same-child retry and Session component/terminal exactly once. No LLM cleanup loop/scheduler or SDK-exit-as-all-ACK. Successful current paid paths do not manufacture a failed provider generation.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-business-lifecycle.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-001@round16-narrow.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-integration.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round16-project-e2e.log"
+      ]
+    },
+    {
+      "ac": "AC-016",
+      "scenarios": "SCN-012",
+      "result": "Pass",
+      "basis": "No auto business-DONE from idle/offline/worker completion: explicit actual Manager instructions are sole DONE trigger after workers/results; status remains open until user/business update. Prompt has no new completion report guarantee/notifier; same scoped cleanup triggered independently of receipt of a report. Controlled service no implicit status and real paid paths distinguish role knowledge from runtime facts.",
+      "evidence": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-native-agent-start.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-concrete-agent_org.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-claude-concrete-agent_team.json",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-business-lifecycle.log",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round16-import.log"
+      ]
+    }
+  ],
+  "rootScope": "All3 supported root architectures through real owners/durable gates and actual named local model journeys, not provider x root x failure Cartesian product",
+  "originalFailures": "FAPI007 Open / Unclear / Not Reproduced; original FAPI011 inner/physical/sole-cause attribution unobserved, neither cause backfilled nor inferred acceptance blocker"
+}

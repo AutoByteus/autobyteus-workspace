@@ -1,0 +1,578 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-collaboration/configured-root-first-work.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-collaboration/configured-root-first-work.test.ts > standalone_team configured first work > scope stays Offline; 'autobyteus' / 'none' / null readies only receivers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/agent-collaboration/configured-root-first-work.test.ts (48 tests | 18 failed) 1524ms
+     × scope stays Offline; 'autobyteus' / 'none' / null readies only receivers 39ms
+     × scope stays Offline; 'autobyteus' / 'present' / null readies only receivers 13ms
+     × scope stays Offline; 'codex_app_server' / 'present' / 'old-thread' readies only receivers 14ms
+     × scope stays Offline; 'codex_app_server' / 'none' / null readies only receivers 25ms
+     × scope stays Offline; 'codex_app_server' / 'none' / 'old-thread' readies only receivers 24ms
+     × scope stays Offline; 'claude_agent_sdk' / 'present' / 'old-thread' readies only receivers 13ms
+     ✓ later legitimate peer work starts only the new receiver and retains attachment references 38ms
+     ✓ preserves fresh zero-work laziness and targeted first input 26ms
+     ✓ coalesces same-member first work, holding publication, cache and input until root durability 83ms
+     ✓ serializes different-member commits against the current tree, not the pre-await snapshot 91ms
+     ✓ aborts a definite failed write and safely retries the unchanged binding 30ms
+     ✓ does not retry or publish after indeterminate rename 15ms
+     ✓ fails closed on 'COLLABORATION_AGENT_CONTINUATION_BIND…' at first work, not scope restore 17ms
+     ✓ fails closed on 'COLLABORATION_AGENT_CONTINUATION_STAT…' at first work, not scope restore 15ms
+     ✓ rejects stale expected-old and foreign-root changes without writing 15ms
+     ✓ latches a post-root Flat cache failure as nonretryable without rolling back the tree 26ms
+     × scope stays Offline; 'autobyteus' / 'none' / null readies only receivers 22ms
+     × scope stays Offline; 'autobyteus' / 'present' / null readies only receivers 15ms
+     × scope stays Offline; 'codex_app_server' / 'present' / 'old-thread' readies only receivers 28ms
+     × scope stays Offline; 'codex_app_server' / 'none' / null readies only receivers 27ms
+     × scope stays Offline; 'codex_app_server' / 'none' / 'old-thread' readies only receivers 26ms
+     × scope stays Offline; 'claude_agent_sdk' / 'present' / 'old-thread' readies only receivers 29ms
+     ✓ later legitimate peer work starts only the new receiver and retains attachment references 44ms
+     ✓ preserves fresh zero-work laziness and targeted first input 32ms
+     ✓ coalesces same-member first work, holding publication, cache and input until root durability 87ms
+     ✓ serializes different-member commits against the current tree, not the pre-await snapshot 103ms
+     ✓ aborts a definite failed write and safely retries the unchanged binding 36ms
+     ✓ does not retry or publish after indeterminate rename 16ms
+     ✓ fails closed on 'COLLABORATION_AGENT_CONTINUATION_BIND…' at first work, not scope restore 17ms
+     ✓ fails closed on 'COLLABORATION_AGENT_CONTINUATION_STAT…' at first work, not scope restore 16ms
+     ✓ rejects stale expected-old and foreign-root changes without writing 15ms
+     × scope stays Offline; 'autobyteus' / 'none' / null readies only receivers 17ms
+     × scope stays Offline; 'autobyteus' / 'present' / null readies only receivers 15ms
+     × scope stays Offline; 'codex_app_server' / 'present' / 'old-thread' readies only receivers 26ms
+     × scope stays Offline; 'codex_app_server' / 'none' / null readies only receivers 24ms
+     × scope stays Offline; 'codex_app_server' / 'none' / 'old-thread' readies only receivers 28ms
+     × scope stays Offline; 'claude_agent_sdk' / 'present' / 'old-thread' readies only receivers 30ms
+     ✓ later legitimate peer work starts only the new receiver and retains attachment references 51ms
+     ✓ preserves fresh zero-work laziness and targeted first input 29ms
+     ✓ coalesces same-member first work, holding publication, cache and input until root durability 81ms
+     ✓ serializes different-member commits against the current tree, not the pre-await snapshot 93ms
+     ✓ aborts a definite failed write and safely retries the unchanged binding 32ms
+     ✓ does not retry or publish after indeterminate rename 17ms
+     ✓ fails closed on 'COLLABORATION_AGENT_CONTINUATION_BIND…' at first work, not scope restore 16ms
+     ✓ fails closed on 'COLLABORATION_AGENT_CONTINUATION_STAT…' at first work, not scope restore 17ms
+     ✓ rejects stale expected-old and foreign-root changes without writing 16ms
+     ✓ latches a post-root Flat cache failure as nonretryable without rolling back the tree 35ms
+     ✓ keeps ordinary adoption strict and requires an exact old binding for replacement 1ms
+stdout | tests/unit/projects/project-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/projects/project-service.test.ts (29 tests | 6 failed) 420ms
+     ✓ lists no projects when the store file does not exist 4ms
+     ✓ creates a project with trimmed name, trimmed description and timestamps 11ms
+     ✓ stores an empty description as an empty string 8ms
+     ✓ rejects an empty or whitespace name 1ms
+     ✓ rejects a case-insensitive duplicate name without creating a record 13ms
+     ✓ sorts projects by name case-insensitively 20ms
+     ✓ updates name and description, allowing a case change of its own name 15ms
+     ✓ rejects renaming to another project's name and leaves the file unchanged 19ms
+     ✓ rejects updates for unknown projects 7ms
+     ✓ returns null for an unknown project 1ms
+     ✓ links a registered workspace with a description and snapshots its root path 14ms
+     ✓ rejects linking the same workspace twice to one project 19ms
+     ✓ allows one workspace to be linked to several projects with separate descriptions 54ms
+     ✓ rejects linking a workspace that is not a registered filesystem workspace (temp_ws_default) 14ms
+     ✓ rejects linking a workspace that is not a registered filesystem workspace (skill_ws_foo) 12ms
+     ✓ rejects linking a workspace that is not a registered filesystem workspace (agent_ws_unknown) 13ms
+     ✓ rejects linking to an unknown project 7ms
+     ✓ resolves availability at read time and restores it on re-registration without duplicating the link 22ms
+     ✓ edits a link description and unlinks an unregistered workspace 24ms
+     ✓ rejects editing or removing a link that does not exist 19ms
+     ✓ deletes only the project record and its links 37ms
+     × drops malformed rows on read 4ms
+     ✓ leaves the previous file intact when the atomic write fails (QR-001) 13ms
+     × reads a released v1.4.86 row without a tasks field as a Project with no Tasks (AC-010) 1ms
+     × counts open Tasks and never exposes the stored Task list on the Project view 1ms
+     × preserves Tasks when the Project or its links change 12ms
+     × deletes a Project together with its Tasks and leaves other Projects intact (REQ-008) 19ms
+     ✓ atomically saves aggregate workspace rows, preserves unregistered snapshots and current Tasks 27ms
+     × projects known fields only without a migration and never persists derived locators/counts 7ms
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts (42 tests | 1 failed) 173ms
+     ✓ auto-accepts MCP tool approvals when autoExecuteTools is enabled 2ms
+     ✓ auto-accepts MCP tool approvals for team members when autoExecuteTools is enabled 1ms
+     ✓ emits approval events for MCP tool calls and answers with the MCP elicitation action 1ms
+     ✓ emits a local MCP completion event when a pending MCP tool call completes 1ms
+     ✓ auto-accepts terminal approvals when autoExecuteTools is enabled 0ms
+     ✓ auto-accepts Codex local runtime tools for team members while preserving dynamic-tool auto execution 54ms
+     ✓ gates file-change approvals in manual mode and returns decline on denial 0ms
+     ✓ gates dynamic tools in manual mode until approval 1ms
+     ✓ claims manual dynamic approvals before awaited handler execution 1ms
+     ✓ denies dynamic tools in manual mode without invoking the handler 0ms
+     ✓ executes dynamic tools immediately when autoExecuteTools is enabled 51ms
+     ✓ grants permission requests automatically in auto mode 1ms
+     ✓ grants permission requests automatically for team members in auto mode 0ms
+     ✓ queues permission requests in manual mode and grants only after approval 1ms
+     ✓ denies permission requests in manual mode with a no-grant response 0ms
+     ✓ stores Codex terminal approvals by exact item id while keeping approvalId as metadata 1ms
+     ✓ passes open reasoning effort max to turn/start 1ms
+     ✓ passes open reasoning effort ultra to turn/start 0ms
+     ✓ passes open reasoning effort Future-Custom to turn/start 0ms
+     ✓ passes an unset reasoning effort as null to turn/start 0ms
+     ✓ passes the configured Codex serviceTier to turn/start 0ms
+     ✓ starts only while idle and returns the strict nested turn identity 0ms
+     ✓ rejects malformed start responses without installing anonymous running state 0ms
+     ✓ steers the exact active turn without lifecycle replacement and settles canonically 0ms
+     ✓ preserves active identity on steer rejection and mismatch without start fallback 0ms
+     ✓ rejects a steer for a turn that is no longer active before any RPC with a distinct code 0ms
+     ✓ rejects a steer response without its method-specific top-level turnId 0ms
+     ✓ does not reopen a start response after its terminal notification wins the race 0ms
+     ✓ preserves a newer notification identity when an older start response arrives 0ms
+     ✓ queues Codex cumulative snapshot updates immediately without waiting for idle 0ms
+     ✓ maps Codex app-server total fields into cumulative snapshots and last fields into provider-delta metadata 0ms
+     ✓ keeps absent Codex cache writes out of source records and null in reconciliation metadata 1ms
+     ✓ queues multiple same-turn cumulative advancements instead of overwriting by turn id 1ms
+     ✓ keeps late token usage as an immediately consumable cumulative snapshot after turn completion 0ms
+     ✓ flags provider-delta metadata missing when a Codex cumulative total has no last payload 0ms
+     ✓ keeps a retryable native error diagnostic on the active turn and admits later work 1ms
+     ✓ retains matching active terminal error state and cleanup for exact non-retryable errors 0ms
+     ✓ suppresses exact stale terminal boundaries without mutating or emitting against a newer turn 0ms
+     ✓ classifies an error status change before clearing the matching active turn 0ms
+     ✓ classifies client loss as runtime-global before clearing native identity 0ms
+     × waits a late turn/start, interrupts that exact turn and requires terminal notification, protecting another thread 26ms
+     ✓ retains failed interrupt authority and retries only the same exact turn 22ms
+stdout | tests/unit/projects/project-task-context-store.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > returns proven committed metadata even when subsequent lock finalization fails
+Project state committed; lock finalization failed. Error: release failure
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:90:65)
+    at Object.unlink (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at code (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/persistence/file/store-utils.ts:55:20)
+    at withFilePathLock (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/persistence/file/store-utils.ts:123:9)
+    at ProjectStore.updateState (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/stores/project-store.ts:17:14)
+    at ProjectTaskService.createTask (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/services/project-task-service.ts:69:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:93:18
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > cleanup failure cannot turn a confirmed file-removal commit into rollback
+Task context cleanup failed. Error: cleanup unavailable
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:119:63
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/unit/projects/project-task-context-store.test.ts (9 tests) 900ms
+stdout | tests/unit/projects/project-task-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-task-service.test.ts (15 tests) 353ms
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > keeps a new run private until synchronous candidate publication
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > claims the run id before the first backend await and rejects overlapping preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > allows retry only after candidate abort confirms inactivity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines an uncertain candidate cleanup and rejects same-process replacement
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores codex_app_server from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores claude_agent_sdk from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > aborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rolls back already-attached run resources when a later attachment fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates exactly once when a post-activation backend identity mismatch fails before attachment
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines attachment rollback when exact-run session deactivation fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation create failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation restore failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines with primary then deactivation cleanup evidence
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rejects another candidate after publication without replacing the active run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > detaches run resources and invokes exact-run MCP cleanup after accepted termination
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > allows only one non-waiting quiescence preparation attempt per exact run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > cancels through the exact run without releasing it and permits a fresh preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries only after a rejected finish and releases once after acceptance
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > coalesces one committed finish attempt and caches successful finalization
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retains accepted-but-active failure without removing the exact run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries exact retained component cleanup after physical release without stopping twice
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal not_found as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal identity_mismatch as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > rejects a missing or different exact instance before lower-level preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-execution/agent-run-manager.test.ts (25 tests) 22ms
+stdout | tests/unit/projects/project-task-lifetime.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/projects/project-task-lifetime.test.ts (6 tests | 1 failed) 547ms
+     ✓ atomically closes exact copies under agent without Task B or unlinked adoption; retries only outstanding release 122ms
+     ✓ atomically closes exact copies under agent_team without Task B or unlinked adoption; retries only outstanding release 125ms
+     ✓ atomically closes exact copies under agent_org without Task B or unlinked adoption; retries only outstanding release 132ms
+     ✓ reopens into a new lifetime and permanently rejects old worker inheritance across deletion/restart 67ms
+     ✓ rejects missing/ambiguous Tasks, cross-project ID reuse and duplicate exact execution reservation 68ms
+     × never creates a lifetime or silently omits saved context when bytes are unavailable 33ms
+ ✓ tests/unit/agent-execution/services/agent-run-activation-operation.test.ts (3 tests) 5ms
+ ❯ tests/unit/app-data-migrations/project-task-lifetime-state.test.ts (5 tests | 1 failed) 58ms
+     × preserves released meaning and context/worktree bytes, adopts no old runtime, and is byte-idempotent 28ms
+     ✓ does not create an absent authority and normal current reads are empty 8ms
+     ✓ fails closed without rewriting malformed authority {bad 7ms
+     ✓ fails closed without rewriting malformed authority [{"projectId":"p","name":"released","description":"original","createdAt":"2026-01-01T00:00:00Z","updatedAt":"2026-01-02T00:00:00Z","workspaces":[{"workspaceId":"w","workspaceRootPath":"/test-owned/worktree","description":"keep","addedAt":"2026-01-01T00:00:00Z"}],"tasks":[{"taskId":"t","description":"unchanged task","status":"INVALID","createdAt":"2026-01-01T00:00:00Z","updatedAt":"2026-01-02T00:00:00Z","contextFiles":[{"storedFilename":"kept.txt","displayName":"kept","mimeType":"text/plain","sizeBytes":4}]}]}] 7ms
+     ✓ fails closed without rewriting malformed authority {"projects":[{"projectId":"p","name":"released","description":"original","createdAt":"2026-01-01T00:00:00Z","updatedAt":"2026-01-02T00:00:00Z","workspaces":[{"workspaceId":"w","workspaceRootPath":"/test-owned/worktree","description":"keep","addedAt":"2026-01-01T00:00:00Z"}],"tasks":[{"taskId":"t","description":"unchanged task","status":"DONE","createdAt":"2026-01-01T00:00:00Z","updatedAt":"2026-01-02T00:00:00Z","contextFiles":[{"storedFilename":"kept.txt","displayName":"kept","mimeType":"text/plain","sizeBytes":4}]}]}]} 7ms
+stdout | tests/unit/projects/projects-capability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/projects-capability-service.test.ts (3 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 27 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > standalone_team configured first work > scope stays Offline; 'autobyteus' / 'none' / null readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > standalone_team configured first work > scope stays Offline; 'autobyteus' / 'present' / null readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > standalone_team configured first work > scope stays Offline; 'codex_app_server' / 'present' / 'old-thread' readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > standalone_team configured first work > scope stays Offline; 'codex_app_server' / 'none' / null readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > standalone_team configured first work > scope stays Offline; 'codex_app_server' / 'none' / 'old-thread' readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > standalone_team configured first work > scope stays Offline; 'claude_agent_sdk' / 'present' / 'old-thread' readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > direct_org configured first work > scope stays Offline; 'autobyteus' / 'none' / null readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > direct_org configured first work > scope stays Offline; 'autobyteus' / 'present' / null readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > direct_org configured first work > scope stays Offline; 'codex_app_server' / 'present' / 'old-thread' readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > direct_org configured first work > scope stays Offline; 'codex_app_server' / 'none' / null readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > direct_org configured first work > scope stays Offline; 'codex_app_server' / 'none' / 'old-thread' readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > direct_org configured first work > scope stays Offline; 'claude_agent_sdk' / 'present' / 'old-thread' readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > mounted_team configured first work > scope stays Offline; 'autobyteus' / 'none' / null readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > mounted_team configured first work > scope stays Offline; 'autobyteus' / 'present' / null readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > mounted_team configured first work > scope stays Offline; 'codex_app_server' / 'present' / 'old-thread' readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > mounted_team configured first work > scope stays Offline; 'codex_app_server' / 'none' / null readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > mounted_team configured first work > scope stays Offline; 'codex_app_server' / 'none' / 'old-thread' readies only receivers
+ FAIL  tests/unit/agent-collaboration/configured-root-first-work.test.ts > mounted_team configured first work > scope stays Offline; 'claude_agent_sdk' / 'present' / 'old-thread' readies only receivers
+TypeError: undefined is not a spy or a call to a spy!
+ ❯ tests/unit/agent-collaboration/configured-root-first-work.test.ts:27:35
+     25|     expect(f.write).not.toHaveBeenCalled();
+     26|     expect(await f.send()).toMatchObject({ accepted: true });
+     27|     expect(f.manager[row.method]).toHaveBeenCalledTimes(1);
+       |                                   ^
+     28|     expect(f.publish.mock.calls).toEqual([[f.ids[1]]]);
+     29|     expect(f.statuses().map((s) => s.details.status)).toEqual(["offlin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/27]⎯
+
+ FAIL  tests/unit/app-data-migrations/project-task-lifetime-state.test.ts > isolated startup Project envelope migration > preserves released meaning and context/worktree bytes, adopts no old runtime, and is byte-idempotent
+AssertionError: expected { projects: [ { …(7) } ], …(1) } to deeply equal { projects: [ { …(7) } ], …(1) }
+
+- Expected
++ Received
+
+@@ -5,18 +5,11 @@
+        "description": "original",
+        "name": "released",
+        "projectId": "p",
+        "tasks": [
+          {
+-           "contextFiles": [
+-             {
+-               "displayName": "kept",
+-               "mimeType": "text/plain",
+-               "sizeBytes": 4,
+-               "storedFilename": "kept.txt",
+-             },
+-           ],
++           "contextFiles": [],
+            "createdAt": "2026-01-01T00:00:00Z",
+            "description": "unchanged task",
+            "status": "DONE",
+            "taskId": "t",
+            "updatedAt": "2026-01-02T00:00:00Z",
+
+ ❯ tests/unit/app-data-migrations/project-task-lifetime-state.test.ts:22:37
+     20|     await expect(store.readState()).rejects.toMatchObject({ code: "PRO…
+     21|     expect(await migrate()).toMatchObject({ status: "SUCCEEDED", summa…
+     22|     expect(await store.readState()).toEqual({ projects: released, task…
+       |                                     ^
+     23|     expect(await fs.readFile(context, "utf8")).toBe("keep");
+     24|     const before = await fs.readFile(file, "utf8"), stat = await fs.st…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/27]⎯
+
+ FAIL  tests/unit/projects/project-service.test.ts > ProjectService > drops malformed rows on read
+ProjectError: Current Project authority is unavailable; use migration recovery. Expected a current record.
+ ❯ parseProjectState src/projects/stores/project-state-schema.ts:71:11
+     69|     return { projects, taskLifetimes };
+     70|   } catch (error) {
+     71|     throw new ProjectError('PROJECT_STATE_UNAVAILABLE', `Current Proje…
+       |           ^
+     72|   }
+     73| };
+ ❯ ProjectStore.readState src/projects/stores/project-store.ts:11:53
+ ❯ ProjectStore.listRecords src/projects/stores/project-store.ts:12:53
+ ❯ ProjectService.listProjects src/projects/services/project-service.ts:105:21
+ ❯ tests/unit/projects/project-service.test.ts:311:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/27]⎯
+
+ FAIL  tests/unit/projects/project-service.test.ts > ProjectService > reads a released v1.4.86 row without a tasks field as a Project with no Tasks (AC-010)
+ProjectError: Current Project authority is unavailable; use migration recovery. Expected a current record.
+ ❯ parseProjectState src/projects/stores/project-state-schema.ts:71:11
+     69|     return { projects, taskLifetimes };
+     70|   } catch (error) {
+     71|     throw new ProjectError('PROJECT_STATE_UNAVAILABLE', `Current Proje…
+       |           ^
+     72|   }
+     73| };
+ ❯ ProjectStore.readState src/projects/stores/project-store.ts:11:53
+ ❯ ProjectStore.listRecords src/projects/stores/project-store.ts:12:53
+ ❯ ProjectService.listProjects src/projects/services/project-service.ts:105:21
+ ❯ tests/unit/projects/project-service.test.ts:348:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/27]⎯
+
+ FAIL  tests/unit/projects/project-service.test.ts > ProjectService > counts open Tasks and never exposes the stored Task list on the Project view
+ProjectError: Current Project authority is unavailable; use migration recovery. Expected a current record.
+ ❯ parseProjectState src/projects/stores/project-state-schema.ts:71:11
+     69|     return { projects, taskLifetimes };
+     70|   } catch (error) {
+     71|     throw new ProjectError('PROJECT_STATE_UNAVAILABLE', `Current Proje…
+       |           ^
+     72|   }
+     73| };
+ ❯ ProjectStore.readState src/projects/stores/project-store.ts:11:53
+ ❯ ProjectStore.listRecords src/projects/stores/project-store.ts:12:53
+ ❯ ProjectService.getProject src/projects/services/project-service.ts:115:21
+ ❯ tests/unit/projects/project-service.test.ts:383:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/27]⎯
+
+ FAIL  tests/unit/projects/project-service.test.ts > ProjectService > preserves Tasks when the Project or its links change
+ProjectError: Current Project authority is unavailable; use migration recovery. Expected a current record.
+ ❯ parseProjectState src/projects/stores/project-state-schema.ts:71:11
+     69|     return { projects, taskLifetimes };
+     70|   } catch (error) {
+     71|     throw new ProjectError('PROJECT_STATE_UNAVAILABLE', `Current Proje…
+       |           ^
+     72|   }
+     73| };
+ ❯ committed src/projects/stores/project-store.ts:18:41
+ ❯ src/persistence/file/store-utils.ts:221:29
+ ❯ withFilePathLock src/persistence/file/store-utils.ts:119:12
+ ❯ ProjectStore.updateState src/projects/stores/project-store.ts:17:14
+ ❯ ProjectStore.updateRecords src/projects/stores/project-store.ts:28:13
+ ❯ ProjectService.updateProjectRecord src/projects/services/project-service.ts:241:21
+ ❯ ProjectService.updateProject src/projects/services/project-service.ts:147:21
+ ❯ tests/unit/projects/project-service.test.ts:400:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/27]⎯
+
+ FAIL  tests/unit/projects/project-service.test.ts > ProjectService > deletes a Project together with its Tasks and leaves other Projects intact (REQ-008)
+AssertionError: promise rejected "ProjectError: Current Project authority i… { code: '…' }" instead of resolving
+ ❯ tests/unit/projects/project-service.test.ts:424:63
+    422|     await fs.writeFile(harness.store.getFilePath(), JSON.stringify(row…
+    423| 
+    424|     await expect(harness.service.deleteProject(drop.projectId)).resolv…
+       |                                                               ^
+    425| 
+    426|     const remaining = await harness.readFile();
+
+Caused by: ProjectError: Current Project authority is unavailable; use migration recovery. Expected a current record.
+ ❯ parseProjectState src/projects/stores/project-state-schema.ts:71:11
+ ❯ committed src/projects/stores/project-store.ts:18:41
+ ❯ src/persistence/file/store-utils.ts:221:29
+ ❯ withFilePathLock src/persistence/file/store-utils.ts:119:12
+ ❯ ProjectStore.updateState src/projects/stores/project-store.ts:17:14
+ ❯ ProjectStore.updateRecords src/projects/stores/project-store.ts:28:13
+ ❯ ProjectService.deleteProject src/projects/services/project-service.ts:161:5
+ ❯ tests/unit/projects/project-service.test.ts:424:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'PROJECT_STATE_UNAVAILABLE' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/27]⎯
+
+ FAIL  tests/unit/projects/project-service.test.ts > ProjectService > projects known fields only without a migration and never persists derived locators/counts
+ProjectError: Current Project authority is unavailable; use migration recovery. Expected a current record.
+ ❯ parseProjectState src/projects/stores/project-state-schema.ts:71:11
+     69|     return { projects, taskLifetimes };
+     70|   } catch (error) {
+     71|     throw new ProjectError('PROJECT_STATE_UNAVAILABLE', `Current Proje…
+       |           ^
+     72|   }
+     73| };
+ ❯ ProjectStore.readState src/projects/stores/project-store.ts:11:53
+ ❯ ProjectStore.listRecords src/projects/stores/project-store.ts:12:53
+ ❯ tests/unit/projects/project-service.test.ts:463:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/27]⎯
+
+ FAIL  tests/unit/projects/project-task-lifetime.test.ts > durable Project Task lifetime authority > never creates a lifetime or silently omits saved context when bytes are unavailable
+AssertionError: promise resolved "{ …(3) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "description": "must include attachment",
++   "lifetimeId": "project_task_lifetime_5251def6-e766-470b-b4f3-1b5174f1cd11",
++   "referenceFiles": [],
+  }
+
+ ❯ tests/unit/projects/project-task-lifetime.test.ts:95:58
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > Task-owned exact Codex input release > waits a late turn/start, interrupts that exact turn and requires terminal notification, protecting another thread
+AssertionError: expected "vi.fn()" to be called with arguments: [ 99, …(1) ]
+
+Received: 
+
+  1st vi.fn() call:
+
+  [
+    99,
+-   ObjectContaining {
+-     "code": -32000,
+-   },
++   -32000,
++   "Codex run runtime admission is closed.",
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts:1607:33
+    1605|     await expect(thread.startInput(new AgentInputUserMessage("closed")…
+    1606|     thread.handleAppServerRequest(99, "mcpServer/elicitation/request",…
+    1607|     expect(client.respondError).toHaveBeenCalledWith(99, expect.object…
+       |                                 ^
+    1608|     expect(other.client.request).not.toHaveBeenCalled();
+    1609|     expect(other.thread.activeTurnId).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/27]⎯
+
+
+ Test Files  5 failed | 5 passed (10)
+      Tests  27 failed | 158 passed (185)
+   Start at  09:29:51
+   Duration  13.41s (transform 2.54s, setup 49ms, import 8.04s, tests 4.01s, environment 1ms)
+

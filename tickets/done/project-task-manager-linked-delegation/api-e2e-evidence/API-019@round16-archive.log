@@ -1,0 +1,7 @@
+2026-10-04T18:39:10.568305+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round16-owned-cleanup.py", "archive"]
+{"allowlistedFiles": 4, "capturedOwnPids": 8}
+
+INNER_EXIT=0
+ELAPSED=0.13

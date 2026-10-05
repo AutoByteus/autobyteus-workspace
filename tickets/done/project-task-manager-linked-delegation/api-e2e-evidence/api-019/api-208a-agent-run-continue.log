@@ -1,0 +1,10 @@
+STEP agent run continued on the same root at manager-read
+STEP agent run Manager read: current assignments only
+STEP agent run DONE A closed every A entry and stopped exactly A runs
+STEP agent run fence: every closed A run rejects input
+STEP agent run Manager, open B and borrowed still usable
+STEP agent run repeat DONE: no resource file change
+STEP agent run reopen + delegate: new open assigned; old closed; list shows only new
+STEP agent run unlinked delegation works and records nothing
+STEP agent run run phase complete
+exit 0

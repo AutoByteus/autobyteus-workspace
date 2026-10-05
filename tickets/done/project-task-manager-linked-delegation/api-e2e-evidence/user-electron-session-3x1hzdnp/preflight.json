@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-05T05:58:36.813762+00:00",
+  "purpose": "User requested manual testing; leave own instance running and retain its data, not a new API validation round or workflow advance",
+  "sameValidatedAsar": true,
+  "currentProductionPackageFingerprintsExact": true,
+  "docAndTestOnlyChangesSinceAPI17": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/TESTING.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_communication.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_execution.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_team_execution.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/run_history.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/docs/agent_execution_architecture.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/docs/projects.md"
+  ],
+  "currentServerDistPackagedExactFiles": 4426,
+  "launchCommand": [
+    "pnpm",
+    "--silent",
+    "isolated-app",
+    "start",
+    "--from-worktree",
+    "--keep"
+  ]
+}

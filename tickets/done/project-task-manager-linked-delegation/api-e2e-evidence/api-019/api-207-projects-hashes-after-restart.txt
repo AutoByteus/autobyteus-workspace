@@ -1,0 +1,10 @@
+28f22ec321d423121e160cf6e0bc559f6e94db0d652f1717104fb6c92da047ee  /server-data/projects/projects.pre-folders.json
+4a5db976186f13466253bc245f925d3106fda37b63754874c5b02c14a9a80f77  /server-data/projects/project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b/tasks/project_task_42241be0-8a55-4919-8f66-58833200ac73/task.json
+50b4b22c01f2b4f2acf035f29959ba856b945d0f0eee21467511e7d2165a3af3  /server-data/projects/project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b/drafts/bb8318ad-db74-4db3-b4cd-43d4badfa23d/ctx_ddf428b1e079__draft-notes.txt
+53520ab14a00941a1b151cbfade7930a629f69009e03c2084b36eb23baf16160  /server-data/projects/project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b/tasks/project_task_42241be0-8a55-4919-8f66-58833200ac73/context/ctx_e2a3ed306df7__requirements.txt
+57f1001a3be01c9b4c3fc819e36f7d21dbae6ac0e50d137b448844c53417f862  /server-data/projects/project_4252486c-5f5d-4296-9432-87e047386153/tasks/project_task_6d173705-25f4-4aa0-8c24-15330de8508f/task.json
+5d5d192d27e21d8ada7022b391dd302e2ec07e67fe023c4b21f2b0e7006a21a6  /server-data/projects/project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b/project.json
+9258028250c2f44f31cec4be448c46045084c64e90f8dd869e7f33b28d104857  /server-data/projects/project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b/drafts/17f6c0a0-3ba8-419f-ad9f-eb84f91d5fd6/manifest.json
+b8fbe3e5c7a53a75315e43bf504451f9f260c9eb23352f9d563b4f2551a0d600  /server-data/projects/project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b/drafts/bb8318ad-db74-4db3-b4cd-43d4badfa23d/manifest.json
+fb7f8decc4e2909e2f4c138a8682aa75616e5def8b1937ac1ae33f9f19d59f10  /server-data/projects/project_4252486c-5f5d-4296-9432-87e047386153/project.json
+fc662fca52788daee20e3bf4605c6ff1b25273c896b92e67add0805e8dc5df31  /server-data/projects/project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b/tasks/project_task_1e13fcc4-def6-485c-bca0-6663403071ab/task.json

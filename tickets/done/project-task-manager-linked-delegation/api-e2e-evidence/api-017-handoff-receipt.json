@@ -1,0 +1,20 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /software_engineering_team/code_reviewer.\",\"target_agent_run_id\":\"code_reviewer_324c9986b1b745749a92256d790995c4\"}"
+    }
+  ],
+  "structuredContent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/code_reviewer.",
+    "target_agent_run_id": "code_reviewer_324c9986b1b745749a92256d790995c4"
+  },
+  "recordedAt": "2026-10-05T05:10:39.587135+00:00",
+  "revision": "API-REV-017",
+  "attachedDirectReferences": 895,
+  "cumulativeReferencesAtDelivery": 6019,
+  "deliveryEngineerNotMessaged": true,
+  "stageEndedNoPolling": true
+}

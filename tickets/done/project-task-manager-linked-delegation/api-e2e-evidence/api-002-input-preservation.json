@@ -1,0 +1,1228 @@
+{
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "reviewedCount": 195,
+  "reviewedUnchanged": 195,
+  "priorCoverageUnchanged": 8,
+  "files": [
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/message-recipient-resolution.ts",
+      "expected": "b02a2ffbd49e3260ec66b29963595eff7aa52e09aecf3def4b6fcabb339fc9c7",
+      "actual": "b02a2ffbd49e3260ec66b29963595eff7aa52e09aecf3def4b6fcabb339fc9c7",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/task-scoped-message-recipient.ts",
+      "expected": "67072837448a953fba32c5ff27d7b9348bb372737c40b7f2c1e7b76a541b92d5",
+      "actual": "67072837448a953fba32c5ff27d7b9348bb372737c40b7f2c1e7b76a541b92d5",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts",
+      "expected": "345dccd272708bbf27ad9d46750279b63daaf1cce00b83668cb3ab9141e9458e",
+      "actual": "345dccd272708bbf27ad9d46750279b63daaf1cce00b83668cb3ab9141e9458e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts",
+      "expected": "649ac495ca9449bd1233b9638846d008a68952cc86015b597fea802cd4e06d0b",
+      "actual": "649ac495ca9449bd1233b9638846d008a68952cc86015b597fea802cd4e06d0b",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "expected": "c7f94d0209a37602fb04e5dc00334b5a02bc58b634566bcde15df003d15c5191",
+      "actual": "c7f94d0209a37602fb04e5dc00334b5a02bc58b634566bcde15df003d15c5191",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts",
+      "expected": "ba8f69d637cb05919806b12c3404e770ac9c6f6dbfb1f0aca29b8bf2a1bde698",
+      "actual": "ba8f69d637cb05919806b12c3404e770ac9c6f6dbfb1f0aca29b8bf2a1bde698",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+      "expected": "1c448585af0573e84f90f5297800bdf122c66208b29f2a2189de3266aaa2f6ce",
+      "actual": "1c448585af0573e84f90f5297800bdf122c66208b29f2a2189de3266aaa2f6ce",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+      "expected": "fc8185b75d81f01591ce6f2c503ae4516df189ad60e99116176dd15eec3337dd",
+      "actual": "fc8185b75d81f01591ce6f2c503ae4516df189ad60e99116176dd15eec3337dd",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts",
+      "expected": "7c3b4ee78d76eb4da96fadf4c45f3cbda16618cc1cf91d1783c72b5237fb71af",
+      "actual": "7c3b4ee78d76eb4da96fadf4c45f3cbda16618cc1cf91d1783c72b5237fb71af",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts",
+      "expected": "58b2d1e2d5312073cb28ac21349be5df0e6c7786504a8ad09cb8b4cd36d33718",
+      "actual": "58b2d1e2d5312073cb28ac21349be5df0e6c7786504a8ad09cb8b4cd36d33718",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/active-collaboration-root-directory.ts",
+      "expected": "70b6d10401395be492d5e449ffde3a89f9330bf763f23600e251c911c144192f",
+      "actual": "70b6d10401395be492d5e449ffde3a89f9330bf763f23600e251c911c144192f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-dispatch.ts",
+      "expected": "bb21d185cbda1134a06b1c61e6ae7cce06cc80980b523d308a173ac8179eed24",
+      "actual": "bb21d185cbda1134a06b1c61e6ae7cce06cc80980b523d308a173ac8179eed24",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-adapter.ts",
+      "expected": "c3e799a42793b3523bb63c192296322d728dec71de77435d65e58f1c3151fe95",
+      "actual": "c3e799a42793b3523bb63c192296322d728dec71de77435d65e58f1c3151fe95",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts",
+      "expected": "1c1e5f36848b5fe07489e3089fd8734e7fc00b88d8c619a35f93d2b0ab214c85",
+      "actual": "1c1e5f36848b5fe07489e3089fd8734e7fc00b88d8c619a35f93d2b0ab214c85",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts",
+      "expected": "616f3e248e1079a5a6c19a1bc73bc32b1fd6dcfa99dfab5b7b7d44eea4360395",
+      "actual": "616f3e248e1079a5a6c19a1bc73bc32b1fd6dcfa99dfab5b7b7d44eea4360395",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts",
+      "expected": "43f9080a56f78d1f9a24db258d6c9834b8335176defc0d0a843304361c7bb8fe",
+      "actual": "43f9080a56f78d1f9a24db258d6c9834b8335176defc0d0a843304361c7bb8fe",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-input.ts",
+      "expected": "6915a90a871eed4579e5b2815a8f077a851d72dbcb51e6c6c4533d128b0bd9b3",
+      "actual": "6915a90a871eed4579e5b2815a8f077a851d72dbcb51e6c6c4533d128b0bd9b3",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-lifetime.ts",
+      "expected": "7f017e4932514b52f2d221df1df25c9062281c9e6891b44a3b175ec643a82833",
+      "actual": "7f017e4932514b52f2d221df1df25c9062281c9e6891b44a3b175ec643a82833",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-seed-admission.ts",
+      "expected": "fd860660c9f160af9a53bedcd21f90d1f74104ce01d29972daa22dfd51d50b61",
+      "actual": "fd860660c9f160af9a53bedcd21f90d1f74104ce01d29972daa22dfd51d50b61",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-tree-projection.ts",
+      "expected": "462bb32ffc8d34feb1ea21673cbcc4f58747a0041ea31deb4fcefba2b2a60451",
+      "actual": "462bb32ffc8d34feb1ea21673cbcc4f58747a0041ea31deb4fcefba2b2a60451",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-lifetime-operation-gate.ts",
+      "expected": "a68e774232888c7ce115808535b7c097e6994dbd2f9e52b56e965149da99abb8",
+      "actual": "a68e774232888c7ce115808535b7c097e6994dbd2f9e52b56e965149da99abb8",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts",
+      "expected": "384bd92538d4b299677f2c829647f301dd650740fe226b03a9ed21b24bf3d70f",
+      "actual": "384bd92538d4b299677f2c829647f301dd650740fe226b03a9ed21b24bf3d70f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts",
+      "expected": "27a3da0f35a11ce1bcb8bbd6cf00e9389acd912ef7cf66ddf744dd7a344d9f93",
+      "actual": "27a3da0f35a11ce1bcb8bbd6cf00e9389acd912ef7cf66ddf744dd7a344d9f93",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-factory.ts",
+      "expected": "31c20362171ae0b4ce26e642f773898389470383d76db05c40e8e2d47bd7acb7",
+      "actual": "31c20362171ae0b4ce26e642f773898389470383d76db05c40e8e2d47bd7acb7",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-preparation.ts",
+      "expected": "bc7cafa5c5e783909814a21c79ffff75151816073ec8aa203acbe6d2d522a3f4",
+      "actual": "bc7cafa5c5e783909814a21c79ffff75151816073ec8aa203acbe6d2d522a3f4",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts",
+      "expected": "2c78db725982435871904e17e82b8c2b474c0472bca6a47bc435efb0c1cc91ff",
+      "actual": "2c78db725982435871904e17e82b8c2b474c0472bca6a47bc435efb0c1cc91ff",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "expected": "b0c4715a874f06284ea82d3c41119607aa7721bfeb76a20b83c371562e28574a",
+      "actual": "b0c4715a874f06284ea82d3c41119607aa7721bfeb76a20b83c371562e28574a",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-process-groups.ts",
+      "expected": "7179602e369bb225ad685ffd5270de5c6859b7e7bbc20043b21ed70e17771a11",
+      "actual": "7179602e369bb225ad685ffd5270de5c6859b7e7bbc20043b21ed70e17771a11",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts",
+      "expected": "575971c6c5e1478fbcf708210b1b6da8e00f4370285dfb59378f2af09cbb84f6",
+      "actual": "575971c6c5e1478fbcf708210b1b6da8e00f4370285dfb59378f2af09cbb84f6",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "expected": "1e4fd6a9d76c5d7d3b5f8c3c647996f7d6acd07ecad9305abda8ee929d506928",
+      "actual": "1e4fd6a9d76c5d7d3b5f8c3c647996f7d6acd07ecad9305abda8ee929d506928",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts",
+      "expected": "39c603e2f17d5fe9a2b0e14ddbf222fcf5db4417dd9738e29677e889e20cb3ac",
+      "actual": "39c603e2f17d5fe9a2b0e14ddbf222fcf5db4417dd9738e29677e889e20cb3ac",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts",
+      "expected": "7b2306737a11ce13600d0fc1c13fe354d697d658ca84f9af9bc6b22191f460fc",
+      "actual": "7b2306737a11ce13600d0fc1c13fe354d697d658ca84f9af9bc6b22191f460fc",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+      "expected": "574527d0179f6086f69cd37b11c671790fb23b90daf58d637f83c4f78ed8ee4f",
+      "actual": "574527d0179f6086f69cd37b11c671790fb23b90daf58d637f83c4f78ed8ee4f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts",
+      "expected": "f7471faa33897d0355f4709e9abc264aa4c8a3d3662fae55c9d2c8469ba2046d",
+      "actual": "f7471faa33897d0355f4709e9abc264aa4c8a3d3662fae55c9d2c8469ba2046d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts",
+      "expected": "6a7961bf0416fd8241b78789a0edbaf966cb6cc8be49cb19afc5bf0ccb66719e",
+      "actual": "6a7961bf0416fd8241b78789a0edbaf966cb6cc8be49cb19afc5bf0ccb66719e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts",
+      "expected": "0c2c54eb258fb2076c1979292d408e7ea6473956060b7c2e34f421353a65f102",
+      "actual": "0c2c54eb258fb2076c1979292d408e7ea6473956060b7c2e34f421353a65f102",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts",
+      "expected": "587cea0c00dc6f40f6e2d2eb5e4ec2718b40c2c07e9b1d55b7e002a25a24d6ca",
+      "actual": "587cea0c00dc6f40f6e2d2eb5e4ec2718b40c2c07e9b1d55b7e002a25a24d6ca",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts",
+      "expected": "d00f9a124f816a2ca0948e20d5aac976e58360986f72c5ff55d6a3c466774986",
+      "actual": "d00f9a124f816a2ca0948e20d5aac976e58360986f72c5ff55d6a3c466774986",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts",
+      "expected": "b160adb967d444cce508e15c4a167909deff7988d1e7584a546980c1761683a7",
+      "actual": "b160adb967d444cce508e15c4a167909deff7988d1e7584a546980c1761683a7",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+      "expected": "19ebe285bc5a0afb1a952d93b743324bfcb9e7e9c9e992fb250ea442647d26fb",
+      "actual": "19ebe285bc5a0afb1a952d93b743324bfcb9e7e9c9e992fb250ea442647d26fb",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+      "expected": "cb22fbf9f0ebe2e300d1a84b5c60f4045788c967e29cc6cbe8b27b55385fabaf",
+      "actual": "cb22fbf9f0ebe2e300d1a84b5c60f4045788c967e29cc6cbe8b27b55385fabaf",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-cleanup.ts",
+      "expected": "ff88efde183f772297b8f0f4e94e3e1bb2a0d19176c42d3062f9694b22541abb",
+      "actual": "ff88efde183f772297b8f0f4e94e3e1bb2a0d19176c42d3062f9694b22541abb",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts",
+      "expected": "b67f8326f3e6ef46836ee36878fa3a37d0680de8949cc57298ccec7857855188",
+      "actual": "b67f8326f3e6ef46836ee36878fa3a37d0680de8949cc57298ccec7857855188",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-input-submission.ts",
+      "expected": "d0563dec639526535f6e10036eba495fde87c7945440c82244fdaa143b202965",
+      "actual": "d0563dec639526535f6e10036eba495fde87c7945440c82244fdaa143b202965",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts",
+      "expected": "10b2653c4e1ac792a3df6baac57ce8b3091a5f28538e9591b5e7bd2ca2b25a99",
+      "actual": "10b2653c4e1ac792a3df6baac57ce8b3091a5f28538e9591b5e7bd2ca2b25a99",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-release-scope.ts",
+      "expected": "11945cec3d6b363de9554c129a6b5c324fea7c3c25de700e75c85e4731aecc45",
+      "actual": "11945cec3d6b363de9554c129a6b5c324fea7c3c25de700e75c85e4731aecc45",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts",
+      "expected": "ced34af7e57a7d82b31a59720705d06cc90ed13263ccfb222f2186e3ab7f4cd3",
+      "actual": "ced34af7e57a7d82b31a59720705d06cc90ed13263ccfb222f2186e3ab7f4cd3",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts",
+      "expected": "8472dc6b5c074a95f20b4456fea6e673e1eddcd1b84db74e97aeb3e227e03b36",
+      "actual": "8472dc6b5c074a95f20b4456fea6e673e1eddcd1b84db74e97aeb3e227e03b36",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts",
+      "expected": "df1eaa8ad928439616d9b77b93d423cd014f44ed4f326a4ed84cfb1925c6f618",
+      "actual": "df1eaa8ad928439616d9b77b93d423cd014f44ed4f326a4ed84cfb1925c6f618",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "expected": "a5e6bb3c601b2228a2d2f0b045182c0c271798dadaeedbb655d3f0a73cb50c7f",
+      "actual": "a5e6bb3c601b2228a2d2f0b045182c0c271798dadaeedbb655d3f0a73cb50c7f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts",
+      "expected": "40a2dfc13de13ac9ae36acb7fc96e77bc5764817ea4fc2f34e9e95db33d90a46",
+      "actual": "40a2dfc13de13ac9ae36acb7fc96e77bc5764817ea4fc2f34e9e95db33d90a46",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-execution-admission-fence.ts",
+      "expected": "846007aaa3ba76170442b09ef7e0a9090941bd91ba25cf67ea17daac24c3e3aa",
+      "actual": "846007aaa3ba76170442b09ef7e0a9090941bd91ba25cf67ea17daac24c3e3aa",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+      "expected": "8eb9409d21e81062987a417d20905599fd64ac7f5d0cddb4074239ec9fda7609",
+      "actual": "8eb9409d21e81062987a417d20905599fd64ac7f5d0cddb4074239ec9fda7609",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts",
+      "expected": "82476215d81c4b372926f854db0bf4f19845e62c730fd6dd222a065b8790a149",
+      "actual": "82476215d81c4b372926f854db0bf4f19845e62c730fd6dd222a065b8790a149",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts",
+      "expected": "018cb1b311a42b82122e839ad54ea787c9010a6a482b963e9874a417f8f71f68",
+      "actual": "018cb1b311a42b82122e839ad54ea787c9010a6a482b963e9874a417f8f71f68",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-activation-operation.ts",
+      "expected": "84e24b02dee0e285bfb82da9a0a9be737f636e5e41b15a87f4bf46260ac97cd3",
+      "actual": "84e24b02dee0e285bfb82da9a0a9be737f636e5e41b15a87f4bf46260ac97cd3",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "expected": "162fbab50b5df6ef0a148a5ce5c69f71467e16167bade7434542616e49f91cbe",
+      "actual": "162fbab50b5df6ef0a148a5ce5c69f71467e16167bade7434542616e49f91cbe",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts",
+      "expected": "d3fb08825ed2ef68d0627c482bd7988a0f54f4d0b8bf602badc7d750ac5c22b4",
+      "actual": "d3fb08825ed2ef68d0627c482bd7988a0f54f4d0b8bf602badc7d750ac5c22b4",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/managed-agent-run-termination.ts",
+      "expected": "72e5253d9b49f286b7cbe42afb3e23633e3d75db4074903190979ca33221b0fb",
+      "actual": "72e5253d9b49f286b7cbe42afb3e23633e3d75db4074903190979ca33221b0fb",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+      "expected": "a365ab4149e901b5ba21c43634f4c5c5f6caac397f1c281666cc7975a4cca0e8",
+      "actual": "a365ab4149e901b5ba21c43634f4c5c5f6caac397f1c281666cc7975a4cca0e8",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts",
+      "expected": "8160f2d7abf6a96f2ef2197d597087b72f899f287e2ced1df73a68c567fa3e3a",
+      "actual": "8160f2d7abf6a96f2ef2197d597087b72f899f287e2ced1df73a68c567fa3e3a",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+      "expected": "603097d087802b2eac6acc752daaf8c9e21e0ce67128cdcd2b574f02567b2db3",
+      "actual": "603097d087802b2eac6acc752daaf8c9e21e0ce67128cdcd2b574f02567b2db3",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts",
+      "expected": "7d72e7a385cf462d3f6877b63000401978c368316289589ebced604275602cd1",
+      "actual": "7d72e7a385cf462d3f6877b63000401978c368316289589ebced604275602cd1",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts",
+      "expected": "493e45f2ea17d899ee2ca26714ff3451651301fb8bc7ede3cd27d2069a915ddc",
+      "actual": "493e45f2ea17d899ee2ca26714ff3451651301fb8bc7ede3cd27d2069a915ddc",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+      "expected": "1d1f11d29c5aa58ecc7c6d04a37d634e817f0cf12ab73e2952ca0ba3a9e37319",
+      "actual": "1d1f11d29c5aa58ecc7c6d04a37d634e817f0cf12ab73e2952ca0ba3a9e37319",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts",
+      "expected": "31f4b9f3e4d6b4b03327678b070f8813cf2aa45d57731d49784e6ff3a7f58b21",
+      "actual": "31f4b9f3e4d6b4b03327678b070f8813cf2aa45d57731d49784e6ff3a7f58b21",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts",
+      "expected": "755705fb71edc309fe61538ab22cc5d66009ed7942dab99257501a720d20e804",
+      "actual": "755705fb71edc309fe61538ab22cc5d66009ed7942dab99257501a720d20e804",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+      "expected": "a19b836db50df8a89d0ca827b9a18c45f176516284d9022d6990272ddd28aca8",
+      "actual": "a19b836db50df8a89d0ca827b9a18c45f176516284d9022d6990272ddd28aca8",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts",
+      "expected": "871ad99f2a6894e49fbf9676366f1b9b9544b8bc0ac1fbe05082e21f1b591468",
+      "actual": "871ad99f2a6894e49fbf9676366f1b9b9544b8bc0ac1fbe05082e21f1b591468",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts",
+      "expected": "cc3e1def20c0de41d123c6d336ef25e75114c43bbb8f8748e79b7b29131385c9",
+      "actual": "cc3e1def20c0de41d123c6d336ef25e75114c43bbb8f8748e79b7b29131385c9",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts",
+      "expected": "f83d35b2c118c3c63b747eb7aefe06ad6b8fde7307085208427313b94bb12888",
+      "actual": "f83d35b2c118c3c63b747eb7aefe06ad6b8fde7307085208427313b94bb12888",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts",
+      "expected": "2ffa501f46da83c8e59e4342e7c26c0b2713cf26fbfab186cb200aecef697c38",
+      "actual": "2ffa501f46da83c8e59e4342e7c26c0b2713cf26fbfab186cb200aecef697c38",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts",
+      "expected": "2097129716739ac87d566aa3e3d398eaa2c6cf6a4b3d3937612c3449e64d15de",
+      "actual": "2097129716739ac87d566aa3e3d398eaa2c6cf6a4b3d3937612c3449e64d15de",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts",
+      "expected": "20651697e89fc93aff45792001518bfcde4bde837d298f828f2557246df0c221",
+      "actual": "20651697e89fc93aff45792001518bfcde4bde837d298f828f2557246df0c221",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/prepared-task-execution.ts",
+      "expected": "d7595c8f5f59da1aaa112c1937ecf0b65c812d406e4deb3e36d4b95c6ba4183d",
+      "actual": "d7595c8f5f59da1aaa112c1937ecf0b65c812d406e4deb3e36d4b95c6ba4183d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+      "expected": "05ed9f79b55a614542b5b56e00c5df9ef00c39c1ae521b6b1cf60dab418a6ec3",
+      "actual": "05ed9f79b55a614542b5b56e00c5df9ef00c39c1ae521b6b1cf60dab418a6ec3",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/task-agent-execution.ts",
+      "expected": "28fdc05d76056a9534cca7fed063aaa396bcbff3848f2462c4ccf0eef65fd2ee",
+      "actual": "28fdc05d76056a9534cca7fed063aaa396bcbff3848f2462c4ccf0eef65fd2ee",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/task-team-execution.ts",
+      "expected": "df76734208bc6493fdfd18fa96d5e7c57201045b60c9430795e05cb8efaa66ea",
+      "actual": "df76734208bc6493fdfd18fa96d5e7c57201045b60c9430795e05cb8efaa66ea",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts",
+      "expected": "8f6d3ab5ed6910e0a2d73cabbb904fd36d8f2cea41f366624412ba57be0b60b7",
+      "actual": "8f6d3ab5ed6910e0a2d73cabbb904fd36d8f2cea41f366624412ba57be0b60b7",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts",
+      "expected": "03bbe8479ec2be6e66d9b8e72ea6f2f80b5c6d9677a0c821b4bf8d6c4f6fe81e",
+      "actual": "03bbe8479ec2be6e66d9b8e72ea6f2f80b5c6d9677a0c821b4bf8d6c4f6fe81e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-callbacks.ts",
+      "expected": "64e1047b3865aad618db3ac77168220ba1f36250f8f753a32412b4da306c8b3b",
+      "actual": "64e1047b3865aad618db3ac77168220ba1f36250f8f753a32412b4da306c8b3b",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+      "expected": "603c839399061e14e97a8c77452152cdb1140df08e07e5dbb712546fb7f45333",
+      "actual": "603c839399061e14e97a8c77452152cdb1140df08e07e5dbb712546fb7f45333",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager-options.ts",
+      "expected": "6e853897b80b01af5d30e2661e8b7a78bf4858b097613e788da24b75b07f5346",
+      "actual": "6e853897b80b01af5d30e2661e8b7a78bf4858b097613e788da24b75b07f5346",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "expected": "dba3930507beb0a21fd902f9f9b575b0d93ea3a3b25fb64138b724512d040c08",
+      "actual": "dba3930507beb0a21fd902f9f9b575b0d93ea3a3b25fb64138b724512d040c08",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts",
+      "expected": "7d6a6850c2073efc06d42f98e9ba00062d5f8be2c99b6dedb86b5035018ce348",
+      "actual": "7d6a6850c2073efc06d42f98e9ba00062d5f8be2c99b6dedb86b5035018ce348",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/owned-flat-team-runtime-release.ts",
+      "expected": "078b7e814a71c7c3865727a31bd09fd6ee85d789c1af5d8e7e045dfe1bfb8818",
+      "actual": "078b7e814a71c7c3865727a31bd09fd6ee85d789c1af5d8e7e045dfe1bfb8818",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/prepare-flat-team-configured-activation.ts",
+      "expected": "c2fcc5cf94a5051acf19232fbf8155ffa93b9b1a5231b405c0c69ac3a1894390",
+      "actual": "c2fcc5cf94a5051acf19232fbf8155ffa93b9b1a5231b405c0c69ac3a1894390",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts",
+      "expected": "26fe10cf16f8af3ac6f09351a46b270967889a5a34b98102c896f633efe626fd",
+      "actual": "26fe10cf16f8af3ac6f09351a46b270967889a5a34b98102c896f633efe626fd",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+      "expected": "5f036d1e2d99fde38a500f2586deab9cb77f8a87db48700415a7a6b34a26dcc2",
+      "actual": "5f036d1e2d99fde38a500f2586deab9cb77f8a87db48700415a7a6b34a26dcc2",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-team-execution-registry.ts",
+      "expected": "6742972fe71908c80cdd4dfad1ef3e64fa3dd22c597972011888c4b18216b585",
+      "actual": "6742972fe71908c80cdd4dfad1ef3e64fa3dd22c597972011888c4b18216b585",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/task-team-execution-factory.ts",
+      "expected": "5f04a30e750fa81be00fbea74464db437329a825889273f01dd810ec043903e7",
+      "actual": "5f04a30e750fa81be00fbea74464db437329a825889273f01dd810ec043903e7",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts",
+      "expected": "e8faf2fe6aec2801723650fe99a8a3b47a73f065c0ae18ede213783ee02bf798",
+      "actual": "e8faf2fe6aec2801723650fe99a8a3b47a73f065c0ae18ede213783ee02bf798",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts",
+      "expected": "5ed192ec4e3ee28ba91f8ee974173756494a14480c05c8dae23e1e88d62a6c62",
+      "actual": "5ed192ec4e3ee28ba91f8ee974173756494a14480c05c8dae23e1e88d62a6c62",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+      "expected": "27292d0d542e0a72881860cba08118e3775ac1e15495500e58a072f6cf076bce",
+      "actual": "27292d0d542e0a72881860cba08118e3775ac1e15495500e58a072f6cf076bce",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts",
+      "expected": "b5f6a6327fc7b0f3c0de6e455e9678f9c9984af76f19294d5fe019ed34dd9271",
+      "actual": "b5f6a6327fc7b0f3c0de6e455e9678f9c9984af76f19294d5fe019ed34dd9271",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts",
+      "expected": "23a19d88eab7a98fc38582ca2ad617a5f8f19abc0cb205271a29d80fcd5ac9f3",
+      "actual": "23a19d88eab7a98fc38582ca2ad617a5f8f19abc0cb205271a29d80fcd5ac9f3",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts",
+      "expected": "1997108b5d4f8c586e72a8e48c651e7e4e636e11a9b1239a035de46545bc27b5",
+      "actual": "1997108b5d4f8c586e72a8e48c651e7e4e636e11a9b1239a035de46545bc27b5",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service-contract.ts",
+      "expected": "b263a0f83fe93adddb8e0a23920156d1404a83d3c5dc39e7887755b88ba87244",
+      "actual": "b263a0f83fe93adddb8e0a23920156d1404a83d3c5dc39e7887755b88ba87244",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts",
+      "expected": "a7815a0cb073e7cbe4debf51245e4a8f7b21b1958c2536e43cfff98bf3a9f000",
+      "actual": "a7815a0cb073e7cbe4debf51245e4a8f7b21b1958c2536e43cfff98bf3a9f000",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts",
+      "expected": "5d8896549ebf8ff091b12c2da9cd14fb7700e335e37b82476450c80218ba9f98",
+      "actual": "5d8896549ebf8ff091b12c2da9cd14fb7700e335e37b82476450c80218ba9f98",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts",
+      "expected": "9b9c2005a71f0c7a7c2592dae85d3c760354a8aa2a70f217b45cecb5ad709472",
+      "actual": "9b9c2005a71f0c7a7c2592dae85d3c760354a8aa2a70f217b45cecb5ad709472",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts",
+      "expected": "cca839656e238f3eecbf1b348191b9930f81b47b6d5c46ae4da53414e4851254",
+      "actual": "cca839656e238f3eecbf1b348191b9930f81b47b6d5c46ae4da53414e4851254",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts",
+      "expected": "05a1312a2def9ddc320b15b3385517e1d112de46d1369ce5c45e4e917657b483",
+      "actual": "05a1312a2def9ddc320b15b3385517e1d112de46d1369ce5c45e4e917657b483",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts",
+      "expected": "5f42672be1caf39c7b029ac1c96c3841cb28e281c43eada93fb140ec290985a9",
+      "actual": "5f42672be1caf39c7b029ac1c96c3841cb28e281c43eada93fb140ec290985a9",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts",
+      "expected": "9edf019d16a74ca91ecd67fe1ba6d318358c7c587c85be68988932c62a9f0c3e",
+      "actual": "9edf019d16a74ca91ecd67fe1ba6d318358c7c587c85be68988932c62a9f0c3e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+      "expected": "9c188c898170aa50ed009a30e584cd100602c761cdae225fab69d1e72beb2d1d",
+      "actual": "9c188c898170aa50ed009a30e584cd100602c761cdae225fab69d1e72beb2d1d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent-config.json",
+      "expected": "b9f58808e3720e3290f4928910ff5061a4f689c82f02a6292cfdd914a0502bc4",
+      "actual": "b9f58808e3720e3290f4928910ff5061a4f689c82f02a6292cfdd914a0502bc4",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md",
+      "expected": "6cf71a0d53d96b17cada40c61ef62623e96daad3cccb40ee570a10d0b5f2e886",
+      "actual": "6cf71a0d53d96b17cada40c61ef62623e96daad3cccb40ee570a10d0b5f2e886",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/llm-management/services/codex-model-catalog.ts",
+      "expected": "44a7eeb1534e0198d22ec6324bb3f74aac815f394c6a08c73147c583a94b42ed",
+      "actual": "44a7eeb1534e0198d22ec6324bb3f74aac815f394c6a08c73147c583a94b42ed",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/persistence/file/store-utils.ts",
+      "expected": "6a59bc5b4b0d1c09791f1fba29950c00eeaa468c1ead14cf75e1ab27eef77724",
+      "actual": "6a59bc5b4b0d1c09791f1fba29950c00eeaa468c1ead14cf75e1ab27eef77724",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/context/project-task-context-store.ts",
+      "expected": "983285bae9404d48f136e0d2a4a5b1ef0df8df94847bc0cb69ac65e1741cbe43",
+      "actual": "983285bae9404d48f136e0d2a4a5b1ef0df8df94847bc0cb69ac65e1741cbe43",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/models.ts",
+      "expected": "c290f23de98e543c9c392ea9f34140172b677934596f508e904b5ddaf3522247",
+      "actual": "c290f23de98e543c9c392ea9f34140172b677934596f508e904b5ddaf3522247",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-errors.ts",
+      "expected": "ce58072114bf2c0f60ca6ded4840232c025ac2c34b94741e84f639ec153ca52e",
+      "actual": "ce58072114bf2c0f60ca6ded4840232c025ac2c34b94741e84f639ec153ca52e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-task-execution-state.ts",
+      "expected": "93e890c2e59fcda1e239bb4f3881afea77e56784c8fed71e02364622ad55fdcf",
+      "actual": "93e890c2e59fcda1e239bb4f3881afea77e56784c8fed71e02364622ad55fdcf",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-task-execution.ts",
+      "expected": "c744e0cf86ef8f3c0a74be6ad387508775a0baa23858f6676184e519d3060f64",
+      "actual": "c744e0cf86ef8f3c0a74be6ad387508775a0baa23858f6676184e519d3060f64",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts",
+      "expected": "a97ebf7a44a59e98df4cd378f49615db96f8988d09f1bd5d2ded02e53b932f44",
+      "actual": "a97ebf7a44a59e98df4cd378f49615db96f8988d09f1bd5d2ded02e53b932f44",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/services/project-task-service.ts",
+      "expected": "39b7846415bb7f023527eab1043b799177e12b80e75b64d9fb5879cd50884377",
+      "actual": "39b7846415bb7f023527eab1043b799177e12b80e75b64d9fb5879cd50884377",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-metadata-schema.ts",
+      "expected": "bb766390c913941db0aa8041e2255c327b3e0b7c2535ad34bcdf95e575ce9418",
+      "actual": "bb766390c913941db0aa8041e2255c327b3e0b7c2535ad34bcdf95e575ce9418",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-state-schema.ts",
+      "expected": "227e0556717fc7ccbe8c6eb976984611314218077b6cbdd73ed1b42a1736a54f",
+      "actual": "227e0556717fc7ccbe8c6eb976984611314218077b6cbdd73ed1b42a1736a54f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-store.ts",
+      "expected": "aa866a73e8819b6e5bf06e3e3f289f4ed56c25c0b05f904f259fec5f04a26c86",
+      "actual": "aa866a73e8819b6e5bf06e3e3f289f4ed56c25c0b05f904f259fec5f04a26c86",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts",
+      "expected": "fd12c36a87aac884a2de8e02223c6911f73a581655980eb973c17195487c3051",
+      "actual": "fd12c36a87aac884a2de8e02223c6911f73a581655980eb973c17195487c3051",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts",
+      "expected": "61f71a04bf6ca80d94e4b7d5385e1a16d063721c4661a8abb2549b63aa435745",
+      "actual": "61f71a04bf6ca80d94e4b7d5385e1a16d063721c4661a8abb2549b63aa435745",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/acp/acp-agent-process.ts",
+      "expected": "d2ae323cf3e40f7960dd5d51e7ac056bc775357e7a0e6e1f5c5e05a3574182c6",
+      "actual": "d2ae323cf3e40f7960dd5d51e7ac056bc775357e7a0e6e1f5c5e05a3574182c6",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts",
+      "expected": "10df0ae52b08cc1af34d8d662bc9906c53b32b125f3a49686c0c503bfa353fe7",
+      "actual": "10df0ae52b08cc1af34d8d662bc9906c53b32b125f3a49686c0c503bfa353fe7",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts",
+      "expected": "e2b8060bdebcc87e458935c09a8327a99fe404ab6b96674150cd74bf29510197",
+      "actual": "e2b8060bdebcc87e458935c09a8327a99fe404ab6b96674150cd74bf29510197",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-session-opening.ts",
+      "expected": "5a1a4c03c62fcc029d2619054e5597c9a9b17affce9fd81bd0220111a8617a4b",
+      "actual": "5a1a4c03c62fcc029d2619054e5597c9a9b17affce9fd81bd0220111a8617a4b",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-streaming-session.ts",
+      "expected": "d2043bbf2fc75cd5fb334c48524986e10df9d459c3aa2f212d17f1da9d237408",
+      "actual": "d2043bbf2fc75cd5fb334c48524986e10df9d459c3aa2f212d17f1da9d237408",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+      "expected": "3ca5444b822acde7d94cb13c45feabb946d197f724cb4546058ef199cd03a634",
+      "actual": "3ca5444b822acde7d94cb13c45feabb946d197f724cb4546058ef199cd03a634",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts",
+      "expected": "d78957ff537af3623723ae7dd351401eed6d28ae1ceb9460d9265f5eda472c03",
+      "actual": "d78957ff537af3623723ae7dd351401eed6d28ae1ceb9460d9265f5eda472c03",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts",
+      "expected": "66f89ba5370bcf25e918124e732d6455d9cb617f2637be5e8f7fe80717377054",
+      "actual": "66f89ba5370bcf25e918124e732d6455d9cb617f2637be5e8f7fe80717377054",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/agent-run-preparation-fixtures.ts",
+      "expected": "4e24a85de69d75e502cf0277023d275e4bcdfee6fb2ac1827c4e5e7adcad05d8",
+      "actual": "4e24a85de69d75e502cf0277023d275e4bcdfee6fb2ac1827c4e5e7adcad05d8",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs",
+      "expected": "d408306b1decad92e9ddade8817c1768164a34791f94d25e6e4204ffcedd3933",
+      "actual": "d408306b1decad92e9ddade8817c1768164a34791f94d25e6e4204ffcedd3933",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/configured-root-first-work-fixture.ts",
+      "expected": "6a4503dae9c8b2f632f61dc657740f815626594325bb0db5c7fb440e649a5162",
+      "actual": "6a4503dae9c8b2f632f61dc657740f815626594325bb0db5c7fb440e649a5162",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/task-release-generation-fixtures.ts",
+      "expected": "fafc8521f9ef31adbd97a5f73537adf4d676cadf1727c2a8742552511519c07c",
+      "actual": "fafc8521f9ef31adbd97a5f73537adf4d676cadf1727c2a8742552511519c07c",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/helpers/fake-claude-streaming-sdk.ts",
+      "expected": "697151a30835e03f7e408661fba5b2de1774074f3a2786ac1a453cded09bc484",
+      "actual": "697151a30835e03f7e408661fba5b2de1774074f3a2786ac1a453cded09bc484",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts",
+      "expected": "2312712af658662593c11c07c312b456082206c979299ccbe37c5b7945d8885b",
+      "actual": "2312712af658662593c11c07c312b456082206c979299ccbe37c5b7945d8885b",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts",
+      "expected": "591d6fa9a96b1582152a99fee7ec891f41a1981acd787149ab6a130c2f5d019e",
+      "actual": "591d6fa9a96b1582152a99fee7ec891f41a1981acd787149ab6a130c2f5d019e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-collaboration/configured-root-first-work.test.ts",
+      "expected": "a77fb4321e6d7e49222d19d5c1e4d9c6962c67778e662b3011ed59eb126d86bb",
+      "actual": "a77fb4321e6d7e49222d19d5c1e4d9c6962c67778e662b3011ed59eb126d86bb",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts",
+      "expected": "1affcb7f32183f51bd9c5be294d78d21bde868f4a25426ca6f744a609ee2ab83",
+      "actual": "1affcb7f32183f51bd9c5be294d78d21bde868f4a25426ca6f744a609ee2ab83",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-dispatch-races.test.ts",
+      "expected": "aec513507774f3b22ac058f2709f18732ebf7a4434029ea1d8c2d7b6049b59fe",
+      "actual": "aec513507774f3b22ac058f2709f18732ebf7a4434029ea1d8c2d7b6049b59fe",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-quiet-generation.test.ts",
+      "expected": "f31b8b35c1f98d35cd11723b952c2837415152c862b85e602179530ce36f5c91",
+      "actual": "f31b8b35c1f98d35cd11723b952c2837415152c862b85e602179530ce36f5c91",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-tree-scope.test.ts",
+      "expected": "91c6917630e2f05d212da587c48a001296ba0c430b20a5000bc8c666f2233b1d",
+      "actual": "91c6917630e2f05d212da587c48a001296ba0c430b20a5000bc8c666f2233b1d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts",
+      "expected": "b1f3b25d887bd1a51ae919651e1829ecc5047639bac83551a72bf7f91cee08c9",
+      "actual": "b1f3b25d887bd1a51ae919651e1829ecc5047639bac83551a72bf7f91cee08c9",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts",
+      "expected": "4773baaa3112698d73a70c92ba4a0e92695063b0deadc6f873148b58ae07e320",
+      "actual": "4773baaa3112698d73a70c92ba4a0e92695063b0deadc6f873148b58ae07e320",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts",
+      "expected": "281dc584e9644e952726adc90e5d10d1a62854b9ecfd1cb5798962cf1cc6fbf0",
+      "actual": "281dc584e9644e952726adc90e5d10d1a62854b9ecfd1cb5798962cf1cc6fbf0",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts",
+      "expected": "ad118d543efd7c7d74ea0cf0f65305821ea11e723f0bd53b34470c59051b19df",
+      "actual": "ad118d543efd7c7d74ea0cf0f65305821ea11e723f0bd53b34470c59051b19df",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts",
+      "expected": "9f0fb6fc684f60d9ccb67e08c21c98aaf653d7c2cce96329a9e36b145d25507a",
+      "actual": "9f0fb6fc684f60d9ccb67e08c21c98aaf653d7c2cce96329a9e36b145d25507a",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts",
+      "expected": "867e48b8c527814d61c0106bef854b11dba8e18fc490b3156e0cc79494674d00",
+      "actual": "867e48b8c527814d61c0106bef854b11dba8e18fc490b3156e0cc79494674d00",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts",
+      "expected": "7f11402a96120a80839d14105c4844559ee83dc04cb9e8f0ce2da4fbb95e7984",
+      "actual": "7f11402a96120a80839d14105c4844559ee83dc04cb9e8f0ce2da4fbb95e7984",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts",
+      "expected": "3d9334b54394b2fc4ff66a86588818cc099593543e22accefd167e7e6707b470",
+      "actual": "3d9334b54394b2fc4ff66a86588818cc099593543e22accefd167e7e6707b470",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts",
+      "expected": "55bd1460a726b0a1950c52479316d992c35922e6eeae4c6102becd65d0d9b131",
+      "actual": "55bd1460a726b0a1950c52479316d992c35922e6eeae4c6102becd65d0d9b131",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts",
+      "expected": "1ffcc0ab5aaef40585d60ab68129b4a44050ef9677346d648c4bef17684c785d",
+      "actual": "1ffcc0ab5aaef40585d60ab68129b4a44050ef9677346d648c4bef17684c785d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts",
+      "expected": "74d19d86593120648b39c2d9d5e310d6aa13034bf46d318debb7c34b3e8ed442",
+      "actual": "74d19d86593120648b39c2d9d5e310d6aa13034bf46d318debb7c34b3e8ed442",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts",
+      "expected": "cf11f0003c4ab36144bfc362032fd66b0fcc8d61fa2f210c8575986f86a2cfb3",
+      "actual": "cf11f0003c4ab36144bfc362032fd66b0fcc8d61fa2f210c8575986f86a2cfb3",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts",
+      "expected": "f5f2e3dceac29321864b9f6e0dc9dadd1e0f609c62c035dee9ddeaa1b3134d6f",
+      "actual": "f5f2e3dceac29321864b9f6e0dc9dadd1e0f609c62c035dee9ddeaa1b3134d6f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+      "expected": "6e291ecfb474adbb71fa6f951da54109d7ba6a1ca99fc263102deb833159908e",
+      "actual": "6e291ecfb474adbb71fa6f951da54109d7ba6a1ca99fc263102deb833159908e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts",
+      "expected": "156418343711900464e3f66669752dfa4ebd3e601ccfa77fa75a524512ee7066",
+      "actual": "156418343711900464e3f66669752dfa4ebd3e601ccfa77fa75a524512ee7066",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts",
+      "expected": "34f8c3f22df714b1f58250b640af3c1c16643d06c6fb3c823a097d0773d56be7",
+      "actual": "34f8c3f22df714b1f58250b640af3c1c16643d06c6fb3c823a097d0773d56be7",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts",
+      "expected": "98ee2ff0a12ca8c6ffd0981283b4f8b287c18c52c5d717aeb90a3358ff4351f4",
+      "actual": "98ee2ff0a12ca8c6ffd0981283b4f8b287c18c52c5d717aeb90a3358ff4351f4",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts",
+      "expected": "b6a0c86b6dc4d250dcfb8b885a0fcd0d044513c6015b7c8a35241fa34a27bd4b",
+      "actual": "b6a0c86b6dc4d250dcfb8b885a0fcd0d044513c6015b7c8a35241fa34a27bd4b",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+      "expected": "557b9626a04df00944efcd1797bbf6ba7530287f1b55549c3fb26c5340cbf814",
+      "actual": "557b9626a04df00944efcd1797bbf6ba7530287f1b55549c3fb26c5340cbf814",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/services/agent-run-activation-operation.test.ts",
+      "expected": "d33d722686dbacda965a12fdcd92977edeb365bdb6a04151d42b585c4c459247",
+      "actual": "d33d722686dbacda965a12fdcd92977edeb365bdb6a04151d42b585c4c459247",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts",
+      "expected": "0f74442367a9078bccb5c00bd969256c28e9308f0ca9b82d7a217ab0fa44d3f1",
+      "actual": "0f74442367a9078bccb5c00bd969256c28e9308f0ca9b82d7a217ab0fa44d3f1",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts",
+      "expected": "20b0cf742a6bc949e048c86968824cf4b6fb73ac18c8c1ea6f81450db0fd34d8",
+      "actual": "20b0cf742a6bc949e048c86968824cf4b6fb73ac18c8c1ea6f81450db0fd34d8",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-scope.test.ts",
+      "expected": "879488bbc0af6e59f5565e9db2468e0e359721f2424d4f0c5eaaa452ecd216a9",
+      "actual": "879488bbc0af6e59f5565e9db2468e0e359721f2424d4f0c5eaaa452ecd216a9",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts",
+      "expected": "6fc76ad4698d408345fc5db11bc081ae2cc42f99fc7c081787a61cb9249b83e4",
+      "actual": "6fc76ad4698d408345fc5db11bc081ae2cc42f99fc7c081787a61cb9249b83e4",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts",
+      "expected": "6d80bd525d19e89f3fc390dc9d4f8ed6d14565e0345944efdf6472c2e03e4bf4",
+      "actual": "6d80bd525d19e89f3fc390dc9d4f8ed6d14565e0345944efdf6472c2e03e4bf4",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-task-publication.test.ts",
+      "expected": "8ab2e4c335b1f9a6127198ab1cec348a143c0786f56eb036255cb73dadcbde17",
+      "actual": "8ab2e4c335b1f9a6127198ab1cec348a143c0786f56eb036255cb73dadcbde17",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts",
+      "expected": "3ccce0a2e4386c3c9479e7c7bcc020dcab24c2ea0aaad60e9e1ff5e170c3e75f",
+      "actual": "3ccce0a2e4386c3c9479e7c7bcc020dcab24c2ea0aaad60e9e1ff5e170c3e75f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts",
+      "expected": "855f31f70420f01909a6be39c55ec681efd7204eab36fdd05a4556d89d781b9b",
+      "actual": "855f31f70420f01909a6be39c55ec681efd7204eab36fdd05a4556d89d781b9b",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-execution-factory.test.ts",
+      "expected": "2f13a125a9ed43cd19b71e3a9e4b0b36a9ddae583674399008fe43f814961a47",
+      "actual": "2f13a125a9ed43cd19b71e3a9e4b0b36a9ddae583674399008fe43f814961a47",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts",
+      "expected": "2849adf1f8438bdca2d98f74f3a8ab3599431656e101f04e6efdff626db24ab5",
+      "actual": "2849adf1f8438bdca2d98f74f3a8ab3599431656e101f04e6efdff626db24ab5",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-private-release-independence.test.ts",
+      "expected": "dee659f580ba6b72cb4dc97b6f18eaba888036beb9bcc2cd1e6b7ab142b1ac9c",
+      "actual": "dee659f580ba6b72cb4dc97b6f18eaba888036beb9bcc2cd1e6b7ab142b1ac9c",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts",
+      "expected": "c796006c3d84da3cdc9e1be7e5bc29c671a68122d3fd5264e066fd3879a5b3b9",
+      "actual": "c796006c3d84da3cdc9e1be7e5bc29c671a68122d3fd5264e066fd3879a5b3b9",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-liveness.test.ts",
+      "expected": "3d18501c1cad7e3bf80c68c325d1bc81b4633c430a9254b80a86383d1f3cf12e",
+      "actual": "3d18501c1cad7e3bf80c68c325d1bc81b4633c430a9254b80a86383d1f3cf12e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts",
+      "expected": "498f6422cd3f89f073a4957d26b1c2dc13fb207dfecb6e57c693db59ffce43eb",
+      "actual": "498f6422cd3f89f073a4957d26b1c2dc13fb207dfecb6e57c693db59ffce43eb",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-root-agent-initiated-collaborators.test.ts",
+      "expected": "51235b993865f2199f2a48968ac389ca5c1a1cf51323411329bf0647d14700bf",
+      "actual": "51235b993865f2199f2a48968ac389ca5c1a1cf51323411329bf0647d14700bf",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts",
+      "expected": "8cbd9dcbd20601b2c8d0bea0ef34c0d260fbd2f4f5fd3da33fdc6b01fbcc1926",
+      "actual": "8cbd9dcbd20601b2c8d0bea0ef34c0d260fbd2f4f5fd3da33fdc6b01fbcc1926",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts",
+      "expected": "75aa6f3b8b18364373f4699cd81a743a32e36197d9866113728ce13a450fda3a",
+      "actual": "75aa6f3b8b18364373f4699cd81a743a32e36197d9866113728ce13a450fda3a",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-work-source.test.ts",
+      "expected": "c603d5de04f34a91ddc96a4f8ea0f017f9dcc84cfddef77829c6a99389928e5f",
+      "actual": "c603d5de04f34a91ddc96a4f8ea0f017f9dcc84cfddef77829c6a99389928e5f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts",
+      "expected": "3fa6a05b415d3ff75c1edd696e4652f04431a45f8854befb4f3d43a6349f35b5",
+      "actual": "3fa6a05b415d3ff75c1edd696e4652f04431a45f8854befb4f3d43a6349f35b5",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+      "expected": "852bdce9957fd08bfc2d45912bf0a9a90f20171e4093767238be7201e6be1987",
+      "actual": "852bdce9957fd08bfc2d45912bf0a9a90f20171e4093767238be7201e6be1987",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/projects/project-service.test.ts",
+      "expected": "1c14613f1d753eea5d532e3f84bb6343e1d2cd2414e5fdfda2b473bb703185c2",
+      "actual": "1c14613f1d753eea5d532e3f84bb6343e1d2cd2414e5fdfda2b473bb703185c2",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/projects/project-state-schema.test.ts",
+      "expected": "24347e9d3038fe47ca0b9c7ba38469ff397aedc465e3efc797972265ea002c61",
+      "actual": "24347e9d3038fe47ca0b9c7ba38469ff397aedc465e3efc797972265ea002c61",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/projects/project-task-lifetime.test.ts",
+      "expected": "91dcf65ebb4062688d8959e51e89b6453660c5ba80de9f6fa86e2316c1234bd7",
+      "actual": "91dcf65ebb4062688d8959e51e89b6453660c5ba80de9f6fa86e2316c1234bd7",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/projects/project-task-service.test.ts",
+      "expected": "c637c7e5663e6559644b8382505e87d1263029a7d915f4133868ec95cd6078a2",
+      "actual": "c637c7e5663e6559644b8382505e87d1263029a7d915f4133868ec95cd6078a2",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts",
+      "expected": "a1abbe4ea87c2938afada20198abf27bc6eff56f0253f7054a7c5b615b307345",
+      "actual": "a1abbe4ea87c2938afada20198abf27bc6eff56f0253f7054a7c5b615b307345",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts",
+      "expected": "9dd04bc83a7e6c4d6126f567bf1d99754d6d8f4e0496dc3dfab322fe44fe91ee",
+      "actual": "9dd04bc83a7e6c4d6126f567bf1d99754d6d8f4e0496dc3dfab322fe44fe91ee",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts",
+      "expected": "188a82b8a931cbbdac7593ff6bd9f5f5222a7033cabf02f21a16f1f32aea2b97",
+      "actual": "188a82b8a931cbbdac7593ff6bd9f5f5222a7033cabf02f21a16f1f32aea2b97",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts",
+      "expected": "53bb75a0c4da06d99f2509ecd87fd824540f12e3ab7a2a2ecb84e9b5b75c0fd8",
+      "actual": "53bb75a0c4da06d99f2509ecd87fd824540f12e3ab7a2a2ecb84e9b5b75c0fd8",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts",
+      "expected": "19c26abc140850eb10fe30267e00a9c2c2cea3b487fce2ecc6364eae62489df9",
+      "actual": "19c26abc140850eb10fe30267e00a9c2c2cea3b487fce2ecc6364eae62489df9",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts",
+      "expected": "49046ddbc0cc7d191ce5dc282ffa70b045fcfdd7c9f33871a95dc7864fd943b4",
+      "actual": "49046ddbc0cc7d191ce5dc282ffa70b045fcfdd7c9f33871a95dc7864fd943b4",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts",
+      "expected": "0a85e80fdb5c0ca184c402e1eb2c3398d73211f66cf87123f38da7a0aff3ece1",
+      "actual": "0a85e80fdb5c0ca184c402e1eb2c3398d73211f66cf87123f38da7a0aff3ece1",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-ts/src/agent/factory/agent-factory.ts",
+      "expected": "d44c560f1a2ed4786b69024df55a554c6307a2e3fe91ac0f064441c7b39d7420",
+      "actual": "d44c560f1a2ed4786b69024df55a554c6307a2e3fe91ac0f064441c7b39d7420",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts",
+      "expected": "73cea6a4450a361d70e5f029c2e1fce22fcc10cd06f50f4857afa69f5b9e9a90",
+      "actual": "73cea6a4450a361d70e5f029c2e1fce22fcc10cd06f50f4857afa69f5b9e9a90",
+      "unchanged": true
+    }
+  ],
+  "priorCoverage": [
+    {
+      "path": "autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs",
+      "sha256": "762671965de0fdc54c9e563817a1ab02fea8fbb79ad86e7345421fb476594e1d",
+      "actual": "762671965de0fdc54c9e563817a1ab02fea8fbb79ad86e7345421fb476594e1d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "sha256": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "actual": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts",
+      "sha256": "acce34ce0a4535f8ccbd02c5718af23408d3bb272e5d9f34aa09f5000f8db28f",
+      "actual": "acce34ce0a4535f8ccbd02c5718af23408d3bb272e5d9f34aa09f5000f8db28f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts",
+      "sha256": "e74df30a17940fa4260a5e8ba394efa1d5f2e62f58c5cc9d789fbdad7baa92a1",
+      "actual": "e74df30a17940fa4260a5e8ba394efa1d5f2e62f58c5cc9d789fbdad7baa92a1",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+      "sha256": "46a9e961cfa98224adba30eb55797020e3ce1bda3675087c579341034d2edf76",
+      "actual": "46a9e961cfa98224adba30eb55797020e3ce1bda3675087c579341034d2edf76",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/projects/projects-startup-no-write.e2e.test.ts",
+      "sha256": "de0149eea93d5a91062c5a0492b4539e440b774c4a8baef247cffd2144ccff24",
+      "actual": "de0149eea93d5a91062c5a0492b4539e440b774c4a8baef247cffd2144ccff24",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/projects-released-array.json",
+      "sha256": "2c3e0ce7eff6abcee143bef23fecc1c1657359bc99a7b9612cb67da50209520e",
+      "actual": "2c3e0ce7eff6abcee143bef23fecc1c1657359bc99a7b9612cb67da50209520e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/projects-released-array.provenance.json",
+      "sha256": "1746ed7ccc406348784e2f9b497b516f83913eadde71e0a32b01cd61711f2e17",
+      "actual": "1746ed7ccc406348784e2f9b497b516f83913eadde71e0a32b01cd61711f2e17",
+      "unchanged": true
+    }
+  ]
+}

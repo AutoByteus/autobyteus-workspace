@@ -1,0 +1,191 @@
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+Merge made by the 'ort' strategy.
+ TESTING.md                                         |   1 +
+ .../dist/agent-presentation-message-dtos.d.ts      |   1 +
+ .../dist/agent-presentation-message-dtos.d.ts.map  |   2 +-
+ .../dist/agent-presentation-message-dtos.js        |   2 +-
+ .../dist/agent-presentation-message-dtos.js.map    |   2 +-
+ .../src/agent-presentation-message-dtos.ts         |   2 +-
+ .../tests/agent-presentation-contracts.test.mjs    |   7 +-
+ .../docs/modules/agent_execution.md                |  29 +-
+ .../docs/modules/antigravity_cli_runtime.md        |   2 +-
+ .../events/agent-presentation-message-projector.ts |   2 +-
+ .../stream/agy-background-task-monitor.ts          |   1 +
+ .../session/claude-background-task-registry.ts     |  63 +-
+ .../backends/claude/session/claude-turn-tracker.ts |   2 +-
+ .../domain/agent-background-task.ts                |  17 +-
+ .../team-agent-event-websocket-projector.ts        |   2 +-
+ .../agy-background-task-updates-live.e2e.test.ts   |   4 +-
+ .../claude-agent-background-task.e2e.test.ts       |  43 +-
+ .../claude-team-member-background-task.e2e.test.ts |   2 +
+ .../agy-background-task-monitor.test.ts            |   6 +-
+ .../events/claude-session-event-converter.test.ts  |   2 +-
+ .../claude-background-task-registry.test.ts        | 179 +++++-
+ .../backends/claude/session/claude-session.test.ts |  23 +
+ .../claude/session/claude-turn-tracker.test.ts     |  35 +-
+ .../domain/agent-background-task.test.ts           |  15 +-
+ .../lifecycle-status-event-transformer.test.ts     |   2 +-
+ .../team-agent-background-task-admission.test.ts   |   3 +-
+ .../agent-stream-broadcaster.test.ts               |   6 +-
+ .../agent-streaming/agent-stream-handler.test.ts   |   2 +-
+ .../dist/team-agent-message-dtos.d.ts              |   1 +
+ .../dist/team-agent-message-dtos.d.ts.map          |   2 +-
+ .../dist/team-stream-server-message.d.ts           |   1 +
+ .../dist/team-stream-server-message.d.ts.map       |   2 +-
+ .../tests/token-usage-run-summary-dto.test.mjs     |   3 +
+ .../components/progress/BackgroundTaskPanel.vue    |  31 +-
+ .../progress/__tests__/BackgroundTaskPanel.spec.ts |  95 ++-
+ .../docs/agent_execution_architecture.md           |   1 +
+ .../__tests__/AgentStreamingService.spec.ts        |   2 +-
+ .../__tests__/TeamStreamingService.spec.ts         |   6 +-
+ .../__tests__/backgroundTaskHandler.spec.ts        |  11 +
+ .../handlers/backgroundTaskHandler.ts              |   1 +
+ .../agentStreaming/protocol/messageTypes.ts        |   1 +
+ .../agentStreaming/teamStreamDtoAdapters.ts        |   2 +-
+ .../__tests__/agentBackgroundTaskStore.spec.ts     |   9 +
+ .../tests/e2e/background-tasks-panel-probe.mjs     |  60 +-
+ autobyteus-web/types/backgroundTask.ts             |   2 +
+ .../api-e2e-coverage-investigation.md              | 241 ++++++++
+ .../api-e2e-evidence/agy-live/l-agy-01-exit-0.json |  27 +
+ .../api-e2e-evidence/agy-live/l-agy-02-exit-3.json |  27 +
+ .../agy-live/l-agy-03-terminate.json               |  29 +
+ .../agy-live/l-agy-04-non-daemon.json              | 133 ++++
+ .../agy-live/l-agy-05-large-output.json            |  31 +
+ .../browser-probe/01-default-collapsed.png         | Bin 0 -> 31305 bytes
+ .../browser-probe/02-empty-expanded.png            | Bin 0 -> 31444 bytes
+ .../api-e2e-evidence/browser-probe/03-running.png  | Bin 0 -> 33689 bytes
+ .../browser-probe/04-mixed-statuses.png            | Bin 0 -> 53602 bytes
+ .../browser-probe/05-summary-expanded.png          | Bin 0 -> 92209 bytes
+ .../browser-probe/06-narrow-panel.png              | Bin 0 -> 52187 bytes
+ .../browser-probe/07-command-collapsed.png         | Bin 0 -> 59959 bytes
+ .../browser-probe/08-command-expanded.png          | Bin 0 -> 72508 bytes
+ .../browser-probe/09-command-and-agy-rows.png      | Bin 0 -> 63984 bytes
+ .../api-e2e-evidence/browser-probe/evidence.json   | 181 ++++++
+ .../api-e2e-evidence/browser-probe/nuxt.log        |  17 +
+ .../api-e2e-evidence/desktop-journey/00-start.png  | Bin 0 -> 127769 bytes
+ .../desktop-journey/01-runtime-menu.png            | Bin 0 -> 202503 bytes
+ .../desktop-journey/02-claude-selected.png         | Bin 0 -> 131682 bytes
+ .../desktop-journey/03-after-send.png              | Bin 0 -> 189513 bytes
+ .../desktop-journey/04-running-row.png             | Bin 0 -> 209024 bytes
+ .../desktop-journey/05-completed-row-collapsed.png | Bin 0 -> 234096 bytes
+ .../desktop-journey/06-completed-row-expanded.png  | Bin 0 -> 254805 bytes
+ .../07-completed-row-recollapsed.png               | Bin 0 -> 234902 bytes
+ .../desktop-journey/dom-evidence.json              |   9 +
+ .../api-e2e-evidence/isolated-build.log            | 643 ++++++++++++++++++++
+ .../api-e2e-evidence/isolated-start.json           |  20 +
+ .../api-e2e-evidence/isolated-stop.json            |  15 +
+ .../api-e2e-evidence/probe-auto-bg-env.log         |  17 +
+ .../api-e2e-evidence/probe-auto-bg.log             |   8 +
+ .../api-e2e-evidence/probe-monitor-rerun.log       |  26 +
+ .../probes/claude-auto-bg-probe.mjs                |  67 ++
+ ...aude-stop-during-bg-start.probe.e2e.test.ts.txt |  56 ++
+ .../api-e2e-evidence/r1-contracts.log              | 120 ++++
+ .../api-e2e-evidence/r2-server-focused.log         | 671 +++++++++++++++++++++
+ .../api-e2e-evidence/r3-web-focused.log            | 303 ++++++++++
+ .../api-e2e-evidence/r4-claude-live-e2e.log        | 459 ++++++++++++++
+ .../api-e2e-evidence/r5-agy-live-e2e.log           | 395 ++++++++++++
+ .../api-e2e-evidence/r6-browser-probe.log          |   5 +
+ .../api-e2e-evidence/r7-registry-unit.log          | 102 ++++
+ .../r8-claude-live-e2e-updated.log                 | 292 +++++++++
+ .../api-e2e-evidence/stop-probe.jsonl              |   2 +
+ .../api-e2e-execution-coverage-report.md           | 239 ++++++++
+ .../api-e2e-revision-record.md                     |  30 +
+ .../api-e2e-test-case-ledger.md                    |  58 ++
+ .../delivery-revision-record.md                    |  46 ++
+ .../background-task-shell-command/design-spec.md   | 303 ++++++++++
+ .../docs-sync-report.md                            |  53 ++
+ .../evidence/probe-bash-bg.log                     |  14 +
+ .../evidence/probe-monitor.log                     |  25 +
+ .../evidence/probes/claude-bg-command-probe.mjs    |  65 ++
+ .../handoff-summary.md                             |  45 ++
+ .../browser-probe/01-default-collapsed.png         | Bin 0 -> 31305 bytes
+ .../browser-probe/02-empty-expanded.png            | Bin 0 -> 31444 bytes
+ .../browser-probe/03-running.png                   | Bin 0 -> 33957 bytes
+ .../browser-probe/04-mixed-statuses.png            | Bin 0 -> 53933 bytes
+ .../browser-probe/05-summary-expanded.png          | Bin 0 -> 92209 bytes
+ .../browser-probe/06-narrow-panel.png              | Bin 0 -> 52187 bytes
+ .../browser-probe/07-command-collapsed.png         | Bin 0 -> 59959 bytes
+ .../browser-probe/08-command-expanded.png          | Bin 0 -> 72508 bytes
+ .../browser-probe/09-command-and-agy-rows.png      | Bin 0 -> 63984 bytes
+ .../browser-probe/evidence.json                    | 189 ++++++
+ .../implementation-evidence/browser-probe/nuxt.log |  19 +
+ .../implementation-handoff.md                      | 151 +++++
+ .../implementation-revision-record.md              |  31 +
+ .../investigation-notes.md                         | 154 +++++
+ .../release-deployment-report.md                   | 107 ++++
+ .../requirements-doc.md                            | 188 ++++++
+ .../solution-handoff.md                            |  63 ++
+ .../solution-revision-record.md                    |  56 ++
+ .../release-deployment-report.md                   |  72 ++-
+ 117 files changed, 6408 insertions(+), 83 deletions(-)
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/agy-live/l-agy-01-exit-0.json
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/agy-live/l-agy-02-exit-3.json
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/agy-live/l-agy-03-terminate.json
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/agy-live/l-agy-04-non-daemon.json
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/agy-live/l-agy-05-large-output.json
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/01-default-collapsed.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/02-empty-expanded.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/03-running.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/04-mixed-statuses.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/05-summary-expanded.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/06-narrow-panel.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/07-command-collapsed.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/08-command-expanded.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/09-command-and-agy-rows.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/evidence.json
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/browser-probe/nuxt.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/desktop-journey/00-start.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/desktop-journey/01-runtime-menu.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/desktop-journey/02-claude-selected.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/desktop-journey/03-after-send.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/desktop-journey/04-running-row.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/desktop-journey/05-completed-row-collapsed.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/desktop-journey/06-completed-row-expanded.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/desktop-journey/07-completed-row-recollapsed.png
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/desktop-journey/dom-evidence.json
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/isolated-build.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/isolated-start.json
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/isolated-stop.json
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/probe-auto-bg-env.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/probe-auto-bg.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/probe-monitor-rerun.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/probes/claude-auto-bg-probe.mjs
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/probes/claude-stop-during-bg-start.probe.e2e.test.ts.txt
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/r1-contracts.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/r2-server-focused.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/r3-web-focused.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/r4-claude-live-e2e.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/r5-agy-live-e2e.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/r6-browser-probe.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/r7-registry-unit.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/r8-claude-live-e2e-updated.log
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-evidence/stop-probe.jsonl
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-revision-record.md
+ create mode 100644 tickets/done/background-task-shell-command/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/background-task-shell-command/delivery-revision-record.md
+ create mode 100644 tickets/done/background-task-shell-command/design-spec.md
+ create mode 100644 tickets/done/background-task-shell-command/docs-sync-report.md
+ create mode 100644 tickets/done/background-task-shell-command/evidence/probe-bash-bg.log
+ create mode 100644 tickets/done/background-task-shell-command/evidence/probe-monitor.log
+ create mode 100644 tickets/done/background-task-shell-command/evidence/probes/claude-bg-command-probe.mjs
+ create mode 100644 tickets/done/background-task-shell-command/handoff-summary.md
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/01-default-collapsed.png
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/02-empty-expanded.png
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/03-running.png
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/04-mixed-statuses.png
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/05-summary-expanded.png
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/06-narrow-panel.png
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/07-command-collapsed.png
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/08-command-expanded.png
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/09-command-and-agy-rows.png
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/evidence.json
+ create mode 100644 tickets/done/background-task-shell-command/implementation-evidence/browser-probe/nuxt.log
+ create mode 100644 tickets/done/background-task-shell-command/implementation-handoff.md
+ create mode 100644 tickets/done/background-task-shell-command/implementation-revision-record.md
+ create mode 100644 tickets/done/background-task-shell-command/investigation-notes.md
+ create mode 100644 tickets/done/background-task-shell-command/release-deployment-report.md
+ create mode 100644 tickets/done/background-task-shell-command/requirements-doc.md
+ create mode 100644 tickets/done/background-task-shell-command/solution-handoff.md
+ create mode 100644 tickets/done/background-task-shell-command/solution-revision-record.md

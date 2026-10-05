@@ -1,0 +1,7 @@
+2026-10-04T18:38:45.790885+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round16-ambiguity-settled.mjs"]
+Pass: same original actual clarification turn settled idle/empty canonical input; actual assistant names both real Projects; exact original trace prefix and Project bytes unchanged; sole expected final assistant append, no replay or writes.
+
+INNER_EXIT=0
+ELAPSED=0.8

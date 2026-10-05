@@ -1,0 +1,677 @@
+diff --git a/autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs b/autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+index 83ed51995..e53e7dfb7 100644
+--- a/autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
++++ b/autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+@@ -27,11 +27,15 @@ const [
+   skillImproverDistAgentConfigPath,
+   dailyAssistantDistAgentMdPath,
+   dailyAssistantDistAgentConfigPath,
++  projectTaskManagerDistAgentMdPath,
++  projectTaskManagerDistAgentConfigPath,
+ ] = await Promise.all([
+   assertDistAssetPresent("retrospective-skill-improver", "agent.md"),
+   assertDistAssetPresent("retrospective-skill-improver", "agent-config.json"),
+   assertDistAssetPresent("daily-assistant", "agent.md"),
+   assertDistAssetPresent("daily-assistant", "agent-config.json"),
++  assertDistAssetPresent("project-task-manager", "agent.md"),
++  assertDistAssetPresent("project-task-manager", "agent-config.json"),
+ ]);
+ await assertDistTemplateAbsent("memory-compactor");
+ 
+@@ -40,6 +44,7 @@ const { bootstrapBuiltInAgents } = await import(
+ );
+ const {
+   DAILY_ASSISTANT_AGENT_DEFINITION_ID,
++  PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
+   RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+ } = await import(
+   "../dist/built-in-agents/built-in-agent-registry.js"
+@@ -101,7 +106,11 @@ try {
+     },
+   });
+ 
+-  assert.equal(result.builtInAgents.length, 2);
++  assert.deepEqual(result.builtInAgents.map(item => item.agentDefinitionId).sort(), [
++    DAILY_ASSISTANT_AGENT_DEFINITION_ID,
++    PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
++    RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
++  ].sort());
+   assert.equal(result.refreshedCache, true);
+ 
+   const resultById = new Map(result.builtInAgents.map((item) => [item.agentDefinitionId, item]));
+@@ -123,6 +132,21 @@ try {
+   assert.equal(skillImproverAgentConfig, skillImproverDistAgentConfig);
+   assert.match(skillImproverAgentMd, /Retrospective Skill Improver/);
+   assert.equal(settingsByKey.get(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID), RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
++  const managerDir = path.join(agentsDir, PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID);
++  const assertManagerTemplate = async () => {
++    assert.equal(await fs.readFile(path.join(managerDir, "agent.md"), "utf8"),
++      await fs.readFile(projectTaskManagerDistAgentMdPath, "utf8"));
++    const managerConfig = await fs.readFile(path.join(managerDir, "agent-config.json"), "utf8");
++    assert.equal(managerConfig, await fs.readFile(projectTaskManagerDistAgentConfigPath, "utf8"));
++    assert.deepEqual(JSON.parse(managerConfig).toolNames, [
++      "list_projects", "list_project_tasks", "create_or_update_task", "list_available_agents",
++      "delegate_task", "send_message_to", "read_file",
++    ]);
++    assert.equal(JSON.parse(managerConfig).defaultLaunchConfig, null);
++  };
++  assert.equal(resultById.get(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID).syncedAgentMd, true);
++  assert.equal(resultById.get(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID).syncedAgentConfig, true);
++  await assertManagerTemplate();
+   const dailyAssistantAgentDir = path.join(agentsDir, DAILY_ASSISTANT_AGENT_DEFINITION_ID);
+   assert.equal(
+     await fs.readFile(path.join(dailyAssistantAgentDir, "agent.md"), "utf8"),
+@@ -133,6 +157,7 @@ try {
+     await fs.readFile(dailyAssistantDistAgentConfigPath, "utf8"),
+   );
+   await fs.writeFile(path.join(dailyAssistantAgentDir, "agent.md"), "user edited daily assistant", "utf8");
++  await fs.writeFile(path.join(managerDir, "agent.md"), "stale manager", "utf8");
+   const resyncResult = await bootstrapBuiltInAgents({
+     agentsDir,
+     agentDefinitionService: fakeAgentDefinitionService,
+@@ -141,6 +166,8 @@ try {
+   });
+   const resyncById = new Map(resyncResult.builtInAgents.map((item) => [item.agentDefinitionId, item]));
+   assert.equal(resyncById.get(DAILY_ASSISTANT_AGENT_DEFINITION_ID).syncedAgentMd, true);
++  assert.equal(resyncById.get(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID).syncedAgentMd, true);
++  await assertManagerTemplate();
+   assert.equal(
+     await fs.readFile(path.join(dailyAssistantAgentDir, "agent.md"), "utf8"),
+     await fs.readFile(dailyAssistantDistAgentMdPath, "utf8"),
+diff --git a/autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts b/autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts
+index e2b06b9e1..28804a0ca 100644
+--- a/autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts
+@@ -95,7 +95,7 @@ describe("Project Task production HTTP boundaries", () => {
+     if (root) await fs.rm(root, { recursive: true, force: true });
+   }, 30000);
+ 
+-  it("API-MCP: selected default host executes equivalent raw native contracts while UI remains off", async () => {
++  it("API-MCP: selected default host executes equivalent compact mutations and detailed native reads while UI remains off", async () => {
+     expect((await gql<{ projectsCapability: { enabled: boolean } }>("{projectsCapability{enabled}}" )).projectsCapability.enabled).toBe(false);
+     expect((await call("list_projects", {})).structuredContent).toEqual({ projects: [] });
+     const projectId = await createProject("HTTP parity");
+@@ -103,9 +103,18 @@ describe("Project Task production HTTP boundaries", () => {
+     expect(catalog.structuredContent).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
+     expect((await rpc(mcpUrl, "initialize")).body.result.serverInfo.name).toBe("autobyteus_agent_tools");
+     expect((await rpc(mcpUrl, "tools/list")).body.result.tools.map((t: { name: string }) => t.name)).toEqual(names);
+-    const created = (await call("create_or_update_task", { project_id: projectId, description: "  hello HTTP  " })).structuredContent.task as Task;
+-    expect(created).toMatchObject({ description: "hello HTTP", status: "TODO", contextFiles: [] });
+-    for (const status of ["IN_PROGRESS", "DONE", "TODO"]) await call("create_or_update_task", { project_id: projectId, task_id: created.taskId, status });
++    const created = (await call("create_or_update_task", { project_id: projectId, description: "  hello HTTP  " })).structuredContent.task;
++    expect(created).toEqual({ projectId, taskId: expect.any(String), status: "TODO" });
++    expect(created.taskId.trim()).not.toBe("");
++    expect(await list(projectId)).toEqual([expect.objectContaining({
++      projectId, taskId: created.taskId, description: "hello HTTP", status: "TODO", contextFiles: [],
++    })]);
++    for (const status of ["IN_PROGRESS", "DONE", "TODO"]) {
++      const input = { project_id: projectId, task_id: created.taskId, status };
++      const patched = (await call("create_or_update_task", input)).structuredContent;
++      expect(patched).toEqual({ task: { projectId, taskId: created.taskId, status } });
++      expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, input))).toEqual(patched);
++    }
+     const nativeList = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
+     expect((await call("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(nativeList);
+     expect((await call("list_project_tasks", { project_id: projectId, status: "DONE" })).structuredContent.tasks).toEqual([]);
+diff --git a/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts b/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
+index 550ac7e03..4e89f816a 100644
+--- a/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
++++ b/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
+@@ -4,7 +4,7 @@ import path from 'node:path';
+ import { expect, vi } from 'vitest';
+ import { AgentDefinition } from '../../../src/agent-definition/domain/models.js';
+ import { AgentTeamDefinition, TeamMember } from '../../../src/agent-team-definition/domain/agent-team-definition.js';
+-import { createCollaboratorMentionAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js';
++import { createCollaboratorAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js';
+ import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
+ import { RootedAgentMemoryLocator } from '../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js';
+ import { AgentRunCollaborationRootManager } from '../../../src/agent-run-collaboration/services/agent-run-collaboration-root-manager.js';
+@@ -12,6 +12,7 @@ import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/loca
+ import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
+ import { AgentCollaborationStreamHandler } from '../../../src/services/agent-streaming/agent-collaboration-stream-handler.js';
+ import { CollaborationStreamServerMessageSchema } from '@autobyteus/collaboration-stream-contracts';
++import { testActivationManager } from '../../fixtures/agent-run-preparation-fixtures.js';
+ import type { AgentRun } from '../../../src/agent-execution/domain/agent-run.js';
+ import { createRecoveryFixture } from '../../unit/agent-execution/recovery-native-fixture.js';
+ 
+@@ -47,11 +48,20 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
+       commitPublication: () => { active.set(runId, native.run); return native.run; },
+       abort: async () => ({ kind: 'aborted' }) };
+   });
+-  const runManager = {
+-    prepareNewAgentRun: prepare,
++  const runManager = testActivationManager({
++    newPreparation: prepare,
+     getActiveRun: (id: string) => active.get(id) ?? null,
+     prepareAgentRunTermination: (run: AgentRun) => run.prepareTermination(),
+-  };
++    releaseExactRun: async (run: AgentRun) => {
++      expect(active.get(run.runId)).toBe(run);
++      const result = await run.forceReleaseRuntime();
++      if (result.accepted) {
++        expect(run.isActive()).toBe(false);
++        active.delete(run.runId);
++      }
++      return result;
++    },
++  });
+   const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+   const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
+   const restoreHost = vi.fn(async () => hostRun);
+@@ -79,7 +89,7 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
+           id === (kind === 'agent' ? 'reviewer' : 'lead') ? native.run.runId : 'dormant-' + id,
+       }),
+       teamDefinitions: { getDefinitionById: catalog.getTeamDefinition },
+-      collaboratorAdmission: createCollaboratorMentionAdmission(catalog, {
++      collaboratorAdmission: createCollaboratorAdmission(catalog, {
+         validateMany: async (inputs: unknown[]) => inputs.map(() => ({
+           kind: 'valid', selection: { llmModelIdentifier: 'parent', llmConfig: null },
+         })),
+diff --git a/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts b/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts
+index d5db188eb..82589b385 100644
+--- a/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts
+@@ -7,6 +7,7 @@ describe('whole-host termination result is later than actual child-root inactivi
+   for (const kind of ['agent', 'agent_team'] as const) {
+     it.each(['success', 'child-finish-failure', 'later-host-failure'] as const)(`${kind}: %s`, async mode => {
+       const f = await createNativeRootFixture(kind, false);
++      let finishFault: ReturnType<typeof vi.spyOn> | undefined;
+       try {
+         const connection = await f.connect();
+         f.request();
+@@ -14,7 +15,7 @@ describe('whole-host termination result is later than actual child-root inactivi
+         await f.send(connection.session, 'A');
+         await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user');
+         if (mode === 'child-finish-failure') {
+-          vi.spyOn(f.runManager, 'prepareAgentRunTermination').mockImplementation(async run => {
++          finishFault = vi.spyOn(f.runManager, 'prepareAgentRunTermination').mockImplementation(async run => {
+             const prepared = await run.prepareTermination();
+             return {
+               ...prepared,
+@@ -46,6 +47,16 @@ describe('whole-host termination result is later than actual child-root inactivi
+           await expect(service.terminateAgentRun(HOST)).rejects.toThrow('controlled child finish uncertainty');
+           expect(hostStop).not.toHaveBeenCalled();
+           expect(history).not.toHaveBeenCalled();
++          // Native stop alone is not an enclosing cleanup certificate.
++          expect(connection.frames.some(frame => frame.type === 'ROOT_LIFECYCLE' && frame.payload.is_active === false)).toBe(false);
++          expect(f.manager.getActive(HOST)).toBeNull();
++          expect(f.manager.hasRoot(HOST)).toBe(true);
++          expect(f.native.isRunning).toBe(false);
++          finishFault!.mockRestore(); // remove only the explicitly injected test fault
++          expect((await service.terminateAgentRun(HOST)).success).toBe(true);
++          expect(hostStop).toHaveBeenCalledOnce();
++          expect(history).toHaveBeenCalledOnce();
++          expect(f.manager.hasRoot(HOST)).toBe(false);
+         } else {
+           expect((await service.terminateAgentRun(HOST)).success).toBe(mode === 'success');
+           expect(hostStop).toHaveBeenCalledOnce();
+@@ -54,7 +65,7 @@ describe('whole-host termination result is later than actual child-root inactivi
+         expect(connection.frames.some(frame => frame.type === 'ROOT_LIFECYCLE' && frame.payload.is_active === false)).toBe(true);
+         expect(f.native.isRunning).toBe(false);
+         expect(f.parent.requests).toHaveLength(3); // held A never reached parent
+-      } finally { await f.close(); }
++      } finally { finishFault?.mockRestore(); await f.close(); }
+     }, 20000);
+   }
+ });
+diff --git a/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts b/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+index 69c5018eb..11a026677 100644
+--- a/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+@@ -10,7 +10,7 @@ import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services
+ import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
+ import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../src/agent-team-execution/local/flat-team-execution-context.js";
+ import type { PreparedLocalExecutionTermination } from "../../../src/agent-collaboration/execution/domain/prepared-local-execution-termination.js";
+-import type { PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
++import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
+ import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
+ import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
+ import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
+@@ -65,7 +65,7 @@ class PreparedTask implements PreparedTaskExecution {
+   readonly binding;
+   readonly preparedTeamRuns;
+   readonly stagedPlatformBindings = Object.freeze([]);
+-  readonly releaseWork = vi.fn();
++  readonly releaseWork = vi.fn(async (assertOpen: () => void) => { assertOpen(); return { accepted: true as const }; });
+   readonly abort = vi.fn(async () => undefined);
+   private state: "open" | "sealed" | "committed" = "open";
+ 
+@@ -134,6 +134,7 @@ class TestTeamBackend implements TeamRunBackend {
+   getRuntimeContext(): FlatTeamExecutionContext { return this.runtimeContext; }
+   isActive(): boolean { return this.active; }
+   isTerminated(): boolean { return !this.active; }
++  getInputStateSnapshots() { return []; }
+   getLeafAgentStatusSnapshots() { return []; }
+   hasOpenExecutionWork(): boolean { return false; }
+   async reserveDirectAgentInput(agentRunId: string): Promise<AgentRunInputReservationResult> {
+@@ -147,14 +148,28 @@ class TestTeamBackend implements TeamRunBackend {
+     this.commands.push({ agentRunId, command });
+     return { accepted: true };
+   }
+-  async prepareTaskAgent(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
++  beginTaskAgent(input: PrepareTaskAgentInput): TaskExecutionPreparationOperation {
++    return createTaskExecutionPreparation({
++      prepare: async assertAccepting => { assertAccepting(); return this.prepareAgent(input); },
++      cancel: () => undefined,
++      releaseResources: () => this.releaseDirectTaskExecution({ agentRunId: input.agentRunId }),
++    });
++  }
++  private async prepareAgent(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
+     this.preparedAgents.push(input);
+     return new PreparedTask({
+       binding: Object.freeze({ kind: "agent", address: input.address, agentRunId: input.agentRunId }),
+       onCommit: () => this.liveTaskAgents.add(input.agentRunId),
+     });
+   }
+-  async prepareTaskTeam(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution> {
++  beginTaskTeam(input: PrepareTaskTeamInput): TaskExecutionPreparationOperation {
++    return createTaskExecutionPreparation({
++      prepare: async assertAccepting => { assertAccepting(); return this.prepareTeam(input); },
++      cancel: () => undefined,
++      releaseResources: () => this.releaseDirectTaskExecution({ teamRunId: input.teamRunId }),
++    });
++  }
++  private async prepareTeam(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution> {
+     this.preparedTeams.push(input);
+     const taskBackend = new TestTeamBackend(
+       createChildPhysicalScope(this.physicalScope, input.teamNode.teamRunId),
+@@ -177,13 +192,21 @@ class TestTeamBackend implements TeamRunBackend {
+       onCommit: () => undefined,
+     });
+   }
+-  restoreTaskAgent(input: RestoreTaskAgentInput): void {
++  async restoreTaskAgent(input: RestoreTaskAgentInput): Promise<void> {
+     this.restoredAgents.push(input);
+     this.liveTaskAgents.add(input.agentRunId);
+   }
+   async restoreTaskTeam(_input: RestoreTaskTeamInput): Promise<TeamRun> {
+     throw new Error("Task Team restore is outside this integration scenario.");
+   }
++  cancelDirectTaskExecution(_reference: TaskExecutionReference): void {}
++  async releaseDirectTaskExecution(reference: TaskExecutionReference): Promise<AgentOperationResult> {
++    if ("agentRunId" in reference) this.liveTaskAgents.delete(reference.agentRunId);
++    else { await this.children.get(reference.teamRunId)?.terminate(); this.children.delete(reference.teamRunId); }
++    return { accepted: true };
++  }
++  cancelRuntimeActivation(): void {}
++  releaseOwnedRuntime(): Promise<AgentOperationResult> { return this.terminate(); }
+   hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean {
+     return "agentRunId" in reference ? this.liveTaskAgents.has(reference.agentRunId) : this.children.has(reference.teamRunId);
+   }
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts
+index 0785b5a20..ccbc74719 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts
+@@ -5,11 +5,23 @@ import { CodexThreadEventName } from "../../../../../../src/agent-execution/back
+ import { TeamAgentEventAdapter } from "../../../../../../src/agent-team-execution/services/team-agent-event-adapter.js";
+ import { createCodexThreadEventHarness } from "../../../../../fixtures/codex-thread-event-harness.js";
+ 
+-const strictTeamAdapter = new TeamAgentEventAdapter(() => null);
++import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
++import { createTeamAgentExecutionBinding } from "../../../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
++
++const createStrictTeamAdapter = (agentRunId: string): TeamAgentEventAdapter => {
++  const execution = createTeamAgentExecutionBinding({
++    root: createTeamRootExecutionIdentity("tool-log-root-team"),
++    memberAddress: "/worker",
++    agentRunId,
++  });
++  return new TeamAgentEventAdapter(
++    (runId) => runId === execution.agentRunId ? execution : null,
++  );
++};
+ 
+ const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): void => {
+   for (const event of events) {
+-    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publish" });
++    expect(createStrictTeamAdapter(event.runId).adapt(event)).toMatchObject({ kind: "publish" });
+   }
+ };
+ 
+@@ -63,6 +75,25 @@ const emitRawToolOutput = (
+ });
+ 
+ describe("Codex TOOL_LOG correlation", () => {
++  it("rejects valid correlated TOOL_LOG when the run has no Team identity", () => {
++    const harness = createCodexThreadEventHarness("run-unregistered-tool-log");
++    emitMcpStarted(harness);
++    const output = emitRawToolOutput(harness, {
++      turnId: "turn-1",
++      item: {
++        type: "functionCallOutput",
++        call_id: "call-1",
++        output: "exact unregistered tool output",
++      },
++    });
++    expect(output).toHaveLength(1);
++    expect(output[0].eventType).toBe(AgentRunEventType.TOOL_LOG);
++    expect(new TeamAgentEventAdapter(() => null).adapt(output[0])).toMatchObject({
++      kind: "rejected",
++      code: "TEAM_AGENT_EVENT_ADMISSION_FAILED",
++    });
++  });
++
+   it("retains exact tool identity across a retry diagnostic", () => {
+     const harness = createCodexThreadEventHarness("run-retry-tool-log");
+     const started = emitMcpStarted(
+@@ -146,7 +177,7 @@ describe("Codex TOOL_LOG correlation", () => {
+         log_entry: "{\"task_id\":\"task-1\",\"status\":\"active\"}",
+       },
+     });
+-    expect(strictTeamAdapter.adapt(rawOutput[0]!)).toEqual(expect.objectContaining({
++    expect(createStrictTeamAdapter(rawOutput[0]!.runId).adapt(rawOutput[0]!)).toEqual(expect.objectContaining({
+       kind: "publish",
+       event: expect.objectContaining({
+         eventType: "TOOL_LOG",
+diff --git a/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts b/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
+index cf8f31f46..7fd090e82 100644
+--- a/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
+@@ -8,6 +8,14 @@ import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team
+ import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
+ import { StudioRunModelConfigService } from '../../../src/run-history/services/studio-run-model-config-service.js';
+ import { AgentTeamRunResolver } from '../../../src/api/graphql/types/agent-team-run.js';
++// This harness controls the tree writer/readback, so it must also supply the
++// current package-admission prerequisite. It does not prove disk admission.
++vi.mock('../../../src/run-history/services/team-run-package-catalog.js', () => ({
++  TeamRunPackageCatalog: class {
++    async awaitReady() {}
++    isAdmitted(teamRunId: string) { return teamRunId === 'root'; }
++  },
++}));
+ const view = (rows: any[]) => ({ offeredModels: rows,
+   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
+ 
+@@ -40,6 +48,13 @@ const harness = (physicalOutcome = 'committed', readback = 'ok', runtimeKind = '
+   return { manager, read, write, capacity, saved: () => saved };
+ };
+ describe('configured Team model selection Save', () => {
++  it('rejects a non-admitted root before model selection or writing', async () => {
++    const h = harness();
++    const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'not-admitted', patches: [] });
++    expect(result).toMatchObject({ outcome: 'NOT_FOUND', success: false });
++    expect(h.write).not.toHaveBeenCalled();
++    expect(h.capacity.resolveMany).not.toHaveBeenCalled();
++  });
+   it('validates every native original baseline before writing and does not omit incompatible children', async () => {
+     const h = harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
+     const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [
+diff --git a/autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts b/autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts
+index 2988f4dc9..8774d2925 100644
+--- a/autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts
++++ b/autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts
+@@ -13,7 +13,7 @@ const mockProjectService = vi.hoisted(() => ({
+ const mockProjectTaskService = vi.hoisted(() => ({
+   listTasks: vi.fn(),
+   createTask: vi.fn(),
+-  updateTaskDescription: vi.fn(),
++  updateTask: vi.fn(),
+   deleteTask: vi.fn(),
+ }));
+ 
+@@ -60,7 +60,7 @@ describe("Project Tasks GraphQL schema", () => {
+     expect(mutationFields).toEqual(expect.arrayContaining(["createProjectTask", "updateProjectTask", "deleteProjectTask"]));
+     expect(mutationFields.filter((name) => /projecttask/i.test(name) && /status/i.test(name))).toEqual([]);
+     const updateInput = schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> };
+-    expect(Object.keys(updateInput.getFields()).sort()).toEqual(["description", "projectId", "taskId"]);
++    expect(Object.keys(updateInput.getFields()).sort()).toEqual(["contextChanges", "description", "projectId", "taskId"]);
+   });
+ 
+   it("names Task types distinctly from delegated tasks (REQ-012)", () => {
+@@ -85,7 +85,7 @@ describe("Project Tasks GraphQL schema", () => {
+ 
+   it("forwards create, update and delete inputs", async () => {
+     mockProjectTaskService.createTask.mockResolvedValue(taskView);
+-    mockProjectTaskService.updateTaskDescription.mockResolvedValue({ ...taskView, description: "edited" });
++    mockProjectTaskService.updateTask.mockResolvedValue({ ...taskView, description: "edited" });
+     mockProjectTaskService.deleteTask.mockResolvedValue(true);
+ 
+     const result = await graphql({
+@@ -104,7 +104,7 @@ describe("Project Tasks GraphQL schema", () => {
+       deleted: true,
+     });
+     expect(mockProjectTaskService.createTask).toHaveBeenCalledWith(expect.objectContaining({ projectId: "project_1", description: "d" }));
+-    expect(mockProjectTaskService.updateTaskDescription).toHaveBeenCalledWith(
++    expect(mockProjectTaskService.updateTask).toHaveBeenCalledWith(
+       expect.objectContaining({ projectId: "project_1", taskId: "project_task_1", description: "edited" }),
+     );
+     expect(mockProjectTaskService.deleteTask).toHaveBeenCalledWith(
+@@ -117,7 +117,7 @@ describe("Project Tasks GraphQL schema", () => {
+     ["TASK_NOT_FOUND"],
+     ["PROJECT_NOT_FOUND"],
+   ] as const)("maps %s into GraphQL error extensions", async (code) => {
+-    mockProjectTaskService.updateTaskDescription.mockRejectedValue(new ProjectError(code, "failed"));
++    mockProjectTaskService.updateTask.mockRejectedValue(new ProjectError(code, "failed"));
+ 
+     const result = await graphql({
+       schema,
+diff --git a/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts b/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+index 0360be8e7..1d06351ba 100644
+--- a/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
++++ b/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+@@ -152,10 +152,20 @@ describe("RawTraceActiveFileNameMigration", () => {
+       REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID,
+     );
+     expect(externalIndex).toBeGreaterThanOrEqual(0);
+-    expect([
+-      definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID),
+-      definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID),
+-      definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID),
+-    ]).toEqual([externalIndex + 1, externalIndex + 2, externalIndex + 3]);
++    for (const id of [
++      REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID,
++      RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID,
++      RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID,
++      MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID,
++    ]) {
++      expect(definitionIds.filter((registeredId) => registeredId === id)).toHaveLength(1);
++    }
++    const rotationIndex = definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID);
++    const activeIndex = definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID);
++    const nativeIndex = definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID);
++    // Other legitimate migrations may interpose; these dependencies must stay ordered.
++    expect(rotationIndex).toBeGreaterThan(externalIndex);
++    expect(activeIndex).toBeGreaterThan(rotationIndex);
++    expect(nativeIndex).toBeGreaterThan(activeIndex);
+   });
+ });
+diff --git a/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts b/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+index 94fdbfdc5..fe12670d2 100644
+--- a/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
++++ b/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+@@ -74,6 +74,11 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
+   it("keeps unresolved predecessor bytes retryable while leaving exact V1 roots for the V2 boundary", async () => {
+     const { memoryDir, appDataDir } = await createEnvironment();
+     const validRoot = await copyCurrentScenario(memoryDir, "case-001-persistent-only");
++    const retainedFiles = [
++      "team_run_execution_tree.json", "task_delegation_records.json", "team_communication_messages.json",
++    ];
++    const retainedBytes = await Promise.all(retainedFiles.map((name) =>
++      fs.readFile(path.join(memoryDir, "agent_teams", validRoot, name))));
+     const invalidRoot = "root-unresolved";
+     const invalidDirectory = path.join(memoryDir, "agent_teams", invalidRoot);
+     await fs.mkdir(invalidDirectory, { recursive: true });
+@@ -97,10 +102,14 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
+     const catalog = new TeamRunPackageCatalog(memoryDir);
+     await catalog.rebuild();
+     expect(catalog.listAdmittedRootIds()).toEqual([]);
+-    expect(catalog.getDiagnostics().get(validRoot)).toContain("schemaVersion");
++    const historicalDiagnostic = catalog.getDiagnostics().get(validRoot);
++    expect(historicalDiagnostic).toContain("ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED");
++    expect(historicalDiagnostic).toContain("missing required field(s): address, defaultLaunchConfiguration");
+     expect(catalog.getDiagnostics().get(invalidRoot)).toContain(
+-      "Current package is missing required authorities",
++      "ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.",
+     );
++    expect(await Promise.all(retainedFiles.map((name) =>
++      fs.readFile(path.join(memoryDir, "agent_teams", validRoot, name))))).toEqual(retainedBytes);
+   });
+ 
+   it("does not promote partial target residue without its protected predecessor backup", async () => {
+diff --git a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+index b4a69215f..0b76cd792 100644
+--- a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
++++ b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+@@ -24,6 +24,8 @@ const schemaMigrations = [
+   "20260730090000_add_token_usage_provider_name",
+   "20260801090000_token_usage_member_display_name",
+   "20260819090000_add_token_usage_run_records",
++  // Normal startup expands the current target before app-data conversion.
++  "20260923130000_add_claude_sdk_usage_state",
+ ] as const;
+ 
+ const readMigration = (migrationId: string): Promise<string> => fs.readFile(
+@@ -107,6 +109,9 @@ const createReleasedUpgradeDatabase = async (databasePath: string): Promise<void
+     for (const migrationId of schemaMigrations.slice(1)) {
+       database.exec(await readMigration(migrationId));
+     }
++    expect(database.prepare('PRAGMA table_info("token_usage_run_records")').all()).toEqual(
++      expect.arrayContaining([expect.objectContaining({ name: "claude_sdk_usage_state_json" })]),
++    );
+     seedLaterRows(database);
+   } finally {
+     database.close();
+diff --git a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+index d70224faa..abd23272d 100644
+--- a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
++++ b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+@@ -23,6 +23,8 @@ const schemaMigrations = [
+   "20260730090000_add_token_usage_provider_name",
+   "20260801090000_token_usage_member_display_name",
+   "20260819090000_add_token_usage_run_records",
++  // Historical source rows are converted only after current target expansion.
++  "20260923130000_add_claude_sdk_usage_state",
+ ] as const;
+ 
+ type JsonSourceValue = null | number | string | boolean | readonly unknown[] | Readonly<Record<string, unknown>>;
+@@ -36,6 +38,9 @@ const createDatabase = async (databasePath: string): Promise<void> => {
+         "utf8",
+       ));
+     }
++    expect(database.prepare('PRAGMA table_info("token_usage_run_records")').all()).toEqual(
++      expect.arrayContaining([expect.objectContaining({ name: "claude_sdk_usage_state_json" })]),
++    );
+   } finally {
+     database.close();
+   }
+diff --git a/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts b/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts
+index 449dbef66..a6cbd4651 100644
+--- a/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts
++++ b/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts
+@@ -26,6 +26,7 @@ const sender = buildDeliveryEndpointForParticipant(Object.freeze({
+ }));
+ 
+ const buildHarness = (input: {
++  assertDeliveryAllowed?: (sender: CollaborationMemberExecutionIdentity, receiver: CollaborationMemberExecutionIdentity) => void;
+   currentAgent?: (identity: CollaborationMemberExecutionIdentity) => boolean;
+   commit?: (plan: PreparedTeamMessageAppend) => Promise<
+     | { outcome: "committed" }
+@@ -49,16 +50,18 @@ const buildHarness = (input: {
+     prepared.commit.commitAfterDurability();
+     return { outcome: "committed" as const };
+   }));
++  const assertDeliveryAllowed = vi.fn(input.assertDeliveryAllowed ?? (() => undefined));
+   const service = new TeamCommunicationService({
+     rootTeamRunId,
+     initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) }),
++    assertDeliveryAllowed,
+     isCurrentAgent: input.currentAgent ?? (() => true),
+     requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
+     commit,
+     publish,
+     replaceSnapshot,
+   });
+-  return { service, cancel, release, reservationCommit, reserveDirectAgentInput, publish, replaceSnapshot, commit };
++  return { service, assertDeliveryAllowed, cancel, release, reservationCommit, reserveDirectAgentInput, publish, replaceSnapshot, commit };
+ };
+ 
+ const intent = (overrides: Record<string, unknown> = {}) => ({
+@@ -72,6 +75,16 @@ const intent = (overrides: Record<string, unknown> = {}) => ({
+ });
+ 
+ describe("TeamCommunicationService", () => {
++  it("does not reserve or persist input when the current lifetime fence rejects delivery", async () => {
++    const harness = buildHarness({ assertDeliveryAllowed: () => { throw new Error("TASK_LIFETIME_CLOSED"); } });
++    await expect(harness.service.deliver({ intent: intent(), receiverIdentity, receiverDisplayName: "receiver" }))
++      .rejects.toThrow("TASK_LIFETIME_CLOSED");
++    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity, receiverIdentity);
++    expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
++    expect(harness.commit).not.toHaveBeenCalled();
++    expect(harness.release).not.toHaveBeenCalled();
++    expect(harness.service.getSnapshot().messages).toEqual([]);
++  });
+   it("commits one root-owned message and only then releases exact receiver input", async () => {
+     const harness = buildHarness();
+ 
+@@ -93,6 +106,7 @@ describe("TeamCommunicationService", () => {
+         }),
+       }),
+     );
++    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity, receiverIdentity);
+     expect(harness.commit).toHaveBeenCalledOnce();
+     expect(harness.reservationCommit).toHaveBeenCalledOnce();
+     expect(harness.release).toHaveBeenCalledOnce();
+diff --git a/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts b/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+index bd6abb438..d7c9f393b 100644
+--- a/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
++++ b/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+@@ -220,6 +220,7 @@ const {
+       removeWorkspace: vi.fn().mockResolvedValue({ workspaceRootPath: '/ws/a', message: 'removed' }),
+     },
+     selectionStoreMock: {
++      beginSelectionIntent: vi.fn(),
+       selectedType: null as 'agent' | 'team' | null,
+       selectedRunId: null as string | null,
+       selectRun: vi.fn(),
+@@ -318,6 +319,12 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
+     runHistoryState.workspaceHistoryErrorById = {};
+     runHistoryState.workspaceGroups = [];
+     runHistoryState.teamNodesByWorkspace = {};
++    let currentIntent: symbol | null = null;
++    selectionStoreMock.beginSelectionIntent.mockImplementation(() => {
++      const token = Symbol('test-selection');
++      currentIntent = token;
++      return { isCurrent: () => currentIntent === token };
++    });
+     selectionStoreMock.selectedType = null;
+     selectionStoreMock.selectedRunId = null;
+     selectionStoreMock.selectRun.mockImplementation((runId: string, type: 'agent' | 'team') => {
+@@ -328,12 +335,13 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
+       if ('teamRunId' in row) {
+         selectionStoreMock.selectedType = 'team';
+         selectionStoreMock.selectedRunId = row.teamRunId;
+-        return;
++        return { disposition: 'committed' };
+       }
+ 
+       selectionStoreMock.selectedType = 'agent';
+       selectionStoreMock.selectedRunId = row.runId;
+       runHistoryState.selectedRunId = row.runId;
++      return { disposition: 'committed' };
+     });
+   });
+ 
+@@ -430,7 +438,10 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
+         teamRunId: 'team-1',
+         memberAddress: '/super_agent',
+       }),
++      { selectionIntent: selectionStoreMock.beginSelectionIntent.mock.results[0].value },
+     );
++    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledTimes(1);
++    expect(selectionStoreMock.beginSelectionIntent).toHaveBeenCalledTimes(1);
+   });
+ 
+   it('keeps a previously selected team expanded when another team row is opened', async () => {
+diff --git a/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts b/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+index 38bffcef9..ad075dc13 100644
+--- a/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
++++ b/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+@@ -32,7 +32,7 @@ const retainedView = (active: boolean) => {
+   view.agent_statuses = active
+     ? view.agent_statuses.map(status => status.agent_run_id.startsWith('agent-task-') ? { ...status, status: 'offline' as const } : status)
+       .concat(second.members.map(member => ({ member_address: member.address, agent_run_id: (member as { agentRunId: string }).agentRunId,
+-        status: 'offline' as const, trigger: null, tool_name: null, error_message: null, error_details: null })))
++        status: 'offline' as const, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })))
+     : []
+   return view
+ }

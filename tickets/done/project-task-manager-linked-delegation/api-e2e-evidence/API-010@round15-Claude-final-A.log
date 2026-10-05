@@ -1,0 +1,3 @@
+2026-10-04T08:17:44.691656+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["--", "node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-final-a.mjs", "claude"]

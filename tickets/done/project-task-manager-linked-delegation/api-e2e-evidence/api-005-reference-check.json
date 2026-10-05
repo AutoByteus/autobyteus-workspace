@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-03T14:15:56.476190+00:00",
+  "incomingReferences": 676,
+  "currentCompleteReferences": 801,
+  "missing": [],
+  "currentSourcePackage": 283,
+  "cumulativeApiCoveragePaths": 14,
+  "sourceOrDurableTestEditsThisRound": false,
+  "note": "Complete cumulative package attached for focused failure-origin review, not successful-test-code review. No environment DB/key/vault/env archived.",
+  "attachedAtHandoff": 800,
+  "receiptAddedAfterConfirmedDelivery": true
+}

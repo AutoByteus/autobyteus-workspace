@@ -1,0 +1,9 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-cleanup.py after
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-cleanup.py", line 40, in <module>
+    assert all(free.values());assert not Path(i['dataRoot']).exists();debug=[json.loads(x) for x in (E/'api-009-round9-owner-debugger.jsonl').read_text().splitlines()];assert debug[-1]['event']=='detached'
+TypeError: 'list' object is not callable
+
+PROCESS_EXIT_CODE=1

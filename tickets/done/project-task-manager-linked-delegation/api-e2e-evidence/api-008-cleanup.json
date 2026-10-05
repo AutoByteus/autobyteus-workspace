@@ -1,0 +1,6 @@
+{
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/live-e2e-runtime",
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/db/test.db",
+  "ownership": "Absent before this preflight; newly created by own documented run",
+  "cleanup": "removeOwnedTestRuntime safe path guards; owned runtime+DB/key/sidecars removed"
+}

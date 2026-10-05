@@ -1,0 +1,40 @@
+diff --cc autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+index 1ba70a0fb,a702b8447..000000000
+--- a/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
++++ b/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+@@@ -29,10 -27,10 +28,10 @@@ import type { AgentRunCommandObserver 
+  import { composeAgentRunInputObserver } from "./agent-run-command-observer-dispatch.js";
+  import type { AgentOperationResult } from "./agent-operation-result.js";
+  import { AgentRunInterruptState } from "./agent-run-interrupt-state.js";
+- import { AgentRunRootShutdownFence } from "./agent-run-root-shutdown-fence.js";
+- import { createPreparedAgentRunTermination, type PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
++ import { AgentRunTermination } from "./agent-run-termination.js";
++ import type { PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
+  import {
+ -  buildAgentStatusPayload,
+ +  buildAgentStatusPayload, agentStatusHint,
+    type AgentApiStatus,
+    type AgentStatusPayload,
+  } from "./agent-status-payload.js";
+@@@ -64,16 -62,10 +63,20 @@@ export class AgentRun 
+    private lastInputSignature = '';
+    private readonly compactionRecovery: AgentRunCompactionRecovery;
+    private uncertainInputDispatch: ClaimedInputDispatch | null = null;
+-   private recoveryShutdownFenced = false;
+    private activeInputDispatch: Promise<void> | null = null;
+    private readonly interruptState: AgentRunInterruptState;
+++<<<<<<< HEAD
+ +  /** The current root-shutdown attempt: shared while pending, kept once accepted, replaced after a failure. */
+ +  private rootShutdownFence: AgentRunRootShutdownFence | null = null;
+ +  private tryingQuiescentTermination: Promise<PreparedAgentRunTermination | null> | null = null;
+ +  private preparingTermination: Promise<PreparedAgentRunTermination> | null = null;
+ +  private preparedTermination: PreparedAgentRunTermination | null = null;
+ +  private termination: Promise<AgentOperationResult> | null = null;
+ +  private readonly executionAdmissionFence = new AgentRunExecutionAdmissionFence();
+++=======
++   /** The termination lifecycle and root-shutdown fence attempts (internal owner). */
++   private readonly termination: AgentRunTermination;
+++>>>>>>> origin/personal
+  
+    constructor(options: AgentRunOptions) {
+      this.context = options.context;

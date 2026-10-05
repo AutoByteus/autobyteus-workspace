@@ -1,0 +1,5 @@
+case=API-016
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=git diff --check
+
+PROCESS_EXIT_CODE=0

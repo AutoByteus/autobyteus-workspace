@@ -1,0 +1,355 @@
+{
+  "instanceId": "iso-58861-449a",
+  "at": "2026-10-03T19:18:44.342920+00:00",
+  "files": [
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/agent_org_communication_messages.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/agent_org_communication_messages.json",
+      "sha256": "5b46cf04676f5b8525446f66af0b148c8a1ebbfedd0b16f5277474b0cf469ff6",
+      "bytes": 180
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/agent_org_run_execution_tree.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/agent_org_run_execution_tree.json",
+      "sha256": "75b9b26679a89a24c015e561d6b4ce5f1b6477c5a0c731d42fc1be76f5940de6",
+      "bytes": 2891
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/project_task_manager_72233ae14c094337881006e94c43379d/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/project_task_manager_72233ae14c094337881006e94c43379d/raw_traces_active.jsonl",
+      "sha256": "b68b0e8ce252d61e05d98d55fab1c9204fe3d0b88401386c9eed024c46303130",
+      "bytes": 20561
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_approval_org_a6f2d91c_63ef_4f55_87dd_385d81448edc_8699769788d64ae3bc5526f2ed0c0298/api009_manual_reader_1a14b6ff_17b9_47c8_9432_ac8_b326b2a0895b47a59cd3784fe2c37099/raw_traces_active.jsonl",
+      "sha256": "8f2a9dd5d2f638b46d55756af21b0e374b481930372317d516a0731e3c598039",
+      "bytes": 8662
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/agent_org_communication_messages.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/agent_org_communication_messages.json",
+      "sha256": "cc63806624efb70bff6ced788eb8a78d603a2fce22fabec2d609e4d28fc607ad",
+      "bytes": 7304
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/agent_org_run_execution_tree.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/agent_org_run_execution_tree.json",
+      "sha256": "8e3696324c50f5ef7222d30bb1205a7cc507c0261327826986f731505e7e8e91",
+      "bytes": 9240
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_borrowed_packet_agent_22ef668d2d364994bda0facb75bfa914/raw_traces_active.jsonl",
+      "sha256": "431572468f5a7c6e92dda22f3d9d9bb9b3ca17096016b16cb393f99412d8f301",
+      "bytes": 9651
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_workers_7e30647905394883b46755a70ba3ee53/api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_workers_7e30647905394883b46755a70ba3ee53/api009p_physical_coordinator_4c7f44c75a7546d289787c14904a751d/raw_traces_active.jsonl",
+      "sha256": "59ede4011ddccab6b6e5625e9c9672bf198107167dd10eef428dbac37432dc47",
+      "bytes": 22004
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_workers_7e30647905394883b46755a70ba3ee53/api009p_physical_reader_c538f1aded884cb7978aa345d9bf695a/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_workers_7e30647905394883b46755a70ba3ee53/api009p_physical_reader_c538f1aded884cb7978aa345d9bf695a/raw_traces_active.jsonl",
+      "sha256": "2158246b09e22adc74d747542b05037063ac7d6c2f6e3fa1ee21d076b240efa9",
+      "bytes": 10099
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_leaf_691e7be3cc4248f4820cd2f0d22c3493/raw_traces_active.jsonl",
+      "sha256": "834ee0fcf5d079203760954f33bb0d550046ee54158a7347955c3f66588bffc0",
+      "bytes": 10477
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420/api009p_physical_reader_5043594e9f894d6a87ee4237a242c5be/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420/api009p_physical_reader_5043594e9f894d6a87ee4237a242c5be/raw_traces_active.jsonl",
+      "sha256": "59494b73f771994d1f725e10f090880bcf86326c9897cd50edf1b65b7df640c4",
+      "bytes": 8822
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420/api009p_physical_helper_coordinator_01368906dcfe4fe3899f6131325072df/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/api009p_physical_helper_team_0f8ca6367afd47d1a03cdab5d223f420/api009p_physical_helper_coordinator_01368906dcfe4fe3899f6131325072df/raw_traces_active.jsonl",
+      "sha256": "bc789d332717115e9a3db932d6ff4b20d823798ccdd0874448283790e6a03a33",
+      "bytes": 10605
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/project_task_manager_358fa68fd9e541818e26e8275fa38fae/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009p_physical_org_0890dca9_8e56_436c_9bc3_f5119f4abede_b57b841e0ffb43aa9fd1031806a97d4c/project_task_manager_358fa68fd9e541818e26e8275fa38fae/raw_traces_active.jsonl",
+      "sha256": "aa40b1a27f78b67b51875c88495380396faabeccae727b0cb79fab3f1904ef0d",
+      "bytes": 28047
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/agent_org_communication_messages.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/agent_org_communication_messages.json",
+      "sha256": "cc9e4ef32e4d0da90f921dde84dbeac49f3d3d0aa06336fd8786e3b037f731f6",
+      "bytes": 6289
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/agent_org_run_execution_tree.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/agent_org_run_execution_tree.json",
+      "sha256": "6ecde47d99d41b82673fe21680a1301c7fd7b27d938a277087d825d988568918",
+      "bytes": 6734
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_agent_fe723f4e7f334371bd1fe7ad346e9b2a/raw_traces_active.jsonl",
+      "sha256": "357a1958d3c428f982f0160b1e8286a670273543297df1c7914e6de310b2d29f",
+      "bytes": 23200
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d/api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d/api009_team_coordinator_33c000254a6247be8bbe3bf86b7c9c8d/raw_traces_active.jsonl",
+      "sha256": "306d25972802eff625b00933f7507bb4f75235a5aab7ae763688d8f2dcf972f4",
+      "bytes": 12636
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d/api009_team_reader_5239c53dc5ec4e659542c1e092d9512e/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_4d29de6287b24962b3d5a648fa3fb33d/api009_team_reader_5239c53dc5ec4e659542c1e092d9512e/raw_traces_active.jsonl",
+      "sha256": "4b115f5e9b41afeb9a88def3bae408f054e2646aaf6d19e59523f43a3ed65b3c",
+      "bytes": 9893
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_agent_9cb0c12b1c564ae097517e7bc92c1b23/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_agent_9cb0c12b1c564ae097517e7bc92c1b23/raw_traces_active.jsonl",
+      "sha256": "bfece35ad6ff221eea77594b1229065caba4acae1b9d15e43ee257470463d5fa",
+      "bytes": 8427
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe/api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe/api009_team_coordinator_22b1b98e90da460ebb4197137b80fd4b/raw_traces_active.jsonl",
+      "sha256": "1f76a0085e25bf24b878d75990d82d9b780e4e5fe78b2bbe16d8283f9dfae079",
+      "bytes": 12082
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe/api009_team_reader_0a6c9e981db043a28d9b851cfa76ead5/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/api009_packet_team_100e07bb8c9a4ac0a4b500888c0384fe/api009_team_reader_0a6c9e981db043a28d9b851cfa76ead5/raw_traces_active.jsonl",
+      "sha256": "8e8cf558d441760cac07fbb147670d26db0683705fee9ff685226685d9bec185",
+      "bytes": 11271
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_orgs/api009_concrete_root_org_rerun_861fe254_2e56_495d_8639_190c065a1ecc_f94d2cd2e48e4e77905fd72b7af8b476/project_task_manager_443e4f6c4fa74fd8934116ce0d4b3119/raw_traces_active.jsonl",
+      "sha256": "e40cd16a525073337ca850789871723ce3a7453366310cac0cbca3f71ddf8c09",
+      "bytes": 64407
+    },
+    {
+      "sourceRelative": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/raw_traces_active.jsonl",
+      "sha256": "2da4b25d4cfc6ea71ec54e0bcd1a09dde683c64a73e0f21114c3d256efe17efb",
+      "bytes": 48987
+    },
+    {
+      "sourceRelative": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/run_metadata.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/run_metadata.json",
+      "sha256": "38e7682f22054fe7bd18a080e7a0d8c8003d2a388a7bd9683b20d94af598977b",
+      "bytes": 857
+    },
+    {
+      "sourceRelative": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/communication_messages.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/communication_messages.json",
+      "sha256": "6a12c0947f110423cfef60c3b619e0d1cb6c9ca1d0b05750346687e150e992d4",
+      "bytes": 5975
+    },
+    {
+      "sourceRelative": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/collaboration_tree.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/collaboration_tree.json",
+      "sha256": "e4bc7ea4ed8bf79ebada8d9a2b17e5764eb48beccf97ef9a9365dcda893953b4",
+      "bytes": 4939
+    },
+    {
+      "sourceRelative": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_agent_ed0ffb47f8b043778db1cb345a2d50c1/raw_traces_active.jsonl",
+      "sha256": "89b0dc615b1ff1f932fd1edd724e6b6325f4fbff33acbd39c1480a5990a35da2",
+      "bytes": 11572
+    },
+    {
+      "sourceRelative": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_22eda17c57834896a26b58557ccb302a/api009_team_coordinator_a160ecdb871441df89b23c812e00eced/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_22eda17c57834896a26b58557ccb302a/api009_team_coordinator_a160ecdb871441df89b23c812e00eced/raw_traces_active.jsonl",
+      "sha256": "01a0865ec80b3d22855d039ee6558a16023b4b191ec1e8cd09dff0aba12a5d7e",
+      "bytes": 12799
+    },
+    {
+      "sourceRelative": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_22eda17c57834896a26b58557ccb302a/api009_team_reader_83fbc07510a54c33bc0dc4d17ace5154/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_22eda17c57834896a26b58557ccb302a/api009_team_reader_83fbc07510a54c33bc0dc4d17ace5154/raw_traces_active.jsonl",
+      "sha256": "85d6a5d81bf1cbf7995240f4f864e33fbc197283671f5711a0d7c22945e5997e",
+      "bytes": 10068
+    },
+    {
+      "sourceRelative": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e/api009_team_coordinator_55733fe6784e411e963c147b02bc9d1a/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e/api009_team_coordinator_55733fe6784e411e963c147b02bc9d1a/raw_traces_active.jsonl",
+      "sha256": "9c49a16e1e84d7615655d2f833f773c20b0840a6ddede8b38b182f7aab20aa63",
+      "bytes": 12149
+    },
+    {
+      "sourceRelative": "server-data/memory/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e/api009_team_reader_2155997629a84347bd6dc68feea7605f/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agents/project_task_manager_a21bcb295adf444ab47bef61b55aed31/collaboration/api009_packet_team_3907d9e33c7d423b8061fb4d76ee8e8e/api009_team_reader_2155997629a84347bd6dc68feea7605f/raw_traces_active.jsonl",
+      "sha256": "37f380396c0347718704cf9c6ca6278aacbfd5ac5778cfdfe4f7573218152aaa",
+      "bytes": 8808
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/team_run_execution_tree.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/team_run_execution_tree.json",
+      "sha256": "3e44d9e97a7ca3a5e8949294b9db24c91b6470b41ca7640b8a366d3279663368",
+      "bytes": 6625
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/team_communication_messages.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/team_communication_messages.json",
+      "sha256": "f9bcfe1b6a290ad9b6da96d11f7164533ad4e4235e757d1eef4b37fc519f9078",
+      "bytes": 5503
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362/api009_team_reader_38ab69888cee460390d221ebd61ba91a/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362/api009_team_reader_38ab69888cee460390d221ebd61ba91a/raw_traces_active.jsonl",
+      "sha256": "78321a9d5febebb3d0f0c1f767753b53386d7cd409cb4c52a5a67c34e20208b9",
+      "bytes": 8849
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362/api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362/api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3/raw_traces_active.jsonl",
+      "sha256": "17cc78aa9d6f2a2f4ad5ba378be29f08a83a1040d1d5f5d420e0b32d8c9315bc",
+      "bytes": 12013
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_3c57e63cef5143529c038caceeded3fd/api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_3c57e63cef5143529c038caceeded3fd/api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d/raw_traces_active.jsonl",
+      "sha256": "9d25eda76379229fe55d111b297022558835720e60b083e7868740fe5f7d6bbb",
+      "bytes": 12130
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_3c57e63cef5143529c038caceeded3fd/api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_team_3c57e63cef5143529c038caceeded3fd/api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6/raw_traces_active.jsonl",
+      "sha256": "43daa5520fb0edf4d85675708a2888c767a1abfb5488102d7c35a8bb156f1f1c",
+      "bytes": 11279
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_agent_6375a9f260524202910f7dd9aaedaeae/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_agent_6375a9f260524202910f7dd9aaedaeae/raw_traces_active.jsonl",
+      "sha256": "d85de6adad3fe02c687f70081e0d6ff38f6a4a77485e863e7a76b53a6f380821",
+      "bytes": 17285
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c/raw_traces_active.jsonl",
+      "sha256": "63033c5369da36123ebcc4af71a978ccf4c8a64f4d1d82e0e35013e7e6146ded",
+      "bytes": 62178
+    },
+    {
+      "sourceRelative": "server-data/memory/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_agent_1fe4483413c44722afaba6859b6da377/raw_traces_active.jsonl",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-history/agent_teams/api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb/api009_packet_agent_1fe4483413c44722afaba6859b6da377/raw_traces_active.jsonl",
+      "sha256": "3bcc0ebc90aec2ea0ceaed32b1aa180c6b66d4e9be51c7065ee91d00ef9e10c5",
+      "bytes": 8459
+    },
+    {
+      "sourceRelative": "server-data/projects/task_context_files/project_b543993a-d51e-4a0d-8683-1dc3c3560aa2/project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649/ctx_e144d4aeb7a4__saved-packet-A.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-saved-packets/project_b543993a-d51e-4a0d-8683-1dc3c3560aa2/project_task_09b9fc68-ef03-4b2c-bac0-8f94c7fec649/ctx_e144d4aeb7a4__saved-packet-A.txt",
+      "sha256": "bfcb49bc203835fd4584aaf09e699d2619ec9c4291c153e5db5e040e4b2b1941",
+      "bytes": 65
+    },
+    {
+      "sourceRelative": "server-data/projects/task_context_files/project_b543993a-d51e-4a0d-8683-1dc3c3560aa2/project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e/ctx_2248e72cb7e8__saved-packet-B.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-saved-packets/project_b543993a-d51e-4a0d-8683-1dc3c3560aa2/project_task_df81e953-42a3-49a0-963a-29e72b7f4e9e/ctx_2248e72cb7e8__saved-packet-B.txt",
+      "sha256": "9d2e288f15c3a031ee6e9d7d804ba286884d1767530fe27346156590d8dbbadf",
+      "bytes": 65
+    },
+    {
+      "sourceRelative": "server-data/projects/task_context_files/project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e/project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e/ctx_bd7ac0a3441e__physical-B.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-saved-packets/project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e/project_task_970de909-55d9-4f7a-bb36-28e61cfc1b1e/ctx_bd7ac0a3441e__physical-B.txt",
+      "sha256": "a143ea4635c3953290e43e9ba357f79201498e99dbe6eee2cb5ccd663ed05b38",
+      "bytes": 56
+    },
+    {
+      "sourceRelative": "server-data/projects/task_context_files/project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e/project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb/ctx_ee4feb5e86f7__physical-A.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-saved-packets/project_cca3af77-afa9-49c5-84a3-fe214cf6ca9e/project_task_a30b7d36-4e1b-4ea8-bbd8-782fe5d123cb/ctx_ee4feb5e86f7__physical-A.txt",
+      "sha256": "eaf01259c28dd9002c9f0bb4fa003f88b2c1b03289f13d75928aa24ffc389d57",
+      "bytes": 56
+    },
+    {
+      "sourceRelative": "server-data/projects/task_context_files/project_7c37013f-5c5b-410f-a042-293e5b812957/project_task_71004b62-543c-4aee-a1e1-b069e60a83f3/ctx_795cf61bddd7__saved-agent_team-A.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-saved-packets/project_7c37013f-5c5b-410f-a042-293e5b812957/project_task_71004b62-543c-4aee-a1e1-b069e60a83f3/ctx_795cf61bddd7__saved-agent_team-A.txt",
+      "sha256": "5dff5a134b282405e207e6691f3b79a78a1308c8a1117b4d5bfc6ff684ef123a",
+      "bytes": 57
+    },
+    {
+      "sourceRelative": "server-data/projects/task_context_files/project_7c37013f-5c5b-410f-a042-293e5b812957/project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424/ctx_a512c9606a5b__saved-agent_team-B.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-saved-packets/project_7c37013f-5c5b-410f-a042-293e5b812957/project_task_dd448f58-8a6d-471c-910e-e5b5b5dee424/ctx_a512c9606a5b__saved-agent_team-B.txt",
+      "sha256": "e87abf3df089e6079072713dd15b96526a33748f149188df805484e31b5abb91",
+      "bytes": 57
+    },
+    {
+      "sourceRelative": "server-data/projects/task_context_files/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43/ctx_99eee1d8e605__saved-agent_org-B.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-saved-packets/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_e0c2a3a6-1e10-4d86-8c99-b4e8b93b7a43/ctx_99eee1d8e605__saved-agent_org-B.txt",
+      "sha256": "071ed3f771102708c94936533b2b2834803b6d36e106c4ef6abe4f8d40c6b0f5",
+      "bytes": 56
+    },
+    {
+      "sourceRelative": "server-data/projects/task_context_files/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09/ctx_f7e3cce89fad__saved-agent_org-A.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-saved-packets/project_34f4870f-5493-4125-8742-da3b4fe994dd/project_task_711bf2aa-b73c-4407-bc79-7ba00c326b09/ctx_f7e3cce89fad__saved-agent_org-A.txt",
+      "sha256": "8fffc5e76113af6d10466cca5f758ce1173a565bdfe0bcca0c5d8a30cf81c9d3",
+      "bytes": 56
+    },
+    {
+      "sourceRelative": "server-data/projects/task_context_files/project_8984965a-aa0b-45d4-8ace-ef86642eee2d/project_task_c256315e-eb41-41b6-a61a-f3f7507519eb/ctx_cb7464c25341__manual-packet.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-saved-packets/project_8984965a-aa0b-45d4-8ace-ef86642eee2d/project_task_c256315e-eb41-41b6-a61a-f3f7507519eb/ctx_cb7464c25341__manual-packet.txt",
+      "sha256": "1a780d91fa8fc201da1eb737daad4b50ede9a3525ef41a11299f3c3670f709ff",
+      "bytes": 51
+    },
+    {
+      "sourceRelative": "validation-workspace/manual-approval/protected-sentinel.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-workspace/manual-approval/protected-sentinel.txt",
+      "sha256": "57cb7052870ee68f637dd8422142f018d09a048203e53f4d7a5e5372947c155a",
+      "bytes": 22
+    },
+    {
+      "sourceRelative": "validation-workspace/physical-manager-round9/protected-sentinel.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-workspace/physical-manager-round9/protected-sentinel.txt",
+      "sha256": "9793585949afe7dc3d9de18661bfab2e8015aa0ae9b9f01b6052e584439d199c",
+      "bytes": 25
+    },
+    {
+      "sourceRelative": "validation-workspace/concrete-agent_team/protected-sentinel.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-workspace/concrete-agent_team/protected-sentinel.txt",
+      "sha256": "cd00473661f7961816816c9e0fc8ed33211560e61d2b4f25c0cdbbe4bb6eada4",
+      "bytes": 26
+    },
+    {
+      "sourceRelative": "validation-workspace/concrete-agent_org/protected-sentinel.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-workspace/concrete-agent_org/protected-sentinel.txt",
+      "sha256": "cfc230cf2a7d95458a18f56c6175770358663422ab6bc357ec6915aeb51b8b8d",
+      "bytes": 25
+    },
+    {
+      "sourceRelative": "validation-workspace/team-b/protected-sentinel.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-workspace/team-b/protected-sentinel.txt",
+      "sha256": "330c135932b1d3af83f08aa43ddeeeed00faafa10fe003cf2fcaa70fe757734c",
+      "bytes": 28
+    },
+    {
+      "sourceRelative": "validation-workspace/agent-a/protected-sentinel.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-workspace/agent-a/protected-sentinel.txt",
+      "sha256": "be4f17b8b8b37672312805f518f4ddf73d49840de772f345e55b2099872bdd9e",
+      "bytes": 29
+    },
+    {
+      "sourceRelative": "validation-workspace/manager/protected-sentinel.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-workspace/manager/protected-sentinel.txt",
+      "sha256": "351aa0b317446a26ad09b23ccac1bfd0f009a7f37667fc002ea92883d941e4d7",
+      "bytes": 29
+    },
+    {
+      "sourceRelative": "validation-workspace/physical-task-workers-round9/protected-sentinel.txt",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-workspace/physical-task-workers-round9/protected-sentinel.txt",
+      "sha256": "9793585949afe7dc3d9de18661bfab2e8015aa0ae9b9f01b6052e584439d199c",
+      "bytes": 25
+    },
+    {
+      "sourceRelative": "server-data/projects/projects.json",
+      "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-009-round9-owned-project-array.json",
+      "sha256": "f1204f6e2236c998e59112cc3682b503bda822db1368ee2c8939d83fa2da8dd9",
+      "bytes": 21020
+    }
+  ],
+  "scope": "Allowlisted actual OWN raw history/tree/communication/run metadata, all OWN saved Task packets/current array and complete8 sentinel workspace files. No DB, encrypted vault, key, env or native HOME history."
+}

@@ -1,0 +1,6 @@
+case=API-013
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-inspector-owner.py
+{"instanceId": "iso-58861-449a", "ownBackendPid": 73104, "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server", "bound9229ToExactOwner": true}
+
+PROCESS_EXIT_CODE=0

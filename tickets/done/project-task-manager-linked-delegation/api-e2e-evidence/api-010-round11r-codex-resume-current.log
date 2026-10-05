@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-resume.mjs resume codex --observations
+Scoped Pass actual whole-app restart + explicit same-root restore + same open worker real saved-byte re-read/final reply and same Manager business read; closed B fenced; IDs/lifetimes/Project/tree/old bytes protected; actual packaged renderer reply.
+
+PROCESS_EXIT_CODE=0

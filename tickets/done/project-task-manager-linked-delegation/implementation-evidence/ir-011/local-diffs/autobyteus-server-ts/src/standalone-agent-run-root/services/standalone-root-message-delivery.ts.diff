@@ -1,0 +1,41 @@
+--- incoming-merge/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-message-delivery.ts
++++ IR-011/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-message-delivery.ts
+@@ -11,7 +11,7 @@
+   type RootExecutionIdentity,
+ } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+ import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
+-import type { RootTaskExecutionLifecycle, TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
++import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
+ import { TaskDelegationError, type DelegateTaskInput, type DelegateTaskResult, type TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+ import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+ import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
+@@ -200,26 +200,15 @@
+       : this.options.teams.require(agent.host.hostRunId).executeDirectAgentCommand(agentRunId, command);
+     if (command.kind !== "post_message") {
+       return this.isLiveChild(agentRunId)
+-        ? execute()
++        ? this.options.taskExecutions.withLiveLease(agentRunId, execute, false)
+         : Promise.resolve({ accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in Agent root '${this.options.hostRunId}'.` });
+     }
+     // Operator input wakes a shut-down child exactly like send_message_to.
+     return this.withLiveLease(agentRunId, execute);
+   }
+ 
+-  async withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+-    let lease: TaskExecutionLiveLease;
+-    try {
+-      lease = await this.options.taskExecutions.acquireLiveLease(agentRunId);
+-    } catch (error) {
+-      if (error instanceof TaskDelegationError) return { accepted: false, code: error.code, message: error.message };
+-      throw error;
+-    }
+-    try {
+-      return await operation();
+-    } finally {
+-      lease.release();
+-    }
++  withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
++    return this.options.taskExecutions.withLiveLease(agentRunId, operation);
+   }
+ 
+   isLiveChild(agentRunId: string): boolean {

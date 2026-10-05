@@ -1,0 +1,3707 @@
+{
+  "result": "Scoped Pass fresh ordinary exact submitted-reader closure; no historical backfill or default-pipeline second-cause claim",
+  "instanceId": "iso-58861-449a",
+  "rootId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+  "lifetimeId": "project_task_lifetime_01de9b25-69b4-44ed-85fc-f710c7004637",
+  "teamId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd",
+  "memberIds": [
+    "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+    "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6"
+  ],
+  "readerId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+  "turnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+  "ownerReceipts": [
+    {
+      "at": "2026-10-03T17:56:37.510Z",
+      "event": "owner-verified",
+      "value": {}
+    },
+    {
+      "at": "2026-10-03T17:57:26.403Z",
+      "event": "native-terminal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_packet_agent_1fe4483413c44722afaba6859b6da377",
+        "threadId": "01a102e9-961d-79d3-96d0-860940b25b9e",
+        "activeTurnId": "01a102e9-9733-7652-986b-d9d34cfebe28",
+        "eventTurnId": "01a102e9-9733-7652-986b-d9d34cfebe28",
+        "status": "completed",
+        "method": "turn/completed"
+      }
+    },
+    {
+      "at": "2026-10-03T17:57:26.407Z",
+      "event": "canonical-input-before",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_packet_agent_1fe4483413c44722afaba6859b6da377",
+        "runInstanceId": "61b5b087-9594-48ce-a4a9-ede8a8a7b518",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102e9-9733-7652-986b-d9d34cfebe28",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102e9-9733-7652-986b-d9d34cfebe28"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102e9-961d-79d3-96d0-860940b25b9e",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102e9-9733-7652-986b-d9d34cfebe28",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 2,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 1,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_packet_agent_1fe4483413c44722afaba6859b6da377",
+            "eventType": "TURN_COMPLETED",
+            "turnId": "01a102e9-9733-7652-986b-d9d34cfebe28",
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          },
+          {
+            "runId": "api009_packet_agent_1fe4483413c44722afaba6859b6da377",
+            "eventType": "AGENT_STATUS",
+            "turnId": null,
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:57:26.409Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 1,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102e9-9733-7652-986b-d9d34cfebe28",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102e9-9733-7652-986b-d9d34cfebe28"
+        },
+        "observerAttached": true,
+        "messageId": "b9408a11-ceeb-4ca8-90a5-40a94d2bf37d",
+        "callerRunId": "api009_packet_agent_1fe4483413c44722afaba6859b6da377",
+        "generation": "61b5b087-9594-48ce-a4a9-ede8a8a7b518"
+      }
+    },
+    {
+      "at": "2026-10-03T17:57:26.414Z",
+      "event": "canonical-input-after",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_packet_agent_1fe4483413c44722afaba6859b6da377",
+        "runInstanceId": "61b5b087-9594-48ce-a4a9-ede8a8a7b518",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102e9-9733-7652-986b-d9d34cfebe28"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102e9-961d-79d3-96d0-860940b25b9e",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102e9-9733-7652-986b-d9d34cfebe28",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 2,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 1,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_packet_agent_1fe4483413c44722afaba6859b6da377",
+            "eventType": "TURN_COMPLETED",
+            "turnId": "01a102e9-9733-7652-986b-d9d34cfebe28"
+          },
+          {
+            "runId": "api009_packet_agent_1fe4483413c44722afaba6859b6da377",
+            "eventType": "AGENT_STATUS",
+            "turnId": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:19.182Z",
+      "event": "native-terminal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+        "threadId": "01a102ea-5693-74c3-b3cb-d3de3e10dc86",
+        "activeTurnId": "01a102ea-571e-79d3-95d9-e85e0b86487f",
+        "eventTurnId": "01a102ea-571e-79d3-95d9-e85e0b86487f",
+        "status": "completed",
+        "method": "turn/completed"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:19.187Z",
+      "event": "canonical-input-before",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+        "runInstanceId": "89c1aea5-b78e-4ab3-bbee-6442ede71fd3",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102ea-571e-79d3-95d9-e85e0b86487f",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-571e-79d3-95d9-e85e0b86487f"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-5693-74c3-b3cb-d3de3e10dc86",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-571e-79d3-95d9-e85e0b86487f",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 3,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+            "eventType": "TURN_COMPLETED",
+            "turnId": "01a102ea-571e-79d3-95d9-e85e0b86487f",
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          },
+          {
+            "runId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+            "eventType": "AGENT_STATUS",
+            "turnId": null,
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:19.189Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 1,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102ea-571e-79d3-95d9-e85e0b86487f",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102ea-571e-79d3-95d9-e85e0b86487f"
+        },
+        "observerAttached": true,
+        "messageId": null,
+        "callerRunId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+        "generation": "89c1aea5-b78e-4ab3-bbee-6442ede71fd3"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:19.191Z",
+      "event": "canonical-input-after",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+        "runInstanceId": "89c1aea5-b78e-4ab3-bbee-6442ede71fd3",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-571e-79d3-95d9-e85e0b86487f"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-5693-74c3-b3cb-d3de3e10dc86",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-571e-79d3-95d9-e85e0b86487f",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 3,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+            "eventType": "TURN_COMPLETED",
+            "turnId": "01a102ea-571e-79d3-95d9-e85e0b86487f"
+          },
+          {
+            "runId": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+            "eventType": "AGENT_STATUS",
+            "turnId": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:26.229Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 1,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102e9-e9e3-7182-8da0-2649513030c1",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102e9-e9e3-7182-8da0-2649513030c1"
+        },
+        "observerAttached": true,
+        "messageId": "cf4e2434-f219-486c-91ee-3920f32cefda",
+        "callerRunId": "project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c",
+        "generation": "946ce06b-78d6-41fa-8e14-ce4c26e51fe7"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:26.231Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 2,
+        "state": "terminal",
+        "dispatchKind": "append_to_active_turn",
+        "associatedTurnId": "01a102e9-e9e3-7182-8da0-2649513030c1",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102e9-e9e3-7182-8da0-2649513030c1"
+        },
+        "observerAttached": true,
+        "messageId": "memberinput_XU5S_Ab_5sELcGWaO6KTJ21xj2gkxrKR",
+        "callerRunId": "project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c",
+        "generation": "946ce06b-78d6-41fa-8e14-ce4c26e51fe7"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:36.780Z",
+      "event": "native-terminal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "threadId": "01a102ea-8296-7793-8e0b-f0df0f6ae3db",
+        "activeTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+        "eventTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+        "status": "completed",
+        "method": "turn/completed"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:36.785Z",
+      "event": "canonical-input-before",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "runInstanceId": "e4a32979-660b-4462-8669-3642747d54a0",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-83b9-7dd1-b763-630c8116b60d"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8296-7793-8e0b-f0df0f6ae3db",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 3,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+            "eventType": "TURN_COMPLETED",
+            "turnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          },
+          {
+            "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+            "eventType": "AGENT_STATUS",
+            "turnId": null,
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:36.786Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 1,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102ea-83b9-7dd1-b763-630c8116b60d"
+        },
+        "observerAttached": true,
+        "messageId": null,
+        "callerRunId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "generation": "e4a32979-660b-4462-8669-3642747d54a0"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:36.789Z",
+      "event": "canonical-input-after",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "runInstanceId": "e4a32979-660b-4462-8669-3642747d54a0",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-83b9-7dd1-b763-630c8116b60d"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8296-7793-8e0b-f0df0f6ae3db",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 3,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+            "eventType": "TURN_COMPLETED",
+            "turnId": "01a102ea-83b9-7dd1-b763-630c8116b60d"
+          },
+          {
+            "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+            "eventType": "AGENT_STATUS",
+            "turnId": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.063Z",
+      "event": "root-begin",
+      "evaluationException": null,
+      "value": {
+        "lifetimeId": "project_task_lifetime_b370343a-d8f0-4250-8e9b-add88b64c0a5",
+        "requested": [
+          {
+            "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.065Z",
+      "event": "team-release-start",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "lifecycle": "terminating",
+        "configured": [
+          {
+            "address": "/api009_packet_team/coordinator",
+            "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+            "identity": {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "memberAddress": "/api009_packet_team/coordinator",
+              "agentRunId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3"
+            },
+            "generation": "e4a32979-660b-4462-8669-3642747d54a0"
+          },
+          {
+            "address": "/api009_packet_team/reader",
+            "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+            "identity": {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "memberAddress": "/api009_packet_team/reader",
+              "agentRunId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a"
+            },
+            "generation": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3"
+          }
+        ],
+        "taskAgents": [],
+        "taskTeams": []
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.068Z",
+      "event": "agent-force-begin",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "runInstanceId": "e4a32979-660b-4462-8669-3642747d54a0",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-83b9-7dd1-b763-630c8116b60d"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8296-7793-8e0b-f0df0f6ae3db",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.070Z",
+      "event": "agent-force-begin",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "runInstanceId": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "running",
+          "activeTurn": {
+            "kind": "IDENTIFIED",
+            "turnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": []
+        },
+        "provider": {
+          "threadId": "01a102ea-8312-7151-9d7f-8fc2b5f32df6",
+          "activeTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+          "lastTerminalTurnId": null,
+          "status": "RUNNING",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.072Z",
+      "event": "team-release-start",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "lifecycle": "terminating",
+        "configured": [
+          {
+            "address": "/api009_packet_team/coordinator",
+            "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+            "identity": {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "memberAddress": "/api009_packet_team/coordinator",
+              "agentRunId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3"
+            },
+            "generation": "e4a32979-660b-4462-8669-3642747d54a0"
+          },
+          {
+            "address": "/api009_packet_team/reader",
+            "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+            "identity": {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "memberAddress": "/api009_packet_team/reader",
+              "agentRunId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a"
+            },
+            "generation": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3"
+          }
+        ],
+        "taskAgents": [],
+        "taskTeams": []
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.074Z",
+      "event": "agent-force-begin",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "runInstanceId": "e4a32979-660b-4462-8669-3642747d54a0",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-83b9-7dd1-b763-630c8116b60d"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8296-7793-8e0b-f0df0f6ae3db",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.075Z",
+      "event": "agent-force-begin",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "runInstanceId": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "running",
+          "activeTurn": {
+            "kind": "IDENTIFIED",
+            "turnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": []
+        },
+        "provider": {
+          "threadId": "01a102ea-8312-7151-9d7f-8fc2b5f32df6",
+          "activeTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+          "lastTerminalTurnId": null,
+          "status": "RUNNING",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.076Z",
+      "event": "root-proof-request",
+      "evaluationException": null,
+      "value": {
+        "lifetimeId": null,
+        "key": "team:api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "execution": {
+          "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362"
+        },
+        "actual": {
+          "root": {
+            "rootSubjectKind": "agent_team",
+            "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+          },
+          "execution": {
+            "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362"
+          },
+          "ingressAgentRunId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+          "purpose": "assignment"
+        },
+        "registeredControl": true,
+        "physicalAdapter": true,
+        "proofCount": 2
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.078Z",
+      "event": "codex-thread-cleanup-proof",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "threadId": "01a102ea-8296-7793-8e0b-f0df0f6ae3db",
+        "activeTurnId": null,
+        "owner": {
+          "cancelled": true,
+          "settled": true,
+          "exactContext": true,
+          "exactThread": true
+        },
+        "errors": [],
+        "thread": {
+          "status": "IDLE",
+          "lastTerminalTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+          "listeners": 0,
+          "unbindHandlers": 0,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          }
+        },
+        "clientEntry": {
+          "holders": 4,
+          "closing": false,
+          "hasClient": true,
+          "closeAttempt": false
+        },
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.079Z",
+      "event": "agent-backend-return",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "runInstanceId": "e4a32979-660b-4462-8669-3642747d54a0",
+        "backendResult": {
+          "accepted": true
+        },
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-83b9-7dd1-b763-630c8116b60d"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8296-7793-8e0b-f0df0f6ae3db",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 4,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.081Z",
+      "event": "agent-before-input-settlement",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "runInstanceId": "e4a32979-660b-4462-8669-3642747d54a0",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-83b9-7dd1-b763-630c8116b60d"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8296-7793-8e0b-f0df0f6ae3db",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 4,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.083Z",
+      "event": "agent-before-unsubscribe",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "runInstanceId": "e4a32979-660b-4462-8669-3642747d54a0",
+        "backendResult": {
+          "accepted": true
+        },
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-83b9-7dd1-b763-630c8116b60d"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8296-7793-8e0b-f0df0f6ae3db",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-83b9-7dd1-b763-630c8116b60d",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 4,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.086Z",
+      "event": "agent-manager-components",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "generation": "e4a32979-660b-4462-8669-3642747d54a0",
+        "result": {
+          "accepted": true
+        },
+        "forceReleaseErrors": [],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": true,
+        "retired": false,
+        "providerThread": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.087Z",
+      "event": "agent-manager-removal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "generation": "e4a32979-660b-4462-8669-3642747d54a0",
+        "result": {
+          "accepted": true
+        },
+        "removal": {
+          "kind": "removed",
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.088Z",
+      "event": "agent-manager-components",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "generation": "e4a32979-660b-4462-8669-3642747d54a0",
+        "result": {
+          "accepted": true
+        },
+        "forceReleaseErrors": [],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false,
+        "providerThread": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.089Z",
+      "event": "agent-manager-removal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "generation": "e4a32979-660b-4462-8669-3642747d54a0",
+        "result": {
+          "accepted": true
+        },
+        "removal": {
+          "kind": "removed",
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.091Z",
+      "event": "native-terminal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "threadId": "01a102ea-8312-7151-9d7f-8fc2b5f32df6",
+        "activeTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+        "eventTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+        "status": "interrupted",
+        "method": "turn/completed"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.093Z",
+      "event": "codex-thread-cleanup-proof",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "threadId": "01a102ea-8312-7151-9d7f-8fc2b5f32df6",
+        "activeTurnId": null,
+        "owner": {
+          "cancelled": true,
+          "settled": true,
+          "exactContext": true,
+          "exactThread": true
+        },
+        "errors": [],
+        "thread": {
+          "status": "IDLE",
+          "lastTerminalTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+          "listeners": 0,
+          "unbindHandlers": 0,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          }
+        },
+        "clientEntry": {
+          "holders": 3,
+          "closing": false,
+          "hasClient": true,
+          "closeAttempt": false
+        },
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.099Z",
+      "event": "canonical-input-before",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "runInstanceId": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-cb4a-7f10-8a2d-739d16877ce9"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8312-7151-9d7f-8fc2b5f32df6",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 3,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+            "eventType": "TURN_INTERRUPTED",
+            "turnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          },
+          {
+            "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+            "eventType": "AGENT_STATUS",
+            "turnId": null,
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.100Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 1,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+        "terminal": {
+          "kind": "interrupted",
+          "turnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9"
+        },
+        "observerAttached": true,
+        "messageId": "memberinput_c6cFYiP3CeNu0d8lju5z0MuidBEJE4mo",
+        "callerRunId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "generation": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.102Z",
+      "event": "canonical-input-after",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "runInstanceId": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-cb4a-7f10-8a2d-739d16877ce9"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8312-7151-9d7f-8fc2b5f32df6",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 3,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+            "eventType": "TURN_INTERRUPTED",
+            "turnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9"
+          },
+          {
+            "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+            "eventType": "AGENT_STATUS",
+            "turnId": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.103Z",
+      "event": "agent-backend-return",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "runInstanceId": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "backendResult": {
+          "accepted": true
+        },
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-cb4a-7f10-8a2d-739d16877ce9"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8312-7151-9d7f-8fc2b5f32df6",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.105Z",
+      "event": "agent-before-input-settlement",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "runInstanceId": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-cb4a-7f10-8a2d-739d16877ce9"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8312-7151-9d7f-8fc2b5f32df6",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.106Z",
+      "event": "agent-before-unsubscribe",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "runInstanceId": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "backendResult": {
+          "accepted": true
+        },
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102ea-cb4a-7f10-8a2d-739d16877ce9"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102ea-8312-7151-9d7f-8fc2b5f32df6",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102ea-cb4a-7f10-8a2d-739d16877ce9",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.107Z",
+      "event": "agent-manager-components",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "generation": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "result": {
+          "accepted": true
+        },
+        "forceReleaseErrors": [],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": true,
+        "retired": false,
+        "providerThread": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.108Z",
+      "event": "agent-manager-removal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "generation": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "result": {
+          "accepted": true
+        },
+        "removal": {
+          "kind": "removed",
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.109Z",
+      "event": "agent-manager-components",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "generation": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "result": {
+          "accepted": true
+        },
+        "forceReleaseErrors": [],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false,
+        "providerThread": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.110Z",
+      "event": "agent-manager-removal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+        "generation": "ee892eb8-ef1e-4ad0-be39-c87a4c2d2fc3",
+        "result": {
+          "accepted": true
+        },
+        "removal": {
+          "kind": "removed",
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.111Z",
+      "event": "team-proof-settled",
+      "evaluationException": null,
+      "value": {
+        "results": [
+          {
+            "index": 0,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          },
+          {
+            "index": 1,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.112Z",
+      "event": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "results": [
+          {
+            "index": 0,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            }
+          },
+          {
+            "index": 1,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            }
+          }
+        ],
+        "releaseCount": 2,
+        "disposalReached": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.112Z",
+      "event": "exact-team-current-proof",
+      "trigger": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "lifecycle": "terminated",
+        "configuredCount": 0,
+        "taskAgentCount": 0,
+        "taskTeamCount": 0,
+        "collaboratorTeamCount": 0
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.113Z",
+      "event": "team-proof-settled",
+      "evaluationException": null,
+      "value": {
+        "results": [
+          {
+            "index": 0,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          },
+          {
+            "index": 1,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.114Z",
+      "event": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "results": [
+          {
+            "index": 0,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            }
+          },
+          {
+            "index": 1,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            }
+          }
+        ],
+        "releaseCount": 2,
+        "disposalReached": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.114Z",
+      "event": "exact-team-current-proof",
+      "trigger": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "lifecycle": "terminated",
+        "configuredCount": 0,
+        "taskAgentCount": 0,
+        "taskTeamCount": 0,
+        "collaboratorTeamCount": 0
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.115Z",
+      "event": "root-proof-settled",
+      "evaluationException": null,
+      "value": {
+        "lifetimeId": null,
+        "key": "team:api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "execution": {
+          "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362"
+        },
+        "actual": {
+          "root": {
+            "rootSubjectKind": "agent_team",
+            "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+          },
+          "execution": {
+            "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362"
+          },
+          "ingressAgentRunId": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+          "purpose": "assignment"
+        },
+        "registeredControl": true,
+        "physicalAdapter": true,
+        "proofs": [
+          {
+            "branch": "registered-control",
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          },
+          {
+            "branch": "physical-adapter",
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:39.116Z",
+      "event": "exact-team-current-proof",
+      "trigger": "root-proof-settled",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "lifecycle": "terminated",
+        "configuredCount": 0,
+        "taskAgentCount": 0,
+        "taskTeamCount": 0,
+        "collaboratorTeamCount": 0
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:55.592Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 3,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102ea-e9a6-7f43-a73d-a48a0c595ca6",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102ea-e9a6-7f43-a73d-a48a0c595ca6"
+        },
+        "observerAttached": true,
+        "messageId": "678d50c2-e8fa-4490-846e-f4e2575824a2",
+        "callerRunId": "project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c",
+        "generation": "946ce06b-78d6-41fa-8e14-ce4c26e51fe7"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:55.594Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 4,
+        "state": "terminal",
+        "dispatchKind": "append_to_active_turn",
+        "associatedTurnId": "01a102ea-e9a6-7f43-a73d-a48a0c595ca6",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102ea-e9a6-7f43-a73d-a48a0c595ca6"
+        },
+        "observerAttached": true,
+        "messageId": "memberinput_5dYTg9ayOi9qafziiXpGNEMGvProFkvx",
+        "callerRunId": "project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c",
+        "generation": "946ce06b-78d6-41fa-8e14-ce4c26e51fe7"
+      }
+    },
+    {
+      "at": "2026-10-03T17:58:55.596Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 5,
+        "state": "terminal",
+        "dispatchKind": "append_to_active_turn",
+        "associatedTurnId": "01a102ea-e9a6-7f43-a73d-a48a0c595ca6",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102ea-e9a6-7f43-a73d-a48a0c595ca6"
+        },
+        "observerAttached": true,
+        "messageId": "bf35269d-1216-4497-a6fd-0059bb414af4",
+        "callerRunId": "project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c",
+        "generation": "946ce06b-78d6-41fa-8e14-ce4c26e51fe7"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:17.782Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 6,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102eb-46d0-7632-8338-cd53335dc4c6",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102eb-46d0-7632-8338-cd53335dc4c6"
+        },
+        "observerAttached": true,
+        "messageId": "33e0174c-f8a5-4c88-a260-ec039c7d523a",
+        "callerRunId": "project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c",
+        "generation": "946ce06b-78d6-41fa-8e14-ce4c26e51fe7"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:39.312Z",
+      "event": "native-terminal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "threadId": "01a102eb-6969-79d3-9966-3e2d39d3ae78",
+        "activeTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+        "eventTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+        "status": "completed",
+        "method": "turn/completed"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:39.319Z",
+      "event": "canonical-input-before",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "runInstanceId": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-6b36-7052-be15-1a4c84873f1a"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6969-79d3-9966-3e2d39d3ae78",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 3,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+            "eventType": "TURN_COMPLETED",
+            "turnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          },
+          {
+            "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+            "eventType": "AGENT_STATUS",
+            "turnId": null,
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:39.321Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 1,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102eb-6b36-7052-be15-1a4c84873f1a"
+        },
+        "observerAttached": true,
+        "messageId": null,
+        "callerRunId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "generation": "b618ae73-cdc4-471a-a0ea-784fa268dea5"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:39.323Z",
+      "event": "canonical-input-after",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "runInstanceId": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-6b36-7052-be15-1a4c84873f1a"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6969-79d3-9966-3e2d39d3ae78",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 3,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+            "eventType": "TURN_COMPLETED",
+            "turnId": "01a102eb-6b36-7052-be15-1a4c84873f1a"
+          },
+          {
+            "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+            "eventType": "AGENT_STATUS",
+            "turnId": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.234Z",
+      "event": "root-begin",
+      "evaluationException": null,
+      "value": {
+        "lifetimeId": "project_task_lifetime_01de9b25-69b4-44ed-85fc-f710c7004637",
+        "requested": [
+          {
+            "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.236Z",
+      "event": "team-release-start",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd",
+        "lifecycle": "terminating",
+        "configured": [
+          {
+            "address": "/api009_packet_team/coordinator",
+            "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+            "identity": {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "memberAddress": "/api009_packet_team/coordinator",
+              "agentRunId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d"
+            },
+            "generation": "b618ae73-cdc4-471a-a0ea-784fa268dea5"
+          },
+          {
+            "address": "/api009_packet_team/reader",
+            "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+            "identity": {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "memberAddress": "/api009_packet_team/reader",
+              "agentRunId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6"
+            },
+            "generation": "0586af50-8c75-4463-881c-9310f3ffc8f7"
+          }
+        ],
+        "taskAgents": [],
+        "taskTeams": []
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.238Z",
+      "event": "agent-force-begin",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "runInstanceId": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-6b36-7052-be15-1a4c84873f1a"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6969-79d3-9966-3e2d39d3ae78",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.240Z",
+      "event": "agent-force-begin",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "runInstanceId": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": true,
+          "rootShutdownFenced": false,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            },
+            {
+              "sequence": 2,
+              "state": "forwarded",
+              "dispatchKind": "append_to_active_turn",
+              "associatedTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "running",
+          "activeTurn": {
+            "kind": "IDENTIFIED",
+            "turnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": []
+        },
+        "provider": {
+          "threadId": "01a102eb-6a97-78a2-ab7e-d0e11a11eca0",
+          "activeTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+          "lastTerminalTurnId": null,
+          "status": "RUNNING",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": false,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.242Z",
+      "event": "team-release-start",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd",
+        "lifecycle": "terminating",
+        "configured": [
+          {
+            "address": "/api009_packet_team/coordinator",
+            "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+            "identity": {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "memberAddress": "/api009_packet_team/coordinator",
+              "agentRunId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d"
+            },
+            "generation": "b618ae73-cdc4-471a-a0ea-784fa268dea5"
+          },
+          {
+            "address": "/api009_packet_team/reader",
+            "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+            "identity": {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+              },
+              "memberAddress": "/api009_packet_team/reader",
+              "agentRunId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6"
+            },
+            "generation": "0586af50-8c75-4463-881c-9310f3ffc8f7"
+          }
+        ],
+        "taskAgents": [],
+        "taskTeams": []
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.244Z",
+      "event": "agent-force-begin",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "runInstanceId": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-6b36-7052-be15-1a4c84873f1a"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6969-79d3-9966-3e2d39d3ae78",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.245Z",
+      "event": "agent-force-begin",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "runInstanceId": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            },
+            {
+              "sequence": 2,
+              "state": "forwarded",
+              "dispatchKind": "append_to_active_turn",
+              "associatedTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "running",
+          "activeTurn": {
+            "kind": "IDENTIFIED",
+            "turnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": []
+        },
+        "provider": {
+          "threadId": "01a102eb-6a97-78a2-ab7e-d0e11a11eca0",
+          "activeTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+          "lastTerminalTurnId": null,
+          "status": "RUNNING",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": true,
+          "preparationInManager": true,
+          "exactThreadReleased": false,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 5,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.247Z",
+      "event": "root-proof-request",
+      "evaluationException": null,
+      "value": {
+        "lifetimeId": null,
+        "key": "team:api009_packet_team_3c57e63cef5143529c038caceeded3fd",
+        "execution": {
+          "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd"
+        },
+        "actual": {
+          "root": {
+            "rootSubjectKind": "agent_team",
+            "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+          },
+          "execution": {
+            "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd"
+          },
+          "ingressAgentRunId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+          "purpose": "assignment"
+        },
+        "registeredControl": true,
+        "physicalAdapter": true,
+        "proofCount": 2
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.248Z",
+      "event": "codex-thread-cleanup-proof",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "threadId": "01a102eb-6969-79d3-9966-3e2d39d3ae78",
+        "activeTurnId": null,
+        "owner": {
+          "cancelled": true,
+          "settled": true,
+          "exactContext": true,
+          "exactThread": true
+        },
+        "errors": [],
+        "thread": {
+          "status": "IDLE",
+          "lastTerminalTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+          "listeners": 0,
+          "unbindHandlers": 0,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          }
+        },
+        "clientEntry": {
+          "holders": 4,
+          "closing": false,
+          "hasClient": true,
+          "closeAttempt": false
+        },
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.249Z",
+      "event": "agent-backend-return",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "runInstanceId": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "backendResult": {
+          "accepted": true
+        },
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-6b36-7052-be15-1a4c84873f1a"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6969-79d3-9966-3e2d39d3ae78",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 4,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.251Z",
+      "event": "agent-before-input-settlement",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "runInstanceId": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "idle",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-6b36-7052-be15-1a4c84873f1a"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6969-79d3-9966-3e2d39d3ae78",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 4,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.253Z",
+      "event": "agent-before-unsubscribe",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "runInstanceId": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "backendResult": {
+          "accepted": true
+        },
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-6b36-7052-be15-1a4c84873f1a"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6969-79d3-9966-3e2d39d3ae78",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-6b36-7052-be15-1a4c84873f1a",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 4,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.254Z",
+      "event": "agent-manager-components",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "generation": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "result": {
+          "accepted": true
+        },
+        "forceReleaseErrors": [],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": true,
+        "retired": false,
+        "providerThread": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.255Z",
+      "event": "agent-manager-removal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "generation": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "result": {
+          "accepted": true
+        },
+        "removal": {
+          "kind": "removed",
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.256Z",
+      "event": "agent-manager-components",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "generation": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "result": {
+          "accepted": true
+        },
+        "forceReleaseErrors": [],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false,
+        "providerThread": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.258Z",
+      "event": "agent-manager-removal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "generation": "b618ae73-cdc4-471a-a0ea-784fa268dea5",
+        "result": {
+          "accepted": true
+        },
+        "removal": {
+          "kind": "removed",
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.260Z",
+      "event": "native-terminal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "threadId": "01a102eb-6a97-78a2-ab7e-d0e11a11eca0",
+        "activeTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+        "eventTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+        "status": "interrupted",
+        "method": "turn/completed"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.263Z",
+      "event": "codex-thread-cleanup-proof",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "threadId": "01a102eb-6a97-78a2-ab7e-d0e11a11eca0",
+        "activeTurnId": null,
+        "owner": {
+          "cancelled": true,
+          "settled": true,
+          "exactContext": true,
+          "exactThread": true
+        },
+        "errors": [],
+        "thread": {
+          "status": "IDLE",
+          "lastTerminalTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+          "listeners": 0,
+          "unbindHandlers": 0,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          }
+        },
+        "clientEntry": {
+          "holders": 3,
+          "closing": false,
+          "hasClient": true,
+          "closeAttempt": false
+        },
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.264Z",
+      "event": "canonical-input-before",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "runInstanceId": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": [
+            {
+              "sequence": 1,
+              "state": "forwarded",
+              "dispatchKind": "start_turn",
+              "associatedTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            },
+            {
+              "sequence": 2,
+              "state": "forwarded",
+              "dispatchKind": "append_to_active_turn",
+              "associatedTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+              "observedTurnId": null,
+              "pendingTerminal": null,
+              "heldTurnId": null,
+              "notInto": null
+            }
+          ]
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6a97-78a2-ab7e-d0e11a11eca0",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 2,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+            "eventType": "TURN_INTERRUPTED",
+            "turnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          },
+          {
+            "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+            "eventType": "AGENT_STATUS",
+            "turnId": null,
+            "code": null,
+            "errorScope": null,
+            "errorEffect": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.266Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 1,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+        "terminal": {
+          "kind": "interrupted",
+          "turnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+        },
+        "observerAttached": true,
+        "messageId": "memberinput_nAaZELBntNMSRXMjGMlI5Rxxg7vm4eks",
+        "callerRunId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "generation": "0586af50-8c75-4463-881c-9310f3ffc8f7"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.267Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 2,
+        "state": "terminal",
+        "dispatchKind": "append_to_active_turn",
+        "associatedTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+        "terminal": {
+          "kind": "interrupted",
+          "turnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+        },
+        "observerAttached": true,
+        "messageId": "f3d34c7b-a11b-4887-8a2b-abaa65dfa5b0",
+        "callerRunId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "generation": "0586af50-8c75-4463-881c-9310f3ffc8f7"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.269Z",
+      "event": "canonical-input-after",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "runInstanceId": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6a97-78a2-ab7e-d0e11a11eca0",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 2,
+        "sourceSubscribed": true,
+        "events": [
+          {
+            "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+            "eventType": "TURN_INTERRUPTED",
+            "turnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+          },
+          {
+            "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+            "eventType": "AGENT_STATUS",
+            "turnId": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.271Z",
+      "event": "agent-backend-return",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "runInstanceId": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "backendResult": {
+          "accepted": true
+        },
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6a97-78a2-ab7e-d0e11a11eca0",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.271Z",
+      "event": "agent-before-input-settlement",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "runInstanceId": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "backendResult": null,
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6a97-78a2-ab7e-d0e11a11eca0",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.273Z",
+      "event": "agent-before-unsubscribe",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "runInstanceId": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "backendResult": {
+          "accepted": true
+        },
+        "activeInputDispatch": false,
+        "uncertainInputDispatch": false,
+        "input": {
+          "accepting": false,
+          "rootShutdownFenced": true,
+          "activeClaimSequence": null,
+          "entries": []
+        },
+        "canonical": {
+          "lastStatus": "offline",
+          "activeTurn": {
+            "kind": "NONE"
+          },
+          "pendingCommand": false,
+          "retiredTurnIds": [
+            "01a102eb-c091-7633-8424-8eaf9e78b3f5"
+          ]
+        },
+        "provider": {
+          "threadId": "01a102eb-6a97-78a2-ab7e-d0e11a11eca0",
+          "activeTurnId": null,
+          "lastTerminalTurnId": "01a102eb-c091-7633-8424-8eaf9e78b3f5",
+          "status": "IDLE",
+          "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YVI5WL/validation-workspace/concrete-agent_team",
+          "threadInManager": false,
+          "preparationInManager": false,
+          "exactThreadReleased": true,
+          "releaseScope": {
+            "closed": true,
+            "pendingCount": 0,
+            "unknownInputOutcome": false
+          },
+          "clientEntry": {
+            "holders": 3,
+            "closing": false,
+            "hasClient": true,
+            "closeAttempt": false
+          }
+        },
+        "sourceWorkCount": 0,
+        "sourceSubscribed": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.274Z",
+      "event": "agent-manager-components",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "generation": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "result": {
+          "accepted": true
+        },
+        "forceReleaseErrors": [],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": true,
+        "retired": false,
+        "providerThread": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.275Z",
+      "event": "agent-manager-removal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "generation": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "result": {
+          "accepted": true
+        },
+        "removal": {
+          "kind": "removed",
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.276Z",
+      "event": "agent-manager-components",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "generation": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "result": {
+          "accepted": true
+        },
+        "forceReleaseErrors": [],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false,
+        "providerThread": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.277Z",
+      "event": "agent-manager-removal",
+      "evaluationException": null,
+      "value": {
+        "runId": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+        "generation": "0586af50-8c75-4463-881c-9310f3ffc8f7",
+        "result": {
+          "accepted": true
+        },
+        "removal": {
+          "kind": "removed",
+          "errors": []
+        },
+        "activePublished": false,
+        "retired": false
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.278Z",
+      "event": "team-proof-settled",
+      "evaluationException": null,
+      "value": {
+        "results": [
+          {
+            "index": 0,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          },
+          {
+            "index": 1,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.279Z",
+      "event": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "results": [
+          {
+            "index": 0,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            }
+          },
+          {
+            "index": 1,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            }
+          }
+        ],
+        "releaseCount": 2,
+        "disposalReached": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.279Z",
+      "event": "exact-team-current-proof",
+      "trigger": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "lifecycle": "terminated",
+        "configuredCount": 0,
+        "taskAgentCount": 0,
+        "taskTeamCount": 0,
+        "collaboratorTeamCount": 0
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.279Z",
+      "event": "exact-team-current-proof",
+      "trigger": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd",
+        "lifecycle": "terminated",
+        "configuredCount": 0,
+        "taskAgentCount": 0,
+        "taskTeamCount": 0,
+        "collaboratorTeamCount": 0
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.280Z",
+      "event": "team-proof-settled",
+      "evaluationException": null,
+      "value": {
+        "results": [
+          {
+            "index": 0,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          },
+          {
+            "index": 1,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.281Z",
+      "event": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "results": [
+          {
+            "index": 0,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            }
+          },
+          {
+            "index": 1,
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            }
+          }
+        ],
+        "releaseCount": 2,
+        "disposalReached": true
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.281Z",
+      "event": "exact-team-current-proof",
+      "trigger": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "lifecycle": "terminated",
+        "configuredCount": 0,
+        "taskAgentCount": 0,
+        "taskTeamCount": 0,
+        "collaboratorTeamCount": 0
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.281Z",
+      "event": "exact-team-current-proof",
+      "trigger": "team-disposed-proof",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd",
+        "lifecycle": "terminated",
+        "configuredCount": 0,
+        "taskAgentCount": 0,
+        "taskTeamCount": 0,
+        "collaboratorTeamCount": 0
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.282Z",
+      "event": "root-proof-settled",
+      "evaluationException": null,
+      "value": {
+        "lifetimeId": null,
+        "key": "team:api009_packet_team_3c57e63cef5143529c038caceeded3fd",
+        "execution": {
+          "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd"
+        },
+        "actual": {
+          "root": {
+            "rootSubjectKind": "agent_team",
+            "rootRunId": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb"
+          },
+          "execution": {
+            "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd"
+          },
+          "ingressAgentRunId": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+          "purpose": "assignment"
+        },
+        "registeredControl": true,
+        "physicalAdapter": true,
+        "proofs": [
+          {
+            "branch": "registered-control",
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          },
+          {
+            "branch": "physical-adapter",
+            "status": "fulfilled",
+            "value": {
+              "accepted": true
+            },
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.283Z",
+      "event": "exact-team-current-proof",
+      "trigger": "root-proof-settled",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_8bab865bbba74ce4b72aaf3d0222c362",
+        "lifecycle": "terminated",
+        "configuredCount": 0,
+        "taskAgentCount": 0,
+        "taskTeamCount": 0,
+        "collaboratorTeamCount": 0
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:47.283Z",
+      "event": "exact-team-current-proof",
+      "trigger": "root-proof-settled",
+      "evaluationException": null,
+      "value": {
+        "teamRunId": "api009_packet_team_3c57e63cef5143529c038caceeded3fd",
+        "lifecycle": "terminated",
+        "configuredCount": 0,
+        "taskAgentCount": 0,
+        "taskTeamCount": 0,
+        "collaboratorTeamCount": 0
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:51.934Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 7,
+        "state": "terminal",
+        "dispatchKind": "start_turn",
+        "associatedTurnId": "01a102eb-dfd3-78b3-88ee-498671390eb6",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102eb-dfd3-78b3-88ee-498671390eb6"
+        },
+        "observerAttached": true,
+        "messageId": "memberinput_NY18Ft1GzYKc1-XeZ9XQ3pWPQJ10Q0cp",
+        "callerRunId": "project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c",
+        "generation": "946ce06b-78d6-41fa-8e14-ce4c26e51fe7"
+      }
+    },
+    {
+      "at": "2026-10-03T17:59:51.935Z",
+      "event": "input-outcome-fact",
+      "evaluationException": null,
+      "value": {
+        "sequence": 8,
+        "state": "terminal",
+        "dispatchKind": "append_to_active_turn",
+        "associatedTurnId": "01a102eb-dfd3-78b3-88ee-498671390eb6",
+        "terminal": {
+          "kind": "completed",
+          "turnId": "01a102eb-dfd3-78b3-88ee-498671390eb6"
+        },
+        "observerAttached": true,
+        "messageId": "2074b1e7-b427-4599-89fb-1a9a29352eb2",
+        "callerRunId": "project_task_manager_5e298e96d54c46aa8e511be52dfd2c8c",
+        "generation": "946ce06b-78d6-41fa-8e14-ce4c26e51fe7"
+      }
+    },
+    {
+      "at": "2026-10-03T18:02:11.648Z",
+      "event": "detached",
+      "value": {}
+    }
+  ],
+  "uiCheckpoints": [
+    {
+      "at": "2026-10-03T17:58:32.076Z",
+      "label": "Initial live exact worker rows",
+      "terminal": false,
+      "ids": [
+        "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "api009_team_reader_38ab69888cee460390d221ebd61ba91a"
+      ],
+      "rows": [
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/manager",
+          "label": "Agent, manager, level 1, idle, /manager",
+          "text": "MmanagernowAgent \u00b7 manager \u00b7 /manager"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/borrowed",
+          "label": "Agent, borrowed, level 1, idle, /borrowed",
+          "text": "BborrowednowAgent \u00b7 borrowed \u00b7 /borrowed"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+          "address": "/borrowed",
+          "label": "Temporary task agent, borrowed, level 1, idle, Started by manager, /borrowed",
+          "text": "BborrowedTemporary task agent \u00b7 borrowed \u00b7 /borrowed"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/api009_packet_team",
+          "label": "Temporary task team, api009 packet team, level 1, offline, Started by manager, /api009_packet_team",
+          "text": "api009 packet teamTemporary task team \u00b7 api009 packet team \u00b7 /api009_packet_team"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+          "address": "/api009_packet_team/coordinator",
+          "label": "Temporary task agent, coordinator, level 2, running, /api009_packet_team/coordinator",
+          "text": "CcoordinatorTemporary task agent \u00b7 coordinator \u00b7 /api009_packet_team/coordinator"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+          "address": "/api009_packet_team/reader",
+          "label": "Temporary task agent, reader, level 2, running, /api009_packet_team/reader",
+          "text": "RreaderTemporary task agent \u00b7 reader \u00b7 /api009_packet_team/reader"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-03T17:58:39.620Z",
+      "label": "First DONE genuine LIVE offline exact rows",
+      "terminal": true,
+      "ids": [
+        "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+        "api009_team_reader_38ab69888cee460390d221ebd61ba91a"
+      ],
+      "rows": [
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/manager",
+          "label": "Agent, manager, level 1, running, /manager",
+          "text": "MmanagernowAgent \u00b7 manager \u00b7 /manager"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/borrowed",
+          "label": "Agent, borrowed, level 1, idle, /borrowed",
+          "text": "BborrowednowAgent \u00b7 borrowed \u00b7 /borrowed"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+          "address": "/borrowed",
+          "label": "Temporary task agent, borrowed, level 1, idle, Started by manager, /borrowed",
+          "text": "BborrowedTemporary task agent \u00b7 borrowed \u00b7 /borrowed"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/api009_packet_team",
+          "label": "Temporary task team, api009 packet team, level 1, offline, Started by manager, /api009_packet_team",
+          "text": "api009 packet teamTemporary task team \u00b7 api009 packet team \u00b7 /api009_packet_team"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+          "address": "/api009_packet_team/coordinator",
+          "label": "Temporary task agent, coordinator, level 2, offline, /api009_packet_team/coordinator",
+          "text": "CcoordinatorTemporary task agent \u00b7 coordinator \u00b7 /api009_packet_team/coordinator"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+          "address": "/api009_packet_team/reader",
+          "label": "Temporary task agent, reader, level 2, offline, /api009_packet_team/reader",
+          "text": "RreaderTemporary task agent \u00b7 reader \u00b7 /api009_packet_team/reader"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-03T17:59:35.211Z",
+      "label": "Fresh reopened exact worker rows LIVE",
+      "terminal": false,
+      "ids": [
+        "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6"
+      ],
+      "rows": [
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/manager",
+          "label": "Agent, manager, level 1, running, /manager",
+          "text": "MmanagernowAgent \u00b7 manager \u00b7 /manager"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/borrowed",
+          "label": "Agent, borrowed, level 1, idle, /borrowed",
+          "text": "BborrowednowAgent \u00b7 borrowed \u00b7 /borrowed"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+          "address": "/borrowed",
+          "label": "Temporary task agent, borrowed, level 1, idle, Started by manager, /borrowed",
+          "text": "BborrowedTemporary task agent \u00b7 borrowed \u00b7 /borrowed"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/api009_packet_team",
+          "label": "Temporary task team, api009 packet team, level 1, offline, Started by manager, /api009_packet_team",
+          "text": "api009 packet teamTemporary task team \u00b7 api009 packet team \u00b7 /api009_packet_team"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+          "address": "/api009_packet_team/coordinator",
+          "label": "Temporary task agent, coordinator, level 2, offline, /api009_packet_team/coordinator",
+          "text": "CcoordinatorTemporary task agent \u00b7 coordinator \u00b7 /api009_packet_team/coordinator"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+          "address": "/api009_packet_team/reader",
+          "label": "Temporary task agent, reader, level 2, offline, /api009_packet_team/reader",
+          "text": "RreaderTemporary task agent \u00b7 reader \u00b7 /api009_packet_team/reader"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/api009_packet_team",
+          "label": "Temporary task team, api009 packet team, level 1, offline, Started by manager, /api009_packet_team",
+          "text": "api009 packet teamTemporary task team \u00b7 api009 packet team \u00b7 /api009_packet_team"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+          "address": "/api009_packet_team/coordinator",
+          "label": "Temporary task agent, coordinator, level 2, running, /api009_packet_team/coordinator",
+          "text": "CcoordinatorTemporary task agent \u00b7 coordinator \u00b7 /api009_packet_team/coordinator"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+          "address": "/api009_packet_team/reader",
+          "label": "Temporary task agent, reader, level 2, running, /api009_packet_team/reader",
+          "text": "RreaderTemporary task agent \u00b7 reader \u00b7 /api009_packet_team/reader"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-03T17:59:52.372Z",
+      "label": "New submitted-reader DONE genuine LIVE offline rows without reload",
+      "terminal": true,
+      "ids": [
+        "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+        "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6"
+      ],
+      "rows": [
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/manager",
+          "label": "Agent, manager, level 1, idle, /manager",
+          "text": "MmanagernowAgent \u00b7 manager \u00b7 /manager"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/borrowed",
+          "label": "Agent, borrowed, level 1, idle, /borrowed",
+          "text": "BborrowednowAgent \u00b7 borrowed \u00b7 /borrowed"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_packet_agent_6375a9f260524202910f7dd9aaedaeae",
+          "address": "/borrowed",
+          "label": "Temporary task agent, borrowed, level 1, idle, Started by manager, /borrowed",
+          "text": "BborrowedTemporary task agent \u00b7 borrowed \u00b7 /borrowed"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/api009_packet_team",
+          "label": "Temporary task team, api009 packet team, level 1, offline, Started by manager, /api009_packet_team",
+          "text": "api009 packet teamTemporary task team \u00b7 api009 packet team \u00b7 /api009_packet_team"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_coordinator_8b372746d9d8468ab19e95e345f7edd3",
+          "address": "/api009_packet_team/coordinator",
+          "label": "Temporary task agent, coordinator, level 2, offline, /api009_packet_team/coordinator",
+          "text": "CcoordinatorTemporary task agent \u00b7 coordinator \u00b7 /api009_packet_team/coordinator"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_reader_38ab69888cee460390d221ebd61ba91a",
+          "address": "/api009_packet_team/reader",
+          "label": "Temporary task agent, reader, level 2, offline, /api009_packet_team/reader",
+          "text": "RreaderTemporary task agent \u00b7 reader \u00b7 /api009_packet_team/reader"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": null,
+          "address": "/api009_packet_team",
+          "label": "Temporary task team, api009 packet team, level 1, offline, Started by manager, /api009_packet_team",
+          "text": "api009 packet teamTemporary task team \u00b7 api009 packet team \u00b7 /api009_packet_team"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_coordinator_d568e6c3d09c425fb8a1ce5b42b55a3d",
+          "address": "/api009_packet_team/coordinator",
+          "label": "Temporary task agent, coordinator, level 2, offline, /api009_packet_team/coordinator",
+          "text": "CcoordinatorTemporary task agent \u00b7 coordinator \u00b7 /api009_packet_team/coordinator"
+        },
+        {
+          "root": "api009_concrete_root_team_9bec98634ba44a639c77f5d410f728fb",
+          "id": "api009_team_reader_1440abaec70e4ff6b6264b0924cc7db6",
+          "address": "/api009_packet_team/reader",
+          "label": "Temporary task agent, reader, level 2, offline, /api009_packet_team/reader",
+          "text": "RreaderTemporary task agent \u00b7 reader \u00b7 /api009_packet_team/reader"
+        }
+      ]
+    }
+  ],
+  "initialRoute": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace",
+  "finalRoute": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace",
+  "pauseAudit": {
+    "count": 91,
+    "totalMs": 91,
+    "maximumMs": 3,
+    "evaluationErrors": 0,
+    "detached": {
+      "at": "2026-10-03T18:02:11.648Z",
+      "event": "detached"
+    }
+  },
+  "limits": [
+    "Read-only debugger pauses perturbed timing; ordinary companion without observer still required. No source hooks, forced terminal, latch, reload or Root Stop repair.",
+    "Historical reader backend/wire/stage UNOBSERVED; fresh accepted result never backfills original. AgentRun FIFO prior protection and finite source continuation contract distinct.",
+    "FAPI-007 remains independently Open/Unclear/NotReproduced."
+  ]
+}

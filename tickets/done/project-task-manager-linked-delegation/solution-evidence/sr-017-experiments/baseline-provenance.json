@@ -1,0 +1,32 @@
+[
+  {
+    "current": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts",
+    "incomingArchive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-007-baseline-owners/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts",
+    "incomingSHA256": "ced34af7e57a7d82b31a59720705d06cc90ed13263ccfb222f2186e3ab7f4cd3",
+    "currentSHA256": "ec7d250bff023c7d22b61cdb464be083d8982122d684d3528b4786607b44c73b",
+    "tarMatches": [
+      "incoming-package/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts"
+    ],
+    "sameAsInputTar": true
+  },
+  {
+    "current": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+    "incomingArchive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-007-baseline-owners/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+    "incomingSHA256": "19ebe285bc5a0afb1a952d93b743324bfcb9e7e9c9e992fb250ea442647d26fb",
+    "currentSHA256": "33ab9e59aefeea86c22cb54d9fa5838365b5cf86ad25dbcbb1de275255ae9f96",
+    "tarMatches": [
+      "incoming-package/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts"
+    ],
+    "sameAsInputTar": true
+  },
+  {
+    "current": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts",
+    "incomingArchive": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-007-baseline-owners/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts",
+    "incomingSHA256": "789f33ebc1ca99ce027efc09e40476d6a8903dfe4f141f49b9387b0e1d161fdc",
+    "currentSHA256": "294f9fe73168f19b3d1b551f192981d41e660105a65a408bd07681f3a3244bb1",
+    "tarMatches": [
+      "incoming-package/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts"
+    ],
+    "sameAsInputTar": true
+  }
+]

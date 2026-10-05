@@ -1,0 +1,6 @@
+START 2026-10-05T04:52:26.237168+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-resume.mjs", "snapshot", "claude"]
+Scoped Pass quiescent active A/open and B/closed before whole-app restart; bytes archived
+
+INNER_EXIT_CODE=0

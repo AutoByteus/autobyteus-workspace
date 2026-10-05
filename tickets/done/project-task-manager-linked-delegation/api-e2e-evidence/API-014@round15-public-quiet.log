@@ -1,0 +1,7 @@
+2026-10-04T08:14:50.054080+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-public-quiet.mjs"]
+Scoped Pass strict actual list+scoped complete forest/privacy and all3 live roots quiescent before normal whole-app restart; read-only Project protection
+
+INNER_EXIT=0
+ELAPSED=0.45

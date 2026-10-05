@@ -1,0 +1,203 @@
+{
+  "evidenceOrigin": "Read and narrowed existing actual API-REV-004 evidence; reviewer did not run app/provider",
+  "instanceId": "iso-62535-1894",
+  "validActor": true,
+  "started": "2026-10-03T12:36:46.747Z",
+  "hostRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+  "finalSample": {
+    "time": "2026-10-03T12:36:53.300Z",
+    "status": "DONE",
+    "completedAt": "2026-10-03T12:36:53.079Z",
+    "cleanup": [
+      "released",
+      "released"
+    ]
+  },
+  "liveRows": [
+    {
+      "host": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+      "text": "APapi004 packet agentTemporary task agent \u00b7 api004 packet agent \u00b7 /api004_packet_agentapi004 packet teamTemporary task team \u00b7 api004 packet team \u00b7 /api004_packet_teamCcoordinatorTemporary task agent \u00b7 coordinator \u00b7 /api004_packet_team/coordinatorRreaderTemporary task agent \u00b7 reader \u00b7 /api004_packet_team/readerATapi004 team readerTemporary task agent \u00b7 api004 team reader \u00b7 /api004_team_reader",
+      "rows": [
+        {
+          "id": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+          "label": "Temporary task agent, api004 packet agent, level 1, offline, Started by project task manager, /api004_packet_agent",
+          "selected": "false"
+        },
+        {
+          "id": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+          "label": "Temporary task agent, coordinator, level 2, idle, /api004_packet_team/coordinator",
+          "selected": "false"
+        },
+        {
+          "id": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+          "label": "Temporary task agent, reader, level 2, idle, /api004_packet_team/reader",
+          "selected": "false"
+        },
+        {
+          "id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+          "label": "Temporary task agent, api004 team reader, level 1, offline, Started by coordinator, /api004_team_reader",
+          "selected": "false"
+        }
+      ]
+    }
+  ],
+  "failure": "Error: TIMEOUT Retained worker row non-active api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+  "currentSnapshotStatuses": [
+    {
+      "member_address": "/api004_packet_agent",
+      "agent_run_id": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+      "status": "offline",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "recoverableBlock": null
+    },
+    {
+      "member_address": "/api004_team_reader",
+      "agent_run_id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+      "status": "offline",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "recoverableBlock": null
+    },
+    {
+      "member_address": "/api004_packet_team/coordinator",
+      "agent_run_id": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+      "status": "offline",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "recoverableBlock": null
+    },
+    {
+      "member_address": "/api004_packet_team/reader",
+      "agent_run_id": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+      "status": "offline",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "recoverableBlock": null
+    }
+  ],
+  "rootActive": true,
+  "capturedRootFrames": [
+    {
+      "type": "CONNECTED"
+    },
+    {
+      "type": "ROOT_EXECUTION_VIEW_SNAPSHOT",
+      "base": 1436,
+      "statuses": [
+        {
+          "member_address": "/api004_packet_agent",
+          "agent_run_id": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api004_team_reader",
+          "agent_run_id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api004_packet_team/coordinator",
+          "agent_run_id": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api004_packet_team/reader",
+          "agent_run_id": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        }
+      ]
+    },
+    {
+      "type": "ROOT_LIFECYCLE",
+      "root_subject_kind": "agent",
+      "root_run_id": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3",
+      "is_active": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "sequence": 1437,
+      "event": {
+        "kind": "agent_presentation",
+        "member_address": "/api004_team_reader",
+        "agent_run_id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+        "message": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "recoverableBlock": null,
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          }
+        }
+      }
+    }
+  ],
+  "passiveBeforeReload": [
+    {
+      "id": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+      "label": "Temporary task agent, api004 packet agent, level 1, offline, Started by project task manager, /api004_packet_agent"
+    },
+    {
+      "id": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+      "label": "Temporary task agent, coordinator, level 2, idle, /api004_packet_team/coordinator"
+    },
+    {
+      "id": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+      "label": "Temporary task agent, reader, level 2, idle, /api004_packet_team/reader"
+    },
+    {
+      "id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+      "label": "Temporary task agent, api004 team reader, level 1, offline, Started by coordinator, /api004_team_reader"
+    }
+  ],
+  "afterOrdinaryReload": [
+    {
+      "id": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+      "label": "Temporary task agent, api004 packet agent, level 1, offline, Started by project task manager, /api004_packet_agent"
+    },
+    {
+      "id": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+      "label": "Temporary task agent, coordinator, level 2, offline, /api004_packet_team/coordinator"
+    },
+    {
+      "id": "api004_team_reader_6b67d501d7b54be39fe7b425db73929b",
+      "label": "Temporary task agent, reader, level 2, offline, /api004_packet_team/reader"
+    },
+    {
+      "id": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+      "label": "Temporary task agent, api004 team reader, level 1, offline, Started by coordinator, /api004_team_reader"
+    }
+  ],
+  "disparity": true,
+  "limits": "No physical resource-leak/all-root/complete cascade or acceptance inference. Private and terminal-status controlled witness independently rerun."
+}

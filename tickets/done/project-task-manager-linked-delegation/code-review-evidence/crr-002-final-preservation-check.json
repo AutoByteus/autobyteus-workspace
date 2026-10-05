@@ -1,0 +1,5 @@
+{
+  "verified_count": 195,
+  "changed_or_missing_after_checks": [],
+  "note": "Path then SHA256 TSV parsed explicitly; initial length-only column guess misread three 64-character paths, a verifier construction fault, not package changes."
+}

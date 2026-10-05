@@ -1,0 +1,488 @@
+{
+  "at": "2026-10-03T20:41:36.607901+00:00",
+  "commands": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round10-census-before-restart.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-process-census.py before-restart",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass own census 30 PIDs"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round10-census-before-stop.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-process-census.py before-stop",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass own census 7 PIDs"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round10-cleanup-final.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-cleanup-check.py",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass own cleanup: 38 captured PIDs absent;2 ports free;root removed;4 foreign records exact;22 allowlisted archives hash-verified"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round10-cleanup-verification.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-cleanup-check.py",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round10-history-restart.log",
+      "command": "bash -c 'pnpm --silent isolated-app restart iso-63749-7f67 > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-history-restart.json'",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round10-owned-archive.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-archive.py",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-round10-stop.log",
+      "command": "bash -c 'pnpm --silent isolated-app stop iso-63749-7f67 > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-stop.json'",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-build.log",
+      "command": "bash -c 'pnpm --silent isolated-app start --build > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-instance.json'",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-discovery.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-manager-discovery.mjs",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-import-preview.log",
+      "command": "pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/server-data/db/production.db --dry-run",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-org.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-concrete-lifecycle-probe.mjs agent_org",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass critical ordinary saved-ID new B closure/reopen: exact all-released diagnostic and genuine member terminals; A/borrowed/root/packet protection. Remaining Root Stop/restore held for separate case."
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-restart.log",
+      "command": "bash -c 'pnpm --silent isolated-app restart iso-63749-7f67 > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-restart.json'",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-setup.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-manager-probe.mjs setup",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round10-byte-before.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-byte-guard.py before",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass before snapshot 19 allowlisted owned exact/prefix files"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round10-byte-final.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-byte-guard.py final",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass full Project/private trees/saved bytes/workspaces exact and raw history old-byte prefix after final (19 files)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round10-byte-restored.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-byte-guard.py restored",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass full Project/private trees/saved bytes/workspaces exact and raw history old-byte prefix after restored (19 files)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-011-round10-byte-stored.log",
+      "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-byte-guard.py stored",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass full Project/private trees/saved bytes/workspaces exact and raw history old-byte prefix after stored (19 files)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-history-family.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-family-control.mjs",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass complete linked+unstamped Org family displayed across both workspaces, current Running restored root and stopped unlinked observational inspection/no implicit restore; separate dormant Team remains"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-history.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts tests/unit/run-history/services/collaboration-root-history-readiness.test.ts tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  4 passed (4)",
+        "Tests  35 passed (35)",
+        "Duration  6.07s (transform 2.63s, setup 28ms, import 4.78s, tests 456ms, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-live-history-activity.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs live --reuse-controls",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-live-history-certified.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs live --reuse-controls",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass live actual HTTP/strict Org history full forest + packaged retained worker selection + public/private no-write; not cumulative provider/failure matrix"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-live-history-current.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs live",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-live-history-disclosed.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs live --reuse-controls",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-live-history-final.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs live --reuse-controls",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-live-history.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs live",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-restored-history.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs restored",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass restored actual HTTP/strict Org history full forest + packaged retained worker selection + public/private no-write; not cumulative provider/failure matrix"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-stored-history.log",
+      "command": "node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs stored",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Scoped Pass stored actual HTTP/strict Org history full forest + packaged retained worker selection + public/private no-write; not cumulative provider/failure matrix"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-round10-web.log",
+      "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/runHistoryStore.spec.ts tests/integration/web-boundary-guard.integration.test.ts --run",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  2 passed (2)",
+        "Tests  48 passed (48)",
+        "Duration  6.26s (transform 3.28s, setup 10.15s, collect 169ms, tests 604ms, environment 427ms, prepare 274ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-round10-diffcheck.log",
+      "command": "git diff --check",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-round10-strict-tool-log-certified.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts tests/unit/agent-team-execution/team-system-instruction-admission.test.ts tests/unit/agent-team-execution/team-agent-file-change-admission.test.ts tests/unit/agent-team-execution/team-agent-background-task-admission.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 1 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed | 3 passed (4)",
+        "Tests  1 failed | 11 passed (12)",
+        "Duration  4.48s (transform 2.39s, setup 23ms, import 3.73s, tests 30ms, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-round10-strict-tool-log-final.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts tests/unit/agent-team-execution/team-system-instruction-admission.test.ts tests/unit/agent-team-execution/team-agent-file-change-admission.test.ts tests/unit/agent-team-execution/team-agent-background-task-admission.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  4 passed (4)",
+        "Tests  12 passed (12)",
+        "Duration  4.10s (transform 2.35s, setup 22ms, import 3.41s, tests 27ms, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-round10-strict-tool-log.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 4 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  4 failed | 1 passed (5)",
+        "Duration  825ms (transform 248ms, setup 15ms, import 318ms, tests 14ms, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-round10-api.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  7 passed (7)",
+        "Tests  21 passed (21)",
+        "Duration  20.10s (transform 4.34s, setup 33ms, import 9.02s, tests 10.13s, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-round10-cumulative.log",
+      "command": "bash tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-008-cumulative-focused-command.sh",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  143 passed | 3 skipped (146)",
+        "Tests  1386 passed | 5 skipped (1391)",
+        "Duration  117.89s (transform 4.89s, setup 514ms, import 54.60s, tests 50.56s, environment 10ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-round10-typecheck.log",
+      "command": "pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-component-after.log",
+      "command": "pnpm -C autobyteus-web test:nuxt components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --run",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  3 passed (3)",
+        "Duration  5.09s (transform 3.10s, setup 4.27s, collect 334ms, tests 68ms, environment 120ms, prepare 108ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-component-before.log",
+      "command": "pnpm -C autobyteus-web test:nuxt components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --run",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  2 failed | 1 passed (3)",
+        "Duration  5.22s (transform 3.15s, setup 4.36s, collect 334ms, tests 82ms, environment 124ms, prepare 110ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-after.log",
+      "command": "pnpm test:native-input-history",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  2 failed (2)",
+        "Duration  9.26s (transform 5.63s, setup 4.51s, collect 4.10s, tests 223ms, environment 128ms, prepare 109ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-before.log",
+      "command": "pnpm test:native-input-history",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  2 failed (2)",
+        "Duration  9.20s (transform 5.72s, setup 4.45s, collect 4.17s, tests 128ms, environment 120ms, prepare 119ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-current.log",
+      "command": "pnpm test:native-input-history",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  2 failed (2)",
+        "Duration  9.65s (transform 5.66s, setup 4.59s, collect 4.18s, tests 414ms, environment 128ms, prepare 108ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-final-confirm.log",
+      "command": "pnpm test:native-input-history",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  2 passed (2)",
+        "Duration  10.55s (transform 6.08s, setup 4.97s, collect 4.61s, tests 442ms, environment 196ms, prepare 124ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-final.log",
+      "command": "pnpm test:native-input-history",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  2 passed (2)",
+        "Duration  9.60s (transform 5.73s, setup 4.54s, collect 4.18s, tests 449ms, environment 124ms, prepare 116ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-neighbors-certified.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  2 passed (2)",
+        "Tests  16 passed (16)",
+        "Duration  12.36s (transform 5.32s, setup 29ms, import 7.98s, tests 3.50s, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-neighbors-final.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed | 1 passed (2)",
+        "Tests  2 failed | 14 passed (16)",
+        "Duration  8.10s (transform 2.80s, setup 17ms, import 4.83s, tests 2.67s, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-neighbors-retry.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed | 1 passed (2)",
+        "Tests  2 failed | 14 passed (16)",
+        "Duration  7.26s (transform 2.52s, setup 18ms, import 4.36s, tests 2.32s, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-neighbors-visible.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed | 1 passed (2)",
+        "Tests  2 failed | 14 passed (16)",
+        "Duration  7.36s (transform 2.53s, setup 20ms, import 4.40s, tests 2.36s, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-native-neighbors.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed | 1 passed (2)",
+        "Tests  2 failed | 14 passed (16)",
+        "Duration  7.77s (transform 2.46s, setup 17ms, import 4.26s, tests 2.93s, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-stream-neighbors.log",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts tests/unit/agent-run-collaboration/agent-run-collaboration-root-manager.test.ts --no-watch",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  2 passed (2)",
+        "Tests  14 passed (14)",
+        "Duration  3.13s (transform 1.31s, setup 19ms, import 2.46s, tests 83ms, environment 0ms)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-web-neighbors-final.log",
+      "command": "pnpm -C autobyteus-web test:nuxt services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --run",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 0,
+      "summary": [
+        "Test Files  8 passed (8)",
+        "Tests  99 passed (99)",
+        "Duration  8.39s (transform 4.37s, setup 46.59s, collect 4.26s, tests 2.00s, environment 2.36s, prepare 1.55s)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018-round10-web-neighbors.log",
+      "command": "pnpm -C autobyteus-web test:nuxt services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --run",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "innerExit": 1,
+      "summary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 7 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed | 7 passed (8)",
+        "Tests  7 failed | 92 passed (99)",
+        "Duration  9.03s (transform 4.32s, setup 50.98s, collect 3.46s, tests 2.01s, environment 2.97s, prepare 1.84s)"
+      ]
+    }
+  ],
+  "importTty": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-010-round10-import-tty.log",
+    "observedExecExit": 0,
+    "source": "Actual PTY command completion observed during execution; not a wrapper PROCESS_EXIT_CODE token.",
+    "promptAnswered": "IMPORT",
+    "configured": 10,
+    "replaced": 0
+  },
+  "countsOverlap": true,
+  "wrapperExitDoesNotOverrideInner": true
+}

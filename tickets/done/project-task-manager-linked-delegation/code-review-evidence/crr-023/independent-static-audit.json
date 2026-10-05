@@ -1,0 +1,498 @@
+{
+  "all20": [
+    {
+      "number": 1,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs",
+      "sha256": "762671965de0fdc54c9e563817a1ab02fea8fbb79ad86e7345421fb476594e1d",
+      "assertionContainingLineCount": 0,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 2,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts",
+      "sha256": "c5f882bce2f35446d947a6ebee6f9dda9fe0723fc04543dd002cc78e8a841bd9",
+      "assertionContainingLineCount": 60,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 3,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/e2e/projects/projects-startup-no-write.e2e.test.ts",
+      "sha256": "de0149eea93d5a91062c5a0492b4539e440b774c4a8baef247cffd2144ccff24",
+      "assertionContainingLineCount": 13,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 4,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/projects-released-array.json",
+      "sha256": "2c3e0ce7eff6abcee143bef23fecc1c1657359bc99a7b9612cb67da50209520e",
+      "assertionContainingLineCount": 0,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 5,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/projects-released-array.provenance.json",
+      "sha256": "1746ed7ccc406348784e2f9b497b516f83913eadde71e0a32b01cd61711f2e17",
+      "assertionContainingLineCount": 0,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 6,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-compaction-root-fixture.ts",
+      "sha256": "a9dc138fe9cdf1a247f8706db7e8ad4454f071e84aa8368d9d8edd5882ad4507",
+      "assertionContainingLineCount": 5,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": true,
+      "renamed": true
+    },
+    {
+      "number": 7,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts",
+      "sha256": "9e552cfcbf729cc05bee232a6d2854b4222f6c80b00a08bcb81199926098d32d",
+      "assertionContainingLineCount": 19,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": true,
+      "renamed": true
+    },
+    {
+      "number": 8,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "sha256": "1c10703aa3d4bd75bc9cf89b308307755cafc13842340a0f98f088f08a948611",
+      "assertionContainingLineCount": 74,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": true,
+      "renamed": false
+    },
+    {
+      "number": 9,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts",
+      "sha256": "917b5322a9a1f51d8eca24e300b72e3645d13bfcefb9dcafb429e29e41fe913d",
+      "assertionContainingLineCount": 13,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 10,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts",
+      "sha256": "40eb9bbe6de5587a8ecdae6e43f9acee1ba3322412c85217c438125d029ec279",
+      "assertionContainingLineCount": 17,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 11,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+      "sha256": "60251414dee877396ae5594475b697e5a2afc56f03bbef08a53d37288efb8701",
+      "assertionContainingLineCount": 14,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": true,
+      "renamed": false
+    },
+    {
+      "number": 12,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts",
+      "sha256": "acce34ce0a4535f8ccbd02c5718af23408d3bb272e5d9f34aa09f5000f8db28f",
+      "assertionContainingLineCount": 18,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 13,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+      "sha256": "5b89f89dbf1cadcd5348592cc4fbcfe993108a1f6c86237159e7feca2699b057",
+      "assertionContainingLineCount": 24,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 14,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+      "sha256": "edcee6190f989db9cdafbdf4cd2835faffd463edbfca0d3e0dfbd22ae9805083",
+      "assertionContainingLineCount": 16,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 15,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+      "sha256": "0fa0788c48e46fc8b5bfa714f4b06c560a3ec01a6a5bd376b7623bb7003122eb",
+      "assertionContainingLineCount": 32,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 16,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts",
+      "sha256": "706eb96c58c1e5575e516b06c8a653647c09428571f078bfe9e940869ef06a6e",
+      "assertionContainingLineCount": 16,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 17,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts",
+      "sha256": "2bd664c6855680e65c8c8737ee18aa01b472b9b321b67817266cbadfefcc2e57",
+      "assertionContainingLineCount": 3,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": true,
+      "renamed": false
+    },
+    {
+      "number": 18,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts",
+      "sha256": "e74df30a17940fa4260a5e8ba394efa1d5f2e62f58c5cc9d789fbdad7baa92a1",
+      "assertionContainingLineCount": 25,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 19,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts",
+      "sha256": "e0f6d5f14473fb1718d69f96f0ed3e19e0cc7fd260e92300ef1ad3bb17d54de2",
+      "assertionContainingLineCount": 10,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    },
+    {
+      "number": 20,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+      "sha256": "da638bd829c8438cd2253e62d62242c4d70089eef35c8722ec5549cbdcc5306b",
+      "assertionContainingLineCount": 32,
+      "acceptedAssertionContainingLinesExact": true,
+      "unreasonedDisabledOrCompilerBypassMarkers": [],
+      "integrationChanged": false,
+      "renamed": false
+    }
+  ],
+  "fixtureProvenanceHashExact": true,
+  "sourceCRR022NotReopened": true,
+  "noReviewerRuntimeCommandsNeeded": true,
+  "suppliedAPI17CommandAttempts": [
+    {
+      "label": "production-types",
+      "case": "API-002@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-production-types.log",
+      "sha256": "69cf863b6b713d69345d2ec2850fce923cd79a622512f3cf6bb36044415c57fb",
+      "tail": "START 2026-10-05T04:37:34.208108+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"pnpm\", \"-C\", \"autobyteus-server-ts\", \"exec\", \"tsc\", \"--noEmit\", \"-p\", \"tsconfig.build.json\"]\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "strict-test-types",
+      "case": "API-002@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-strict-test-types.log",
+      "sha256": "8e3f0d8cfa7ed8ff98618e34b76f8b302a5174a507ae8c562e290e262557a0cd",
+      "tail": "START 2026-10-05T04:37:42.047420+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"pnpm\", \"-C\", \"autobyteus-server-ts\", \"exec\", \"tsc\", \"--noEmit\", \"-p\", \"/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/tests-tsconfig.json\"]\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "terminal-managed-narrow",
+      "case": "API-002@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-terminal-managed-narrow.log",
+      "sha256": "fe685f33213ec13cf49b8d12b12eb3e4d1d1a9a888dcdf6c14265bc69207f944",
+      "tail": "\n Test Files  6 passed (6)\n      Tests  60 passed (60)\n   Start at  06:37:48\n   Duration  29.14s (transform 2.75s, setup 31ms, import 5.93s, tests 22.26s, environment 0ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-full-owner-units",
+      "case": "API-002@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-current-full-owner-units.log",
+      "sha256": "d47551b564d33366448b605a41ffd0c646aa6a2808657b5e82a7db06a45eac2f",
+      "tail": "\n Test Files  102 passed (102)\n      Tests  743 passed (743)\n   Start at  06:39:28\n   Duration  91.09s (transform 4.55s, setup 394ms, import 48.27s, tests 33.26s, environment 7ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "remaining-durable-consumers",
+      "case": "API-002@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-remaining-durable-consumers.log",
+      "sha256": "8b15711ac8d86e63dd4cc77e03a608f694e3847b1df38d823fbbd3c4efbc7b77",
+      "tail": "\n Test Files  7 passed (7)\n      Tests  37 passed (37)\n   Start at  06:41:11\n   Duration  9.26s (transform 3.76s, setup 35ms, import 7.60s, tests 628ms, environment 0ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-native-task-integration",
+      "case": "API-004@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round17-current-native-task-integration.log",
+      "sha256": "c12d2f3b4c9b2dd78081a504d62ef612f111c1b17704adcfad5575c193ddc8cc",
+      "tail": "\n Test Files  4 passed (4)\n      Tests  31 passed (31)\n   Start at  06:41:21\n   Duration  10.23s (transform 2.31s, setup 22ms, import 5.37s, tests 4.15s, environment 0ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-shared-server-bootstrap-build",
+      "case": "API-008@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round17-current-shared-server-bootstrap-build.log",
+      "sha256": "fda696c00de2480ee4f62392a731955fab1cce9b051969b67dfbe9fd979354ac",
+      "tail": "> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts\n> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs\n\nAgentFactory (Singleton) initialized.\nBuilt-in agents bootstrap smoke check passed.\nSanitized built-module/bootstrap smoke passed without DATABASE_URL.\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "project-public-http-startup",
+      "case": "API-003@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round17-project-public-http-startup.log",
+      "sha256": "016426d79c9e10b189aa4c08a8e61dd7bc9e091cc6febc85cb548ec0616c7b7e",
+      "tail": "\n Test Files  3 passed (3)\n      Tests  14 passed (14)\n   Start at  06:41:47\n   Duration  15.20s (transform 4.67s, setup 20ms, import 7.39s, tests 7.18s, environment 0ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-scoped-org-history",
+      "case": "API-005@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-005@round17-current-scoped-org-history.log",
+      "sha256": "7c7c3dd70eda0d43162ee296c90b67c95991cf68063ccdcd4ca2e636a87f6d0e",
+      "tail": "\n Test Files  1 passed (1)\n      Tests  1 passed (1)\n   Start at  06:42:03\n   Duration  4.33s (transform 26ms, setup 14ms, import 24ms, tests 3.83s, environment 0ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-controlled-publication",
+      "case": "API-005@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-005@round17-current-controlled-publication.log",
+      "sha256": "34e5e04e02fd05f0f302c19ec40a62b0d475bb52bd201a4841ab49caf5a5f36d",
+      "tail": "\n Test Files  2 passed (2)\n      Tests  5 passed (5)\n   Start at  06:42:08\n   Duration  17.39s (transform 4.51s, setup 19ms, import 7.69s, tests 9.11s, environment 0ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-nuxt-history-consumers",
+      "case": "API-006@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-nuxt-history-consumers.log",
+      "sha256": "0ba563c004e63f9ef4eb4b925deb4eebff188ed48762d96a180dbc609b0a5b8b",
+      "tail": "\n Test Files  6 passed (6)\n      Tests  32 passed (32)\n   Start at  06:42:28\n   Duration  8.90s (transform 3.95s, setup 34.87s, collect 2.41s, tests 2.00s, environment 2.12s, prepare 1.24s)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-native-web-boundary",
+      "case": "API-006@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-native-web-boundary.log",
+      "sha256": "8fdfa9f60b14fd4c555e262349885fd7c0091b510ee538ac6593958a59698692",
+      "tail": "\n Test Files  1 passed (1)\n      Tests  2 passed (2)\n   Start at  06:42:39\n   Duration  9.55s (transform 5.75s, setup 4.32s, collect 4.38s, tests 424ms, environment 121ms, prepare 112ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-shared-history-message-consumers",
+      "case": "API-006@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-shared-history-message-consumers.log",
+      "sha256": "2c2017de61bb699542ebef19322c76dd9c3274a380d4c6fb07155d4c91159ad2",
+      "tail": "\n Test Files  2 passed (2)\n      Tests  58 passed (58)\n   Start at  06:43:05\n   Duration  6.31s (transform 3.47s, setup 10.55s, collect 352ms, tests 532ms, environment 311ms, prepare 248ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "changed-provider-preparation-real-child-controls",
+      "case": "API-002@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-changed-provider-preparation-real-child-controls.log",
+      "sha256": "7313129235f8c8204fbe0170b53e859747a7ee4ef622d8fcf8a06be90bb5a68e",
+      "tail": "\n Test Files  8 passed (8)\n      Tests  111 passed (111)\n   Start at  06:46:03\n   Duration  26.43s (transform 4.25s, setup 69ms, import 10.33s, tests 14.67s, environment 1ms)\n\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-isolated-packaged-build-start",
+      "case": "API-008@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round17-current-isolated-packaged-build-start.log",
+      "sha256": "66abe609f27312eaa4be3685891602c7e12ec5697431622e5af0ac5022abb3db",
+      "tail": "  '/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.94-beta.5.dmg.blockmap',\n  '/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.94-beta.5.dmg',\n  '/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.94-beta.5.zip.blockmap',\n  '/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.94-beta.5.zip'\n]\n{\"schemaVersion\": 1, \"ok\": true, \"command\": \"start\", \"result\": {\"instanceId\": \"iso-63884-5507\", \"pid\": 25861, \"executablePath\": \"/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus\", \"backendUrl\": \"http://127.0.0.1:63885\", \"graphqlUrl\": \"http://127.0.0.1:63885/graphql\", \"controlEndpoint\": \"http://127.0.0.1:63884\", \"controlPort\": 63884, \"serverPort\": 63885, \"dataRoot\": \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-1b6TpE\", \"ownsDataRoot\": true, \"keepDataRoot\": false, \"databaseUrl\": \"file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-1b6TpE/server-data/db/production.db\", \"logPath\": \"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-63884-5507.log\"}}\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-claude-catalog",
+      "case": "API-008@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round17-current-claude-catalog.log",
+      "sha256": "a4292405d333a290d7aecd92a551ec584ca45a975bbecafd35ac0103e7af6edb",
+      "tail": "START 2026-10-05T04:49:16.009728+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"node\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-target-setup.mjs\", \"catalog\"]\n{\"instanceId\":\"iso-63884-5507\",\"targets\":{\"claude\":{\"runtimeKind\":\"claude_agent_sdk\",\"model\":\"sonnet\",\"llmConfig\":{\"thinking_enabled\":false,\"reasoning_effort\":\"medium\"},\"ready\":true,\"selected\":{\"modelIdentifier\":\"sonnet\",\"name\":\"Sonnet 5\",\"canonicalName\":\"claude-sonnet-5\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"xhigh\",\"max\"]}},\"required\":[]}}}},\"claudeOffered\":[{\"modelIdentifier\":\"claude-fable-5\",\"name\":\"Fable 5\",\"canonicalName\":\"claude-fable-5\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"xhigh\",\"max\"]}},\"required\":[]}},{\"modelIdentifier\":\"claude-fable-5-1[1m]\",\"name\":\"Fable 5.1\",\"canonicalName\":\"claude-fable-5-1\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"xhigh\",\"max\"]}},\"required\":[]}},{\"modelIdentifier\":\"haiku\",\"name\":\"Haiku 4.5\",\"canonicalName\":\"claude-haiku-4-5-20251001\",\"configSchema\":null},{\"modelIdentifier\":\"claude-opus-4-6\",\"name\":\"Opus 4.6\",\"canonicalName\":\"claude-opus-4-6\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"max\"]}},\"required\":[]}},{\"modelIdentifier\":\"claude-opus-4-7\",\"name\":\"Opus 4.7\",\"canonicalName\":\"claude-opus-4-7\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"xhigh\",\"max\"]}},\"required\":[]}},{\"modelIdentifier\":\"claude-opus-4-8\",\"name\":\"Opus 4.8\",\"canonicalName\":\"claude-opus-4-8\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"xhigh\",\"max\"]}},\"required\":[]}},{\"modelIdentifier\":\"claude-opus-5\",\"name\":\"Opus 5\",\"canonicalName\":\"claude-opus-5\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"xhigh\",\"max\"]}},\"required\":[]}},{\"modelIdentifier\":\"opus\",\"name\":\"Opus 5.5\",\"canonicalName\":\"claude-opus-5-5\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"xhigh\",\"max\"]}},\"required\":[]}},{\"modelIdentifier\":\"claude-sonnet-4-6\",\"name\":\"Sonnet 4.6\",\"canonicalName\":\"claude-sonnet-4-6\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"max\"]}},\"required\":[]}},{\"modelIdentifier\":\"sonnet\",\"name\":\"Sonnet 5\",\"canonicalName\":\"claude-sonnet-5\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"xhigh\",\"max\"]}},\"required\":[]}}],\"settings\":[]}\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-artifact-fidelity",
+      "case": "API-008@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round17-current-artifact-fidelity.log",
+      "sha256": "e7f7423b462508ad7c6afe75b06ae169e3228e01d535fbbe43ac81a3523cdd77",
+      "tail": "START 2026-10-05T04:49:17.356514+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"python3\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-artifact-check.py\"]\n{\"resources\": \"/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources\", \"distFiles\": 4426, \"allDistExact\": true, \"all545Exact\": true, \"asar\": \"1928bc0593f9bdd2f4b2730acc88a45232b9c30ff5957627b86c5aae2eb48f10\", \"sdkVersion\": \"0.3.280\"}\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "own-saved-packet-definition-setup",
+      "case": "API-011@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-011@round17-own-saved-packet-definition-setup.log",
+      "sha256": "ed54ed56f3a6e139b46e4f5e48dc55e0d26bfe61beeba60ac615715bfb53e1f7",
+      "tail": "START 2026-10-05T04:49:36.561868+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"node\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-target-setup.mjs\", \"setup\", \"claude\"]\n{\"target\":\"claude\",\"instanceId\":\"iso-63884-5507\",\"started\":\"2026-10-05T04:49:36.596Z\",\"catalogTarget\":{\"runtimeKind\":\"claude_agent_sdk\",\"model\":\"sonnet\",\"llmConfig\":{\"thinking_enabled\":false,\"reasoning_effort\":\"medium\"},\"ready\":true,\"selected\":{\"modelIdentifier\":\"sonnet\",\"name\":\"Sonnet 5\",\"canonicalName\":\"claude-sonnet-5\",\"configSchema\":{\"type\":\"object\",\"properties\":{\"thinking_enabled\":{\"description\":\"Enable Claude extended thinking.\",\"type\":\"boolean\",\"default\":false},\"reasoning_effort\":{\"description\":\"Controls Claude thinking depth. Higher effort may improve quality but increase latency.\",\"type\":\"string\",\"default\":\"medium\",\"enum\":[\"low\",\"medium\",\"high\",\"xhigh\",\"max\"]}},\"required\":[]}}},\"prefix\":\"API017_CLAUDE\",\"config\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"sonnet\",\"llmConfig\":{\"thinking_enabled\":false,\"reasoning_effort\":\"medium\"}},\"workspaces\":{\"manager\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-1b6TpE/validation-workspace/claude/manager\",\"agent-a\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-1b6TpE/validation-workspace/claude/agent-a\",\"team-b\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-1b6TpE/validation-workspace/claude/team-b\"},\"agent\":{\"id\":\"api017-claude-packet-agent\",\"name\":\"API017_CLAUDE Packet Agent\",\"defaultLaunchConfig\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"sonnet\",\"llmConfig\":{\"thinking_enabled\":false,\"reasoning_effort\":\"medium\"}}},\"coordinator\":{\"id\":\"api017-claude-team-coordinator\",\"name\":\"API017_CLAUDE Team Coordinator\",\"defaultLaunchConfig\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"sonnet\",\"llmConfig\":{\"thinking_enabled\":false,\"reasoning_effort\":\"medium\"}}},\"reader\":{\"id\":\"api017-claude-team-reader\",\"name\":\"API017_CLAUDE Team Reader\",\"defaultLaunchConfig\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"sonnet\",\"llmConfig\":{\"thinking_enabled\":false,\"reasoning_effort\":\"medium\"}}},\"team\":{\"id\":\"api017-claude-packet-team\",\"name\":\"API017_CLAUDE Packet Team\"}}\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-standalone-chat-clarification",
+      "case": "API-010@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-010@round17-current-standalone-chat-clarification.log",
+      "sha256": "45ffafe1c95fa89638ccd84e9133cd97efbc4faad447b954b78cd91b863e1512",
+      "tail": "START 2026-10-05T04:49:35.271404+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"node\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-ambiguity.mjs\"]\nPass: actual shipped Manager fresh Chat asks which real Project; successful list_projects, exact authorized model/thinking, actual assistant DOM; no Task write, delegated execution, invented Project, or sentinel change.\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-claude-org-saved-id-lifecycle",
+      "case": "API-011@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-011@round17-current-claude-org-saved-id-lifecycle.log",
+      "sha256": "e4e1fc7aa733b8898c7cfed089e28adc03ad492b270a228b0662030d2bc7693c",
+      "tail": "START 2026-10-05T04:50:05.171966+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"node\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-concrete-lifecycle-probe.mjs\", \"claude\", \"agent_org\", \"--keep-a-open\"]\nScoped Pass A stays open for independent whole-app same-worker resumption; B old/new copies closed with real terminals, reopen/fences/protection retained. Final A closure is a separate planned post-restart case, not tested here.\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "pre-restart-quiescence",
+      "case": "API-014@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-014@round17-pre-restart-quiescence.log",
+      "sha256": "9aa8581c480e52871d78d126d2d66b8920ab6c548f6072a7b3fbca29bbc22abe",
+      "tail": "START 2026-10-05T04:52:25.965024+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"node\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-quiescent.mjs\"]\nScoped Pass one bounded Org original worker and Manager actual public snapshot idle + empty input/no recoverable block before normal whole-app restart\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "original-worker-restart-snapshot",
+      "case": "API-014@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-014@round17-original-worker-restart-snapshot.log",
+      "sha256": "1a8ea969b6749061a3da4c33168d5b0bd9978c45c9c999b06355f4bcd3bffa21",
+      "tail": "START 2026-10-05T04:52:26.237168+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"node\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-resume.mjs\", \"snapshot\", \"claude\"]\nScoped Pass quiescent active A/open and B/closed before whole-app restart; bytes archived\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "normal-same-profile-app-restart",
+      "case": "API-014@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-014@round17-normal-same-profile-app-restart.log",
+      "sha256": "abe7b1711bf6e93d421b560ec04d509b13ef5b958b4ed529e5c259d752284333",
+      "tail": "START 2026-10-05T04:52:39.778364+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"python3\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-restart.py\"]\n{\"at\": \"2026-10-05T04:52:44.723632+00:00\", \"instanceId\": \"iso-63884-5507\", \"sameOwnedProfilePortsExecutable\": true, \"oldAppPid\": 25861, \"newAppPid\": 51594, \"oldCapturedPids\": [25861, 26265, 26266, 27206, 27219, 27222, 27223, 31004, 32968, 34638, 35284], \"allOldCapturedPidsGone\": true, \"scope\": \"Actual ordinary quiescent whole-app restart, not renderer reload or Task DONE/initial-cause repair. No inspector was enabled.\"}\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "original-worker-manager-real-resume",
+      "case": "API-014@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-014@round17-original-worker-manager-real-resume.log",
+      "sha256": "71c9406f99c8ec4c9a24d01dbf69431191a62eef59a30bcfb4fb466fd91cb1e6",
+      "tail": "START 2026-10-05T04:53:21.843738+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"node\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-resume.mjs\", \"resume\", \"claude\"]\nScoped Pass actual whole-app restart + explicit same-root restore + same open worker real saved-byte re-read/final reply and same Manager business read; closed B fenced; IDs/lifetimes/Project/tree/old bytes protected; actual packaged renderer reply.\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "exact-resumed-own-child-binding",
+      "case": "API-013@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-013@round17-exact-resumed-own-child-binding.log",
+      "sha256": "047fbc8f8ccc7092d89f9855fcb9656d7a88732467ed5e22cac3cba64e80efc1",
+      "tail": "START 2026-10-05T04:54:27.181614+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"python3\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-physical-owner.py\"]\nDiagnostic unavailable, not physical evidence\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "own-child-protected-manager-complement",
+      "case": "API-013@round17",
+      "exitCode": 1,
+      "observed": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-013@round17-own-child-protected-manager-complement.log",
+      "sha256": "1d5d4a4fb5498ce1749b7a38257c62b77d0732397805b12c71aeff9182387a87",
+      "tail": "CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"python3\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-physical-owner-complement.py\"]\nTraceback (most recent call last):\n  File \"/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-physical-owner-complement.py\", line 27, in <module>\n    mid=j['managerRunId'];data2=json.loads(urllib.request.urlopen(urllib.request.Request(i['graphqlUrl'],data=json.dumps({'query':query,'variables':{'id':mid}}).encode(),headers={'content-type':'application/json'}),timeout=30).read());assert not data2.get('errors');session2=data2['data']['getAgentRunResumeConfig']['metadataConfig']['runtimeReference']['sessionId'];assert session2 and session2!=session\nAssertionError\n\nINNER_EXIT_CODE=1"
+    },
+    {
+      "label": "explicit-same-a-final-done",
+      "case": "API-013@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-013@round17-explicit-same-a-final-done.log",
+      "sha256": "065801423adec308ddb09340069179d4641685a822f902bb6a4c19115c30a334",
+      "tail": "START 2026-10-05T04:54:49.894613+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"node\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-a.mjs\", \"claude\"]\nScoped Pass final A sole explicit business instruction after real whole-app same-worker/Manager resumption; exact closed/released, genuine live event and retained offline row/assistant reply without subsequent reload/navigation; B/borrowed/root/Manager/sentinel protected. Current exact physical/IO retry proof is the separately executed actual pinned SDK child control and Native integration; prior API15 genuine instrumented recursive capture remains pre-refresh support, not this current acknowledgement or original-cause closure.\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "current-full-public-canonical-observation",
+      "case": "API-006@round17",
+      "exitCode": 1,
+      "observed": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-full-public-canonical-observation.log",
+      "sha256": "35b829136b3a57610d0b7788b0158dd761d943e9d1ab0d22ad80c2294206ccc2",
+      "tail": "  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.23.1\n\nINNER_EXIT_CODE=1"
+    },
+    {
+      "label": "current-full-public-canonical-corrected",
+      "case": "API-006@round17",
+      "exitCode": 1,
+      "observed": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-full-public-canonical-corrected.log",
+      "sha256": "3a5c2de3d1cb48e4b21fd00955e76335cee193f3e0ec231d9d3297745be78b9b",
+      "tail": "                                                                                                                                                                                                                                            ^\n\nTypeError: Cannot read properties of undefined (reading 'length')\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-public.mjs:17:237\n\nNode.js v22.23.1\n\nINNER_EXIT_CODE=1"
+    },
+    {
+      "label": "current-full-public-canonical-collection-corrected",
+      "case": "API-006@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-full-public-canonical-collection-corrected.log",
+      "sha256": "cdc68469b826850d93a7f7f0331d3a55cf1a5fbc26fe6fb9c3b5a33c1e518805",
+      "tail": "START 2026-10-05T04:57:49.067661+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"node\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-public.mjs\"]\nScoped Pass five original/reopened/current workers offline; existing live inputs empty, retired input handles absent, Manager idle/root active; all full public frames/forests strict, private stamps absent; three lifetimes closed/all released without business recreation.\n\nINNER_EXIT_CODE=0"
+    },
+    {
+      "label": "own-archive-stop-cleanup",
+      "case": "API-019@round17",
+      "exitCode": 1,
+      "observed": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-019@round17-own-archive-stop-cleanup.log",
+      "sha256": "c5a09cbd6e9914a920d538edba07dc7d30c98217ec7711309246bef9fc6fe35d",
+      "tail": "CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"python3\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-cleanup.py\"]\nTraceback (most recent call last):\n  File \"/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-cleanup.py\", line 31, in <module>\n    with socket.socket() as s:s.bind(('127.0.0.1',port));ports[str(port)]=True\nOSError: [Errno 48] Address already in use\n\nINNER_EXIT_CODE=1"
+    },
+    {
+      "label": "read-only-final-cleanup-bind-verification",
+      "case": "API-019@round17",
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-019@round17-read-only-final-cleanup-bind-verification.log",
+      "sha256": "74b21a13d0e3c6184ca378db27806bcea77f522b95307656e6162f6059d10436",
+      "tail": "START 2026-10-05T04:59:34.021178+00:00\nCWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation\nCOMMAND [\"python3\", \"tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-cleanup-verify.py\"]\n{\"at\": \"2026-10-05T04:59:34.320774+00:00\", \"instanceId\": \"iso-63884-5507\", \"recordAbsent\": true, \"dataRootAbsent\": true, \"capturedOwnPids\": [25861, 26265, 26266, 27206, 27219, 27222, 27223, 31004, 32968, 34638, 35284, 51594, 51595, 51596, 52527, 52538, 52542, 52543, 56890], \"capturedOwnPidsStillPresent\": [], \"portsFreeBind\": {\"63884\": true, \"63885\": true}, \"plainBindWaits\": [], \"foreignRecordsUnchanged\": true, \"priorForeignIds\": [\"iso-52483-84f0\", \"iso-52977-8d78\"], \"independentlyNewForeignIds\": [], \"archiveFiles\": 18, \"archiveHashesExact\": true, \"observerInstalled\": false, \"scope\": \"Own exact app stopped once; final read-only verification after transient plain-bind EADDRINUSE, no additional stop/signal/REUSEADDR. Cleanup is not Task DONE/repair.\"}\n\nINNER_EXIT_CODE=0"
+    }
+  ],
+  "scope": "Static assertion/fidelity/consumer reconciliation, not API execution rescore. Four failed owned supplemental attempts retained, not durable failing scenarios. Current integrated 5 corrections judged against approved independent contracts and accepted bodies."
+}

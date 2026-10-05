@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-020-verify-preservation.py", line 31, in <module>
+    assert prefix==prior.rstrip('\n'), 'Prior CRR001–019 chronology not byte-preserved'
+AssertionError: Prior CRR001–019 chronology not byte-preserved

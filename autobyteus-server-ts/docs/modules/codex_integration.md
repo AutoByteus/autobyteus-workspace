@@ -561,6 +561,22 @@ conversation is being applied.
 - Raw-trace-only Codex memory appends active raw traces for normal user/assistant/tool records. Dynamic tools, MCP tool calls, and built-in tool-like items such as `search_web` are recorded from normalized lifecycle events as a strict call plus minimal terminal result; display `SEGMENT_*` events alone are not treated as memory tool-result authority. Existing historical raw rows are read directly and are not rewritten or backfilled, and Memory Sync behavior is unchanged. The required startup migration removes only exact current-metadata-classified pre-cutover Codex/Claude snapshot copies; native, imported, unclassified, invalid-metadata, and task-like copies are preserved, and reported failures remain retryable without blocking current raw recording. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or current external snapshot path.
 - Raw Codex debug capture is available through `CODEX_THREAD_RAW_EVENT_LOG_DIR`; see `docs/design/codex_raw_event_mapping.md` for the audit workflow and file format.
 
+### Codex built-in multi-agent override (REQ-014, partially delivered)
+
+`parseArgs()` in `src/runtime-management/codex/client/codex-app-server-launch-config.ts` builds the app-server launch arguments. It takes the default `app-server`, or the `CODEX_APP_SERVER_ARGS_JSON` / `CODEX_APP_SERVER_ARGS` override, and always appends:
+
+```
+-c features.multi_agent=false -c features.multi_agent_v2=false
+```
+
+- **Why `-c`.** It overrides the user's `~/.codex/config.toml` without editing the file, so the user's own Codex usage is unchanged. It also tolerates feature keys that an installed Codex version doesn't know. `--disable` would reject an unknown feature and stop the app-server from starting.
+- **Delivered.** The user's Codex config can no longer switch multi-agent on for AutoByteus runs. This covers models without a catalog `multi_agent_version`.
+- **Known open limit (FAPI-013; AC-017 not met; deferred by the user).** Codex's server-side model catalog still enables built-in multi-agent for models whose entry sets `multi_agent_version`. That includes gpt-6.x and gpt-5.6 (v2) and some v1 models (upstream openai/codex#50880).
+  - On those models, AutoByteus Codex threads still receive Codex's `<multi_agent_role>` prompt and its `send_message` / `list_agents` / `spawn_agent` tools, even though the feature flags read `false`.
+  - A worker may then reply through Codex's `send_message` instead of AutoByteus `send_message_to`, and the reply never arrives.
+  - The real control for `multi_agent_version` (or a `thread/start` parameter) is still to be found. Do not treat the launch flags as proof that multi-agent is off.
+- **Observed, outside this change.** MCP servers declared in the user's `~/.codex/config.toml` also start inside AutoByteus-launched Codex app-servers.
+
 ## Validation Notes
 
 - Durable long-turn attribution probes live under `tests/integration/runtime-execution/codex-app-server/thread/`.

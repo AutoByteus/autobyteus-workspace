@@ -1,0 +1,6 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round12-own-census.py fresh-build
+Captured own census 7 current 7 cumulative PIDs
+
+PROCESS_EXIT_CODE=0

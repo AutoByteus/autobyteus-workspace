@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-03T15:30:37.075310+00:00",
+  "os": "Darwin",
+  "arch": "arm64",
+  "macos": "26.5.2",
+  "node": "v22.23.1",
+  "pnpm": "10.28.2",
+  "electronManifest": "42.4.1",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "low",
+  "runtimeKind": "codex_app_server",
+  "timezoneUser": "Europe/Berlin",
+  "scope": "Headless public API/WS/MCP through owned packaged desktop; no renderer viewport claim"
+}

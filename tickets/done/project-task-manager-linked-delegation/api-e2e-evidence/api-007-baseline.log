@@ -1,0 +1,545 @@
+HEAD=806907faeb567d2b703e10fe984fcd01be0b41fd
+cwd=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts
+command=pnpm exec vitest run tests/unit/agent-team-execution/team-run-model-selection-save.test.ts tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts --no-watch
+Dependencies shared (not a whole-source/dependency pristine baseline); tsconfig maps core imports to archived HEAD core source; installed dependency links shared; no pristine dependency baseline.
+
+ RUN  v4.0.18 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-team-execution/team-run-model-selection-save.test.ts (11 tests | 11 failed) 24ms
+     × validates every native original baseline before writing and does not omit incompatible children 10ms
+     × commits one native tree preserving configured identities and task records; later Save uses new baseline 2ms
+     × preserves 'committed' / 'ok' through Team owner, Studio and resolver 3ms
+     × preserves 'committed' / 'throws' through Team owner, Studio and resolver 1ms
+     × preserves 'committed' / 'missing' through Team owner, Studio and resolver 1ms
+     × preserves 'renamed_finalization_indeterminate' / 'ok' through Team owner, Studio and resolver 1ms
+     × preserves 'renamed_finalization_indeterminate' / 'throws' through Team owner, Studio and resolver 1ms
+     × preserves 'renamed_finalization_indeterminate' / 'missing' through Team owner, Studio and resolver 1ms
+     × preserves 'not_renamed' / 'ok' through Team owner, Studio and resolver 2ms
+     × preserves 'not_renamed' / 'throws' through Team owner, Studio and resolver 1ms
+     × preserves 'not_renamed' / 'missing' through Team owner, Studio and resolver 1ms
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:50729) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion
+Platform detection: Windows=false
+App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts (3 tests | 1 failed) 36ms
+     ✓ renames local standalone and nested team active raw trace files 11ms
+     ✓ renames imported Memory Sync active files and rewrites matching manifest file records 14ms
+     × registers external cleanup then both raw-layout prerequisites before native snapshot conversion 9ms
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:50740) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts > TeamRunExecutionTreeV1AppDataMigration > registers the final TeamRun migration exactly once without the removed intermediate ID
+Platform detection: Windows=false
+App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts (4 tests | 1 failed) 110ms
+     ✓ registers the final TeamRun migration exactly once without the removed intermediate ID 4ms
+     × keeps unresolved predecessor bytes retryable while leaving exact V1 roots for the V2 boundary 78ms
+     ✓ does not promote partial target residue without its protected predecessor backup 9ms
+     ✓ turns token-apply and history-reconciliation problems into terminal warnings 17ms
+(node:50744) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts (3 tests | 3 failed) 775ms
+     × normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup 635ms
+     × rolls back an injected cleanup failure and succeeds through the same ordinary retry 52ms
+     × returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file 86ms
+(node:51331) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts (8 tests | 1 failed) 456ms
+     × imports later JSON integers after four leading NULLs in the same real Prisma batch 91ms
+     ✓ rejects 'JSON real' and rolls the real migration transaction back 47ms
+     ✓ rejects 'JSON text' and rolls the real migration transaction back 40ms
+     ✓ rejects 'JSON true' and rolls the real migration transaction back 45ms
+     ✓ rejects 'JSON array' and rolls the real migration transaction back 71ms
+     ✓ rejects 'JSON object' and rolls the real migration transaction back 67ms
+     ✓ rejects 'negative JSON integer' and rolls the real migration transaction back 44ms
+     ✓ rejects 'integer above SafeInt' and rolls the real migration transaction back 47ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 17 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > validates every native original baseline before writing and does not omit incompatible children
+AssertionError: expected { success: false, …(6) } to match object { outcome: 'VALIDATION_FAILED', …(1) }
+(12 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "fieldErrors": [
+-     {
+-       "path": "patches[/member].llmModelIdentifier",
+-     },
+-   ],
+-   "outcome": "VALIDATION_FAILED",
++   "fieldErrors": [],
++   "outcome": "NOT_FOUND",
+  }
+
+ ❯ tests/unit/agent-team-execution/team-run-model-selection-save.test.ts:49:20
+     47|       { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', llmMod…
+     48|     ] });
+     49|     expect(result).toMatchObject({ outcome: 'VALIDATION_FAILED', field…
+       |                    ^
+     50|     expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(…
+     51|     expect(h.capacity.resolveMany).toHaveBeenCalledTimes(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/17]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > commits one native tree preserving configured identities and task records; later Save uses new baseline
+AssertionError: expected 'NOT_FOUND' to be 'UPDATED' // Object.is equality
+
+Expected: "UPDATED"
+Received: "NOT_FOUND"
+
+ ❯ tests/unit/agent-team-execution/team-run-model-selection-save.test.ts:56:106
+     54|     const h = harness('committed', 'ok', 'autobyteus'); const original…
+     55|     const patch = { scopeKind: 'CONFIGURED_TEAM' as const, scopeAddres…
+     56|     expect((await h.manager.updateStoppedModelConfigs({ teamRunId: 'ro…
+       |                                                                                                          ^
+     57|     expect(h.write).toHaveBeenCalledTimes(1);
+     58|     expect(h.saved()).toEqual({ ...original, rootTeam: { ...original.r…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/17]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > preserves 'committed' / 'ok' through Team owner, Studio and resolver
+AssertionError: expected { success: false, …(6) } to match object { outcome: 'UPDATED', …(5) }
+(16 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "canonicalExecutionTree": {
+      "root_team": {
+        "default_launch_configuration": {
+          "llm_config": null,
+-         "llm_model_identifier": "large",
++         "llm_model_identifier": "small",
+        },
+      },
+    },
+    "editability": {
+-     "editable": true,
+-     "reason": null,
++     "editable": false,
++     "reason": "NOT_FOUND",
+    },
+    "fieldErrors": [],
+    "isActive": false,
+-   "outcome": "UPDATED",
+-   "success": true,
++   "outcome": "NOT_FOUND",
++   "success": false,
+  }
+
+ ❯ tests/unit/agent-team-execution/team-run-model-selection-save.test.ts:86:24
+     84|         : physicalOutcome === 'renamed_finalization_indeterminate' || …
+     85|           ? 'PERSISTENCE_INDETERMINATE' : 'UPDATED';
+     86|       expect(response).toMatchObject({ outcome: expected, success: exp…
+       |                        ^
+     87|         isActive: false, editability: { editable: true, reason: null }…
+     88|         canonicalExecutionTree: { root_team: { default_launch_configur…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/17]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > preserves 'committed' / 'throws' through Team owner, Studio and resolver
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > preserves 'committed' / 'missing' through Team owner, Studio and resolver
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > preserves 'renamed_finalization_indeterminate' / 'throws' through Team owner, Studio and resolver
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > preserves 'renamed_finalization_indeterminate' / 'missing' through Team owner, Studio and resolver
+AssertionError: expected { success: false, …(6) } to match object { …(6) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+@@ -6,13 +6,13 @@
+          "llm_model_identifier": "small",
+        },
+      },
+    },
+    "editability": {
+-     "editable": true,
+-     "reason": null,
++     "editable": false,
++     "reason": "NOT_FOUND",
+    },
+    "fieldErrors": [],
+    "isActive": false,
+-   "outcome": "PERSISTENCE_INDETERMINATE",
++   "outcome": "NOT_FOUND",
+    "success": false,
+  }
+
+ ❯ tests/unit/agent-team-execution/team-run-model-selection-save.test.ts:86:24
+     84|         : physicalOutcome === 'renamed_finalization_indeterminate' || …
+     85|           ? 'PERSISTENCE_INDETERMINATE' : 'UPDATED';
+     86|       expect(response).toMatchObject({ outcome: expected, success: exp…
+       |                        ^
+     87|         isActive: false, editability: { editable: true, reason: null }…
+     88|         canonicalExecutionTree: { root_team: { default_launch_configur…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/17]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > preserves 'renamed_finalization_indeterminate' / 'ok' through Team owner, Studio and resolver
+AssertionError: expected { success: false, …(6) } to match object { …(6) }
+(16 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "canonicalExecutionTree": {
+      "root_team": {
+        "default_launch_configuration": {
+          "llm_config": null,
+-         "llm_model_identifier": "large",
++         "llm_model_identifier": "small",
+        },
+      },
+    },
+    "editability": {
+-     "editable": true,
+-     "reason": null,
++     "editable": false,
++     "reason": "NOT_FOUND",
+    },
+    "fieldErrors": [],
+    "isActive": false,
+-   "outcome": "PERSISTENCE_INDETERMINATE",
++   "outcome": "NOT_FOUND",
+    "success": false,
+  }
+
+ ❯ tests/unit/agent-team-execution/team-run-model-selection-save.test.ts:86:24
+     84|         : physicalOutcome === 'renamed_finalization_indeterminate' || …
+     85|           ? 'PERSISTENCE_INDETERMINATE' : 'UPDATED';
+     86|       expect(response).toMatchObject({ outcome: expected, success: exp…
+       |                        ^
+     87|         isActive: false, editability: { editable: true, reason: null }…
+     88|         canonicalExecutionTree: { root_team: { default_launch_configur…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/17]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > preserves 'not_renamed' / 'ok' through Team owner, Studio and resolver
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > preserves 'not_renamed' / 'throws' through Team owner, Studio and resolver
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts > configured Team model selection Save > preserves 'not_renamed' / 'missing' through Team owner, Studio and resolver
+AssertionError: expected { success: false, …(6) } to match object { outcome: 'PERSISTENCE_FAILED', …(5) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+@@ -6,13 +6,13 @@
+          "llm_model_identifier": "small",
+        },
+      },
+    },
+    "editability": {
+-     "editable": true,
+-     "reason": null,
++     "editable": false,
++     "reason": "NOT_FOUND",
+    },
+    "fieldErrors": [],
+    "isActive": false,
+-   "outcome": "PERSISTENCE_FAILED",
++   "outcome": "NOT_FOUND",
+    "success": false,
+  }
+
+ ❯ tests/unit/agent-team-execution/team-run-model-selection-save.test.ts:86:24
+     84|         : physicalOutcome === 'renamed_finalization_indeterminate' || …
+     85|           ? 'PERSISTENCE_INDETERMINATE' : 'UPDATED';
+     86|       expect(response).toMatchObject({ outcome: expected, success: exp…
+       |                        ^
+     87|         isActive: false, editability: { editable: true, reason: null }…
+     88|         canonicalExecutionTree: { root_team: { default_launch_configur…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/17]⎯
+
+ FAIL  tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion
+AssertionError: expected [ 11, 12, 14 ] to deeply equal [ 11, 12, 13 ]
+
+- Expected
++ Received
+
+  [
+    11,
+    12,
+-   13,
++   14,
+  ]
+
+ ❯ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts:159:8
+    157|       definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID),
+    158|       definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V…
+    159|     ]).toEqual([externalIndex + 1, externalIndex + 2, externalIndex + …
+       |        ^
+    160|   });
+    161| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/17]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts > TeamRunExecutionTreeV1AppDataMigration > keeps unresolved predecessor bytes retryable while leaving exact V1 roots for the V2 boundary
+AssertionError: expected 'ROOT_RUN_PACKAGE_CURRENT_VALIDATION_F…' to contain 'schemaVersion'
+
+Expected: "schemaVersion"
+Received: "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED: rootTeam is missing required field(s): address, defaultLaunchConfiguration."
+
+ ❯ tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts:100:53
+     98|     await catalog.rebuild();
+     99|     expect(catalog.listAdmittedRootIds()).toEqual([]);
+    100|     expect(catalog.getDiagnostics().get(validRoot)).toContain("schemaV…
+       |                                                     ^
+    101|     expect(catalog.getDiagnostics().get(invalidRoot)).toContain(
+    102|       "Current package is missing required authorities",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/17]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup
+AssertionError: expected '\nInvalid `this.transaction.tokenUsag…' to be null
+
+- Expected: 
+null
+
++ Received: 
+"
+Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
+
+  176 }
+  177 
+  178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
+→ 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
+The column `claude_sdk_usage_state_json` does not exist in the current database."
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:175:35
+    173| 
+    174|       const result = await migration.execute();
+    175|       expect(result.errorMessage).toBeNull();
+       |                                   ^
+    176|       expect(result).toMatchObject({
+    177|         status: "SUCCEEDED",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/17]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > rolls back an injected cleanup failure and succeeds through the same ordinary retry
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'FAILED', …(2) }
+
+- Expected
++ Received
+
+@@ -1,7 +1,15 @@
+  {
+-   "errorMessage": "injected cleanup failure",
++   "errorMessage": "
++ Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
++ /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
++
++   176 }
++   177 
++   178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
++ → 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
++ The column `claude_sdk_usage_state_json` does not exist in the current database.",
+    "status": "FAILED",
+    "summary": {
+      "failedCount": 1,
+      "migratedCount": 0,
+    },
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:279:22
+    277|       };
+    278|       const failed = await new TokenUsageRunRecordsV1AppDataMigration(…
+    279|       expect(failed).toMatchObject({
+       |                      ^
+    280|         status: "FAILED",
+    281|         errorMessage: "injected cleanup failure",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/17]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'SUCCEEDED', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "SUCCEEDED",
++   "status": "FAILED",
+    "summary": {
+-     "failedCount": 0,
+-     "migratedCount": 6,
+-     "scannedCount": 403,
++     "failedCount": 1,
++     "migratedCount": 0,
++     "scannedCount": 0,
+    },
+  }
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:311:22
+    309|         new LegacyTokenUsageConsolidationRepository(prisma),
+    310|       ).execute();
+    311|       expect(result).toMatchObject({
+       |                      ^
+    312|         status: "SUCCEEDED",
+    313|         summary: { scannedCount: 403, migratedCount: 6, failedCount: 0…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/17]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts > token usage consolidation source-token decoding > imports later JSON integers after four leading NULLs in the same real Prisma batch
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'SUCCEEDED', …(2) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "errorMessage": null,
+-   "status": "SUCCEEDED",
++   "errorMessage": "
++ Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
++ /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-9bxtxtfj/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
++
++   176 }
++   177 
++   178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
++ → 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
++ The column `claude_sdk_usage_state_json` does not exist in the current database.",
++   "status": "FAILED",
+    "summary": {
+-     "failedCount": 0,
+-     "migratedCount": 1,
+-     "scannedCount": 6,
++     "failedCount": 1,
++     "migratedCount": 0,
++     "scannedCount": 0,
+    },
+  }
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:142:22
+    140| 
+    141|       const result = await new TokenUsageRunRecordsV1AppDataMigration(…
+    142|       expect(result).toMatchObject({
+       |                      ^
+    143|         status: "SUCCEEDED",
+    144|         errorMessage: null,
+ ❯ withFixture tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:118:5
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:127:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/17]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  17 failed | 12 passed (29)
+   Start at  11:12:12
+   Duration  13.94s (transform 4.55s, setup 67ms, import 11.22s, tests 1.40s, environment 1ms)
+
+
+PROCESS_EXIT_CODE=1

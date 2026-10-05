@@ -1,0 +1,23 @@
+[
+  {
+    "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.d.ts",
+    "originalHash": "3f11d909c001504b37ac8d82484e8a0a8c776e4f98991f83adffbc88b4c80dc1",
+    "exactRecovered": true,
+    "basis": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/resources/server/dist/agent-execution/backends/claude/session/claude-session.d.ts",
+    "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/original-compiled/dist/agent-execution/backends/claude/session/claude-session.d.ts"
+  },
+  {
+    "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.d.ts.map",
+    "originalHash": "2a0525579159ce5bb31ac5a0fff36517eaede4283ded31bfdebd5bc7604f92a3",
+    "exactRecovered": true,
+    "basis": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/resources/server/dist/agent-execution/backends/claude/session/claude-session.d.ts.map",
+    "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/original-compiled/dist/agent-execution/backends/claude/session/claude-session.d.ts.map"
+  },
+  {
+    "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.js",
+    "originalHash": "a5deb623778f74128007799f26c1a4079d6fe9b75ed47ed56e538501747a4dcd",
+    "exactRecovered": true,
+    "basis": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/resources/server/dist/agent-execution/backends/claude/session/claude-session.js",
+    "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/original-compiled/dist/agent-execution/backends/claude/session/claude-session.js"
+  }
+]

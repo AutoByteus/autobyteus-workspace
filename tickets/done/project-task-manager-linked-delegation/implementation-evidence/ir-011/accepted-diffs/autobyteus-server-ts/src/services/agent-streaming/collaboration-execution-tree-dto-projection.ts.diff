@@ -1,0 +1,20 @@
+--- accepted/autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts
++++ integrated/autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts
+@@ -9,7 +9,7 @@
+ } from "@autobyteus/collaboration-stream-contracts";
+ import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+ import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
+-import type { AgentRunCollaborationTreeSnapshot } from "../../agent-run-collaboration/domain/agent-run-collaboration-tree.js";
++import type { StandaloneRootTreeSnapshot } from "../../standalone-agent-run-root/domain/standalone-root-tree.js";
+ import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
+ import type {
+   CollaboratorEntry, ConfiguredAgentExecutionNode, ConfiguredExecutionNode,
+@@ -86,7 +86,7 @@
+     taskExecutions: member.taskExecutions.map(projectCollaborationTaskExecution),
+   };
+ 
+-export const projectAgentCollaborationTree = (tree: AgentRunCollaborationTreeSnapshot): AgentRunCollaborationTreeDto => ({
++export const projectAgentCollaborationTree = (tree: StandaloneRootTreeSnapshot): AgentRunCollaborationTreeDto => ({
+   subjectKind: "agent", createdAt: tree.createdAt,
+   host: { address: tree.host.address, agentRunId: tree.host.agentRunId, agentDefinitionId: tree.host.agentDefinitionId },
+   collaborators: tree.collaborators.map(projectCollaborationCollaborator),

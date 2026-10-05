@@ -1,0 +1,17 @@
+{
+  "runId": "project_task_manager_0872a55978874200a94ec3e54af283a2",
+  "agentDefinitionId": "autobyteus-project-task-manager",
+  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/manager",
+  "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/memory/agents/project_task_manager_0872a55978874200a94ec3e54af283a2",
+  "llmModelIdentifier": "gpt-6.1-sol",
+  "llmConfig": {
+    "reasoning_effort": "low"
+  },
+  "autoExecuteTools": true,
+  "runtimeKind": "codex_app_server",
+  "platformAgentRunId": "01a10276-ee57-7fa3-82be-f8a220104b4e",
+  "preparedAt": "2026-10-03T15:51:50.856Z",
+  "preparedExpiresAt": "2026-10-04T15:51:50.856Z",
+  "startedAt": "2026-10-03T15:51:51.400Z",
+  "applicationExecutionContext": null
+}

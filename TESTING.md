@@ -227,6 +227,67 @@ underlying native fixture returns and preserve the original setup error. They
 are not an exhaustive infrastructure-failure guarantee; keep the workspace
 native-to-web and shared compaction/termination assertions intact.
 
+### Project Task Agent Run Resources And Projects Migration Regressions
+
+Start with the current worktree and the smallest relevant server layer:
+
+```bash
+pnpm -C autobyteus-server-ts exec vitest run tests/unit/projects tests/unit/agent-collaboration tests/unit/agent-tools/project-tasks tests/unit/agent-tools/task-delegation tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts --no-watch
+pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts --no-watch
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects --no-watch
+```
+
+What these suites cover:
+- **Project unit tests.** The per-folder store and Delete, which keeps
+  `agent_run_resources.json`. Task agent run resources: roles, link-before-
+  resources, closed-forever, current assignments versus `assignmentsUnavailable`,
+  and the damaged-file policy (Q-3). Also saved-ID payloads, compact business
+  results, DONE close-then-stop, retry by repeated DONE with nothing about the
+  stop persisted, and reopen.
+- **RootTeam/catalog helper integration.** Same-address helpers isolated per
+  Task, borrowed advisers that are never adopted, exact stop sets, and closed
+  ingress.
+- **Native hosted children.** Their own admission and termination boundary.
+  The Native fixture lives under `standalone-agent-run-root/`, not the retired
+  `agent-run-collaboration/` location.
+- **Migration unit test and `projects-startup-migration.e2e.test.ts`.** The
+  STARTUP_ONLY `20261005_projects_per_folder_v1` migration: released fixtures,
+  invalid/residue/duplicate/conflict skips, the retained
+  `projects.pre-folders.json`, retry after a failed move, and the no-op on
+  restart. The e2e runs it through **both** startup entrypoints (Studio and the
+  standalone host). The `PROJECTS_MIGRATION_PENDING` gate must block only
+  Projects, never the rest of the app.
+- **The e2e needs a rebuilt dist.** It drives the built startup entrypoints, so
+  rebuild before running it. The rebuilt `dist/` of the application SDK
+  packages and `autobyteus-web/electron-dist/` are untracked build output.
+  Stage paths explicitly; never `git add -A`.
+
+If you change `ProjectsLayout`, `readProjectFile` or `readTaskFile`, first
+repoint `projects-per-folder-v1` to frozen copies (data_migration_guideline §4),
+then rerun the migration tests.
+
+These controlled model/backend checks do not certify paid inference or
+universal OS teardown. Production `tsc`, the scoped Org/publication checks,
+recursive public-tree projection tests and the existing web history consumers
+cover separate contract gaps.
+
+The following are separate evidence layers, and none substitutes for another:
+- public HTTP/WS/scoped MCP tests;
+- controlled SDK real-child exit/IO tests;
+- actual model execution;
+- a whole-app restart on the same profile;
+- a real desktop upgrade from a released app.
+
+A business DONE acknowledgement or an Offline row is not proof of a physical
+stop.
+
+A full product journey needs a newly built isolated desktop app and owned
+Project/context/workspace data. Do not treat an older asar as proof of a
+refreshed source state. Record the exact build, IDs, checks and limitations,
+and stop only the instance you own. Keep Delivery-owned rerun evidence separate
+from the API owner's ledger. Agent-run testing is not explicit user
+verification for finalization.
+
 ### GitHub Skill Sources Regression
 
 Run from the repository root with installed workspace dependencies and Chrome:

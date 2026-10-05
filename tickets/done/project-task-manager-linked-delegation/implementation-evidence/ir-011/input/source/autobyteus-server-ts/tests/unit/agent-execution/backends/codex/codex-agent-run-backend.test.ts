@@ -1,0 +1,518 @@
+import { describe, expect, it, vi } from "vitest";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
+import { AgentRunEventType } from "../../../../../src/agent-execution/domain/agent-run-event.js";
+import { CodexAgentRunBackend } from "../../../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend.js";
+import { CodexThread } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread.js";
+import { CodexThreadEventName } from "../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+
+vi.mock("../../../../../src/token-usage/pricing/token-price-config-provider.js", () => ({
+  TokenPriceConfigProvider: class TokenPriceConfigProvider {
+    async resolvePolicy(payload: { model_identifier?: string | null }) {
+      const isGpt56Sol = payload.model_identifier === "gpt-5.6-sol";
+      return {
+        pricing_policy_key: isGpt56Sol ? "autobyteus_model_catalog:OPENAI:gpt-5.6-sol" : null,
+        price_config_id: isGpt56Sol ? "autobyteus_model_catalog:OPENAI:gpt-5.6-sol" : null,
+        model_provider: isGpt56Sol ? "OPENAI" : null,
+        model_identifier: isGpt56Sol ? "gpt-5.6-sol" : null,
+        model_value: isGpt56Sol ? "gpt-5.6-sol" : null,
+        canonical_name: isGpt56Sol ? "gpt-5.6-sol" : null,
+        currency: isGpt56Sol ? "USD" : null,
+        input_price_per_million: isGpt56Sol ? 5 : null,
+        output_price_per_million: isGpt56Sol ? 30 : null,
+        cached_input_read_price_per_million: isGpt56Sol ? 0.5 : null,
+        cached_input_write_price_per_million: isGpt56Sol ? 6.25 : null,
+        cached_input_write_5m_price_per_million: null,
+        cached_input_write_1h_price_per_million: null,
+        input_price_tiers: [],
+        pricing_status: isGpt56Sol ? "trusted" : "missing",
+        trusted_dimensions: {
+          input: isGpt56Sol,
+          output: isGpt56Sol,
+          cached_input_read: isGpt56Sol,
+          cached_input_write: isGpt56Sol,
+          cached_input_write_5m: false,
+          cached_input_write_1h: false,
+        },
+        missing_reason: isGpt56Sol ? null : "test_unpriced",
+        source: isGpt56Sol ? "autobyteus_model_catalog" : null,
+        effective_from: null,
+        effective_to: null,
+        version: null,
+      };
+    }
+  },
+}));
+
+const waitForCondition = async (
+  predicate: () => boolean,
+  timeoutMs = 5_000,
+): Promise<void> => {
+  const startedAt = Date.now();
+  while (!predicate()) {
+    if (Date.now() - startedAt > timeoutMs) {
+      throw new Error("Timed out waiting for expected Codex backend event.");
+    }
+    await new Promise<void>((resolve) => setTimeout(resolve, 10));
+  }
+};
+
+const createBackend = (overrides: Record<string, unknown> = {}) => {
+  const threadManager = {
+    hasThread: vi.fn().mockReturnValue(true),
+    terminateThread: vi.fn().mockResolvedValue(undefined),
+  };
+
+  const runContext = {
+    runId: "run-codex-1",
+    config: {
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    },
+    runtimeContext: {
+      threadId: "thread-1",
+      activeTurnId: null,
+      codexThreadConfig: {
+        model: null,
+        workingDirectory: "/tmp/codex-backend-test-workspace",
+        reasoningEffort: null,
+        serviceTier: null,
+        approvalPolicy: null,
+        sandbox: null,
+      },
+    },
+  };
+
+  const startup = {
+    status: "ready",
+    waitForReady: Promise.resolve(),
+    resolveReady: vi.fn(),
+    rejectReady: vi.fn(),
+  };
+
+  const client = {
+    request: vi.fn().mockResolvedValue({
+      turn: {
+        id: "turn-1",
+      },
+    }),
+    respondSuccess: vi.fn(),
+    respondError: vi.fn(),
+  };
+
+  const codexThread = new CodexThread({
+    runContext: runContext as any,
+    client: client as any,
+    startup: startup as any,
+  });
+
+  const pendingSystemInstructionCapture = overrides.pendingSystemInstructionCapture as Parameters<
+    CodexThread["setPendingSystemInstructionCapture"]
+  >[0] | undefined;
+  const { pendingSystemInstructionCapture: _pending, ...threadOverrides } = overrides;
+  Object.assign(codexThread, threadOverrides);
+  if (pendingSystemInstructionCapture) {
+    codexThread.setPendingSystemInstructionCapture(pendingSystemInstructionCapture);
+  }
+
+  return {
+    codexThread,
+    threadManager,
+    emitThreadEvent: (event: Record<string, unknown>) => {
+      codexThread.handleAppServerNotification(
+        String(event.method),
+        (event.params ?? {}) as Record<string, unknown>,
+      );
+    },
+    backend: new CodexAgentRunBackend(
+      runContext as any,
+      codexThread as any,
+      threadManager as any,
+    ),
+  };
+};
+
+describe("CodexAgentRunBackend", () => {
+  it("publishes the committed system instruction after listener binding and before the first input exactly once", async () => {
+    const order: string[] = [];
+    const { backend, codexThread } = createBackend({
+      pendingSystemInstructionCapture: {
+        id: "raw-codex-system", ts: 10, trace_type: "system_instruction",
+        content: " exact Codex prompt ", source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      },
+    });
+    (codexThread.client as any).request.mockImplementation(async (method: string) => {
+      order.push("input");
+      return method === "turn/start" ? { turn: { id: "turn-1" } } : { turnId: "turn-1" };
+    });
+    const listener = vi.fn(async () => { order.push("event"); });
+    backend.subscribeToSourceEventBatches(listener);
+
+    await backend.dispatchUserInput({ kind: "start_turn", message: new AgentInputUserMessage("first") });
+    await backend.dispatchUserInput({
+      kind: "append_to_active_turn", turnId: "turn-1",
+      message: new AgentInputUserMessage("second"),
+    });
+
+    expect(order).toEqual(["event", "input", "input"]);
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenCalledWith([expect.objectContaining({
+      eventType: AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED,
+      payload: { trace_id: "raw-codex-system", content: " exact Codex prompt ", ts: 10 },
+    })]);
+  });
+
+  it("returns the accepted platform run id from the codex thread", async () => {
+    const { backend, codexThread } = createBackend();
+
+    const result = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello codex"),
+    });
+
+    expect((codexThread.client as any).request).toHaveBeenCalledWith(
+      "turn/start",
+      expect.objectContaining({
+        input: expect.arrayContaining([
+          expect.objectContaining({
+            type: "text",
+            text: "hello codex",
+          }),
+        ]),
+      }),
+    );
+    expect(result).toEqual({
+      forwarded: true,
+      turnId: "turn-1",
+      platformAgentRunId: "thread-1",
+    });
+  });
+
+  it("returns a runtime command failure when the codex thread sendTurn throws", async () => {
+    const { backend } = createBackend({
+      client: {
+        request: vi.fn().mockRejectedValue(new Error("boom")),
+        respondSuccess: vi.fn(),
+        respondError: vi.fn(),
+      },
+    });
+
+    const result = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello failing codex"),
+    });
+
+    expect(result.forwarded).toBe(false);
+    expect(result.code).toBe("RUNTIME_COMMAND_FAILED");
+    expect(result.message).toContain("Failed to send user input");
+  });
+
+  it("preserves structured Codex input submission failure codes", async () => {
+    const { backend } = createBackend({
+      client: {
+        request: vi.fn().mockResolvedValue({ turn: {} }),
+        respondSuccess: vi.fn(),
+        respondError: vi.fn(),
+      },
+    });
+
+    const result = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("invalid start"),
+    });
+
+    expect(result).toMatchObject({
+      forwarded: false,
+      code: "CODEX_TURN_START_RESPONSE_INVALID",
+      message: expect.stringContaining("turn.id"),
+    });
+  });
+
+  it("maps the explicit append command to exact turn/steer", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-active");
+    (codexThread.client as any).request.mockResolvedValue({ turnId: "turn-active" });
+
+    await expect(backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: new AgentInputUserMessage("append"),
+    })).resolves.toMatchObject({ forwarded: true, turnId: "turn-active" });
+    expect((codexThread.client as any).request).toHaveBeenCalledWith(
+      "turn/steer",
+      expect.objectContaining({ expectedTurnId: "turn-active" }),
+    );
+    expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "supported" });
+  });
+
+  it("marks a steer rejected by the local turn pre-check as definitely undelivered (IC-3)", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-other");
+
+    const result = await backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-ended",
+      message: new AgentInputUserMessage("late append"),
+    });
+
+    expect(result).toMatchObject({
+      forwarded: false,
+      code: "CODEX_TURN_STEER_TURN_NOT_ACTIVE",
+      undeliveredRetryAsStart: true,
+    });
+    expect((codexThread.client as any).request).not.toHaveBeenCalledWith("turn/steer", expect.anything());
+  });
+
+  it("keeps an RPC steer rejection as a visible failure without retry (IC-3)", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-active");
+    (codexThread.client as any).request.mockRejectedValueOnce(new Error("turn is not steerable"));
+
+    const result = await backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: new AgentInputUserMessage("rejected append"),
+    });
+
+    expect(result).toMatchObject({ forwarded: false, code: "CODEX_TURN_STEER_REJECTED" });
+    expect(result).not.toHaveProperty("undeliveredRetryAsStart");
+  });
+
+  it("keeps a post-RPC steer id mismatch as a visible failure without retry (IC-3)", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-active");
+    (codexThread.client as any).request.mockResolvedValueOnce({ turnId: "turn-other" });
+
+    const result = await backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: new AgentInputUserMessage("possibly delivered"),
+    });
+
+    expect(result).toMatchObject({ forwarded: false, code: "CODEX_TURN_STEER_ID_MISMATCH" });
+    expect(result).not.toHaveProperty("undeliveredRetryAsStart");
+  });
+
+  describe("compaction open at terminate (SCN-C5)", () => {
+    const startCompaction = async (emitThreadEvent: (event: Record<string, unknown>) => void,
+      events: Array<Record<string, unknown>>) => {
+      emitThreadEvent({ method: CodexThreadEventName.TURN_STARTED,
+        params: { threadId: "thread-1", turn: { id: "turn-compact", status: "inProgress" } } });
+      emitThreadEvent({ method: CodexThreadEventName.ITEM_STARTED,
+        params: { threadId: "thread-1", turnId: "turn-compact", item: { type: "contextCompaction", id: "compaction-1" } } });
+      await waitForCondition(() => events.some((event) => event.eventType === AgentRunEventType.COMPACTION_STATUS));
+    };
+
+    it("publishes the failed close to listeners before the thread is terminated", async () => {
+      const { backend, emitThreadEvent, threadManager } = createBackend();
+      const events: Array<Record<string, unknown>> = [];
+      let terminatedWhenClosed: boolean | null = null;
+      backend.subscribeToSourceEventBatches((batch) => {
+        for (const event of batch as unknown as Array<Record<string, unknown>>) {
+          if ((event.payload as Record<string, unknown>).status === "failed") {
+            terminatedWhenClosed = threadManager.terminateThread.mock.calls.length > 0;
+          }
+          events.push(event);
+        }
+      });
+      await startCompaction(emitThreadEvent, events);
+
+      await backend.terminateRun();
+
+      const failed = events.filter((event) => (event.payload as Record<string, unknown>).status === "failed");
+      expect(failed).toHaveLength(1);
+      expect(failed[0]).toMatchObject({ eventType: AgentRunEventType.COMPACTION_STATUS, statusHint: null,
+        payload: { source_surface: "codex.context_compaction_abandoned", provider_event_id: "compaction-1",
+          turn_id: "turn-compact", rotation_eligible: false,
+          error_message: "Compaction did not complete (run terminated)." } });
+      expect(terminatedWhenClosed).toBe(false);
+      expect(threadManager.terminateThread).toHaveBeenCalledTimes(1);
+    });
+
+    it("publishes nothing when no compaction is open, and still terminates when a listener fails", async () => {
+      const quiet = createBackend();
+      const quietEvents: unknown[] = [];
+      quiet.backend.subscribeToSourceEventBatches((batch) => { quietEvents.push(...batch); });
+      await quiet.backend.terminateRun();
+      expect(quietEvents).toEqual([]);
+
+      const { backend, emitThreadEvent, threadManager } = createBackend();
+      const events: Array<Record<string, unknown>> = [];
+      backend.subscribeToSourceEventBatches((batch) => {
+        events.push(...batch as unknown as Array<Record<string, unknown>>);
+        if (batch.some((event) => event.payload.status === "failed")) throw new Error("listener failed");
+      });
+      await startCompaction(emitThreadEvent, events);
+      const errorLog = vi.spyOn(console, "error").mockImplementation(() => undefined);
+      await expect(backend.terminate()).resolves.toEqual({ accepted: true });
+      expect(threadManager.terminateThread).toHaveBeenCalledTimes(1);
+      expect(String(errorLog.mock.calls[0]?.[0])).toContain("Failed to publish abandoned Codex compactions");
+      errorLog.mockRestore();
+    });
+  });
+
+  it("dispatches idle lifecycle events even when token usage updates were observed earlier", async () => {
+    const { backend, codexThread, emitThreadEvent } = createBackend();
+    codexThread.runContext.runtimeContext.activeTurnId = "turn-usage-1";
+    codexThread.runContext.runtimeContext.codexThreadConfig.model = "gpt-5.6-sol";
+    codexThread.setCurrentStatus("RUNNING");
+
+    const emittedEvents: Array<Record<string, unknown>> = [];
+    backend.subscribeToSourceEventBatches((events) => {
+      emittedEvents.push(...events as unknown as Array<Record<string, unknown>>);
+    });
+
+    emitThreadEvent({
+      method: CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED,
+      params: {
+        threadId: "thread-1",
+        turnId: "turn-usage-1",
+        tokenUsage: {
+          modelContextWindow: 128000,
+          total: {
+            totalTokens: 150,
+            inputTokens: 100,
+            cachedInputTokens: 40,
+            outputTokens: 50,
+            reasoningOutputTokens: 20,
+          },
+          last: {
+            totalTokens: 15,
+            inputTokens: 10,
+            cachedInputTokens: 4,
+            outputTokens: 5,
+            reasoningOutputTokens: 2,
+          },
+        },
+      },
+    });
+
+    emitThreadEvent({
+      method: CodexThreadEventName.THREAD_STATUS_CHANGED,
+      params: {
+        threadId: "thread-1",
+        status: {
+          type: "idle",
+        },
+      },
+    });
+
+    emitThreadEvent({
+      method: CodexThreadEventName.TURN_COMPLETED,
+      params: {
+        threadId: "thread-1",
+        turn: {
+          id: "turn-usage-1",
+        },
+      },
+    });
+    await waitForCondition(() =>
+      emittedEvents.some((event) => event.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED),
+    );
+
+    expect(emittedEvents).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+          runId: "run-codex-1",
+          payload: expect.objectContaining({
+            turn_id: "turn-usage-1",
+            runtime_kind: "codex_app_server",
+            ingestion_kind: "codex_thread_token_usage",
+            usage_scope: "cumulative_snapshot",
+            idempotency_key: "codex_token_usage:run-codex-1:thread-1:turn-usage-1:cumulative_snapshot:100:40:50:20:150",
+            reported_input_tokens: 100,
+            reported_output_tokens: 50,
+            reported_total_tokens: 150,
+            input_token_semantic: "gross_includes_cache",
+            cache_read_input_tokens: 40,
+            cache_state: "positive",
+            reasoning_output_tokens: 20,
+            latest_prompt_tokens: 10,
+            effective_context_window_tokens: 128000,
+            context_window_usage_percent: 0.0078125,
+            model_provider: "OPENAI",
+            provider_name: null,
+            model_identifier: "gpt-5.6-sol",
+            raw_usage_json: {
+              totalTokens: 150,
+              inputTokens: 100,
+              cachedInputTokens: 40,
+              outputTokens: 50,
+              reasoningOutputTokens: 20,
+            },
+          }),
+        }),
+        expect.objectContaining({
+          eventType: AgentRunEventType.TURN_COMPLETED,
+          payload: expect.objectContaining({
+            turnId: "turn-usage-1",
+          }),
+        }),
+      ]),
+    );
+
+    const tokenUsageEvent = emittedEvents.find(
+      (event) => event.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED,
+    );
+    const payload = tokenUsageEvent?.payload as Record<string, any>;
+    expect(payload).toMatchObject({
+      reported_input_tokens: 100,
+      cache_read_input_tokens: 40,
+    });
+    expect(payload.raw_usage_json).not.toHaveProperty("cacheWriteTokens");
+    expect(payload.raw_usage_json).not.toHaveProperty("cache_write_tokens");
+    expect(payload.raw_event_json.tokenUsage.total).not.toHaveProperty("cacheWriteTokens");
+    expect(payload.raw_event_json.autobyteus_cumulative_snapshot_provider_delta_tokens)
+      .toMatchObject({ cache_creation_input_tokens: null });
+  });
+
+  it("emits normalized token usage events for late token usage updates after idle", async () => {
+    const { backend, codexThread, emitThreadEvent } = createBackend();
+    codexThread.runContext.runtimeContext.activeTurnId = "turn-late-usage-1";
+    codexThread.runContext.runtimeContext.codexThreadConfig.model = "gpt-5.4-mini";
+    codexThread.setCurrentStatus("IDLE");
+
+    const emittedEvents: Array<Record<string, unknown>> = [];
+    backend.subscribeToSourceEventBatches((events) => {
+      emittedEvents.push(...events as unknown as Array<Record<string, unknown>>);
+    });
+
+    emitThreadEvent({
+      method: CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED,
+      params: {
+        threadId: "thread-late-1",
+        turnId: "turn-late-usage-1",
+        tokenUsage: {
+          total: {
+            totalTokens: 180,
+            inputTokens: 110,
+            outputTokens: 70,
+          },
+          last: {
+            totalTokens: 18,
+            inputTokens: 11,
+            outputTokens: 7,
+          },
+        },
+      },
+    });
+
+    await waitForCondition(() => emittedEvents.length === 1);
+
+    expect(emittedEvents).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+        runId: "run-codex-1",
+        payload: expect.objectContaining({
+          turn_id: "turn-late-usage-1",
+          usage_scope: "cumulative_snapshot",
+          idempotency_key: "codex_token_usage:run-codex-1:thread-late-1:turn-late-usage-1:cumulative_snapshot:110:x:70:x:180",
+          reported_input_tokens: 110,
+          reported_output_tokens: 70,
+          reported_total_tokens: 180,
+          latest_prompt_tokens: 11,
+        }),
+      }),
+    ]);
+  });
+});

@@ -1,0 +1,9 @@
+migrationId=20260924_remove_external_messaging_data
+displayName=Remove external messaging data
+statusSummary={"scannedCount":4,"migratedCount":0,"skippedCount":4,"failedCount":0}
+error=
+details=
+{"itemId":"bindingDataDir","filePath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/server-data/external-channel","status":"SKIPPED","message":"Not present."}
+{"itemId":"gatewayInstallDir","filePath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/server-data/extensions/messaging-gateway","status":"SKIPPED","message":"Not present."}
+{"itemId":"gatewayDownloadDir","filePath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/server-data/download/messaging-gateway","status":"SKIPPED","message":"Not present."}
+{"itemId":"gatewayLogsDir","filePath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/server-data/logs/messaging-gateway","status":"SKIPPED","message":"Not present."}

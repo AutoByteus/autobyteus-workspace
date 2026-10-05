@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-020-causal-investigation/verify-receipts.py", line 27, in <module>
+    A=next(l for l in proj(after)['taskLifetimes'] if l['taskId']==a['tasks']['A']['taskId']);assert A['completedAt'] is None and A['executions'][0]['cleanup']=='not_requested'
+KeyError: 'taskLifetimes'

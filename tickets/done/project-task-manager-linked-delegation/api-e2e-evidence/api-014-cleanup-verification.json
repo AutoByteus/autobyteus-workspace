@@ -1,0 +1,57 @@
+{
+  "at": "2026-10-04T06:38:18.350141+00:00",
+  "instanceId": "iso-65469-85e7",
+  "stop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-65469-85e7",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oPTvSU",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "recordAbsent": true,
+  "dataRootAbsent": true,
+  "portsFreeBind": {
+    "65469": true,
+    "65470": true
+  },
+  "capturedOwnPids": [
+    47343,
+    59584,
+    59585,
+    59586,
+    60514,
+    60599,
+    61052,
+    61054,
+    64406,
+    72385,
+    73217,
+    81061,
+    81062,
+    81122,
+    81450,
+    82432,
+    82512,
+    85178,
+    85237,
+    85594,
+    89810,
+    89826,
+    92858,
+    97723
+  ],
+  "capturedOwnPidsStillPresent": [],
+  "foreignRecordsUnchanged": true,
+  "archiveFilesVerified": 30,
+  "archiveMismatches": [],
+  "observerInstalled": false,
+  "scope": "Environment cleanup of24 captured own PIDs only; exclusive Task provider physical release not observed in this round. App teardown is NOT Task acceptance proof."
+}

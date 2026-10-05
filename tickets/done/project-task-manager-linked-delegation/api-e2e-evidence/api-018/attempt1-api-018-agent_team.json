@@ -1,0 +1,256 @@
+{
+  "instanceId": "iso-57237-3826",
+  "kind": "agent_team",
+  "started": "2026-10-05T08:18:01.808Z",
+  "steps": [
+    {
+      "phase": "run",
+      "name": "root created",
+      "at": "2026-10-05T08:18:02.403Z",
+      "rootId": "api018_root_team_769b3121_3828bac99eaa4144845c030bc95867b0",
+      "managerRunId": "project_task_manager_a22519e5d02e4ec0984a20ad06f7032c",
+      "borrowedRunId": "api018_packet_agent_a22d1ca9d44647fe96bdec98e7bbc3de"
+    },
+    {
+      "phase": "run",
+      "name": "borrowed member read its sentinel",
+      "at": "2026-10-05T08:18:05.427Z"
+    },
+    {
+      "phase": "run",
+      "name": "project and saved tasks created",
+      "at": "2026-10-05T08:18:05.555Z",
+      "projectId": "project_13784181-cca5-4954-8ecd-1721b6814eec",
+      "tasks": {
+        "A": {
+          "taskId": "project_task_9a3280d8-c9e4-46ad-830f-eed20df19685",
+          "description": "Read the supplied saved Task attachment with read_file and report the exact marker to the requester. Do not modify files, create copies, or change any Task status.",
+          "status": "TODO",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_4bd29b0a8cfc__saved-A.txt"
+            }
+          ],
+          "marker": "API018_AGENT_TEAM_A_7b4bf795-7cc0-4d27-b1cc-67fb530ba55c"
+        },
+        "B": {
+          "taskId": "project_task_a5f60b61-8a31-49c6-9160-4452c0914ddd",
+          "description": "Read the supplied saved Task attachment with read_file and report the exact marker to the requester. Do not modify files, create copies, or change any Task status.",
+          "status": "TODO",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_7d1a886131d5__saved-B.txt"
+            }
+          ],
+          "marker": "API018_AGENT_TEAM_B_9469e336-7819-4aa0-9593-084441ca83fc"
+        }
+      }
+    },
+    {
+      "phase": "run",
+      "name": "A/B dispatched, bytes read, links delivered",
+      "at": "2026-10-05T08:18:13.594Z",
+      "aWorker": "api018_packet_agent_bf4f3f4569d0459cabcce7aaaf21d45c",
+      "bCoordinator": "api018_team_coordinator_9ca57777fbc042c8b8bf6eb953ea2601",
+      "bReader": "api018_team_reader_b2392a05c19d44fda6b59a417a20434a"
+    }
+  ],
+  "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-ylJTJD/validation-workspace/agent_team",
+  "definition": {
+    "id": "api018-root-team-769b3121"
+  },
+  "rootId": "api018_root_team_769b3121_3828bac99eaa4144845c030bc95867b0",
+  "initialAgents": [
+    "api018_packet_agent_a22d1ca9d44647fe96bdec98e7bbc3de",
+    "project_task_manager_a22519e5d02e4ec0984a20ad06f7032c"
+  ],
+  "managerRunId": "project_task_manager_a22519e5d02e4ec0984a20ad06f7032c",
+  "borrowedRunId": "api018_packet_agent_a22d1ca9d44647fe96bdec98e7bbc3de",
+  "borrowedFirstNonce": "API018_AGENT_TEAM_c9ad5f1a-da6b-4b3e-81db-f3bbbf90eeb5",
+  "project": {
+    "projectId": "project_13784181-cca5-4954-8ecd-1721b6814eec",
+    "name": "API018 agent_team f0a94343"
+  },
+  "tasks": {
+    "A": {
+      "taskId": "project_task_9a3280d8-c9e4-46ad-830f-eed20df19685",
+      "description": "Read the supplied saved Task attachment with read_file and report the exact marker to the requester. Do not modify files, create copies, or change any Task status.",
+      "status": "TODO",
+      "contextFiles": [
+        {
+          "storedFilename": "ctx_4bd29b0a8cfc__saved-A.txt"
+        }
+      ],
+      "marker": "API018_AGENT_TEAM_A_7b4bf795-7cc0-4d27-b1cc-67fb530ba55c"
+    },
+    "B": {
+      "taskId": "project_task_a5f60b61-8a31-49c6-9160-4452c0914ddd",
+      "description": "Read the supplied saved Task attachment with read_file and report the exact marker to the requester. Do not modify files, create copies, or change any Task status.",
+      "status": "TODO",
+      "contextFiles": [
+        {
+          "storedFilename": "ctx_7d1a886131d5__saved-B.txt"
+        }
+      ],
+      "marker": "API018_AGENT_TEAM_B_9469e336-7819-4aa0-9593-084441ca83fc"
+    }
+  },
+  "lifetimes": {
+    "A": {
+      "lifetimeId": "project_task_lifetime_33994365-3543-4c3d-84b7-fb1f0b46db7d",
+      "projectId": "project_13784181-cca5-4954-8ecd-1721b6814eec",
+      "taskId": "project_task_9a3280d8-c9e4-46ad-830f-eed20df19685",
+      "openedAt": "2026-10-05T08:18:08.212Z",
+      "completedAt": null,
+      "executions": [
+        {
+          "root": {
+            "rootSubjectKind": "agent_team",
+            "rootRunId": "api018_root_team_769b3121_3828bac99eaa4144845c030bc95867b0"
+          },
+          "execution": {
+            "agentRunId": "api018_packet_agent_bf4f3f4569d0459cabcce7aaaf21d45c"
+          },
+          "ingressAgentRunId": "api018_packet_agent_bf4f3f4569d0459cabcce7aaaf21d45c",
+          "purpose": "assignment",
+          "reservedAt": "2026-10-05T08:18:08.219Z",
+          "dispatch": "delivered",
+          "cleanup": "not_requested"
+        }
+      ]
+    },
+    "B": {
+      "lifetimeId": "project_task_lifetime_029e6d1b-10e9-4987-b9a1-1e96bf147e1f",
+      "projectId": "project_13784181-cca5-4954-8ecd-1721b6814eec",
+      "taskId": "project_task_a5f60b61-8a31-49c6-9160-4452c0914ddd",
+      "openedAt": "2026-10-05T08:18:08.275Z",
+      "completedAt": null,
+      "executions": [
+        {
+          "root": {
+            "rootSubjectKind": "agent_team",
+            "rootRunId": "api018_root_team_769b3121_3828bac99eaa4144845c030bc95867b0"
+          },
+          "execution": {
+            "teamRunId": "api018_packet_team_6b3aaf5881fd40219a79d4ff53ddeba6"
+          },
+          "ingressAgentRunId": "api018_team_coordinator_9ca57777fbc042c8b8bf6eb953ea2601",
+          "purpose": "assignment",
+          "reservedAt": "2026-10-05T08:18:08.282Z",
+          "dispatch": "delivered",
+          "cleanup": "not_requested"
+        }
+      ]
+    }
+  },
+  "aWorker": "api018_packet_agent_bf4f3f4569d0459cabcce7aaaf21d45c",
+  "bCoordinator": "api018_team_coordinator_9ca57777fbc042c8b8bf6eb953ea2601",
+  "bMembers": [
+    "api018_team_coordinator_9ca57777fbc042c8b8bf6eb953ea2601",
+    "api018_team_reader_b2392a05c19d44fda6b59a417a20434a"
+  ],
+  "bReader": "api018_team_reader_b2392a05c19d44fda6b59a417a20434a",
+  "writeWindow": {
+    "before": {
+      "ino": 466289467,
+      "mtimeMs": 1791188289793.4612,
+      "size": 3488,
+      "sha": "ee2424ddce6ac5f7969858875b4728265e1b3905bd0dfb59d1145e3120b19283"
+    },
+    "aNonce": "API018_AGENT_TEAM_25581d28-6420-4155-8a8c-aadebf5a1eb4"
+  },
+  "error": "Error: TIMEOUT B coordinator messages reader and answers",
+  "stack": "Error: TIMEOUT B coordinator messages reader and answers\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018/api-018-probe.mjs:33:9)\n    at async ask (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018/api-018-probe.mjs:138:3)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-018/api-018-probe.mjs:255:30",
+  "failureState": [
+    {
+      "projectId": "project_13784181-cca5-4954-8ecd-1721b6814eec",
+      "name": "API018 agent_team f0a94343",
+      "description": "IR-012 changed-build lifetime recheck",
+      "createdAt": "2026-10-05T08:18:05.431Z",
+      "updatedAt": "2026-10-05T08:18:05.431Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_9a3280d8-c9e4-46ad-830f-eed20df19685",
+          "description": "Read the supplied saved Task attachment with read_file and report the exact marker to the requester. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-05T08:18:05.477Z",
+          "updatedAt": "2026-10-05T08:18:09.772Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_4bd29b0a8cfc__saved-A.txt",
+              "displayName": "saved-A.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 57
+            }
+          ]
+        },
+        {
+          "taskId": "project_task_a5f60b61-8a31-49c6-9160-4452c0914ddd",
+          "description": "Read the supplied saved Task attachment with read_file and report the exact marker to the requester. Do not modify files, create copies, or change any Task status.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-05T08:18:05.534Z",
+          "updatedAt": "2026-10-05T08:18:09.792Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_7d1a886131d5__saved-B.txt",
+              "displayName": "saved-B.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 57
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskLifetimes": [
+        {
+          "lifetimeId": "project_task_lifetime_33994365-3543-4c3d-84b7-fb1f0b46db7d",
+          "projectId": "project_13784181-cca5-4954-8ecd-1721b6814eec",
+          "taskId": "project_task_9a3280d8-c9e4-46ad-830f-eed20df19685",
+          "openedAt": "2026-10-05T08:18:08.212Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api018_root_team_769b3121_3828bac99eaa4144845c030bc95867b0"
+              },
+              "execution": {
+                "agentRunId": "api018_packet_agent_bf4f3f4569d0459cabcce7aaaf21d45c"
+              },
+              "ingressAgentRunId": "api018_packet_agent_bf4f3f4569d0459cabcce7aaaf21d45c",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-05T08:18:08.219Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        },
+        {
+          "lifetimeId": "project_task_lifetime_029e6d1b-10e9-4987-b9a1-1e96bf147e1f",
+          "projectId": "project_13784181-cca5-4954-8ecd-1721b6814eec",
+          "taskId": "project_task_a5f60b61-8a31-49c6-9160-4452c0914ddd",
+          "openedAt": "2026-10-05T08:18:08.275Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent_team",
+                "rootRunId": "api018_root_team_769b3121_3828bac99eaa4144845c030bc95867b0"
+              },
+              "execution": {
+                "teamRunId": "api018_packet_team_6b3aaf5881fd40219a79d4ff53ddeba6"
+              },
+              "ingressAgentRunId": "api018_team_coordinator_9ca57777fbc042c8b8bf6eb953ea2601",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-05T08:18:08.282Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

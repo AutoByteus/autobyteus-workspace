@@ -1,0 +1,694 @@
+{
+  "summary": {
+    "sourceCount": 134,
+    "testCount": 83,
+    "otherCount": 66,
+    "trackedModifiedCount": 169,
+    "maxRawNonempty": 499,
+    "maxEffectiveNonempty": 489,
+    "cumulativeSourceDeltasAbove220": [
+      {
+        "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+        "add": 64,
+        "delete": 235
+      },
+      {
+        "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+        "add": 78,
+        "delete": 154
+      }
+    ]
+  },
+  "sources": [
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/message-recipient-resolution.ts",
+      "rawNonempty": 124,
+      "effectiveNonempty": 95
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/task-scoped-message-recipient.ts",
+      "rawNonempty": 31,
+      "effectiveNonempty": 30
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts",
+      "rawNonempty": 118,
+      "effectiveNonempty": 118
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts",
+      "rawNonempty": 170,
+      "effectiveNonempty": 169
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "rawNonempty": 433,
+      "effectiveNonempty": 423
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts",
+      "rawNonempty": 54,
+      "effectiveNonempty": 53
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+      "rawNonempty": 297,
+      "effectiveNonempty": 279
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+      "rawNonempty": 294,
+      "effectiveNonempty": 278
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts",
+      "rawNonempty": 39,
+      "effectiveNonempty": 38
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts",
+      "rawNonempty": 81,
+      "effectiveNonempty": 80
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/active-collaboration-root-directory.ts",
+      "rawNonempty": 95,
+      "effectiveNonempty": 93
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-dispatch.ts",
+      "rawNonempty": 70,
+      "effectiveNonempty": 69
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-adapter.ts",
+      "rawNonempty": 96,
+      "effectiveNonempty": 93
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts",
+      "rawNonempty": 256,
+      "effectiveNonempty": 234
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts",
+      "rawNonempty": 89,
+      "effectiveNonempty": 86
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts",
+      "rawNonempty": 50,
+      "effectiveNonempty": 47
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-input.ts",
+      "rawNonempty": 36,
+      "effectiveNonempty": 35
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-lifetime.ts",
+      "rawNonempty": 34,
+      "effectiveNonempty": 34
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-seed-admission.ts",
+      "rawNonempty": 11,
+      "effectiveNonempty": 10
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-tree-projection.ts",
+      "rawNonempty": 55,
+      "effectiveNonempty": 53
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-lifetime-operation-gate.ts",
+      "rawNonempty": 27,
+      "effectiveNonempty": 26
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts",
+      "rawNonempty": 225,
+      "effectiveNonempty": 217
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts",
+      "rawNonempty": 115,
+      "effectiveNonempty": 107
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-factory.ts",
+      "rawNonempty": 10,
+      "effectiveNonempty": 9
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-preparation.ts",
+      "rawNonempty": 59,
+      "effectiveNonempty": 58
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts",
+      "rawNonempty": 119,
+      "effectiveNonempty": 117
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "rawNonempty": 144,
+      "effectiveNonempty": 142
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-process-groups.ts",
+      "rawNonempty": 76,
+      "effectiveNonempty": 63
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts",
+      "rawNonempty": 144,
+      "effectiveNonempty": 138
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "rawNonempty": 485,
+      "effectiveNonempty": 485
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts",
+      "rawNonempty": 63,
+      "effectiveNonempty": 63
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts",
+      "rawNonempty": 58,
+      "effectiveNonempty": 58
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+      "rawNonempty": 122,
+      "effectiveNonempty": 122
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts",
+      "rawNonempty": 37,
+      "effectiveNonempty": 36
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts",
+      "rawNonempty": 173,
+      "effectiveNonempty": 173
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts",
+      "rawNonempty": 116,
+      "effectiveNonempty": 112
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts",
+      "rawNonempty": 23,
+      "effectiveNonempty": 23
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts",
+      "rawNonempty": 484,
+      "effectiveNonempty": 463
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts",
+      "rawNonempty": 57,
+      "effectiveNonempty": 57
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+      "rawNonempty": 228,
+      "effectiveNonempty": 228
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+      "rawNonempty": 393,
+      "effectiveNonempty": 390
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-cleanup.ts",
+      "rawNonempty": 38,
+      "effectiveNonempty": 38
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts",
+      "rawNonempty": 110,
+      "effectiveNonempty": 110
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-input-submission.ts",
+      "rawNonempty": 99,
+      "effectiveNonempty": 99
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts",
+      "rawNonempty": 233,
+      "effectiveNonempty": 233
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-release-scope.ts",
+      "rawNonempty": 48,
+      "effectiveNonempty": 47
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts",
+      "rawNonempty": 430,
+      "effectiveNonempty": 429
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts",
+      "rawNonempty": 8,
+      "effectiveNonempty": 7
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts",
+      "rawNonempty": 328,
+      "effectiveNonempty": 312
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "rawNonempty": 499,
+      "effectiveNonempty": 489
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts",
+      "rawNonempty": 48,
+      "effectiveNonempty": 48
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-execution-admission-fence.ts",
+      "rawNonempty": 14,
+      "effectiveNonempty": 13
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+      "rawNonempty": 210,
+      "effectiveNonempty": 210
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts",
+      "rawNonempty": 288,
+      "effectiveNonempty": 288
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts",
+      "rawNonempty": 64,
+      "effectiveNonempty": 60
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-activation-operation.ts",
+      "rawNonempty": 115,
+      "effectiveNonempty": 114
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "rawNonempty": 324,
+      "effectiveNonempty": 322
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts",
+      "rawNonempty": 124,
+      "effectiveNonempty": 124
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/managed-agent-run-termination.ts",
+      "rawNonempty": 55,
+      "effectiveNonempty": 54
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+      "rawNonempty": 412,
+      "effectiveNonempty": 409
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts",
+      "rawNonempty": 36,
+      "effectiveNonempty": 35
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+      "rawNonempty": 464,
+      "effectiveNonempty": 445
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts",
+      "rawNonempty": 76,
+      "effectiveNonempty": 75
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts",
+      "rawNonempty": 326,
+      "effectiveNonempty": 308
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+      "rawNonempty": 223,
+      "effectiveNonempty": 213
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts",
+      "rawNonempty": 73,
+      "effectiveNonempty": 59
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts",
+      "rawNonempty": 359,
+      "effectiveNonempty": 357
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+      "rawNonempty": 480,
+      "effectiveNonempty": 457
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts",
+      "rawNonempty": 77,
+      "effectiveNonempty": 76
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts",
+      "rawNonempty": 279,
+      "effectiveNonempty": 263
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts",
+      "rawNonempty": 67,
+      "effectiveNonempty": 56
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts",
+      "rawNonempty": 179,
+      "effectiveNonempty": 168
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts",
+      "rawNonempty": 347,
+      "effectiveNonempty": 341
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts",
+      "rawNonempty": 42,
+      "effectiveNonempty": 41
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/prepared-task-execution.ts",
+      "rawNonempty": 67,
+      "effectiveNonempty": 64
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+      "rawNonempty": 451,
+      "effectiveNonempty": 436
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/task-agent-execution.ts",
+      "rawNonempty": 17,
+      "effectiveNonempty": 15
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/task-team-execution.ts",
+      "rawNonempty": 18,
+      "effectiveNonempty": 16
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts",
+      "rawNonempty": 87,
+      "effectiveNonempty": 83
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts",
+      "rawNonempty": 188,
+      "effectiveNonempty": 187
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-callbacks.ts",
+      "rawNonempty": 25,
+      "effectiveNonempty": 23
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+      "rawNonempty": 168,
+      "effectiveNonempty": 164
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager-options.ts",
+      "rawNonempty": 15,
+      "effectiveNonempty": 14
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "rawNonempty": 462,
+      "effectiveNonempty": 453
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts",
+      "rawNonempty": 50,
+      "effectiveNonempty": 50
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/owned-flat-team-runtime-release.ts",
+      "rawNonempty": 14,
+      "effectiveNonempty": 13
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/prepare-flat-team-configured-activation.ts",
+      "rawNonempty": 26,
+      "effectiveNonempty": 25
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts",
+      "rawNonempty": 73,
+      "effectiveNonempty": 67
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+      "rawNonempty": 256,
+      "effectiveNonempty": 236
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-team-execution-registry.ts",
+      "rawNonempty": 189,
+      "effectiveNonempty": 185
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/task-team-execution-factory.ts",
+      "rawNonempty": 81,
+      "effectiveNonempty": 80
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts",
+      "rawNonempty": 376,
+      "effectiveNonempty": 355
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts",
+      "rawNonempty": 93,
+      "effectiveNonempty": 91
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+      "rawNonempty": 133,
+      "effectiveNonempty": 131
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts",
+      "rawNonempty": 111,
+      "effectiveNonempty": 102
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts",
+      "rawNonempty": 96,
+      "effectiveNonempty": 95
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts",
+      "rawNonempty": 302,
+      "effectiveNonempty": 300
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service-contract.ts",
+      "rawNonempty": 38,
+      "effectiveNonempty": 37
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts",
+      "rawNonempty": 51,
+      "effectiveNonempty": 50
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts",
+      "rawNonempty": 227,
+      "effectiveNonempty": 227
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts",
+      "rawNonempty": 55,
+      "effectiveNonempty": 54
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts",
+      "rawNonempty": 63,
+      "effectiveNonempty": 61
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts",
+      "rawNonempty": 28,
+      "effectiveNonempty": 28
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts",
+      "rawNonempty": 43,
+      "effectiveNonempty": 43
+    },
+    {
+      "path": "autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts",
+      "rawNonempty": 246,
+      "effectiveNonempty": 246
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+      "rawNonempty": 35,
+      "effectiveNonempty": 31
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent-config.json",
+      "rawNonempty": 12,
+      "effectiveNonempty": 12
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md",
+      "rawNonempty": 11,
+      "effectiveNonempty": 11
+    },
+    {
+      "path": "autobyteus-server-ts/src/llm-management/services/codex-model-catalog.ts",
+      "rawNonempty": 51,
+      "effectiveNonempty": 51
+    },
+    {
+      "path": "autobyteus-server-ts/src/persistence/file/store-utils.ts",
+      "rawNonempty": 237,
+      "effectiveNonempty": 236
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/context/project-task-context-store.ts",
+      "rawNonempty": 181,
+      "effectiveNonempty": 177
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/models.ts",
+      "rawNonempty": 90,
+      "effectiveNonempty": 83
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-errors.ts",
+      "rawNonempty": 30,
+      "effectiveNonempty": 30
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-task-execution-state.ts",
+      "rawNonempty": 47,
+      "effectiveNonempty": 47
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-task-execution.ts",
+      "rawNonempty": 13,
+      "effectiveNonempty": 13
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts",
+      "rawNonempty": 44,
+      "effectiveNonempty": 43
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/services/project-task-service.ts",
+      "rawNonempty": 271,
+      "effectiveNonempty": 269
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-metadata-schema.ts",
+      "rawNonempty": 54,
+      "effectiveNonempty": 50
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-state-schema.ts",
+      "rawNonempty": 95,
+      "effectiveNonempty": 93
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-store.ts",
+      "rawNonempty": 49,
+      "effectiveNonempty": 47
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts",
+      "rawNonempty": 152,
+      "effectiveNonempty": 128
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts",
+      "rawNonempty": 448,
+      "effectiveNonempty": 426
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/acp/acp-agent-process.ts",
+      "rawNonempty": 79,
+      "effectiveNonempty": 71
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts",
+      "rawNonempty": 457,
+      "effectiveNonempty": 450
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts",
+      "rawNonempty": 187,
+      "effectiveNonempty": 179
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-session-opening.ts",
+      "rawNonempty": 99,
+      "effectiveNonempty": 97
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-streaming-session.ts",
+      "rawNonempty": 140,
+      "effectiveNonempty": 131
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+      "rawNonempty": 108,
+      "effectiveNonempty": 106
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts",
+      "rawNonempty": 358,
+      "effectiveNonempty": 355
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+      "rawNonempty": 80,
+      "effectiveNonempty": 79
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+      "rawNonempty": 91,
+      "effectiveNonempty": 91
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts",
+      "rawNonempty": 100,
+      "effectiveNonempty": 98
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts",
+      "rawNonempty": 102,
+      "effectiveNonempty": 101
+    },
+    {
+      "path": "autobyteus-ts/src/agent/factory/agent-factory.ts",
+      "rawNonempty": 214,
+      "effectiveNonempty": 213
+    }
+  ]
+}

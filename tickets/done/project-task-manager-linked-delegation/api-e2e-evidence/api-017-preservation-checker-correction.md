@@ -1,0 +1,1 @@
+Initial preservation checker selected the first historical informational-review heading, not the exact latest CRR022 heading, and rejected the old-record prefix. Correct read-only selector to latest exact CRR022 marker; no foreign record/source/index mutation. The initial checker failure is retained as reporting evidence, not a preservation success or source drift.

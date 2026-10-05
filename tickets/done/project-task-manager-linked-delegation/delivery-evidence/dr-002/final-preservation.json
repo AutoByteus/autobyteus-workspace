@@ -1,0 +1,242 @@
+{
+  "at": "2026-10-05T05:34:05.857033+00:00",
+  "incomingReferences": 6094,
+  "allIncomingPresent": true,
+  "missing": [],
+  "changes": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/TESTING.md",
+      "inputSha256": "9ae6d301fe4afd8c9b725fab8942fbc6f9b496d512c4a0c01768a283247ad7b6",
+      "currentSha256": "f8b9f70246f1fe0a3c13de50a8a0856c9f2df385590ca5e230789c1fd8253b28",
+      "classification": "Delivery docs sync"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_communication.md",
+      "inputSha256": "bb2b70fbdfb14ac91d5a1469a90a45c2038e2d136a3cbea7e116e3536d1af0f2",
+      "currentSha256": "ac6de73a04d86c27abd8c36cd6362b453877a3a01fd9659046f02936baedfa9d",
+      "classification": "Delivery docs sync"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_execution.md",
+      "inputSha256": "d8715d687f964892e2464e2dac69223e69348dc973659174b545a3ebb2f9ab1e",
+      "currentSha256": "09fff903517124eebc8bf50182493c8a16a6ba37dc9f3ae33c683bcae35173ca",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_team_execution.md",
+      "inputSha256": "d44f4e8f32bff1d83ff8422f91e2972a95c7f34c66083f3fe04455876deee914",
+      "currentSha256": "420d46b7ef110667e75278856a8757912a28729256985f7d33a0ca021252b397",
+      "classification": "Delivery docs sync"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md",
+      "inputSha256": "690ac46a13ce99991a23ef22301c0c08756aad6b90bafbbee9b44cc05f74333c",
+      "currentSha256": "d877600ac29e099f55817f05e36e2f84c5263048415d1eadfa0b6f6c802d78fc",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/run_history.md",
+      "inputSha256": "57092b5482bee4a31d8a015c97336014394e89de6f553e69c05cb824cbb6479c",
+      "currentSha256": "58b65ab661af9d16f5bebf08bc4ee79c3ae6215b1ea894aebc6c085eba4ea7a5",
+      "classification": "Delivery docs sync"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md",
+      "inputSha256": "f7d9b62f24adadd01db294893e421e441f2eb9a925a810b7dd776def6c0949b0",
+      "currentSha256": "f771111667486fe0f02297d8802cbd04ba0daafd37cbad7bdf31e3baefe5b5ac",
+      "classification": "Delivery docs sync"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-task-monitor.ts",
+      "inputSha256": "84b4b4480bf306f9d963b8b130ce0e46beca00867466c10eb5b0e256cc508ece",
+      "currentSha256": "7b3139b0456da7d284d7301aa4d3cab1bb96b5ed6f8f19d9a01662ae4a1e7604",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-background-task-registry.ts",
+      "inputSha256": "0da0d43c227b330410cfe028a46955cacd28ea029dec589a0959f74d41f52e22",
+      "currentSha256": "f8eca5c06378b5396d1ab4723693e27d4046ed8493142144790e249f2e6e3a41",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-tracker.ts",
+      "inputSha256": "77f3da6070046763926f28682f155b287afd20a550633586ed51c447c3d935ce",
+      "currentSha256": "c2bff48d7bc979da1ce4f05dd62ed6766a6ea103522de05d381cb25ffeeb446e",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-background-task-monitor.test.ts",
+      "inputSha256": "436ca98ae2d3c1e3c56d9b61d343862e7964562d68d6cef68d9bbd35d29dd0dc",
+      "currentSha256": "de79b73e900230d37d0aadc8c15b5b2f098250f8f2f91c1075884b69970910a1",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts",
+      "inputSha256": "c580e32c50f8e5ba6edfd2d27c36f222078010e31df0ab999b462a1c3eea3e96",
+      "currentSha256": "a625ca755464856b7f6de061d0757f19c9f142cd7d1e854b2e1299f6926ac0d2",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-background-task-registry.test.ts",
+      "inputSha256": "9976828762982a81b7f1bc5bcc835f21eae8d441e8c891900b5feff01cd46ae5",
+      "currentSha256": "fd73f629dcb3beb2041f9180524ee612a74e68bd7546448a9265d38d52eb699a",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+      "inputSha256": "f64701bf5c067200d920f3f77a6b6618ead6ec34d5db2b4c4be778bb2d770060",
+      "currentSha256": "7f29879d28ca2fce6b2c51601d8499aa6d58215a6eef4a63686f0605c6052dcd",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts",
+      "inputSha256": "538e40e7a67b0fe1370adcbe10acef1aa07738b695b36ac6a5508b706ca0988b",
+      "currentSha256": "74dac4ea9270891a67b2f2dd78a596d29e8839293f743583600e84a7f651cb25",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts",
+      "inputSha256": "52dddcd2976d03e923af2abd365f856195b33b17ef9672f004bb242cc81ad2d2",
+      "currentSha256": "8f5465bcc668d96e029d855b309f6cd5e70ddb1596ccd34577fe0118a4e9423c",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/docs/agent_execution_architecture.md",
+      "inputSha256": "581b886d506f908e62d8c0a9ad691a3bf2fde0dcfbce7b0d11e9ee3dcd7fc850",
+      "currentSha256": "d4dbd98331dd5caed513172f57de2945a2231fd6b5a5afdfdd0a3a64f01c0659",
+      "classification": "Latest remote base integration"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/docs/projects.md",
+      "inputSha256": "252f0927cf7f9a205a1c7a8d96202e043d3e3e19e038c99e6966093daf9afcf6",
+      "currentSha256": "a26ce7920180a82ed99639de41289867857bac6b0d4adcabe8209394335b65f0",
+      "classification": "Delivery docs sync"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-revision-record.md",
+      "inputSha256": "3795ed90ff65b1a51c3202b2e3845a2568aed3bafb0734f04076afd3597f70c6",
+      "currentSha256": "df6a8ca33ad14eb6337982169949ba4f08cd5270b5a0b2921053fd715f02bc2d",
+      "classification": "Delivery canonical update"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/docs-sync-report.md",
+      "inputSha256": "d3ffae0ad6b3f49559a8d74c88275348db7d162141e6730b6ab05f6b3d6727b5",
+      "currentSha256": "c54537a53b87e10bdcc6affcf7fa6d5ffc2366a0f759c9345802db70be00a9a0",
+      "classification": "Delivery canonical update"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/handoff-summary.md",
+      "inputSha256": "c790d9e15ec57de0dcd69db8f0fb93581ae309a485bf70249899eee6cb3a7186",
+      "currentSha256": "544f33871a4595672ded87526a66b83300d5e49b0e0b6e624edcf329e5655bd4",
+      "classification": "Delivery canonical update"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/release-deployment-report.md",
+      "inputSha256": "837eb733f063edd30b33d7ec9a8ed8bc5486db04a04237a0d19aa413798903bb",
+      "currentSha256": "eaeae0d051703cca746b9963a2eb351dcfdafaebaaa0cdabca66a3ba7e6f89d6",
+      "classification": "Delivery canonical update"
+    }
+  ],
+  "unexpectedChanges": [],
+  "inputPackageFiles": 545,
+  "packageChanges": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/TESTING.md",
+      "beforeSha256": "9ae6d301fe4afd8c9b725fab8942fbc6f9b496d512c4a0c01768a283247ad7b6",
+      "afterSha256": "f8b9f70246f1fe0a3c13de50a8a0856c9f2df385590ca5e230789c1fd8253b28",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_communication.md",
+      "beforeSha256": "bb2b70fbdfb14ac91d5a1469a90a45c2038e2d136a3cbea7e116e3536d1af0f2",
+      "afterSha256": "ac6de73a04d86c27abd8c36cd6362b453877a3a01fd9659046f02936baedfa9d",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_execution.md",
+      "beforeSha256": "d8715d687f964892e2464e2dac69223e69348dc973659174b545a3ebb2f9ab1e",
+      "afterSha256": "09fff903517124eebc8bf50182493c8a16a6ba37dc9f3ae33c683bcae35173ca",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/agent_team_execution.md",
+      "beforeSha256": "d44f4e8f32bff1d83ff8422f91e2972a95c7f34c66083f3fe04455876deee914",
+      "afterSha256": "420d46b7ef110667e75278856a8757912a28729256985f7d33a0ca021252b397",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md",
+      "beforeSha256": "690ac46a13ce99991a23ef22301c0c08756aad6b90bafbbee9b44cc05f74333c",
+      "afterSha256": "d877600ac29e099f55817f05e36e2f84c5263048415d1eadfa0b6f6c802d78fc",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/run_history.md",
+      "beforeSha256": "57092b5482bee4a31d8a015c97336014394e89de6f553e69c05cb824cbb6479c",
+      "afterSha256": "58b65ab661af9d16f5bebf08bc4ee79c3ae6215b1ea894aebc6c085eba4ea7a5",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md",
+      "beforeSha256": "f7d9b62f24adadd01db294893e421e441f2eb9a925a810b7dd776def6c0949b0",
+      "afterSha256": "f771111667486fe0f02297d8802cbd04ba0daafd37cbad7bdf31e3baefe5b5ac",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts",
+      "beforeSha256": "c580e32c50f8e5ba6edfd2d27c36f222078010e31df0ab999b462a1c3eea3e96",
+      "afterSha256": "a625ca755464856b7f6de061d0757f19c9f142cd7d1e854b2e1299f6926ac0d2",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+      "beforeSha256": "f64701bf5c067200d920f3f77a6b6618ead6ec34d5db2b4c4be778bb2d770060",
+      "afterSha256": "7f29879d28ca2fce6b2c51601d8499aa6d58215a6eef4a63686f0605c6052dcd",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts",
+      "beforeSha256": "52dddcd2976d03e923af2abd365f856195b33b17ef9672f004bb242cc81ad2d2",
+      "afterSha256": "8f5465bcc668d96e029d855b309f6cd5e70ddb1596ccd34577fe0118a4e9423c",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/docs/agent_execution_architecture.md",
+      "beforeSha256": "581b886d506f908e62d8c0a9ad691a3bf2fde0dcfbce7b0d11e9ee3dcd7fc850",
+      "afterSha256": "d4dbd98331dd5caed513172f57de2945a2231fd6b5a5afdfdd0a3a64f01c0659",
+      "expected": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/docs/projects.md",
+      "beforeSha256": "252f0927cf7f9a205a1c7a8d96202e043d3e3e19e038c99e6966093daf9afcf6",
+      "afterSha256": "a26ce7920180a82ed99639de41289867857bac6b0d4adcabe8209394335b65f0",
+      "expected": true
+    }
+  ],
+  "all20CurrentDurablesExact": true,
+  "all20OriginalAcceptedSnapshotsExact": true,
+  "allSevenSourceTestAPIReportsExact": true,
+  "DR001BodyExact": true,
+  "head": "ccb5fbe3ca63b3542fa6538e035a4b1428c80788",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "latestBase": "10fb69504f99a615e0728ffdd6c1fcab0104ff05",
+  "pendingMerge": false,
+  "zeroUnmerged": true,
+  "zeroStagedEdits": true,
+  "unstagedDocsOnly": [
+    "TESTING.md",
+    "autobyteus-server-ts/docs/modules/agent_communication.md",
+    "autobyteus-server-ts/docs/modules/agent_orgs.md",
+    "autobyteus-server-ts/docs/modules/agent_team_execution.md",
+    "autobyteus-server-ts/docs/modules/projects.md",
+    "autobyteus-server-ts/docs/modules/run_history.md",
+    "autobyteus-server-ts/docs/modules/standalone_agent_run_root.md",
+    "autobyteus-web/docs/projects.md"
+  ],
+  "stashExact": true,
+  "inputIndexSha256": "7b88df25613022646974421c128cb3570c6c4bba26ee0efd141540a2fa33baea",
+  "currentIndexSha256": "51e2a3262a9f217b132e47123c7d6b9ecae2f963d6a8d71ba8a4681824edf413",
+  "indexChangeExplanation": "Expected authorized local resolved/latest-base merge commits; input disclosed API17 stat-cache derivative archived, not restored or relabelled original-byte-exact. Optional Git locks disabled for read-only checks.",
+  "userAppPaidCredentialActions": false,
+  "testDBScope": "Only preflighted disposable worktree Vitest database, not application/user DB; inherited bytes archived."
+}

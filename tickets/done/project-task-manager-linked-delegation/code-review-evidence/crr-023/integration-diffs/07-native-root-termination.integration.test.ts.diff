@@ -1,0 +1,36 @@
+--- /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-001/accepted-candidate/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts
+@@ -1,5 +1,6 @@
+ import { describe, it, expect, vi } from 'vitest';
+ import { AgentRunService } from '../../../src/agent-execution/services/agent-run-service.js';
++import { StandaloneAgentRunLifecycleService } from '../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js';
+ import { eventually } from '../../unit/agent-execution/recovery-native-fixture.js';
+ import { createNativeRootFixture, HOST } from './native-compaction-root-fixture.js';
+ 
+@@ -35,12 +36,24 @@
+           return mode !== 'later-host-failure';
+         });
+         const history = vi.fn(async () => {});
++        const hostRuns = { getActiveRun: () => ({ runtimeKind: 'autobyteus' }), terminateAgentRun: hostStop };
++        // The real host termination (the standalone lifecycle) behind the root's host handle.
++        const lifecycleService = new StandaloneAgentRunLifecycleService('/unused-test-owned', {
++          agentRunManager: hostRuns as never,
++          metadataService: {} as never,
++          historyCatalogService: { recordRunTerminated: history } as never,
++          workspaceManager: {} as never,
++          tokenUsageReadiness: {} as never,
++          modelSelectionValidator: { validate: vi.fn() } as never,
++        });
++        f.terminateHost.mockImplementation((id: string) => lifecycleService.terminateHost(id) as never);
+         const service = new AgentRunService('/unused-test-owned', {
+-          agentRunManager: { getActiveRun: () => ({ runtimeKind: 'autobyteus' }), terminateAgentRun: hostStop } as never,
++          agentRunManager: hostRuns as never,
+           metadataService: {} as never,
+           historyCatalogService: { recordRunTerminated: history } as never,
+           provisioningService: {} as never,
+-          lifecycleService: { terminateCollaborationRoot: (id: string) => f.manager.terminateRoot(id) } as never,
++          lifecycleService,
++          standaloneRuns: f.manager,
+           workspaceManager: {} as never,
+         });
+         if (mode === 'child-finish-failure') {

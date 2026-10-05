@@ -1,0 +1,268 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { AgentFactory } from '../../../../src/agent/factory/agent-factory.js';
+import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
+import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
+import { Agent } from '../../../../src/agent/agent.js';
+import { BaseLLM } from '../../../../src/llm/base.js';
+import { LLMModel } from '../../../../src/llm/models.js';
+import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
+import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
+import { BaseTool } from '../../../../src/tools/base-tool.js';
+import type { LLMUserMessage } from '../../../../src/llm/user-message.js';
+import type { CompleteResponse as CompleteResponseType, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import { createEnabledMemoryCompactionConfiguration } from '../../../../src/memory/compaction/memory-compaction-configuration.js';
+import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
+
+class DummyLLM extends BaseLLM {
+  protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponseType> {
+    return new CompleteResponse({ content: 'ok' });
+  }
+
+  protected async *_streamMessagesToLLM(
+    _userMessage: LLMUserMessage
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    yield { content: 'ok', is_complete: true } as ChunkResponse;
+  }
+}
+
+class DummyTool extends BaseTool {
+  static getName(): string {
+    return 'factory_tool';
+  }
+
+  static getDescription(): string {
+    return 'Factory test tool';
+  }
+
+  static getArgumentSchema() {
+    return null;
+  }
+
+  protected async _execute(): Promise<any> {
+    return 'ok';
+  }
+}
+
+const makeConfig = () => {
+  const model = new LLMModel({
+    name: 'dummy',
+    value: 'dummy',
+    canonicalName: 'dummy',
+    provider: LLMProvider.OPENAI
+  });
+  const llm = new DummyLLM(model, new LLMConfig());
+  return new AgentConfig('FactoryTestAgent', 'factory-tester', 'Test agent for factory', llm, null, [new DummyTool()]);
+};
+
+const resetFactory = () => {
+  (AgentFactory as any).instance = undefined;
+};
+
+describe('AgentFactory', () => {
+  beforeEach(() => {
+    resetFactory();
+  });
+
+  afterEach(() => {
+    resetFactory();
+    vi.restoreAllMocks();
+  });
+
+  it('does not mutate the tool catalog when the factory module is imported or constructed', async () => {
+    vi.resetModules();
+    const { defaultToolRegistry } = await import('../../../../src/tools/registry/tool-registry.js');
+    defaultToolRegistry.clear();
+
+    const imported = await import('../../../../src/agent/factory/agent-factory.js');
+    expect(defaultToolRegistry.listToolNames()).toEqual([]);
+    new imported.AgentFactory();
+    expect(defaultToolRegistry.listToolNames()).toEqual([]);
+  });
+
+  it('initializes without legacy dependencies', () => {
+    const factory = new AgentFactory();
+    expect(factory).toBeInstanceOf(AgentFactory);
+    expect((factory as any).llm_factory).toBeUndefined();
+    expect((factory as any).tool_registry).toBeUndefined();
+  });
+
+  it('does not expose a default turn-control handler registry', () => {
+    const factory = new AgentFactory();
+    expect((factory as any).getDefaultEventHandlerRegistry).toBeUndefined();
+  });
+
+  it('creates agents and stores them', () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+
+    const runtimeStub = Object.create(AgentRuntime.prototype) as AgentRuntime;
+    runtimeStub.context = { agentId: '' } as any;
+
+    const createRuntimeSpy = vi
+      .spyOn(factory as any, 'createRuntimeWithId')
+      .mockImplementation((...args: any[]) => {
+        const agentId = String(args[0] ?? '');
+        runtimeStub.context.agentId = agentId;
+        return runtimeStub;
+      });
+
+    const agent = factory.createAgent(config);
+
+    expect(agent).toBeInstanceOf(Agent);
+    expect(agent.agentId).toMatch(/^factorytestagent_factory_tester_\d{4}$/);
+    expect(createRuntimeSpy).toHaveBeenCalledWith(agent.agentId, config);
+    expect(factory.getAgent(agent.agentId)).toBe(agent);
+    expect(factory.listActiveAgentIds()).toContain(agent.agentId);
+  });
+
+  it('rejects invalid config types', () => {
+    const factory = new AgentFactory();
+    expect(() => factory.createAgent('not a config' as any)).toThrow('Expected AgentConfig instance');
+  });
+
+  it('prepares tool instances by name', () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+
+    const toolInstances = (factory as any).prepareToolInstances('test-id', config) as Record<string, BaseTool>;
+    expect(toolInstances.factory_tool).toBeInstanceOf(DummyTool);
+  });
+
+  it('warns and overwrites duplicate tool names', () => {
+    const factory = new AgentFactory();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    const config = makeConfig();
+    config.tools = [new DummyTool(), new DummyTool()];
+
+    const toolInstances = (factory as any).prepareToolInstances('test-id', config) as Record<string, BaseTool>;
+    expect(warnSpy).toHaveBeenCalled();
+    expect(toolInstances.factory_tool).toBeInstanceOf(DummyTool);
+  });
+
+  it('populates runtime state with LLM and tools', () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+
+    const runtime = (factory as any).createRuntimeWithId('test-runtime-agent', config) as AgentRuntime;
+    expect(runtime).toBeInstanceOf(AgentRuntime);
+    expect(runtime.context.state.llmInstance).toBe(config.llmInstance);
+    expect(runtime.context.state.toolInstances?.factory_tool).toBe(config.tools[0]);
+    expect(runtime.context.state.memoryManager?.getAutomaticCompactionConfiguration())
+      .toBe(config.memoryCompaction);
+  });
+
+  it('installs supplied memory compaction without inventing another policy', () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+    const policy = new CompactionPolicy({ triggerRatio: 0.2 });
+    const createCompressionStrategy = () => ({ compress: vi.fn() });
+    config.memoryCompaction = createEnabledMemoryCompactionConfiguration(policy, createCompressionStrategy);
+
+    const runtime = (factory as any).createRuntimeWithId('enabled-memory-agent', config) as AgentRuntime;
+    const installed = runtime.context.state.memoryManager?.getAutomaticCompactionConfiguration();
+
+    expect(installed).toBe(config.memoryCompaction);
+    expect(installed).toMatchObject({ kind: 'enabled', policy, createCompressionStrategy });
+  });
+
+  it('restores agents with existing id', () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+
+    const runtimeStub = Object.create(AgentRuntime.prototype) as AgentRuntime;
+    runtimeStub.context = { agentId: '' } as any;
+
+    const createRuntimeSpy = vi
+      .spyOn(factory as any, 'createRuntimeWithId')
+      .mockImplementation((...args: any[]) => {
+        const agentId = String(args[0] ?? '');
+        runtimeStub.context.agentId = agentId;
+        return runtimeStub;
+      });
+
+    const agent = factory.restoreAgent('restored-agent', config, '/tmp/memory/agents/restored-agent');
+    expect(agent.agentId).toBe('restored-agent');
+    const callArgs = createRuntimeSpy.mock.calls[0] ?? [];
+    expect(callArgs[0]).toBe('restored-agent');
+    expect(callArgs[1]).toBe(config);
+    expect(callArgs[2]).toBe('/tmp/memory/agents/restored-agent');
+    expect(callArgs[3]).not.toBeNull();
+  });
+
+  it('treats explicit config memoryDir as a leaf directory without team metadata branching', () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+    const explicitMemoryDir = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-factory-explicit-memory-'));
+    config.memoryDir = explicitMemoryDir;
+
+    try {
+      const runtime = (factory as any).createRuntimeWithId('explicit-memory-agent', config) as AgentRuntime;
+      const memoryStore = runtime.context.state.memoryManager?.store as any;
+      expect(memoryStore.agentDir).toBe(explicitMemoryDir);
+      expect(memoryStore.agentDir).not.toContain(path.join('agents', 'explicit-memory-agent'));
+    } finally {
+      fs.rmSync(explicitMemoryDir, { recursive: true, force: true });
+    }
+  });
+
+  it('keeps stopping agents known to removal but non-routable until stop completes', async () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+    let resolveStop: (() => void) | null = null;
+    const runtimeStub = Object.create(AgentRuntime.prototype) as AgentRuntime;
+    runtimeStub.context = { agentId: 'stopping-agent' } as any;
+    runtimeStub.stop = vi.fn(() => new Promise<void>((resolve) => {
+      resolveStop = resolve;
+    })) as any;
+
+    vi.spyOn(factory as any, 'createRuntimeWithId').mockReturnValue(runtimeStub);
+
+    const agent = factory.createAgentWithId('stopping-agent', config);
+    const firstRemove = factory.removeAgent('stopping-agent');
+
+    expect(factory.getAgent('stopping-agent')).toBeUndefined();
+    expect(factory.listActiveAgentIds()).not.toContain('stopping-agent');
+    expect(() => factory.createAgentWithId('stopping-agent', config)).toThrow(/already active or stopping/);
+
+    const secondRemove = factory.removeAgent('stopping-agent');
+    expect(runtimeStub.stop).toHaveBeenCalledTimes(1);
+
+    resolveStop?.();
+    await expect(firstRemove).resolves.toBe(true);
+    await expect(secondRemove).resolves.toBe(true);
+    expect(factory.getAgent(agent.agentId)).toBeUndefined();
+    expect(factory.listActiveAgentIds()).not.toContain(agent.agentId);
+  });
+
+  it('retains a failed non-routable exact owner for cleanup-only retry', async () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+    const runtimeStub = Object.create(AgentRuntime.prototype) as AgentRuntime;
+    runtimeStub.context = { agentId: 'failing-stop-agent' } as any;
+    runtimeStub.stop = vi.fn(async () => {
+      throw new Error('stop failed');
+    }) as any;
+
+    vi.spyOn(factory as any, 'createRuntimeWithId').mockReturnValue(runtimeStub);
+
+    factory.createAgentWithId('failing-stop-agent', config);
+    await expect(factory.removeAgent('failing-stop-agent')).rejects.toThrow('stop failed');
+
+    expect(factory.getAgent('failing-stop-agent')).toBeUndefined();
+    expect(factory.listActiveAgentIds()).not.toContain('failing-stop-agent');
+    expect(() => factory.restoreAgent('failing-stop-agent', config, '/tmp/memory/agents/failing-stop-agent'))
+      .toThrow(/already active or stopping/);
+    runtimeStub.stop = vi.fn(async () => undefined) as any;
+    await expect(factory.removeAgent('failing-stop-agent')).resolves.toBe(true);
+    expect(runtimeStub.stop).toHaveBeenCalledOnce();
+    expect((factory as any).createRuntimeWithId).toHaveBeenCalledOnce();
+    expect(factory.getAgent('failing-stop-agent')).toBeUndefined();
+    await expect(factory.removeAgent('failing-stop-agent')).resolves.toBe(false);
+    expect(runtimeStub.stop).toHaveBeenCalledOnce();
+  });
+});

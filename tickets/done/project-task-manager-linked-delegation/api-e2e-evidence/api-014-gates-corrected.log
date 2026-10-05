@@ -1,0 +1,7 @@
+2026-10-04T06:27:18.181455+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["bash", "-c", "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json && GIT_OPTIONAL_LOCKS=0 git diff HEAD --check && GIT_OPTIONAL_LOCKS=0 git diff --cached --check && test -z \"$(git ls-files -u)\" && python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-preservation.py repository"]
+{"head": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2", "indexExact": true, "stagesExact": true, "inputDirtyCount": 299, "currentDirtyCount": 299, "dirtyStatusHashesExact": true, "inputReferenceCount": 3136, "missingIncomingReferences": [], "cumulative20DurableCurrentHashesExact": true}
+
+INNER_EXIT=0
+ELAPSED=9.97

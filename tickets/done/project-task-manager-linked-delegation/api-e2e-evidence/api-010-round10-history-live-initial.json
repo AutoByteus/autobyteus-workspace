@@ -1,0 +1,85 @@
+{
+  "mode": "live",
+  "instanceId": "iso-63749-7f67",
+  "at": "2026-10-03T20:23:38.162Z",
+  "requests": [
+    {
+      "query": "mutation($i:CreateAgentTeamRunInput!){createAgentTeamRun(input:$i){success message teamRunId}}",
+      "variables": {
+        "i": {
+          "teamDefinitionId": "api010-packet-team",
+          "teamConfigs": [
+            {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b",
+              "teamAddress": "/"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b",
+              "memberAddress": "/coordinator",
+              "agentDefinitionId": "api010-team-coordinator"
+            },
+            {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b",
+              "memberAddress": "/reader",
+              "agentDefinitionId": "api010-team-reader"
+            }
+          ]
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": null,
+        "errors": [
+          {
+            "message": "Variable \"$i\" got invalid value { runtimeKind: \"codex_app_server\", llmModelIdentifier: \"gpt-6.1-sol\", llmConfig: { reasoning_effort: \"low\" }, workspaceRootPath: \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\", teamAddress: \"/\" } at \"i.teamConfigs[0]\"; Field \"autoExecuteTools\" of required type \"Boolean!\" was not provided.",
+            "locations": [
+              {
+                "line": 1,
+                "column": 10
+              }
+            ]
+          },
+          {
+            "message": "Variable \"$i\" got invalid value { runtimeKind: \"codex_app_server\", llmModelIdentifier: \"gpt-6.1-sol\", llmConfig: { reasoning_effort: \"low\" }, workspaceRootPath: \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\", memberAddress: \"/coordinator\", agentDefinitionId: \"api010-team-coordinator\" } at \"i.memberConfigs[0]\"; Field \"autoExecuteTools\" of required type \"Boolean!\" was not provided.",
+            "locations": [
+              {
+                "line": 1,
+                "column": 10
+              }
+            ]
+          },
+          {
+            "message": "Variable \"$i\" got invalid value { runtimeKind: \"codex_app_server\", llmModelIdentifier: \"gpt-6.1-sol\", llmConfig: { reasoning_effort: \"low\" }, workspaceRootPath: \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\", memberAddress: \"/reader\", agentDefinitionId: \"api010-team-reader\" } at \"i.memberConfigs[1]\"; Field \"autoExecuteTools\" of required type \"Boolean!\" was not provided.",
+            "locations": [
+              {
+                "line": 1,
+                "column": 10
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "console": [],
+  "readOnly": false,
+  "error": "AssertionError [ERR_ASSERTION]: [{\"message\":\"Variable \\\"$i\\\" got invalid value { runtimeKind: \\\"codex_app_server\\\", llmModelIdentifier: \\\"gpt-6.1-sol\\\", llmConfig: { reasoning_effort: \\\"low\\\" }, workspaceRootPath: \\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\\\", teamAddress: \\\"/\\\" } at \\\"i.teamConfigs[0]\\\"; Field \\\"autoExecuteTools\\\" of required type \\\"Boolean!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]},{\"message\":\"Variable \\\"$i\\\" got invalid value { runtimeKind: \\\"codex_app_server\\\", llmModelIdentifier: \\\"gpt-6.1-sol\\\", llmConfig: { reasoning_effort: \\\"low\\\" }, workspaceRootPath: \\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\\\", memberAddress: \\\"/coordinator\\\", agentDefinitionId: \\\"api010-team-coordinator\\\" } at \\\"i.memberConfigs[0]\\\"; Field \\\"autoExecuteTools\\\" of required type \\\"Boolean!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]},{\"message\":\"Variable \\\"$i\\\" got invalid value { runtimeKind: \\\"codex_app_server\\\", llmModelIdentifier: \\\"gpt-6.1-sol\\\", llmConfig: { reasoning_effort: \\\"low\\\" }, workspaceRootPath: \\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\\\", memberAddress: \\\"/reader\\\", agentDefinitionId: \\\"api010-team-reader\\\" } at \\\"i.memberConfigs[1]\\\"; Field \\\"autoExecuteTools\\\" of required type \\\"Boolean!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]}]",
+  "stack": "AssertionError [ERR_ASSERTION]: [{\"message\":\"Variable \\\"$i\\\" got invalid value { runtimeKind: \\\"codex_app_server\\\", llmModelIdentifier: \\\"gpt-6.1-sol\\\", llmConfig: { reasoning_effort: \\\"low\\\" }, workspaceRootPath: \\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\\\", teamAddress: \\\"/\\\" } at \\\"i.teamConfigs[0]\\\"; Field \\\"autoExecuteTools\\\" of required type \\\"Boolean!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]},{\"message\":\"Variable \\\"$i\\\" got invalid value { runtimeKind: \\\"codex_app_server\\\", llmModelIdentifier: \\\"gpt-6.1-sol\\\", llmConfig: { reasoning_effort: \\\"low\\\" }, workspaceRootPath: \\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\\\", memberAddress: \\\"/coordinator\\\", agentDefinitionId: \\\"api010-team-coordinator\\\" } at \\\"i.memberConfigs[0]\\\"; Field \\\"autoExecuteTools\\\" of required type \\\"Boolean!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]},{\"message\":\"Variable \\\"$i\\\" got invalid value { runtimeKind: \\\"codex_app_server\\\", llmModelIdentifier: \\\"gpt-6.1-sol\\\", llmConfig: { reasoning_effort: \\\"low\\\" }, workspaceRootPath: \\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\\\", memberAddress: \\\"/reader\\\", agentDefinitionId: \\\"api010-team-reader\\\" } at \\\"i.memberConfigs[1]\\\"; Field \\\"autoExecuteTools\\\" of required type \\\"Boolean!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]}]\n    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs:8:325)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs:17:20"
+}

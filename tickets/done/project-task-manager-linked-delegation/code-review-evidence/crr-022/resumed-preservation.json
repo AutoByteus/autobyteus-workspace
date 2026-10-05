@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-05T04:12:01.818627+00:00",
+  "userRequestedFullReAudit": true,
+  "incomingReferenceCount": 5828,
+  "changedReferences": [],
+  "headExact": true,
+  "mergeHeadExact": true,
+  "indexExact": true,
+  "stagesExact": true
+}

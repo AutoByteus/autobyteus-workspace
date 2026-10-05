@@ -1,0 +1,245 @@
+{
+  "instanceId": "iso-50993-65ad",
+  "steps": [
+    {
+      "name": "root, project and Task created",
+      "at": "2026-10-05T15:10:16.754Z",
+      "rootId": "project_task_manager_4e0831562125410faa6012e64ded065a",
+      "task": {
+        "taskId": "project_task_61e05a19-e2c7-427d-ac93-4f8835ffdbd6"
+      }
+    },
+    {
+      "name": "Task R assigned to W",
+      "at": "2026-10-05T15:10:22.833Z",
+      "W": "api020_packet_agent_0e71af87fc074d6c8a34a99c408f0e83"
+    },
+    {
+      "name": "(a) run-ID reply reached W; only H started; Task file = assigned W + delegated H",
+      "at": "2026-10-05T15:10:32.887Z",
+      "receivers": [
+        "api020_packet_agent_0e71af87fc074d6c8a34a99c408f0e83"
+      ],
+      "newRuns": [
+        "api020_delegate_helper_d152a56578b44571968f40bae9c72165"
+      ]
+    },
+    {
+      "name": "(b) unlinked control: address reply brought in a new root-wide run; no Task file written",
+      "at": "2026-10-05T15:10:44.465Z",
+      "Wu": "api020_packet_agent_59d0f12764ce4c0ba989fce15abfb051",
+      "Hu": "api020_delegate_helper_abf73b79ca3249b6ad72245168798609",
+      "collaborator": {
+        "agentRunId": "api020_packet_agent_2e3d132d08c246178c9cf45453706d16",
+        "address": "/api020_packet_agent",
+        "delegatorAgentRunId": null
+      },
+      "newRuns": [
+        {
+          "agentRunId": "api020_packet_agent_2e3d132d08c246178c9cf45453706d16",
+          "address": "/api020_packet_agent",
+          "delegatorAgentRunId": null
+        },
+        {
+          "agentRunId": "api020_delegate_helper_abf73b79ca3249b6ad72245168798609",
+          "address": "/api020_delegate_helper",
+          "delegatorAgentRunId": "api020_packet_agent_59d0f12764ce4c0ba989fce15abfb051"
+        }
+      ]
+    },
+    {
+      "name": "DONE R closed and stopped exactly W and H; unlinked worker still answers",
+      "at": "2026-10-05T15:10:49.044Z",
+      "fileAfterDone": {
+        "taskId": "project_task_61e05a19-e2c7-427d-ac93-4f8835ffdbd6",
+        "agentRunResources": [
+          {
+            "role": "assigned",
+            "assignedBy": "project_task_manager_4e0831562125410faa6012e64ded065a",
+            "hostRoot": {
+              "kind": "agent",
+              "runId": "project_task_manager_4e0831562125410faa6012e64ded065a"
+            },
+            "agentRun": {
+              "kind": "agent",
+              "agentRunId": "api020_packet_agent_0e71af87fc074d6c8a34a99c408f0e83"
+            },
+            "linkedAt": "2026-10-05T15:10:19.320Z",
+            "start": "started",
+            "closedAt": "2026-10-05T15:10:46.220Z"
+          },
+          {
+            "role": "delegated",
+            "hostRoot": {
+              "kind": "agent",
+              "runId": "project_task_manager_4e0831562125410faa6012e64ded065a"
+            },
+            "agentRun": {
+              "kind": "agent",
+              "agentRunId": "api020_delegate_helper_d152a56578b44571968f40bae9c72165"
+            },
+            "linkedAt": "2026-10-05T15:10:26.078Z",
+            "start": "started",
+            "closedAt": "2026-10-05T15:10:46.220Z"
+          }
+        ]
+      }
+    }
+  ],
+  "packetAgent": {
+    "id": "api020-packet-agent",
+    "name": "API020 Packet Agent"
+  },
+  "helper": {
+    "id": "api020-delegate-helper",
+    "name": "API020 Delegate Helper"
+  },
+  "manager": {
+    "id": "autobyteus-project-task-manager",
+    "name": "Project Task Manager"
+  },
+  "rootId": "project_task_manager_4e0831562125410faa6012e64ded065a",
+  "project": {
+    "projectId": "project_5cbeeb46-5b08-455d-a1c8-51ff59b25c53"
+  },
+  "task": {
+    "taskId": "project_task_61e05a19-e2c7-427d-ac93-4f8835ffdbd6"
+  },
+  "W": "api020_packet_agent_0e71af87fc074d6c8a34a99c408f0e83",
+  "runIdMarker": "API020_RUNID_REPLY_6f393d65-e70d-4be1-a598-864ceee82d10",
+  "runIdReceivers": [
+    "api020_packet_agent_0e71af87fc074d6c8a34a99c408f0e83"
+  ],
+  "fileAfterA": {
+    "taskId": "project_task_61e05a19-e2c7-427d-ac93-4f8835ffdbd6",
+    "agentRunResources": [
+      {
+        "role": "assigned",
+        "assignedBy": "project_task_manager_4e0831562125410faa6012e64ded065a",
+        "hostRoot": {
+          "kind": "agent",
+          "runId": "project_task_manager_4e0831562125410faa6012e64ded065a"
+        },
+        "agentRun": {
+          "kind": "agent",
+          "agentRunId": "api020_packet_agent_0e71af87fc074d6c8a34a99c408f0e83"
+        },
+        "linkedAt": "2026-10-05T15:10:19.320Z",
+        "start": "started",
+        "closedAt": null
+      },
+      {
+        "role": "delegated",
+        "hostRoot": {
+          "kind": "agent",
+          "runId": "project_task_manager_4e0831562125410faa6012e64ded065a"
+        },
+        "agentRun": {
+          "kind": "agent",
+          "agentRunId": "api020_delegate_helper_d152a56578b44571968f40bae9c72165"
+        },
+        "linkedAt": "2026-10-05T15:10:26.078Z",
+        "start": "started",
+        "closedAt": null
+      }
+    ]
+  },
+  "H": "api020_delegate_helper_d152a56578b44571968f40bae9c72165",
+  "hToolResult": {
+    "id": "rt_1791213027420_turn_0001_call_00_pfW27tTStVQYB0coJG5q6281_result",
+    "ts": 1791213027.42,
+    "turn_id": "turn_0001",
+    "seq": 4,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "native_api_ordered_batch",
+    "tool_name": "send_message_to",
+    "tool_call_id": "call_00_pfW27tTStVQYB0coJG5q6281",
+    "tool_args": {
+      "target_agent_run_id": "api020_packet_agent_0e71af87fc074d6c8a34a99c408f0e83",
+      "content": "API020_RUNID_REPLY_6f393d65-e70d-4be1-a598-864ceee82d10"
+    },
+    "tool_result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"api020_packet_agent_0e71af87fc074d6c8a34a99c408f0e83\"}",
+    "tool_error": null
+  },
+  "newRunsA": [
+    "api020_delegate_helper_d152a56578b44571968f40bae9c72165"
+  ],
+  "Wu": "api020_packet_agent_59d0f12764ce4c0ba989fce15abfb051",
+  "addrMarker": "API020_ADDR_REPLY_b32579f2-dc40-4ab9-b9ce-48d65ee0138f",
+  "newRunsB": [
+    {
+      "agentRunId": "api020_packet_agent_2e3d132d08c246178c9cf45453706d16",
+      "address": "/api020_packet_agent",
+      "delegatorAgentRunId": null
+    },
+    {
+      "agentRunId": "api020_delegate_helper_abf73b79ca3249b6ad72245168798609",
+      "address": "/api020_delegate_helper",
+      "delegatorAgentRunId": "api020_packet_agent_59d0f12764ce4c0ba989fce15abfb051"
+    }
+  ],
+  "Hu": "api020_delegate_helper_abf73b79ca3249b6ad72245168798609",
+  "addrReceivers": [
+    "api020_packet_agent_2e3d132d08c246178c9cf45453706d16"
+  ],
+  "huToolResult": {
+    "id": "rt_1791213039232_turn_0001_call_00_c8hGGQkjVignmZ09SzWE4215_result",
+    "ts": 1791213039.232,
+    "turn_id": "turn_0001",
+    "seq": 4,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "native_api_ordered_batch",
+    "tool_name": "send_message_to",
+    "tool_call_id": "call_00_c8hGGQkjVignmZ09SzWE4215",
+    "tool_args": {
+      "recipient_address": "/api020_packet_agent",
+      "content": "API020_ADDR_REPLY_b32579f2-dc40-4ab9-b9ce-48d65ee0138f"
+    },
+    "tool_result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /api020_packet_agent.\",\"target_agent_run_id\":\"api020_packet_agent_2e3d132d08c246178c9cf45453706d16\"}",
+    "tool_error": null
+  },
+  "collaborator": "api020_packet_agent_2e3d132d08c246178c9cf45453706d16",
+  "collaboratorNode": {
+    "agentRunId": "api020_packet_agent_2e3d132d08c246178c9cf45453706d16",
+    "address": "/api020_packet_agent",
+    "delegatorAgentRunId": null
+  },
+  "fileAfterDone": {
+    "taskId": "project_task_61e05a19-e2c7-427d-ac93-4f8835ffdbd6",
+    "agentRunResources": [
+      {
+        "role": "assigned",
+        "assignedBy": "project_task_manager_4e0831562125410faa6012e64ded065a",
+        "hostRoot": {
+          "kind": "agent",
+          "runId": "project_task_manager_4e0831562125410faa6012e64ded065a"
+        },
+        "agentRun": {
+          "kind": "agent",
+          "agentRunId": "api020_packet_agent_0e71af87fc074d6c8a34a99c408f0e83"
+        },
+        "linkedAt": "2026-10-05T15:10:19.320Z",
+        "start": "started",
+        "closedAt": "2026-10-05T15:10:46.220Z"
+      },
+      {
+        "role": "delegated",
+        "hostRoot": {
+          "kind": "agent",
+          "runId": "project_task_manager_4e0831562125410faa6012e64ded065a"
+        },
+        "agentRun": {
+          "kind": "agent",
+          "agentRunId": "api020_delegate_helper_d152a56578b44571968f40bae9c72165"
+        },
+        "linkedAt": "2026-10-05T15:10:26.078Z",
+        "start": "started",
+        "closedAt": "2026-10-05T15:10:46.220Z"
+      }
+    ]
+  },
+  "unlinkedAfterDone": "API020_80550ba4-6f27-4cd7-9f33-740132d0a012",
+  "result": "pass"
+}

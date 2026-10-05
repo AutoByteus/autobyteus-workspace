@@ -1,0 +1,163 @@
+HEAD=806907faeb567d2b703e10fe984fcd01be0b41fd
+cwd=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-1vg3hcl7/autobyteus-server-ts
+command=pnpm exec vitest run tests/unit/agent-team-execution/team-run-model-selection-save.test.ts tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts --no-watch
+Dependencies shared (not a whole-source/dependency pristine baseline); core dist current, no AgentFactory create on selected five failure paths.
+
+ RUN  v4.0.18 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-1vg3hcl7/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-1vg3hcl7/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+(node:35961) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts (0 test)
+(node:35962) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts (0 test)
+ ❯ tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts (0 test)
+ ❯ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts (0 test)
+ ❯ tests/unit/agent-team-execution/team-run-model-selection-save.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-model-selection-save.test.ts [ tests/unit/agent-team-execution/team-run-model-selection-save.test.ts ]
+Error: Cannot find package 'autobyteus-ts/agent/sender-type.js' imported from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-1vg3hcl7/autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts'
+ ❯ src/agent-execution/input/agent-run-compaction-recovery.ts:1:1
+      1| import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+       | ^
+      2| import type { AgentInputUserMessage } from "autobyteus-ts/agent/messag…
+      3| import type { CompactionRetryRequest } from "autobyteus-ts/memory/comp…
+ ❯ src/agent-execution/domain/agent-run.ts:5:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts [ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts ]
+Error: Cannot find package 'autobyteus-ts/memory/store/memory-file-names.js' imported from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-1vg3hcl7/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts'
+ ❯ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts:5:1
+      3| import path from "node:path";
+      4| import { afterEach, beforeEach, describe, expect, it } from "vitest";
+      5| import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memo…
+       | ^
+      6| import { AppDataMigrationRegistry } from "../../../src/app-data-migrat…
+      7| import {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts [ tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts ]
+Error: Cannot find package 'autobyteus-ts/memory/store/memory-file-names.js' imported from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-1vg3hcl7/autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts'
+ ❯ src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts:3:1
+      1| import fs from "node:fs/promises";
+      2| import path from "node:path";
+      3| import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memo…
+       | ^
+      4| import type { TeamRunExecutionTreeSnapshot } from "./team-run-executio…
+      5| import { AgentMemoryLayout } from "../../../agent-memory/store/agent-m…
+ ❯ src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.ts:33:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts [ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts ]
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts [ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts ]
+Error: Cannot find package 'autobyteus-ts/llm/provider-display-names.js' imported from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-linked-api-baseline-1vg3hcl7/autobyteus-server-ts/src/token-usage/projections/token-usage-model-display-projection.ts'
+ ❯ src/token-usage/projections/token-usage-model-display-projection.ts:1:1
+      1| import { getLlmProviderDisplayName, isBuiltInLlmProviderId } from "aut…
+       | ^
+      2| import { LLMProvider } from "autobyteus-ts/llm/providers.js";
+      3| import type { TokenUsageUpdatedPayload } from "../../agent-execution/d…
+ ❯ src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts:3:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  no tests
+   Start at  11:08:53
+   Duration  1.62s (transform 427ms, setup 35ms, import 0ms, tests 0ms, environment 0ms)
+
+
+PROCESS_EXIT_CODE=1

@@ -1,0 +1,82 @@
+{
+  "scope": "Local implementation checks only; counts overlap, do not sum as unique acceptance. No independent API/E2E, paid model, desktop or provider acceptance.",
+  "checks": [
+    {
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts --no-watch",
+      "log": "ir-009-focused-initial.log",
+      "exit": 0,
+      "filesPassed": 4,
+      "testsPassed": 46
+    },
+    {
+      "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+      "log": "ir-009-production-typecheck.log",
+      "exit": 0
+    },
+    {
+      "command": "pnpm -C autobyteus-server-ts prebuild",
+      "log": "ir-009-prebuild.log",
+      "exit": 0,
+      "scope": "Current shared core/SDK compilation and Prisma generation, no database migration"
+    },
+    {
+      "command": "pnpm -C autobyteus-server-ts build",
+      "log": "ir-009-server-build.log",
+      "exit": 0,
+      "scope": "Includes package prebuild hook, full compile/assets/sanitized built-module bootstrap, not desktop or independent API"
+    },
+    {
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts --no-watch",
+      "log": "ir-009-native-integration.log",
+      "exit": 0,
+      "filesPassed": 4,
+      "testsPassed": 29
+    },
+    {
+      "command": "bash /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-009-cumulative-unit-command.sh",
+      "log": "ir-009-cumulative-unit.log",
+      "exit": 0,
+      "filesPassed": 150,
+      "filesSkipped": 3,
+      "testsPassed": 1498,
+      "testsSkipped": 5,
+      "scope": "Same selected owner unit command as IR-008, expanded by current upstream tests; exact script retained. Not whole repository test baseline. AGY live prerequisites not enabled; skips not Pass"
+    },
+    {
+      "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts tests/integration/web-boundary-guard.integration.test.ts --run",
+      "log": "ir-009-web-history.log",
+      "exit": 0,
+      "filesPassed": 3,
+      "testsPassed": 53,
+      "scope": "47 store + 3 panel + 3 boundary; expected Vue router injection warnings retained"
+    },
+    {
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-009-history-fixture-producer.mjs",
+      "log": "ir-009-history-fixture-producer.log",
+      "exit": 0,
+      "scope": "Rebuilt actual read facade/store over archived real stamped trees. List and scoped equality/strict forest/facts/private bytes. Active row controlled seam, not live"
+    },
+    {
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-009-org-history-preview.mjs",
+      "log": "ir-009-rendered-preview-initial.log",
+      "exit": 0,
+      "scope": "Initial interaction assertions pass; mobile full-page capture showed transient resize/stitch artifact on direct image inspection. Retained separately; not final visual evidence"
+    },
+    {
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-009-org-history-preview.mjs",
+      "log": "ir-009-rendered-preview.log",
+      "exit": 0,
+      "scope": "Final own dev preview after harness-only viewport paint stabilization; interactions and desktop/mobile directly inspected. Zero errors, one Apollo list replacement warning retained"
+    },
+    {
+      "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+      "log": "ir-009-production-typecheck-final.log",
+      "exit": 0
+    },
+    {
+      "command": "git diff HEAD --check && git diff --cached --check",
+      "log": "ir-009-diffcheck.log",
+      "exit": 0
+    }
+  ]
+}

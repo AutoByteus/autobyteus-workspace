@@ -1,0 +1,196 @@
+{
+  "subjectKind": "agent",
+  "createdAt": "2026-10-05T14:23:52.035Z",
+  "host": {
+    "address": "/project_task_manager",
+    "agentRunId": "project_task_manager_17b07df3e9cd4b23b2cc834d8a11d9bc",
+    "agentDefinitionId": "autobyteus-project-task-manager"
+  },
+  "collaborators": [],
+  "taskExecutions": [
+    {
+      "address": "/api019_packet_agent",
+      "agentRunId": "api019_packet_agent_c8e44b8d556341a8be241bb513138433",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "project_task_manager_17b07df3e9cd4b23b2cc834d8a11d9bc",
+      "startedAt": "2026-10-05T14:23:56.099Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api019-packet-agent",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent"
+        }
+      }
+    },
+    {
+      "address": "/api019_packet_team",
+      "teamRunId": "api019_packet_team_863dbf10bdbb4dad87913ea39ddbd763",
+      "members": [
+        {
+          "address": "/api019_packet_team/coordinator",
+          "agentRunId": "api019_team_coordinator_b045c914f98c465ca429e0eee20eef20",
+          "platformAgentRunId": null
+        },
+        {
+          "address": "/api019_packet_team/reader",
+          "agentRunId": "api019_team_reader_553481b8acc54c54a28c0cabab3802cc",
+          "platformAgentRunId": null
+        }
+      ],
+      "taskExecutions": [],
+      "delegatorAgentRunId": "project_task_manager_17b07df3e9cd4b23b2cc834d8a11d9bc",
+      "startedAt": "2026-10-05T14:23:56.194Z",
+      "source": {
+        "kind": "agent_team",
+        "teamDefinitionId": "api019-packet-team",
+        "coordinatorAddress": "/api019_packet_team/coordinator",
+        "members": [
+          {
+            "address": "/api019_packet_team/coordinator",
+            "agentDefinitionId": "api019-team-coordinator"
+          },
+          {
+            "address": "/api019_packet_team/reader",
+            "agentDefinitionId": "api019-team-reader"
+          }
+        ],
+        "handoffs": [],
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent"
+        }
+      }
+    },
+    {
+      "address": "/api019_delegate_helper",
+      "agentRunId": "api019_delegate_helper_68ccdcbfe2dc49bf896e5b5a93c09b10",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "api019_packet_agent_c8e44b8d556341a8be241bb513138433",
+      "startedAt": "2026-10-05T14:24:03.639Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api019-delegate-helper",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent"
+        }
+      }
+    },
+    {
+      "address": "/api019_packet_agent",
+      "agentRunId": "api019_packet_agent_9d7adedd7ad0405f99a37ad7b3d460b6",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "api019_delegate_helper_68ccdcbfe2dc49bf896e5b5a93c09b10",
+      "startedAt": "2026-10-05T14:24:04.838Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api019-packet-agent",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent"
+        }
+      }
+    },
+    {
+      "address": "/api019_bring_helper",
+      "agentRunId": "api019_bring_helper_0be6419ab45e47b3ae22e04d5d702847",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "api019_packet_agent_c8e44b8d556341a8be241bb513138433",
+      "startedAt": "2026-10-05T14:24:07.232Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api019-bring-helper",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent"
+        }
+      }
+    },
+    {
+      "address": "/api019_packet_agent",
+      "agentRunId": "api019_packet_agent_2738f10a71e44c9bb4adb1e39ce0e938",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "project_task_manager_17b07df3e9cd4b23b2cc834d8a11d9bc",
+      "startedAt": "2026-10-05T14:25:25.226Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api019-packet-agent",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent"
+        }
+      }
+    },
+    {
+      "address": "/api019_delegate_helper",
+      "agentRunId": "api019_delegate_helper_4af20a1bbcb54887982a27198e44c005",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "project_task_manager_17b07df3e9cd4b23b2cc834d8a11d9bc",
+      "startedAt": "2026-10-05T14:25:37.806Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api019-delegate-helper",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent"
+        }
+      }
+    },
+    {
+      "address": "/api019_packet_agent",
+      "agentRunId": "api019_packet_agent_63ff49b6c8a3423192149b120d85694e",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "project_task_manager_17b07df3e9cd4b23b2cc834d8a11d9bc",
+      "startedAt": "2026-10-05T14:32:25.866Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api019-packet-agent",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent"
+        }
+      }
+    }
+  ]
+}

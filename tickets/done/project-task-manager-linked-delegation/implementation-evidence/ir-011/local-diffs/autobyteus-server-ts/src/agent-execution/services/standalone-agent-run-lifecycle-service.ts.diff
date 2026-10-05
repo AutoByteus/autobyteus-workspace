@@ -1,0 +1,17 @@
+--- incoming-merge/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
++++ IR-011/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+@@ -173,13 +173,8 @@
+ 
+   private async activatePrepared(metadata: AgentRunMetadata, input: StandaloneHostActivationInput): Promise<StandaloneAgentRunActivationResult> {
+     this.tokenUsageReadiness.assertCurrentSchemaReady();
+-<<<<<<< HEAD
+-    const config = await this.buildConfig(metadata);
++    const config = await this.buildConfig(metadata, input);
+     const candidate = await this.agentRunManager.beginActivation({ kind: "new", runId: metadata.runId, config }).prepare();
+-=======
+-    const config = await this.buildConfig(metadata, input);
+-    const candidate = await this.agentRunManager.prepareNewAgentRun({ runId: metadata.runId, config });
+->>>>>>> origin/personal
+     await this.validateCandidateOrAbort(candidate, metadata.runtimeKind, metadata.runId);
+     const startedAt = new Date().toISOString();
+     return this.persistAndPublish({

@@ -1,0 +1,6 @@
+2026-10-04T05:36:34.455126+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["bash", "-c", "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json && git diff HEAD --check && git diff --cached --check && test -z \"$(git ls-files -u)\""]
+
+INNER_EXIT=0
+ELAPSED=9.09

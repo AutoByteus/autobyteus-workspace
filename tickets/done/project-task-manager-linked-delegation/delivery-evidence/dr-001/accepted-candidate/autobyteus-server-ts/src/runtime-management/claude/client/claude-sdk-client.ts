@@ -1,0 +1,506 @@
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
+import { randomUUID } from "node:crypto";
+import { beginClaudeSdkSessionOpening, type ClaudeSdkSessionOpening } from "./claude-sdk-session-opening.js";
+import type { SecretValue } from "autobyteus-ts";
+import type { ModelInfoWithSelectionPresentation } from "../../../llm-management/domain/model-selection-presentation.js";
+import {
+  asObject,
+  asString,
+  CLAUDE_AGENT_SDK_MODULE_NAME,
+  logger,
+  MODEL_DISCOVERY_PROBE_PROMPT,
+  type ClaudeSdkPermissionMode,
+} from "../../../agent-execution/backends/claude/claude-runtime-shared.js";
+import { getSecretVaultRuntime } from "../../../secret-management/secret-vault-runtime.js";
+import {
+  buildClaudeSdkSpawnEnvironment,
+  resolveClaudeSdkAuthMode,
+} from "./claude-sdk-auth-environment.js";
+import { resolveClaudeCodeExecutablePath } from "./claude-sdk-executable-path.js";
+import {
+  normalizeModelDescriptors,
+  toModelInfo,
+  type NormalizedModelDescriptor,
+} from "./claude-sdk-model-normalizer.js";
+import { deriveClaudeModelSelectionPresentation } from "./claude-sdk-model-selection-presentation.js";
+import {
+  getClaudeCatalogSettingSources,
+  getClaudeRuntimeSettingSources,
+} from "./claude-sdk-setting-sources.js";
+import type { ClaudeSdkSessionBinding } from "./claude-sdk-session-binding.js";
+import {
+  ClaudeSdkInputChannel,
+} from "./claude-sdk-streaming-session.js";
+
+type ClaudeSdkFunctionName =
+  | "query"
+  | "getSessionMessages"
+  | "createSdkMcpServer";
+
+export type ClaudeSdkModuleLike = {
+  query?: (...args: unknown[]) => unknown;
+  getSessionMessages?: (...args: unknown[]) => unknown;
+  createSdkMcpServer?: (...args: unknown[]) => unknown;
+  default?: {
+    query?: (...args: unknown[]) => unknown;
+    getSessionMessages?: (...args: unknown[]) => unknown;
+    createSdkMcpServer?: (...args: unknown[]) => unknown;
+  };
+};
+
+export type ClaudeSdkCanUseToolOptions = {
+  toolUseID?: string;
+};
+
+export type ClaudeSdkCanUseTool = (
+  toolName: string,
+  input: Record<string, unknown>,
+  options: ClaudeSdkCanUseToolOptions,
+) => Promise<Record<string, unknown>>;
+
+export type ClaudeSdkStderrCallback = (data: string) => void;
+type ClaudeApiKeyResolver = () => Promise<SecretValue>;
+
+/** Options for one long-lived streaming-input session (one Claude CLI process). */
+export type ClaudeSdkStreamingSessionOptions = {
+  systemPrompt: string;
+  sessionBinding: ClaudeSdkSessionBinding;
+  model: string;
+  workingDirectory: string | null;
+  env?: Record<string, string | undefined>;
+  mcpServers?: Record<string, unknown> | null;
+  allowedTools?: Iterable<string> | null;
+  permissionMode?: ClaudeSdkPermissionMode;
+  canUseTool?: ClaudeSdkCanUseTool;
+  stderr?: ClaudeSdkStderrCallback;
+  thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
+  debugFile?: string;
+  effort?: "low" | "medium" | "high" | "xhigh" | "max";
+};
+
+export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
+  interrupt: () => Promise<unknown>;
+  close: () => void;
+  initializationResult: () => Promise<unknown>;
+  supportedModels?: () => Promise<unknown>;
+  setMcpServers?: (servers: Record<string, unknown>) => Promise<unknown>;
+};
+
+let sdkSessionSpawnQueue: Promise<void> = Promise.resolve();
+let cachedClaudeSdkClient: ClaudeSdkClient | null = null;
+
+// Claude Code built-ins exposed to normal turns (SDK `tools`); all others, incl. native
+// multi-agent tools, stay out of context. MCP tools are unaffected. Re-verify on SDK upgrades.
+const CLAUDE_BUILT_IN_TOOLS_ENABLED_BY_AUTOBYTEUS = [
+  "Bash", "Read", "Edit", "Write", "Glob", "Grep", "NotebookEdit", "WebFetch", "WebSearch", "Skill",
+] as const;
+// Safety net even if the enabled list widens; AutoByteus delegate_task/send_message_to replace these.
+const CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS = [
+  "AskUserQuestion", "Agent", "Task", "Workflow", "SendMessage", "ListAgents",
+] as const;
+const CLAUDE_API_KEY_UNAVAILABLE = "CLAUDE_RUNTIME_API_KEY_UNAVAILABLE";
+
+const resolveClaudeApiKeyFromVault: ClaudeApiKeyResolver = () =>
+  getSecretVaultRuntime().requireService().resolveForUse({
+    kind: "agentRuntime",
+    runtimeKind: "claude_agent_sdk",
+    credentialSlot: "apiKey",
+  });
+
+const canScopeProcessCwd = (workingDirectory: string | null): workingDirectory is string => {
+  const targetWorkingDirectory = workingDirectory?.trim();
+  if (!targetWorkingDirectory) {
+    return false;
+  }
+
+  try {
+    return fs.statSync(targetWorkingDirectory).isDirectory();
+  } catch {
+    return false;
+  }
+};
+
+const withGuardedProcessCwd = async <T>(
+  workingDirectory: string | null,
+  operation: () => Promise<T>,
+): Promise<T> => {
+  if (!canScopeProcessCwd(workingDirectory)) {
+    return operation();
+  }
+
+  const originalWorkingDirectory = process.cwd();
+  if (originalWorkingDirectory === workingDirectory) {
+    return operation();
+  }
+
+  process.chdir(workingDirectory);
+  try {
+    return await operation();
+  } finally {
+    try {
+      process.chdir(originalWorkingDirectory);
+    } catch {
+      // best-effort restoration to avoid masking the original failure
+    }
+  }
+};
+
+const runInClaudeSdkSessionSpawnCriticalSection = async <T>(
+  operation: () => Promise<T>,
+): Promise<T> => {
+  const previous = sdkSessionSpawnQueue;
+  let release!: () => void;
+  sdkSessionSpawnQueue = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await previous;
+  try {
+    return await operation();
+  } finally {
+    release();
+  }
+};
+
+const closeQueryControl = async (controlLike: Record<string, unknown> | null): Promise<void> => {
+  if (!controlLike) {
+    return;
+  }
+
+  const interruptFn =
+    typeof controlLike.interrupt === "function"
+      ? (controlLike.interrupt as (...args: unknown[]) => Promise<unknown>)
+      : null;
+  if (interruptFn) {
+    try {
+      await interruptFn.call(controlLike);
+    } catch {
+      // best-effort cleanup
+    }
+  }
+
+  const closeFn =
+    typeof controlLike.close === "function"
+      ? (controlLike.close as (...args: unknown[]) => unknown)
+      : null;
+  if (closeFn) {
+    try {
+      closeFn.call(controlLike);
+    } catch {
+      // best-effort cleanup
+    }
+  }
+};
+
+export class ClaudeSdkClient {
+  private cachedSdkModule: ClaudeSdkModuleLike | null = null;
+
+  constructor(
+    private readonly resolveClaudeApiKey: ClaudeApiKeyResolver = resolveClaudeApiKeyFromVault,
+  ) {}
+
+  setCachedModuleForTesting(module: unknown): void {
+    this.cachedSdkModule = (module as ClaudeSdkModuleLike | null) ?? null;
+  }
+
+  async listModels(): Promise<ModelInfoWithSelectionPresentation[]> {
+    const sdk = await this.loadModuleSafe();
+    let spawnEnvironment: Record<string, string | undefined>;
+    try {
+      spawnEnvironment = await this.resolveSpawnEnvironment();
+    } catch {
+      return [];
+    }
+    const supportedRows = await this.tryGetSupportedModelsFromQueryControl(
+      sdk,
+      spawnEnvironment,
+    );
+    const selectionPresentation = deriveClaudeModelSelectionPresentation(supportedRows);
+    return supportedRows.map((row) => ({
+      ...toModelInfo(row),
+      selection_presentation: selectionPresentation.get(row.identifier) ?? null,
+    }));
+  }
+
+  async getSessionMessages(sessionId: string): Promise<unknown | null> {
+    const normalizedSessionId = asString(sessionId);
+    if (!normalizedSessionId) {
+      return null;
+    }
+
+    const sdk = await this.loadModuleSafe();
+    const getSessionMessagesFn = this.resolveFunction(sdk, "getSessionMessages");
+    if (!getSessionMessagesFn) {
+      return null;
+    }
+
+    try {
+      return await getSessionMessagesFn(normalizedSessionId);
+    } catch {
+      return null;
+    }
+  }
+
+  beginStreamingSession(input: { resolveOptions(): ClaudeSdkStreamingSessionOptions | Promise<ClaudeSdkStreamingSessionOptions> }): ClaudeSdkSessionOpening {
+    let suppliedOptions: ClaudeSdkStreamingSessionOptions | null = null;
+    return beginClaudeSdkSessionOpening({
+      stderr: text => suppliedOptions?.stderr?.(text),
+      createQuery: async control => {
+        const options = await input.resolveOptions();
+        suppliedOptions = options;
+        control.assertAccepting();
+        const sdk = await this.loadModuleSafe();
+        control.assertAccepting();
+        const queryFn = this.resolveFunction(sdk, "query");
+        if (!queryFn) throw new Error("Claude SDK query API is unavailable.");
+        const spawnEnvironment = await this.resolveSpawnEnvironment(options.env);
+        control.assertAccepting();
+        if (asString(spawnEnvironment.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS)) logger.warn("Claude CLI background tasks disabled by inherited CLAUDE_CODE_DISABLE_BACKGROUND_TASKS operator environment.");
+        const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
+        if (!options.debugFile && /^(1|true)$/i.test(spawnEnvironment.DEBUG_CLAUDE_AGENT_SDK ?? "")) {
+          const root = spawnEnvironment.CLAUDE_CONFIG_DIR || path.join(spawnEnvironment.HOME || os.homedir(), ".claude");
+          const directory = path.join(root, "debug");
+          await fs.promises.mkdir(directory, { recursive: true });
+          control.assertAccepting();
+          queryOptions.debugFile = path.join(directory, `autobyteus-cli-${randomUUID()}.log`);
+          logger.info("Claude CLI debug log:", queryOptions.debugFile);
+        }
+        const originalPermission = options.canUseTool;
+        if (originalPermission) queryOptions.canUseTool = async (...args: Parameters<ClaudeSdkCanUseTool>) => {
+          control.assertAccepting();
+          const response = await originalPermission(...args);
+          control.assertAccepting();
+          return response;
+        };
+        queryOptions.spawnClaudeCodeProcess = control.spawn;
+        queryOptions.stderr = control.stderr;
+        await runInClaudeSdkSessionSpawnCriticalSection(async () => {
+          control.assertAccepting();
+          return withGuardedProcessCwd(options.workingDirectory, async () => {
+            control.assertAccepting();
+            const raw = queryFn({ prompt: control.channel, options: queryOptions });
+            control.registerQuery(raw); // before shape checks/any additional await
+          });
+        });
+      },
+    });
+  }
+
+  async createToolDefinition(options: {
+    name: string;
+    description: string;
+    inputSchema: Record<string, unknown>;
+    handler: (args: unknown) => Promise<Record<string, unknown>>;
+  }): Promise<Record<string, unknown>> {
+    return {
+      name: options.name,
+      description: options.description,
+      inputSchema: options.inputSchema,
+      handler: options.handler,
+    };
+  }
+
+  async createMcpServer(options: {
+    name: string;
+    tools: Record<string, unknown>[];
+  }): Promise<Record<string, unknown> | null> {
+    const sdk = await this.loadModuleSafe();
+    const createSdkMcpServerFn = this.resolveFunction(sdk, "createSdkMcpServer");
+    if (!createSdkMcpServerFn) {
+      return null;
+    }
+
+    const normalizedTools = options.tools.map((tool, index) => {
+      const payload = asObject(tool);
+      const name = asString(payload?.name);
+      if (!name) {
+        throw new Error(
+          `CLAUDE_MCP_TOOL_INVALID: Tool at index ${String(index)} is missing a valid name.`,
+        );
+      }
+      const description = asString(payload?.description) ?? "";
+      const inputSchema = asObject(payload?.inputSchema) ?? {};
+      const handler =
+        typeof payload?.handler === "function"
+          ? (payload.handler as (args: unknown) => Promise<Record<string, unknown>>)
+          : null;
+      if (!handler) {
+        throw new Error(
+          `CLAUDE_MCP_TOOL_INVALID: Tool '${name}' is missing a valid handler.`,
+        );
+      }
+
+      const annotations = asObject(payload?.annotations);
+      return {
+        name,
+        description,
+        inputSchema,
+        handler,
+        ...(annotations ? { annotations } : {}),
+      };
+    });
+
+    const mcpServerConfig = await this.callSdkFunction(createSdkMcpServerFn, {
+      name: options.name,
+      tools: normalizedTools,
+    });
+    return asObject(mcpServerConfig);
+  }
+
+  private async loadModuleSafe(): Promise<ClaudeSdkModuleLike | null> {
+    if (this.cachedSdkModule) {
+      return this.cachedSdkModule;
+    }
+
+    try {
+      const loaded = (await import(CLAUDE_AGENT_SDK_MODULE_NAME)) as ClaudeSdkModuleLike;
+      this.cachedSdkModule = loaded;
+      return loaded;
+    } catch {
+      return null;
+    }
+  }
+
+  private resolveFunction(
+    sdk: ClaudeSdkModuleLike | null,
+    functionName: ClaudeSdkFunctionName,
+  ): ((...args: unknown[]) => unknown) | null {
+    if (!sdk) {
+      return null;
+    }
+
+    const candidate = sdk[functionName];
+    if (typeof candidate === "function") {
+      return candidate as (...args: unknown[]) => unknown;
+    }
+
+    const nested = sdk.default?.[functionName];
+    if (typeof nested === "function") {
+      return nested as (...args: unknown[]) => unknown;
+    }
+
+    return null;
+  }
+
+  private buildQueryOptions(
+    options: ClaudeSdkStreamingSessionOptions,
+    spawnEnvironment: Record<string, string | undefined>,
+  ): Record<string, unknown> {
+    const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
+    const settingSources = getClaudeRuntimeSettingSources();
+    const allowedTools = new Set<string>();
+    for (const toolName of options.allowedTools ?? []) {
+      const normalizedToolName = asString(toolName)?.trim();
+      if (!normalizedToolName) {
+        continue;
+      }
+      allowedTools.add(normalizedToolName);
+    }
+    return {
+      model: options.model,
+      ...(options.debugFile ? { debugFile: options.debugFile } : {}),
+      ...(options.systemPrompt ? { systemPrompt: options.systemPrompt } : {}),
+      pathToClaudeCodeExecutable,
+      permissionMode: options.permissionMode ?? "default",
+      ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
+      env: spawnEnvironment,
+      tools: [...CLAUDE_BUILT_IN_TOOLS_ENABLED_BY_AUTOBYTEUS],
+      disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],
+      ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
+      ...(options.sessionBinding.kind === "create"
+        ? { sessionId: options.sessionBinding.sessionId }
+        : { resume: options.sessionBinding.sessionId }),
+      ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),
+      ...(options.stderr ? { stderr: options.stderr } : {}),
+      settingSources,
+      ...(options.thinking ? { thinking: options.thinking } : {}),
+      ...(options.effort ? { effort: options.effort } : {}),
+      ...(options.canUseTool ? { canUseTool: options.canUseTool } : {}),
+    };
+  }
+
+  private async resolveSpawnEnvironment(
+    explicitEnvironment?: Record<string, string | undefined>,
+  ): Promise<Record<string, string | undefined>> {
+    const effectiveEnvironment = explicitEnvironment ?? process.env;
+    if (resolveClaudeSdkAuthMode(effectiveEnvironment) !== "api-key") {
+      return explicitEnvironment ?? buildClaudeSdkSpawnEnvironment(effectiveEnvironment);
+    }
+
+    try {
+      const apiKey = await this.resolveClaudeApiKey();
+      return buildClaudeSdkSpawnEnvironment(
+        effectiveEnvironment,
+        apiKey.revealToTrustedConsumer(),
+      );
+    } catch {
+      throw new Error(CLAUDE_API_KEY_UNAVAILABLE);
+    }
+  }
+
+  private async callSdkFunction(
+    fn: (...args: unknown[]) => unknown,
+    ...args: unknown[]
+  ): Promise<unknown> {
+    return Promise.resolve(fn(...args));
+  }
+
+  private async tryGetSupportedModelsFromQueryControl(
+    sdk: ClaudeSdkModuleLike | null,
+    env?: Record<string, string | undefined>,
+  ): Promise<NormalizedModelDescriptor[]> {
+    const queryFn = this.resolveFunction(sdk, "query");
+    if (!queryFn) {
+      return [];
+    }
+
+    const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
+    const settingSources = getClaudeCatalogSettingSources();
+
+    let controlLike: Record<string, unknown> | null = null;
+    try {
+      const result = await queryFn({
+        prompt: MODEL_DISCOVERY_PROBE_PROMPT,
+        options: {
+          maxTurns: 0,
+          permissionMode: "plan",
+          cwd: process.cwd(),
+          pathToClaudeCodeExecutable,
+          settingSources,
+          ...(env ? { env } : {}),
+        },
+      });
+
+      controlLike = asObject(result);
+      if (!controlLike) {
+        return [];
+      }
+
+      const supportedModelsFn =
+        typeof controlLike.supportedModels === "function"
+          ? (controlLike.supportedModels as (...args: unknown[]) => Promise<unknown>)
+          : null;
+      if (supportedModelsFn) {
+        const rows = await supportedModelsFn.call(result);
+        const normalized = normalizeModelDescriptors(rows);
+        if (normalized.length > 0) {
+          return normalized;
+        }
+      }
+
+      return [];
+    } catch {
+      return [];
+    } finally {
+      await closeQueryControl(controlLike);
+    }
+  }
+}
+
+export const getClaudeSdkClient = (): ClaudeSdkClient => {
+  if (!cachedClaudeSdkClient) {
+    cachedClaudeSdkClient = new ClaudeSdkClient();
+  }
+  return cachedClaudeSdkClient;
+};

@@ -1,0 +1,6 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round12-cleanup-check.py
+{'recordAbsent': True, 'dataRootAbsent': True, 'portsFreeBind': {'59466': True, '59467': True}, 'capturedOwnPidsStillPresent': [], 'foreignRecordsUnchanged': True, 'archiveFilesVerified': 31}
+
+PROCESS_EXIT_CODE=0

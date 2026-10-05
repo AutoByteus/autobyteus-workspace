@@ -1,0 +1,7 @@
+2026-10-04T06:30:56.493977+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-physical-recursive-probe.mjs"]
+Error: TIMEOUT all actual recursive six worker saved-byte reads including helper-Team further delegation
+
+INNER_EXIT=1
+ELAPSED=258.66

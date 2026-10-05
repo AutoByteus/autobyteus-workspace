@@ -1,0 +1,9 @@
+START 2026-10-05T04:58:42.049822+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-cleanup.py"]
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-cleanup.py", line 31, in <module>
+    with socket.socket() as s:s.bind(('127.0.0.1',port));ports[str(port)]=True
+OSError: [Errno 48] Address already in use
+
+INNER_EXIT_CODE=1

@@ -1,0 +1,13 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=git diff --check
+autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts:108: leftover conflict marker
+autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts:112: leftover conflict marker
+autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts:116: leftover conflict marker
+autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts:44: leftover conflict marker
+autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts:47: leftover conflict marker
+autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts:61: leftover conflict marker
+autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts:30: leftover conflict marker
+autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts:34: leftover conflict marker
+autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts:110: leftover conflict marker
+
+PROCESS_EXIT_CODE=2

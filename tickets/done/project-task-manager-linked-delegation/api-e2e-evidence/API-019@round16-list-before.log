@@ -1,0 +1,66 @@
+2026-10-04T18:36:09.097814+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["pnpm", "--silent", "isolated-app", "list"]
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": [
+      {
+        "instanceId": "iso-52483-84f0",
+        "pid": 64222,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:52484",
+        "graphqlUrl": "http://127.0.0.1:52484/graphql",
+        "controlEndpoint": "http://127.0.0.1:52483",
+        "controlPort": 52483,
+        "serverPort": 52484,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5bvwnO",
+        "ownsDataRoot": true,
+        "keepDataRoot": false,
+        "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5bvwnO/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52483-84f0.log",
+        "startedAt": "2026-09-30T10:40:07.537Z",
+        "running": false
+      },
+      {
+        "instanceId": "iso-52977-8d78",
+        "pid": 92125,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:52978",
+        "graphqlUrl": "http://127.0.0.1:52978/graphql",
+        "controlEndpoint": "http://127.0.0.1:52977",
+        "controlPort": 52977,
+        "serverPort": 52978,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-wKOsFC",
+        "ownsDataRoot": true,
+        "keepDataRoot": true,
+        "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-wKOsFC/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52977-8d78.log",
+        "startedAt": "2026-10-04T17:47:18.422Z",
+        "running": false
+      },
+      {
+        "instanceId": "iso-53160-67d9",
+        "pid": 88709,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:53161",
+        "graphqlUrl": "http://127.0.0.1:53161/graphql",
+        "controlEndpoint": "http://127.0.0.1:53160",
+        "controlPort": 53160,
+        "serverPort": 53161,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8mpAaB",
+        "ownsDataRoot": true,
+        "keepDataRoot": true,
+        "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8mpAaB/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-53160-67d9.log",
+        "startedAt": "2026-10-04T18:27:29.715Z",
+        "running": true
+      }
+    ]
+  }
+}
+
+INNER_EXIT=0
+ELAPSED=0.45

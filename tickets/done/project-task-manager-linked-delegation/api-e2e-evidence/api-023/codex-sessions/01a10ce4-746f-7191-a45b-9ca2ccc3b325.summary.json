@@ -1,0 +1,26 @@
+{
+ "thread": "01a10ce4-746f-7191-a45b-9ca2ccc3b325",
+ "originator": "autobyteus-server-ts",
+ "cli": "0.160.0",
+ "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rQphUM/server-data/temp_workspace",
+ "base_instructions_head": "## Agent Identity\n\n- Name: UI Report Worker\n- Description: Does assigned work and reports the result back.\n\n### Responsi",
+ "turn_context_multi_agent_version": [
+  "v2",
+  "v2"
+ ],
+ "has_multi_agent_role_developer_prompt": true,
+ "calls": [
+  {
+   "name": "exec",
+   "autobyteus_tools": [],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__send_message_to"
+   ],
+   "target": null
+  }
+ ]
+}

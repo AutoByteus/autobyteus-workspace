@@ -1,0 +1,20 @@
+[
+  {
+    "projectId": "project_4e3901c8-3755-4ba6-ad30-c49ec80ffea0",
+    "name": "API016 North planning",
+    "description": "Owned ambiguity acceptance witness only",
+    "createdAt": "2026-10-04T18:37:39.854Z",
+    "updatedAt": "2026-10-04T18:37:39.854Z",
+    "workspaces": [],
+    "tasks": []
+  },
+  {
+    "projectId": "project_bbf337fc-08d2-4915-b283-19b832818747",
+    "name": "API016 South planning",
+    "description": "Owned ambiguity acceptance witness only",
+    "createdAt": "2026-10-04T18:37:39.877Z",
+    "updatedAt": "2026-10-04T18:37:39.877Z",
+    "workspaces": [],
+    "tasks": []
+  }
+]

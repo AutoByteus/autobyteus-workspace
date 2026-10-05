@@ -1,0 +1,67 @@
+case=API-009
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round12-native-agent-start-observations.mjs
+ZodError: [
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+      "base_change_sequence"
+    ],
+    "message": "Invalid input: expected number, received undefined"
+  },
+  {
+    "expected": "boolean",
+    "code": "invalid_type",
+    "path": [
+      "is_active"
+    ],
+    "message": "Invalid input: expected boolean, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "execution_tree"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "communication_messages"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "agent_statuses"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "root_subject_kind",
+      "root_run_id",
+      "root_agent"
+    ],
+    "path": [],
+    "message": "Unrecognized keys: \"root_subject_kind\", \"root_run_id\", \"root_agent\""
+  }
+]
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round12-native-agent-start-observations.mjs:9:482
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+PROCESS_EXIT_CODE=1

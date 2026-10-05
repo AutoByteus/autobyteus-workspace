@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-04T18:59:05.927123+00:00",
+  "checkpoint": "Pre-result-return; not constraint on later authorized owner edits",
+  "incomingReferences": 4167,
+  "exactReferences": 4166,
+  "all20DurableHashesExact": true,
+  "sourceReportExact": true,
+  "priorCRR001Through020ReconstructByteExact": true,
+  "headBranchStashIndexBytesStagesExact": true,
+  "zeroUnmerged": true,
+  "diffHEADAndCachedCheckExit0": true,
+  "existingDirtyStatusPreserved": true,
+  "disabledSelectedDurables": [],
+  "noSourceTestAppDBCredentialOrGitWrites": true,
+  "routing": "Requesting API owner result return only; explicit Delivery hold; no source/failure/rerun assignment"
+}

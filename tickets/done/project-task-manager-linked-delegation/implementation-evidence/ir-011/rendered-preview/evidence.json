@@ -1,0 +1,202 @@
+{
+  "scope": "Local current Nuxt standalone child rows + production store/stored GraphQL facade hydration and message panel over controlled public fixture. No runtime, API product validation, provider inference or desktop proof.",
+  "port": 56421,
+  "operations": [
+    {
+      "name": "GetAgentRunCollaboration",
+      "mode": "valid",
+      "variables": {
+        "runId": "host-run"
+      }
+    },
+    {
+      "name": "GetAgentRunCollaborationMemberProjection",
+      "mode": "valid",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      }
+    },
+    {
+      "name": "GetAgentRunCollaborationMemberProjection",
+      "mode": "valid",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/prototyper",
+        "agentRunId": "pp-run"
+      }
+    },
+    {
+      "name": "GetAgentRunCollaborationMemberProjection",
+      "mode": "valid",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/bootstrapper",
+        "agentRunId": "pb-run"
+      }
+    },
+    {
+      "name": "GetAgentRunCollaboration",
+      "mode": "error",
+      "variables": {
+        "runId": "host-run"
+      }
+    },
+    {
+      "name": "GetAgentRunCollaboration",
+      "mode": "empty",
+      "variables": {
+        "runId": "host-run"
+      }
+    },
+    {
+      "name": "GetAgentRunCollaboration",
+      "mode": "valid",
+      "variables": {
+        "runId": "host-run"
+      }
+    },
+    {
+      "name": "GetAgentRunCollaborationMemberProjection",
+      "mode": "valid",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      }
+    },
+    {
+      "name": "GetAgentRunCollaborationMemberProjection",
+      "mode": "valid",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/prototyper",
+        "agentRunId": "pp-run"
+      }
+    },
+    {
+      "name": "GetAgentRunCollaborationMemberProjection",
+      "mode": "valid",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/bootstrapper",
+        "agentRunId": "pb-run"
+      }
+    }
+  ],
+  "events": [],
+  "states": {
+    "loaded": {
+      "loading": false,
+      "selected": null,
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": [
+        "computer use agent"
+      ]
+    },
+    "agent": {
+      "loading": false,
+      "selected": "cua-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": [
+        "Research Assistant"
+      ]
+    },
+    "member": {
+      "loading": false,
+      "selected": "pp-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/prototyper",
+        "agentRunId": "pp-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": []
+    },
+    "mobileGeometry": {
+      "width": 358,
+      "right": 374,
+      "viewport": 390
+    },
+    "error": {
+      "loading": false,
+      "selected": "cua-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": "Controlled stored inspection failure",
+      "labels": [
+        "Research Assistant"
+      ]
+    },
+    "empty": {
+      "loading": false,
+      "selected": "cua-run",
+      "rows": [],
+      "error": "Controlled stored inspection failure"
+    },
+    "recovered": {
+      "loading": false,
+      "selected": "cua-run",
+      "target": {
+        "kind": "standaloneMember",
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      },
+      "rows": [
+        "computer use agent",
+        "product team",
+        "prototyper",
+        "bootstrapper"
+      ],
+      "error": null,
+      "labels": [
+        "Research Assistant"
+      ]
+    }
+  },
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtExitCode": null,
+    "nuxtSignal": "SIGTERM",
+    "temporaryRouteRemoved": true
+  },
+  "pid": 32462,
+  "result": "Pass local rendered integration self-check"
+}

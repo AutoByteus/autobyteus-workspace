@@ -1,0 +1,7 @@
+2026-10-04T05:51:09.242304+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round13-owned-agy-stop.mjs"]
+Scoped Pass real AgyStreamProcess awaits actual owned child close and captured detached background process group exit; repeated stop idempotent. External CLI emulated; no installed model/provider certificate.
+
+INNER_EXIT=0
+ELAPSED=2.02

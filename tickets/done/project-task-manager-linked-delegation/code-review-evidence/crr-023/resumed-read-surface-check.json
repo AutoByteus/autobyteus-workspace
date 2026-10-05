@@ -1,0 +1,47 @@
+{
+  "reason": "Interruption reset functions store; resumed workdir load was undefined. The six body reads therefore used default superrepo. Comparison below prevents treating noncurrent bytes as current review. No files changed by those reads. A metadata read failed on undefined path and is not validation. All divergent bodies are reread from explicit current worktree before verdict.",
+  "rows": [
+    {
+      "number": 13,
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+      "superrepoSha256": "01d3c8f3d7d8ceeb8e5d0450f4ac659943cd063b3ba64dd59beeb904e2ed03b7",
+      "worktreeSha256": "5b89f89dbf1cadcd5348592cc4fbcfe993108a1f6c86237159e7feca2699b057",
+      "readBytesMatchCurrent": false
+    },
+    {
+      "number": 14,
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+      "superrepoSha256": "e9f87235a48535b40d09a027f351086d2b15d8b81ee1869b0c28d6294f6babac",
+      "worktreeSha256": "edcee6190f989db9cdafbdf4cd2835faffd463edbfca0d3e0dfbd22ae9805083",
+      "readBytesMatchCurrent": false
+    },
+    {
+      "number": 15,
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+      "superrepoSha256": "c9074ff36d3fcfdf28d8f3dc7f45ec029f9656f8fc31106282328ea31820952d",
+      "worktreeSha256": "0fa0788c48e46fc8b5bfa714f4b06c560a3ec01a6a5bd376b7623bb7003122eb",
+      "readBytesMatchCurrent": false
+    },
+    {
+      "number": 16,
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts",
+      "superrepoSha256": "a092ec1c795c66594ece61070a0ef846fe9ca156a2657b6656a39e15d838a007",
+      "worktreeSha256": "706eb96c58c1e5575e516b06c8a653647c09428571f078bfe9e940869ef06a6e",
+      "readBytesMatchCurrent": false
+    },
+    {
+      "number": 19,
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts",
+      "superrepoSha256": "2a9399c1c85fcdcb197875c6471e7632126a3c70ea6d346ed3f55f611f6d15b2",
+      "worktreeSha256": "e0f6d5f14473fb1718d69f96f0ed3e19e0cc7fd260e92300ef1ad3bb17d54de2",
+      "readBytesMatchCurrent": false
+    },
+    {
+      "number": 20,
+      "path": "autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+      "superrepoSha256": "4dde3152446411a2b218b6aa712ace600ba9cab2b3375424935ca994ef2ff4b7",
+      "worktreeSha256": "da638bd829c8438cd2253e62d62242c4d70089eef35c8722ec5549cbdcc5306b",
+      "readBytesMatchCurrent": false
+    }
+  ]
+}

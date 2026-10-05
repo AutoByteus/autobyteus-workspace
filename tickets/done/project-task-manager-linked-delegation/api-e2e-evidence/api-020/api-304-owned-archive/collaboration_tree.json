@@ -1,0 +1,111 @@
+{
+  "subjectKind": "agent",
+  "createdAt": "2026-10-05T14:38:48.895Z",
+  "host": {
+    "address": "/project_task_manager",
+    "agentRunId": "project_task_manager_43c17bd2f7c1466fa69faac7e8caaaf2",
+    "agentDefinitionId": "autobyteus-project-task-manager"
+  },
+  "collaborators": [
+    {
+      "kind": "agent",
+      "address": "/api020_packet_agent",
+      "agentDefinitionId": "api020-packet-agent",
+      "agentRunId": "api020_packet_agent_e4ca21fb6af24617a361ab5f701f7848",
+      "platformAgentRunId": null,
+      "launchConfiguration": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "llmConfig": {
+          "thinking_type": "disabled"
+        },
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vS0oH6/validation-workspace/reply"
+      },
+      "addedAt": "2026-10-05T14:39:12.199Z",
+      "addedViaAgentRunId": "api020_delegate_helper_8678fb29ffe942f5b5653d55ec6a139b"
+    }
+  ],
+  "taskExecutions": [
+    {
+      "address": "/api020_packet_agent",
+      "agentRunId": "api020_packet_agent_a59f966eb88446e1a4362621bbc34591",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "project_task_manager_43c17bd2f7c1466fa69faac7e8caaaf2",
+      "startedAt": "2026-10-05T14:38:52.152Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api020-packet-agent",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vS0oH6/validation-workspace/reply"
+        }
+      }
+    },
+    {
+      "address": "/api020_delegate_helper",
+      "agentRunId": "api020_delegate_helper_ce3df6b0c0e44be3ae544055d794ae73",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "api020_packet_agent_a59f966eb88446e1a4362621bbc34591",
+      "startedAt": "2026-10-05T14:38:58.522Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api020-delegate-helper",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vS0oH6/validation-workspace/reply"
+        }
+      }
+    },
+    {
+      "address": "/api020_packet_agent",
+      "agentRunId": "api020_packet_agent_36f5a1a0dbe1448ea7ac9fb81d917f79",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "project_task_manager_43c17bd2f7c1466fa69faac7e8caaaf2",
+      "startedAt": "2026-10-05T14:39:07.044Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api020-packet-agent",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vS0oH6/validation-workspace/reply"
+        }
+      }
+    },
+    {
+      "address": "/api020_delegate_helper",
+      "agentRunId": "api020_delegate_helper_8678fb29ffe942f5b5653d55ec6a139b",
+      "platformAgentRunId": null,
+      "delegatorAgentRunId": "api020_packet_agent_36f5a1a0dbe1448ea7ac9fb81d917f79",
+      "startedAt": "2026-10-05T14:39:10.954Z",
+      "source": {
+        "kind": "agent",
+        "agentDefinitionId": "api020-delegate-helper",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vS0oH6/validation-workspace/reply"
+        }
+      }
+    }
+  ]
+}

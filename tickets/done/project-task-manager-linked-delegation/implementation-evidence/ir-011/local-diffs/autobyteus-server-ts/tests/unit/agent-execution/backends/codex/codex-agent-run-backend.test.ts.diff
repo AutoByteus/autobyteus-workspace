@@ -1,0 +1,24 @@
+--- incoming-merge/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts
++++ IR-011/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts
+@@ -60,6 +60,7 @@
+ const createBackend = (overrides: Record<string, unknown> = {}) => {
+   const threadManager = {
+     hasThread: vi.fn().mockReturnValue(true),
++    getThread: vi.fn(() => codexThread),
+     terminateThread: vi.fn().mockResolvedValue(undefined),
+   };
+ 
+@@ -343,9 +344,12 @@
+       });
+       await startCompaction(emitThreadEvent, events);
+       const errorLog = vi.spyOn(console, "error").mockImplementation(() => undefined);
+-      await expect(backend.terminate()).resolves.toEqual({ accepted: true });
++      await expect(backend.terminate()).resolves.toMatchObject({ accepted: false, code: "RUNTIME_COMMAND_FAILED" });
+       expect(threadManager.terminateThread).toHaveBeenCalledTimes(1);
+       expect(String(errorLog.mock.calls[0]?.[0])).toContain("Failed to publish abandoned Codex compactions");
++      // Physical termination still ran, but a missing canonical delivery proof
++      // cannot become a successful release merely because compaction is closed.
++      await expect(backend.terminate()).resolves.toMatchObject({ accepted: false, code: "RUNTIME_COMMAND_FAILED" });
+       errorLog.mockRestore();
+     });
+   });

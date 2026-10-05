@@ -1,0 +1,10 @@
+2026-10-04T18:39:12.165766+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round16-owned-cleanup.py", "verify"]
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round16-owned-cleanup.py", line 23, in <module>
+    a=load('api-016-owned-evidence-manifest.json');before=parseLog('API-019@round16-list-before.log')['result']['instances'];after=parseLog('API-019@round16-list-after.log')['result']['instances'];assert after==before
+AssertionError
+
+INNER_EXIT=1
+ELAPSED=0.06

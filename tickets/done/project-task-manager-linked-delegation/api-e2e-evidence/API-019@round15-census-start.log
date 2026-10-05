@@ -1,0 +1,7 @@
+2026-10-04T08:00:18.303974+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-own-census.py", "fresh-start"]
+Captured own census 7 current 7 cumulative PIDs
+
+INNER_EXIT=0
+ELAPSED=0.1

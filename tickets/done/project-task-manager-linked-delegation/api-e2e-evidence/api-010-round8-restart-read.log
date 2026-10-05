@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-lifecycle-probe.mjs restart-read
+Scoped Pass: exact own app restart preserves current physical Project array/tree; normal readers do not rewrite, closed B stays fenced/open A restores same authority and actually reads saved bytes.
+
+PROCESS_EXIT_CODE=0

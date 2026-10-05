@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-03T16:08:20.969917+00:00",
+  "ownInstance": "iso-55024-a24c",
+  "ownBackendPID": 31575,
+  "ownBackendParentPID": 30630,
+  "ownServerPort": 55025,
+  "inspectorPort": 9229,
+  "portOwner": {
+    "pid": 45446,
+    "parent": 44468,
+    "instanceId": "iso-54639-13b7",
+    "foreign": true
+  },
+  "signalSent": false,
+  "foreignConnectedOrStopped": false,
+  "supportedAlternateInspection": "Isolated server baseline explicitly drops NODE_OPTIONS; macOS launcher only passes entry/port/data-dir. No documented live alternate-port setter. Do not bypass isolation/startup or inject source instrumentation.",
+  "failureRoot": "api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb",
+  "failureLifetime": "project_task_lifetime_d25faaac-5824-4dd3-baa6-a0229195beca",
+  "next": "User arrangement for port owner to release inspector; retain current case briefly for one actual same-authority retry. No generic old-cause handoff."
+}

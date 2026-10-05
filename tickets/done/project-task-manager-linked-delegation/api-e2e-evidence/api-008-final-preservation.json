@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-03T16:23:46.010539+00:00",
+  "reviewedPaths": 283,
+  "unchanged": 283,
+  "missing": [],
+  "changedReviewed": [],
+  "actualNonTicketDirtyPaths": 284,
+  "additionalIntentionalTest": [
+    "autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts"
+  ],
+  "baselineTestBeforeSha256": "ddab050d17a0d6b74b42eaa4dcb742eda05795d904f6291db743069614308bb2",
+  "baselineTestCurrentSha256": "c5f882bce2f35446d947a6ebee6f9dda9fe0723fc04543dd002cc78e8a841bd9",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "diffCheckExit": 0,
+  "scope": "All283 incoming reviewed source/template/test/SDK paths preserved byte-for-byte; one previously clean tracked baseline HTTP test intentionally updated. No production source edits by API."
+}

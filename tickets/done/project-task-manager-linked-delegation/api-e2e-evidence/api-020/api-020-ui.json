@@ -1,0 +1,41 @@
+{
+  "at": "2026-10-05T14:40:41.662Z",
+  "instanceId": "iso-49888-65b8",
+  "listText": "Projects\n\nGroup related workspaces under a named project and describe what each one is for.\n\nNew project\nSearch projects\nAPI020 reply 9e43bbf6\n\nFAPI-012 re-baseline\n\nNo open tasks · No workspaces",
+  "boardText": "Search tasks\nRefresh\nNew task\nTo Do\n0\n\nNo tasks\n\nIn Progress\n0\n\nNo tasks\n\nDone\n1\nAPI020 Task R: wait for the user's follow-up instructions and report briefly to the requester. Do not change any Task status.",
+  "columns": [
+    {
+      "id": "project-task-column-TODO",
+      "text": "To Do\n0\n\nNo tasks"
+    },
+    {
+      "id": "project-task-column-count",
+      "text": "0"
+    },
+    {
+      "id": "project-task-column-empty",
+      "text": "No tasks"
+    },
+    {
+      "id": "project-task-column-IN_PROGRESS",
+      "text": "In Progress\n0\n\nNo tasks"
+    },
+    {
+      "id": "project-task-column-count",
+      "text": "0"
+    },
+    {
+      "id": "project-task-column-empty",
+      "text": "No tasks"
+    },
+    {
+      "id": "project-task-column-DONE",
+      "text": "Done\n1\nAPI020 Task R: wait for the user's follow-up instructions and report briefly to the requester. Do not change any Task status."
+    },
+    {
+      "id": "project-task-column-count",
+      "text": "1"
+    }
+  ],
+  "result": "pass"
+}

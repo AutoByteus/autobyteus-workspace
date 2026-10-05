@@ -1,0 +1,6 @@
+agent_message_board                      under development  false
+external_agent_memory_import             under development  false
+multi_agent                              stable             false
+multi_agent_mode                         removed            false
+multi_agent_v2                           stable             false
+use_agent_identity                       under development  false

@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-05T05:20:59.793206+00:00",
+  "incomingReferences": 6020,
+  "missing": [],
+  "changed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "all20CurrentAndAcceptedExact": true,
+  "all545PackageExact": true,
+  "sourceCRR022Exact": true,
+  "priorCRR001Through022ExactPrefix": true,
+  "gitAllFieldsAndCurrentInputBinaryIndexExact": true,
+  "indexSha256": "7b88df25613022646974421c128cb3570c6c4bba26ee0efd141540a2fa33baea",
+  "zeroUnmerged": true,
+  "api17OriginalBinaryIndexExact": false,
+  "scope": "Read-only review preserves API17 current disclosed stat-cache derivative; no restoration, semantic Git mutation or original-byte-exact claim."
+}

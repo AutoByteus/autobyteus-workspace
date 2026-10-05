@@ -1,0 +1,10 @@
+{
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "producer": "Archived HEAD ProjectStore.updateRecords; real released array writer; no current schema/helper generation",
+  "fixture": "tests/fixtures/projects-released-array.json",
+  "fixtureSha256": "2c3e0ce7eff6abcee143bef23fecc1c1657359bc99a7b9612cb67da50209520e",
+  "writerSha256": "98130193353de803dfb0057cc9bac9ca56ae8a33d91cebb46b491798b0544d8f",
+  "scope": "Representative released Project with saved TODO Task/no attachments; not every released malformed variant",
+  "dependencies": "Archived HEAD server/core source with shared installed node_modules; default isolated scratch DB reset; scratch removed",
+  "reproduction": "create-released-project-fixture.py retained in task API/E2E evidence; git archive exact HEAD server/core; default Vitest invokes actual ProjectStore.updateRecords"
+}

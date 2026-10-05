@@ -1,0 +1,6 @@
+START 2026-10-05T04:49:17.356514+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-artifact-check.py"]
+{"resources": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources", "distFiles": 4426, "allDistExact": true, "all545Exact": true, "asar": "1928bc0593f9bdd2f4b2730acc88a45232b9c30ff5957627b86c5aae2eb48f10", "sdkVersion": "0.3.280"}
+
+INNER_EXIT_CODE=0

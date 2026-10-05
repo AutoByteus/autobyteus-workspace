@@ -1,0 +1,29 @@
+{
+  "instanceId": "iso-49296-0746",
+  "kind": "agent",
+  "steps": [
+    {
+      "phase": "run",
+      "name": "root created",
+      "at": "2026-10-05T14:18:10.672Z",
+      "rootId": "project_task_manager_4d673977218a4d1587a7152829ec3ae4",
+      "managerRunId": "project_task_manager_4d673977218a4d1587a7152829ec3ae4"
+    }
+  ],
+  "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent",
+  "project": {
+    "projectId": "project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b"
+  },
+  "tasks": {
+    "A": {
+      "taskId": "project_task_42241be0-8a55-4919-8f66-58833200ac73"
+    },
+    "B": {
+      "taskId": "project_task_1e13fcc4-def6-485c-bca0-6663403071ab"
+    }
+  },
+  "rootId": "project_task_manager_4d673977218a4d1587a7152829ec3ae4",
+  "managerRunId": "project_task_manager_4d673977218a4d1587a7152829ec3ae4",
+  "error": "Error: TIMEOUT Manager assigns A and B",
+  "stack": "Error: TIMEOUT Manager assigns A and B\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-019/api-019-probe.mjs:28:9)\n    at async ask (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-019/api-019-probe.mjs:128:3)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-019/api-019-probe.mjs:190:20"
+}

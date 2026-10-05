@@ -1,0 +1,324 @@
+import {
+  Arg,
+  Field,
+  InputType,
+  Int,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+} from "type-graphql";
+import { GraphQLJSON } from "graphql-scalars";
+import { getAgentRunHistoryService } from "../../../run-history/services/agent-run-history-service.js";
+import { getAgentRunViewProjectionService } from "../../../run-history/services/agent-run-view-projection-service.js";
+import { getStudioRunModelConfigService } from "../studio-application-api-services.js";
+import { getWorkspaceRunHistoryService } from "../../../run-history/services/workspace-run-history-service.js";
+import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
+import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
+import { RunModelConfigEditabilityObject } from "./run-model-config.js";
+
+@ObjectType()
+class RunHistoryItemObject {
+  @Field(() => String)
+  runId!: string;
+
+  @Field(() => String)
+  summary!: string;
+
+  @Field(() => String)
+  createdAt!: string;
+
+  @Field(() => String, { nullable: true })
+  archivedAt?: string | null;
+
+  @Field(() => String, { nullable: true })
+  terminatedAt?: string | null;
+
+  @Field(() => Boolean)
+  hasCollaboration!: boolean;
+
+  @Field(() => String)
+  status!: string;
+
+  @Field(() => Boolean)
+  isActive!: boolean;
+
+  @Field(() => Boolean)
+  shouldConnectStream!: boolean;
+
+  @Field(() => String)
+  statusSource!: string;
+}
+
+@ObjectType()
+class RunHistoryAgentGroupObject {
+  @Field(() => String)
+  agentDefinitionId!: string;
+
+  @Field(() => String)
+  agentName!: string;
+
+  @Field(() => [RunHistoryItemObject])
+  runs!: RunHistoryItemObject[];
+}
+
+@ObjectType("WorkspaceHistoryTeamRunMemberObject")
+class WorkspaceHistoryTeamRunMemberObject {
+  @Field(() => String)
+  memberAddress!: string;
+
+  @Field(() => String)
+  displayName!: string;
+
+  @Field(() => String)
+  agentRunId!: string;
+
+  @Field(() => String)
+  status!: string;
+
+  @Field(() => String)
+  runtimeKind!: string;
+
+  @Field(() => String, { nullable: true })
+  workspaceRootPath?: string | null;
+}
+
+@ObjectType("WorkspaceHistoryTeamRunItemObject")
+class WorkspaceHistoryTeamRunItemObject {
+  @Field(() => String)
+  teamRunId!: string;
+
+  @Field(() => String)
+  teamDefinitionId!: string;
+
+  @Field(() => String)
+  teamDefinitionName!: string;
+
+  @Field(() => String)
+  coordinatorAddress!: string;
+
+  @Field(() => String, { nullable: true })
+  workspaceRootPath?: string | null;
+
+  @Field(() => String)
+  summary!: string;
+
+  @Field(() => String)
+  createdAt!: string;
+
+  @Field(() => String, { nullable: true })
+  archivedAt?: string | null;
+
+  @Field(() => String, { nullable: true })
+  terminatedAt?: string | null;
+
+  @Field(() => Boolean)
+  isActive!: boolean;
+
+  @Field(() => [WorkspaceHistoryTeamRunMemberObject])
+  members!: WorkspaceHistoryTeamRunMemberObject[];
+
+  @Field(() => GraphQLJSON)
+  rootTeam!: unknown;
+}
+
+@ObjectType("WorkspaceHistoryTeamDefinitionObject")
+class WorkspaceHistoryTeamDefinitionObject {
+  @Field(() => String)
+  teamDefinitionId!: string;
+
+  @Field(() => String)
+  teamDefinitionName!: string;
+
+  @Field(() => [WorkspaceHistoryTeamRunItemObject])
+  runs!: WorkspaceHistoryTeamRunItemObject[];
+}
+
+@ObjectType()
+class WorkspaceRunHistoryGroupObject {
+  @Field(() => String)
+  workspaceRootPath!: string;
+
+  @Field(() => String)
+  workspaceName!: string;
+
+  @Field(() => [RunHistoryAgentGroupObject])
+  agentDefinitions!: RunHistoryAgentGroupObject[];
+
+  @Field(() => [WorkspaceHistoryTeamDefinitionObject])
+  teamDefinitions!: WorkspaceHistoryTeamDefinitionObject[];
+}
+
+@ObjectType()
+class RunProjectionPayload {
+  @Field(() => String)
+  runId!: string;
+
+  @Field(() => [GraphQLJSON])
+  conversation!: unknown[];
+
+  @Field(() => [GraphQLJSON])
+  activities!: unknown[];
+
+  @Field(() => String, { nullable: true })
+  summary?: string | null;
+
+  @Field(() => String, { nullable: true })
+  lastActivityAt?: string | null;
+
+  @Field(() => Boolean)
+  hasEarlierActiveTraceEvents!: boolean;
+}
+
+@ObjectType()
+class RunRuntimeReferenceObject {
+  @Field(() => String)
+  runtimeKind!: string;
+
+  @Field(() => String, { nullable: true })
+  sessionId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  threadId?: string | null;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  metadata?: Record<string, unknown> | null;
+}
+
+@ObjectType()
+class RunMetadataConfigObject {
+  @Field(() => String)
+  agentDefinitionId!: string;
+
+  @Field(() => String)
+  workspaceRootPath!: string;
+
+  @Field(() => String)
+  llmModelIdentifier!: string;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  llmConfig?: Record<string, unknown> | null;
+
+  @Field(() => Boolean)
+  autoExecuteTools!: boolean;
+
+  @Field(() => String)
+  runtimeKind!: string;
+
+  @Field(() => RunRuntimeReferenceObject)
+  runtimeReference!: RunRuntimeReferenceObject;
+}
+
+@ObjectType()
+class RunResumeConfigPayload {
+  @Field(() => String)
+  runId!: string;
+
+  @Field(() => Boolean)
+  isActive!: boolean;
+
+  @Field(() => RunMetadataConfigObject)
+  metadataConfig!: RunMetadataConfigObject;
+
+  @Field(() => RunModelConfigEditabilityObject)
+  modelConfigEditability!: RunModelConfigEditabilityObject;
+}
+
+@ObjectType()
+class DeleteStoredRunMutationResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  message!: string;
+}
+
+@ObjectType()
+class ArchiveStoredRunMutationResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  message!: string;
+}
+
+@Resolver()
+export class RunHistoryResolver {
+  private agentRunHistoryService = getAgentRunHistoryService();
+  private workspaceRunHistoryService = getWorkspaceRunHistoryService();
+  private workspaceManager = getWorkspaceManager();
+  private agentRunProjectionService = getAgentRunViewProjectionService();
+  private runModelConfigService = getStudioRunModelConfigService();
+
+  @Query(() => [WorkspaceRunHistoryGroupObject])
+  async listWorkspaceRunHistory(
+    @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
+  ): Promise<WorkspaceRunHistoryGroupObject[]> {
+    return this.workspaceRunHistoryService.listWorkspaceRunHistory(limitPerAgent);
+  }
+
+  @Query(() => WorkspaceRunHistoryGroupObject)
+  async workspaceRunHistory(
+    @Arg("workspaceId", () => String) workspaceId: string,
+    @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
+  ): Promise<WorkspaceRunHistoryGroupObject> {
+    const workspaceRootPath = await this.workspaceManager.getWorkspaceRootPathForHistory(workspaceId);
+    if (!workspaceRootPath) {
+      throw new Error(`Workspace '${workspaceId}' was not found or is not visible for run history.`);
+    }
+    return this.workspaceRunHistoryService.getWorkspaceRunHistory(
+      workspaceRootPath,
+      limitPerAgent,
+    );
+  }
+
+  @Query(() => RunProjectionPayload)
+  async getRunProjection(
+    @Arg("runId", () => String) runId: string,
+  ): Promise<RunProjectionPayload> {
+    return this.agentRunProjectionService.getProjection(runId);
+  }
+
+  @Query(() => EventMonitorActiveTracePageObject)
+  async getRunEventMonitorActiveTracePage(
+    @Arg("runId", () => String) runId: string,
+    @Arg("beforeCursor", () => String, { nullable: true }) beforeCursor?: string | null,
+  ): Promise<EventMonitorActiveTracePageObject> {
+    return this.agentRunProjectionService.getActiveTracePage(runId, beforeCursor);
+  }
+
+  @Query(() => RunResumeConfigPayload)
+  async getAgentRunResumeConfig(
+    @Arg("runId", () => String) runId: string,
+  ): Promise<RunResumeConfigPayload> {
+    return this.runModelConfigService.getAgentRunResumeConfig(runId);
+  }
+
+  @Mutation(() => DeleteStoredRunMutationResult)
+  async deleteStoredRun(
+    @Arg("runId", () => String) runId: string,
+  ): Promise<DeleteStoredRunMutationResult> {
+    try {
+      return await this.agentRunHistoryService.deleteStoredRun(runId);
+    } catch (error) {
+      return {
+        success: false,
+        message: String(error),
+      };
+    }
+  }
+
+  @Mutation(() => ArchiveStoredRunMutationResult)
+  async archiveStoredRun(
+    @Arg("runId", () => String) runId: string,
+  ): Promise<ArchiveStoredRunMutationResult> {
+    try {
+      return await this.agentRunHistoryService.archiveStoredRun(runId);
+    } catch (error) {
+      return {
+        success: false,
+        message: String(error),
+      };
+    }
+  }
+}

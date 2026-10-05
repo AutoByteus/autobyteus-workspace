@@ -97,6 +97,23 @@ to the caller's own address is rejected with `COLLABORATION_SELF_TARGET_REJECTED
 and Org roots. `listAvailableAgents(sender)` serves `list_available_agents` and never writes, so
 a run that only lists has no `collaboration/` package and no `hasCollaboration` flag (AR-005).
 
+## Project Task-Linked Copies
+
+The host and children use the same strict saved-ID/described `delegate_task`
+variants as Team/Org roots. The standalone tree carries no Task information.
+The root is the `hostRoot` recorded in the Task's `agent_run_resources.json`,
+and the Project Task service remains the business authority. Owned helper
+copies and further delegations belong to the same Task even when hosted as
+root-level siblings. Existing unowned collaborators are borrowed, not adopted.
+Explicit DONE closes and stops exactly that Task's runs. It never stops the
+host or unrelated collaborators, and never deletes history. Closed copies
+cannot be woken after root restore, and reopening the Task does not restart
+them.
+
+See [Project Task agent run resources](projects.md#saved-id-delegation-and-agent-run-resources),
+[message scope](agent_communication.md#task-linked-message-scope) and
+[public projection](run_history.md#task-linked-history-and-public-projection).
+
 ## Package
 
 ```text

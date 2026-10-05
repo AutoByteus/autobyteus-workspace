@@ -1,0 +1,521 @@
+import { DirectLlmCompressionStrategy, type CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js';
+import { createCompactionLlm } from '../../compaction/compaction-llm-factory.js';
+import fs from "node:fs/promises";
+import {
+  AgentConfig,
+  BaseAgentUserInputMessageProcessor,
+  BaseLLMResponseProcessor,
+  BaseLifecycleEventProcessor,
+  BaseToolExecutionResultProcessor,
+  BaseToolInvocationPreprocessor,
+  CompactionPolicy,
+  createEnabledMemoryCompactionConfiguration,
+  defaultAgentFactory,
+  defaultInputProcessorRegistry,
+  defaultLlmResponseProcessorRegistry,
+  defaultLifecycleEventProcessorRegistry,
+  defaultToolExecutionResultProcessorRegistry,
+  defaultToolInvocationPreprocessorRegistry,
+  waitForAgentToBeIdle,
+} from "autobyteus-ts";
+import type { BaseLLM, LLMFactoryConfigInput } from "autobyteus-ts";
+import type { Agent } from "autobyteus-ts/agent/agent.js";
+import { AgentDefinition } from "../../../agent-definition/domain/models.js";
+import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
+import { mergeMandatoryAndOptional } from "../../../agent-definition/utils/processor-defaults.js";
+import { RuntimeKind, runtimeKindFromString } from "../../../runtime-management/runtime-kind-enum.js";
+import { SkillService } from "../../../skills/services/skill-service.js";
+import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
+import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
+import { AgentCreationError } from "../../errors.js";
+import { AgentRunConfig } from "../../domain/agent-run-config.js";
+import { AgentRunContext, type RuntimeAgentRunContext } from "../../domain/agent-run-context.js";
+import { APPLICATION_EXECUTION_CONTEXT_KEY } from "../../../application-orchestration/domain/models.js";
+import {
+  AutoByteusAgentRunBackend,
+  type AutoByteusAgentLike,
+} from "./autobyteus-agent-run-backend.js";
+import { createBackendPreparation } from "../agent-run-backend-preparation.js";
+import type { AgentRunBackendPreparationRequest } from "../agent-run-backend-factory.js";
+import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
+import { buildAutoByteusManagedCollaborationContext } from "./autobyteus-managed-collaboration-context-builder.js";
+import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
+import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-tool-exposure.js";
+import { createAvailableLlm } from "./available-llm-construction.js";
+import type { ApplicationAgentToolCapability } from "../../../application-agent-tools/services/application-agent-tool-capability.js";
+import { resolveApplicationAwareAgentTools } from "./application-agent-tools/application-agent-tool-composer.js";
+
+const logger = {
+  info: (...args: unknown[]) => console.info(...args),
+  warn: (...args: unknown[]) => console.warn(...args),
+  error: (...args: unknown[]) => console.error(...args),
+};
+
+export type AutoByteusAgentFactoryLike = typeof defaultAgentFactory;
+
+export type AutoByteusLlmFactory = (
+  modelIdentifier: string,
+  configInput?: LLMFactoryConfigInput,
+) => Promise<BaseLLM>;
+
+export type AutoByteusAgentIdleWaiter = (
+  agent: Agent,
+  timeout?: number,
+) => Promise<void>;
+
+type ProcessorOption = { name: string; isMandatory: boolean };
+
+type ProcessorRegistry<T> = {
+  getProcessor: (name: string) => T | undefined;
+  getOrderedProcessorOptions: () => ProcessorOption[];
+};
+
+type PreprocessorRegistry<T> = {
+  getPreprocessor: (name: string) => T | undefined;
+  getOrderedProcessorOptions: () => ProcessorOption[];
+};
+
+export type ProcessorRegistries = {
+  input: ProcessorRegistry<BaseAgentUserInputMessageProcessor>;
+  llmResponse: ProcessorRegistry<BaseLLMResponseProcessor>;
+  toolExecutionResult: ProcessorRegistry<BaseToolExecutionResultProcessor>;
+  toolInvocationPreprocessor: PreprocessorRegistry<BaseToolInvocationPreprocessor>;
+  lifecycle: ProcessorRegistry<BaseLifecycleEventProcessor>;
+};
+
+type AgentLike = {
+  agentId: string;
+  start?: () => void;
+};
+
+type AutoByteusRuntimeAgentLike = AgentLike & AutoByteusAgentLike;
+
+export type AutoByteusAgentRunBackendFactoryOptions = {
+  agentFactory?: AutoByteusAgentFactoryLike;
+  agentDefinitionService?: AgentDefinitionService;
+  createLLM?: AutoByteusLlmFactory;
+  workspaceManager?: WorkspaceManager;
+  skillService?: SkillService;
+  registries?: Partial<ProcessorRegistries>;
+  waitForIdle?: AutoByteusAgentIdleWaiter;
+  compactionLlmFactory?: CompactionLlmFactory;
+  applicationAgentTools?: ApplicationAgentToolCapability | null;
+};
+
+export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
+  private readonly agentFactory: AutoByteusAgentFactoryLike;
+  private readonly agentDefinitionService: AgentDefinitionService;
+  private readonly createLLM: (
+    modelIdentifier: string,
+    configInput?: LLMFactoryConfigInput,
+  ) => Promise<BaseLLM>;
+  private readonly workspaceManager: WorkspaceManager;
+  private readonly skillService: SkillService;
+  private readonly registries: ProcessorRegistries;
+  private readonly waitForIdle: (agent: Agent, timeout?: number) => Promise<void>;
+  private readonly compactionLlmFactory: CompactionLlmFactory;
+  private readonly applicationAgentTools: ApplicationAgentToolCapability | null;
+
+  constructor(options: AutoByteusAgentRunBackendFactoryOptions = {}) {
+    this.agentFactory = options.agentFactory ?? defaultAgentFactory;
+    this.agentDefinitionService =
+      options.agentDefinitionService ?? AgentDefinitionService.getInstance();
+    this.createLLM = options.createLLM ?? createAvailableLlm;
+    this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
+    this.skillService = options.skillService ?? SkillService.getInstance();
+    this.registries = {
+      input: options.registries?.input ?? defaultInputProcessorRegistry,
+      llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
+      toolExecutionResult:
+        options.registries?.toolExecutionResult ??
+        defaultToolExecutionResultProcessorRegistry,
+      toolInvocationPreprocessor:
+        options.registries?.toolInvocationPreprocessor ??
+        defaultToolInvocationPreprocessorRegistry,
+      lifecycle: options.registries?.lifecycle ?? defaultLifecycleEventProcessorRegistry,
+    };
+    this.waitForIdle = options.waitForIdle ?? waitForAgentToBeIdle;
+    this.compactionLlmFactory =
+      options.compactionLlmFactory ?? createCompactionLlm;
+    this.applicationAgentTools = options.applicationAgentTools ?? null;
+  }
+
+  beginPreparation(request: AgentRunBackendPreparationRequest) {
+    let agent: AutoByteusRuntimeAgentLike | null = null;
+    let llm: BaseLLM | null = null;
+    let backend: AutoByteusAgentRunBackend | null = null;
+    const ownAgent = (acquired: AutoByteusRuntimeAgentLike) => { agent = acquired; };
+    const ownLlm = (acquired: BaseLLM) => { llm = acquired; };
+    return createBackendPreparation({
+      prepare: async (assertAccepting) => {
+        backend = request.kind === "new"
+          ? await this.createBackend(request.config, request.runId, assertAccepting, ownAgent, ownLlm)
+          : await this.restoreBackend(request.context, assertAccepting, ownAgent, ownLlm);
+        return backend;
+      },
+      releaseResources: async () => {
+        if (backend) {
+          const result = await backend.terminate();
+          if (!result.accepted) throw new Error(result.message ?? "Native Agent release failed.");
+        } else if (agent) {
+          await this.agentFactory.removeAgent(agent.agentId, 10);
+        } else if (llm) { await llm.cleanup(); }
+      },
+    });
+  }
+
+  private async createBackend(
+    config: AgentRunConfig,
+    agentRunId: string,
+    assertAccepting: () => void,
+    ownAgent: (agent: AutoByteusRuntimeAgentLike) => void,
+    ownLlm: (llm: BaseLLM) => void,
+  ): Promise<AutoByteusAgentRunBackend> {
+    const runId = agentRunId.trim();
+    if (!runId) {
+      throw new AgentCreationError(
+        "AutoByteus standalone backend creation requires agentRunId.",
+      );
+    }
+    const built = await this.buildAgentConfig(config, runId, ownLlm);
+    assertAccepting();
+    const memoryDir = built.resolvedRunConfig.memoryDir;
+    if (!memoryDir) {
+      throw new AgentCreationError(
+        `AutoByteus standalone backend creation for run '${runId}' requires an explicit memoryDir.`,
+      );
+    }
+    await fs.mkdir(memoryDir, { recursive: true });
+    built.agentConfig.memoryDir = memoryDir;
+    const resolvedRunConfig = new AgentRunConfig({
+      agentDefinitionId: built.resolvedRunConfig.agentDefinitionId,
+      llmModelIdentifier: built.resolvedRunConfig.llmModelIdentifier,
+      autoExecuteTools: built.resolvedRunConfig.autoExecuteTools,
+      workspaceId: built.resolvedRunConfig.workspaceId,
+      memoryDir,
+      llmConfig: built.resolvedRunConfig.llmConfig,
+      runtimeKind: built.resolvedRunConfig.runtimeKind,
+      memberExecutionContext: built.resolvedRunConfig.memberExecutionContext,
+      applicationExecutionContext: built.resolvedRunConfig.applicationExecutionContext,
+    });
+    const createAgentWithId = (
+    this.agentFactory as AutoByteusAgentFactoryLike & {
+        createAgentWithId?: (agentId: string, config: AgentConfig) => AgentLike;
+      }
+    ).createAgentWithId;
+    if (typeof createAgentWithId !== "function") {
+      throw new AgentCreationError(
+        "AutoByteus AgentFactory must support createAgentWithId(...) for explicit standalone run provisioning.",
+      );
+    }
+    assertAccepting();
+    const agent = createAgentWithId.call(this.agentFactory, runId, built.agentConfig) as AgentLike;
+    ownAgent(agent as AutoByteusRuntimeAgentLike);
+    if (agent.agentId !== runId) {
+      throw new AgentCreationError(
+        `AutoByteus AgentFactory returned agent id '${agent.agentId}' but '${runId}' was requested.`,
+      );
+    }
+    agent.start?.();
+    await this.waitForIdle(agent as Agent);
+    assertAccepting();
+    return this.createBackendFromAgent(
+      new AgentRunContext({
+        runId: agent.agentId,
+        config: resolvedRunConfig,
+        runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? null,
+      }),
+      agent as AutoByteusRuntimeAgentLike,
+    );
+  }
+
+  private async restoreBackend(
+    context: AgentRunContext<RuntimeAgentRunContext>,
+    assertAccepting: () => void,
+    ownAgent: (agent: AutoByteusRuntimeAgentLike) => void,
+    ownLlm: (llm: BaseLLM) => void,
+  ): Promise<AutoByteusAgentRunBackend> {
+    const built = await this.buildAgentConfig(context.config, context.runId, ownLlm);
+    assertAccepting();
+    const memoryDir = context.config.memoryDir;
+    if (!memoryDir) {
+      throw new AgentCreationError(
+        `AutoByteus standalone restore for run '${context.runId}' requires an explicit memoryDir.`,
+      );
+    }
+    await fs.mkdir(memoryDir, { recursive: true });
+    built.agentConfig.memoryDir = memoryDir;
+    assertAccepting();
+    const agent = this.agentFactory.restoreAgent(
+      context.runId,
+      built.agentConfig,
+      memoryDir,
+    ) as AgentLike;
+    ownAgent(agent as AutoByteusRuntimeAgentLike);
+    agent.start?.();
+    await this.waitForIdle(agent as Agent);
+    assertAccepting();
+    return this.createBackendFromAgent(
+      new AgentRunContext({
+        runId: agent.agentId,
+        config: new AgentRunConfig({
+          agentDefinitionId: context.config.agentDefinitionId,
+          llmModelIdentifier: context.config.llmModelIdentifier,
+          autoExecuteTools: context.config.autoExecuteTools,
+          workspaceId: context.config.workspaceId,
+          memoryDir,
+          llmConfig: context.config.llmConfig,
+          runtimeKind: context.config.runtimeKind,
+          memberExecutionContext: context.config.memberExecutionContext,
+          applicationExecutionContext: context.config.applicationExecutionContext,
+        }),
+        runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? context.runtimeContext,
+      }),
+      agent as AutoByteusRuntimeAgentLike,
+    );
+  }
+
+  private async buildAgentConfig(
+    options: AgentRunConfig,
+    runId: string,
+    ownLlm: (llm: BaseLLM) => void,
+  ): Promise<{ agentConfig: AgentConfig; resolvedRunConfig: AgentRunConfig }> {
+    const {
+      agentDefinitionId,
+      llmModelIdentifier,
+      autoExecuteTools,
+      workspaceId,
+      llmConfig,
+    } = options;
+
+    let agentDef: AgentDefinition | null = null;
+    try {
+      const getFreshAgentDefinitionById = (
+        this.agentDefinitionService as AgentDefinitionService & {
+          getFreshAgentDefinitionById?: (definitionId: string) => Promise<AgentDefinition | null>;
+        }
+      ).getFreshAgentDefinitionById;
+      agentDef =
+        typeof getFreshAgentDefinitionById === "function"
+          ? await getFreshAgentDefinitionById.call(this.agentDefinitionService, agentDefinitionId)
+          : await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
+    } catch (error) {
+      logger.error(
+        `Failed to fetch agent definition '${agentDefinitionId}': ${String(error)}`,
+      );
+    }
+
+    if (!agentDef) {
+      throw new AgentCreationError(
+        `AgentDefinition with ID ${agentDefinitionId} not found.`,
+      );
+    }
+
+    let workspaceInstance = workspaceId
+      ? this.workspaceManager.getWorkspaceById(workspaceId)
+      : undefined;
+    if (workspaceId && !workspaceInstance) {
+      logger.warn(
+        `Workspace with ID ${workspaceId} not found. Falling back to temp workspace.`,
+      );
+    }
+    if (!workspaceInstance) {
+      workspaceInstance = await this.workspaceManager.getOrCreateTempWorkspace();
+      logger.info(`Using temp workspace (ID: ${workspaceInstance.workspaceId}) for agent.`);
+    }
+    const workspaceRootPath = workspaceInstance?.getBasePath?.() ?? null;
+    if (!workspaceRootPath) {
+      throw new AgentCreationError("AutoByteus runtime workspace path is unavailable.");
+    }
+
+    const runtimeToolExposure = resolveAutoByteusRuntimeAgentToolExposure(
+      agentDef,
+      options.memberExecutionContext,
+    );
+
+    const { tools } = resolveApplicationAwareAgentTools({
+      agentDefinition: agentDef,
+      runtimeToolExposure,
+      senderRunId: runId,
+      runtimeKind: options.runtimeKind,
+      memberExecutionContext: options.memberExecutionContext,
+      applicationExecutionContext: options.applicationExecutionContext,
+      capability: this.applicationAgentTools,
+      logger,
+    });
+    const resolvedPrompt = composeNativeAutoByteusPrompt({
+      agentDefinition: agentDef,
+      workspaceRootPath,
+      memberExecutionContext: options.memberExecutionContext ?? null,
+    });
+
+    const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];
+    for (const name of mergeMandatoryAndOptional(agentDef.inputProcessorNames, this.registries.input)) {
+      const processor = this.registries.input.getProcessor(name);
+      if (processor) {
+        inputProcessors.push(processor);
+      } else {
+        logger.warn(
+          `Input processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
+        );
+      }
+    }
+
+    const llmResponseProcessors: BaseLLMResponseProcessor[] = [];
+    for (const name of mergeMandatoryAndOptional(
+      agentDef.llmResponseProcessorNames,
+      this.registries.llmResponse,
+    )) {
+      const processor = this.registries.llmResponse.getProcessor(name);
+      if (processor) {
+        llmResponseProcessors.push(processor);
+      } else {
+        logger.warn(
+          `LLM response processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
+        );
+      }
+    }
+
+    const toolExecutionResultProcessors: BaseToolExecutionResultProcessor[] = [];
+    for (const name of mergeMandatoryAndOptional(
+      agentDef.toolExecutionResultProcessorNames,
+      this.registries.toolExecutionResult,
+    )) {
+      const processor = this.registries.toolExecutionResult.getProcessor(name);
+      if (processor) {
+        toolExecutionResultProcessors.push(processor);
+      } else {
+        logger.warn(
+          `Tool result processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
+        );
+      }
+    }
+
+    const toolInvocationPreprocessors: BaseToolInvocationPreprocessor[] = [];
+    for (const name of mergeMandatoryAndOptional(
+      agentDef.toolInvocationPreprocessorNames,
+      this.registries.toolInvocationPreprocessor,
+    )) {
+      const processor = this.registries.toolInvocationPreprocessor.getPreprocessor(name);
+      if (processor) {
+        toolInvocationPreprocessors.push(processor);
+      } else {
+        logger.warn(
+          `Tool invocation preprocessor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
+        );
+      }
+    }
+
+    const lifecycleProcessors: BaseLifecycleEventProcessor[] = [];
+    for (const name of mergeMandatoryAndOptional(
+      agentDef.lifecycleProcessorNames,
+      this.registries.lifecycle,
+    )) {
+      const processor = this.registries.lifecycle.getProcessor(name);
+      if (processor) {
+        lifecycleProcessors.push(processor);
+      } else {
+        logger.warn(
+          `Lifecycle processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
+        );
+      }
+    }
+
+    const skillPaths: string[] = [];
+    if (this.skillService.hasEffectiveSkills(agentDef)) {
+      for (const skill of this.skillService.resolveConfiguredSkillsForAgent(agentDef)) {
+        skillPaths.push(skill.rootPath);
+        logger.info(`Resolved skill '${skill.name}' to path: ${skill.rootPath}`);
+      }
+    }
+
+    const llmInstance = await this.createLLM(
+      llmModelIdentifier,
+      llmConfig ?? undefined,
+    );
+
+    ownLlm(llmInstance);
+    const effectiveRuntimeKind =
+      runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEUS) ??
+      RuntimeKind.AUTOBYTEUS;
+
+    const initialCustomData = {
+      agent_definition_id: agentDefinitionId,
+      is_first_user_turn: true,
+      workspace_id: workspaceInstance?.workspaceId ?? null,
+      workspace_root_path: workspaceRootPath,
+      workspace_name: workspaceInstance?.getName?.() ?? workspaceInstance?.workspaceId ?? null,
+      workspace_is_temp:
+        workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
+      ...(options.memberExecutionContext
+        ? { teamContext: buildAutoByteusManagedCollaborationContext(options.memberExecutionContext) }
+        : {}),
+      ...(options.applicationExecutionContext
+        ? { [APPLICATION_EXECUTION_CONTEXT_KEY]: options.applicationExecutionContext }
+        : {}),
+    };
+
+    const memoryCompaction = createEnabledMemoryCompactionConfiguration(
+      new CompactionPolicy(), (execution) => new DirectLlmCompressionStrategy(this.compactionLlmFactory, execution),
+    );
+
+    return {
+      resolvedRunConfig: new AgentRunConfig({
+        agentDefinitionId,
+        llmModelIdentifier,
+        autoExecuteTools,
+        workspaceId: workspaceInstance?.workspaceId ?? null,
+        memoryDir: options.memoryDir ?? null,
+        llmConfig: llmConfig ?? null,
+        runtimeKind: effectiveRuntimeKind,
+        memberExecutionContext: options.memberExecutionContext ?? null,
+        applicationExecutionContext: options.applicationExecutionContext ?? null,
+      }),
+      agentConfig: new AgentConfig(
+        agentDef.name,
+        agentDef.role ?? "",
+        agentDef.description,
+        llmInstance,
+        resolvedPrompt,
+        tools,
+        autoExecuteTools,
+        inputProcessors,
+        llmResponseProcessors,
+        toolExecutionResultProcessors,
+        toolInvocationPreprocessors,
+        workspaceRootPath,
+        lifecycleProcessors,
+        initialCustomData,
+        skillPaths,
+        null,
+        memoryCompaction,
+      ),
+    };
+  }
+
+  private createBackendFromAgent(
+    context: AgentRunContext<RuntimeAgentRunContext>,
+    agent: AutoByteusRuntimeAgentLike,
+  ): AutoByteusAgentRunBackend {
+    const pendingSystemInstructionCapture = agent.context?.state.takePendingSystemInstructionCapture() ?? null;
+    return new AutoByteusAgentRunBackend(context, agent, {
+      isActive: () => this.resolveAutoByteusAgent(agent.agentId) !== null,
+      removeAgent: async (runId: string, shutdownTimeout: number) => this.agentFactory.removeAgent(runId, shutdownTimeout),
+      pendingSystemInstructionCapture,
+    });
+  }
+  private resolveAutoByteusAgent(runId: string): AutoByteusRuntimeAgentLike | null {
+    return (this.agentFactory.getAgent(runId) as AutoByteusRuntimeAgentLike | undefined) ?? null;
+  }
+}
+
+let cachedAutoByteusAgentRunBackendFactory: AutoByteusAgentRunBackendFactory | null = null;
+
+export const getAutoByteusAgentRunBackendFactory = (
+  options: AutoByteusAgentRunBackendFactoryOptions = {},
+): AutoByteusAgentRunBackendFactory => {
+  if (!cachedAutoByteusAgentRunBackendFactory) {
+    cachedAutoByteusAgentRunBackendFactory = new AutoByteusAgentRunBackendFactory(options);
+  }
+  return cachedAutoByteusAgentRunBackendFactory;
+};

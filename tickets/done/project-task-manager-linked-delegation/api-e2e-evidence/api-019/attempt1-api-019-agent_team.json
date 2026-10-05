@@ -1,0 +1,8 @@
+{
+  "instanceId": "iso-49296-0746",
+  "kind": "agent_team",
+  "steps": [],
+  "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/validation-workspace/agent_team",
+  "error": "AssertionError [ERR_ASSERTION]: [{\"message\":\"A project named 'API019 agent_team' already exists.\",\"locations\":[{\"line\":1,\"column\":34}],\"path\":[\"createProject\"],\"extensions\":{\"code\":\"PROJECT_NAME_TAKEN\"}}]",
+  "stack": "AssertionError [ERR_ASSERTION]: [{\"message\":\"A project named 'API019 agent_team' already exists.\",\"locations\":[{\"line\":1,\"column\":34}],\"path\":[\"createProject\"],\"extensions\":{\"code\":\"PROJECT_NAME_TAKEN\"}}]\n    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-019/api-019-probe.mjs:23:58)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-019/api-019-probe.mjs:178:22"
+}

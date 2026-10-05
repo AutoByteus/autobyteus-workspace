@@ -1,0 +1,52 @@
+{
+  "at": "2026-10-04T03:33:11.948111+00:00",
+  "instanceId": "iso-57259-7e1c",
+  "root": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+  "traceSummaries": [
+    {
+      "run": "api011_native_packet_agent_55f2e60b73ce4e52bb427ff2cffb8071",
+      "rows": 6,
+      "last": [
+        {
+          "type": "assistant",
+          "event": "LlmPhase",
+          "tool": null,
+          "content": "I'll read the specified file using read_file."
+        },
+        {
+          "type": "tool_call",
+          "event": "PendingToolInvocationEvent",
+          "tool": "read_file",
+          "content": ""
+        },
+        {
+          "type": "tool_result",
+          "event": "native_api_ordered_batch",
+          "tool": "read_file",
+          "content": ""
+        },
+        {
+          "type": "assistant",
+          "event": "LlmPhase",
+          "tool": null,
+          "content": "Read complete via read_file (native read-only). No messaging, delegation, or other paths touched.\n\n**Actual bytes of `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_"
+        }
+      ]
+    }
+  ],
+  "business": [
+    {
+      "id": "project_e3eb0ac7-bf87-4fe7-8742-fef2c13d7add",
+      "tasks": [
+        {
+          "id": "project_task_d9d69e54-5103-44c7-81bf-b7fec4fc2c8a",
+          "status": "TODO"
+        },
+        {
+          "id": "project_task_20245c9c-0b2b-4f45-94ee-b2980de30366",
+          "status": "TODO"
+        }
+      ]
+    }
+  ]
+}

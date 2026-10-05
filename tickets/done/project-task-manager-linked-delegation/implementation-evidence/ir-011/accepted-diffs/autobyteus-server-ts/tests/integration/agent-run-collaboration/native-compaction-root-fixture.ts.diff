@@ -1,0 +1,72 @@
+--- accepted/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
++++ integrated/autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-compaction-root-fixture.ts
+@@ -7,7 +7,7 @@
+ import { createCollaboratorAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js';
+ import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
+ import { RootedAgentMemoryLocator } from '../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js';
+-import { AgentRunCollaborationRootManager } from '../../../src/agent-run-collaboration/services/agent-run-collaboration-root-manager.js';
++import { StandaloneAgentRunRootManager } from '../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js';
+ import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
+ import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
+ import { AgentCollaborationStreamHandler } from '../../../src/services/agent-streaming/agent-collaboration-stream-handler.js';
+@@ -28,7 +28,7 @@
+ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', postResponse: boolean) {
+   const native = await createRecoveryFixture(postResponse);
+   let memoryDir: string | undefined;
+-  let manager: AgentRunCollaborationRootManager | undefined;
++  let manager: StandaloneAgentRunRootManager | undefined;
+   let handler: AgentCollaborationStreamHandler | undefined;
+   const sessions = new Set<string>();
+   const close = async () => {
+@@ -37,7 +37,7 @@
+       try { handler?.disconnect(session); } catch (error) { errors.push(error); }
+     }
+     sessions.clear();
+-    try { await manager?.terminateRoot(HOST); } catch (error) { errors.push(error); }
++    try { await manager?.endRoot(HOST); } catch (error) { errors.push(error); }
+     try { await native.close(); } catch (error) { errors.push(error); }
+     if (memoryDir) {
+       try { await fs.rm(memoryDir, { recursive: true, force: true }); } catch (error) { errors.push(error); }
+@@ -82,19 +82,21 @@
+     });
+     const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+     const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
+-    const restoreHost = vi.fn(async () => hostRun);
+     const metadata = {
+       runId: HOST, agentDefinitionId: 'host', memoryDir: path.join(memoryDir, 'agents', HOST),
+       workspaceRootPath: null, llmModelIdentifier: 'parent', llmConfig: null,
+       autoExecuteTools: false, runtimeKind: 'autobyteus', platformAgentRunId: null,
+       startedAt: '2026-10-01T00:00:00.000Z',
+     };
+-    manager = new AgentRunCollaborationRootManager({
++    const restoreHost = vi.fn(async () => ({ run: hostRun as unknown as AgentRun, metadata: metadata as never }));
++    const terminateHost = vi.fn(async () => ({ outcome: 'not_active' as const, runtimeKind: null }));
++    manager = new StandaloneAgentRunRootManager({
+       memoryDir, activeRootDirectory: new ActiveCollaborationRootDirectory(),
+       definitions: { getAgentDefinitionById: catalog.getAgentDefinition },
+       host: {
+         getActiveRun: () => hostRun as unknown as AgentRun,
+-        resolveCommandReadyAgentRun: restoreHost as never,
++        activateHost: restoreHost,
++        terminateHost,
+         readMetadata: async () => metadata as never,
+         recordCollaborationPackageCreated: async () => {},
+       },
+@@ -114,7 +116,7 @@
+         } as never),
+       },
+     });
+-    const root = (await manager.ensureRoot(metadata as never))!;
++    const root = (await manager.resolveRoot(HOST))!;
+     expect((await root.admitCollaboratorMentions({
+       focusedAgentRunId: HOST, content: 'Please help',
+       mentions: [{ kind, definitionId: kind === 'agent' ? 'reviewer' : 'team' }],
+@@ -139,7 +141,7 @@
+         context_file_paths: [], image_urls: [],
+       },
+     }));
+-    return { ...native, manager: rootManager, root, prepare, runManager, restoreHost, connect, send,
++    return { ...native, manager: rootManager, root, prepare, runManager, restoreHost, terminateHost, connect, send,
+       rootMemoryDir: memoryDir,
+       disconnect: (session: string) => { streamHandler.disconnect(session); sessions.delete(session); },
+       close,

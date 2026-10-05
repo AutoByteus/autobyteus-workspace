@@ -1,0 +1,101 @@
+{
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nWhat should we work on?\n\nAll your skills are available. Type / to use a skill, or @ to chat with an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\n\nChat with @Project · ↑↓ to move, Enter to choose\n\nAgents\nPT\nProject Task Manager\nReusable assistant for planning saved Project Tasks, delegating linked work, checking results, and explicitly completing Tasks.\nTeams: your message goes to the coordinator\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff\n\nFiles are saved in the temp workspace · /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WrQPt9/server-data/temp_workspace",
+  "buttons": [
+    {
+      "text": "Chat",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "",
+      "title": "New chat",
+      "aria": "New chat"
+    },
+    {
+      "text": "",
+      "title": "Collapse left panel",
+      "aria": null
+    },
+    {
+      "text": "Agents",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "Agent Teams",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "Agent Orgs",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "Skills",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "Memory",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "Nodes",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "",
+      "title": "Add workspace",
+      "aria": null
+    },
+    {
+      "text": "Temp Workspace",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "Settings",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "",
+      "title": "Upload files",
+      "aria": "Upload files"
+    },
+    {
+      "text": "PTProject Task ManagerReusable assistant for planning saved Project Tasks, delegating linked work, checking results, and explicitly completing Tasks.",
+      "title": null,
+      "aria": null
+    },
+    {
+      "text": "Temp workspace",
+      "title": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WrQPt9/server-data/temp_workspace",
+      "aria": "Workspace: Temp workspace. Change workspace"
+    },
+    {
+      "text": "Auto-approve",
+      "title": "Tools run without asking. Click to ask before running tools.",
+      "aria": "Auto-approve tools is on. Tools run without asking. Turn off to ask first."
+    },
+    {
+      "text": "claude-fable-5AutoByteus",
+      "title": "claude-fable-5 · AutoByteus",
+      "aria": "Model: claude-fable-5 on AutoByteus. Change model"
+    },
+    {
+      "text": "Off",
+      "title": "Thinking",
+      "aria": "Thinking: Off. Change"
+    },
+    {
+      "text": "",
+      "title": "Send message",
+      "aria": "Send message"
+    }
+  ]
+}

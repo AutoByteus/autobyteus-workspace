@@ -1,0 +1,139 @@
+import "reflect-metadata";
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
+import { MemberExecutionContextBuilder } from '../../../src/agent-team-execution/services/member-team-context-builder.js';
+import { AgentTeamRunManager } from '../../../src/agent-team-execution/services/agent-team-run-manager.js';
+import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
+import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
+import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
+import { StudioRunModelConfigService } from '../../../src/run-history/services/studio-run-model-config-service.js';
+import { AgentTeamRunResolver } from '../../../src/api/graphql/types/agent-team-run.js';
+<<<<<<< HEAD
+// This harness controls the tree writer/readback, so it must also supply the
+// current package-admission prerequisite. It does not prove disk admission.
+vi.mock('../../../src/run-history/services/team-run-package-catalog.js', () => ({
+  TeamRunPackageCatalog: class {
+    async awaitReady() {}
+    isAdmitted(teamRunId: string) { return teamRunId === 'root'; }
+  },
+}));
+=======
+import { AgentMemoryLayout } from '../../../src/agent-memory/store/agent-memory-layout.js';
+import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
+import { writeAttachmentSidecars } from '../../fixtures/current-attachment-package-fixtures.js';
+>>>>>>> origin/personal
+const view = (rows: any[]) => ({ offeredModels: rows,
+  findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
+
+const memoryDirs: string[] = [];
+afterEach(async () => { await Promise.all(memoryDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true }))); });
+
+/**
+ * Save admits only a current Team package (strict startup admission scans the memory dir), so
+ * the stored Team is a real admitted package on disk; reads and writes go through the
+ * controlled store below.
+ */
+const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKind = 'codex_app_server') => {
+  let saved: any = testExecutionTree({ rootTeamRunId: 'root', coordinatorAddress: '/member', children: [testAgentNode('/member', { platformAgentRunId: 'retained-provider-id' })] });
+  saved = structuredClone(saved);
+  saved.rootTeam.taskExecutions = [{ address: '/task-run', agentRunId: 'retained-task', platformAgentRunId: 'platform-task',
+    delegatorAgentRunId: 'run-member', startedAt: '2026-09-01T00:00:00.000Z' }];
+  const root = saved.rootTeam.defaultLaunchConfiguration;
+  root.runtimeKind = runtimeKind; root.llmModelIdentifier = 'small'; root.workspaceRootPath = '/workspace'; root.llmConfig = null;
+  const member = saved.rootTeam.members[0].launchConfiguration;
+  Object.assign(member, root, { llmModelIdentifier: 'large' });
+  let attempted = false;
+  const read = vi.fn(async () => {
+    if (attempted && readback === 'throws') throw new Error('post-write read unavailable');
+    return attempted && readback === 'missing' ? null : saved;
+  });
+  const write = vi.fn(async (_dir, next) => {
+    attempted = true;
+    if (physicalOutcome !== 'not_renamed') saved = next;
+    return { outcome: physicalOutcome };
+  });
+  const catalog = { runtimeModelSelectionCatalog: vi.fn(async () => view(['small','equal','large'].map(model_identifier => ({ model_identifier } as any)))) };
+  const capacity = { resolveMany: vi.fn(() => ({ small: 128000, equal: 128000, large: 272000 })) };
+  const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
+  const memberExecutionContextBuilder = new MemberExecutionContextBuilder({} as any);
+  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'model-save-unit-'));
+  memoryDirs.push(memoryDir);
+  const packageDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: 'root', ancestorTeamRunIds: [] });
+  await new TeamRunExecutionTreeStore().write(packageDir, saved);
+  writeAttachmentSidecars(packageDir, 'team', 'root');
+  const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
+    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => 'task' }),
+    executionTreeStore: { read, write } as any, modelSelectionValidator: new RunModelSelectionService(catalog, capacity) });
+  return { manager, read, write, capacity, saved: () => saved };
+};
+describe('configured Team model selection Save', () => {
+  it('rejects a non-admitted root before model selection or writing', async () => {
+    const h = harness();
+    const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'not-admitted', patches: [] });
+    expect(result).toMatchObject({ outcome: 'NOT_FOUND', success: false });
+    expect(h.write).not.toHaveBeenCalled();
+    expect(h.capacity.resolveMany).not.toHaveBeenCalled();
+  });
+  it('validates every native original baseline before writing and does not omit incompatible children', async () => {
+    const h = await harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
+    const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [
+      { scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', llmModelIdentifier: 'equal', llmConfig: null },
+      { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', llmModelIdentifier: 'equal', llmConfig: null },
+    ] });
+    expect(result).toMatchObject({ outcome: 'VALIDATION_FAILED', fieldErrors: [{ path: 'patches[/member].llmModelIdentifier' }] });
+    expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);
+    expect(h.capacity.resolveMany).toHaveBeenCalledTimes(2);
+  });
+  it('commits one native tree preserving configured identities and task records; later Save uses new baseline', async () => {
+    const h = await harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
+    const patch = { scopeKind: 'CONFIGURED_TEAM' as const, scopeAddress: '/', llmModelIdentifier: 'large', llmConfig: null };
+    expect((await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [patch] })).outcome).toBe('UPDATED');
+    expect(h.write).toHaveBeenCalledTimes(1);
+    expect(h.saved()).toEqual({ ...original, rootTeam: { ...original.rootTeam, defaultLaunchConfiguration: { ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large' } } });
+    expect((await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [{ ...patch, llmModelIdentifier: 'small' }] })).outcome).toBe('VALIDATION_FAILED');
+    expect(h.write).toHaveBeenCalledTimes(1);
+  });
+  it.each(['committed', 'renamed_finalization_indeterminate', 'not_renamed'].flatMap(physicalOutcome =>
+    ['ok', 'throws', 'missing'].map(readback => ({ physicalOutcome, readback }))))(
+    'preserves $physicalOutcome / $readback through Team owner, Studio and resolver', async ({ physicalOutcome, readback }) => {
+      const h = await harness(physicalOutcome, readback);
+      const original = structuredClone(h.saved());
+      const service = new StudioRunModelConfigService({
+        modelSelectionService: { listOptions: vi.fn(), listOptionsMany: vi.fn() },
+        applicationRunOwnership: { hasLiveRunOwnership: vi.fn(async () => false) },
+        agentResumeConfigService: { getAgentRunResumeConfig: vi.fn() },
+        agentRunService: { updateStoppedModelConfig: vi.fn() },
+        teamResumeConfigService: { getTeamRunResumeConfig: vi.fn(async () => ({
+          teamRunId: 'root', executionTree: original, isActive: false,
+          modelConfigEditability: { editable: true, reason: null },
+        })) },
+        teamRunService: { updateStoppedModelConfigs: input => h.manager.updateStoppedModelConfigs(input) },
+      });
+      const response = await AgentTeamRunResolver.prototype.updateStoppedTeamRunModelConfigs.call(
+        { runModelConfigService: service } as never,
+        { teamRunId: 'root', patches: [{ scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/',
+          llmModelIdentifier: 'large', llmConfig: null }] },
+      );
+      const expected = physicalOutcome === 'not_renamed' ? 'PERSISTENCE_FAILED'
+        : physicalOutcome === 'renamed_finalization_indeterminate' || readback !== 'ok'
+          ? 'PERSISTENCE_INDETERMINATE' : 'UPDATED';
+      expect(response).toMatchObject({ outcome: expected, success: expected === 'UPDATED',
+        isActive: false, editability: { editable: true, reason: null }, fieldErrors: [],
+        canonicalExecutionTree: { root_team: { default_launch_configuration: {
+          llm_model_identifier: readback === 'ok' && physicalOutcome !== 'not_renamed' ? 'large' : 'small',
+          llm_config: null,
+        } } },
+      });
+      expect(h.write).toHaveBeenCalledTimes(1);
+      expect(h.saved()).toEqual(physicalOutcome === 'not_renamed' ? original : {
+        ...original, rootTeam: { ...original.rootTeam, defaultLaunchConfiguration: {
+          ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large',
+        } },
+      });
+    },
+  );
+
+});

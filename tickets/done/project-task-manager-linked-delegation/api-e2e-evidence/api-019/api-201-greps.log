@@ -1,0 +1,11 @@
+$ grep1
+exit=1
+$ grep2
+exit=1
+$ grep3
+src/projects/stores/projects-layout.ts:26:  releasedProjectsFile(): string { return path.join(this.root, "projects.json"); }
+src/projects/stores/project-store.ts:59: * While the released `projects.json` still exists, every operation rejects PROJECTS_MIGRATION_PENDING.
+exit=0
+$ grep4 runtime/current code importing migration or frozen reader
+exit=1
+diffcheck exit=0

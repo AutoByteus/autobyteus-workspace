@@ -1,0 +1,129 @@
+{
+  "result": "Pass \u2014 static review cross-checks only, not new API execution",
+  "inputReferences": 4167,
+  "durablePaths": 20,
+  "allCurrentInventoryHashesExact": true,
+  "originalEightCaseBodiesExactExceptStrongerMessagePresenceGuard": true,
+  "originalEightNames": [
+    "spawns a fresh task Agent through the only public tool and persists the delegator in one tree write",
+    "shuts an idle delegated Agent down after the grace period and restores it when a message arrives",
+    "rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing",
+    "keeps identical general and application identities bound to their own root capabilities",
+    "lets a fresh task Agent delegate a nested sibling and records it as the exact delegator",
+    "fails closed for a retired configured-Team recipient in a flat Team root",
+    "rejects self, root, missing, noncanonical, traversal, foreign, and relative targets before mutation",
+    "validates absolute reference files before preparation and delivers the exact path in the work packet"
+  ],
+  "newParameterizedCases": [
+    "/scope_helper",
+    "/scope_helpers"
+  ],
+  "fixturesTyping": "fresh activation; production branded-address assertion; production status-hint mapping; runtime message presence guard before dereference",
+  "existingExecutionEvidence": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-helper-admission.log",
+      "sha256": "d6f85391b862f5e555af55b94c91a199f4c376b68de867e7cbf1a3b90cc5ca45",
+      "innerExits": [
+        "0"
+      ],
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  10 passed (10)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-helper-final.log",
+      "sha256": "687203a8b2380a9fa4bd6adb2fbf7f0c72ff2173146e99ba12a1fee47ced5f3b",
+      "innerExits": [
+        "0"
+      ],
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  10 passed (10)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round16-integration.log",
+      "sha256": "979e1f91ed97e67312c26eaaf20d27b679b6e5f2cc4199f341109261f4d39587",
+      "innerExits": [
+        "0"
+      ],
+      "summary": [
+        "Test Files  4 passed (4)",
+        "Tests  31 passed (31)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-005@round16-durables.log",
+      "sha256": "467a109906c7d83bf39582d4be070060fa5bb998ee17ed431d8ed8817754a7dd",
+      "innerExits": [
+        "0"
+      ],
+      "summary": [
+        "Test Files  10 passed (10)",
+        "Tests  53 passed (53)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round16-web.log",
+      "sha256": "0cf3bdfb061805df3a25c3881ad069dbcd5449e473b59db3f52c0d5b83541e5a",
+      "innerExits": [
+        "0"
+      ],
+      "summary": [
+        "Test Files  6 passed (6)",
+        "Tests  83 passed (83)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round16-project-e2e.log",
+      "sha256": "8afccb65e43e2aa1d0e55d29104612edd594707d2fa36b01910bbb29e781a3a3",
+      "innerExits": [
+        "0"
+      ],
+      "summary": [
+        "Test Files  3 passed (3)",
+        "Tests  14 passed (14)"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-test-typecheck-final.log",
+      "sha256": "b1e3f8f61e55a2749a341ffdb5edb11525e9702de98708bf816b4e10d374a9f3",
+      "innerExits": [
+        "0"
+      ],
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round16-production.log",
+      "sha256": "9ec54c15ee15a9e70848ed0f04d41640e5252f8154f28058ea8e81261eef96d1",
+      "innerExits": [
+        "0"
+      ],
+      "summary": []
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round16-import.log",
+      "sha256": "91169e87d08884d9b7046e300562362a6d1c161380707ec3f5327d6285958593",
+      "innerExits": [
+        "0"
+      ],
+      "summary": []
+    }
+  ],
+  "noNewAPIExecution": true,
+  "sourceResultUnchanged": "CRR-020 source-only Pass9.20; no new source review",
+  "notClaims": [
+    "controlled-backend OS/provider inference",
+    "individual Agent projection privacy certificate",
+    "hosted Native fixture universal three-root certification",
+    "original FAPI007/FAPI011 attribution closure",
+    "API15 withdrawn verdict conversion",
+    "Delivery authorization"
+  ],
+  "retainedCRR020DurablesExact": 19,
+  "changedSinceCRR020": [
+    "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts"
+  ],
+  "CRR020SourceTemplate136HashFidelityExact": true
+}

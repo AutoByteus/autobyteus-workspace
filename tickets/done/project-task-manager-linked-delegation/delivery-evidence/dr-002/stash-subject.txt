@@ -1,0 +1,36 @@
+c0d5140aeee1902f46993237433436152b2472ee On codex/project-task-manager-linked-delegation: autostash
+108a93df281ddf4a498ec837d9d56d78d7ef9e91 On codex/runtime-lifecycle-usability: runtime-lifecycle-reconcile-20261004T032444Z
+86fa5f5445364220cb5c4e3b55fa5040a329f6ea On codex/context-compaction-simplification-analysis: sr018 preserve all owners before latest personal refresh
+dba3b62524050b93b319cb9e76d6c2bf5c9cf3a8 On codex/context-compaction-simplification-analysis: compaction-preserve-before-base-refresh-20260930T093850Z
+a79d3229bd3db18a676e3046fb8a739194cbecda On personal: personal: pre-ff backup of ticket edits/untracked already present upstream 2026-09-28
+7d5d58049503a74b8f836842231ea3d20bc20c12 On codex/context-compaction-simplification-analysis: compaction-preserve-before-base-refresh-20260928T045609Z
+892ac5e95c9226683443f150ba725cee2bab6386 On codex/context-compaction-simplification-analysis: context-compaction pre-base-refresh 20260927T093100Z
+5f6e6f75bc642511a389f7cf02c6a956593611d7 On personal: stray root package.json overwrite (web manifest copy) preserved before ff to origin/personal 2026-09-26
+d13667337bc3c0c8b31dbd45fcbc0cffe317b96f On codex/autobyteus-runtime-streaming-ui-performance: Preserve autobyteus-runtime-streaming-ui-performance before finished worktree removal 2026-09-02
+866a6983204b8fbf9d73c16190fa510dede024b9 On codex/team-agent-instruction-composition: Preserve team-agent-instruction-composition before finished worktree removal 2026-09-02
+e5a77d947ef6a91f048a1fc36405a7761ec8001a On codex/live-run-stream-reconnect-after-reload: Preserve live-run-stream-reconnect-after-reload before finished worktree removal 2026-09-02
+c9989c105d524854e0cc030904cf0a1f68b555d4 On codex/universal-application-framework-proposal-analysis: Preserve universal-application-framework-proposal-analysis before finished worktree removal 2026-09-02
+8d372026d457278790bde0212ff362dfa92fa987 On codex/external-turn-reply-aggregation: Preserve external-turn-reply-aggregation before finished worktree removal 2026-09-02
+75e205549569483510315ab8714ad4a88a1d3c79 On codex/run-history-worktree-live-stream-loss: Preserve run-history-worktree-live-stream-loss before finished worktree removal 2026-09-02
+c047e321cef842e75278f65497108b6492211761 On codex/external-channel-receipt-state-machine: Preserve external-channel-receipt-state-machine before finished worktree removal 2026-09-02
+045af3b2a55d5811f73fcd5489b4033a87391801 On codex/file-explorer-move-stale-children: Preserve file-explorer-move-stale-children before finished worktree removal 2026-09-02
+7a4fcdb8198c2d71161c5fed7d70bca23c359fad On codex/task-agent-monitor-visibility: Preserve task-agent-monitor-visibility before finished worktree removal 2026-09-02
+2d8cd6c1ec56e21bfa4efc3ddf2fb97040d4ae48 On codex/hierarchical-team-run-launch-config: temporary pre-rebase archive restore 2026-08-24
+a106d4e0011ee83608c77c91bd6984febf0e7ddf On codex/agent-team-universal-task-delegation: safety: UTD working tree before origin/personal merge 20260815T103300Z
+143e29eafadcb6d7cdb233e61d3f92a1bdbf77ee On codex/agent-team-hierarchical-handoffs: delivery DR-007 protect delivery artifacts before CRR-072 integration
+2c7f3140e36c2fddc80ff1a4a28d9da9c6b33964 On codex/agent-team-hierarchical-handoffs: delivery DR-006 protect unrelated web-ticket deletions and delivery artifacts
+8a46238a0e7480df845f32992f8a281be7ca9e38 On codex/agent-team-hierarchical-handoffs: solution SR-016 protect CRR-050/API state before origin-personal refresh 20260811-102826
+92fe82e95eb123bdfa259c74eeb1c534b26d909b On codex/agent-team-hierarchical-handoffs: delivery DR-004 protect pre-SR-015 docs and delivery artifacts
+88fbe8331d472f08678c9588766023c19d044fc6 On codex/agent-team-hierarchical-handoffs: delivery re-entry protect DR-001 docs and handoff artifacts
+75ac08606b3289ea7e8ffa8bf803283da3b0605e On codex/agent-idle-status-lifecycle: preserve api-e2e round6 artifacts before 2026-07-29 rebase
+c4ee4ad846608a9be11d4f9cfa9a2bd8a56f75b3 On personal: delivery preserve ignored main worktree files before release
+d2e0a8347a9b5e540934a96e192952a487df0e1a On personal: delivery preserve unrelated main worktree before event monitor file URI finalization
+ba7597ece66ffcf3880ee692b5c0168b2f2f9fb2 On personal: safety: stash partial send-message global routing WIP from main checkout before refreshing personal 2026-06-12T02:43:33Z
+46cbb525bdd3a04922deb6aade405a7f30fc7c84 On personal: delivery-protect-main-personal-before-refresh-20260606
+5c45418dd1746e0fbbb99616fcaf2ccd6a77e35a On codex/mobile-remote-access-requirements: pre-rebase-mobile-remote-access-20260519-095946
+2381de084512eaed1ae5dae13ed1f231179b7953 On personal: pre-release preserve docs/future-features before claude tool args release
+34a114b2d83bcbe5dcfac52b49ef7ae55d30c0bd On personal: pre-sync-personal-before-reset-20260423-082934
+7dda370b1ee1c519b6adae93fce51b1428b22505 On personal: move current llm-runtime-compaction work to dedicated worktree 20260410-123853
+7b6d701ee5ee6442538a605209229e6ca3f0bf7f On codex/messaging-agent-team-support: codex/messaging-agent-team-support pre-origin-personal-merge 2026-03-11
+698787e1cf2671ed9495f607812e27ce69d00eb8 On codex/messaging-runtime-visibility: codex pre-merge personal sync
+afb33236be4639cfc51f69c070169f0cce1a7976 On codex/claude-agent-sdk-runtime-workflow: retarget-to-personal-20260228-133731

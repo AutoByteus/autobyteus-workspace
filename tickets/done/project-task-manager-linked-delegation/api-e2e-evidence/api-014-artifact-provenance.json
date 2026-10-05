@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-04T06:27:43.655204+00:00",
+  "independentBuild": "api-013-desktop-build.log (inner0,288.53s)",
+  "unchangedCandidateProof": "api-014-repository-preservation.json",
+  "version": "1.4.94-beta.2",
+  "boundaryHashes": {
+    "run-history/services/collaboration-root-history-service.js": {
+      "sha256": "f8fdf87ae512b8faefbe7d1b230c7fcf80757d27ffc698002578c04c5ad78dd2",
+      "compiledEqualsPackaged": true
+    },
+    "api/graphql/types/collaboration-root-history.js": {
+      "sha256": "ba66f1a52345890d576cee955bfe176b5ca54bd07f89e958f108a86898b67e37",
+      "compiledEqualsPackaged": true
+    },
+    "services/agent-streaming/collaboration-execution-tree-dto-projection.js": {
+      "sha256": "9bfa8ef6270b1b26a259fe27a87585b14ee8eaec79d9ab7e07a8f2b7b6733f84",
+      "compiledEqualsPackaged": true
+    }
+  },
+  "appAsarSha256": "7ed603ddd87e68074639fbc41cd8678320385156994a85b1b0e58d58a5c778c2",
+  "isolatedLaunch": {
+    "isolatedLaunchContract": 1
+  },
+  "reuse": "TESTING explicit --from-worktree on unchanged current worktree artifact only; new owned instance/profile/ports"
+}

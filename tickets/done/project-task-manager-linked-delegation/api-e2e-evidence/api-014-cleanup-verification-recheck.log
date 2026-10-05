@@ -1,0 +1,7 @@
+2026-10-04T06:38:18.281777+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-cleanup-check.py"]
+{'recordAbsent': True, 'dataRootAbsent': True, 'portsFreeBind': {'65469': True, '65470': True}, 'capturedOwnPidsStillPresent': [], 'foreignRecordsUnchanged': True, 'archiveFilesVerified': 30}
+
+INNER_EXIT=0
+ELAPSED=0.07

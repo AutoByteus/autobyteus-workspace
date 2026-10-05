@@ -1,0 +1,12 @@
+src/agent-org-execution/domain/agent-org-run.ts(126,11): error TS7022: 'recipients' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+src/agent-org-execution/domain/agent-org-run.ts(127,7): error TS7023: 'taskScope' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+src/agent-org-execution/domain/agent-org-run.ts(128,9): error TS7023: 'resolvePlacement' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts(12,56): error TS2307: Cannot find module '../../agent-run-collaboration/domain/agent-run-collaboration-tree.js' or its corresponding type declarations.
+src/skills/installers/skill-repository-archive.ts(4,47): error TS2307: Cannot find module 'tar' or its corresponding type declarations.
+src/skills/installers/skill-repository-archive.ts(28,51): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/skills/installers/skill-repository-archive.ts(48,24): error TS7006: Parameter 'error' implicitly has an 'any' type.
+src/skills/installers/skill-repository-archive.ts(140,12): error TS7006: Parameter '_name' implicitly has an 'any' type.
+src/skills/installers/skill-repository-archive.ts(140,19): error TS7006: Parameter 'raw' implicitly has an 'any' type.
+src/standalone-agent-run-root/domain/standalone-agent-run-root.ts(151,11): error TS7022: 'recipients' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+src/standalone-agent-run-root/domain/standalone-agent-run-root.ts(152,7): error TS7023: 'taskScope' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+src/standalone-agent-run-root/domain/standalone-agent-run-root.ts(153,9): error TS7023: 'resolvePlacement' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.

@@ -1,0 +1,4 @@
+restart exit 0
+agent resume exit 0
+agent_team resume exit 0
+agent_org resume exit 0

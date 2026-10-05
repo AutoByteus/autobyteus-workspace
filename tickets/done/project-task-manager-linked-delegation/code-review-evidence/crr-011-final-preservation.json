@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-03T17:12:30.303504+00:00",
+  "protectedCurrentReferenceCount": 1252,
+  "changedDuringRouting": [],
+  "priorReportArchiveExact": true,
+  "diffCheckExit": 0,
+  "scope": "Reviewer only writes its ticket report/history/evidence. IR007 changes preexist; not source-reviewed here. Concurrent specialist artifact changes, if any, recorded rather than attributed to reviewer.",
+  "handoffAccepted": true,
+  "handoffTargetRun": "solution_designer_4369c3e671e34a2dadd670c5b652afaa",
+  "referencesDelivered": 1261,
+  "currentCumulativeReferences": 1262,
+  "receiptAddedAfterDelivery": true
+}

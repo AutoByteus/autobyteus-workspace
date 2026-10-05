@@ -1,0 +1,491 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts (23 tests | 23 failed) 21ms
+     × keeps the entire public nested forest, source/member/provider/launch identity and internal stamps 6ms
+     × projects the actual indexed started execution solo-copy 1ms
+     × projects the actual indexed started execution packet-copy 1ms
+     × projects the actual indexed started execution nested-helper 1ms
+     × projects the actual indexed started execution follow-on-agent 1ms
+     × projects the actual indexed started execution follow-on-team 1ms
+     × projects the actual indexed started execution review-helper 0ms
+     × projects the actual indexed started execution shared-helper 0ms
+     × projects collaborator events recursively without exposing lifetime ownership 1ms
+     × still rejects invalid public critical fields and missing started references 0ms
+     × streams stamped snapshot/start/collaborator and reconnect through actual subscription boundary without false close1011 0ms
+     × keeps the entire public nested forest, source/member/provider/launch identity and internal stamps 1ms
+     × projects the actual indexed started execution solo-copy 0ms
+     × projects the actual indexed started execution packet-copy 0ms
+     × projects the actual indexed started execution nested-helper 1ms
+     × projects the actual indexed started execution follow-on-agent 1ms
+     × projects the actual indexed started execution follow-on-team 0ms
+     × projects the actual indexed started execution review-helper 3ms
+     × projects the actual indexed started execution shared-helper 1ms
+     × projects collaborator events recursively without exposing lifetime ownership 0ms
+     × still rejects invalid public critical fields and missing started references 0ms
+     × streams stamped snapshot/start/collaborator and reconnect through actual subscription boundary without false close1011 0ms
+   × GraphQL Agent inspection reuses the exact public view without materialization or stamp loss 0ms
+ ✓ tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts (2 tests) 7ms
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > shares business reads and compact TODO create/known-ID status acknowledgements
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-7GuMxM
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_projects
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-DGZGbH
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_projects
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_project_tasks
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-NsbeSZ
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_project_tasks
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_project_tasks
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-0vZadP
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_project_tasks
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-AW40pX
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-1khsiC
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-F1lHD9
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-gfLKOe
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-nNo3Tw
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > unknown Task IDs fail without creating and aborted native execution stays a transport error
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-CA95pG
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > unknown Task IDs fail without creating and aborted native execution stays a transport error
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > exposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-Dv04wE
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > exposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+ ✓ tests/unit/agent-tools/project-tasks/project-task-tools.test.ts (11 tests) 138ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 23 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > keeps the entire public nested forest, source/member/provider/launch identity and internal stamps
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateInvariants src/run-history/store/agent-run-collaboration-tree-schema.ts:34:3
+ ❯ validateAgentRunCollaborationTreePayload src/run-history/store/agent-run-collaboration-tree-schema.ts:70:3
+ ❯ agentProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:47:57
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:35
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:40:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > projects the actual indexed started execution solo-copy
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > projects the actual indexed started execution packet-copy
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > projects the actual indexed started execution nested-helper
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > projects the actual indexed started execution follow-on-agent
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > projects the actual indexed started execution follow-on-team
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > projects the actual indexed started execution review-helper
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > projects the actual indexed started execution shared-helper
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateInvariants src/run-history/store/agent-run-collaboration-tree-schema.ts:34:3
+ ❯ validateAgentRunCollaborationTreePayload src/run-history/store/agent-run-collaboration-tree-schema.ts:70:3
+ ❯ agentProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:47:57
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:35
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:54:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > projects collaborator events recursively without exposing lifetime ownership
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateInvariants src/run-history/store/agent-run-collaboration-tree-schema.ts:34:3
+ ❯ validateAgentRunCollaborationTreePayload src/run-history/store/agent-run-collaboration-tree-schema.ts:70:3
+ ❯ agentProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:47:57
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:35
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:67:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > still rejects invalid public critical fields and missing started references
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateInvariants src/run-history/store/agent-run-collaboration-tree-schema.ts:34:3
+ ❯ validateAgentRunCollaborationTreePayload src/run-history/store/agent-run-collaboration-tree-schema.ts:70:3
+ ❯ agentProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:47:57
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:35
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:74:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent camel-case public projection > streams stamped snapshot/start/collaborator and reconnect through actual subscription boundary without false close1011
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateInvariants src/run-history/store/agent-run-collaboration-tree-schema.ts:34:3
+ ❯ validateAgentRunCollaborationTreePayload src/run-history/store/agent-run-collaboration-tree-schema.ts:70:3
+ ❯ agentProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:47:57
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:35
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:81:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > keeps the entire public nested forest, source/member/provider/launch identity and internal stamps
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateHandoffEndpoints src/run-history/store/agent-org-run-execution-tree-schema.ts:97:3
+ ❯ validateAgentOrgRunExecutionTreePayload src/run-history/store/agent-org-run-execution-tree-schema.ts:139:3
+ ❯ orgProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:60:10
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:65
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:40:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > projects the actual indexed started execution solo-copy
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > projects the actual indexed started execution packet-copy
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > projects the actual indexed started execution nested-helper
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > projects the actual indexed started execution follow-on-agent
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > projects the actual indexed started execution follow-on-team
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > projects the actual indexed started execution review-helper
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > projects the actual indexed started execution shared-helper
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateHandoffEndpoints src/run-history/store/agent-org-run-execution-tree-schema.ts:97:3
+ ❯ validateAgentOrgRunExecutionTreePayload src/run-history/store/agent-org-run-execution-tree-schema.ts:139:3
+ ❯ orgProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:60:10
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:65
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:54:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > projects collaborator events recursively without exposing lifetime ownership
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateHandoffEndpoints src/run-history/store/agent-org-run-execution-tree-schema.ts:97:3
+ ❯ validateAgentOrgRunExecutionTreePayload src/run-history/store/agent-org-run-execution-tree-schema.ts:139:3
+ ❯ orgProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:60:10
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:65
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:67:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > still rejects invalid public critical fields and missing started references
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateHandoffEndpoints src/run-history/store/agent-org-run-execution-tree-schema.ts:97:3
+ ❯ validateAgentOrgRunExecutionTreePayload src/run-history/store/agent-org-run-execution-tree-schema.ts:139:3
+ ❯ orgProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:60:10
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:65
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:74:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > agent_org camel-case public projection > streams stamped snapshot/start/collaborator and reconnect through actual subscription boundary without false close1011
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateHandoffEndpoints src/run-history/store/agent-org-run-execution-tree-schema.ts:97:3
+ ❯ validateAgentOrgRunExecutionTreePayload src/run-history/store/agent-org-run-execution-tree-schema.ts:139:3
+ ❯ orgProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:60:10
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:65
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:81:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/23]⎯
+
+ FAIL  tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts > GraphQL Agent inspection reuses the exact public view without materialization or stamp loss
+Error: Task TeamRun 'packet-copy' does not match its catalog source.
+ ❯ visit src/run-history/store/run-execution-tree-shared-record-schemas.ts:442:15
+    440|       const layout = new Set<string>(task.source.members.map((member) …
+    441|       if (task.members.length !== layout.size || task.members.some((me…
+    442|         throw new Error(`Task TeamRun '${task.teamRunId}' does not mat…
+       |               ^
+    443|       }
+    444|     }
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:46
+ ❯ validateCollaboratorInvariants src/run-history/store/run-execution-tree-shared-record-schemas.ts:460:6
+ ❯ validateInvariants src/run-history/store/agent-run-collaboration-tree-schema.ts:34:3
+ ❯ validateAgentRunCollaborationTreePayload src/run-history/store/agent-run-collaboration-tree-schema.ts:70:3
+ ❯ agentProjectionTree tests/fixtures/collaboration-public-projection-fixtures.ts:47:57
+ ❯ setup tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:23:35
+ ❯ tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts:109:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/23]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  23 failed | 13 passed (36)
+   Start at  13:54:31
+   Duration  6.62s (transform 3.05s, setup 27ms, import 5.65s, tests 166ms, environment 0ms)
+

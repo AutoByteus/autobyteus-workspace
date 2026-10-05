@@ -1,0 +1,17 @@
+{
+  "references": 1597,
+  "existing": 1597,
+  "unchanged": 1595,
+  "changedOnlyReviewerCanonical": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "unchangedReviewedPackage": 287,
+  "nonTicketStatusSame": true,
+  "branchHeadSame": true,
+  "sourceTestsSpecialistArtifactsUntouched": true,
+  "reviewerChanges": "ticket reports/history/evidence only",
+  "reviewerLiveSessionsOrProviderChildren": "none started",
+  "historicalCRR012ArchiveExact": true,
+  "diffCheck": 0
+}

@@ -1,0 +1,6 @@
+migrationId=20261005_projects_per_folder_v1
+displayName=Move Projects into per-Project folders
+statusSummary={"scannedCount":2,"migratedCount":2,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"MIGRATED","status":"MIGRATED","message":"Moved the Project, its Tasks, context and drafts into its per-Project folder. Count: 2. Examples: project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b, project_4252486c-5f5d-4296-9432-87e047386153"}

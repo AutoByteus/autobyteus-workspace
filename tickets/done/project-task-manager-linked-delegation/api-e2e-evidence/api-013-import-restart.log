@@ -1,0 +1,6 @@
+2026-10-04T05:57:05.266401+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["bash", "-c", "pnpm --silent isolated-app restart iso-63229-72f4 > tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-restart.json"]
+
+INNER_EXIT=0
+ELAPSED=3.76

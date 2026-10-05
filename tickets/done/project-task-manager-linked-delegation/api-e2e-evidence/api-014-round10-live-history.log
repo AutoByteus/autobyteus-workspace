@@ -1,0 +1,16 @@
+case=API-014
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs live
+AssertionError [ERR_ASSERTION]: [{"message":"Variable \"$i\" got invalid value { runtimeKind: \"codex_app_server\", llmModelIdentifier: \"gpt-6.1-sol\", llmConfig: { reasoning_effort: \"low\" }, workspaceRootPath: \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\", teamAddress: \"/\" } at \"i.teamConfigs[0]\"; Field \"autoExecuteTools\" of required type \"Boolean!\" was not provided.","locations":[{"line":1,"column":10}]},{"message":"Variable \"$i\" got invalid value { runtimeKind: \"codex_app_server\", llmModelIdentifier: \"gpt-6.1-sol\", llmConfig: { reasoning_effort: \"low\" }, workspaceRootPath: \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\", memberAddress: \"/coordinator\", agentDefinitionId: \"api010-team-coordinator\" } at \"i.memberConfigs[0]\"; Field \"autoExecuteTools\" of required type \"Boolean!\" was not provided.","locations":[{"line":1,"column":10}]},{"message":"Variable \"$i\" got invalid value { runtimeKind: \"codex_app_server\", llmModelIdentifier: \"gpt-6.1-sol\", llmConfig: { reasoning_effort: \"low\" }, workspaceRootPath: \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6wq8pS/validation-workspace/team-b\", memberAddress: \"/reader\", agentDefinitionId: \"api010-team-reader\" } at \"i.memberConfigs[1]\"; Field \"autoExecuteTools\" of required type \"Boolean!\" was not provided.","locations":[{"line":1,"column":10}]}]
+    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs:8:325)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs:17:20 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+PROCESS_EXIT_CODE=1

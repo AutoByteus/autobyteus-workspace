@@ -1,0 +1,123 @@
+{
+  "observedAt": "2026-10-04T04:41:44.676084+00:00",
+  "inputHead": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "currentHead": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "inputBranch": "codex/project-task-manager-linked-delegation",
+  "currentBranch": "codex/project-task-manager-linked-delegation",
+  "changedIncomingReferences": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/TESTING.md",
+      "inputSha": "ebb7696c4b3eff25c2e44d82918360a97b847eb39351dbcb91648d203d93bfa8",
+      "currentSha": "ce7a8784c10db894324a6b9651595cf8b73aca8b68ccb6880057d432e7783c82",
+      "mtime": "2026-10-04T04:40:42.588889+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "inputSha": "b0c4715a874f06284ea82d3c41119607aa7721bfeb76a20b83c371562e28574a",
+      "currentSha": "9d7b08e4ed9a9dd9c85f14b25bc54b01ea4da0725595787e586b59c46a3f059a",
+      "mtime": "2026-10-04T04:40:44.488320+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "inputSha": "692fe53516726f02c3e2404854481f45a417b00e5e0696ef184cc1c956dffca3",
+      "currentSha": "85e6995c9a87ce1a22cfbd30712842c2fcebeaf2647a014332dfc1b947e52222",
+      "mtime": "2026-10-04T04:40:42.595388+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/api/graphql/types/collaboration-root-history.ts",
+      "inputSha": "e4b76371ab609411ff92d6ab4411270f945bc0ef0213ca62a85018ff023d735e",
+      "currentSha": "444bb2ca3f628b9ef70df2dae2662f7de06db41e8bc120b45dbf0895e2a0949e",
+      "mtime": "2026-10-04T04:40:42.597598+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+      "inputSha": "9c188c898170aa50ed009a30e584cd100602c761cdae225fab69d1e72beb2d1d",
+      "currentSha": "7355fff4118ce76e46dee7c02c809cdd2e9e3d0fbd7e32840b4f54964fadb347",
+      "mtime": "2026-10-04T04:40:44.504143+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "inputSha": "daa8284478d806370c10f8af1f87bd4d19f4dc28e9dbfddf43536812ed2ecb8b",
+      "currentSha": "f70e0ee09845568872fb4fc20aa60390f50a02b23d3b52b939c9aa33c852a8a1",
+      "mtime": "2026-10-04T04:40:44.506555+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+      "inputSha": "051b34e4912ca6d3a1c0f2db2d74c40d27e92129e2c8783cbe8a82fb0c0a2a12",
+      "currentSha": "91b58699e333933bb0ecdba6c157fe361566f9cea25bc40b0f762c6f23ab5d51",
+      "mtime": "2026-10-04T04:40:44.509684+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "inputSha": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "currentSha": "edadd6e41a6d791036ac17c4115ad0de5e92c65cf1fa0a520bd73100dde71d80",
+      "mtime": "2026-10-04T04:40:44.510153+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+      "inputSha": "6e291ecfb474adbb71fa6f951da54109d7ba6a1ca99fc263102deb833159908e",
+      "currentSha": "9fe8c746634ee1d44a6d8c73a21058dcbddd908891a78fc5a8b8c885308f3cd5",
+      "mtime": "2026-10-04T04:40:44.514861+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+      "inputSha": "9e1a34ee2d01cf785956747a32494830284f7db2622fefe0c016466208c99277",
+      "currentSha": "d30d803240ef2271e28dab71029b7632237e66133db0aee20cf86f6ef994eb80",
+      "mtime": "2026-10-04T04:40:44.523333+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "inputSha": "fbffbd9b5f44aad4bd668b7f33d0aeaafabdb7b35915b414ba3134d759cda1bb",
+      "currentSha": "1d847877ea58b13edf3bfcb302c334d3c3747ed2e21a099ef224a6c5cd760dee",
+      "mtime": "2026-10-04T04:40:42.671057+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/graphql/queries/collaborationRootHistoryQueries.ts",
+      "inputSha": "11f82c4ed3b7414608b72670506aa99542b7c45689f15805a609eda499b4c3f3",
+      "currentSha": "ac402186d9f51c1bed3b9d36bfe61e3c8ce7308522c8f351a77bba1291c020b8",
+      "mtime": "2026-10-04T04:40:42.682396+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+      "inputSha": "7dff6062cf759dc71aaf604aff76753460f468a859e4cb9aa68c3e48a1f2fdba",
+      "currentSha": "6ebc3c459b87c5e901ffe72be8ff130f26e28684d39672a74308b9f90520ff90",
+      "mtime": "2026-10-04T04:40:42.684816+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+      "inputSha": "fdd5e14bcb91a262017bc35c682998d4b8de478df9a6516fae0f51586dcca029",
+      "currentSha": "b1ba38bc1933ec4d9cabf4629fc3d96c9b59a2ba5da2ae0487ca61662d1e780f",
+      "mtime": "2026-10-04T04:40:44.526973+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/stores/agentOrgContextsStore.ts",
+      "inputSha": "d93adbd2426aad8e1fdeb351d1dab5663afa0386fd1c3128acd0c32b1fc9c0c5",
+      "currentSha": "0891bbc3b108b1fd0fa3dbb65c38b1e8fc85fcabcf6c7a906fd19fe9bf39ca93",
+      "mtime": "2026-10-04T04:40:42.691264+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/stores/runHistoryLoadActions.ts",
+      "inputSha": "e0be3a84b1d435366f74a7609f24ff33a873eda613872893c6441fa797cb6514",
+      "currentSha": "898fa3f4184d52ec24e2cda1ebd2af40563c8833f9710c021a5c2ff80fb4f3c9",
+      "mtime": "2026-10-04T04:40:42.692230+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/stores/runHistoryStoreSupport.ts",
+      "inputSha": "bea93e460db5786a42475dc9f18bbcb413e795d5dec0ddc38cc72751176df5d7",
+      "currentSha": "703540cfb0adef61114a6beeed32ed4ee5d05222a647dc22bb8bb72c4c2bc37e",
+      "mtime": "2026-10-04T04:40:42.693180+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-coverage-investigation.md",
+      "inputSha": "701f66a3ff914cb3919636b00e4da9c55b435b4d8f42cf9774cace16b4147998",
+      "currentSha": "851ab7c39916e1cf7a26a5e9380e5550519fe3178d659b4eb38cd41975f6b675",
+      "mtime": "2026-10-04T04:40:41.824763+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-test-case-ledger.md",
+      "inputSha": "8779e76c3dff6a1a70998785f5c9cd2e2216e91a390046f71e4106261e64846e",
+      "currentSha": "16192df971bedfae4558bd8a72a8499b40f2f195f93cd35967e9137b053985e0",
+      "mtime": "2026-10-04T04:41:18.535354+00:00"
+    }
+  ]
+}

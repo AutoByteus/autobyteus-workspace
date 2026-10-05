@@ -1,0 +1,6 @@
+case=API-014
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs restored
+Scoped Pass restored actual HTTP/strict Org history full forest + packaged retained worker selection + public/private no-write; not cumulative provider/failure matrix
+
+PROCESS_EXIT_CODE=0

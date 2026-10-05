@@ -1,0 +1,35 @@
+{
+  "production_typecheck": {
+    "exit": 0,
+    "log": "ir-005-production-typecheck-final.log"
+  },
+  "server_build": {
+    "exit": 0,
+    "log": "ir-005-server-build-final.log"
+  },
+  "changed_boundaries": {
+    "exit": 0,
+    "files_passed": 9,
+    "tests_passed": 78,
+    "log": "ir-005-changed-boundary-final2.log"
+  },
+  "cumulative_focused": {
+    "exit": 0,
+    "files_passed": 136,
+    "files_skipped": 3,
+    "tests_passed": 1233,
+    "tests_skipped": 5,
+    "log": "ir-005-cumulative-focused-final.log"
+  },
+  "web_store_control": {
+    "exit": 0,
+    "files_passed": 1,
+    "tests_passed": 3,
+    "log": "ir-005-web-store-control.log"
+  },
+  "diffcheck": {
+    "exit": 0
+  },
+  "api_e2e_rescored": false,
+  "rendered_product_verified": false
+}

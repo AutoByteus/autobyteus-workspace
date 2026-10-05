@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round5-lifecycle-probe.mjs repeat-b
+Scoped Pass: explicit repeated DONE unchanged exact closed lifetime/retained tree, one compact business ack, open A and Manager protected.
+
+PROCESS_EXIT_CODE=0

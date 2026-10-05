@@ -1,0 +1,17 @@
+--- incoming-merge/autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts
++++ IR-011/autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts
+@@ -29,13 +29,8 @@
+ const discoverable = (skill: Skill) => ({ kind: "reconcile-discoverable" as const, skill });
+ type TestRequest = ReturnType<typeof expose> | ReturnType<typeof discoverable> | { kind: "reconcile-unresolved"; name: string };
+ const run = (materializer: WorkspaceSkillMaterializer, workspace: string, requests: TestRequest[],
+-<<<<<<< HEAD
+   workspaceCollisionPolicy: WorkspaceCollisionPolicy = "fail", runId = "run-1", onAcquired?: (value: any) => void) =>
+-  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, workspaceCollisionPolicy, onAcquired });
+-=======
+-  workspaceCollisionPolicy: WorkspaceCollisionPolicy = "fail", runId = "run-1") =>
+-  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, workspaceCollisionPolicy }).then(result => result.materializedSkills);
+->>>>>>> origin/personal
++  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, workspaceCollisionPolicy, onAcquired }).then(result => result.materializedSkills);
+ 
+ const isAbsent = async (target: string): Promise<boolean> => {
+   try { await fs.lstat(target); return false; } catch (error) {

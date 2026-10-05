@@ -1,0 +1,9 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-final-witness.py
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-final-witness.py", line 34, in <module>
+    actual=next(x for x in p['tasks'] if x['taskId']==t['taskId']);assert actual['description']==t['description'] and actual['contextFiles']==t['contextFiles'];assert actual['status']==('IN_PROGRESS' if k=='A' else 'DONE')
+AssertionError
+
+PROCESS_EXIT_CODE=1

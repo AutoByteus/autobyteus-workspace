@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-root-recovery-probe.mjs agent_org stop-restore
+Scoped Pass agent_org stop-restore: exact separate Root Stop/physical exclusive owner exit/other roots protected and same-root/open-A recovery with real read; closed B fenced, current array/tree/history/metadata/workspace retained
+
+PROCESS_EXIT_CODE=0

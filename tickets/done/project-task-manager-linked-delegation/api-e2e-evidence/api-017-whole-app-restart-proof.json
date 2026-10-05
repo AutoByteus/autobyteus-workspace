@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-05T04:52:44.723632+00:00",
+  "instanceId": "iso-63884-5507",
+  "sameOwnedProfilePortsExecutable": true,
+  "oldAppPid": 25861,
+  "newAppPid": 51594,
+  "oldCapturedPids": [
+    25861,
+    26265,
+    26266,
+    27206,
+    27219,
+    27222,
+    27223,
+    31004,
+    32968,
+    34638,
+    35284
+  ],
+  "allOldCapturedPidsGone": true,
+  "scope": "Actual ordinary quiescent whole-app restart, not renderer reload or Task DONE/initial-cause repair. No inspector was enabled."
+}

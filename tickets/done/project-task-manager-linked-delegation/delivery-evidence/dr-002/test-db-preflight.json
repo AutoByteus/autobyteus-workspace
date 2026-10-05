@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-05T05:25:31.677538+00:00",
+  "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+  "lsofExit": 1,
+  "openProcessEvidence": "",
+  "files": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db": "ad6f2ef9d2a80eebb5004d41d41300c8fae89b297b6289a8881437a483762782",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal": "899eaefbd386cdc4d37e434e44c4d63eb02e8746da4f5898c339d80c73cb0149"
+  },
+  "scope": "Repository-defined disposable Vitest SQLite fixture (prisma-test-config/global-setup), not application/user DB. Inherited bytes archived before serial reset; no live owner found. No test configuration or assertions changed."
+}

@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-03T15:38:29.224196+00:00",
+  "reviewedPaths": 283,
+  "unchanged": 283,
+  "changed": [],
+  "branch": "codex/project-task-manager-linked-delegation",
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "actualNonTicketDirtyPaths": 283,
+  "actualNonTicketPathsExactlyMatchReviewedManifest": true
+}

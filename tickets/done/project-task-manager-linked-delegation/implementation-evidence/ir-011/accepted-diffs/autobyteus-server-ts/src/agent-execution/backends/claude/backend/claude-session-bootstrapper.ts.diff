@@ -1,0 +1,36 @@
+--- accepted/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
++++ integrated/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
+@@ -11,9 +11,6 @@
+   getClaudeWorkspaceSkillMaterializer,
+ } from "../claude-workspace-skill-materializer.js";
+ import type { MaterializedWorkspaceSkill, WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
+-import {
+-  collectResolvedConfiguredSkills,
+-} from "../../../../skills/domain/configured-agent-skill-binding.js";
+ import {
+   buildClaudeSessionConfig,
+   DEFAULT_CLAUDE_PERMISSION_MODE,
+@@ -74,12 +71,11 @@
+     }
+     const configuredSkillBindings =
+       this.skillService.resolveConfiguredSkillBindingsForAgent(agentDefinition);
+-    const configuredSkills = collectResolvedConfiguredSkills(configuredSkillBindings);
+     const runtimeToolExposure = resolveRuntimeAgentToolExposure(
+       agentDefinition,
+       runContext.config.memberExecutionContext,
+     );
+-    const materializedConfiguredSkills =
++    const preparedSkills =
+       await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
+         runId: runContext.runId,
+         onAcquired: guard.ownSkill, assertAccepting: guard.assertAccepting,
+@@ -92,6 +88,9 @@
+         workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
+       });
+     guard.assertAccepting();
++    const materializedConfiguredSkills = preparedSkills.materializedSkills;
++    const configuredSkills = preparedSkills.effectiveRequests.flatMap((request) =>
++      request.kind === "reconcile-unresolved" ? [] : [request.skill]);
+     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
+       agentDefinition,
+       memberExecutionContext: runContext.config.memberExecutionContext,

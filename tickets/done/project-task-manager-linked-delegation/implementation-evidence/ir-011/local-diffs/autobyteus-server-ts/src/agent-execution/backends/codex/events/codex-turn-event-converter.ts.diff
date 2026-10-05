@@ -1,0 +1,42 @@
+--- incoming-merge/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts
++++ IR-011/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts
+@@ -59,12 +59,16 @@
+         payload,
+       );
+       context.clearOrderedToolsForBoundary(payload);
+-<<<<<<< HEAD
++      const abandonedCompactions = context.closeOpenCompactionsForTurn(
++        codexEventName,
++        turnId,
++        resolveTurnEndAbandonReason(payload),
++      );
+       const turn = asObject(payload.turn);
+       const status = asString(turn?.status);
+       if (status === "failed" && turnId) {
+         const error = asObject(turn?.error);
+-        return [...completionReasoningEnds, context.createEvent(codexEventName, AgentRunEventType.ERROR, {
++        return [...completionReasoningEnds, ...abandonedCompactions, context.createEvent(codexEventName, AgentRunEventType.ERROR, {
+           code: "CODEX_TURN_FAILED",
+           message: asString(error?.message) ?? "Codex turn failed.",
+           error_scope: "turn",
+@@ -74,19 +78,9 @@
+       }
+       return [
+         ...completionReasoningEnds,
++        ...abandonedCompactions,
+         context.createEvent(codexEventName, status === "interrupted"
+           ? AgentRunEventType.TURN_INTERRUPTED : AgentRunEventType.TURN_COMPLETED, {
+-=======
+-      const abandonedCompactions = context.closeOpenCompactionsForTurn(
+-        codexEventName,
+-        turnId,
+-        resolveTurnEndAbandonReason(payload),
+-      );
+-      return [
+-        ...completionReasoningEnds,
+-        ...abandonedCompactions,
+-        context.createEvent(codexEventName, AgentRunEventType.TURN_COMPLETED, {
+->>>>>>> origin/personal
+           ...(turnId ? { turnId } : {}),
+         }),
+       ];

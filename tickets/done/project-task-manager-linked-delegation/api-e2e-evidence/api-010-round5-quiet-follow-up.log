@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round5-lifecycle-probe.mjs quiet-a
+Scoped Pass: naturally quiet offline open-Task Agent restored through existing renderer conversation with SAME ID/lifetime, fresh actual saved-byte read, no new initial seed/copy.
+
+PROCESS_EXIT_CODE=0

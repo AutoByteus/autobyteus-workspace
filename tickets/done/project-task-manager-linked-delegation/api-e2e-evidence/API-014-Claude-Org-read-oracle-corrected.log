@@ -1,0 +1,7 @@
+2026-10-04T06:29:59.126702+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-concrete-lifecycle-probe.mjs", "claude", "agent_org", "--resume-borrowed", "--keep-a-open"]
+Error: TIMEOUT same lifetime closed/released diagnostic
+
+INNER_EXIT=1
+ELAPSED=152.24

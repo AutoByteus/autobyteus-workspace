@@ -1,0 +1,6 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-lifecycle-probe.mjs reopen-b
+Scoped Pass: saved-ID redelegation after explicit TODO creates fresh lifetime, Team and two member IDs/real byte reads; original closed executions retained.
+
+PROCESS_EXIT_CODE=0

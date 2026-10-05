@@ -1,0 +1,168 @@
+{
+  "createdAt": "2026-10-03T15:57:57.489Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "api008-concrete-root-team",
+    "teamDefinitionName": "API008 Concrete Root Team",
+    "teamRunId": "api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb",
+    "coordinatorAddress": "/manager",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team"
+    },
+    "members": [
+      {
+        "address": "/manager",
+        "agentDefinitionId": "autobyteus-project-task-manager",
+        "role": null,
+        "description": null,
+        "agentRunId": "project_task_manager_e2ba134e193e4786b004abb78512bf6e",
+        "platformAgentRunId": "01a1027c-e4a0-7530-8e35-c667ccfbc173",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team"
+        }
+      },
+      {
+        "address": "/borrowed",
+        "agentDefinitionId": "api008-packet-agent",
+        "role": null,
+        "description": null,
+        "agentRunId": "api008_packet_agent_d89d4f7914b0409abadfce1f3d396b1b",
+        "platformAgentRunId": "01a1027c-8885-76d3-82a8-3f429f6331f6",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team"
+        }
+      }
+    ],
+    "collaborators": [],
+    "taskExecutions": [
+      {
+        "address": "/borrowed",
+        "agentRunId": "api008_packet_agent_34d7c6a41be94c2497893229978d1554",
+        "platformAgentRunId": "01a1027d-2c8c-70d0-ac1b-968d1090949c",
+        "taskLifetime": {
+          "lifetimeId": "project_task_lifetime_ee11a785-6a58-4486-ace5-d12d9adabd22",
+          "purpose": "assignment"
+        },
+        "delegatorAgentRunId": "project_task_manager_e2ba134e193e4786b004abb78512bf6e",
+        "startedAt": "2026-10-03T15:58:40.250Z"
+      },
+      {
+        "address": "/api008_packet_team",
+        "teamRunId": "api008_packet_team_bf7718e498ba48129798cbfaa562d1ff",
+        "members": [
+          {
+            "address": "/api008_packet_team/coordinator",
+            "agentRunId": "api008_team_coordinator_b7d1e4e1bff740cca5441c8b0e7087a8",
+            "platformAgentRunId": "01a1027d-2d3f-7a13-a2b2-4db1e798e615"
+          },
+          {
+            "address": "/api008_packet_team/reader",
+            "agentRunId": "api008_team_reader_32b0997628cc4cc9bc27cd0cabfe4aef",
+            "platformAgentRunId": "01a1027d-2de0-7a81-bf44-683fdd13abc8"
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_e2ba134e193e4786b004abb78512bf6e",
+        "startedAt": "2026-10-03T15:58:40.427Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "api008-packet-team",
+          "coordinatorAddress": "/api008_packet_team/coordinator",
+          "members": [
+            {
+              "address": "/api008_packet_team/coordinator",
+              "agentDefinitionId": "api008-team-coordinator"
+            },
+            {
+              "address": "/api008_packet_team/reader",
+              "agentDefinitionId": "api008-team-reader"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team"
+          }
+        },
+        "taskLifetime": {
+          "lifetimeId": "project_task_lifetime_fec8fa1d-d861-4aa1-ae66-90915d1383b0",
+          "purpose": "assignment"
+        }
+      },
+      {
+        "address": "/api008_packet_team",
+        "teamRunId": "api008_packet_team_66adda0d15544a6aa0f186ed58465aa2",
+        "members": [
+          {
+            "address": "/api008_packet_team/coordinator",
+            "agentRunId": "api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8",
+            "platformAgentRunId": "01a1027e-3a67-7062-a405-74ff025da740"
+          },
+          {
+            "address": "/api008_packet_team/reader",
+            "agentRunId": "api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148",
+            "platformAgentRunId": "01a1027e-3ae7-75f2-ac7a-96b5d899d188"
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "project_task_manager_e2ba134e193e4786b004abb78512bf6e",
+        "startedAt": "2026-10-03T15:59:49.330Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "api008-packet-team",
+          "coordinatorAddress": "/api008_packet_team/coordinator",
+          "members": [
+            {
+              "address": "/api008_packet_team/coordinator",
+              "agentDefinitionId": "api008-team-coordinator"
+            },
+            {
+              "address": "/api008_packet_team/reader",
+              "agentDefinitionId": "api008-team-reader"
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team"
+          }
+        },
+        "taskLifetime": {
+          "lifetimeId": "project_task_lifetime_d25faaac-5824-4dd3-baa6-a0229195beca",
+          "purpose": "assignment"
+        }
+      }
+    ]
+  }
+}

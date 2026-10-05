@@ -1,0 +1,7 @@
+2026-10-04T05:59:55.060106+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round13-native-agent-probe.mjs", "reconnect"]
+Pass: actual renderer reload/reconnect retains Agent+Team rows and both readable worker conversations.
+
+INNER_EXIT=0
+ELAPSED=1.3

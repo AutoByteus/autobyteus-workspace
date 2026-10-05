@@ -1,0 +1,8 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-idempotent-done-current.mjs
+agent Scoped Pass exact repeated DONE retains same released lifetime/execution/history; no new copy/seed or other Task effect
+agent_team Scoped Pass exact repeated DONE retains same released lifetime/execution/history; no new copy/seed or other Task effect
+agent_org Scoped Pass exact repeated DONE retains same released lifetime/execution/history; no new copy/seed or other Task effect
+
+PROCESS_EXIT_CODE=0

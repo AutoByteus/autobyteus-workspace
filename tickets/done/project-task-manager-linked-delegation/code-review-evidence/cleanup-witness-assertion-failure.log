@@ -1,0 +1,48 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts > witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts > witness: partial private Team release waits for member 1 before initiating member 2 cleanup
+PRIVATE_RELEASE_BEFORE_FIRST_DRAIN ["first"]
+
+ ❯ tests/unit/reviewer/cleanup-witness.test.ts (2 tests | 1 failed) 13ms
+   × witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending 12ms
+   ✓ witness: partial private Team release waits for member 1 before initiating member 2 cleanup 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/reviewer/cleanup-witness.test.ts > witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending
+AssertionError: expected { accepted: true, …(2) } to deeply equal { accepted: true }
+
+- Expected
++ Received
+
+  {
+    "accepted": true,
++   "agentRunId": "A-lead",
++   "displayName": "Lead",
+  }
+
+ ❯ tests/unit/reviewer/cleanup-witness.test.ts:63:139
+     61|   (adapter as any).sources.requireTeam = () => ({ kind: 'agent_team', …
+     62|   await adapter.restoreChain('A-lead', () => undefined); const restore…
+     63|   expect(restored).not.toBe(oldTeam); expect(await restored.postMessag…
+       |                                                                                                                                           ^
+     64|   expect(f.active.has('A-child')).toBe(false); expect(f.active.has('A-…
+     65|   // Actual original controls retained by root registration; these sup…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  10:28:10
+   Duration  3.29s (transform 2.27s, setup 0ms, import 3.18s, tests 13ms, environment 0ms)
+

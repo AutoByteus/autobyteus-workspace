@@ -1,0 +1,24 @@
+(node:23780) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "fixtureMigrations": [
+    "20260624090000_add_token_usage_ledger_events",
+    "20260625193000_token_usage_component_pricing_explainability",
+    "20260629120000_add_token_usage_display_fields",
+    "20260702093000_token_usage_execution_address",
+    "20260730090000_add_token_usage_provider_name",
+    "20260801090000_token_usage_member_display_name",
+    "20260819090000_add_token_usage_run_records"
+  ],
+  "sourceColumn": "claude_sdk_usage_state_json",
+  "fixtureHasColumn": false,
+  "installedClientField": "claude_sdk_usage_state_json",
+  "beforeExpansion": {
+    "code": "P2022",
+    "column": "main.token_usage_run_records.claude_sdk_usage_state_json",
+    "messageHasMissingColumn": true
+  },
+  "expandedHasColumn": true,
+  "afterExpansionRows": []
+}
+OWNED_SCRATCH_REMOVED=true

@@ -1,0 +1,39 @@
+START 2026-10-05T04:43:03.582192+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["pnpm", "-C", "autobyteus-web", "test:nuxt", "stores/__tests__/runHistoryStore.spec.ts", "components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts", "--run"]
+
+> autobyteus@1.4.94-beta.5 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/runHistoryStore.spec.ts components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts (11 tests) 159ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (47 tests) 373ms
+
+ Test Files  2 passed (2)
+      Tests  58 passed (58)
+   Start at  06:43:05
+   Duration  6.31s (transform 3.47s, setup 10.55s, collect 352ms, tests 532ms, environment 311ms, prepare 248ms)
+
+
+INNER_EXIT_CODE=0

@@ -1,0 +1,6 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round7-archive-and-witness.py
+{"archivedFiles": 55, "cases": 5, "ownPids": 92, "observerCaptures": 0, "observerPauses": 0}
+
+PROCESS_EXIT_CODE=0

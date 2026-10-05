@@ -1,0 +1,10 @@
+2026-10-04T08:06:49.316926+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-physical-recursive-probe.mjs"]
+AssertionError [ERR_ASSERTION]: Six exact Task actors must own six exclusive SDK children in unused W2
+
+3 !== 6
+
+
+INNER_EXIT=1
+ELAPSED=77.48

@@ -1,0 +1,9 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-resume.mjs resume native
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(!out.resumedManagerTurn.some(x=>x.trace_type==='tool_call'&&['delegate_task','create_or_update_task'].includes(x.tool_name)))
+
+
+PROCESS_EXIT_CODE=1

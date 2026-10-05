@@ -1,0 +1,394 @@
+[
+  {
+    "id": "api-013-gates",
+    "label": "FAPI010 independent current production typecheck/index diff/zero-unmerged",
+    "at": "2026-10-04T05:36:34.455126+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "bash",
+      "-c",
+      "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json && git diff HEAD --check && git diff --cached --check && test -z \"$(git ls-files -u)\""
+    ],
+    "exit": 0,
+    "elapsed": 9.09,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-gates.log",
+    "testFilesSummary": [],
+    "testsSummary": []
+  },
+  {
+    "id": "api-013-focused",
+    "label": "API014 current public history/fullforest and AGY native argument exact-stop controls",
+    "at": "2026-10-04T05:36:44.225161+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts",
+      "tests/unit/run-history/services/collaboration-root-history-readiness.test.ts",
+      "tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts",
+      "tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts",
+      "tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 12.32,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-focused.log",
+    "testFilesSummary": [
+      "8 passed (8)"
+    ],
+    "testsSummary": [
+      "88 passed (88)"
+    ]
+  },
+  {
+    "id": "api-013-native-integration",
+    "label": "API004 acquired Native exact cleanup/compaction/termination and current MCP lifecycle",
+    "at": "2026-10-04T05:46:16.581122+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts",
+      "tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+      "tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+      "tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 10.83,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-native-integration.log",
+    "testFilesSummary": [
+      "4 passed (4)"
+    ],
+    "testsSummary": [
+      "29 passed (29)"
+    ]
+  },
+  {
+    "id": "api-013-server-build",
+    "label": "Independent current prebuild/server compilation/assets/sanitized bootstrap",
+    "at": "2026-10-04T05:46:28.034418+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "build"
+    ],
+    "exit": 0,
+    "elapsed": 14.79,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-server-build.log",
+    "testFilesSummary": [],
+    "testsSummary": []
+  },
+  {
+    "id": "api-013-cumulative",
+    "label": "API017 current cumulative selected owners/private preparation/canonical terminal/quiet/failure exact retry",
+    "at": "2026-10-04T05:46:52.073640+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "bash",
+      "tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-009-cumulative-unit-command.sh"
+    ],
+    "exit": 0,
+    "elapsed": 127.73,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-cumulative.log",
+    "testFilesSummary": [
+      "150 passed | 3 skipped (153)"
+    ],
+    "testsSummary": [
+      "1498 passed | 5 skipped (1503)"
+    ]
+  },
+  {
+    "id": "API-003@round13-e2e",
+    "label": "Deterministic actual Project/current-array/startup/Team/Org HTTP boundaries",
+    "at": "2026-10-04T05:48:59.885396+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/projects",
+      "tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts",
+      "tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts",
+      "tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts",
+      "tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 20.62,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round13-e2e.log",
+    "testFilesSummary": [
+      "7 passed (7)"
+    ],
+    "testsSummary": [
+      "21 passed (21)"
+    ]
+  },
+  {
+    "id": "API-004@round13-integration",
+    "label": "Current Native root/private/termination/compaction plus actual MCP tool Task lifecycle",
+    "at": "2026-10-04T05:49:20.544258+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+      "tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+      "tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 8.84,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round13-integration.log",
+    "testFilesSummary": [
+      "3 passed (3)"
+    ],
+    "testsSummary": [
+      "24 passed (24)"
+    ]
+  },
+  {
+    "id": "API-017@round13-tool-log",
+    "label": "Strict TOOL_LOG correlation and hosted Team noncollaboration controls",
+    "at": "2026-10-04T05:49:29.432442+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts",
+      "tests/unit/agent-team-execution/team-system-instruction-admission.test.ts",
+      "tests/unit/agent-team-execution/team-agent-file-change-admission.test.ts",
+      "tests/unit/agent-team-execution/team-agent-background-task-admission.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 4.69,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-017@round13-tool-log.log",
+    "testFilesSummary": [
+      "4 passed (4)"
+    ],
+    "testsSummary": [
+      "12 passed (12)"
+    ]
+  },
+  {
+    "id": "API-006@round13-web",
+    "label": "Actual stores/stream/selection/component affected consumers",
+    "at": "2026-10-04T05:49:34.159994+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts",
+      "services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+      "stores/__tests__/runHistoryStore.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts",
+      "--run"
+    ],
+    "exit": 0,
+    "elapsed": 11.24,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round13-web.log",
+    "testFilesSummary": [
+      "8 passed (8)"
+    ],
+    "testsSummary": [
+      "102 passed (102)"
+    ]
+  },
+  {
+    "id": "API-006@round13-native-input",
+    "label": "Unchanged web boundary guard then native/FIFO/saved hydration workspace surface",
+    "at": "2026-10-04T05:49:45.450029+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "test:native-input-history"
+    ],
+    "exit": 0,
+    "elapsed": 11.8,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round13-native-input.log",
+    "testFilesSummary": [
+      "1 passed (1)"
+    ],
+    "testsSummary": [
+      "2 passed (2)"
+    ]
+  },
+  {
+    "id": "api-013-scoped-http",
+    "label": "API014 current built actual list/scoped Org HTTP Stop/restore/restart no-write",
+    "at": "2026-10-04T05:49:57.294451+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 4.22,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-scoped-http.log",
+    "testFilesSummary": [
+      "1 passed (1)"
+    ],
+    "testsSummary": [
+      "1 passed (1)"
+    ]
+  },
+  {
+    "id": "api-013-agy-http",
+    "label": "API019 current AGY emulated actor real HTTP/WS/scoped MCP nativearguments/publication/recovery",
+    "at": "2026-10-04T05:50:01.561777+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "env",
+      "RUN_AGY_FAILURE_E2E=1",
+      "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts",
+      "tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts",
+      "tests/e2e/runtime/agy-runtime-error-transport.e2e.test.ts",
+      "tests/e2e/runtime/agy-runtime-error-team-members.e2e.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 18.0,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-agy-http.log",
+    "testFilesSummary": [
+      "2 passed (2)"
+    ],
+    "testsSummary": [
+      "5 passed (5)"
+    ]
+  },
+  {
+    "id": "api-013-agy-failure-mcp",
+    "label": "API019 correct actual AGY failure/native argument coexistence all3-root scoped MCP transport",
+    "at": "2026-10-04T05:50:30.271411+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "env",
+      "RUN_AGY_FAILURE_E2E=1",
+      "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/agy-failure-transport.e2e.test.ts",
+      "tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts",
+      "tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 36.63,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-agy-failure-mcp.log",
+    "testFilesSummary": [
+      "3 passed (3)"
+    ],
+    "testsSummary": [
+      "33 passed | 1 skipped (34)"
+    ]
+  },
+  {
+    "id": "api-013-owned-agy-stop",
+    "label": "API019 actual compiled AGY owned child/group stop/idempotence",
+    "at": "2026-10-04T05:51:09.242304+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "node",
+      "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round13-owned-agy-stop.mjs"
+    ],
+    "exit": 0,
+    "elapsed": 2.02,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-owned-agy-stop.log",
+    "testFilesSummary": [],
+    "testsSummary": []
+  },
+  {
+    "id": "api-013-retained-durables",
+    "label": "API017 remaining cumulative API durable tests schema/model/communications/released migrations",
+    "at": "2026-10-04T05:52:22.628366+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+      "tests/unit/api/graphql/project-tasks-schema.test.ts",
+      "tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+      "tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+      "tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+      "tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts",
+      "tests/unit/services/team-communication/team-communication-service.test.ts",
+      "--no-watch"
+    ],
+    "exit": 0,
+    "elapsed": 12.05,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-013-retained-durables.log",
+    "testFilesSummary": [
+      "7 passed (7)"
+    ],
+    "testsSummary": [
+      "43 passed (43)"
+    ]
+  }
+]

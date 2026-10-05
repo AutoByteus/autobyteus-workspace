@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-10-05T05:32:17.970426+00:00",
+  "command": "python3 tickets/in-progress/project-task-manager-linked-delegation/delivery-evidence/dr-002/audit-preservation.py",
+  "exitCode": 1,
+  "failure": "AssertionError at stash comparison line32",
+  "cause": "Checker used commit-subject %s while input used reflog-subject %gs. Exact %H %gs comparison confirmed preserved input.",
+  "runtimeOrAPIValidationFailure": false,
+  "gitMutation": false
+}

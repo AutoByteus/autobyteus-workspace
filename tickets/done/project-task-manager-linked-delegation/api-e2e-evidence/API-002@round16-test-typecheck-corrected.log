@@ -1,0 +1,3 @@
+2026-10-04T18:34:20.474697+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["--", "pnpm", "-C", "autobyteus-server-ts", "exec", "tsc", "--noEmit", "-p", "../tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-016-tests-tsconfig.json"]

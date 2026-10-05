@@ -1,0 +1,3 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=api-010-round8-causal-failed-retry.log node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-causal-failed-retry.mjs

@@ -1,0 +1,1259 @@
+{
+  "basis": "All136 cumulative source/template paths, not tests/fixtures/generated dist. Prior135 exact hashes independently confirmed; fresh source/caller and full forward history path reviewed. Raw conservative guard; comment-only-excluding estimate. >220 trigger is not automatic split.",
+  "rows": [
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/message-recipient-resolution.ts",
+      "rawNonEmpty": 124,
+      "effectiveNonEmptyApprox": 95,
+      "cumulativeDelta": 33,
+      "sha256": "b02a2ffbd49e3260ec66b29963595eff7aa52e09aecf3def4b6fcabb339fc9c7",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/task-scoped-message-recipient.ts",
+      "rawNonEmpty": 31,
+      "effectiveNonEmptyApprox": 30,
+      "cumulativeDelta": 32,
+      "sha256": "67072837448a953fba32c5ff27d7b9348bb372737c40b7f2c1e7b76a541b92d5",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts",
+      "rawNonEmpty": 118,
+      "effectiveNonEmptyApprox": 118,
+      "cumulativeDelta": 15,
+      "sha256": "345dccd272708bbf27ad9d46750279b63daaf1cce00b83668cb3ab9141e9458e",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts",
+      "rawNonEmpty": 170,
+      "effectiveNonEmptyApprox": 169,
+      "cumulativeDelta": 51,
+      "sha256": "649ac495ca9449bd1233b9638846d008a68952cc86015b597fea802cd4e06d0b",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "rawNonEmpty": 433,
+      "effectiveNonEmptyApprox": 423,
+      "cumulativeDelta": 106,
+      "sha256": "c7f94d0209a37602fb04e5dc00334b5a02bc58b634566bcde15df003d15c5191",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts",
+      "rawNonEmpty": 54,
+      "effectiveNonEmptyApprox": 53,
+      "cumulativeDelta": 4,
+      "sha256": "ba8f69d637cb05919806b12c3404e770ac9c6f6dbfb1f0aca29b8bf2a1bde698",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+      "rawNonEmpty": 297,
+      "effectiveNonEmptyApprox": 279,
+      "cumulativeDelta": 67,
+      "sha256": "1c448585af0573e84f90f5297800bdf122c66208b29f2a2189de3266aaa2f6ce",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+      "rawNonEmpty": 294,
+      "effectiveNonEmptyApprox": 278,
+      "cumulativeDelta": 111,
+      "sha256": "de48426c2b2f0fedf7909f718c7184e868405734f974b54c61971b5bb1ae2d11",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts",
+      "rawNonEmpty": 39,
+      "effectiveNonEmptyApprox": 38,
+      "cumulativeDelta": 1,
+      "sha256": "7c3b4ee78d76eb4da96fadf4c45f3cbda16618cc1cf91d1783c72b5237fb71af",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts",
+      "rawNonEmpty": 81,
+      "effectiveNonEmptyApprox": 80,
+      "cumulativeDelta": 10,
+      "sha256": "58b2d1e2d5312073cb28ac21349be5df0e6c7786504a8ad09cb8b4cd36d33718",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/active-collaboration-root-directory.ts",
+      "rawNonEmpty": 95,
+      "effectiveNonEmptyApprox": 93,
+      "cumulativeDelta": 3,
+      "sha256": "70b6d10401395be492d5e449ffde3a89f9330bf763f23600e251c911c144192f",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-dispatch.ts",
+      "rawNonEmpty": 70,
+      "effectiveNonEmptyApprox": 69,
+      "cumulativeDelta": 71,
+      "sha256": "bb21d185cbda1134a06b1c61e6ae7cce06cc80980b523d308a173ac8179eed24",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-adapter.ts",
+      "rawNonEmpty": 96,
+      "effectiveNonEmptyApprox": 93,
+      "cumulativeDelta": 110,
+      "sha256": "c3e799a42793b3523bb63c192296322d728dec71de77435d65e58f1c3151fe95",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts",
+      "rawNonEmpty": 256,
+      "effectiveNonEmptyApprox": 234,
+      "cumulativeDelta": 142,
+      "sha256": "1c1e5f36848b5fe07489e3089fd8734e7fc00b88d8c619a35f93d2b0ab214c85",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts",
+      "rawNonEmpty": 89,
+      "effectiveNonEmptyApprox": 86,
+      "cumulativeDelta": 90,
+      "sha256": "616f3e248e1079a5a6c19a1bc73bc32b1fd6dcfa99dfab5b7b7d44eea4360395",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts",
+      "rawNonEmpty": 50,
+      "effectiveNonEmptyApprox": 47,
+      "cumulativeDelta": 20,
+      "sha256": "43f9080a56f78d1f9a24db258d6c9834b8335176defc0d0a843304361c7bb8fe",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-input.ts",
+      "rawNonEmpty": 36,
+      "effectiveNonEmptyApprox": 35,
+      "cumulativeDelta": 2,
+      "sha256": "6915a90a871eed4579e5b2815a8f077a851d72dbcb51e6c6c4533d128b0bd9b3",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-lifetime.ts",
+      "rawNonEmpty": 34,
+      "effectiveNonEmptyApprox": 34,
+      "cumulativeDelta": 35,
+      "sha256": "7f017e4932514b52f2d221df1df25c9062281c9e6891b44a3b175ec643a82833",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-seed-admission.ts",
+      "rawNonEmpty": 11,
+      "effectiveNonEmptyApprox": 10,
+      "cumulativeDelta": 12,
+      "sha256": "fd860660c9f160af9a53bedcd21f90d1f74104ce01d29972daa22dfd51d50b61",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-tree-projection.ts",
+      "rawNonEmpty": 55,
+      "effectiveNonEmptyApprox": 53,
+      "cumulativeDelta": 5,
+      "sha256": "462bb32ffc8d34feb1ea21673cbcc4f58747a0041ea31deb4fcefba2b2a60451",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-lifetime-operation-gate.ts",
+      "rawNonEmpty": 27,
+      "effectiveNonEmptyApprox": 26,
+      "cumulativeDelta": 28,
+      "sha256": "a68e774232888c7ce115808535b7c097e6994dbd2f9e52b56e965149da99abb8",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts",
+      "rawNonEmpty": 225,
+      "effectiveNonEmptyApprox": 217,
+      "cumulativeDelta": 74,
+      "sha256": "384bd92538d4b299677f2c829647f301dd650740fe226b03a9ed21b24bf3d70f",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts",
+      "rawNonEmpty": 115,
+      "effectiveNonEmptyApprox": 107,
+      "cumulativeDelta": 9,
+      "sha256": "27a3da0f35a11ce1bcb8bbd6cf00e9389acd912ef7cf66ddf744dd7a344d9f93",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-factory.ts",
+      "rawNonEmpty": 10,
+      "effectiveNonEmptyApprox": 9,
+      "cumulativeDelta": 10,
+      "sha256": "31c20362171ae0b4ce26e642f773898389470383d76db05c40e8e2d47bd7acb7",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-preparation.ts",
+      "rawNonEmpty": 59,
+      "effectiveNonEmptyApprox": 58,
+      "cumulativeDelta": 61,
+      "sha256": "bc7cafa5c5e783909814a21c79ffff75151816073ec8aa203acbe6d2d522a3f4",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts",
+      "rawNonEmpty": 119,
+      "effectiveNonEmptyApprox": 117,
+      "cumulativeDelta": 32,
+      "sha256": "2c78db725982435871904e17e82b8c2b474c0472bca6a47bc435efb0c1cc91ff",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "rawNonEmpty": 144,
+      "effectiveNonEmptyApprox": 142,
+      "cumulativeDelta": 5,
+      "sha256": "b0c4715a874f06284ea82d3c41119607aa7721bfeb76a20b83c371562e28574a",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-process-groups.ts",
+      "rawNonEmpty": 76,
+      "effectiveNonEmptyApprox": 63,
+      "cumulativeDelta": 18,
+      "sha256": "7179602e369bb225ad685ffd5270de5c6859b7e7bbc20043b21ed70e17771a11",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts",
+      "rawNonEmpty": 144,
+      "effectiveNonEmptyApprox": 138,
+      "cumulativeDelta": 65,
+      "sha256": "575971c6c5e1478fbcf708210b1b6da8e00f4370285dfb59378f2af09cbb84f6",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "rawNonEmpty": 485,
+      "effectiveNonEmptyApprox": 485,
+      "cumulativeDelta": 50,
+      "sha256": "1e4fd6a9d76c5d7d3b5f8c3c647996f7d6acd07ecad9305abda8ee929d506928",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts",
+      "rawNonEmpty": 63,
+      "effectiveNonEmptyApprox": 63,
+      "cumulativeDelta": 11,
+      "sha256": "39c603e2f17d5fe9a2b0e14ddbf222fcf5db4417dd9738e29677e889e20cb3ac",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts",
+      "rawNonEmpty": 58,
+      "effectiveNonEmptyApprox": 58,
+      "cumulativeDelta": 88,
+      "sha256": "7b2306737a11ce13600d0fc1c13fe354d697d658ca84f9af9bc6b22191f460fc",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+      "rawNonEmpty": 122,
+      "effectiveNonEmptyApprox": 122,
+      "cumulativeDelta": 16,
+      "sha256": "574527d0179f6086f69cd37b11c671790fb23b90daf58d637f83c4f78ed8ee4f",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts",
+      "rawNonEmpty": 37,
+      "effectiveNonEmptyApprox": 36,
+      "cumulativeDelta": 27,
+      "sha256": "f7471faa33897d0355f4709e9abc264aa4c8a3d3662fae55c9d2c8469ba2046d",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts",
+      "rawNonEmpty": 173,
+      "effectiveNonEmptyApprox": 173,
+      "cumulativeDelta": 45,
+      "sha256": "6a7961bf0416fd8241b78789a0edbaf966cb6cc8be49cb19afc5bf0ccb66719e",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts",
+      "rawNonEmpty": 116,
+      "effectiveNonEmptyApprox": 112,
+      "cumulativeDelta": 174,
+      "sha256": "0c2c54eb258fb2076c1979292d408e7ea6473956060b7c2e34f421353a65f102",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts",
+      "rawNonEmpty": 23,
+      "effectiveNonEmptyApprox": 23,
+      "cumulativeDelta": 4,
+      "sha256": "587cea0c00dc6f40f6e2d2eb5e4ec2718b40c2c07e9b1d55b7e002a25a24d6ca",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts",
+      "rawNonEmpty": 484,
+      "effectiveNonEmptyApprox": 463,
+      "cumulativeDelta": 35,
+      "sha256": "d00f9a124f816a2ca0948e20d5aac976e58360986f72c5ff55d6a3c466774986",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts",
+      "rawNonEmpty": 57,
+      "effectiveNonEmptyApprox": 57,
+      "cumulativeDelta": 80,
+      "sha256": "b160adb967d444cce508e15c4a167909deff7988d1e7584a546980c1761683a7",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+      "rawNonEmpty": 237,
+      "effectiveNonEmptyApprox": 234,
+      "cumulativeDelta": 29,
+      "sha256": "33ab9e59aefeea86c22cb54d9fa5838365b5cf86ad25dbcbb1de275255ae9f96",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+      "rawNonEmpty": 393,
+      "effectiveNonEmptyApprox": 390,
+      "cumulativeDelta": 27,
+      "sha256": "cb22fbf9f0ebe2e300d1a84b5c60f4045788c967e29cc6cbe8b27b55385fabaf",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-cleanup.ts",
+      "rawNonEmpty": 38,
+      "effectiveNonEmptyApprox": 38,
+      "cumulativeDelta": 16,
+      "sha256": "ff88efde183f772297b8f0f4e94e3e1bb2a0d19176c42d3062f9694b22541abb",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts",
+      "rawNonEmpty": 68,
+      "effectiveNonEmptyApprox": 68,
+      "cumulativeDelta": 17,
+      "sha256": "294f9fe73168f19b3d1b551f192981d41e660105a65a408bd07681f3a3244bb1",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts",
+      "rawNonEmpty": 110,
+      "effectiveNonEmptyApprox": 110,
+      "cumulativeDelta": 5,
+      "sha256": "b67f8326f3e6ef46836ee36878fa3a37d0680de8949cc57298ccec7857855188",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-input-submission.ts",
+      "rawNonEmpty": 99,
+      "effectiveNonEmptyApprox": 99,
+      "cumulativeDelta": 105,
+      "sha256": "d0563dec639526535f6e10036eba495fde87c7945440c82244fdaa143b202965",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts",
+      "rawNonEmpty": 233,
+      "effectiveNonEmptyApprox": 233,
+      "cumulativeDelta": 160,
+      "sha256": "10b2653c4e1ac792a3df6baac57ce8b3091a5f28538e9591b5e7bd2ca2b25a99",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-release-scope.ts",
+      "rawNonEmpty": 48,
+      "effectiveNonEmptyApprox": 47,
+      "cumulativeDelta": 49,
+      "sha256": "11945cec3d6b363de9554c129a6b5c324fea7c3c25de700e75c85e4731aecc45",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts",
+      "rawNonEmpty": 424,
+      "effectiveNonEmptyApprox": 420,
+      "cumulativeDelta": 132,
+      "sha256": "ec7d250bff023c7d22b61cdb464be083d8982122d684d3528b4786607b44c73b",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts",
+      "rawNonEmpty": 8,
+      "effectiveNonEmptyApprox": 7,
+      "cumulativeDelta": 9,
+      "sha256": "8472dc6b5c074a95f20b4456fea6e673e1eddcd1b84db74e97aeb3e227e03b36",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts",
+      "rawNonEmpty": 328,
+      "effectiveNonEmptyApprox": 312,
+      "cumulativeDelta": 77,
+      "sha256": "df1eaa8ad928439616d9b77b93d423cd014f44ed4f326a4ed84cfb1925c6f618",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "rawNonEmpty": 499,
+      "effectiveNonEmptyApprox": 489,
+      "cumulativeDelta": 32,
+      "sha256": "a5e6bb3c601b2228a2d2f0b045182c0c271798dadaeedbb655d3f0a73cb50c7f",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts",
+      "rawNonEmpty": 48,
+      "effectiveNonEmptyApprox": 48,
+      "cumulativeDelta": 7,
+      "sha256": "40a2dfc13de13ac9ae36acb7fc96e77bc5764817ea4fc2f34e9e95db33d90a46",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-execution-admission-fence.ts",
+      "rawNonEmpty": 14,
+      "effectiveNonEmptyApprox": 13,
+      "cumulativeDelta": 14,
+      "sha256": "846007aaa3ba76170442b09ef7e0a9090941bd91ba25cf67ea17daac24c3e3aa",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+      "rawNonEmpty": 210,
+      "effectiveNonEmptyApprox": 210,
+      "cumulativeDelta": 6,
+      "sha256": "8eb9409d21e81062987a417d20905599fd64ac7f5d0cddb4074239ec9fda7609",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts",
+      "rawNonEmpty": 288,
+      "effectiveNonEmptyApprox": 288,
+      "cumulativeDelta": 31,
+      "sha256": "82476215d81c4b372926f854db0bf4f19845e62c730fd6dd222a065b8790a149",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts",
+      "rawNonEmpty": 64,
+      "effectiveNonEmptyApprox": 60,
+      "cumulativeDelta": 18,
+      "sha256": "018cb1b311a42b82122e839ad54ea787c9010a6a482b963e9874a417f8f71f68",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-activation-operation.ts",
+      "rawNonEmpty": 115,
+      "effectiveNonEmptyApprox": 114,
+      "cumulativeDelta": 117,
+      "sha256": "84e24b02dee0e285bfb82da9a0a9be737f636e5e41b15a87f4bf46260ac97cd3",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "rawNonEmpty": 324,
+      "effectiveNonEmptyApprox": 322,
+      "cumulativeDelta": 299,
+      "sha256": "162fbab50b5df6ef0a148a5ce5c69f71467e16167bade7434542616e49f91cbe",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts",
+      "rawNonEmpty": 124,
+      "effectiveNonEmptyApprox": 124,
+      "cumulativeDelta": 53,
+      "sha256": "d3fb08825ed2ef68d0627c482bd7988a0f54f4d0b8bf602badc7d750ac5c22b4",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/managed-agent-run-termination.ts",
+      "rawNonEmpty": 55,
+      "effectiveNonEmptyApprox": 54,
+      "cumulativeDelta": 11,
+      "sha256": "72e5253d9b49f286b7cbe42afb3e23633e3d75db4074903190979ca33221b0fb",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+      "rawNonEmpty": 412,
+      "effectiveNonEmptyApprox": 409,
+      "cumulativeDelta": 10,
+      "sha256": "a365ab4149e901b5ba21c43634f4c5c5f6caac397f1c281666cc7975a4cca0e8",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts",
+      "rawNonEmpty": 36,
+      "effectiveNonEmptyApprox": 35,
+      "cumulativeDelta": 37,
+      "sha256": "8160f2d7abf6a96f2ef2197d597087b72f899f287e2ced1df73a68c567fa3e3a",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+      "rawNonEmpty": 464,
+      "effectiveNonEmptyApprox": 445,
+      "cumulativeDelta": 86,
+      "sha256": "603097d087802b2eac6acc752daaf8c9e21e0ce67128cdcd2b574f02567b2db3",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts",
+      "rawNonEmpty": 76,
+      "effectiveNonEmptyApprox": 75,
+      "cumulativeDelta": 4,
+      "sha256": "7d72e7a385cf462d3f6877b63000401978c368316289589ebced604275602cd1",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts",
+      "rawNonEmpty": 326,
+      "effectiveNonEmptyApprox": 308,
+      "cumulativeDelta": 18,
+      "sha256": "493e45f2ea17d899ee2ca26714ff3451651301fb8bc7ede3cd27d2069a915ddc",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+      "rawNonEmpty": 223,
+      "effectiveNonEmptyApprox": 213,
+      "cumulativeDelta": 5,
+      "sha256": "1d1f11d29c5aa58ecc7c6d04a37d634e817f0cf12ab73e2952ca0ba3a9e37319",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts",
+      "rawNonEmpty": 73,
+      "effectiveNonEmptyApprox": 59,
+      "cumulativeDelta": 2,
+      "sha256": "31f4b9f3e4d6b4b03327678b070f8813cf2aa45d57731d49784e6ff3a7f58b21",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts",
+      "rawNonEmpty": 359,
+      "effectiveNonEmptyApprox": 357,
+      "cumulativeDelta": 162,
+      "sha256": "755705fb71edc309fe61538ab22cc5d66009ed7942dab99257501a720d20e804",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+      "rawNonEmpty": 480,
+      "effectiveNonEmptyApprox": 457,
+      "cumulativeDelta": 59,
+      "sha256": "a19b836db50df8a89d0ca827b9a18c45f176516284d9022d6990272ddd28aca8",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts",
+      "rawNonEmpty": 77,
+      "effectiveNonEmptyApprox": 76,
+      "cumulativeDelta": 4,
+      "sha256": "871ad99f2a6894e49fbf9676366f1b9b9544b8bc0ac1fbe05082e21f1b591468",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts",
+      "rawNonEmpty": 279,
+      "effectiveNonEmptyApprox": 263,
+      "cumulativeDelta": 18,
+      "sha256": "cc3e1def20c0de41d123c6d336ef25e75114c43bbb8f8748e79b7b29131385c9",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts",
+      "rawNonEmpty": 67,
+      "effectiveNonEmptyApprox": 56,
+      "cumulativeDelta": 2,
+      "sha256": "f83d35b2c118c3c63b747eb7aefe06ad6b8fde7307085208427313b94bb12888",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts",
+      "rawNonEmpty": 179,
+      "effectiveNonEmptyApprox": 168,
+      "cumulativeDelta": 5,
+      "sha256": "2ffa501f46da83c8e59e4342e7c26c0b2713cf26fbfab186cb200aecef697c38",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts",
+      "rawNonEmpty": 347,
+      "effectiveNonEmptyApprox": 341,
+      "cumulativeDelta": 153,
+      "sha256": "2097129716739ac87d566aa3e3d398eaa2c6cf6a4b3d3937612c3449e64d15de",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts",
+      "rawNonEmpty": 42,
+      "effectiveNonEmptyApprox": 41,
+      "cumulativeDelta": 10,
+      "sha256": "20651697e89fc93aff45792001518bfcde4bde837d298f828f2557246df0c221",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/prepared-task-execution.ts",
+      "rawNonEmpty": 67,
+      "effectiveNonEmptyApprox": 64,
+      "cumulativeDelta": 53,
+      "sha256": "d7595c8f5f59da1aaa112c1937ecf0b65c812d406e4deb3e36d4b95c6ba4183d",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+      "rawNonEmpty": 451,
+      "effectiveNonEmptyApprox": 436,
+      "cumulativeDelta": 52,
+      "sha256": "05ed9f79b55a614542b5b56e00c5df9ef00c39c1ae521b6b1cf60dab418a6ec3",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/task-agent-execution.ts",
+      "rawNonEmpty": 17,
+      "effectiveNonEmptyApprox": 15,
+      "cumulativeDelta": 2,
+      "sha256": "28fdc05d76056a9534cca7fed063aaa396bcbff3848f2462c4ccf0eef65fd2ee",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/task-team-execution.ts",
+      "rawNonEmpty": 18,
+      "effectiveNonEmptyApprox": 16,
+      "cumulativeDelta": 3,
+      "sha256": "df76734208bc6493fdfd18fa96d5e7c57201045b60c9430795e05cb8efaa66ea",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts",
+      "rawNonEmpty": 87,
+      "effectiveNonEmptyApprox": 83,
+      "cumulativeDelta": 55,
+      "sha256": "8f6d3ab5ed6910e0a2d73cabbb904fd36d8f2cea41f366624412ba57be0b60b7",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts",
+      "rawNonEmpty": 188,
+      "effectiveNonEmptyApprox": 187,
+      "cumulativeDelta": 19,
+      "sha256": "03bbe8479ec2be6e66d9b8e72ea6f2f80b5c6d9677a0c821b4bf8d6c4f6fe81e",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-callbacks.ts",
+      "rawNonEmpty": 25,
+      "effectiveNonEmptyApprox": 23,
+      "cumulativeDelta": 1,
+      "sha256": "64e1047b3865aad618db3ac77168220ba1f36250f8f753a32412b4da306c8b3b",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+      "rawNonEmpty": 168,
+      "effectiveNonEmptyApprox": 164,
+      "cumulativeDelta": 97,
+      "sha256": "603c839399061e14e97a8c77452152cdb1140df08e07e5dbb712546fb7f45333",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager-options.ts",
+      "rawNonEmpty": 15,
+      "effectiveNonEmptyApprox": 14,
+      "cumulativeDelta": 16,
+      "sha256": "6e853897b80b01af5d30e2661e8b7a78bf4858b097613e788da24b75b07f5346",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "rawNonEmpty": 462,
+      "effectiveNonEmptyApprox": 453,
+      "cumulativeDelta": 171,
+      "sha256": "dba3930507beb0a21fd902f9f9b575b0d93ea3a3b25fb64138b724512d040c08",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts",
+      "rawNonEmpty": 50,
+      "effectiveNonEmptyApprox": 50,
+      "cumulativeDelta": 8,
+      "sha256": "7d6a6850c2073efc06d42f98e9ba00062d5f8be2c99b6dedb86b5035018ce348",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/owned-flat-team-runtime-release.ts",
+      "rawNonEmpty": 14,
+      "effectiveNonEmptyApprox": 13,
+      "cumulativeDelta": 15,
+      "sha256": "078b7e814a71c7c3865727a31bd09fd6ee85d789c1af5d8e7e045dfe1bfb8818",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/prepare-flat-team-configured-activation.ts",
+      "rawNonEmpty": 26,
+      "effectiveNonEmptyApprox": 25,
+      "cumulativeDelta": 27,
+      "sha256": "c2fcc5cf94a5051acf19232fbf8155ffa93b9b1a5231b405c0c69ac3a1894390",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts",
+      "rawNonEmpty": 73,
+      "effectiveNonEmptyApprox": 67,
+      "cumulativeDelta": 7,
+      "sha256": "26fe10cf16f8af3ac6f09351a46b270967889a5a34b98102c896f633efe626fd",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+      "rawNonEmpty": 256,
+      "effectiveNonEmptyApprox": 236,
+      "cumulativeDelta": 67,
+      "sha256": "19d69cc1274217b66cbe98ace57be7fb9d2ee4c36ba0d35f5925478ea752941f",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-team-execution-registry.ts",
+      "rawNonEmpty": 189,
+      "effectiveNonEmptyApprox": 185,
+      "cumulativeDelta": 114,
+      "sha256": "6742972fe71908c80cdd4dfad1ef3e64fa3dd22c597972011888c4b18216b585",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/task-team-execution-factory.ts",
+      "rawNonEmpty": 81,
+      "effectiveNonEmptyApprox": 80,
+      "cumulativeDelta": 59,
+      "sha256": "733ac268f7c304b17e8e1670356292eb3371fd9a73b1b12fbc3a65df653d57a1",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts",
+      "rawNonEmpty": 376,
+      "effectiveNonEmptyApprox": 355,
+      "cumulativeDelta": 18,
+      "sha256": "e8faf2fe6aec2801723650fe99a8a3b47a73f065c0ae18ede213783ee02bf798",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts",
+      "rawNonEmpty": 93,
+      "effectiveNonEmptyApprox": 91,
+      "cumulativeDelta": 2,
+      "sha256": "5ed192ec4e3ee28ba91f8ee974173756494a14480c05c8dae23e1e88d62a6c62",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+      "rawNonEmpty": 133,
+      "effectiveNonEmptyApprox": 131,
+      "cumulativeDelta": 9,
+      "sha256": "27292d0d542e0a72881860cba08118e3775ac1e15495500e58a072f6cf076bce",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts",
+      "rawNonEmpty": 111,
+      "effectiveNonEmptyApprox": 102,
+      "cumulativeDelta": 9,
+      "sha256": "b5f6a6327fc7b0f3c0de6e455e9678f9c9984af76f19294d5fe019ed34dd9271",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts",
+      "rawNonEmpty": 96,
+      "effectiveNonEmptyApprox": 95,
+      "cumulativeDelta": 12,
+      "sha256": "23a19d88eab7a98fc38582ca2ad617a5f8f19abc0cb205271a29d80fcd5ac9f3",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts",
+      "rawNonEmpty": 302,
+      "effectiveNonEmptyApprox": 300,
+      "cumulativeDelta": 160,
+      "sha256": "1997108b5d4f8c586e72a8e48c651e7e4e636e11a9b1239a035de46545bc27b5",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service-contract.ts",
+      "rawNonEmpty": 38,
+      "effectiveNonEmptyApprox": 37,
+      "cumulativeDelta": 2,
+      "sha256": "b263a0f83fe93adddb8e0a23920156d1404a83d3c5dc39e7887755b88ba87244",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts",
+      "rawNonEmpty": 51,
+      "effectiveNonEmptyApprox": 50,
+      "cumulativeDelta": 21,
+      "sha256": "a7815a0cb073e7cbe4debf51245e4a8f7b21b1958c2536e43cfff98bf3a9f000",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts",
+      "rawNonEmpty": 227,
+      "effectiveNonEmptyApprox": 227,
+      "cumulativeDelta": 6,
+      "sha256": "5d8896549ebf8ff091b12c2da9cd14fb7700e335e37b82476450c80218ba9f98",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts",
+      "rawNonEmpty": 55,
+      "effectiveNonEmptyApprox": 54,
+      "cumulativeDelta": 4,
+      "sha256": "35a5cc5019554e930cb5be010397ee9d7524e20c21719caa402b04cbdc3e6891",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts",
+      "rawNonEmpty": 63,
+      "effectiveNonEmptyApprox": 61,
+      "cumulativeDelta": 60,
+      "sha256": "36e77dc0a094278964dd958198f48267c59ca57e863a557f55926e0eb384cf6f",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts",
+      "rawNonEmpty": 28,
+      "effectiveNonEmptyApprox": 28,
+      "cumulativeDelta": 6,
+      "sha256": "05a1312a2def9ddc320b15b3385517e1d112de46d1369ce5c45e4e917657b483",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts",
+      "rawNonEmpty": 43,
+      "effectiveNonEmptyApprox": 43,
+      "cumulativeDelta": 4,
+      "sha256": "5f42672be1caf39c7b029ac1c96c3841cb28e281c43eada93fb140ec290985a9",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts",
+      "rawNonEmpty": 246,
+      "effectiveNonEmptyApprox": 246,
+      "cumulativeDelta": 8,
+      "sha256": "9edf019d16a74ca91ecd67fe1ba6d318358c7c587c85be68988932c62a9f0c3e",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+      "rawNonEmpty": 35,
+      "effectiveNonEmptyApprox": 31,
+      "cumulativeDelta": 2,
+      "sha256": "9c188c898170aa50ed009a30e584cd100602c761cdae225fab69d1e72beb2d1d",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent-config.json",
+      "rawNonEmpty": 12,
+      "effectiveNonEmptyApprox": 12,
+      "cumulativeDelta": 12,
+      "sha256": "b9f58808e3720e3290f4928910ff5061a4f689c82f02a6292cfdd914a0502bc4",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md",
+      "rawNonEmpty": 11,
+      "effectiveNonEmptyApprox": 11,
+      "cumulativeDelta": 13,
+      "sha256": "97f905389c1f9979c79d7d59cf5df490cc810ace05a463b11b94d6a5c8554d26",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/llm-management/services/codex-model-catalog.ts",
+      "rawNonEmpty": 51,
+      "effectiveNonEmptyApprox": 51,
+      "cumulativeDelta": 5,
+      "sha256": "44a7eeb1534e0198d22ec6324bb3f74aac815f394c6a08c73147c583a94b42ed",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/persistence/file/store-utils.ts",
+      "rawNonEmpty": 237,
+      "effectiveNonEmptyApprox": 236,
+      "cumulativeDelta": 2,
+      "sha256": "6a59bc5b4b0d1c09791f1fba29950c00eeaa468c1ead14cf75e1ab27eef77724",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/context/project-task-context-store.ts",
+      "rawNonEmpty": 181,
+      "effectiveNonEmptyApprox": 177,
+      "cumulativeDelta": 1,
+      "sha256": "983285bae9404d48f136e0d2a4a5b1ef0df8df94847bc0cb69ac65e1741cbe43",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/models.ts",
+      "rawNonEmpty": 90,
+      "effectiveNonEmptyApprox": 83,
+      "cumulativeDelta": 2,
+      "sha256": "c290f23de98e543c9c392ea9f34140172b677934596f508e904b5ddaf3522247",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-errors.ts",
+      "rawNonEmpty": 30,
+      "effectiveNonEmptyApprox": 30,
+      "cumulativeDelta": 8,
+      "sha256": "ce58072114bf2c0f60ca6ded4840232c025ac2c34b94741e84f639ec153ca52e",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-task-execution-state.ts",
+      "rawNonEmpty": 47,
+      "effectiveNonEmptyApprox": 47,
+      "cumulativeDelta": 47,
+      "sha256": "93e890c2e59fcda1e239bb4f3881afea77e56784c8fed71e02364622ad55fdcf",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-task-execution.ts",
+      "rawNonEmpty": 13,
+      "effectiveNonEmptyApprox": 13,
+      "cumulativeDelta": 13,
+      "sha256": "c744e0cf86ef8f3c0a74be6ad387508775a0baa23858f6676184e519d3060f64",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts",
+      "rawNonEmpty": 44,
+      "effectiveNonEmptyApprox": 43,
+      "cumulativeDelta": 44,
+      "sha256": "a97ebf7a44a59e98df4cd378f49615db96f8988d09f1bd5d2ded02e53b932f44",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/services/project-task-service.ts",
+      "rawNonEmpty": 271,
+      "effectiveNonEmptyApprox": 269,
+      "cumulativeDelta": 125,
+      "sha256": "39b7846415bb7f023527eab1043b799177e12b80e75b64d9fb5879cd50884377",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-metadata-schema.ts",
+      "rawNonEmpty": 54,
+      "effectiveNonEmptyApprox": 50,
+      "cumulativeDelta": 62,
+      "sha256": "bb766390c913941db0aa8041e2255c327b3e0b7c2535ad34bcdf95e575ce9418",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-state-schema.ts",
+      "rawNonEmpty": 95,
+      "effectiveNonEmptyApprox": 93,
+      "cumulativeDelta": 95,
+      "sha256": "227e0556717fc7ccbe8c6eb976984611314218077b6cbdd73ed1b42a1736a54f",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-store.ts",
+      "rawNonEmpty": 49,
+      "effectiveNonEmptyApprox": 47,
+      "cumulativeDelta": 148,
+      "sha256": "aa866a73e8819b6e5bf06e3e3f289f4ed56c25c0b05f904f259fec5f04a26c86",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts",
+      "rawNonEmpty": 152,
+      "effectiveNonEmptyApprox": 128,
+      "cumulativeDelta": 3,
+      "sha256": "fd12c36a87aac884a2de8e02223c6911f73a581655980eb973c17195487c3051",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts",
+      "rawNonEmpty": 448,
+      "effectiveNonEmptyApprox": 426,
+      "cumulativeDelta": 3,
+      "sha256": "61f71a04bf6ca80d94e4b7d5385e1a16d063721c4661a8abb2549b63aa435745",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/acp/acp-agent-process.ts",
+      "rawNonEmpty": 79,
+      "effectiveNonEmptyApprox": 71,
+      "cumulativeDelta": 25,
+      "sha256": "d2ae323cf3e40f7960dd5d51e7ac056bc775357e7a0e6e1f5c5e05a3574182c6",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts",
+      "rawNonEmpty": 457,
+      "effectiveNonEmptyApprox": 450,
+      "cumulativeDelta": 109,
+      "sha256": "10df0ae52b08cc1af34d8d662bc9906c53b32b125f3a49686c0c503bfa353fe7",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts",
+      "rawNonEmpty": 187,
+      "effectiveNonEmptyApprox": 179,
+      "cumulativeDelta": 201,
+      "sha256": "e2b8060bdebcc87e458935c09a8327a99fe404ab6b96674150cd74bf29510197",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-session-opening.ts",
+      "rawNonEmpty": 99,
+      "effectiveNonEmptyApprox": 97,
+      "cumulativeDelta": 101,
+      "sha256": "5a1a4c03c62fcc029d2619054e5597c9a9b17affce9fd81bd0220111a8617a4b",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-streaming-session.ts",
+      "rawNonEmpty": 140,
+      "effectiveNonEmptyApprox": 131,
+      "cumulativeDelta": 19,
+      "sha256": "d2043bbf2fc75cd5fb334c48524986e10df9d459c3aa2f212d17f1da9d237408",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+      "rawNonEmpty": 108,
+      "effectiveNonEmptyApprox": 106,
+      "cumulativeDelta": 232,
+      "sha256": "3ca5444b822acde7d94cb13c45feabb946d197f724cb4546058ef199cd03a634",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts",
+      "rawNonEmpty": 358,
+      "effectiveNonEmptyApprox": 355,
+      "cumulativeDelta": 61,
+      "sha256": "d78957ff537af3623723ae7dd351401eed6d28ae1ceb9460d9265f5eda472c03",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+      "rawNonEmpty": 80,
+      "effectiveNonEmptyApprox": 79,
+      "cumulativeDelta": 7,
+      "sha256": "f07b2dbef5eaef03d9db83e61847742aa7629df581b6ba9a53f5bb532c29c3e5",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+      "rawNonEmpty": 91,
+      "effectiveNonEmptyApprox": 91,
+      "cumulativeDelta": 7,
+      "sha256": "3864666cac4b631bfb33fafa0c8a0e781582baa4230083029e89bc1e0402673d",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts",
+      "rawNonEmpty": 100,
+      "effectiveNonEmptyApprox": 98,
+      "cumulativeDelta": 108,
+      "sha256": "fe0e73b4745c2aac6251cf71dbf8779c92d52a49b28abbd3267731b69920928e",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts",
+      "rawNonEmpty": 102,
+      "effectiveNonEmptyApprox": 101,
+      "cumulativeDelta": 4,
+      "sha256": "66f89ba5370bcf25e918124e732d6455d9cb617f2637be5e8f7fe80717377054",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-ts/src/agent/factory/agent-factory.ts",
+      "rawNonEmpty": 214,
+      "effectiveNonEmptyApprox": 213,
+      "cumulativeDelta": 11,
+      "sha256": "d44c560f1a2ed4786b69024df55a554c6307a2e3fe91ac0f064441c7b39d7420",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "rawNonEmpty": 57,
+      "effectiveNonEmptyApprox": 56,
+      "cumulativeDelta": 7,
+      "sha256": "daa8284478d806370c10f8af1f87bd4d19f4dc28e9dbfddf43536812ed2ecb8b",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    }
+  ],
+  "maximumRaw": {
+    "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+    "rawNonEmpty": 499,
+    "effectiveNonEmptyApprox": 489,
+    "cumulativeDelta": 32,
+    "sha256": "a5e6bb3c601b2228a2d2f0b045182c0c271798dadaeedbb655d3f0a73cb50c7f",
+    "priorRawMatches": true,
+    "priorEffectiveMatches": true
+  },
+  "over500": [],
+  "over220": [
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "rawNonEmpty": 324,
+      "effectiveNonEmptyApprox": 322,
+      "cumulativeDelta": 299,
+      "sha256": "162fbab50b5df6ef0a148a5ce5c69f71467e16167bade7434542616e49f91cbe",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+      "rawNonEmpty": 108,
+      "effectiveNonEmptyApprox": 106,
+      "cumulativeDelta": 232,
+      "sha256": "3ca5444b822acde7d94cb13c45feabb946d197f724cb4546058ef199cd03a634",
+      "priorRawMatches": true,
+      "priorEffectiveMatches": true
+    }
+  ]
+}

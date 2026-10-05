@@ -1,0 +1,97 @@
+{
+  "target": "codex",
+  "instanceId": "iso-57259-7e1c",
+  "started": "2026-10-04T03:35:59.316Z",
+  "catalogTarget": {
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-6.1-sol",
+    "llmConfig": {
+      "reasoning_effort": "low"
+    },
+    "ready": true,
+    "selected": {
+      "modelIdentifier": "gpt-6.1-sol",
+      "name": "GPT-6.1-Sol (default reasoning: low)",
+      "canonicalName": "gpt-6.1-sol",
+      "configSchema": {
+        "parameters": [
+          {
+            "name": "reasoning_effort",
+            "type": "enum",
+            "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+            "required": false,
+            "default_value": "low",
+            "enum_values": [
+              "low",
+              "medium",
+              "high",
+              "xhigh",
+              "max",
+              "ultra"
+            ]
+          },
+          {
+            "name": "service_tier",
+            "label": "Fast mode",
+            "type": "enum",
+            "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+            "required": false,
+            "enum_values": [
+              "fast"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "prefix": "API011_CODEX",
+  "config": {
+    "runtimeKind": "codex_app_server",
+    "llmModelIdentifier": "gpt-6.1-sol",
+    "llmConfig": {
+      "reasoning_effort": "low"
+    }
+  },
+  "workspaces": {
+    "manager": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/codex/manager",
+    "agent-a": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/codex/agent-a",
+    "team-b": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/codex/team-b"
+  },
+  "agent": {
+    "id": "api011-codex-packet-agent",
+    "name": "API011_CODEX Packet Agent",
+    "defaultLaunchConfig": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      }
+    }
+  },
+  "coordinator": {
+    "id": "api011-codex-team-coordinator",
+    "name": "API011_CODEX Team Coordinator",
+    "defaultLaunchConfig": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      }
+    }
+  },
+  "reader": {
+    "id": "api011-codex-team-reader",
+    "name": "API011_CODEX Team Reader",
+    "defaultLaunchConfig": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      }
+    }
+  },
+  "team": {
+    "id": "api011-codex-packet-team",
+    "name": "API011_CODEX Packet Team"
+  }
+}

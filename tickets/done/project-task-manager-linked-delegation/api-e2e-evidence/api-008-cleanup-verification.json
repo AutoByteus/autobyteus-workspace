@@ -1,0 +1,44 @@
+{
+  "at": "2026-10-03T16:23:45.148532+00:00",
+  "instanceId": "iso-55024-a24c",
+  "stop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-55024-a24c",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "ownCapturedPidCount": 74,
+  "ownAliveAfterStop": [],
+  "freeBind": {
+    "55024": true,
+    "55025": true,
+    "9229": true
+  },
+  "ownRootDatabaseImportedKeyRemoved": true,
+  "foreignImmediatelyBeforeVsAfterExactlyUnchanged": 4,
+  "entryForeignIDs": [
+    "iso-60383-3d28",
+    "iso-62694-9b10",
+    "iso-61026-fa48",
+    "iso-52483-84f0",
+    "iso-54639-13b7"
+  ],
+  "foreignRemovedBeforeOwnCleanup": [
+    "iso-54639-13b7"
+  ],
+  "foreignExternalChangeLimit": "iso-54639-13b7 disappeared before own cleanup and default debug port became free; actor/cause unobserved. Agent did not signal/connect/stop that instance. Do not claim entry five exactly unchanged. Other four entry records exactly unchanged.",
+  "observerDetached": {
+    "at": "2026-10-03T16:21:26.214Z",
+    "event": "detached"
+  },
+  "scope": "OWN environment teardown only, NOT successful Task release or repair of failed authority."
+}

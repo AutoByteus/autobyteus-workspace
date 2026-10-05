@@ -1,0 +1,9 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-cleanup-check.py
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-cleanup-check.py", line 19, in <module>
+    assert all(free.values());assert not Path(i['dataRoot']).exists();manifest=read('api-010-round10-owned-evidence-manifest.json');assert all(hashlib.sha256(Path(x['archive']).read_bytes()).hexdigest()==x['sha256'] for x in manifest['files'])
+AssertionError
+
+PROCESS_EXIT_CODE=1

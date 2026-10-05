@@ -1,0 +1,538 @@
+{
+  "at": "2026-10-04T06:11:05.262430+00:00",
+  "binaryIndexExact": false,
+  "stageModeBlobPathBytesExact": true,
+  "indexPathsAndFlagsExact": true,
+  "statCacheFieldsOnly": true,
+  "changedStatPaths": 102,
+  "changedStatFields": 105,
+  "statChanges": [
+    {
+      "path": "autobyteus-agent-presentation-contracts/LICENSE",
+      "before": "  ctime: 1791087632:467384731",
+      "after": "  ctime: 1791093145:848824232"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/README.md",
+      "before": "  ctime: 1791087632:497076986",
+      "after": "  ctime: 1791093145:866541615"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts",
+      "before": "  ctime: 1791087632:497763146",
+      "after": "  ctime: 1791093145:867957172"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts.map",
+      "before": "  ctime: 1791087632:473143758",
+      "after": "  ctime: 1791093145:855789937"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js",
+      "before": "  ctime: 1791087632:468229056",
+      "after": "  ctime: 1791093145:849357764"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js.map",
+      "before": "  ctime: 1791087632:473684337",
+      "after": "  ctime: 1791093145:856466841"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts",
+      "before": "  ctime: 1791087632:498836302",
+      "after": "  ctime: 1791093145:868934737"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts.map",
+      "before": "  ctime: 1791087632:488679108",
+      "after": "  ctime: 1791093145:857333034"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js",
+      "before": "  ctime: 1791087632:469104547",
+      "after": "  ctime: 1791093145:849965253"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js.map",
+      "before": "  ctime: 1791087632:489330935",
+      "after": "  ctime: 1791093145:858210143"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts",
+      "before": "  ctime: 1791087632:500076207",
+      "after": "  ctime: 1791093145:869780930"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts.map",
+      "before": "  ctime: 1791087632:490438425",
+      "after": "  ctime: 1791093145:859208916"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js",
+      "before": "  ctime: 1791087632:469943539",
+      "after": "  ctime: 1791093145:850649448"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map",
+      "before": "  ctime: 1791087632:491424124",
+      "after": "  ctime: 1791093145:859993860"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.d.ts",
+      "before": "  ctime: 1791087632:500973698",
+      "after": "  ctime: 1791093145:870458460"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.d.ts.map",
+      "before": "  ctime: 1791087632:492350906",
+      "after": "  ctime: 1791093145:860647098"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.js",
+      "before": "  ctime: 1791087632:470646616",
+      "after": "  ctime: 1791093145:851379477"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.js.map",
+      "before": "  ctime: 1791087632:493150024",
+      "after": "  ctime: 1791093145:861396168"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.d.ts",
+      "before": "  ctime: 1791087632:502143062",
+      "after": "  ctime: 1791093145:871105989"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.d.ts.map",
+      "before": "  ctime: 1791087632:493880267",
+      "after": "  ctime: 1791093145:862082738"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.js",
+      "before": "  ctime: 1791087632:471132361",
+      "after": "  ctime: 1791093145:852323376"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.js.map",
+      "before": "  ctime: 1791087632:494498886",
+      "after": "  ctime: 1791093145:862865266"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.d.ts",
+      "before": "  ctime: 1791087632:502680265",
+      "after": "  ctime: 1791093145:871767394"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.d.ts.map",
+      "before": "  ctime: 1791087632:495093047",
+      "after": "  ctime: 1791093145:863921496"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.js",
+      "before": "  ctime: 1791087632:471634565",
+      "after": "  ctime: 1791093145:853179527"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/schema-helpers.js.map",
+      "before": "  ctime: 1791087632:495612791",
+      "after": "  ctime: 1791093145:864688316"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts",
+      "before": "  ctime: 1791087632:504131084",
+      "after": "  ctime: 1791093145:872357758"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts.map",
+      "before": "  ctime: 1791087632:496094204",
+      "after": "  ctime: 1791093145:865240764"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js",
+      "before": "  ctime: 1791087632:472099269",
+      "after": "  ctime: 1791093145:854129426"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js.map",
+      "before": "  ctime: 1791087632:496602574",
+      "after": "  ctime: 1791093145:865751879"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/package.json",
+      "before": "  ctime: 1791087632:472573931",
+      "after": "  ctime: 1791093145:854895037"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/README.md",
+      "before": "  ctime: 1791087632:458888313",
+      "after": "  ctime: 1791093145:983379803"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/package.json",
+      "before": "  ctime: 1791087632:439568208",
+      "after": "  ctime: 1791093145:965163012"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/LICENSE",
+      "before": "  ctime: 1791087632:451991796",
+      "after": "  ctime: 1791093145:912874306"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/README.md",
+      "before": "  ctime: 1791087632:461246124",
+      "after": "  ctime: 1791093145:944994549"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts",
+      "before": "  ctime: 1791087632:462338404",
+      "after": "  ctime: 1791093145:945973864"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts.map",
+      "before": "  ctime: 1791087632:456717375",
+      "after": "  ctime: 1791093145:936937489"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js",
+      "before": "  ctime: 1791087632:452696456",
+      "after": "  ctime: 1791093145:913687707"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js.map",
+      "before": "  ctime: 1791087632:457328453",
+      "after": "  ctime: 1791093145:937473937"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts",
+      "before": "  ctime: 1791087632:464206220",
+      "after": "  ctime: 1791093145:946818599"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts.map",
+      "before": "  ctime: 1791087632:457828906",
+      "after": "  ctime: 1791093145:937938054"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js",
+      "before": "  ctime: 1791087632:454215316",
+      "after": "  ctime: 1791093145:914377570"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js.map",
+      "before": "  ctime: 1791087632:458431567",
+      "after": "  ctime: 1791093145:938512085"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.d.ts",
+      "before": "  ctime: 1791087632:464902671",
+      "after": "  ctime: 1791093145:947464962"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.d.ts.map",
+      "before": "  ctime: 1791087632:458942687",
+      "after": "  ctime: 1791093145:939113115"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.js",
+      "before": "  ctime: 1791087632:454945018",
+      "after": "  ctime: 1791093145:934449118"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/index.js.map",
+      "before": "  ctime: 1791087632:459501474",
+      "after": "  ctime: 1791093145:939825936"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts",
+      "before": "  ctime: 1791087632:465585873",
+      "after": "  ctime: 1791093145:947924537"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map",
+      "before": "  ctime: 1791087632:460063301",
+      "after": "  ctime: 1791093145:940569755"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js",
+      "before": "  ctime: 1791087632:455542720",
+      "after": "  ctime: 1791093145:935784177"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js.map",
+      "before": "  ctime: 1791087632:460637546",
+      "after": "  ctime: 1791093145:942786090"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/package.json",
+      "before": "  ctime: 1791087632:456119048",
+      "after": "  ctime: 1791093145:936314292"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/LICENSE",
+      "before": "  ctime: 1791087632:473055926",
+      "after": "  ctime: 1791093145:949491842"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/README.md",
+      "before": "  ctime: 1791087632:514977563",
+      "after": "  ctime: 1791093145:975122163"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.d.ts",
+      "before": "  ctime: 1791087632:515763097",
+      "after": "  ctime: 1791093145:975757234"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.d.ts.map",
+      "before": "  ctime: 1791087632:496990237",
+      "after": "  ctime: 1791093145:958754172"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.js",
+      "before": "  ctime: 1791087632:488719400",
+      "after": "  ctime: 1791093145:950037540"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/index.js.map",
+      "before": "  ctime: 1791087632:497760646",
+      "after": "  ctime: 1791093145:959396868"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.d.ts",
+      "before": "  ctime: 1791087632:516445049",
+      "after": "  ctime: 1791093145:976383681"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.d.ts.map",
+      "before": "  ctime: 1791087632:498832760",
+      "after": "  ctime: 1791093145:960045981"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.js",
+      "before": "  ctime: 1791087632:489329810",
+      "after": "  ctime: 1791093145:950692986"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/schema-helpers.js.map",
+      "before": "  ctime: 1791087632:500070332",
+      "after": "  ctime: 1791093145:960594221"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts",
+      "before": "  ctime: 1791087632:517025710",
+      "after": "  ctime: 1791093145:977106293"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map",
+      "before": "  ctime: 1791087632:500942323",
+      "after": "  ctime: 1791093145:961300083"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js",
+      "before": "  ctime: 1791087632:490393050",
+      "after": "  ctime: 1791093145:951275392"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map",
+      "before": "  ctime: 1791087632:502150687",
+      "after": "  ctime: 1791093145:962223066"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.d.ts",
+      "before": "  ctime: 1791087632:517758703",
+      "after": "  ctime: 1791093145:977710907"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.d.ts.map",
+      "before": "  ctime: 1791087632:504607621",
+      "after": "  ctime: 1791093145:963013093"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.js",
+      "before": "  ctime: 1791087632:491296667",
+      "after": "  ctime: 1791093145:951863798"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.js.map",
+      "before": "  ctime: 1791087632:505061034",
+      "after": "  ctime: 1791093145:963904535"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.d.ts",
+      "before": "  ctime: 1791087632:518529612",
+      "after": "  ctime: 1791093145:978322645"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.d.ts.map",
+      "before": "  ctime: 1791087632:505640695",
+      "after": "  ctime: 1791093145:965047764"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.js",
+      "before": "  ctime: 1791087632:492186908",
+      "after": "  ctime: 1791093145:952508995"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-control-message-dtos.js.map",
+      "before": "  ctime: 1791087632:506218064",
+      "after": "  ctime: 1791093145:966001997"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts",
+      "before": "  ctime: 1791087632:519124856",
+      "after": "  ctime: 1791093145:979205838"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts.map",
+      "before": "  ctime: 1791087632:506905974",
+      "after": "  ctime: 1791093145:966663526"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js",
+      "before": "  ctime: 1791087632:492778444",
+      "after": "  ctime: 1791093145:953054401"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js.map",
+      "before": "  ctime: 1791087632:507471219",
+      "after": "  ctime: 1791093145:967444304"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.d.ts",
+      "before": "  ctime: 1791087632:519903474",
+      "after": "  ctime: 1791093145:979860492"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.d.ts.map",
+      "before": "  ctime: 1791087632:508054963",
+      "after": "  ctime: 1791093145:968142166"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.js",
+      "before": "  ctime: 1791087632:493473437",
+      "after": "  ctime: 1791093145:954405543"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-reference-file-dto.js.map",
+      "before": "  ctime: 1791087632:508856830",
+      "after": "  ctime: 1791093145:968700114"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.d.ts",
+      "before": "  ctime: 1791087632:521055421",
+      "after": "  ctime: 1791093145:980525647"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.d.ts.map",
+      "before": "  ctime: 1791087632:509526324",
+      "after": "  ctime: 1791093145:969250770"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.js",
+      "before": "  ctime: 1791087632:494136806",
+      "after": "  ctime: 1791093145:955266861"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-client-message.js.map",
+      "before": "  ctime: 1791087632:510037402",
+      "after": "  ctime: 1791093145:970073005"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts",
+      "before": "  ctime: 1791087632:521925579",
+      "after": "  ctime: 1791093145:981118886"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map",
+      "before": "  ctime: 1791087632:510892144",
+      "after": "  ctime: 1791093145:970750659"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.js",
+      "before": "  ctime: 1791087632:494751133",
+      "after": "  ctime: 1791093145:955925098"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-stream-server-message.js.map",
+      "before": "  ctime: 1791087632:511397722",
+      "after": "  ctime: 1791093145:971360773"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.d.ts",
+      "before": "  ctime: 1791087632:522616156",
+      "after": "  ctime: 1791093145:981886163"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.d.ts.map",
+      "before": "  ctime: 1791087632:511860385",
+      "after": "  ctime: 1791093145:971963846"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.js",
+      "before": "  ctime: 1791087632:495384877",
+      "after": "  ctime: 1791093145:956755750"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.js.map",
+      "before": "  ctime: 1791087632:512757126",
+      "after": "  ctime: 1791093145:972597084"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.d.ts",
+      "before": "  ctime: 1791087632:523245733",
+      "after": "  ctime: 1791093145:982693524"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.d.ts.map",
+      "before": "  ctime: 1791087632:513567993",
+      "after": "  ctime: 1791093145:973449068"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.js",
+      "before": "  ctime: 1791087632:495943247",
+      "after": "  ctime: 1791093145:957363364"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.js.map",
+      "before": "  ctime: 1791087632:514230028",
+      "after": "  ctime: 1791093145:974404551"
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/package.json",
+      "before": "  ctime: 1791087632:496475992",
+      "after": "  ctime: 1791093145:958018185"
+    },
+    {
+      "path": "autobyteus-web/build/icons/16x16.png",
+      "before": "  ctime: 1791087665:298837927",
+      "after": "  ctime: 1791093176:884901759"
+    },
+    {
+      "path": "autobyteus-web/build/icons/16x16.png",
+      "before": "  mtime: 1791087665:298837927",
+      "after": "  mtime: 1791093176:884901759"
+    },
+    {
+      "path": "autobyteus-web/build/icons/32x32.png",
+      "before": "  ctime: 1791087665:300868824",
+      "after": "  ctime: 1791093176:886582186"
+    },
+    {
+      "path": "autobyteus-web/build/icons/32x32.png",
+      "before": "  mtime: 1791087665:300868824",
+      "after": "  mtime: 1791093176:886582186"
+    },
+    {
+      "path": "autobyteus-web/build/icons/48x48.png",
+      "before": "  ctime: 1791087665:302107937",
+      "after": "  ctime: 1791093176:887819414"
+    },
+    {
+      "path": "autobyteus-web/build/icons/48x48.png",
+      "before": "  mtime: 1791087665:302107937",
+      "after": "  mtime: 1791093176:887819414"
+    }
+  ],
+  "indexRestoreOrStagePerformed": false,
+  "mechanismLimit": "Build regenerated/chmodded packaged resources and read-only final git diff can refresh cached stat data. This audit proves stat-only index delta; process writer attribution was not observed, so do not claim exact binary index preservation."
+}

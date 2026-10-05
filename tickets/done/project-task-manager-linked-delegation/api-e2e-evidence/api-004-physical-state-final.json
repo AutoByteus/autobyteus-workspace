@@ -1,0 +1,106 @@
+[
+  {
+    "projectId": "project_865580da-5cef-4545-84d0-493db4819067",
+    "name": "API004 saved-ID visible workers",
+    "description": "Owned current real-provider validation",
+    "createdAt": "2026-10-03T12:26:23.452Z",
+    "updatedAt": "2026-10-03T12:26:23.452Z",
+    "workspaces": [],
+    "tasks": [
+      {
+        "taskId": "project_task_0352e556-c4cc-493c-83ab-a478e75f70ca",
+        "description": "Read the supplied saved Task attachment using read_file and return its exact API004_ATTACHMENT_A_project_865580da-5cef-4545-84d0-493db4819067 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+        "status": "DONE",
+        "createdAt": "2026-10-03T12:26:23.504Z",
+        "updatedAt": "2026-10-03T12:36:22.481Z",
+        "contextFiles": [
+          {
+            "storedFilename": "ctx_fc0a561759c0__saved-packet-A.txt",
+            "displayName": "saved-packet-A.txt",
+            "mimeType": "text/plain",
+            "sizeBytes": 65
+          }
+        ]
+      },
+      {
+        "taskId": "project_task_bc9dd420-32e0-4597-860f-b238223683ae",
+        "description": "Read the supplied saved Task attachment using read_file and return its exact API004_ATTACHMENT_B_project_865580da-5cef-4545-84d0-493db4819067 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+        "status": "DONE",
+        "createdAt": "2026-10-03T12:26:23.572Z",
+        "updatedAt": "2026-10-03T12:36:53.079Z",
+        "contextFiles": [
+          {
+            "storedFilename": "ctx_e3e8db390957__saved-packet-B.txt",
+            "displayName": "saved-packet-B.txt",
+            "mimeType": "text/plain",
+            "sizeBytes": 65
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "taskLifetimes": [
+      {
+        "lifetimeId": "project_task_lifetime_64732eee-8554-4d08-83a0-433a21ff0061",
+        "projectId": "project_865580da-5cef-4545-84d0-493db4819067",
+        "taskId": "project_task_0352e556-c4cc-493c-83ab-a478e75f70ca",
+        "openedAt": "2026-10-03T12:27:56.044Z",
+        "completedAt": "2026-10-03T12:36:22.481Z",
+        "executions": [
+          {
+            "root": {
+              "rootSubjectKind": "agent",
+              "rootRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3"
+            },
+            "execution": {
+              "agentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b"
+            },
+            "ingressAgentRunId": "api004_packet_agent_9ba715f0e2b349fc9574914a6658c39b",
+            "purpose": "assignment",
+            "reservedAt": "2026-10-03T12:27:56.051Z",
+            "dispatch": "delivered",
+            "cleanup": "released"
+          }
+        ]
+      },
+      {
+        "lifetimeId": "project_task_lifetime_548ac8bd-e0f9-49e3-b085-675c0adce9ce",
+        "projectId": "project_865580da-5cef-4545-84d0-493db4819067",
+        "taskId": "project_task_bc9dd420-32e0-4597-860f-b238223683ae",
+        "openedAt": "2026-10-03T12:28:02.975Z",
+        "completedAt": "2026-10-03T12:36:53.079Z",
+        "executions": [
+          {
+            "root": {
+              "rootSubjectKind": "agent",
+              "rootRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3"
+            },
+            "execution": {
+              "teamRunId": "api004_packet_team_2cd38d86f65144f09ab76c5072d0d436"
+            },
+            "ingressAgentRunId": "api004_team_coordinator_6705bc1580e14d63b1ef96f5bcc57827",
+            "purpose": "assignment",
+            "reservedAt": "2026-10-03T12:28:02.986Z",
+            "dispatch": "delivered",
+            "cleanup": "released"
+          },
+          {
+            "root": {
+              "rootSubjectKind": "agent",
+              "rootRunId": "project_task_manager_818aee4963a743bd9f15bbcc7ef253c3"
+            },
+            "execution": {
+              "agentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76"
+            },
+            "ingressAgentRunId": "api004_team_reader_6fd7f3cd87a04369ba610da42dcf1c76",
+            "purpose": "helper",
+            "reservedAt": "2026-10-03T12:28:49.352Z",
+            "dispatch": "delivered",
+            "cleanup": "released"
+          }
+        ]
+      }
+    ]
+  }
+]

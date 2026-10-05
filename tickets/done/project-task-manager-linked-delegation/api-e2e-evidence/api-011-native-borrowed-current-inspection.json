@@ -1,0 +1,111 @@
+{
+  "data": {
+    "getAgentOrgRunInspection": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+      "root_org": {
+        "base_change_sequence": 850,
+        "is_active": true,
+        "execution_tree": {
+          "subjectKind": "agent_org",
+          "createdAt": "2026-10-04T03:32:19.532Z",
+          "archivedAt": null,
+          "applicationBinding": null,
+          "handoffs": [],
+          "rootOrg": {
+            "address": "/",
+            "orgDefinitionId": "api011-native-concrete-root-org-rerun-8216bff6-fc10-41f2-97e6-3e3831053459",
+            "orgDefinitionName": "API011_NATIVE Concrete Root Org Rerun 8216bff6-fc10-41f2-97e6-3e3831053459",
+            "orgRunId": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": {
+                "thinking_type": "disabled"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+            },
+            "members": [
+              {
+                "address": "/manager",
+                "agentDefinitionId": "autobyteus-project-task-manager",
+                "role": null,
+                "description": null,
+                "agentRunId": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "deepseek-v4-flash",
+                  "llmConfig": {
+                    "thinking_type": "disabled"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                }
+              },
+              {
+                "address": "/borrowed",
+                "agentDefinitionId": "api011-native-packet-agent",
+                "role": null,
+                "description": null,
+                "agentRunId": "api011_native_packet_agent_55f2e60b73ce4e52bb427ff2cffb8071",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "deepseek-v4-flash",
+                  "llmConfig": {
+                    "thinking_type": "disabled"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+                }
+              }
+            ],
+            "collaborators": [],
+            "taskExecutions": []
+          }
+        },
+        "communication_messages": {
+          "schemaVersion": 1,
+          "subjectKind": "agent_org",
+          "orgRunId": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+          "messages": []
+        },
+        "agent_statuses": [
+          {
+            "member_address": "/manager",
+            "agent_run_id": "project_task_manager_3910d2869f6240cb9d5fc2eee61473b6",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/borrowed",
+            "agent_run_id": "api011_native_packet_agent_55f2e60b73ce4e52bb427ff2cffb8071",
+            "status": "idle",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          }
+        ],
+        "agent_input_states": [
+          {
+            "agent_run_id": "api011_native_packet_agent_55f2e60b73ce4e52bb427ff2cffb8071",
+            "state": {
+              "run_instance_id": "1592a12c-77db-4f12-8c21-1f0e592fdf52",
+              "revision": 5,
+              "entries": [],
+              "recoverableBlock": null
+            }
+          }
+        ]
+      }
+    }
+  }
+}

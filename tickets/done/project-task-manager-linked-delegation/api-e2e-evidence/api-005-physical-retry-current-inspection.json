@@ -1,0 +1,426 @@
+{
+  "at": "2026-10-03T14:07:58.546Z",
+  "instanceId": "iso-65323-9445",
+  "data": {
+    "getAgentOrgRunInspection": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "api005_physical_org_a67967e3_3aba_480f_93f7_859b932cf6a7_d557d5ae7531415a9955f65ed1bd4e56",
+      "root_org": {
+        "base_change_sequence": 2548,
+        "is_active": true,
+        "execution_tree": {
+          "subjectKind": "agent_org",
+          "createdAt": "2026-10-03T13:56:52.622Z",
+          "archivedAt": null,
+          "applicationBinding": null,
+          "handoffs": [],
+          "rootOrg": {
+            "address": "/",
+            "orgDefinitionId": "api005-physical-org-a67967e3-3aba-480f-93f7-859b932cf6a7",
+            "orgDefinitionName": "API005 Physical Org a67967e3-3aba-480f-93f7-859b932cf6a7",
+            "orgRunId": "api005_physical_org_a67967e3_3aba_480f_93f7_859b932cf6a7_d557d5ae7531415a9955f65ed1bd4e56",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/physical-manager"
+            },
+            "members": [
+              {
+                "address": "/manager",
+                "agentDefinitionId": "autobyteus-project-task-manager",
+                "role": null,
+                "description": null,
+                "agentRunId": "project_task_manager_0b51352866a9413eb487d3ec3a1ebf2c",
+                "platformAgentRunId": "01a1020d-af7d-7b32-beb6-a11758dedd12",
+                "launchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/physical-manager"
+                }
+              },
+              {
+                "address": "/borrowed",
+                "agentDefinitionId": "api005-packet-agent",
+                "role": null,
+                "description": null,
+                "agentRunId": "api005_packet_agent_6ae4da11815d4e728b22079f49135d32",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/physical-manager"
+                }
+              },
+              {
+                "address": "/workers",
+                "teamDefinitionId": "api005-physical-workers",
+                "role": null,
+                "description": null,
+                "teamRunId": "api005_physical_workers_0ad9b20765484d62b105b2b16a5e7f90",
+                "coordinatorAddress": "/workers/coordinator",
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/physical-task-workers"
+                },
+                "members": [
+                  {
+                    "address": "/workers/coordinator",
+                    "agentDefinitionId": "api005-physical-coordinator",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "api005_physical_coordinator_1d61860c69fa419ea4c6d96cdf470262",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-6.1-sol",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      },
+                      "autoExecuteTools": true,
+                      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/physical-task-workers"
+                    }
+                  },
+                  {
+                    "address": "/workers/reader",
+                    "agentDefinitionId": "api005-physical-reader",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "api005_physical_reader_f554f14f74e64c39bcc09895239c02e1",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "codex_app_server",
+                      "llmModelIdentifier": "gpt-6.1-sol",
+                      "llmConfig": {
+                        "reasoning_effort": "low"
+                      },
+                      "autoExecuteTools": true,
+                      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/physical-task-workers"
+                    }
+                  }
+                ],
+                "taskExecutions": []
+              }
+            ],
+            "collaborators": [],
+            "taskExecutions": [
+              {
+                "address": "/workers",
+                "teamRunId": "api005_physical_workers_67b93cc2dbdd43849e6e713c6853947f",
+                "members": [
+                  {
+                    "address": "/workers/coordinator",
+                    "agentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+                    "platformAgentRunId": "01a1020d-faca-7370-80df-0481c8c9f43a"
+                  },
+                  {
+                    "address": "/workers/reader",
+                    "agentRunId": "api005_physical_reader_8004440f5792456b9a192915615ad180",
+                    "platformAgentRunId": "01a1020d-fb42-7f23-bfe9-bfdcbc10eb84"
+                  }
+                ],
+                "taskExecutions": [],
+                "delegatorAgentRunId": "project_task_manager_0b51352866a9413eb487d3ec3a1ebf2c",
+                "startedAt": "2026-10-03T13:57:12.951Z"
+              },
+              {
+                "address": "/borrowed",
+                "agentRunId": "api005_packet_agent_37fc2671e2394e488d48003ec52ba2e1",
+                "platformAgentRunId": "01a1020d-fbfb-77d2-b745-6380d7ccc242",
+                "delegatorAgentRunId": "project_task_manager_0b51352866a9413eb487d3ec3a1ebf2c",
+                "startedAt": "2026-10-03T13:57:13.317Z"
+              },
+              {
+                "address": "/api005_physical_leaf",
+                "agentRunId": "api005_physical_leaf_1f2c647f2a4148c7a360246ef2bcfc39",
+                "platformAgentRunId": "01a1020e-6320-7f13-b7b5-33606ae85443",
+                "delegatorAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+                "startedAt": "2026-10-03T13:57:39.723Z",
+                "source": {
+                  "kind": "agent",
+                  "agentDefinitionId": "api005-physical-leaf",
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/physical-manager"
+                  }
+                }
+              },
+              {
+                "address": "/api005_physical_helper_team",
+                "teamRunId": "api005_physical_helper_team_92afdfb505fc465e981dec5a31ae6085",
+                "members": [
+                  {
+                    "address": "/api005_physical_helper_team/coordinator",
+                    "agentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+                    "platformAgentRunId": "01a1020e-63c1-7962-8aff-29edc1265f0e"
+                  },
+                  {
+                    "address": "/api005_physical_helper_team/reader",
+                    "agentRunId": "api005_physical_reader_750d25704bc54dc0ba86851a2563045e",
+                    "platformAgentRunId": "01a1020e-6432-73f2-b37b-c048f1bee1a4"
+                  }
+                ],
+                "taskExecutions": [],
+                "delegatorAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+                "startedAt": "2026-10-03T13:57:39.885Z",
+                "source": {
+                  "kind": "agent_team",
+                  "teamDefinitionId": "api005-physical-helper-team",
+                  "coordinatorAddress": "/api005_physical_helper_team/coordinator",
+                  "members": [
+                    {
+                      "address": "/api005_physical_helper_team/coordinator",
+                      "agentDefinitionId": "api005-physical-helper-coordinator"
+                    },
+                    {
+                      "address": "/api005_physical_helper_team/reader",
+                      "agentDefinitionId": "api005-physical-reader"
+                    }
+                  ],
+                  "handoffs": [],
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/physical-manager"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "communication_messages": {
+          "schemaVersion": 1,
+          "subjectKind": "agent_org",
+          "orgRunId": "api005_physical_org_a67967e3_3aba_480f_93f7_859b932cf6a7_d557d5ae7531415a9955f65ed1bd4e56",
+          "messages": [
+            {
+              "messageId": "collabmsg__5ik94eebNrhAfWsZMwe4ghLwTP4F5Eq",
+              "senderAgentRunId": "api005_packet_agent_37fc2671e2394e488d48003ec52ba2e1",
+              "receiverAgentRunId": "project_task_manager_0b51352866a9413eb487d3ec3a1ebf2c",
+              "content": "API005_PHYSICAL_B_8669cba4-30b5-4b02-951d-a5ea3c886c6f",
+              "messageType": "agent_message",
+              "referenceFiles": [],
+              "createdAt": "2026-10-03T13:57:31.919Z"
+            },
+            {
+              "messageId": "collabmsg_5W9YEvrx1kFWceALP2gFqVSEsYspZLzF",
+              "senderAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+              "receiverAgentRunId": "api005_physical_reader_8004440f5792456b9a192915615ad180",
+              "content": "Read actual saved packet read-only with native cat/read_file at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/server-data/projects/task_context_files/project_02025d18-9aa5-4d42-b7a5-cce334d5382f/project_task_a040bd83-43d7-45a4-9e72-a2cbc6b02f0d/ctx_3bbd6a84b36f__physical-A.txt; report actual marker. Preserve bytes; no status changes, delegation or root Stop.",
+              "messageType": "agent_message",
+              "referenceFiles": [
+                "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/server-data/projects/task_context_files/project_02025d18-9aa5-4d42-b7a5-cce334d5382f/project_task_a040bd83-43d7-45a4-9e72-a2cbc6b02f0d/ctx_3bbd6a84b36f__physical-A.txt"
+              ],
+              "createdAt": "2026-10-03T13:57:39.679Z"
+            },
+            {
+              "messageId": "collabmsg_DAVXlNhqwmJ94YNTNO-sHbCeBlxd6X5O",
+              "senderAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+              "receiverAgentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+              "content": "Read actual saved packet at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/server-data/projects/task_context_files/project_02025d18-9aa5-4d42-b7a5-cce334d5382f/project_task_a040bd83-43d7-45a4-9e72-a2cbc6b02f0d/ctx_3bbd6a84b36f__physical-A.txt through your configured members, using your lifetime-local Team helper. Report actual markers and concrete returned IDs. Preserve bytes; no more copies, Task status changes or root Stop.",
+              "messageType": "agent_message",
+              "referenceFiles": [
+                "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/server-data/projects/task_context_files/project_02025d18-9aa5-4d42-b7a5-cce334d5382f/project_task_a040bd83-43d7-45a4-9e72-a2cbc6b02f0d/ctx_3bbd6a84b36f__physical-A.txt"
+              ],
+              "createdAt": "2026-10-03T13:57:40.177Z"
+            },
+            {
+              "messageId": "collabmsg_c9zKxl9otHa6fg5Hbs-2m2dFbIefBxNF",
+              "senderAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+              "receiverAgentRunId": "project_task_manager_0b51352866a9413eb487d3ec3a1ebf2c",
+              "content": "Read actual saved packet with native cat. Own actual marker: API005_PHYSICAL_A_032602b5-01b5-466f-97db-89bc4f602e44. Consulted available agents. One configured reader message delivered: api005_physical_reader_8004440f5792456b9a192915615ad180. One unlinked Leaf copy spawned: api005_physical_leaf_1f2c647f2a4148c7a360246ef2bcfc39. One catalog helper Team message delivered to coordinator: api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d. All received the exact supplied packet path. Child read results not yet received. No file/status changes or root Stop. Handoff rules empty.",
+              "messageType": "agent_message",
+              "referenceFiles": [],
+              "createdAt": "2026-10-03T13:57:50.422Z"
+            },
+            {
+              "messageId": "collabmsg_a1lP18d9RR-2-fuM5bfkQrIkz6eEfa0x",
+              "senderAgentRunId": "api005_physical_reader_8004440f5792456b9a192915615ad180",
+              "receiverAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+              "content": "Read supplied saved packet with native cat, read-only. Actual marker: API005_PHYSICAL_A_032602b5-01b5-466f-97db-89bc4f602e44. Bytes preserved; no status changes or delegation.",
+              "messageType": "agent_message",
+              "referenceFiles": [],
+              "createdAt": "2026-10-03T13:57:57.592Z"
+            },
+            {
+              "messageId": "collabmsg_RJhYI9oFAWJ8pas2eipfJDqYl-7CzmF3",
+              "senderAgentRunId": "api005_physical_leaf_1f2c647f2a4148c7a360246ef2bcfc39",
+              "receiverAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+              "content": "Read the supplied saved physical-A.txt packet using native read-only cat; exact marker: API005_PHYSICAL_A_032602b5-01b5-466f-97db-89bc4f602e44. Bytes preserved; no delegation or status changes.",
+              "messageType": "result",
+              "referenceFiles": [],
+              "createdAt": "2026-10-03T13:57:58.380Z"
+            },
+            {
+              "messageId": "collabmsg_ivooZkA3kRvNIPASEK2AXXR58zic0p6f",
+              "senderAgentRunId": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+              "receiverAgentRunId": "api005_physical_reader_750d25704bc54dc0ba86851a2563045e",
+              "content": "Read actual saved packet at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/server-data/projects/task_context_files/project_02025d18-9aa5-4d42-b7a5-cce334d5382f/project_task_a040bd83-43d7-45a4-9e72-a2cbc6b02f0d/ctx_3bbd6a84b36f__physical-A.txt using native read-only cat or read_file. Return exact read marker. Preserve bytes; no copies or Task status changes or root Stop.",
+              "messageType": "agent_message",
+              "referenceFiles": [
+                "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/server-data/projects/task_context_files/project_02025d18-9aa5-4d42-b7a5-cce334d5382f/project_task_a040bd83-43d7-45a4-9e72-a2cbc6b02f0d/ctx_3bbd6a84b36f__physical-A.txt"
+              ],
+              "createdAt": "2026-10-03T13:58:00.949Z"
+            },
+            {
+              "messageId": "collabmsg_Zl9haTeZqUjk2DdteecvInK6eTw3pJP2",
+              "senderAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+              "receiverAgentRunId": "project_task_manager_0b51352866a9413eb487d3ec3a1ebf2c",
+              "content": "Configured reader api005_physical_reader_8004440f5792456b9a192915615ad180 returned: read supplied saved packet using native cat, actual marker API005_PHYSICAL_A_032602b5-01b5-466f-97db-89bc4f602e44; bytes preserved, no status changes or delegation.",
+              "messageType": "agent_message",
+              "referenceFiles": [],
+              "createdAt": "2026-10-03T13:58:04.378Z"
+            },
+            {
+              "messageId": "collabmsg_B5WyUfdk0_ym7MUQW6lz8uT9BYKj01Np",
+              "senderAgentRunId": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+              "receiverAgentRunId": "project_task_manager_0b51352866a9413eb487d3ec3a1ebf2c",
+              "content": "Unlinked Leaf api005_physical_leaf_1f2c647f2a4148c7a360246ef2bcfc39 returned: read supplied saved packet using native read-only cat; exact marker API005_PHYSICAL_A_032602b5-01b5-466f-97db-89bc4f602e44. Bytes preserved; no delegation or status changes.",
+              "messageType": "agent_message",
+              "referenceFiles": [],
+              "createdAt": "2026-10-03T13:58:12.035Z"
+            }
+          ]
+        },
+        "agent_statuses": [
+          {
+            "member_address": "/manager",
+            "agent_run_id": "project_task_manager_0b51352866a9413eb487d3ec3a1ebf2c",
+            "status": "idle",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/borrowed",
+            "agent_run_id": "api005_packet_agent_6ae4da11815d4e728b22079f49135d32",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/borrowed",
+            "agent_run_id": "api005_packet_agent_37fc2671e2394e488d48003ec52ba2e1",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/api005_physical_leaf",
+            "agent_run_id": "api005_physical_leaf_1f2c647f2a4148c7a360246ef2bcfc39",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/workers/coordinator",
+            "agent_run_id": "api005_physical_coordinator_1d61860c69fa419ea4c6d96cdf470262",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/workers/reader",
+            "agent_run_id": "api005_physical_reader_f554f14f74e64c39bcc09895239c02e1",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/workers/coordinator",
+            "agent_run_id": "api005_physical_coordinator_a17a702551034a8fad301c3e98c85ee8",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/workers/reader",
+            "agent_run_id": "api005_physical_reader_8004440f5792456b9a192915615ad180",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/api005_physical_helper_team/coordinator",
+            "agent_run_id": "api005_physical_helper_coordinator_ec5b637d0e034840b447f0f7f495966d",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          },
+          {
+            "member_address": "/api005_physical_helper_team/reader",
+            "agent_run_id": "api005_physical_reader_750d25704bc54dc0ba86851a2563045e",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          }
+        ],
+        "agent_input_states": [
+          {
+            "agent_run_id": "project_task_manager_0b51352866a9413eb487d3ec3a1ebf2c",
+            "state": {
+              "run_instance_id": "07b5cd6d-de54-4c08-babe-def5b3a2f832",
+              "revision": 16,
+              "entries": [],
+              "recoverableBlock": null
+            }
+          }
+        ]
+      }
+    }
+  }
+}

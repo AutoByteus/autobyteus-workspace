@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-04T08:25:31.632498+00:00",
+  "stage": "final",
+  "categories": {
+    "Requirement and acceptance-criteria proof": 75,
+    "Changed-boundary execution directness": 95,
+    "Cross-boundary integration realism and mock gap": 90,
+    "Environment, configuration, identity, and fixture fidelity": 95,
+    "Failure, edge-case, lifecycle, and recovery evidence": 75,
+    "User-surface, browser, and desktop-shell confidence": 95,
+    "Durable regression coverage quality and relevance": 95
+  },
+  "overall": 88.57,
+  "calculation": "Applicable seven-category simple average; no critical-AC or low category hidden by average.",
+  "postRepositoryOverall": 87.86,
+  "decision": "Blocked",
+  "broader": "Required \u2014 executed available selected journeys; remaining exact-target live evidence Blocked",
+  "allCriticalDirectProof": false,
+  "rationale": [
+    {
+      "category": "Requirement and acceptance-criteria proof",
+      "support": "Actual current Claude Org/Team saved-ID/native bytes, active DONE/reopen/finalA and recursive family now positive; unchanged current API13 Native/Codex named scopes plus deterministic current-array/business/schema/late-input controls retained.",
+      "residual": "Full requested provider/acquisition/failure/protection matrix is incomplete. Exact requested AGY Gemini4.8 unavailable; independent original FAPI007 actual failed-authority repair remains unproved."
+    },
+    {
+      "category": "Changed-boundary execution directness",
+      "support": "Fresh current two source/six built hashes and1452 compiled-to-packaged JS exact; actual Session\u2192SDK-child ownership/IO/component/canonical/input and public HTTP/WS/MCP/packaged renderer executed.",
+      "residual": "Instrumented physical schedule is separately bounded, not original identity/sole-cause or a universal background-resource certificate."
+    },
+    {
+      "category": "Cross-boundary integration realism and mock gap",
+      "support": "Actual authorized Sonnet5 inference/native Read/Bash/scoped MCP/public transport and retained positive Native/Codex paths; real owned pinned SDK-child/IO and same-child failure retry tests.",
+      "residual": "AGY HTTP/WS external actor emulated, live AGY target skipped/unavailable; model/control results not whole-provider proof."
+    },
+    {
+      "category": "Environment, configuration, identity, and fixture fidelity",
+      "support": "Exact user authorized SDK Sonnet5 config, normal default CLI mode actual calls, fresh owned build/endpoints/DB/importer, same profiles/ports/run identities and complete stamped-family census.",
+      "residual": "AGY4.8 missing, no substitution; remote host absent only for conditional remote-host legs, not local Native/Codex/Claude. Catalog/configured key state alone not auth proof."
+    },
+    {
+      "category": "Failure, edge-case, lifecycle, and recovery evidence",
+      "support": "Uninstrumented submitted-reader terminal, once-only handoff/fences and controlled real-child same-generation physical failure/retry; eight recursive live child/IO/component release before teardown; whole-app SAME worker/Manager original-packet reread.",
+      "residual": "Original Codex/helper FAPI007 remains Open/Unclear/NotReproduced. Current successful Claude paths create no live failed generation to retry; failure-window/provider matrix still partly controlled."
+    },
+    {
+      "category": "User-surface, browser, and desktop-shell confidence",
+      "support": "Real retained LIVE row/assistant checkpoints for Org and Team, genuine interruption/offline events without post-DONE repair reload, cold/read-only/explicit same-root restore, actual whole desktop shutdown/resume/new assistant DOM; final-A screenshot visually checked.",
+      "residual": "No full accessibility/mobile, mid-turn crash, all-provider shell or current standalone-Claude-root certificate; supported prior Native standalone scope remains narrow."
+    },
+    {
+      "category": "Durable regression coverage quality and relevance",
+      "support": "All20 cumulative API durables Still Valid and independently retained; selected151/1504 plus Native/Task integrations, Project E2E, Nuxt/native-boundary/HTTP; IR010 new6-case Implementation-owned regression independently runs.",
+      "residual": "No new API durable edits or deletion. Successful proportional review remains required only after a genuine successful cumulative result. Historical wider52failedfiles136tests/4unhandled/5live skips not whole-baseline Pass."
+    }
+  ]
+}

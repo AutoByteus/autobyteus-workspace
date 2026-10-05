@@ -1,0 +1,6 @@
+case=API-016
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.production.json
+error TS5058: The specified path does not exist: 'tsconfig.production.json'.
+
+PROCESS_EXIT_CODE=1

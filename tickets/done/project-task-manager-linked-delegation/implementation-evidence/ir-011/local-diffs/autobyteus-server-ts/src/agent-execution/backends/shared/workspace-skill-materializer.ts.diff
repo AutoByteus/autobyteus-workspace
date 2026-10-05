@@ -1,0 +1,167 @@
+--- incoming-merge/autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts
++++ IR-011/autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts
+@@ -119,26 +119,25 @@
+   }): Promise<WorkspaceSkillMaterializationResult> {
+     const requests = options.requests ?? [];
+     const acquired: MaterializedWorkspaceSkill[] = [];
+-<<<<<<< HEAD
+     const receipts: MaterializedWorkspaceSkill[] = [];
++    const effectiveRequests: WorkspaceSkillReconciliationRequest[] = [];
++    const onAcquired = (descriptor: MaterializedWorkspaceSkill) => {
++      receipts.push(descriptor); options.onAcquired?.(descriptor);
++    };
+     try {
+       for (const request of requests) {
+         options.assertAccepting?.();
+-=======
+-    const effectiveRequests: WorkspaceSkillReconciliationRequest[] = [];
+-    try {
+-      for (const request of requests) {
+         if (request.kind !== "reconcile-unresolved" && request.skill.managedSource) {
+-          const result = await this.acquireManaged(options, request);
++          const result = await this.acquireManaged({ ...options, onAcquired }, request);
+           effectiveRequests.push(result.request);
+           if (result.descriptor) acquired.push(result.descriptor);
++          options.assertAccepting?.();
+           continue;
+         }
+         effectiveRequests.push(request);
+->>>>>>> origin/personal
+         const descriptor = request.kind === "reconcile-unresolved"
+           ? await this.reconcileUnresolved(options.runId, options.workingDirectory, request.name)
+-          : await this.acquireResolved({ ...this.targetFor(options.runId, options.workingDirectory, request, options.workspaceCollisionPolicy), onAcquired: (descriptor) => { receipts.push(descriptor); options.onAcquired?.(descriptor); } });
++          : await this.acquireResolved({ ...this.targetFor(options.runId, options.workingDirectory, request, options.workspaceCollisionPolicy), onAcquired });
+         if (descriptor) acquired.push(descriptor);
+         options.assertAccepting?.();
+       }
+@@ -194,7 +193,8 @@
+   }
+ 
+   private async acquireManaged(
+-    options: { runId: string; workingDirectory: string; workspaceCollisionPolicy: WorkspaceCollisionPolicy },
++    options: { runId: string; workingDirectory: string; workspaceCollisionPolicy: WorkspaceCollisionPolicy;
++      assertAccepting?: () => void; onAcquired(descriptor: MaterializedWorkspaceSkill): void },
+     original: ResolvedRequest,
+   ): Promise<{ descriptor: MaterializedWorkspaceSkill | null; request: WorkspaceSkillReconciliationRequest }> {
+     const identity = original.skill.managedSource!;
+@@ -203,6 +203,7 @@
+       return skill?.name === original.skill.name && skill.managedSource?.sourceId === identity.sourceId ? skill : null;
+     };
+     while (true) {
++      options.assertAccepting?.();
+       const skill = resolve();
+       if (!skill) {
+         await this.reconcileUnresolved(options.runId, options.workingDirectory, original.skill.name);
+@@ -211,7 +212,10 @@
+       const request: ResolvedRequest = { kind: skill.rootPath === original.skill.rootPath ? original.kind : "expose-resolved", skill };
+       const target = this.targetFor(options.runId, options.workingDirectory, request, options.workspaceCollisionPolicy);
+       const existing = this.registry.get(target.registryKey);
+-      if (existing?.phase === "releasing") { await existing.cleanup; continue; }
++      if (existing?.phase === "releasing") {
++        if (!existing.cleanup) throw new Error(`Workspace skill cleanup remains failed at '${target.registryKey}'.`);
++        await existing.cleanup; continue;
++      }
+       if (existing && (existing.name !== skill.name || existing.managedSourceId !== identity.sourceId)) {
+         throw this.links.sourceCollisionError(skill.name, target.materializedRootPath, existing.sourceRootPath, skill.rootPath);
+       }
+@@ -231,10 +235,11 @@
+       try {
+         await fs.mkdir(path.dirname(target.materializedRootPath), { recursive: true });
+         await this.links.hasValidSkillManifest(target.sourceRootPath);
++        options.assertAccepting?.();
+         // No await from authority revalidation through link swap and holder publication.
+         const current = resolve();
+         if (!current || current.rootPath !== skill.rootPath || current.managedSource?.generation !== skill.managedSource?.generation) {
+-          this.restoreManagedEntry(target.registryKey, transition, existing);
++          await this.restoreManagedEntry(target.registryKey, transition, existing, options.onAcquired);
+           deferred.resolve();
+           continue;
+         }
+@@ -244,7 +249,7 @@
+             target.sourceRootPath, skill.name, Boolean(existing) || request.kind === "expose-resolved");
+         } catch (error) {
+           if (target.collisionPolicy !== "prefer_workspace" || !(error instanceof Error) || !error.message.startsWith("Workspace skill path collision")) throw error;
+-          this.restoreManagedEntry(target.registryKey, transition, existing);
++          await this.restoreManagedEntry(target.registryKey, transition, existing, options.onAcquired);
+           deferred.resolve();
+           return { descriptor: null, request };
+         }
+@@ -257,23 +262,32 @@
+         this.registry.set(target.registryKey, { phase: "ready", name: skill.name, managedSourceId: identity.sourceId, generation: skill.managedSource!.generation,
+           sourceRootPath: target.sourceRootPath, holders: transition.holders });
+         deferred.resolve();
+-        return { descriptor: this.descriptorFor(target, holder), request };
++        const descriptor = this.descriptorFor(target, holder);
++        options.onAcquired(descriptor);
++        return { descriptor, request };
+       } catch (error) {
+-        this.restoreManagedEntry(target.registryKey, transition, existing);
+-        deferred.reject(error);
+-        throw error;
+-      }
+-    }
+-  }
+-
+-  private restoreManagedEntry(key: string, transition: TransferringRegistryEntry, previous: ReadyRegistryEntry | undefined): void {
++        let failure = error;
++        if (this.registry.get(target.registryKey) === transition) {
++          try { await this.restoreManagedEntry(target.registryKey, transition, existing, options.onAcquired); }
++          catch (cleanupError) { failure = new AggregateError([error, cleanupError], "Managed skill transfer and rollback failed."); }
++        }
++        deferred.reject(failure);
++        throw failure;
++      }
++    }
++  }
++
++  private async restoreManagedEntry(key: string, transition: TransferringRegistryEntry, previous: ReadyRegistryEntry | undefined,
++    onAcquired: (descriptor: MaterializedWorkspaceSkill) => void): Promise<void> {
+     if (!previous) { this.registry.delete(key); return; }
+     this.registry.set(key, previous);
+     if (!transition.holders.size) {
+       // Route zero-holder restoration through normal cleanup, which uses the entry's current root.
+       const holderId = this.addHolder(previous.holders);
+-      void this.releaseMaterializedSkill({ name: previous.name, registryKey: key, holderId,
+-        sourceRootPath: previous.sourceRootPath, materializedRootPath: key });
++      const descriptor = { name: previous.name, registryKey: key, holderId,
++        sourceRootPath: previous.sourceRootPath, materializedRootPath: key };
++      onAcquired(descriptor);
++      await this.releaseMaterializedSkill(descriptor);
+     }
+   }
+ 
+@@ -314,7 +328,8 @@
+       deferred.resolve(outcome);
+     } catch (error) {
+       if (this.registry.get(target.registryKey) === acquiring) {
+-        this.registry.set(target.registryKey, { phase: "ready", sourceRootPath: target.sourceRootPath, holders: acquiring.holders });
++        this.registry.set(target.registryKey, { phase: "ready", name: acquiring.name, managedSourceId: null, generation: null,
++          sourceRootPath: target.sourceRootPath, holders: acquiring.holders });
+       }
+       deferred.reject(error);
+     }
+@@ -437,11 +452,23 @@
+     if (this.releasedHolders.has(descriptor.holderId)) return;
+     let entry = this.registry.get(descriptor.registryKey);
+     if (!entry) throw new Error("Workspace skill exact holder release proof is unavailable.");
+-    if (entry.sourceRootPath !== descriptor.sourceRootPath) throw new Error("Workspace skill release generation mismatch.");
++    if (entry.phase === "transferring") {
++      // A later acquisition owns the pending link transfer, not this released run.
++      // Its failure path owns zero-holder cleanup; do not wait on another Task.
++      if (!entry.holders.delete(descriptor.holderId)) throw new Error("Workspace skill holder was not acquired by this receipt.");
++      this.releasedHolders.add(descriptor.holderId);
++      return;
++    }
+     if (entry.phase === "acquiring") {
+       await entry.readiness.catch(() => undefined);
+       entry = this.registry.get(descriptor.registryKey);
+       if (!entry) { if (this.releasedHolders.has(descriptor.holderId)) return; throw new Error("Workspace skill holder authority disappeared."); }
++    }
++    // Managed source publication transfers this path's existing holders to the
++    // catalog-trusted generation. The exact holder, not its old source path,
++    // owns release; never unlink the newly shared generation while others hold it.
++    if (entry.phase !== "releasing" && !entry.managedSourceId && entry.sourceRootPath !== descriptor.sourceRootPath) {
++      throw new Error("Workspace skill release generation mismatch.");
+     }
+     let releasing: ReleasingRegistryEntry;
+     if (entry.phase === "releasing") {

@@ -1,0 +1,7 @@
+2026-10-04T06:27:05.789042+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["bash", "-c", "pnpm -C autobyteus-server-ts exec tsc --noEmit --project tsconfig.production-check.json && GIT_OPTIONAL_LOCKS=0 git diff HEAD --check && GIT_OPTIONAL_LOCKS=0 git diff --cached --check && test -z \"$(git ls-files -u)\" && python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-preservation.py repository"]
+error TS5058: The specified path does not exist: 'tsconfig.production-check.json'.
+
+INNER_EXIT=1
+ELAPSED=0.29

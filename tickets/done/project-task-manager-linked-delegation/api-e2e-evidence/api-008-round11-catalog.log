@@ -1,0 +1,22 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-target-setup.mjs catalog
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: [{"message":"DYNAMIC_PROVIDER_NOT_AVAILABLE_FOR_RUNTIME","locations":[{"line":1,"column":21}],"path":["reloadProviderModelCatalog"]}]
+    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-target-setup.mjs:7:257)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-target-setup.mjs:16:23 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.1
+
+PROCESS_EXIT_CODE=1

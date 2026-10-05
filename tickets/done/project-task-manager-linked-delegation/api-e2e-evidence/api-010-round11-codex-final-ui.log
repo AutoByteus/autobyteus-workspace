@@ -1,0 +1,17 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-codex-final-ui.mjs
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(out.route.includes(d.rootId))
+
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11-codex-final-ui.mjs:5:5 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+PROCESS_EXIT_CODE=1

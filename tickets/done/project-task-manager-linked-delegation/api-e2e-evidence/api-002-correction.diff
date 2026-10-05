@@ -1,0 +1,109 @@
+diff --git a/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts b/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+index 0360be8e7..1d06351ba 100644
+--- a/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
++++ b/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+@@ -152,10 +152,20 @@ describe("RawTraceActiveFileNameMigration", () => {
+       REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID,
+     );
+     expect(externalIndex).toBeGreaterThanOrEqual(0);
+-    expect([
+-      definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID),
+-      definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID),
+-      definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID),
+-    ]).toEqual([externalIndex + 1, externalIndex + 2, externalIndex + 3]);
++    for (const id of [
++      REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID,
++      RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID,
++      RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID,
++      MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID,
++    ]) {
++      expect(definitionIds.filter((registeredId) => registeredId === id)).toHaveLength(1);
++    }
++    const rotationIndex = definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID);
++    const activeIndex = definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID);
++    const nativeIndex = definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID);
++    // Other legitimate migrations may interpose; these dependencies must stay ordered.
++    expect(rotationIndex).toBeGreaterThan(externalIndex);
++    expect(activeIndex).toBeGreaterThan(rotationIndex);
++    expect(nativeIndex).toBeGreaterThan(activeIndex);
+   });
+ });
+diff --git a/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts b/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+index 94fdbfdc5..fe12670d2 100644
+--- a/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
++++ b/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+@@ -74,6 +74,11 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
+   it("keeps unresolved predecessor bytes retryable while leaving exact V1 roots for the V2 boundary", async () => {
+     const { memoryDir, appDataDir } = await createEnvironment();
+     const validRoot = await copyCurrentScenario(memoryDir, "case-001-persistent-only");
++    const retainedFiles = [
++      "team_run_execution_tree.json", "task_delegation_records.json", "team_communication_messages.json",
++    ];
++    const retainedBytes = await Promise.all(retainedFiles.map((name) =>
++      fs.readFile(path.join(memoryDir, "agent_teams", validRoot, name))));
+     const invalidRoot = "root-unresolved";
+     const invalidDirectory = path.join(memoryDir, "agent_teams", invalidRoot);
+     await fs.mkdir(invalidDirectory, { recursive: true });
+@@ -97,10 +102,14 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
+     const catalog = new TeamRunPackageCatalog(memoryDir);
+     await catalog.rebuild();
+     expect(catalog.listAdmittedRootIds()).toEqual([]);
+-    expect(catalog.getDiagnostics().get(validRoot)).toContain("schemaVersion");
++    const historicalDiagnostic = catalog.getDiagnostics().get(validRoot);
++    expect(historicalDiagnostic).toContain("ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED");
++    expect(historicalDiagnostic).toContain("missing required field(s): address, defaultLaunchConfiguration");
+     expect(catalog.getDiagnostics().get(invalidRoot)).toContain(
+-      "Current package is missing required authorities",
++      "ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.",
+     );
++    expect(await Promise.all(retainedFiles.map((name) =>
++      fs.readFile(path.join(memoryDir, "agent_teams", validRoot, name))))).toEqual(retainedBytes);
+   });
+ 
+   it("does not promote partial target residue without its protected predecessor backup", async () => {
+diff --git a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+index b4a69215f..0b76cd792 100644
+--- a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
++++ b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+@@ -24,6 +24,8 @@ const schemaMigrations = [
+   "20260730090000_add_token_usage_provider_name",
+   "20260801090000_token_usage_member_display_name",
+   "20260819090000_add_token_usage_run_records",
++  // Normal startup expands the current target before app-data conversion.
++  "20260923130000_add_claude_sdk_usage_state",
+ ] as const;
+ 
+ const readMigration = (migrationId: string): Promise<string> => fs.readFile(
+@@ -107,6 +109,9 @@ const createReleasedUpgradeDatabase = async (databasePath: string): Promise<void
+     for (const migrationId of schemaMigrations.slice(1)) {
+       database.exec(await readMigration(migrationId));
+     }
++    expect(database.prepare('PRAGMA table_info("token_usage_run_records")').all()).toEqual(
++      expect.arrayContaining([expect.objectContaining({ name: "claude_sdk_usage_state_json" })]),
++    );
+     seedLaterRows(database);
+   } finally {
+     database.close();
+diff --git a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+index d70224faa..abd23272d 100644
+--- a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
++++ b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+@@ -23,6 +23,8 @@ const schemaMigrations = [
+   "20260730090000_add_token_usage_provider_name",
+   "20260801090000_token_usage_member_display_name",
+   "20260819090000_add_token_usage_run_records",
++  // Historical source rows are converted only after current target expansion.
++  "20260923130000_add_claude_sdk_usage_state",
+ ] as const;
+ 
+ type JsonSourceValue = null | number | string | boolean | readonly unknown[] | Readonly<Record<string, unknown>>;
+@@ -36,6 +38,9 @@ const createDatabase = async (databasePath: string): Promise<void> => {
+         "utf8",
+       ));
+     }
++    expect(database.prepare('PRAGMA table_info("token_usage_run_records")').all()).toEqual(
++      expect.arrayContaining([expect.objectContaining({ name: "claude_sdk_usage_state_json" })]),
++    );
+   } finally {
+     database.close();
+   }

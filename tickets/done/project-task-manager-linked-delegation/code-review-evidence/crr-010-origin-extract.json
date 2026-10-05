@@ -1,0 +1,201 @@
+{
+  "root": "api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb",
+  "lifetime": {
+    "lifetimeId": "project_task_lifetime_d25faaac-5824-4dd3-baa6-a0229195beca",
+    "projectId": "project_0fc2e5bd-e806-4406-802f-a20b83b742a6",
+    "taskId": "project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773",
+    "openedAt": "2026-10-03T15:59:49.329Z",
+    "completedAt": "2026-10-03T16:00:36.636Z",
+    "executions": [
+      {
+        "root": {
+          "rootSubjectKind": "agent_team",
+          "rootRunId": "api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb"
+        },
+        "execution": {
+          "teamRunId": "api008_packet_team_66adda0d15544a6aa0f186ed58465aa2"
+        },
+        "ingressAgentRunId": "api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8",
+        "purpose": "assignment",
+        "reservedAt": "2026-10-03T15:59:49.337Z",
+        "dispatch": "delivered",
+        "cleanup": "failed",
+        "error": {
+          "code": "TASK_RELEASE_FAILED",
+          "message": "Exact Task execution cleanup failed."
+        }
+      }
+    ]
+  },
+  "memberFacts": {
+    "runId": "api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148",
+    "runInstanceId": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+    "backendResult": null,
+    "activeInputDispatch": false,
+    "uncertainInputDispatch": false,
+    "input": {
+      "accepting": false,
+      "rootShutdownFenced": true,
+      "activeClaimSequence": null,
+      "entries": [
+        {
+          "sequence": 1,
+          "state": "forwarded",
+          "dispatchKind": "start_turn",
+          "associatedTurnId": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "observedTurnId": null,
+          "pendingTerminal": null,
+          "heldTurnId": null,
+          "notInto": null
+        }
+      ]
+    },
+    "canonical": {
+      "lastStatus": "offline",
+      "activeTurn": {
+        "kind": "NONE"
+      },
+      "pendingCommand": false,
+      "retiredTurnIds": [
+        "01a1027e-9fe9-7973-b782-12d26f003c9f"
+      ]
+    },
+    "provider": {
+      "threadId": "01a1027e-3ae7-75f2-ac7a-96b5d899d188",
+      "activeTurnId": null,
+      "lastTerminalTurnId": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+      "status": "IDLE",
+      "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team",
+      "threadInManager": false,
+      "preparationInManager": false,
+      "exactThreadReleased": true,
+      "releaseScope": {
+        "closed": true,
+        "pendingCount": 0,
+        "unknownInputOutcome": false
+      },
+      "clientEntry": {
+        "holders": 2,
+        "closing": false,
+        "hasClient": true,
+        "closeAttempt": false
+      }
+    },
+    "sourceSubscribed": true
+  },
+  "backendReceipt": "Reader actual accepted/negative/thrown backend return UNOBSERVED: lexical result scoped out at queued assertion; do not infer accepted from source/offline/exact thread release. Coordinator fulfilled accepted member-release is not a physical backend certificate.",
+  "registryFinalization": "Reader activePublished=true/retired=false; no successful removal/finalization receipt; Team lifecycle terminating and diagnostic failed.",
+  "diagnostic": [
+    {
+      "at": "2026-10-03T16:19:07.317Z",
+      "event": "input-unresolved-assertion",
+      "stack": [
+        {
+          "functionName": "settleAcceptedTermination",
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/input/agent-run-input-admission-state.js",
+          "location": {
+            "scriptId": "1675",
+            "lineNumber": 350,
+            "columnNumber": 12
+          }
+        },
+        {
+          "functionName": "",
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/domain/agent-run.js",
+          "location": {
+            "scriptId": "1633",
+            "lineNumber": 471,
+            "columnNumber": 37
+          }
+        }
+      ],
+      "value": {
+        "accepting": false,
+        "rootShutdownFenced": true,
+        "activeClaimSequence": null,
+        "entries": [
+          {
+            "sequence": 1,
+            "state": "forwarded",
+            "dispatchKind": "start_turn",
+            "associatedTurnId": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+            "observedTurnId": null,
+            "pendingTerminal": null,
+            "heldTurnId": null,
+            "notInto": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-03T16:19:07.318Z",
+      "event": "agent-manager-components",
+      "stack": [
+        {
+          "functionName": "releaseExactRun",
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/services/agent-run-manager.js",
+          "location": {
+            "scriptId": "1632",
+            "lineNumber": 279,
+            "columnNumber": 15
+          }
+        }
+      ],
+      "value": {
+        "runId": "api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148",
+        "generation": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+        "result": null,
+        "forceReleaseErrors": [
+          {
+            "name": "Error",
+            "message": "AgentRun termination cannot settle while submitted input remains unresolved.",
+            "stack": "Error: AgentRun termination cannot settle while submitted input remains unresolved.\n    at AgentRunInputAdmissionState.settleAcceptedTermination (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/input/agent-run-input-admission-state.js:351:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/domain/agent-run.js:472:38",
+            "errors": null,
+            "cause": null
+          }
+        ],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": true,
+        "retired": false,
+        "providerThread": false
+      }
+    },
+    {
+      "at": "2026-10-03T16:19:07.319Z",
+      "event": "agent-manager-components",
+      "stack": [
+        {
+          "functionName": "releaseExactRun",
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/services/agent-run-manager.js",
+          "location": {
+            "scriptId": "1632",
+            "lineNumber": 279,
+            "columnNumber": 15
+          }
+        }
+      ],
+      "value": {
+        "runId": "api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148",
+        "generation": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+        "result": null,
+        "forceReleaseErrors": [
+          {
+            "name": "Error",
+            "message": "AgentRun termination cannot settle while submitted input remains unresolved.",
+            "stack": "Error: AgentRun termination cannot settle while submitted input remains unresolved.\n    at AgentRunInputAdmissionState.settleAcceptedTermination (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/input/agent-run-input-admission-state.js:351:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/domain/agent-run.js:472:38",
+            "errors": null,
+            "cause": null
+          }
+        ],
+        "attachments": {
+          "errors": []
+        },
+        "activePublished": true,
+        "retired": false,
+        "providerThread": false
+      }
+    }
+  ]
+}

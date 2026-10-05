@@ -1,0 +1,74 @@
+# Module Documentation (TypeScript)
+
+This directory mirrors the module documentation layout used in `autobyteus-server/docs/modules`, adapted to TypeScript source locations.
+
+## Module Index
+
+| Module | TS Documentation |
+| --- | --- |
+| Agent Artifacts | [agent_artifacts.md](./agent_artifacts.md) |
+| Agent Communication | [agent_communication.md](./agent_communication.md) |
+| Agent Customization | [agent_customization.md](./agent_customization.md) |
+| Agent Definition | [agent_definition.md](./agent_definition.md) |
+| Agent Execution | [agent_execution.md](./agent_execution.md) |
+| Agent Memory | [agent_memory.md](./agent_memory.md) |
+| Agent Work Traces | [agent_work_traces.md](./agent_work_traces.md) |
+| Agent Packages | [agent_packages.md](./agent_packages.md) |
+| Agent Streaming | [agent_streaming.md](./agent_streaming.md) |
+| Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
+| Agent Organization | [agent_orgs.md](./agent_orgs.md) |
+| Standalone Agent Run Root (standalone runs with collaborators) | [standalone_agent_run_root.md](./standalone_agent_run_root.md) |
+| Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
+| Agent Tools | [agent_tools.md](./agent_tools.md) |
+| Agent Tools MCP Server | [agent_tools_mcp_server.md](./agent_tools_mcp_server.md) |
+| Application Backend API Gateway | [application_backend_api_gateway.md](./application_backend_api_gateway.md) |
+| Application Communication Model | [application_communication_model.md](./application_communication_model.md) |
+| Application Capability | [application_capability.md](./application_capability.md) |
+| Application Engine | [application_engine.md](./application_engine.md) |
+| Application Orchestration | [application_orchestration.md](./application_orchestration.md) |
+| Application Sessions (historical note) | [application_sessions.md](./application_sessions.md) |
+| Application Storage | [application_storage.md](./application_storage.md) |
+| Applications | [applications.md](./applications.md) |
+| Codex Integration | [codex_integration.md](./codex_integration.md) |
+| File Explorer | [file_explorer.md](./file_explorer.md) |
+| File Search | [file_search.md](./file_search.md) |
+| Grok Build Runtime | [grok_build_runtime.md](./grok_build_runtime.md) |
+| LLM Management | [llm_management.md](./llm_management.md) |
+| MCP Server Management | [mcp_server_management.md](./mcp_server_management.md) |
+| Multimedia Management | [multimedia_management.md](./multimedia_management.md) |
+| Projects | [projects.md](./projects.md) |
+| Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |
+| Run History | [run_history.md](./run_history.md) |
+| Search | [search.md](./search.md) |
+| Secret Management | [secret_management.md](./secret_management.md) |
+| Skill Improvement | [skill_improvement.md](./skill_improvement.md) |
+| Skills | [skills.md](./skills.md) |
+| Terminal | [terminal.md](./terminal.md) |
+| Token Usage | [token_usage.md](./token_usage.md) |
+| WebSocket Session Design | [websocket_session_design.md](./websocket_session_design.md) |
+| Workflow Definition | [workflow_definition.md](./workflow_definition.md) |
+| Workspace File Explorer | [WORKSPACE_FILE_EXPLORER.md](./WORKSPACE_FILE_EXPLORER.md) |
+| Workspaces | [workspaces.md](./workspaces.md) |
+
+## Common TS Patterns
+
+- Services expose `getInstance()` or accessor functions.
+- Cached providers decorate persistence providers for read-heavy flows.
+- Persistence is owned per subsystem instead of by a global runtime mode.
+- Token usage keeps lifetime accounting in `TokenUsageRunStore` /
+  `token_usage_run_records` as one cumulative row per canonical AgentRun ID.
+  A separate compact UTC daily projection serves observation-time analytics and
+  advances atomically with changed run folds; it never backfills lifetime rows.
+  Released ledger tables and decoders are migration-only, not current runtime
+  accounting or analytics sources.
+- GraphQL resolvers in `src/api/graphql/types` are thin adapters over services.
+- Startup registration and background initialization run through `src/startup`.
+- Application bundles, orchestration, backend API gateway, engine lifecycle, and app storage now have separate authoritative owners instead of one mixed application subsystem.
+
+## Related Docs
+
+- [Architecture](../ARCHITECTURE.md)
+- [Project Overview](../PROJECT_OVERVIEW.md)
+- [URL Strategy](../URL_GENERATION_AND_ENV_STRATEGY.md)
+- [Startup/Lazy Initialization](../design/startup_initialization_and_lazy_services.md)
+- [Production Data-Migration Conventions](../design/data_migration_guideline.md)

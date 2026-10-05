@@ -1,0 +1,334 @@
+{
+  "at": "2026-10-04T03:38:04.064828+00:00",
+  "instanceId": "iso-57259-7e1c",
+  "rootId": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+  "helper": {
+    "address": "/api011_native_team_coordinator",
+    "agentRunId": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+    "platformAgentRunId": null,
+    "taskLifetime": {
+      "lifetimeId": "project_task_lifetime_eaa6f064-0122-4bb2-b6e5-585685d07549",
+      "purpose": "helper"
+    },
+    "delegatorAgentRunId": "api011_native_team_reader_8640a6460652498cabbd747097afd11a",
+    "startedAt": "2026-10-04T03:36:08.311Z",
+    "source": {
+      "kind": "agent",
+      "agentDefinitionId": "api011-native-team-coordinator",
+      "launchConfiguration": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "llmConfig": {
+          "thinking_type": "disabled"
+        },
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NsCe19/validation-workspace/native-concrete-agent_org"
+      }
+    }
+  },
+  "newLifetime": "project_task_lifetime_eaa6f064-0122-4bb2-b6e5-585685d07549",
+  "newBCompleted": null,
+  "genuineOfflineFrames": [
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22659,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22663,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22666,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22669,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22672,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22675,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22678,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22681,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22686,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22689,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22694,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api011_native_concrete_root_org_rerun_8216bff6_fc10_41f2_97e6_3e3831053459_ebf2b7f569a64d22a3fa99f9b4b55c10",
+        "change_sequence": 22734,
+        "event": {
+          "kind": "agent_presentation",
+          "member_address": "/api011_native_team_coordinator",
+          "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+          "message": {
+            "type": "AGENT_STATUS",
+            "payload": {
+              "recoverableBlock": null,
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          }
+        }
+      }
+    }
+  ],
+  "finalStatus": {
+    "member_address": "/api011_native_team_coordinator",
+    "agent_run_id": "api011_native_team_coordinator_5cb02c0439c14319abd66e7c713c1eff",
+    "status": "offline",
+    "trigger": null,
+    "tool_name": null,
+    "error_message": null,
+    "error_details": null,
+    "recoverableBlock": null
+  },
+  "scope": "Natural native address-message helper, not forced delegation/failure or FAPI007 equivalence",
+  "exactGenuineOfflineCount": 12,
+  "rootManagerBorrowedPreserved": true
+}

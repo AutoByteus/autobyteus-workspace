@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-04T05:51:09.279Z",
+  "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api013-agy-owned-wo1aZV",
+  "before": {
+    "pid": 82810,
+    "groupPid": 82811
+  },
+  "elapsed": 1566,
+  "after": {
+    "childAlive": false,
+    "groupLeaderAlive": false,
+    "groupAlive": false
+  },
+  "idempotent": true,
+  "result": "Scoped Pass real AgyStreamProcess awaits actual owned child close and captured detached background process group exit; repeated stop idempotent. External CLI emulated; no installed model/provider certificate.",
+  "rootRemoved": true
+}

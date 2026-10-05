@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-05T05:04:43.462463+00:00",
+  "cause": "Our first preservation checker used ordinary git status after checking original index SHA. Its optional stat-cache refresh occurred at index mtime 2026-10-05 05:00:58 UTC; next read-only audit caught it. No staged/blob/stage/patch/HEAD/MERGE/status/source change.",
+  "preRefreshOriginalHash": "6414814edfd1540fcab4e0bf4059c2a7cb5f20d6b90d5c5ecb5465accd5f0ae9",
+  "ownRefreshedHash": "7b88df25613022646974421c128cb3570c6c4bba26ee0efd141540a2fa33baea",
+  "archivedRefresh": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-own-stat-refresh-index",
+  "restoredHash": "6414814edfd1540fcab4e0bf4059c2a7cb5f20d6b90d5c5ecb5465accd5f0ae9",
+  "guard": "Known exact observed derivative hash, unchanged semantic stages/staged+unstaged binary patches/HEAD/MERGE/no U, exclusive index.lock; no concurrent writer overwritten",
+  "action": "Restored only our accidental optional stat-cache binary rewrite from initial exact backup. No staging/reset/merge/commit/stash operation. Final reads use --no-optional-locks.",
+  "binaryIndexRestoredExact": true
+}

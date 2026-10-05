@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-04T06:38:02.004660+00:00",
+  "instanceId": "iso-65469-85e7",
+  "ports": {
+    "65469": {
+      "lsofListenExit": 1,
+      "listeners": "",
+      "tcpConnectEx": 61
+    },
+    "65470": {
+      "lsofListenExit": 1,
+      "listeners": "",
+      "tcpConnectEx": 61
+    }
+  },
+  "cause": "Exclusive bind failed after stop while no listener/TCP endpoint observed. Kernel state/cause not inspected; not claimed TIME_WAIT or orphan."
+}

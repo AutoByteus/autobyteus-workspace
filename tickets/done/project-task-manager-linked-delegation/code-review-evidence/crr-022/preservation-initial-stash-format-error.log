@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-022/verify-preservation.py", line 39, in <module>
+    assert git('stash','list').decode()==b['stash']
+AssertionError

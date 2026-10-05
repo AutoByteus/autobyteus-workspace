@@ -1,0 +1,6 @@
+2026-10-04T18:42:02.545229+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["bash", "-c", "set -e; git diff --check HEAD; git diff --cached --check; test -z \"$(git ls-files -u)\""]
+
+INNER_EXIT=0
+ELAPSED=0.34

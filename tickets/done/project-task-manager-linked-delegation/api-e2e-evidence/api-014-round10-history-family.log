@@ -1,0 +1,6 @@
+case=API-014
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-family-control.mjs
+Scoped Pass complete linked+unstamped Org family displayed across both workspaces, current Running restored root and stopped unlinked observational inspection/no implicit restore; separate dormant Team remains
+
+PROCESS_EXIT_CODE=0

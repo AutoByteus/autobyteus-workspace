@@ -1,0 +1,191 @@
+{
+  "bespoke_event_handling.rs": {
+    "url": "https://raw.githubusercontent.com/openai/codex/rust-v0.160.0/codex-rs/app-server/src/bespoke_event_handling.rs",
+    "sha256": "32dc66a8a6d77412be5d6a9dc7db6d3383b7d0d8d54949de02503cade1774982",
+    "sameAsIR007": true,
+    "lineNumberedExtracts": [
+      {
+        "startLine": 1204,
+        "lines": [
+          "        EventMsg::TurnAborted(turn_aborted_event) => {",
+          "            // All per-thread requests are bound to a turn, so abort them.",
+          "            outgoing.abort_pending_server_requests().await;",
+          "            respond_to_pending_interrupts(&thread_state, &outgoing).await;",
+          "",
+          "            thread_watch_manager",
+          "                .note_turn_interrupted(&conversation_id.to_string())",
+          "                .await;",
+          "            handle_turn_interrupted(",
+          "                conversation_id,",
+          "                event_turn_id,",
+          "                turn_aborted_event,",
+          "                &outgoing,",
+          "                &thread_state,",
+          "            )",
+          "            .await;",
+          "        }",
+          "        EventMsg::ThreadGoalUpdated(thread_goal_event) => {",
+          "            let notification = ThreadGoalUpdatedNotification {",
+          "                thread_id: thread_goal_event.thread_id.to_string(),",
+          "                turn_id: thread_goal_event.turn_id,",
+          "                goal: thread_goal_event.goal.clone().into(),"
+        ],
+        "matchesIR007": true
+      },
+      {
+        "startLine": 1321,
+        "lines": [
+          "async fn emit_turn_completed_with_status(",
+          "    conversation_id: ThreadId,",
+          "    event_turn_id: String,",
+          "    turn_completion_metadata: TurnCompletionMetadata,",
+          "    outgoing: &ThreadScopedOutgoingMessageSender,",
+          ") {",
+          "    let (items, items_view) = match turn_completion_metadata.last_agent_message {",
+          "        Some(item) => (vec![item], TurnItemsView::Summary),",
+          "        None => (Vec::new(), TurnItemsView::NotLoaded),",
+          "    };",
+          "    let notification = TurnCompletedNotification {",
+          "        thread_id: conversation_id.to_string(),",
+          "        turn: Turn {",
+          "            id: event_turn_id,",
+          "            items,",
+          "            items_view,",
+          "            error: turn_completion_metadata.error,",
+          "            status: turn_completion_metadata.status,",
+          "            started_at: turn_completion_metadata.started_at,",
+          "            completed_at: turn_completion_metadata.completed_at,",
+          "            duration_ms: turn_completion_metadata.duration_ms,",
+          "        },",
+          "    };",
+          "    outgoing",
+          "        .send_server_notification(ServerNotification::TurnCompleted(notification))",
+          "        .await;",
+          "}"
+        ],
+        "matchesIR007": true
+      },
+      {
+        "startLine": 1533,
+        "lines": [
+          "async fn handle_turn_interrupted(",
+          "    conversation_id: ThreadId,",
+          "    event_turn_id: String,",
+          "    turn_aborted_event: TurnAbortedEvent,",
+          "    outgoing: &ThreadScopedOutgoingMessageSender,",
+          "    thread_state: &Arc<Mutex<ThreadState>>,",
+          ") {",
+          "    let turn_summary = find_and_remove_turn_summary(conversation_id, thread_state).await;",
+          "",
+          "    emit_turn_completed_with_status(",
+          "        conversation_id,",
+          "        event_turn_id,",
+          "        TurnCompletionMetadata {",
+          "            status: TurnStatus::Interrupted,",
+          "            error: turn_aborted_event.error.map(|error| TurnError {",
+          "                message: error.message,",
+          "                codex_error_info: error.codex_error_info.map(Into::into),",
+          "                misalignment: error.misalignment.map(Into::into),",
+          "                additional_details: None,",
+          "            }),",
+          "            last_agent_message: None,",
+          "            started_at: turn_summary.started_at,",
+          "            completed_at: turn_aborted_event.completed_at,",
+          "            duration_ms: turn_aborted_event.duration_ms,",
+          "        },",
+          "        outgoing,",
+          "    )"
+        ],
+        "matchesIR007": true
+      },
+      {
+        "startLine": 1563,
+        "lines": [
+          "async fn respond_to_pending_interrupts(",
+          "    thread_state: &Arc<Mutex<ThreadState>>,",
+          "    outgoing: &ThreadScopedOutgoingMessageSender,",
+          ") {",
+          "    let pending = {",
+          "        let mut state = thread_state.lock().await;",
+          "        std::mem::take(&mut state.pending_interrupts)",
+          "    };",
+          "",
+          "    for request_id in pending {",
+          "        outgoing",
+          "            .send_response(request_id, TurnInterruptResponse {})",
+          "            .await;",
+          "    }",
+          "}",
+          ""
+        ],
+        "matchesIR007": true
+      }
+    ]
+  },
+  "thread_status.rs": {
+    "url": "https://raw.githubusercontent.com/openai/codex/rust-v0.160.0/codex-rs/app-server/src/thread_status.rs",
+    "sha256": "7948ede1c98af3467d8a1b1ec4cd3fe5487574b0789dfc4fac10987e6f1238f1",
+    "sameAsIR007": true,
+    "lineNumberedExtracts": [
+      {
+        "startLine": 160,
+        "lines": [
+          "    pub(crate) async fn note_turn_interrupted(&self, thread_id: &str) {",
+          "        self.clear_active_state(thread_id).await;",
+          "    }",
+          "",
+          "    pub(crate) async fn note_thread_shutdown(&self, thread_id: &str) {"
+        ],
+        "matchesIR007": true
+      },
+      {
+        "startLine": 184,
+        "lines": [
+          "    async fn clear_active_state(&self, thread_id: &str) {",
+          "        self.update_runtime_for_thread(thread_id, move |runtime| {",
+          "            runtime.running = false;",
+          "            runtime.pending_permission_requests = 0;",
+          "            runtime.pending_user_input_requests = 0;",
+          "        })",
+          "        .await;",
+          "    }",
+          ""
+        ],
+        "matchesIR007": true
+      },
+      {
+        "startLine": 223,
+        "lines": [
+          "    async fn mutate_and_publish<F>(&self, mutate: F)",
+          "    where",
+          "        F: FnOnce(&mut ThreadWatchState) -> Option<ThreadStatusChangedNotification>,",
+          "    {",
+          "        let notification = {",
+          "            let mut state = self.state.lock().await;",
+          "            let notification = mutate(&mut state);",
+          "            let running_turn_count = state.running_turn_count;",
+          "            self.running_turn_count_tx.send_if_modified(|current| {",
+          "                if *current == running_turn_count {",
+          "                    false",
+          "                } else {",
+          "                    *current = running_turn_count;",
+          "                    true",
+          "                }",
+          "            });",
+          "            notification",
+          "        };",
+          "",
+          "        if let Some(notification) = notification",
+          "            && let Some(outgoing) = &self.outgoing",
+          "        {",
+          "            outgoing",
+          "                .send_server_notification(ServerNotification::ThreadStatusChanged(notification))",
+          "                .await;",
+          "        }",
+          "    }"
+        ],
+        "matchesIR007": true
+      }
+    ]
+  }
+}

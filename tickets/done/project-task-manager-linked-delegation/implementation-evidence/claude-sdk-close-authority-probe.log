@@ -1,0 +1,4 @@
+{"phase":"first_close","returned":"undefined","fakeChildExited":false}
+{"phase":"async_dispose","elapsedMs":2005,"fakeChildExited":false,"signals":["SIGTERM"]}
+{"phase":"retry","beforeRetry":2,"afterRetry":2,"fakeChildExited":false,"signals":["SIGTERM","SIGKILL"],"errors":[]}
+PASS: pinned SDK close/dispose is not actual-child exit/retry proof (obstruction evidence only).

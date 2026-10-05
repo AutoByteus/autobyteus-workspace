@@ -1,0 +1,94 @@
+{
+ "thread": "01a10cdc-e24f-7da0-bbcd-f0f0a14c7bba",
+ "originator": "autobyteus-server-ts",
+ "cli": "0.160.0",
+ "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rQphUM/server-data/temp_workspace",
+ "base_instructions_head": "## Agent Identity\n\n- Name: Project Task Manager\n- Description: Reusable assistant for planning saved Project Tasks, dele",
+ "turn_context_multi_agent_version": [
+  "v2",
+  "v2",
+  "v2",
+  "v2"
+ ],
+ "has_multi_agent_role_developer_prompt": true,
+ "calls": [
+  {
+   "name": "exec",
+   "autobyteus_tools": [],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__list_projects"
+   ],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__list_project_tasks",
+    "mcp__autobyteus_agent_tools__list_available_agents"
+   ],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__delegate_task",
+    "mcp__autobyteus_agent_tools__delegate_task"
+   ],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__create_or_update_task",
+    "mcp__autobyteus_agent_tools__create_or_update_task"
+   ],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__list_projects"
+   ],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__create_or_update_task"
+   ],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__list_projects"
+   ],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__list_project_tasks"
+   ],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__delegate_task"
+   ],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [
+    "mcp__autobyteus_agent_tools__create_or_update_task"
+   ],
+   "target": null
+  }
+ ]
+}

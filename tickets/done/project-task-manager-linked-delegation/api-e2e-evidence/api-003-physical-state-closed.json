@@ -1,0 +1,54 @@
+[
+  {
+    "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+    "name": "API003 saved-packet validation",
+    "description": "Owned isolated live validation; not production.",
+    "createdAt": "2026-10-03T09:53:53.121Z",
+    "updatedAt": "2026-10-03T09:53:53.121Z",
+    "workspaces": [],
+    "tasks": [
+      {
+        "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+        "description": "Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.",
+        "status": "DONE",
+        "createdAt": "2026-10-03T09:53:53.190Z",
+        "updatedAt": "2026-10-03T09:56:32.013Z",
+        "contextFiles": [
+          {
+            "storedFilename": "ctx_17e6e103abf5__saved-packet.txt",
+            "displayName": "saved-packet.txt",
+            "mimeType": "text/plain",
+            "sizeBytes": 72
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "taskLifetimes": [
+      {
+        "lifetimeId": "project_task_lifetime_9da7a658-dd62-4ad9-b5f8-1ffd683fdc03",
+        "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+        "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+        "openedAt": "2026-10-03T09:54:26.814Z",
+        "completedAt": "2026-10-03T09:56:32.013Z",
+        "executions": [
+          {
+            "root": {
+              "rootSubjectKind": "agent",
+              "rootRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+            },
+            "execution": {
+              "agentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768"
+            },
+            "ingressAgentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768",
+            "purpose": "assignment",
+            "reservedAt": "2026-10-03T09:54:26.833Z",
+            "dispatch": "delivered",
+            "cleanup": "released"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,264 @@
+import { describe, expect, it } from "vitest";
+import { AgentRunEventType, type AgentRunEvent } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
+import type { JsonObject } from "../../../../../../src/agent-execution/backends/codex/codex-app-server-json.js";
+import { CodexThreadEventName } from "../../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+import { TeamAgentEventAdapter } from "../../../../../../src/agent-team-execution/services/team-agent-event-adapter.js";
+import { createCodexThreadEventHarness } from "../../../../../fixtures/codex-thread-event-harness.js";
+
+import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { createTeamAgentExecutionBinding } from "../../../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
+
+const createStrictTeamAdapter = (agentRunId: string): TeamAgentEventAdapter => {
+  const execution = createTeamAgentExecutionBinding({
+    root: createTeamRootExecutionIdentity("tool-log-root-team"),
+    memberAddress: "/worker",
+    agentRunId,
+  });
+  return new TeamAgentEventAdapter(
+    (runId) => runId === execution.agentRunId ? execution : null,
+  );
+};
+
+const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): void => {
+  for (const event of events) {
+    expect(createStrictTeamAdapter(event.runId).adapt(event)).toMatchObject({ kind: "publish" });
+  }
+};
+
+const emitMcpStarted = (
+  harness: ReturnType<typeof createCodexThreadEventHarness>,
+  turnId = "turn-1",
+  invocationId = "call-1",
+  toolName = "delegate_task",
+): AgentRunEvent[] => harness.emitThroughThread({
+  method: CodexThreadEventName.ITEM_STARTED,
+  params: {
+    turnId,
+    item: {
+      type: "mcpToolCall",
+      id: invocationId,
+      server: "agent_tools",
+      tool: toolName,
+      arguments: { recipient_address: "/worker" },
+    },
+  },
+});
+
+const emitLocalMcpCompleted = (
+  harness: ReturnType<typeof createCodexThreadEventHarness>,
+  turnId = "turn-1",
+  invocationId = "call-1",
+  toolName = "delegate_task",
+): AgentRunEvent[] => harness.emitThroughThread({
+  method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+  params: {
+    turnId,
+    invocation_id: invocationId,
+    tool_name: toolName,
+    result: { task_id: "task-1", status: "active" },
+    item: {
+      type: "mcpToolCall",
+      id: invocationId,
+      server: "agent_tools",
+      tool: toolName,
+      status: "completed",
+    },
+  },
+});
+
+const emitRawToolOutput = (
+  harness: ReturnType<typeof createCodexThreadEventHarness>,
+  params: JsonObject,
+): AgentRunEvent[] => harness.emitThroughThread({
+  method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+  params,
+});
+
+describe("Codex TOOL_LOG correlation", () => {
+  it("rejects valid correlated TOOL_LOG when the run has no Team identity", () => {
+    const harness = createCodexThreadEventHarness("run-unregistered-tool-log");
+    emitMcpStarted(harness);
+    const output = emitRawToolOutput(harness, {
+      turnId: "turn-1",
+      item: {
+        type: "functionCallOutput",
+        call_id: "call-1",
+        output: "exact unregistered tool output",
+      },
+    });
+    expect(output).toHaveLength(1);
+    expect(output[0].eventType).toBe(AgentRunEventType.TOOL_LOG);
+    expect(new TeamAgentEventAdapter(() => null).adapt(output[0])).toMatchObject({
+      kind: "rejected",
+      code: "TEAM_AGENT_EVENT_ADMISSION_FAILED",
+    });
+  });
+
+  it("retains exact tool identity across a retry diagnostic", () => {
+    const harness = createCodexThreadEventHarness("run-retry-tool-log");
+    const started = emitMcpStarted(
+      harness,
+      "turn-retry",
+      "call-retry",
+      "delegate_task",
+    );
+
+    const diagnostic = harness.emitThroughThread({
+      method: CodexThreadEventName.ERROR,
+      params: {
+        turnId: "turn-retry",
+        willRetry: true,
+        error: { code: "STREAM_DISCONNECTED", message: "Reconnecting... 2/5" },
+      },
+    });
+    const rawOutput = emitRawToolOutput(harness, {
+      turnId: "turn-retry",
+      item: {
+        type: "functionCallOutput",
+        call_id: "call-retry",
+        output: "continued after retry",
+      },
+    });
+
+    expectStrictTeamAdmission([...started, ...diagnostic, ...rawOutput]);
+    expect(diagnostic).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.ERROR,
+        statusHint: null,
+        payload: expect.objectContaining({
+          error_scope: "turn",
+          error_effect: "diagnostic",
+          turn_id: "turn-retry",
+        }),
+      }),
+    ]);
+    expect(rawOutput).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.TOOL_LOG,
+        payload: expect.objectContaining({
+          turnId: "turn-retry",
+          tool_invocation_id: "call-retry",
+          tool_name: "delegate_task",
+          log_entry: "continued after retry",
+        }),
+      }),
+    ]);
+  });
+
+  it("correlates started/local-completed/raw output and admits it through the strict Team boundary", () => {
+    const harness = createCodexThreadEventHarness("run-codex-tool-log");
+    const started = emitMcpStarted(harness);
+    const localCompleted = emitLocalMcpCompleted(harness);
+    const rawOutput = emitRawToolOutput(harness, {
+      turnId: "turn-1",
+      item: {
+        type: "functionCallOutput",
+        call_id: "call-1",
+        output: "{\"task_id\":\"task-1\",\"status\":\"active\"}",
+      },
+    });
+    const turnCompleted = harness.emitThroughThread({
+      method: CodexThreadEventName.TURN_COMPLETED,
+      params: { turnId: "turn-1" },
+    });
+
+    expectStrictTeamAdmission([
+      ...started,
+      ...localCompleted,
+      ...rawOutput,
+      ...turnCompleted,
+    ]);
+    expect(rawOutput).toHaveLength(1);
+    expect(rawOutput[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_LOG,
+      payload: {
+        tool_invocation_id: "call-1",
+        tool_name: "delegate_task",
+        log_entry: "{\"task_id\":\"task-1\",\"status\":\"active\"}",
+      },
+    });
+    expect(createStrictTeamAdapter(rawOutput[0]!.runId).adapt(rawOutput[0]!)).toEqual(expect.objectContaining({
+      kind: "publish",
+      event: expect.objectContaining({
+        eventType: "TOOL_LOG",
+        details: expect.objectContaining({
+          toolInvocationId: "call-1",
+          toolName: "delegate_task",
+          turnId: "turn-1",
+        }),
+      }),
+    }));
+    expect(turnCompleted).toEqual([
+      expect.objectContaining({ eventType: AgentRunEventType.TURN_COMPLETED }),
+    ]);
+  });
+
+  it("uses an exact direct raw provider tool name without inventing correlation", () => {
+    const harness = createCodexThreadEventHarness("run-direct-tool-log");
+
+    const events = emitRawToolOutput(harness, {
+      turnId: "turn-1",
+      item: {
+        type: "functionCallOutput",
+        call_id: "call-direct",
+        name: "direct_tool",
+        output: "direct output",
+      },
+    });
+
+    expect(events).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.TOOL_LOG,
+        payload: expect.objectContaining({
+          tool_invocation_id: "call-direct",
+          tool_name: "direct_tool",
+          log_entry: "direct output",
+        }),
+      }),
+    ]);
+    expectStrictTeamAdmission(events);
+  });
+
+  it("suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output", () => {
+    const harness = createCodexThreadEventHarness("run-incomplete-tool-log");
+    emitMcpStarted(harness);
+
+    expect(emitRawToolOutput(harness, {
+      turnId: "turn-1",
+      item: { type: "functionCallOutput", output: "missing invocation" },
+    })).toEqual([]);
+    expect(emitRawToolOutput(harness, {
+      turnId: "turn-1",
+      item: { type: "functionCallOutput", call_id: "call-unknown", output: "unknown" },
+    })).toEqual([]);
+    expect(emitRawToolOutput(harness, {
+      turnId: "turn-2",
+      item: { type: "functionCallOutput", call_id: "call-1", output: "wrong turn" },
+    })).toEqual([]);
+    expect(emitRawToolOutput(harness, {
+      turnId: "turn-1",
+      item: { type: "functionCallOutput", call_id: "call-1", output: "   " },
+    })).toEqual([]);
+
+    const completion = harness.emitThroughThread({
+      method: CodexThreadEventName.TURN_COMPLETED,
+      params: { turnId: "turn-1" },
+    });
+    expectStrictTeamAdmission(completion);
+    expect(emitRawToolOutput(harness, {
+      turnId: "turn-1",
+      item: { type: "functionCallOutput", call_id: "call-1", output: "after terminal" },
+    })).toEqual([]);
+  });
+
+  it("fails closed when lifecycle facts conflict for the same invocation", () => {
+    const harness = createCodexThreadEventHarness("run-conflicting-tool-log");
+    emitMcpStarted(harness, "turn-1", "call-1", "delegate_task");
+    emitLocalMcpCompleted(harness, "turn-1", "call-1", "review_task_result");
+
+    expect(emitRawToolOutput(harness, {
+      turnId: "turn-1",
+      item: { type: "functionCallOutput", call_id: "call-1", output: "conflicted" },
+    })).toEqual([]);
+  });
+});

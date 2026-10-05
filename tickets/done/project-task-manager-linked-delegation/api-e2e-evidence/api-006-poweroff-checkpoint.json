@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-03T14:56:25.267501+00:00",
+  "event": "User reported poweroff/restart",
+  "recordedInstanceId": "iso-51765-db16",
+  "recordedMainPid": 43310,
+  "recordedRootExists": true,
+  "matchingRecordedPid": [],
+  "scope": "No signal or attach sent to historical PID; ownership must be reverified before resumed execution.",
+  "reviewedPaths": 283,
+  "packageChangedPaths": []
+}

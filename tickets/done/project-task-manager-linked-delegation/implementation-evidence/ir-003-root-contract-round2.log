@@ -1,0 +1,811 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-collaboration/configured-root-first-work.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-collaboration/configured-root-first-work.test.ts > standalone_team configured first work > scope stays Offline; 'autobyteus' / 'none' / null readies only receivers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-collaboration/configured-root-first-work.test.ts (48 tests) 1555ms
+stdout | tests/unit/projects/project-task-lifetime.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-task-lifetime.test.ts (6 tests) 523ms
+stdout | tests/unit/projects/project-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-service.test.ts (29 tests) 443ms
+stdout | tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts (11 tests | 3 failed) 360ms
+     ✓ gives eligible hosts send_message_to and delegate_task but no handoff rules; helpers and application runs get nothing 4ms
+     ✓ captures hosted Agent/Team live inputs only, deduplicates recursive leaves, and keeps inspection non-restoring 67ms
+     × creates the package on the first admitted mention, hosts each collaborator once, messages it, copies it and restores 79ms
+     ✓ stops every collaborator only on an explicit Stop, serves the stored view without restoring, and restores it on command 39ms
+     ✓ history delete after a host crash ends the lingering root and its children first, then deletes (CR-001/CR-002) 36ms
+     ✓ history delete of a crashed run without collaborators ends its empty root and deletes (CR-002) 2ms
+     ✓ rejects the command entry for runs that cannot host collaborators 1ms
+     ✓ lists without creating the package; the host's own definition is not listed (AR-005) 2ms
+     ✓ the first send_message_to brings a listed agent in and creates the package; concurrent firsts make one (AC-004, AC-008) 50ms
+     × catalog copies record a source, stay one unit each, delegate onward and restore after Stop (AC-005/006/007) 29ms
+     × a collaborator-Team member's top-level copy goes to the root; a copy stored under a Team restores in place (REQ-012, AC-013) 51ms
+stdout | tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts > agent-initiated collaborators and team instances in an AgentOrg > a copy of a mounted Team reaches its own members, not the mounted Team's (REQ-007 behavior change)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts (5 tests | 3 failed) 223ms
+     × a copy of a mounted Team reaches its own members, not the mounted Team's (REQ-007 behavior change) 53ms
+     ✓ lists, brings in on the first message and reuses the instance (AC-002, AC-004) 70ms
+     ✓ a failed add returns COLLABORATOR_ADD_FAILED and writes nothing 26ms
+     × catalog copies record their source and add no collaborator; a mounted-Team member's catalog copy goes to the root (AC-005, AC-006, AC-013) 39ms
+     × places copies by address from inside a mounted Team: teammate under the Team, Org-level placement at the root (REQ-012, AC-013) 35ms
+stdout | tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > spawns a agent with one tree write, shuts it down after the grace period, and restores it on a message
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts (6 tests | 6 failed) 247ms
+     × spawns a agent with one tree write, shuts it down after the grace period, and restores it on a message 58ms
+     × spawns a team with one tree write, shuts it down after the grace period, and restores it on a message 42ms
+     × rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing 37ms
+     × treats an errored delegated agent as quiet: no root open work, shut down after the grace period (AC-015) 39ms
+     × treats an errored delegated team as quiet: no root open work, shut down after the grace period (AC-015) 36ms
+     × disposes pending idle timers when the root terminates 34ms
+stdout | tests/unit/agent-org-execution/agent-org-collaborators.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-collaborators.test.ts > collaborators brought into an AgentOrg run with @ > admits mentions on SEND_MESSAGE, streams collaborator_added and posts the composed note
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/agent-org-execution/agent-org-collaborators.test.ts (5 tests | 1 failed) 237ms
+     ✓ admits mentions on SEND_MESSAGE, streams collaborator_added and posts the composed note 54ms
+     ✓ hosts each collaborator once at admission, Offline, and reaches it by address (DI-001) 68ms
+     ✓ rejects an unrunnable mention without writing, hosting or posting anything 23ms
+     × places extra copies by address: a mounted-Team member's copy of a top-level collaborator goes to the root (REQ-012) 54ms
+     ✓ offers nothing already in the Org and rejects unmentioned delegation with a reason 39ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts (42 tests) 168ms
+stdout | tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts (1 test | 1 failed) 100ms
+     × restores scope lazily and durably replaces a no-conversation binding on first work 99ms
+ ✓ tests/unit/app-data-migrations/project-task-lifetime-state.test.ts (5 tests) 62ms
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (32 tests | 6 failed) 20ms
+     ✓ projects work-request guidance through team create and restore bootstrap 4ms
+     ✓ projects work-request guidance through standalone create and restore bootstrap 1ms
+     ✓ projects work-request guidance through no-context create and restore bootstrap 0ms
+     ✓ resolves Codex sandbox mode from the shared setting normalizer 1ms
+     ✓ uses danger-full-access as the effective Codex sandbox for auto-approved runs 0ms
+     ✓ keeps danger-full-access as the effective Codex sandbox when restoring auto-approved runs 0ms
+     ✓ gives Codex team-member auto mode the high-trust thread config for create and restore 1ms
+     ✓ keeps configured approval and sandbox settings for Codex team-member manual mode 0ms
+     × reconciles a configured skill when Codex discovers exactly the catalog's copy 4ms
+     × exposes the catalog's copy and logs codex-runtime-duplicate when Codex lists another copy (D-19) 1ms
+     × maps every binding exactly once while discovery changes only resolved request intent 1ms
+     × prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1) 0ms
+     ✓ normalizes llmConfig service_tier into Codex thread serviceTier 0ms
+     ✓ passes gpt-5.6-luna to Codex thread configuration unchanged 0ms
+     ✓ preserves open reasoning effort "max" in Codex thread config 0ms
+     ✓ preserves open reasoning effort " ultra " in Codex thread config 0ms
+     ✓ preserves open reasoning effort " Future-Custom " in Codex thread config 0ms
+     ✓ keeps unset reasoning effort unset in Codex thread config 0ms
+     ✓ keeps whitespace-only reasoning effort unset in Codex thread config 0ms
+     ✓ keeps non-string reasoning effort unset in Codex thread config 0ms
+     × falls back to workspace materialization when the discoverable-skill probe fails 0ms
+     ✓ does not materialize Agent Tools MCP browser config unless browser tools are available 0ms
+     ✓ materializes standalone send_message_to through Agent Tools MCP thread config 1ms
+     ✓ forwards the immutable application execution context into the Codex MCP session 1ms
+     ✓ recreates Agent Tools MCP thread config on restore instead of reusing persisted descriptors 0ms
+     × leaves the activated run resource for the run owner when later workspace preparation fails 3ms
+     ✓ does not materialize Agent Tools MCP config when no configured tool is available 0ms
+     ✓ exposes configured browser tools only through Agent Tools MCP when allowed 0ms
+     ✓ exposes publish_artifacts only through Agent Tools MCP when the agent config allows it 0ms
+     ✓ exposes only configured media tools through Agent Tools MCP for Codex 0ms
+     ✓ does not expose artifact publication for old singular-only Codex configs 0ms
+     ✓ exposes only the plural artifact Agent Tools MCP tool for mixed old/new Codex configs 0ms
+stdout | tests/unit/agent-org-execution/agent-org-task-publication.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-org-execution/agent-org-task-publication.test.ts (6 tests | 2 failed) 13ms
+     × forwards root task-Team and recursively materialized Team/Agent events after ordered durable release 8ms
+     ✓ keeps aborted agent preparation and subsequent callbacks private 1ms
+     ✓ keeps aborted team preparation and subsequent callbacks private 1ms
+     ✓ closes the agent publisher when preparation rejects 1ms
+     ✓ closes the team publisher when preparation rejects 0ms
+     × releases only the exact root-Agent preparation once and then forwards live events 1ms
+stdout | tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts > AgentOrg status snapshot traversal > streams every root-owned and recursively Team-owned Agent exactly once across reselect
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ❯ tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts (3 tests | 1 failed) 11ms
+     × streams every root-owned and recursively Team-owned Agent exactly once across reselect 7ms
+     ✓ reports a shut-down root task Team as offline without requiring a live TeamRun 2ms
+     ✓ keeps the flat registered Team scope authoritative for frozen root shutdown 2ms
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts (8 tests | 4 failed) 15ms
+     ✓ captures the exact baseInstructions after successful handoff and stages only created evidence 3ms
+     × registers the thread with the shared router before starting the remote thread 4ms
+     × uses the workspace app-server client boundary for same-workspace standalone agent runs 1ms
+     × shares the cwd-scoped app-server client for team member runs 1ms
+     ✓ passes auto-approved access config to Codex thread start and resume 1ms
+     ✓ passes serviceTier when resuming a remote Codex thread 1ms
+     ✓ passes thread-scoped app-server config to thread start and resume 1ms
+     × surfaces a known-thread resume failure without starting a replacement thread 2ms
+stdout | tests/unit/agent-org-execution/agent-org-member-scope.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-member-scope.test.ts > AgentOrg member collaboration scope (CR-001) > a mounted Team member keeps its cross-placement Org handoffs and its Team instruction (AC-012)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-member-scope.test.ts (3 tests) 6ms
+stdout | tests/unit/projects/project-task-context-store.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > returns proven committed metadata even when subsequent lock finalization fails
+Project state committed; lock finalization failed. Error: release failure
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:90:65)
+    at Object.unlink (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at code (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/persistence/file/store-utils.ts:55:20)
+    at withFilePathLock (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/persistence/file/store-utils.ts:123:9)
+    at ProjectStore.updateState (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/stores/project-store.ts:17:14)
+    at ProjectTaskService.createTask (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/services/project-task-service.ts:69:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:93:18
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > cleanup failure cannot turn a confirmed file-removal commit into rollback
+Task context cleanup failed. Error: cleanup unavailable
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:119:63
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/unit/projects/project-task-context-store.test.ts (9 tests) 914ms
+stdout | tests/unit/agent-org-execution/agent-org-run-config.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-config.test.ts (18 tests) 631ms
+stdout | tests/unit/projects/project-task-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-task-service.test.ts (15 tests) 349ms
+stdout | tests/unit/agent-org-execution/agent-org-run-inspection.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-org-execution/agent-org-run-inspection.test.ts > distinguishes a real empty local task trace from a physical read failure without provider activation
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/org-inspection-L7L8s6/agent_orgs/org/task-run/raw_traces_active.jsonl
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-inspection.test.ts (6 tests) 169ms
+stdout | tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts (6 tests) 118ms
+stdout | tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts (5 tests) 98ms
+stdout | tests/unit/agent-org-execution/agent-org-run-termination.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-run-termination.test.ts > AgentOrgRun termination stabilization > freezes and fences every direct/mounted Agent scope before task and persistence drain
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-termination.test.ts (4 tests) 59ms
+stdout | tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts > AgentOrg committed communication presentation > publishes one root row then the configured receiver input before releasing delivery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts (15 tests) 40ms
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > keeps a new run private until synchronous candidate publication
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > claims the run id before the first backend await and rejects overlapping preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > allows retry only after candidate abort confirms inactivity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines an uncertain candidate cleanup and rejects same-process replacement
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores codex_app_server from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores claude_agent_sdk from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > aborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rolls back already-attached run resources when a later attachment fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates exactly once when a post-activation backend identity mismatch fails before attachment
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines attachment rollback when exact-run session deactivation fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation create failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation restore failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines with primary then deactivation cleanup evidence
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rejects another candidate after publication without replacing the active run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > detaches run resources and invokes exact-run MCP cleanup after accepted termination
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > allows only one non-waiting quiescence preparation attempt per exact run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > cancels through the exact run without releasing it and permits a fresh preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries only after a rejected finish and releases once after acceptance
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > coalesces one committed finish attempt and caches successful finalization
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retains accepted-but-active failure without removing the exact run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries exact retained component cleanup after physical release without stopping twice
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal not_found as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal identity_mismatch as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > rejects a missing or different exact instance before lower-level preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-execution/agent-run-manager.test.ts (25 tests) 21ms
+stdout | tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts (11 tests) 15ms
+stdout | tests/unit/agent-org-execution/agent-org-task-shutdown-event-retirement.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-task-shutdown-event-retirement.test.ts > AgentOrg mounted-Team delegated execution shutdown event retirement > retires the child's teardown events, keeps the execution in the tree, and publishes one offline status
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-task-shutdown-event-retirement.test.ts (1 test) 11ms
+stdout | tests/unit/agent-org-execution/agent-org-run-manager-restore-self-heal.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-restore-self-heal.test.ts (5 tests) 9ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts (2 tests) 6ms
+stdout | tests/unit/agent-org-execution/agent-org-command-execution-kind.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-command-execution-kind.test.ts > AgentOrgRun command execution kind > returns exact configured/task kind while preserving the generic result-only command surface
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-command-execution-kind.test.ts (1 test) 6ms
+stdout | tests/unit/agent-org-execution/agent-org-reference-content-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-reference-content-service.test.ts (2 tests) 6ms
+ ✓ tests/unit/agent-execution/services/agent-run-activation-operation.test.ts (3 tests) 4ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-config-options.test.ts (1 test) 4ms
+stdout | tests/unit/projects/projects-capability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/projects-capability-service.test.ts (3 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 27 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts > agent-initiated collaborators and team instances in an AgentOrg > a copy of a mounted Team reaches its own members, not the mounted Team's (REQ-007 behavior change)
+ FAIL  tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > spawns a team with one tree write, shuts it down after the grace period, and restores it on a message
+ FAIL  tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > treats an errored delegated team as quiet: no root open work, shut down after the grace period (AC-015)
+RootTaskPersistenceFinalizationIndeterminateError: AgentOrg 'execution_tree' is durable but local publication failed: AgentRun 'task-team-1-lead' does not resolve to the supplied member identity.
+ ❯ AgentOrgRunPersistenceCoordinator.finalizeAfterDurability src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts:146:13
+    144|       this.failStopped = true;
+    145|       this.options.enterPersistenceFailStop(error);
+    146|       throw new RootTaskPersistenceFinalizationIndeterminateError(
+       |             ^
+    147|         "agent_org",
+    148|         fileRole,
+ ❯ src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts:87:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/27]⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts > agent-initiated collaborators and team instances in an AgentOrg > catalog copies record their source and add no collaborator; a mounted-Team member's catalog copy goes to the root (AC-005, AC-006, AC-013)
+AssertionError: promise rejected "RootTaskPersistenceFinalizationIndeterminateError: … { …(3) }" instead of resolving
+ ❯ tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts:75:121
+     73|     const f = await buildOrg();
+     74|     const lead = identity(f, "/target/lead", "configured-lead");
+     75|     await expect(f.owner.delegateTask({ identity: lead }, { recipient_…
+       |                                                                                                                         ^
+     76|       .resolves.toMatchObject({ target_agent_run_id: expect.any(String…
+     77|     await expect(f.owner.delegateTask({ identity: identity(f, "/direct…
+
+Caused by: RootTaskPersistenceFinalizationIndeterminateError: AgentOrg 'execution_tree' is durable but local publication failed: AgentRun 'task-team-1-designer' does not resolve to the supplied member identity.
+ ❯ AgentOrgRunPersistenceCoordinator.finalizeAfterDurability src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts:146:13
+ ❯ src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts:87:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { rootSubjectKind: 'agent_org', fileRole: 'execution_tree', stage: 'post_durability_publication' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/27]⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-agent-initiated-collaborators.test.ts > agent-initiated collaborators and team instances in an AgentOrg > places copies by address from inside a mounted Team: teammate under the Team, Org-level placement at the root (REQ-012, AC-013)
+ FAIL  tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > spawns a agent with one tree write, shuts it down after the grace period, and restores it on a message
+ FAIL  tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing
+ FAIL  tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > treats an errored delegated agent as quiet: no root open work, shut down after the grace period (AC-015)
+ FAIL  tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > disposes pending idle timers when the root terminates
+RootTaskPersistenceFinalizationIndeterminateError: AgentOrg 'execution_tree' is durable but local publication failed: AgentRun 'task-agent-1' does not resolve to the supplied member identity.
+ ❯ AgentOrgRunPersistenceCoordinator.finalizeAfterDurability src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts:146:13
+    144|       this.failStopped = true;
+    145|       this.options.enterPersistenceFailStop(error);
+    146|       throw new RootTaskPersistenceFinalizationIndeterminateError(
+       |             ^
+    147|         "agent_org",
+    148|         fileRole,
+ ❯ src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts:87:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/27]⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-collaborators.test.ts > collaborators brought into an AgentOrg run with @ > places extra copies by address: a mounted-Team member's copy of a top-level collaborator goes to the root (REQ-012)
+AssertionError: promise rejected "RootTaskPersistenceFinalizationIndeterminateError: … { …(3) }" instead of resolving
+ ❯ tests/unit/agent-org-execution/agent-org-collaborators.test.ts:85:108
+     83|     const lead = { identity: createCollaborationMemberExecutionIdentit…
+     84|     const director = { identity: f.handles.get("director")!.input.iden…
+     85|     await expect(f.owner.delegateTask(lead, { recipient_address: "/cod…
+       |                                                                                                            ^
+     86|       .resolves.toMatchObject({ target_agent_run_id: expect.any(String…
+     87|     await expect(f.owner.delegateTask(director, { recipient_address: "…
+
+Caused by: RootTaskPersistenceFinalizationIndeterminateError: AgentOrg 'execution_tree' is durable but local publication failed: AgentRun 'task-agent-2' does not resolve to the supplied member identity.
+ ❯ AgentOrgRunPersistenceCoordinator.finalizeAfterDurability src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts:146:13
+ ❯ src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts:87:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { rootSubjectKind: 'agent_org', fileRole: 'execution_tree', stage: 'post_durability_publication' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/27]⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts > AgentOrgExecutionScopeBuilder restore > restores scope lazily and durably replaces a no-conversation binding on first work
+CollaborationAgentActivationError: Agent run 'agent-verifier' cleanup could not be confirmed.
+ ❯ ConfiguredAgentExecutionHandle.cleanupError src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts:440:12
+    438|   }
+    439|   private cleanupError(runId: string, cause: Error): CollaborationAgen…
+    440|     return new CollaborationAgentActivationError(
+       |            ^
+    441|       "AGENT_RUN_ACTIVATION_CLEANUP_FAILED",
+    442|       `Agent run '${runId}' cleanup could not be confirmed.`,
+ ❯ ConfiguredAgentExecutionHandle.initializeReady src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts:317:66
+
+Caused by: TypeError: this.manager.releaseExactRun is not a function
+ ❯ ConfiguredAgentExecutionHandle.releaseRuntime src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts:218:41
+ ❯ ConfiguredAgentExecutionHandle.initializeReady src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts:316:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/27]⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts > AgentOrg status snapshot traversal > streams every root-owned and recursively Team-owned Agent exactly once across reselect
+TypeError: this.options.rootAgents.getInputStateSnapshots is not a function or its return value is not iterable
+ ❯ src/agent-org-execution/domain/agent-org-run.ts:321:60
+    319|       messages: this.messages,
+    320|       statuses: this.getAgentStatusSnapshots(),
+    321|       inputStates: [...new Map([...this.options.rootAgents.getInputSta…
+       |                                                            ^
+    322|         ...this.options.teams.list().flatMap(team => team.getInputStat…
+    323|         .map(input => [input.agent_run_id, input])).values()],
+ ❯ RootEventPublisher.openSnapshotConnection src/agent-collaboration/execution/services/root-event-publisher.ts:60:30
+ ❯ AgentOrgRun.openPackageSnapshotConnection src/agent-org-execution/domain/agent-org-run.ts:317:35
+ ❯ AgentOrgStreamHandler.connect src/services/agent-streaming/agent-org-stream-handler.ts:54:31
+ ❯ connect tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts:148:35
+ ❯ tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts:159:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/27]⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-task-publication.test.ts > Org-root prepared task publishers > forwards root task-Team and recursively materialized Team/Agent events after ordered durable release
+AssertionError: expected [ 'parent-lead:initializing', …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "parent-lead:initializing",
++   "parent-lead:idle",
++   "parent-lead:idle",
++ ]
+
+ ❯ tests/unit/agent-org-execution/agent-org-task-publication.test.ts:41:18
+     39|     const committed = prepared.commitAfterDurability();
+     40|     registration.commit();
+     41|     expect(seen).toEqual([]);
+       |                  ^
+     42|     seen.push("activated");
+     43|     committed.releaseWork(() => undefined); committed.releaseWork(() =…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/27]⎯
+
+ FAIL  tests/unit/agent-org-execution/agent-org-task-publication.test.ts > Org-root prepared task publishers > releases only the exact root-Agent preparation once and then forwards live events
+AssertionError: expected [ 'first:initializing', 'first:idle' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "first:initializing",
++   "first:idle",
++ ]
+
+ ❯ tests/unit/agent-org-execution/agent-org-task-publication.test.ts:125:18
+    123|     const first = await prepare("first"); const second = await prepare…
+    124|     first.sealForCommit(); const commit = first.commitAfterDurability(…
+    125|     expect(seen).toEqual([]); expect(registry.listHandles()).toHaveLen…
+       |                  ^
+    126|     seen.push("activated"); commit.releaseWork(() => undefined); commi…
+    127|     await flushMicrotasks(); handles.get("first")!.emit("idle"); handl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/27]⎯
+
+ FAIL  tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts > Agent root of a standalone run > creates the package on the first admitted mention, hosts each collaborator once, messages it, copies it and restores
+RootTaskPersistenceFinalizationIndeterminateError: Agent root 'execution_tree' is durable but local publication failed: AgentRun 'code-reviewer-run-4' does not resolve to the supplied member identity.
+ ❯ AgentRunCollaborationPersistenceCoordinator.finalize src/agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts:155:13
+    153|       this.failStopped = true;
+    154|       this.options.enterPersistenceFailStop(error);
+    155|       throw new RootTaskPersistenceFinalizationIndeterminateError(
+       |             ^
+    156|         "agent", fileRole, "post_durability_publication",
+    157|         `Agent root '${fileRole}' is durable but local publication fai…
+ ❯ src/agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts:99:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/27]⎯
+
+ FAIL  tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts > agent-initiated collaborators of a standalone run > catalog copies record a source, stay one unit each, delegate onward and restore after Stop (AC-005/006/007)
+AssertionError: promise rejected "RootTaskPersistenceFinalizationIndeterminateError: … { …(3) }" instead of resolving
+ ❯ tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts:421:137
+    419|     const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
+    420|     for (let index = 0; index < 3; index += 1) {
+    421|       await expect(root.delegateTask({ identity: f.hostIdentity }, { r…
+       |                                                                                                                                         ^
+    422|         .resolves.toMatchObject({ target_agent_run_id: expect.any(Stri…
+    423|     }
+
+Caused by: RootTaskPersistenceFinalizationIndeterminateError: Agent root 'execution_tree' is durable but local publication failed: AgentRun 'lead-run-1' does not resolve to the supplied member identity.
+ ❯ AgentRunCollaborationPersistenceCoordinator.finalize src/agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts:155:13
+ ❯ src/agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts:99:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { rootSubjectKind: 'agent', fileRole: 'execution_tree', stage: 'post_durability_publication' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/27]⎯
+
+ FAIL  tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts > agent-initiated collaborators of a standalone run > a collaborator-Team member's top-level copy goes to the root; a copy stored under a Team restores in place (REQ-012, AC-013)
+AssertionError: promise rejected "RootTaskPersistenceFinalizationIndeterminateError: … { …(3) }" instead of resolving
+ ❯ tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts:487:119
+    485|     if (product?.kind !== "agent_team") throw new Error("not added");
+    486|     const lead = childIdentity("/product_team/lead", product.members[0…
+    487|     await expect(root.delegateTask({ identity: lead }, { recipient_add…
+       |                                                                                                                       ^
+    488|       .resolves.toMatchObject({ target_agent_run_id: expect.any(String…
+    489|     await flushMicrotasks();
+
+Caused by: RootTaskPersistenceFinalizationIndeterminateError: Agent root 'execution_tree' is durable but local publication failed: AgentRun 'code-reviewer-run-3' does not resolve to the supplied member identity.
+ ❯ AgentRunCollaborationPersistenceCoordinator.finalize src/agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts:155:13
+ ❯ src/agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts:99:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { rootSubjectKind: 'agent', fileRole: 'execution_tree', stage: 'post_durability_publication' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > reconciles a configured skill when Codex discovers exactly the catalog's copy
+TypeError: this.clientManager.beginAcquire is not a function
+ ❯ CodexThreadBootstrapper.planWorkspaceSkillRequests src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:378:38
+    376| 
+    377|     input.guard.assertAccepting();
+    378|     const lease = this.clientManager.beginAcquire(input.workingDirecto…
+       |                                      ^
+    379|     input.guard.ownCodexClient?.(lease);
+    380|     let client: DiscoverableSkillLookupClient | null = null;
+ ❯ CodexThreadBootstrapper.prepareWorkspaceSkills src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:358:33
+ ❯ CodexThreadBootstrapper.bootstrapInternal src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:268:53
+ ❯ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts:414:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > exposes the catalog's copy and logs codex-runtime-duplicate when Codex lists another copy (D-19)
+TypeError: this.clientManager.beginAcquire is not a function
+ ❯ CodexThreadBootstrapper.planWorkspaceSkillRequests src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:378:38
+    376| 
+    377|     input.guard.assertAccepting();
+    378|     const lease = this.clientManager.beginAcquire(input.workingDirecto…
+       |                                      ^
+    379|     input.guard.ownCodexClient?.(lease);
+    380|     let client: DiscoverableSkillLookupClient | null = null;
+ ❯ CodexThreadBootstrapper.prepareWorkspaceSkills src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:358:33
+ ❯ CodexThreadBootstrapper.bootstrapInternal src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:268:53
+ ❯ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts:446:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > maps every binding exactly once while discovery changes only resolved request intent
+TypeError: this.clientManager.beginAcquire is not a function
+ ❯ CodexThreadBootstrapper.planWorkspaceSkillRequests src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:378:38
+    376| 
+    377|     input.guard.assertAccepting();
+    378|     const lease = this.clientManager.beginAcquire(input.workingDirecto…
+       |                                      ^
+    379|     input.guard.ownCodexClient?.(lease);
+    380|     let client: DiscoverableSkillLookupClient | null = null;
+ ❯ CodexThreadBootstrapper.prepareWorkspaceSkills src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:358:33
+ ❯ CodexThreadBootstrapper.bootstrapInternal src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:268:53
+ ❯ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts:473:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)
+TypeError: this.clientManager.beginAcquire is not a function
+ ❯ CodexThreadBootstrapper.planWorkspaceSkillRequests src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:378:38
+    376| 
+    377|     input.guard.assertAccepting();
+    378|     const lease = this.clientManager.beginAcquire(input.workingDirecto…
+       |                                      ^
+    379|     input.guard.ownCodexClient?.(lease);
+    380|     let client: DiscoverableSkillLookupClient | null = null;
+ ❯ CodexThreadBootstrapper.prepareWorkspaceSkills src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:358:33
+ ❯ CodexThreadBootstrapper.bootstrapInternal src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:268:53
+ ❯ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts:496:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+TypeError: this.clientManager.beginAcquire is not a function
+ ❯ CodexThreadBootstrapper.planWorkspaceSkillRequests src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:378:38
+    376| 
+    377|     input.guard.assertAccepting();
+    378|     const lease = this.clientManager.beginAcquire(input.workingDirecto…
+       |                                      ^
+    379|     input.guard.ownCodexClient?.(lease);
+    380|     let client: DiscoverableSkillLookupClient | null = null;
+ ❯ CodexThreadBootstrapper.prepareWorkspaceSkills src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:358:33
+ ❯ CodexThreadBootstrapper.bootstrapInternal src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:268:53
+ ❯ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts:595:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > leaves the activated run resource for the run owner when later workspace preparation fails
+AssertionError: expected [Function] to throw error including 'workspace materialization failed afte…' but got 'this.clientManager.beginAcquire is no…'
+
+Expected: "workspace materialization failed after issue"
+Received: "this.clientManager.beginAcquire is not a function"
+
+ ❯ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts:743:5
+    741|     });
+    742| 
+    743|     await expect(bootstrapper.bootstrapForCreate(createRunContext(), {…
+       |     ^
+    744|       "workspace materialization failed after issue",
+    745|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts > CodexThreadManager > registers the thread with the shared router before starting the remote thread
+AssertionError: expected "vi.fn()" to be called with arguments: [ '/tmp/workspace' ]
+
+Received: 
+
+  1st vi.fn() call:
+
+- [
+-   "/tmp/workspace",
+- ]
++ []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts:160:41
+    158|     const thread = await manager.createThread(createRunContext("run-1"…
+    159| 
+    160|     expect(clientManager.acquireClient).toHaveBeenCalledWith(
+       |                                         ^
+    161|       "/tmp/workspace",
+    162|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts > CodexThreadManager > uses the workspace app-server client boundary for same-workspace standalone agent runs
+AssertionError: expected 1st "vi.fn()" call to have been called with [ '/tmp/workspace' ]
+
+- Expected
++ Received
+
+- [
+-   "/tmp/workspace",
+- ]
++ []
+
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts:206:41
+    204|     expect(firstThread.client).toBe(sharedClient);
+    205|     expect(secondThread.client).toBe(sharedClient);
+    206|     expect(clientManager.acquireClient).toHaveBeenNthCalledWith(1, "/t…
+       |                                         ^
+    207|     expect(clientManager.acquireClient).toHaveBeenNthCalledWith(2, "/t…
+    208|     expect(clientThreadRouter.registerThread).toHaveBeenCalledTimes(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts > CodexThreadManager > shares the cwd-scoped app-server client for team member runs
+AssertionError: expected "vi.fn()" to be called with arguments: [ '/tmp/workspace' ]
+
+Received: 
+
+  1st vi.fn() call:
+
+- [
+-   "/tmp/workspace",
+- ]
++ []
+
+  2nd vi.fn() call:
+
+- [
+-   "/tmp/workspace",
+- ]
++ []
+
+
+Number of calls: 2
+
+ ❯ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts:250:41
+    248|     expect(firstThread.client).toBe(sharedClient);
+    249|     expect(secondThread.client).toBe(sharedClient);
+    250|     expect(clientManager.acquireClient).toHaveBeenCalledWith("/tmp/wor…
+       |                                         ^
+    251|     expect(clientManager.acquireClient).toHaveBeenCalledTimes(2);
+    252|     expect(clientThreadRouter.registerThread).toHaveBeenCalledTimes(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/27]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts > CodexThreadManager > surfaces a known-thread resume failure without starting a replacement thread
+AssertionError: expected [Function] to throw error including 'known thread unavailable' but got 'this.clientManager.beginAcquire is no…'
+
+Expected: "known thread unavailable"
+Received: "this.clientManager.beginAcquire is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/27]⎯
+
+
+ Test Files  9 failed | 24 passed (33)
+      Tests  27 failed | 315 passed (342)
+   Start at  09:31:49
+   Duration  32.89s (transform 3.06s, setup 132ms, import 23.11s, tests 6.45s, environment 2ms)
+

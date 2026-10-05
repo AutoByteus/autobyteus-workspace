@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-03T19:19:52.001553+00:00",
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "checks": [
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+      "sameAsHEAD": true,
+      "currentSha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+      "headSha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-definition-catalog.ts",
+      "sameAsHEAD": true,
+      "currentSha256": "95866e2b826b6e06e48d8fd6173f394adde680253c23120341bff22ef198976b",
+      "headSha256": "95866e2b826b6e06e48d8fd6173f394adde680253c23120341bff22ef198976b"
+    },
+    {
+      "path": "test-support/native-input-history/native-accepted-input-history.integration.test.ts",
+      "sameAsHEAD": true,
+      "currentSha256": "c93fec88c599984090bca9d19661c499700e534118073691a461e5ad61b220d9",
+      "headSha256": "c93fec88c599984090bca9d19661c499700e534118073691a461e5ad61b220d9"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts",
+      "sameAsHEAD": true,
+      "currentSha256": "2a9399c1c85fcdcb197875c6471e7632126a3c70ea6d346ed3f55f611f6d15b2",
+      "headSha256": "2a9399c1c85fcdcb197875c6471e7632126a3c70ea6d346ed3f55f611f6d15b2"
+    },
+    {
+      "path": "autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts",
+      "sameAsHEAD": true,
+      "currentSha256": "74947069fd83e597a6232e3474610d3458c3247562a45b79818c6969011b445a",
+      "headSha256": "74947069fd83e597a6232e3474610d3458c3247562a45b79818c6969011b445a"
+    },
+    {
+      "path": "autobyteus-web/stores/agentSelectionStore.ts",
+      "sameAsHEAD": true,
+      "currentSha256": "fce522c488829ee383bffb46b0010564dcb729c4a46fe64677853b23821c0483",
+      "headSha256": "fce522c488829ee383bffb46b0010564dcb729c4a46fe64677853b23821c0483"
+    }
+  ],
+  "nativeHarness": "Actual2failed before FIFO/history assertions: stale fixture imports createCollaboratorMentionAdmission but unchanged HEAD/current catalog exports createCollaboratorAdmission. TokenUsage readiness warnings retained. Preliminary existing API fixture issue, no intended native behavior proof.",
+  "nuxt": "Actual2failed +2unhandled due unchanged regressions mock lacks beginSelectionIntent used by unchanged current/HEAD production selection path;129otherpassed not whole green. Preliminary API mock issue.",
+  "strictToolLog": {
+    "currentFailures": [
+      "Codex TOOL_LOG correlation > retains exact tool identity across a retry diagnostic",
+      "Codex TOOL_LOG correlation > correlates started/local-completed/raw output and admits it through the strict Team boundary",
+      "Codex TOOL_LOG correlation > uses an exact direct raw provider tool name without inventing correlation",
+      "Codex TOOL_LOG correlation > suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output"
+    ],
+    "sameFourNamedFailuresAsIncomingCertifiedComparison": true,
+    "originalComparison": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-007-event-baseline-comparison.log",
+    "scope": "Four names/assertion rejected-versus-publish match known incoming certified scope; no new baseline run/source swap and no whole-suite baseline certification."
+  },
+  "classificationLimit": "Static HEAD equality plus exact undefined-symbol/mock-method evidence confirms unchanged obstruction location. Does not certify whole executable baseline or intended behavioral assertions beyond the failed prerequisite. No source/test assertion patch this round."
+}

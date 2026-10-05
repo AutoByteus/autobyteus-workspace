@@ -1,0 +1,9 @@
+{
+  "autobyteus-server-ts/src/projects/services/project-task-service.ts": true,
+  "autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts": true,
+  "autobyteus-server-ts/src/projects/stores/project-state-schema.ts": true,
+  "autobyteus-server-ts/src/projects/stores/project-store.ts": true,
+  "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts": true,
+  "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts": true,
+  "autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts": true
+}

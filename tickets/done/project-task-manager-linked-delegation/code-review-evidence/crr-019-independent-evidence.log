@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "rawRootAttempts": 2,
+  "readerAssertionAttempts": 2,
+  "currentSourceSnapshots": 14,
+  "compiledEqual": 1452,
+  "all299CandidateBytesSame": true,
+  "scope": "Independent archive, raw receipt, current-source/artifact hash verification; no new live execution or repair"
+}

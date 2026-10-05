@@ -260,6 +260,33 @@ is not an alias for the spawned copy, and callers must not repeat one assignment
 through both operations. The shared prompt and both tool descriptions state this
 identically on every runtime (REQ-009).
 
+### Task-linked message scope
+
+The ordinary one-instance/run-wide behavior below is unchanged for unowned
+senders. Unowned agents (configured members, hosts, `@` collaborators) are
+never checked against Task data.
+
+A Task-owned sender resolves an address in this order:
+1. Its deepest own Team instance, with no fall-through on a miss.
+2. That Task's open `broughtIn` helper at the address (dedupe key: Task plus
+   address).
+3. An existing **unowned** run in the root. Such an adviser is borrowed, not
+   adopted, so DONE never stops it.
+4. Otherwise, one new helper copy, recorded as `broughtIn` in that Task's
+   `agent_run_resources.json` before resources are acquired. Concurrent
+   requests from the same Task reuse it. Different Tasks get distinct copies.
+
+Another Task's run is never borrowable: a sender and a recipient owned by
+different Tasks fail with `TASK_AGENT_RESOURCE_CONFLICT`. Follow-up by exact
+run ID never creates a copy.
+
+Before any wake or acceptance, both sender and recipient input, and deferred
+publication, consult the Task record. A closed sender or recipient fails with
+`TASK_AGENT_RESOURCE_CLOSED`, including after restart. While any Task's file
+is damaged, waking or messaging a copy that is not in the Task view fails up
+front with `TASK_AGENT_RESOURCES_UNAVAILABLE`. See
+[Project Task agent run resources](projects.md#saved-id-delegation-and-agent-run-resources).
+
 ### Address resolution order (`MessageRecipientResolution`)
 
 Every root (Team, Org, Agent) resolves `send_message_to(address)` with the shared

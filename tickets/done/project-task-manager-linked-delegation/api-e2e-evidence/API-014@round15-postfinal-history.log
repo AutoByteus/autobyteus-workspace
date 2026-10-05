@@ -1,0 +1,7 @@
+2026-10-04T08:20:07.652614+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-postfinal-history.mjs"]
+Scoped Pass actual BOTH list/scoped strict full forest/privacy and existing mainOrg active, physicalOrg/Team cold stored histories, no implicit restore and protected Project/private trees/packets/workspace no-write after final explicit A closure
+
+INNER_EXIT=0
+ELAPSED=0.17

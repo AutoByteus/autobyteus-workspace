@@ -1,0 +1,723 @@
+{
+  "at": "2026-10-05T05:03:28.289969+00:00",
+  "revision": "API-REV-017",
+  "result": "Pass",
+  "confidence": 95.0,
+  "broader": "Required\u2014completed",
+  "classification": "Large / High / Reviewed",
+  "testReview": "Required current cumulative all20",
+  "caseOutcomes": [
+    [
+      "API-001@round17",
+      "Pass",
+      "Complete current approved mapping/current source/test fidelity; static checkpoint and final audit."
+    ],
+    [
+      "API-002@round17",
+      "Pass",
+      "Production/strict7 compile; narrow6/60, current owner102/743, remaining7/37, provider/opening/actual SDK real-child8/111; overlap, not whole baseline."
+    ],
+    [
+      "API-003@round17",
+      "Pass",
+      "Current test-owned Project real HTTP/multipart/MCP/business/startup/direct-use/restart/no-write/last Delete3/14."
+    ],
+    [
+      "API-004@round17",
+      "Pass",
+      "Current Native standalone compaction/host/fixture cleanup and actual RootTeam/catalog/ProjectStore helper integration4/31; controlled model/backend scope, not universal paid OS."
+    ],
+    [
+      "API-005@round17",
+      "Pass",
+      "Current built scoped Org history1/1; actual HTTP/WS/scoped MCP scripted CLI publication/native-argument coexistence2/5; not paid inference."
+    ],
+    [
+      "API-006@round17",
+      "Pass",
+      "Current Nuxt8/90, web guard + workspace Native\u2192web1/2; actual current full strict forest/frames and original/reopened offline rows. Two temporary observer-contract corrections retained."
+    ],
+    [
+      "API-008@round17",
+      "Pass",
+      "Current shared/server bootstrap; fresh packaged build+readiness+catalog+4426 current dist/package exact, asar hash; no release/deployment."
+    ],
+    [
+      "API-010@round17",
+      "Pass",
+      "Fresh shipped Manager ordinary actual standalone Chat/@ clarification, genuine Sonnet5 CLI auth, one turn/no writes."
+    ],
+    [
+      "API-011@round17",
+      "Pass",
+      "Genuine current Org saved-ID Agent/Team packets, A/borrowed/root protection, B old/new DONE/fences/TODO no-start/fresh copies/live DOM."
+    ],
+    [
+      "API-013@round17",
+      "Pass",
+      "Current actual SDK real-child/IO controls plus actual final-A sole instruction/live terminal/offline row/business ACK/protection. Exact current paid PID/IO diagnostic supplement Not Tested, not physical certification."
+    ],
+    [
+      "API-014@round17",
+      "Pass",
+      "Actual normal whole-app restart: same owned profile/ports/executable, new PID/all11 pre-restart descendants gone; explicit SAME root/worker/Manager restored actual reads/replies and unchanged history/IDs/bytes."
+    ],
+    [
+      "API-017@round17",
+      "Pass",
+      "Seven-category repository89.29\u2192current final95.00, complete attempt/AC/ledger/fidelity reconciliation; fresh reviewed-route handoff only after persistence."
+    ],
+    [
+      "API-019@round17",
+      "Pass",
+      "Own18 final archived files,19 captured PIDs absent, own profile/record gone, both ports plain bind free; two prior foreign records exact. Initial immediate plain-bind EADDRINUSE retained; read-only verification Pass, initial cause not assigned."
+    ]
+  ],
+  "attempts": [
+    {
+      "at": "2026-10-05T04:37:41.972331+00:00",
+      "case": "API-002@round17",
+      "label": "production-types",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "tsc",
+        "--noEmit",
+        "-p",
+        "tsconfig.build.json"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:37:34.208108+00:00",
+      "seconds": 7.76,
+      "pid": 95291,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-production-types.log"
+    },
+    {
+      "at": "2026-10-05T04:37:47.939722+00:00",
+      "case": "API-002@round17",
+      "label": "strict-test-types",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "tsc",
+        "--noEmit",
+        "-p",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/tests-tsconfig.json"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:37:42.047420+00:00",
+      "seconds": 5.89,
+      "pid": 95550,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-strict-test-types.log"
+    },
+    {
+      "at": "2026-10-05T04:38:17.699740+00:00",
+      "case": "API-002@round17",
+      "label": "terminal-managed-narrow",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts",
+        "tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts",
+        "tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts",
+        "tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts",
+        "tests/unit/skills/github/runtime-generation.test.ts",
+        "tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:37:47.993097+00:00",
+      "seconds": 29.71,
+      "pid": 96519,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-terminal-managed-narrow.log"
+    },
+    {
+      "at": "2026-10-05T04:40:59.688076+00:00",
+      "case": "API-002@round17",
+      "label": "current-full-owner-units",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/agent-collaboration",
+        "tests/unit/standalone-agent-run-root",
+        "tests/unit/agent-org-execution",
+        "tests/unit/agent-team-execution",
+        "tests/unit/projects",
+        "tests/unit/agent-tools/project-tasks",
+        "tests/unit/agent-tools/task-delegation",
+        "tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts",
+        "tests/unit/agent-execution/services/agent-run-activation-operation.test.ts",
+        "tests/unit/agent-execution/agent-run-resource-manager.test.ts",
+        "tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts",
+        "tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts",
+        "tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts",
+        "tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts",
+        "tests/unit/agent-execution/backends/codex/events/codex-compaction-abandon.test.ts",
+        "tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts",
+        "tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts",
+        "tests/unit/skills/github/runtime-generation.test.ts",
+        "tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts",
+        "tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts",
+        "tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:39:27.939213+00:00",
+      "seconds": 91.75,
+      "pid": 98931,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-current-full-owner-units.log"
+    },
+    {
+      "at": "2026-10-05T04:41:21.043549+00:00",
+      "case": "API-002@round17",
+      "label": "remaining-durable-consumers",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts",
+        "tests/unit/api/graphql/project-tasks-schema.test.ts",
+        "tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+        "tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+        "tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+        "tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts",
+        "tests/unit/services/team-communication/team-communication-service.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:41:11.248938+00:00",
+      "seconds": 9.79,
+      "pid": 5146,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-remaining-durable-consumers.log"
+    },
+    {
+      "at": "2026-10-05T04:41:31.796730+00:00",
+      "case": "API-004@round17",
+      "label": "current-native-task-integration",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/integration/standalone-agent-run-root/native-compaction-root.integration.test.ts",
+        "tests/integration/standalone-agent-run-root/native-root-fixture-cleanup.integration.test.ts",
+        "tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts",
+        "tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:41:21.084516+00:00",
+      "seconds": 10.71,
+      "pid": 5820,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-004@round17-current-native-task-integration.log"
+    },
+    {
+      "at": "2026-10-05T04:41:47.113103+00:00",
+      "case": "API-008@round17",
+      "label": "current-shared-server-bootstrap-build",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "build"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:41:31.844122+00:00",
+      "seconds": 15.27,
+      "pid": 5904,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round17-current-shared-server-bootstrap-build.log"
+    },
+    {
+      "at": "2026-10-05T04:42:02.920169+00:00",
+      "case": "API-003@round17",
+      "label": "project-public-http-startup",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/projects",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:41:47.180665+00:00",
+      "seconds": 15.74,
+      "pid": 7466,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-003@round17-project-public-http-startup.log"
+    },
+    {
+      "at": "2026-10-05T04:42:07.738398+00:00",
+      "case": "API-005@round17",
+      "label": "current-scoped-org-history",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:42:02.965700+00:00",
+      "seconds": 4.77,
+      "pid": 7535,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-005@round17-current-scoped-org-history.log"
+    },
+    {
+      "at": "2026-10-05T04:42:25.686718+00:00",
+      "case": "API-005@round17",
+      "label": "current-controlled-publication",
+      "command": [
+        "env",
+        "RUN_AGY_FAILURE_E2E=1",
+        "ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts",
+        "tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:42:07.784632+00:00",
+      "seconds": 17.9,
+      "pid": 7600,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-005@round17-current-controlled-publication.log"
+    },
+    {
+      "at": "2026-10-05T04:42:37.230819+00:00",
+      "case": "API-006@round17",
+      "label": "current-nuxt-history-consumers",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts",
+        "composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+        "components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts",
+        "components/workspace/collaboration/__tests__/CollaborationOverviewPanel.spec.ts",
+        "stores/__tests__/agentRunCollaborationStore.spec.ts",
+        "services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts",
+        "--run"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:42:25.732537+00:00",
+      "seconds": 11.5,
+      "pid": 8908,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-nuxt-history-consumers.log"
+    },
+    {
+      "at": "2026-10-05T04:42:49.645007+00:00",
+      "case": "API-006@round17",
+      "label": "current-native-web-boundary",
+      "command": [
+        "pnpm",
+        "test:native-input-history"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:42:37.285737+00:00",
+      "seconds": 12.36,
+      "pid": 9010,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-native-web-boundary.log"
+    },
+    {
+      "at": "2026-10-05T04:43:11.946120+00:00",
+      "case": "API-006@round17",
+      "label": "current-shared-history-message-consumers",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "stores/__tests__/runHistoryStore.spec.ts",
+        "components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts",
+        "--run"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:43:03.582192+00:00",
+      "seconds": 8.36,
+      "pid": 10412,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-shared-history-message-consumers.log"
+    },
+    {
+      "at": "2026-10-05T04:46:29.725320+00:00",
+      "case": "API-002@round17",
+      "label": "changed-provider-preparation-real-child-controls",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts",
+        "tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts",
+        "tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+        "tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts",
+        "tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts",
+        "tests/unit/agent-execution/backends/shared/workspace-skill-materializer-collision-policy.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:46:02.411552+00:00",
+      "seconds": 27.31,
+      "pid": 20692,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-002@round17-changed-provider-preparation-real-child-controls.log"
+    },
+    {
+      "at": "2026-10-05T04:48:59.434912+00:00",
+      "case": "API-008@round17",
+      "label": "current-isolated-packaged-build-start",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-start.py"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:43:54.442746+00:00",
+      "seconds": 304.99,
+      "pid": 12376,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round17-current-isolated-packaged-build-start.log"
+    },
+    {
+      "at": "2026-10-05T04:49:17.075348+00:00",
+      "case": "API-008@round17",
+      "label": "current-claude-catalog",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-target-setup.mjs",
+        "catalog"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:49:16.009728+00:00",
+      "seconds": 1.07,
+      "pid": 28309,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round17-current-claude-catalog.log"
+    },
+    {
+      "at": "2026-10-05T04:49:19.531227+00:00",
+      "case": "API-008@round17",
+      "label": "current-artifact-fidelity",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-artifact-check.py"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:49:17.356514+00:00",
+      "seconds": 2.17,
+      "pid": 28948,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round17-current-artifact-fidelity.log"
+    },
+    {
+      "at": "2026-10-05T04:49:36.739675+00:00",
+      "case": "API-011@round17",
+      "label": "own-saved-packet-definition-setup",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-target-setup.mjs",
+        "setup",
+        "claude"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:49:36.561868+00:00",
+      "seconds": 0.18,
+      "pid": 30968,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-011@round17-own-saved-packet-definition-setup.log"
+    },
+    {
+      "at": "2026-10-05T04:49:45.540134+00:00",
+      "case": "API-010@round17",
+      "label": "current-standalone-chat-clarification",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-ambiguity.mjs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:49:35.271404+00:00",
+      "seconds": 10.27,
+      "pid": 30330,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-010@round17-current-standalone-chat-clarification.log"
+    },
+    {
+      "at": "2026-10-05T04:51:52.089533+00:00",
+      "case": "API-011@round17",
+      "label": "current-claude-org-saved-id-lifecycle",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-concrete-lifecycle-probe.mjs",
+        "claude",
+        "agent_org",
+        "--keep-a-open"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:50:05.171966+00:00",
+      "seconds": 106.92,
+      "pid": 32306,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-011@round17-current-claude-org-saved-id-lifecycle.log"
+    },
+    {
+      "at": "2026-10-05T04:52:26.189946+00:00",
+      "case": "API-014@round17",
+      "label": "pre-restart-quiescence",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-quiescent.mjs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:52:25.965024+00:00",
+      "seconds": 0.22,
+      "pid": 50853,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-014@round17-pre-restart-quiescence.log"
+    },
+    {
+      "at": "2026-10-05T04:52:26.363541+00:00",
+      "case": "API-014@round17",
+      "label": "original-worker-restart-snapshot",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-resume.mjs",
+        "snapshot",
+        "claude"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:52:26.237168+00:00",
+      "seconds": 0.13,
+      "pid": 50855,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-014@round17-original-worker-restart-snapshot.log"
+    },
+    {
+      "at": "2026-10-05T04:52:44.728956+00:00",
+      "case": "API-014@round17",
+      "label": "normal-same-profile-app-restart",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-restart.py"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:52:39.778364+00:00",
+      "seconds": 4.95,
+      "pid": 51537,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-014@round17-normal-same-profile-app-restart.log"
+    },
+    {
+      "at": "2026-10-05T04:53:44.948832+00:00",
+      "case": "API-014@round17",
+      "label": "original-worker-manager-real-resume",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-resume.mjs",
+        "resume",
+        "claude"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:53:21.843738+00:00",
+      "seconds": 23.1,
+      "pid": 53955,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-014@round17-original-worker-manager-real-resume.log"
+    },
+    {
+      "at": "2026-10-05T04:54:27.367369+00:00",
+      "case": "API-013@round17",
+      "label": "exact-resumed-own-child-binding",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-physical-owner.py"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:54:27.181614+00:00",
+      "seconds": 0.19,
+      "pid": 58875,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-013@round17-exact-resumed-own-child-binding.log"
+    },
+    {
+      "at": "2026-10-05T04:54:49.850345+00:00",
+      "case": "API-013@round17",
+      "label": "own-child-protected-manager-complement",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-physical-owner-complement.py"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:54:49.675537+00:00",
+      "seconds": 0.17,
+      "pid": 59521,
+      "exitCode": 1,
+      "observed": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-013@round17-own-child-protected-manager-complement.log"
+    },
+    {
+      "at": "2026-10-05T04:55:01.366219+00:00",
+      "case": "API-013@round17",
+      "label": "explicit-same-a-final-done",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-a.mjs",
+        "claude"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:54:49.894613+00:00",
+      "seconds": 11.47,
+      "pid": 59523,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-013@round17-explicit-same-a-final-done.log"
+    },
+    {
+      "at": "2026-10-05T04:56:23.735932+00:00",
+      "case": "API-006@round17",
+      "label": "current-full-public-canonical-observation",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-public.mjs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:56:23.621122+00:00",
+      "seconds": 0.11,
+      "pid": 66554,
+      "exitCode": 1,
+      "observed": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-full-public-canonical-observation.log"
+    },
+    {
+      "at": "2026-10-05T04:57:18.613528+00:00",
+      "case": "API-006@round17",
+      "label": "current-full-public-canonical-corrected",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-public.mjs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:57:18.433619+00:00",
+      "seconds": 0.18,
+      "pid": 73084,
+      "exitCode": 1,
+      "observed": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-full-public-canonical-corrected.log"
+    },
+    {
+      "at": "2026-10-05T04:57:49.258739+00:00",
+      "case": "API-006@round17",
+      "label": "current-full-public-canonical-collection-corrected",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-public.mjs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:57:49.067661+00:00",
+      "seconds": 0.19,
+      "pid": 74529,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-006@round17-current-full-public-canonical-collection-corrected.log"
+    },
+    {
+      "at": "2026-10-05T04:58:43.378475+00:00",
+      "case": "API-019@round17",
+      "label": "own-archive-stop-cleanup",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-cleanup.py"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:58:42.049822+00:00",
+      "seconds": 1.33,
+      "pid": 77848,
+      "exitCode": 1,
+      "observed": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-019@round17-own-archive-stop-cleanup.log"
+    },
+    {
+      "at": "2026-10-05T04:59:34.324908+00:00",
+      "case": "API-019@round17",
+      "label": "read-only-final-cleanup-bind-verification",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-cleanup-verify.py"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "start": "2026-10-05T04:59:34.021178+00:00",
+      "seconds": 0.3,
+      "pid": 80538,
+      "exitCode": 0,
+      "observed": "Pass",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-019@round17-read-only-final-cleanup-bind-verification.log"
+    }
+  ],
+  "preciseLimits": "Not Tested: standalone metadata endpoint does not expose Org members; unsupported provenance attempts not a physical certificate. Actual current physical/IO evidence is named SDK/Native controls, with pre-refresh genuine physical evidence supplementary only."
+}

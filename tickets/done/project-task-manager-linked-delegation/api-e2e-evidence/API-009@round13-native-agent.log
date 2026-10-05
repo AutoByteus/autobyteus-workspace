@@ -1,0 +1,7 @@
+2026-10-04T05:59:13.143814+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round13-native-agent-probe.mjs", "start"]
+Pass: real ordinary Manager fresh Agent+Team saved-ID/immutable context/link/stamp and visible rows; release/reconnect/inspection pending.
+
+INNER_EXIT=0
+ELAPSED=37.77

@@ -1,0 +1,59 @@
+--- accepted/autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-tree-scope.test.ts
++++ integrated/autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-tree-scope.test.ts
+@@ -4,16 +4,16 @@
+ import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
+ import { validateTeamRunExecutionTreePayload } from '../../../src/run-history/store/team-run-execution-tree-schema.js';
+ import { validateAgentOrgRunExecutionTreePayload } from '../../../src/run-history/store/agent-org-run-execution-tree-schema.js';
+-import { validateAgentRunCollaborationTreePayload } from '../../../src/run-history/store/agent-run-collaboration-tree-schema.js';
++import { validateStandaloneRootTreePayload } from '../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js';
+ import { adoptAgentPlatformBindingInTree } from '../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js';
+ import { adoptAgentOrgPlatformBinding } from '../../../src/agent-org-execution/services/agent-org-run-execution-tree-mutator.js';
+-import { adoptAgentRunPlatformBinding } from '../../../src/agent-run-collaboration/services/agent-run-collaboration-tree-mutator.js';
++import { adoptStandaloneRootPlatformBinding } from '../../../src/standalone-agent-run-root/services/standalone-root-tree-mutator.js';
+ import { TeamExecutionIndex } from '../../../src/agent-team-execution/services/team-execution-index.js';
+ import { AgentOrgExecutionIndex } from '../../../src/agent-org-execution/services/agent-org-execution-index.js';
+-import { AgentRunCollaborationExecutionIndex } from '../../../src/agent-run-collaboration/services/agent-run-collaboration-execution-index.js';
++import { StandaloneRootExecutionIndex } from '../../../src/standalone-agent-run-root/services/standalone-root-execution-index.js';
+ import { TeamTaskExecutionAdapter } from '../../../src/agent-team-execution/task-delegation/team-task-execution-adapter.js';
+ import { AgentOrgTaskExecutionAdapter } from '../../../src/agent-org-execution/services/agent-org-task-execution-adapter.js';
+-import { AgentRunCollaborationTaskExecutionAdapter } from '../../../src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.js';
++import { StandaloneRootTaskExecutionAdapter } from '../../../src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.js';
+ import { RootTaskLifetimeScope } from '../../../src/agent-collaboration/execution/task/root-task-lifetime-scope.js';
+ const now = '2026-10-03T00:00:00.000Z';
+ const launch = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: 'test', llmConfig: null, autoExecuteTools: true, workspaceRootPath: null };
+@@ -46,10 +46,10 @@
+     return { tree, decode, getTasks: (t: any) => t.rootOrg.taskExecutions,
+       index: new AgentOrgExecutionIndex(tree), adopt: (t: any, binding: any) => adoptAgentOrgPlatformBinding({ tree: t, binding }).tree };
+   }
+-  const decode = (raw: any) => validateAgentRunCollaborationTreePayload(raw, 'root');
++  const decode = (raw: any) => validateStandaloneRootTreePayload(raw, 'root');
+   const tree = decode({ subjectKind: 'agent', createdAt: now, host: { address: '/manager', agentRunId: 'root', agentDefinitionId: 'manager' }, collaborators: [], taskExecutions: tasks });
+   return { tree, decode, getTasks: (t: any) => t.taskExecutions,
+-    index: new AgentRunCollaborationExecutionIndex(tree), adopt: (t: any, binding: any) => adoptAgentRunPlatformBinding({ tree: t, binding }).tree };
++    index: new StandaloneRootExecutionIndex(tree), adopt: (t: any, binding: any) => adoptStandaloneRootPlatformBinding({ tree: t, binding }).tree };
+ }
+ describe.each(['agent', 'agent_team', 'agent_org'] as const)('concrete %s tree / index / cleanup boundary', kind => {
+   it('retains exact stamps through current normalization and platform binding; includes transitive helpers but not B/borrowed/Manager', () => {
+@@ -70,7 +70,12 @@
+     expect(() => h.decode(raw)).toThrow('TASK_LIFETIME_INVALID');
+   });
+   it('rejects contradictory containment instead of stopping a foreign child', () => {
+-    const tasks = forest(); tasks[0].taskExecutions[0].taskLifetime.lifetimeId = 'B';
++    const tasks = forest();
++    const team = tasks[0];
++    if (!('taskExecutions' in team)) throw new Error('Expected the first fixture execution to be a Team.');
++    const child = team.taskExecutions[0];
++    if (!child.taskLifetime) throw new Error('Expected the fixture child to have its Task lifetime.');
++    child.taskLifetime.lifetimeId = 'B';
+     const h = subject(kind, tasks);
+     expect(() => h.index.listOwnedTaskExecutions('A')).toThrow('TASK_LIFETIME_CONFLICT');
+   });
+@@ -85,7 +90,7 @@
+     const adapter = kind === 'agent_team' ? new TeamTaskExecutionAdapter({ ...common, rootTeamRunId: 'root',
+       teamRunResolver: { getManaged, getActive }, config: {}, tokenUsageMigrationReadiness: {} } as never)
+       : kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(common as never)
+-      : new AgentRunCollaborationTaskExecutionAdapter(common as never);
++      : new StandaloneRootTaskExecutionAdapter(common as never);
+     adapter.cancelOwnedExecution({ agentRunId: 'A-child' });
+     expect(await adapter.releaseOwnedExecution({ agentRunId: 'A-child' })).toEqual({ accepted: true });
+     expect(getManaged).toHaveBeenCalledWith('A-team'); expect(getActive).not.toHaveBeenCalled();

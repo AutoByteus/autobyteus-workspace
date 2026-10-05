@@ -1,0 +1,158 @@
+{
+  "at": "2026-10-04T07:05:20.481846+00:00",
+  "instanceId": "iso-52225-3ea5",
+  "rootId": "sr020_claude_concrete_root_org_rerun_889e3343_1946_4b0f_9dd7_11d409cbdae8_68982ecb6a0f48f1880372275783e343",
+  "managerId": "project_task_manager_882aa5a980e04a448c890683a15dacf1",
+  "readerId": "sr020_claude_team_reader_c4d778fd55d64de8b64476cbfcc763c4",
+  "lifetime": {
+    "lifetimeId": "project_task_lifetime_bf3537b2-d515-4958-9e4f-90783c9a6f2e",
+    "projectId": "project_7e74b261-8ec4-4f13-9f30-9f1abe87c121",
+    "taskId": "project_task_efdc5587-7a0f-4b49-b41e-08283ad06b31",
+    "openedAt": "2026-10-04T06:58:02.872Z",
+    "completedAt": "2026-10-04T06:58:24.968Z",
+    "executions": [
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "sr020_claude_concrete_root_org_rerun_889e3343_1946_4b0f_9dd7_11d409cbdae8_68982ecb6a0f48f1880372275783e343"
+        },
+        "execution": {
+          "teamRunId": "sr020_claude_packet_team_e86be4b9df0f46ffafa1e5534c458dd8"
+        },
+        "ingressAgentRunId": "sr020_claude_team_coordinator_2e350e493e6b4d52863e20e76f1d85ed",
+        "purpose": "assignment",
+        "reservedAt": "2026-10-04T06:58:02.880Z",
+        "dispatch": "delivered",
+        "cleanup": "failed",
+        "error": {
+          "code": "TASK_RELEASE_FAILED",
+          "message": "Exact Task execution cleanup failed."
+        }
+      }
+    ]
+  },
+  "businessTurns": [
+    {
+      "callAt": 1791097104.954,
+      "turnId": "project_task_manager_882aa5a980e04a448c890683a15dacf1:turn:a1c42bfa-4d0d-40bf-b051-989b325d0f7b",
+      "ack": {
+        "task": {
+          "projectId": "project_7e74b261-8ec4-4f13-9f30-9f1abe87c121",
+          "taskId": "project_task_efdc5587-7a0f-4b49-b41e-08283ad06b31",
+          "status": "DONE"
+        }
+      },
+      "assistantAt": [
+        1791097112.299
+      ]
+    },
+    {
+      "callAt": 1791097237.978,
+      "turnId": "project_task_manager_882aa5a980e04a448c890683a15dacf1:turn:2f2e6720-3353-4d23-8741-9e6615e9b9f5",
+      "ack": {
+        "task": {
+          "projectId": "project_7e74b261-8ec4-4f13-9f30-9f1abe87c121",
+          "taskId": "project_task_efdc5587-7a0f-4b49-b41e-08283ad06b31",
+          "status": "DONE"
+        }
+      },
+      "assistantAt": [
+        1791097245.982
+      ]
+    }
+  ],
+  "originalTwoDONECalls": [
+    1791095433.928,
+    1791095585.596
+  ],
+  "firstAndRetryRootReferenceIdentical": true,
+  "rejectedRootBranchesPerAttempt": 2,
+  "exactReaderGeneration": "90ed580e-5d6b-462b-a366-db037840df7a",
+  "firstAndRetryBackendAcceptedWithForwardedInput": true,
+  "attachmentErrors": [],
+  "SDKChildAndIOReceiptFirstOnly": [
+    {
+      "cancelled": true,
+      "released": false,
+      "results": [
+        {
+          "status": "fulfilled",
+          "error": null
+        }
+      ],
+      "receipts": [
+        {
+          "spawned": true,
+          "creationFailed": false,
+          "physicalExit": true,
+          "nodeClosed": true,
+          "stderrClosed": true,
+          "sdkExitDelivered": true,
+          "releaseProof": true,
+          "finalExitCode": 0,
+          "finalSignalCode": null,
+          "lastSignal": null,
+          "streams": null
+        }
+      ]
+    },
+    {
+      "cancelled": true,
+      "released": false,
+      "results": [
+        {
+          "status": "fulfilled",
+          "error": null
+        }
+      ],
+      "receipts": [
+        {
+          "spawned": true,
+          "creationFailed": false,
+          "physicalExit": true,
+          "nodeClosed": true,
+          "stderrClosed": true,
+          "sdkExitDelivered": true,
+          "releaseProof": true,
+          "finalExitCode": 143,
+          "finalSignalCode": null,
+          "lastSignal": {
+            "signal": "SIGTERM",
+            "at": 1791097106977,
+            "result": true
+          },
+          "streams": null
+        }
+      ]
+    }
+  ],
+  "wholePrivateTreeAndClosedLifetimeExactAfterRetry": true,
+  "AContextBorrowedProtected": true,
+  "currentStatus": [
+    {
+      "member_address": "/manager",
+      "agent_run_id": "project_task_manager_882aa5a980e04a448c890683a15dacf1",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "recoverableBlock": null
+    },
+    {
+      "member_address": "/sr020_claude_packet_team/reader",
+      "agent_run_id": "sr020_claude_team_reader_c4d778fd55d64de8b64476cbfcc763c4",
+      "status": "offline",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "recoverableBlock": null
+    }
+  ],
+  "activeRoot": true,
+  "readEvaluationsWithoutErrors": true,
+  "pauseMaxMs": 1,
+  "pauseTotalMs": 26,
+  "scope": "New exact supported reproduction receipts; not original inner exception/repair or all-background-PID certificate"
+}

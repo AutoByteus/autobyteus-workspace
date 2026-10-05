@@ -1,0 +1,235 @@
+case=API-004
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > spawns a fresh task Agent through the only public tool and persists the delegator in one tree write
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > fails closed for a retired configured-Team recipient in a flat Team root
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-03T09:02:03.222Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+[2026-10-03T09:02:03.223Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > fails closed for a retired configured-Team recipient in a flat Team root
+[2026-10-03T09:02:03.252Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > fails closed for a retired configured-Team recipient in a flat Team root
+Agent definition cache populated with 44 items.
+
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (8 tests | 6 failed) 273ms
+     × spawns a fresh task Agent through the only public tool and persists the delegator in one tree write 82ms
+     × shuts an idle delegated Agent down after the grace period and restores it when a message arrives 15ms
+     × rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing 16ms
+     × keeps identical general and application identities bound to their own root capabilities 34ms
+     × lets a fresh task Agent delegate a nested sibling and records it as the exact delegator 27ms
+     ✓ fails closed for a retired configured-Team recipient in a flat Team root 54ms
+     ✓ rejects self, root, missing, noncanonical, traversal, foreign, and relative targets before mutation 28ms
+     × validates absolute reference files before preparation and delivers the exact path in the work packet 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > spawns a fresh task Agent through the only public tool and persists the delegator in one tree write
+AssertionError: expected { target_agent_run_id: null, …(1) } to deeply equal { target_agent_run_id: Any<String> }
+
+- Expected
++ Received
+
+  {
+-   "target_agent_run_id": Any<String>,
++   "message": "this.backend.beginTaskAgent is not a function",
++   "target_agent_run_id": null,
+  }
+
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:337:21
+    335|       reference_files: [],
+    336|     });
+    337|     expect(created).toEqual({ target_agent_run_id: expect.any(String) …
+       |                     ^
+    338|     const taskAgentRunId = (created as { target_agent_run_id: string }…
+    339|     expect(harness.backend.preparedAgents[0]).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > shuts an idle delegated Agent down after the grace period and restores it when a message arrives
+Error: agentRunId is required.
+ ❯ required src/agent-collaboration/execution/domain/root-execution-identity.ts:40:26
+     38| const required = (value: string, field: string): string => {
+     39|   const normalized = typeof value === "string" ? value.trim() : "";
+     40|   if (!normalized) throw new Error(`${field} is required.`);
+       |                          ^
+     41|   return normalized;
+     42| };
+ ❯ createCollaborationMemberExecutionIdentity src/agent-collaboration/execution/domain/root-execution-identity.ts:118:17
+ ❯ createTeamAgentExecutionBinding src/agent-team-execution/domain/team-agent-execution-binding.ts:11:33
+ ❯ Object.emitStatus tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:294:16
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:364:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing
+Error: agentRunId is required.
+ ❯ required src/agent-collaboration/execution/domain/root-execution-identity.ts:40:26
+     38| const required = (value: string, field: string): string => {
+     39|   const normalized = typeof value === "string" ? value.trim() : "";
+     40|   if (!normalized) throw new Error(`${field} is required.`);
+       |                          ^
+     41|   return normalized;
+     42| };
+ ❯ createCollaborationMemberExecutionIdentity src/agent-collaboration/execution/domain/root-execution-identity.ts:118:17
+ ❯ createTeamAgentExecutionBinding src/agent-team-execution/domain/team-agent-execution-binding.ts:11:33
+ ❯ Object.emitStatus tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:294:16
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:396:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > keeps identical general and application identities bound to their own root capabilities
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:415:81
+    413|       recipient_address: "/worker", description: "Application-scoped t…
+    414|     });
+    415|     expect(application.root.getExecutionTreeSnapshot().rootTeam.taskEx…
+       |                                                                                 ^
+    416|     expect(general.root.getExecutionTreeSnapshot().rootTeam.taskExecut…
+    417|     await delegate(general.service, context(general.commands, "/coordi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > lets a fresh task Agent delegate a nested sibling and records it as the exact delegator
+Error: agentRunId is required.
+ ❯ required src/agent-collaboration/execution/domain/root-execution-identity.ts:40:26
+     38| const required = (value: string, field: string): string => {
+     39|   const normalized = typeof value === "string" ? value.trim() : "";
+     40|   if (!normalized) throw new Error(`${field} is required.`);
+       |                          ^
+     41|   return normalized;
+     42| };
+ ❯ createCollaborationMemberExecutionIdentity src/agent-collaboration/execution/domain/root-execution-identity.ts:118:17
+ ❯ context tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:315:13
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:431:51
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message) > validates absolute reference files before preparation and delivers the exact path in the work packet
+TypeError: Cannot read properties of undefined (reading 'message')
+ ❯ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts:486:47
+    484|       recipient_address: "/worker", description: "Read the absolute re…
+    485|     });
+    486|     expect(harness.backend.preparedAgents[0]!.message.content).toConta…
+       |                                               ^
+    487|   });
+    488| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 2 passed (8)
+   Start at  11:01:58
+   Duration  4.43s (transform 2.64s, setup 16ms, import 3.66s, tests 273ms, environment 0ms)
+
+
+PROCESS_EXIT_CODE=1

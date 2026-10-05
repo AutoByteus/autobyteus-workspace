@@ -1,0 +1,3 @@
+grep1 exit 1
+grep2 exit 1
+diffcheck exit 0

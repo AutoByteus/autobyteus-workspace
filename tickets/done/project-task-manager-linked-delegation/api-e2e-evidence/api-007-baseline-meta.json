@@ -1,0 +1,15 @@
+{
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "serverSource": "git archive HEAD autobyteus-server-ts autobyteus-ts",
+  "dependencyTarget": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/node_modules",
+  "scope": [
+    "tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+    "tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+    "tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+    "tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+    "tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts"
+  ],
+  "exit": 1,
+  "scratchRemovedOnExit": true,
+  "limits": "Archived HEAD server/core source; shared installed deps; no whole-repository/dependency baseline-green or blanket origin certification."
+}

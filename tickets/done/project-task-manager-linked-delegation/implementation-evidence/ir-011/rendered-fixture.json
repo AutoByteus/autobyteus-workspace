@@ -1,0 +1,113 @@
+{
+  "base_change_sequence": 4,
+  "is_active": false,
+  "execution_tree": {
+    "subjectKind": "agent",
+    "createdAt": "2026-09-30T00:00:00.000Z",
+    "host": {
+      "address": "/research_assistant",
+      "agentRunId": "host-run",
+      "agentDefinitionId": "research-assistant"
+    },
+    "collaborators": [
+      {
+        "kind": "agent",
+        "address": "/computer_use_agent",
+        "agentDefinitionId": "computer-use",
+        "agentRunId": "cua-run",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "root-model",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "workspaceRootPath": null
+        },
+        "addedAt": "2026-09-30T00:00:00.000Z",
+        "addedViaAgentRunId": "host-run"
+      },
+      {
+        "kind": "agent_team",
+        "address": "/product_team",
+        "teamDefinitionId": "product-team",
+        "teamRunId": "team-run",
+        "coordinatorAddress": "/product_team/prototyper",
+        "members": [
+          {
+            "address": "/product_team/prototyper",
+            "agentDefinitionId": "prototyper",
+            "agentRunId": "pp-run",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/product_team/bootstrapper",
+            "agentDefinitionId": "bootstrapper",
+            "agentRunId": "pb-run",
+            "platformAgentRunId": null
+          }
+        ],
+        "handoffs": [],
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "root-model",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "workspaceRootPath": null
+        },
+        "taskExecutions": [],
+        "addedAt": "2026-09-30T00:00:00.000Z",
+        "addedViaAgentRunId": "host-run"
+      }
+    ],
+    "taskExecutions": []
+  },
+  "communication_messages": {
+    "schemaVersion": 1,
+    "subjectKind": "agent",
+    "hostRunId": "host-run",
+    "messages": [
+      {
+        "messageId": "m1",
+        "senderAgentRunId": "cua-run",
+        "receiverAgentRunId": "host-run",
+        "content": "Done, research assistant.",
+        "messageType": "direct_message",
+        "referenceFiles": [],
+        "createdAt": "2026-09-30T00:00:00.000Z"
+      }
+    ]
+  },
+  "agent_input_states": [],
+  "agent_statuses": [
+    {
+      "agent_run_id": "cua-run",
+      "member_address": "/computer_use_agent",
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "recoverableBlock": null
+    },
+    {
+      "agent_run_id": "pp-run",
+      "member_address": "/product_team/prototyper",
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "recoverableBlock": null
+    },
+    {
+      "agent_run_id": "pb-run",
+      "member_address": "/product_team/bootstrapper",
+      "status": "offline",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "recoverableBlock": null
+    }
+  ]
+}

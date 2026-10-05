@@ -1,0 +1,1 @@
+Observed first own census attempt: TypeError unsupported operand type(s) for +: PosixPath and str at line3, before any ps call. Parentheses local path construction corrected; original script retained. Original execution tool exit was composite preview session; census failed before effect. No app ownership/state/process mutation.

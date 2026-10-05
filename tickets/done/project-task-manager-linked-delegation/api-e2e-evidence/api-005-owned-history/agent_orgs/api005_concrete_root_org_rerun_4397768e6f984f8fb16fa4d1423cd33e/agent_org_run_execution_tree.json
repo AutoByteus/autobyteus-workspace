@@ -1,0 +1,60 @@
+{
+  "subjectKind": "agent_org",
+  "createdAt": "2026-10-03T13:48:14.225Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootOrg": {
+    "address": "/",
+    "orgDefinitionId": "api005-concrete-root-org-rerun",
+    "orgDefinitionName": "API005 Concrete Root Org Rerun",
+    "orgRunId": "api005_concrete_root_org_rerun_4397768e6f984f8fb16fa4d1423cd33e",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6.1-sol",
+      "llmConfig": {
+        "reasoning_effort": "low"
+      },
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/concrete-agent_org"
+    },
+    "members": [
+      {
+        "address": "/manager",
+        "agentDefinitionId": "autobyteus-project-task-manager",
+        "role": null,
+        "description": null,
+        "agentRunId": "project_task_manager_3d5ae64eff464b3d82b044cc0d31b036",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/concrete-agent_org"
+        }
+      },
+      {
+        "address": "/borrowed",
+        "agentDefinitionId": "api005-packet-agent",
+        "role": null,
+        "description": null,
+        "agentRunId": "api005_packet_agent_d3a43953b6b24aebaeae18add711495d",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-PtD6ip/validation-workspace/concrete-agent_org"
+        }
+      }
+    ],
+    "collaborators": [],
+    "taskExecutions": []
+  }
+}

@@ -1,0 +1,78 @@
+--- incoming-merge/autobyteus-server-ts/tests/unit/skills/github/runtime-generation.test.ts
++++ IR-011/autobyteus-server-ts/tests/unit/skills/github/runtime-generation.test.ts
+@@ -105,6 +105,75 @@
+     await s.materializer.cleanupMaterializedWorkspaceSkills(a.materializedSkills);
+   });
+ 
++  it("closes managed preparation before publication without changing a borrowed holder", async () => {
++    let block = false, closed = false;
++    let entered!: () => void, release!: () => void;
++    const waiting = new Promise<void>(resolve => { entered = resolve; });
++    const gate = new Promise<void>(resolve => { release = resolve; });
++    const s = await setup({ fileSystem: { stat: (async (...args: Parameters<typeof import("node:fs/promises").stat>) => {
++      if (block) { entered(); await gate; }
++      return fs.promises.stat(...args);
++    }) as typeof fs.promises.stat } });
++    const a = await s.run(); await s.update(); block = true;
++    const owned: any[] = [];
++    const preparing = s.materializer.materializeConfiguredWorkspaceSkills({ runId: "B", workingDirectory: s.workspace,
++      requests: [{ kind: "expose-resolved", skill: s.f.catalog.getSkill("writer")! }], workspaceCollisionPolicy: "fail",
++      onAcquired: receipt => owned.push(receipt), assertAccepting: () => { if (closed) throw Error("Task admission closed"); } });
++    const rejected = expect(preparing).rejects.toThrow("Task admission closed");
++    await waiting; closed = true; release(); await rejected;
++    expect(owned).toEqual([]);
++    expect(fs.readlinkSync(a.materializedSkills[0]!.materializedRootPath)).toBe(a.materializedSkills[0]!.sourceRootPath);
++    await s.materializer.cleanupMaterializedWorkspaceSkills(a.materializedSkills);
++  });
++
++  it("registers the exact managed receipt before a post-acquisition fence and releases only that holder", async () => {
++    const s = await setup(); const a = await s.run(); await s.update();
++    let closed = false; const owned: any[] = [];
++    await expect(s.materializer.materializeConfiguredWorkspaceSkills({ runId: "B", workingDirectory: s.workspace,
++      requests: [{ kind: "expose-resolved", skill: s.f.catalog.getSkill("writer")! }], workspaceCollisionPolicy: "fail",
++      onAcquired: receipt => { owned.push(receipt); closed = true; },
++      assertAccepting: () => { if (closed) throw Error("Task admission closed"); },
++    })).rejects.toThrow("Task admission closed");
++    expect(owned).toHaveLength(1);
++    const link = owned[0].materializedRootPath;
++    expect(fs.lstatSync(link).isSymbolicLink()).toBe(true);
++    await s.materializer.cleanupMaterializedWorkspaceSkills(owned);
++    expect(fs.lstatSync(link).isSymbolicLink()).toBe(true);
++    await s.materializer.cleanupMaterializedWorkspaceSkills(a.materializedSkills);
++    expect(fs.existsSync(link)).toBe(false);
++  });
++
++  it("retains failed zero-holder transfer rollback for exact cleanup retry without blocking A release", async () => {
++    let block = false, fail = false;
++    let entered!: () => void, release!: () => void;
++    const waiting = new Promise<void>(resolve => { entered = resolve; });
++    const gate = new Promise<void>(resolve => { release = resolve; });
++    const s = await setup({ fileSystem: {
++      stat: (async (...args: Parameters<typeof import("node:fs/promises").stat>) => {
++        if (block) { entered(); await gate; }
++        return fs.promises.stat(...args);
++      }) as typeof fs.promises.stat,
++      unlink: (async target => { if (fail) throw Error("unlink denied"); await fs.promises.unlink(target); }) as typeof fs.promises.unlink,
++    }, syncFileSystem: { renameSync: (old, next) => { if (fail) throw Error("transfer denied"); fs.renameSync(old, next); } } });
++    const a = await s.run(); await s.update(); block = true; fail = true;
++    const owned: any[] = [];
++    const preparing = s.materializer.materializeConfiguredWorkspaceSkills({ runId: "B", workingDirectory: s.workspace,
++      requests: [{ kind: "expose-resolved", skill: s.f.catalog.getSkill("writer")! }], workspaceCollisionPolicy: "fail",
++      onAcquired: receipt => owned.push(receipt) });
++    const rejected = expect(preparing).rejects.toBeInstanceOf(AggregateError);
++    await waiting;
++    await s.materializer.cleanupMaterializedWorkspaceSkills(a.materializedSkills);
++    release(); await rejected;
++    expect(owned).toHaveLength(1);
++    await expect(s.materializer.cleanupMaterializedWorkspaceSkills(owned)).rejects.toThrow();
++    fail = false; block = false;
++    await s.materializer.cleanupMaterializedWorkspaceSkills(owned);
++    await s.materializer.cleanupMaterializedWorkspaceSkills(a.materializedSkills);
++    const b = await s.run();
++    expect(fs.readFileSync(path.join(b.materializedSkills[0]!.materializedRootPath, "SKILL.md"), "utf8")).toContain("v2");
++    await s.materializer.cleanupMaterializedWorkspaceSkills(b.materializedSkills);
++  });
++
+   it("does not transfer to a renamed exact-name alias sharing the sanitized path", async () => {
+     const s = await setup(); const a = await s.run();
+     writeSkill(s.f.upstream, "Writer", "renamed"); s.f.setRevision("b".repeat(40));

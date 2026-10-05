@@ -1,0 +1,8 @@
+2026-10-04T08:02:33.871095+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["python3", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-package-check.py"]
+Asar equality is not backend freshness authority: configured server is Resources/server/dist
+{'instanceId': 'iso-57942-2d9d', 'compiledPackagedJSCount': 1452, 'compiledPackagedAllEqual': True, 'appAsarSha256': '4f4b3ae8d1606b43852e2ce6cdbb25bce011f05ee7e6d286e392126339472ee2', 'priorAPI014AppAsarSha256': '7ed603ddd87e68074639fbc41cd8678320385156994a85b1b0e58d58a5c778c2'}
+
+INNER_EXIT=0
+ELAPSED=0.86

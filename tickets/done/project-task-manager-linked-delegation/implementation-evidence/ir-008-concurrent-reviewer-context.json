@@ -1,0 +1,16 @@
+{
+  "scope": "Concurrent reviewer-owned CRR-014 user-requested design-clarity/simplification assessment, not Implementation modification or an instruction to pause/reclassify the confirmed Local Fix.",
+  "source": "code-review-report.md and code-review-revision-record.md now latestCRR014; exactCRR013 report archived by reviewer.",
+  "exactCRR013ArchiveMatchesInitialCanonicalHash": true,
+  "currentExternalCanonicalHashes": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md": "0fff0d263580bb951816a5dc3d95360329e84a46966920ecf3cf2640d31849b7",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md": "f862d4da64dea3633863d0bff8c0e31e03a38264c1514404b228a4b037e96b36"
+  },
+  "confirmedRecipient": "/software_engineering_team/solution_designer",
+  "receipt": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-014-handoff-receipt.json",
+  "authorityChange": false,
+  "implementationPaused": false,
+  "sourceAcceptance": false,
+  "CRR014RefCount": 1661,
+  "missing": []
+}

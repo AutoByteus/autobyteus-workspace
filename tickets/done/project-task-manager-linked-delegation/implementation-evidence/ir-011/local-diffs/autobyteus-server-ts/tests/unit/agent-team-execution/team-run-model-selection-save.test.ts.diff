@@ -1,0 +1,44 @@
+--- incoming-merge/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
++++ IR-011/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts
+@@ -11,20 +11,9 @@
+ import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
+ import { StudioRunModelConfigService } from '../../../src/run-history/services/studio-run-model-config-service.js';
+ import { AgentTeamRunResolver } from '../../../src/api/graphql/types/agent-team-run.js';
+-<<<<<<< HEAD
+-// This harness controls the tree writer/readback, so it must also supply the
+-// current package-admission prerequisite. It does not prove disk admission.
+-vi.mock('../../../src/run-history/services/team-run-package-catalog.js', () => ({
+-  TeamRunPackageCatalog: class {
+-    async awaitReady() {}
+-    isAdmitted(teamRunId: string) { return teamRunId === 'root'; }
+-  },
+-}));
+-=======
+ import { AgentMemoryLayout } from '../../../src/agent-memory/store/agent-memory-layout.js';
+ import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
+ import { writeAttachmentSidecars } from '../../fixtures/current-attachment-package-fixtures.js';
+->>>>>>> origin/personal
+ const view = (rows: any[]) => ({ offeredModels: rows,
+   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
+ 
+@@ -71,7 +60,7 @@
+ };
+ describe('configured Team model selection Save', () => {
+   it('rejects a non-admitted root before model selection or writing', async () => {
+-    const h = harness();
++    const h = await harness();
+     const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'not-admitted', patches: [] });
+     expect(result).toMatchObject({ outcome: 'NOT_FOUND', success: false });
+     expect(h.write).not.toHaveBeenCalled();
+@@ -103,7 +92,10 @@
+       const original = structuredClone(h.saved());
+       const service = new StudioRunModelConfigService({
+         modelSelectionService: { listOptions: vi.fn(), listOptionsMany: vi.fn() },
+-        applicationRunOwnership: { hasLiveRunOwnership: vi.fn(async () => false) },
++        applicationRunOwnership: {
++          hasLiveRunOwnership: vi.fn(async () => false),
++          requireLiveApplicationToolProducer: vi.fn(async () => { throw new Error('No live application producer in this stopped-Team scenario.'); }),
++        },
+         agentResumeConfigService: { getAgentRunResumeConfig: vi.fn() },
+         agentRunService: { updateStoppedModelConfig: vi.fn() },
+         teamResumeConfigService: { getTeamRunResumeConfig: vi.fn(async () => ({

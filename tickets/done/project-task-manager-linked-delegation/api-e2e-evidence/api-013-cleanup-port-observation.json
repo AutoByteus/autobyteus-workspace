@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-04T06:09:27.037092+00:00",
+  "instanceId": "iso-63229-72f4",
+  "ports": {
+    "63229": {
+      "listenLsofExit": 1,
+      "listenerOutput": "",
+      "connectEx": 61
+    },
+    "63230": {
+      "listenLsofExit": 1,
+      "listenerOutput": "",
+      "connectEx": 61
+    }
+  }
+}

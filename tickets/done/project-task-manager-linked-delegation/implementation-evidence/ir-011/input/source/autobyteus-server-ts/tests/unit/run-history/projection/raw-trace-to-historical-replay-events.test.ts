@@ -1,0 +1,286 @@
+import { describe, expect, it } from "vitest";
+import { dedupeRunProjectionActivityEntries } from "../../../../src/run-history/projection/run-projection-dedupe.js";
+import { buildRunProjectionActivities } from "../../../../src/run-history/projection/transformers/historical-replay-events-to-activities.js";
+import { buildHistoricalReplayEvents } from "../../../../src/run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
+
+describe("raw trace to historical replay events", () => {
+  it("uses the persisted raw ID for a run-scoped system activity without a turn group", () => {
+    const events = buildHistoricalReplayEvents([{
+      scope: "run",
+      id: "system-raw-id",
+      traceType: "system_instruction",
+      sourceEvent: "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      content: " exact\ncontent ",
+      turnId: null,
+      seq: null,
+      ts: 10,
+    }]);
+
+    expect(events).toEqual([{
+      eventId: "system-raw-id",
+      kind: "system_instruction",
+      activityId: "system-raw-id",
+      content: " exact\ncontent ",
+      ts: 10,
+    }]);
+    expect(buildRunProjectionActivities(events)).toEqual([{
+      kind: "system_instruction",
+      activityId: "system-raw-id",
+      content: " exact\ncontent ",
+      ts: 10,
+    }]);
+  });
+
+  it("merges tool call and result into one canonical tool replay event", () => {
+    const events = buildHistoricalReplayEvents([
+      {
+        traceType: "user",
+        content: "hi",
+        turnId: "turn-1",
+        seq: 1,
+        ts: 1,
+      },
+      {
+        traceType: "tool_call",
+        toolCallId: "call-1",
+        toolName: "search_web",
+        toolArgs: { query: "projection layering" },
+        turnId: "turn-1",
+        seq: 2,
+        ts: 2,
+      },
+      {
+        traceType: "tool_result",
+        toolCallId: "call-1",
+        toolResult: { ok: true },
+        turnId: "turn-1",
+        seq: 3,
+        ts: 3,
+      },
+    ]);
+
+    expect(events).toHaveLength(2);
+    expect(events[0]).toMatchObject({
+      kind: "message",
+      role: "user",
+      content: "hi",
+    });
+    expect(events[1]).toMatchObject({
+      kind: "tool",
+      invocationId: "call-1",
+      toolName: "search_web",
+      toolResult: { ok: true },
+      status: "success",
+      detailLevel: "source_limited",
+    });
+  });
+
+  it("preserves historical AGY envelopes and canonical open_tab results as opaque payloads", () => {
+    const canonical = { tab_id: "c1c04e", status: "opened", url: "about:blank", title: "Probe" };
+    const results = [{ provider_state: "DONE", output: canonical }, canonical];
+    const records = results.flatMap((toolResult, index) => [
+      { traceType: "tool_call", toolCallId: `open-${index}`, toolName: "open_tab",
+        toolArgs: { url: "about:blank" }, turnId: "turn", seq: index * 2 + 1, ts: index * 2 + 1 },
+      { traceType: "tool_result", toolCallId: `open-${index}`, toolResult,
+        turnId: "turn", seq: index * 2 + 2, ts: index * 2 + 2 },
+    ]);
+    const original = JSON.stringify(records);
+    const events = buildHistoricalReplayEvents(records);
+    expect(events).toHaveLength(2);
+    results.forEach((toolResult, index) => {
+      expect(events[index]).toMatchObject({ kind: "tool", invocationId: `open-${index}`,
+        toolName: "open_tab", toolResult, status: "success" });
+    });
+    expect(JSON.stringify(records)).toBe(original);
+  });
+
+  it("restores an AGY provider ERROR denial as denied without changing generic error mapping", () => {
+    const events = buildHistoricalReplayEvents([
+      { traceType: "tool_call", toolCallId: "agy-denied", toolName: "run_command", toolArgs: {}, turnId: "turn", seq: 1, ts: 1 },
+      { traceType: "tool_result", toolCallId: "agy-denied", toolResult: { status: "denied", provider_state: "ERROR" },
+        toolError: "permission denied", turnId: "turn", seq: 2, ts: 2 },
+      { traceType: "tool_call", toolCallId: "agy-done-denied", toolName: "run_command", toolArgs: {}, turnId: "turn", seq: 3, ts: 3 },
+      { traceType: "tool_result", toolCallId: "agy-done-denied", toolResult: { status: "denied", provider_state: "DONE" },
+        toolError: "permission denied", turnId: "turn", seq: 4, ts: 4 },
+      { traceType: "tool_call", toolCallId: "other-error", toolName: "run_bash", toolArgs: {}, turnId: "turn", seq: 5, ts: 5 },
+      { traceType: "tool_result", toolCallId: "other-error", toolResult: null,
+        toolError: "failed", turnId: "turn", seq: 6, ts: 6 },
+    ]);
+    expect(events[0]).toMatchObject({ kind: "tool", invocationId: "agy-denied", status: "denied" });
+    expect(events[1]).toMatchObject({ kind: "tool", invocationId: "agy-done-denied", status: "denied" });
+    expect(events[2]).toMatchObject({ kind: "tool", invocationId: "other-error", status: "error" });
+  });
+
+  it("carries collision-safe raw, tool lifecycle, orphan, and legacy identity", () => {
+    const equalRaw = buildHistoricalReplayEvents([
+      { id: "r17", traceType: "assistant", content: "Done", turnId: "t", seq: 1, ts: 1 },
+      { id: "r18", traceType: "assistant", content: "Done", turnId: "t", seq: 2, ts: 1 },
+      { id: "orphan", traceType: "tool_result", toolResult: null, turnId: "t", seq: 3, ts: 2 },
+      { traceType: "reasoning", content: "same", turnId: "", seq: 4, ts: 3 },
+      { traceType: "reasoning", content: "same", turnId: "", seq: 4, ts: 3 },
+    ]);
+
+    expect(equalRaw[0].eventId).toBe("raw:v1:3:r17");
+    expect(equalRaw[1].eventId).toBe("raw:v1:3:r18");
+    expect(equalRaw[2].eventId).toBe("raw:v1:6:orphan");
+    expect(equalRaw[3].eventId).toMatch(/^legacy:v1:[a-f0-9]{64}:0$/);
+    expect(equalRaw[4].eventId).toMatch(/^legacy:v1:[a-f0-9]{64}:1$/);
+    expect(equalRaw[3].turnGroupId).toBe(`ungrouped:${equalRaw[3].eventId}`);
+
+    const callOnly = buildHistoricalReplayEvents([
+      { id: "call", traceType: "tool_call", toolCallId: "c", toolName: "x", turnId: "t", seq: 1, ts: 1 },
+    ]);
+    const completed = buildHistoricalReplayEvents([
+      { id: "call", traceType: "tool_call", toolCallId: "c", toolName: "x", turnId: "t", seq: 1, ts: 1 },
+      { id: "result", traceType: "tool_result", toolCallId: "c", toolResult: "ok", turnId: "t", seq: 2, ts: 2 },
+    ]);
+    expect(callOnly[0].eventId).toBe("tool:v1:1:t:1:c");
+    expect(completed[0].eventId).toBe(callOnly[0].eventId);
+  });
+
+  it("emits orphan tool results as standalone tool replay events", () => {
+    const events = buildHistoricalReplayEvents([
+      {
+        traceType: "tool_result",
+        toolResult: { ok: true },
+        turnId: "turn-9",
+        seq: 7,
+        ts: 9,
+      },
+    ]);
+
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({
+      kind: "tool",
+      invocationId: "turn-9:7",
+      toolResult: { ok: true },
+      status: "success",
+      detailLevel: "source_limited",
+    });
+  });
+
+  it("emits one successful event for a split explicit-null result", () => {
+    const events = buildHistoricalReplayEvents([
+      {
+        id: "rt-call", traceType: "tool_call", toolCallId: "call-null",
+        toolName: "no_output_tool", toolArgs: {}, turnId: "turn-null", seq: 1, ts: 3,
+      },
+      {
+        id: "rt-result", traceType: "tool_result", toolCallId: "call-null",
+        toolResult: null, toolError: null, turnId: "turn-null", seq: 2, ts: 4,
+      },
+    ]);
+
+    expect(events).toEqual([expect.objectContaining({
+      kind: "tool", invocationId: "call-null", toolName: "no_output_tool",
+      toolResult: null, toolError: null, status: "success",
+    })]);
+  });
+
+  it("preserves terminal-side arguments from historical late-data pairs", () => {
+    const events = buildHistoricalReplayEvents([
+      {
+        id: "rt-call", traceType: "tool_call", toolCallId: "call-web", toolName: "search_web",
+        toolArgs: {}, turnId: "turn-web", seq: 1, ts: 1,
+      },
+      {
+        id: "rt-result", traceType: "tool_result", toolCallId: "call-web", toolName: "search_web",
+        toolArgs: { query: "cats", action_type: "search" }, toolResult: "done",
+        turnId: "turn-web", seq: 2, ts: 2,
+      },
+    ]);
+
+    expect(events).toEqual([expect.objectContaining({
+      kind: "tool", invocationId: "call-web",
+      toolArgs: { query: "cats", action_type: "search" }, toolResult: "done",
+    })]);
+  });
+
+  it("ends an abandoned Codex compaction as one failed activity (AC-C01c)", () => {
+    const marker = (seq: number, toolResult: Record<string, unknown>) => ({
+      traceType: "provider_compaction_boundary", turnId: "turn-1", seq, ts: 10 + seq,
+      toolResult: { provider: "codex", provider_thread_id: "thread-1", provider_event_id: "item-1",
+        rotation_eligible: false, ...toolResult },
+    });
+    const events = buildHistoricalReplayEvents([
+      marker(1, { source_surface: "codex.context_compaction_started",
+        boundary_key: "codex:thread-1:item-1:compacting", status: "compacting" }),
+      marker(2, { source_surface: "codex.context_compaction_abandoned",
+        boundary_key: "codex:thread-1:item-1:failed", status: "failed",
+        error_message: "Compaction interrupted before it completed (turn interrupted)." }),
+    ]);
+    expect(events.map((event) => event.kind === "compaction" ? event.phase : event.kind)).toEqual(["started", "failed"]);
+
+    const activities = dedupeRunProjectionActivityEntries(buildRunProjectionActivities(events));
+    expect(activities).toEqual([
+      expect.objectContaining({
+        kind: "compaction",
+        activityId: "compaction:provider:codex:thread-1:item-1:turn-1",
+        phase: "failed",
+        providerEventId: "item-1",
+      }),
+    ]);
+  });
+
+  it("coalesces provider compacting and compacted boundaries by provider operation identity", () => {
+    const events = buildHistoricalReplayEvents([
+      {
+        traceType: "provider_compaction_boundary",
+        turnId: "turn-1",
+        seq: 1,
+        ts: 10,
+        toolResult: {
+          provider: "claude",
+          source_surface: "claude.status_compacting",
+          boundary_key: "claude:session-1:claude.status_compacting:operation-1:turn-1",
+          provider_session_id: "session-1",
+          provider_event_id: "operation-1",
+          status: "compacting",
+          rotation_eligible: false,
+        },
+      },
+      {
+        traceType: "provider_compaction_boundary",
+        turnId: "turn-1",
+        seq: 2,
+        ts: 12,
+        toolResult: {
+          provider: "claude",
+          source_surface: "claude.compact_boundary",
+          boundary_key: "claude:session-1:claude.compact_boundary:operation-1:turn-1",
+          provider_session_id: "session-1",
+          provider_event_id: "operation-1",
+          status: "compacted",
+          rotation_eligible: true,
+        },
+      },
+    ]);
+
+    expect(events).toHaveLength(2);
+    expect(events.map((event) => event.kind)).toEqual(["compaction", "compaction"]);
+    expect(events[0]).toMatchObject({
+      kind: "compaction",
+      activityId: "compaction:provider:claude:session-1:operation-1:turn-1",
+      phase: "started",
+    });
+    expect(events[1]).toMatchObject({
+      kind: "compaction",
+      activityId: "compaction:provider:claude:session-1:operation-1:turn-1",
+      phase: "completed",
+    });
+
+    const activities = dedupeRunProjectionActivityEntries(buildRunProjectionActivities(events));
+    expect(activities).toEqual([
+      expect.objectContaining({
+        kind: "compaction",
+        activityId: "compaction:provider:claude:session-1:operation-1:turn-1",
+        phase: "completed",
+        boundaryKey: "claude:session-1:claude.compact_boundary:operation-1:turn-1",
+        providerEventId: "operation-1",
+        providerSessionId: "session-1",
+        ts: 10,
+        updatedTs: 12,
+      }),
+    ]);
+  });
+});

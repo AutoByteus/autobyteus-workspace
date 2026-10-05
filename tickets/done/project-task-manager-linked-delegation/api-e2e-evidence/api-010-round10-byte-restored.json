@@ -1,0 +1,178 @@
+{
+  "instanceId": "iso-63749-7f67",
+  "at": "2026-10-03T20:32:52.125436+00:00",
+  "result": "Scoped Pass full Project/private trees/saved bytes/workspaces exact and raw history old-byte prefix after restored",
+  "checks": [
+    {
+      "path": "server-data/memory/agent_orgs/api010_concrete_root_org_rerun_456f250d_b245_46a4_bab4_7584f94c9ea4_7d32eb74fcf44f2290e7fb3b9ab1bba9/agent_org_run_execution_tree.json",
+      "bytes": 6734,
+      "sha256": "cdcadf29b3cdbf4400bd1943d0cb53909255eb548ddc0a949c5975df0507fb44",
+      "mode": "exact",
+      "afterSha256": "cdcadf29b3cdbf4400bd1943d0cb53909255eb548ddc0a949c5975df0507fb44",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api010_concrete_root_org_rerun_456f250d_b245_46a4_bab4_7584f94c9ea4_7d32eb74fcf44f2290e7fb3b9ab1bba9/api010_packet_agent_2eeb9079a0644cd0a3ce443e242083c0/raw_traces_active.jsonl",
+      "bytes": 9904,
+      "sha256": "0866cde080a5ada392f1fef4a9280097ac8aa748276de4aae5021ca816f22595",
+      "mode": "prefix",
+      "afterSha256": "0866cde080a5ada392f1fef4a9280097ac8aa748276de4aae5021ca816f22595",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api010_concrete_root_org_rerun_456f250d_b245_46a4_bab4_7584f94c9ea4_7d32eb74fcf44f2290e7fb3b9ab1bba9/api010_packet_agent_3a1c9896816c47b68cf779277a8b5436/raw_traces_active.jsonl",
+      "bytes": 8389,
+      "sha256": "8c9487b0ec488ea4948450e496534a4f13050bebf2dcd0d43cf350d1e1866727",
+      "mode": "prefix",
+      "afterSha256": "8c9487b0ec488ea4948450e496534a4f13050bebf2dcd0d43cf350d1e1866727",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api010_concrete_root_org_rerun_456f250d_b245_46a4_bab4_7584f94c9ea4_7d32eb74fcf44f2290e7fb3b9ab1bba9/api010_packet_team_ad646cfa97b84a8d94d496d2be427247/api010_team_coordinator_1280c02eb28244ed999dd3d138913412/raw_traces_active.jsonl",
+      "bytes": 13190,
+      "sha256": "339930fbb56087f3269df23cc9147ebc8245edd66e1ca11b325a42c2025c089d",
+      "mode": "prefix",
+      "afterSha256": "339930fbb56087f3269df23cc9147ebc8245edd66e1ca11b325a42c2025c089d",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api010_concrete_root_org_rerun_456f250d_b245_46a4_bab4_7584f94c9ea4_7d32eb74fcf44f2290e7fb3b9ab1bba9/api010_packet_team_ad646cfa97b84a8d94d496d2be427247/api010_team_reader_689280f69a3b441294ac65b9be05f41f/raw_traces_active.jsonl",
+      "bytes": 10068,
+      "sha256": "f4a05d2e39e3a3eed94025df58205e6b4f053827afd133346daa682b38ae22d5",
+      "mode": "prefix",
+      "afterSha256": "f4a05d2e39e3a3eed94025df58205e6b4f053827afd133346daa682b38ae22d5",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api010_concrete_root_org_rerun_456f250d_b245_46a4_bab4_7584f94c9ea4_7d32eb74fcf44f2290e7fb3b9ab1bba9/api010_packet_team_be184fad4c774827bd79a8a5fa0a9c4a/api010_team_coordinator_545f50b6fbbe498785696ab16daeab51/raw_traces_active.jsonl",
+      "bytes": 12051,
+      "sha256": "b6190de4a7841650a11efe1ace9a501455d40676762650636ff4c2aea3e9689d",
+      "mode": "prefix",
+      "afterSha256": "b6190de4a7841650a11efe1ace9a501455d40676762650636ff4c2aea3e9689d",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api010_concrete_root_org_rerun_456f250d_b245_46a4_bab4_7584f94c9ea4_7d32eb74fcf44f2290e7fb3b9ab1bba9/api010_packet_team_be184fad4c774827bd79a8a5fa0a9c4a/api010_team_reader_041520b3f4e0477dba02a7907d25b4b1/raw_traces_active.jsonl",
+      "bytes": 11279,
+      "sha256": "ebf1b813c334faa0b6056836c01698d0daceb00c2d920214034d46ecc448cb2e",
+      "mode": "prefix",
+      "afterSha256": "ebf1b813c334faa0b6056836c01698d0daceb00c2d920214034d46ecc448cb2e",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api010_concrete_root_org_rerun_456f250d_b245_46a4_bab4_7584f94c9ea4_7d32eb74fcf44f2290e7fb3b9ab1bba9/project_task_manager_d71dfb99d235469e98e0acf9446ae38d/raw_traces_active.jsonl",
+      "bytes": 48193,
+      "sha256": "8fc8a0e569792f5263200ab3946d70139c21ca6ec8aa54e20aa769c3c8dfb555",
+      "mode": "prefix",
+      "afterSha256": "8fc8a0e569792f5263200ab3946d70139c21ca6ec8aa54e20aa769c3c8dfb555",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_orgs/api010_concrete_root_org_rerun_456f250d_b245_46a4_bab4_7584f94c9ea4_b6b7e67b0630455099244e09a8e54b4d/agent_org_run_execution_tree.json",
+      "bytes": 2276,
+      "sha256": "800ffff3b81d14c38953f967c6a955464ff590732b557235acbd05a46201b1ce",
+      "mode": "exact",
+      "afterSha256": "800ffff3b81d14c38953f967c6a955464ff590732b557235acbd05a46201b1ce",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/memory/agent_teams/api010_packet_team_8c65ab2a16724d8bbce74a2f6e41ecb8/team_run_execution_tree.json",
+      "bytes": 2140,
+      "sha256": "37985eb9546c0744c4861a9c5b9f7cfd3417bd6c3da966769394468e2de566cd",
+      "mode": "exact",
+      "afterSha256": "37985eb9546c0744c4861a9c5b9f7cfd3417bd6c3da966769394468e2de566cd",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/projects.json",
+      "bytes": 6655,
+      "sha256": "e52a0b386112b906bbe4b0e1cf926060b43f41e8ad57a155a9a096ed07f24b42",
+      "mode": "exact",
+      "afterSha256": "e52a0b386112b906bbe4b0e1cf926060b43f41e8ad57a155a9a096ed07f24b42",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_68927903-cb59-40c2-a092-48d6ec799c7b/project_task_5fadd5dd-57ef-43fd-9c29-1bc656c23a61/ctx_a48c0dcd8afc__saved-agent_org-A.txt",
+      "bytes": 56,
+      "sha256": "6a6545a36c44897df563e5cff603b775e604921daf56c3f553bc967d6044dd21",
+      "mode": "exact",
+      "afterSha256": "6a6545a36c44897df563e5cff603b775e604921daf56c3f553bc967d6044dd21",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_68927903-cb59-40c2-a092-48d6ec799c7b/project_task_fc706434-d61c-41aa-9047-bab39d67a418/ctx_109987ee8f3e__saved-agent_org-B.txt",
+      "bytes": 56,
+      "sha256": "87ebe7a30cc6fed91f2e18c3a21a35e27a328949abb0928c47b798a697f9144c",
+      "mode": "exact",
+      "afterSha256": "87ebe7a30cc6fed91f2e18c3a21a35e27a328949abb0928c47b798a697f9144c",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_a2c4b814-aec9-4ef7-a458-25c1ad092235/project_task_5805441d-9682-4485-a9f6-521287b318fc/ctx_889bf073d576__saved-packet-A.txt",
+      "bytes": 65,
+      "sha256": "4d15345728eb51d819bb6f0cb820a5c905607cb60a7bcd3ba1886ade65654bbf",
+      "mode": "exact",
+      "afterSha256": "4d15345728eb51d819bb6f0cb820a5c905607cb60a7bcd3ba1886ade65654bbf",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "server-data/projects/task_context_files/project_a2c4b814-aec9-4ef7-a458-25c1ad092235/project_task_cdec4953-e326-4aaf-8800-d98589061f6f/ctx_c25440636e45__saved-packet-B.txt",
+      "bytes": 65,
+      "sha256": "2d4e36ea5c80e19e06d4a1ac41f023154ca2f4983d0af7f429305eddf4dc2cf0",
+      "mode": "exact",
+      "afterSha256": "2d4e36ea5c80e19e06d4a1ac41f023154ca2f4983d0af7f429305eddf4dc2cf0",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/agent-a/protected-sentinel.txt",
+      "bytes": 29,
+      "sha256": "54c3330a867a8962af69fa9e66ea00d32bc72a028ed4f56df7c12af9fddc2c15",
+      "mode": "exact",
+      "afterSha256": "54c3330a867a8962af69fa9e66ea00d32bc72a028ed4f56df7c12af9fddc2c15",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/concrete-agent_org/protected-sentinel.txt",
+      "bytes": 25,
+      "sha256": "785ff70c05a1d51c05d290535dacdcce4a01260720b0521915878dc33e0897dd",
+      "mode": "exact",
+      "afterSha256": "785ff70c05a1d51c05d290535dacdcce4a01260720b0521915878dc33e0897dd",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/manager/protected-sentinel.txt",
+      "bytes": 29,
+      "sha256": "2750663eff94ec11622043aa19d448e78e5b33cf5a2a94dc6c5c49073df689a0",
+      "mode": "exact",
+      "afterSha256": "2750663eff94ec11622043aa19d448e78e5b33cf5a2a94dc6c5c49073df689a0",
+      "addedBytes": 0,
+      "passed": true
+    },
+    {
+      "path": "validation-workspace/team-b/protected-sentinel.txt",
+      "bytes": 28,
+      "sha256": "c5db65fde9fa6df94f6b63a5e112e9d40064920736b5a00075109d1af8ade3ac",
+      "mode": "exact",
+      "afterSha256": "c5db65fde9fa6df94f6b63a5e112e9d40064920736b5a00075109d1af8ade3ac",
+      "addedBytes": 0,
+      "passed": true
+    }
+  ]
+}

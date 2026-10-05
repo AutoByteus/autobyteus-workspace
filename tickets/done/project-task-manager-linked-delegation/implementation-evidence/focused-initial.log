@@ -1,0 +1,401 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ ❯ tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts (16 tests | 2 failed) 41ms
+     ✓ creates a link-only exposure, reflects source changes, and removes only the link 5ms
+     ✓ retains a shared link until every occurrence holder releases 2ms
+     ✓ joins concurrent acquisition to one link with one holder per acquisition 2ms
+     ✓ repairs a broken link for a discoverable skill and records the disposition 3ms
+     ✓ does not claim a missing or same-source link when discovery can expose the skill 2ms
+     ✓ warns and skips an unresolved missing binding, and removes an unresolved broken link 1ms
+     ✓ uses safe unavailable-source outcomes without creating or deleting a live same-source link 2ms
+     ✓ rejects and preserves a file collision 2ms
+     ✓ rejects and preserves a directory collision 1ms
+     ✓ rejects and preserves a live-symlink collision 2ms
+     ✓ rechecks broken-link identity and preserves a live replacement won during repair 2ms
+     ✓ publishes releasing before cleanup, then makes a new acquisition wait and rematerialize 1ms
+     ✓ rolls back an earlier created link when a later request hits a live collision 2ms
+     × rolls back every occurrence from a failed batch and rethrows the exact original error 7ms
+     × attempts all rollback releases even when one cleanup fails 4ms
+     ✓ leaves a replacement directory untouched during guarded cleanup 2ms
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts (16 tests | 8 failed) 13ms
+     × returns only the spawned ingress run ID on success 4ms
+     × returns a null run ID with a message when nothing started, aborting the preparation 1ms
+     × builds the first message with the delegator address and run ID 0ms
+     ✓ shuts a quiet child down after the grace period, not before (AC-004) 1ms
+     ✓ cancels on running work and restarts the countdown at the next quiet moment (AC-005) 0ms
+     ✓ arms on error status so an errored child is still released (AR-001) 0ms
+     ✓ never shuts down work that the fire-time quiescence check rejects (approval pending, running turn) 0ms
+     ✓ arms every live execution in the chain and ignores executions that are already shut down 0ms
+     ✓ reads the grace period at arm time 0ms
+     ✓ disposes every timer on root termination and on fail-stop 1ms
+     ✓ logs and survives a teardown-indeterminate shutdown failure raised by the adapter 0ms
+     × restores a shut-down chain, holds it against shutdown, and arms it on release (AR-001b) 0ms
+     × restores a child whose wake arrives while its shutdown is in flight, after the shutdown completes (QR-002) 0ms
+     × rejects with TASK_EXECUTION_CONTEXT_UNAVAILABLE before any restore (AC-011) 2ms
+     × converts restore errors to TASK_EXECUTION_RESTORE_FAILED and arms executions restored before the failure 1ms
+     × returns a no-op lease for agents outside any delegated child 0ms
+stdout | tests/unit/projects/project-task-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/projects/project-task-service.test.ts (15 tests | 3 failed) 386ms
+     × creates a TODO Task from a trimmed multi-line description and stores it inside the Project 39ms
+     ✓ rejects an empty description "" without writing 14ms
+     ✓ rejects an empty description "   " without writing 9ms
+     ✓ rejects an empty description "\n\t\n" without writing 8ms
+     ✓ rejects Task operations on an unknown Project 13ms
+     ✓ lists Tasks most recently updated first 44ms
+     ✓ orders Tasks with equal update times by taskId 21ms
+     ✓ edits only the description and updatedAt; status stays TODO 22ms
+     ✓ rejects editing a missing Task or with an empty description, leaving the file intact 15ms
+     ✓ deletes a Task and reports whether it existed 39ms
+     × never changes the Project's own fields or updatedAt 10ms
+     ✓ keeps other Projects' Tasks separate 32ms
+     ✓ leaves the previous file intact when the atomic write fails (QR-001) 29ms
+     × patches only supplied fields, supports reset/reopen, exact filtering and same-state retry 50ms
+     ✓ merges independent concurrent text and status writes against current records 38ms
+ ✓ tests/unit/agent-execution/runtime/agent-run-activation-registry.test.ts (5 tests) 5ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle delegation result > returns only the spawned ingress run ID on success
+AssertionError: promise rejected "TypeError: this.adapter.lifetimeForAgent …" instead of resolving
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:126:127
+    124|   it("returns only the spawned ingress run ID on success", async () =>…
+    125|     const { lifecycle } = setup();
+    126|     await expect(lifecycle.delegate({ identity: caller }, { recipient_…
+       |                                                                                                                               ^
+    127|       .resolves.toEqual({ target_agent_run_id: "child-run" });
+    128|   });
+
+Caused by: TypeError: this.adapter.lifetimeForAgent is not a function
+ ❯ RootTaskExecutionLifecycle.delegate src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:88:36
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:126:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle delegation result > returns a null run ID with a message when nothing started, aborting the preparation
+AssertionError: promise rejected "TypeError: this.adapter.lifetimeForAgent …" instead of resolving
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:139:127
+    137|       }),
+    138|     });
+    139|     await expect(lifecycle.delegate({ identity: caller }, { recipient_…
+       |                                                                                                                               ^
+    140|       .resolves.toEqual({ target_agent_run_id: null, message: "tree wr…
+    141| 
+
+Caused by: TypeError: this.adapter.lifetimeForAgent is not a function
+ ❯ RootTaskExecutionLifecycle.delegate src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:88:36
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:139:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle delegation result > builds the first message with the delegator address and run ID
+TypeError: this.adapter.lifetimeForAgent is not a function
+ ❯ RootTaskExecutionLifecycle.delegate src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:88:36
+     86|     this.assertAdmitting(context.identity);
+     87|     this.adapter.assertCurrentSchemaReady();
+     88|     const inherited = this.adapter.lifetimeForAgent(context.identity.a…
+       |                                    ^
+     89|     const linked = Object.prototype.hasOwnProperty.call(input, "task_i…
+     90|     const allowed = linked ? ["recipient_address", "task_id"] : ["reci…
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:152:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > restores a shut-down chain, holds it against shutdown, and arms it on release (AR-001b)
+TypeError: this.adapter.lifetimeForAgent is not a function
+ ❯ RootTaskLifetimeScope.acquireForAgent src/agent-collaboration/execution/task/root-task-lifetime-scope.ts:31:32
+     29|   }
+     30|   async acquireForAgent(agentRunId: string): Promise<TaskLifetimeAdmis…
+     31|     const stamp = this.adapter.lifetimeForAgent(agentRunId);
+       |                                ^
+     32|     if (!stamp) return undefined;
+     33|     const admission = await this.acquire(stamp.lifetimeId);
+ ❯ RootTaskExecutionLifecycle.acquireLiveLease src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:177:48
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:291:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > restores a child whose wake arrives while its shutdown is in flight, after the shutdown completes (QR-002)
+TypeError: this.adapter.lifetimeForAgent is not a function
+ ❯ RootTaskLifetimeScope.acquireForAgent src/agent-collaboration/execution/task/root-task-lifetime-scope.ts:31:32
+     29|   }
+     30|   async acquireForAgent(agentRunId: string): Promise<TaskLifetimeAdmis…
+     31|     const stamp = this.adapter.lifetimeForAgent(agentRunId);
+       |                                ^
+     32|     if (!stamp) return undefined;
+     33|     const admission = await this.acquire(stamp.lifetimeId);
+ ❯ RootTaskExecutionLifecycle.acquireLiveLease src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:177:48
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:329:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > rejects with TASK_EXECUTION_CONTEXT_UNAVAILABLE before any restore (AC-011)
+AssertionError: expected TypeError: this.adapter.lifetimeForAgent … to match object { Object (code) }
+
+- Expected
++ Received
+
+- {
+-   "code": "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
++ TypeError {
++   "message": "this.adapter.lifetimeForAgent is not a function",
+  }
+
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:352:5
+    350|     state.chains.set("child-run", [child]);
+    351|     state.restorable = false;
+    352|     await expect(lifecycle.acquireLiveLease("child-run")).rejects.toMa…
+       |     ^
+    353|     expect(state.restoreCalls).toEqual([]);
+    354|     expect(state.live.size).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > converts restore errors to TASK_EXECUTION_RESTORE_FAILED and arms executions restored before the failure
+AssertionError: expected TypeError: this.adapter.lifetimeForAgent … to match object { Object (code) }
+
+- Expected
++ Received
+
+- {
+-   "code": "TASK_EXECUTION_RESTORE_FAILED",
++ TypeError {
++   "message": "this.adapter.lifetimeForAgent is not a function",
+  }
+
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:361:5
+    359|     state.chains.set("nested-run", [child, team]);
+    360|     state.restoreFailure = new Error("provider session unavailable");
+    361|     await expect(lifecycle.acquireLiveLease("nested-run")).rejects.toM…
+       |     ^
+    362|       code: "TASK_EXECUTION_RESTORE_FAILED",
+    363|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > returns a no-op lease for agents outside any delegated child
+TypeError: this.adapter.lifetimeForAgent is not a function
+ ❯ RootTaskLifetimeScope.acquireForAgent src/agent-collaboration/execution/task/root-task-lifetime-scope.ts:31:32
+     29|   }
+     30|   async acquireForAgent(agentRunId: string): Promise<TaskLifetimeAdmis…
+     31|     const stamp = this.adapter.lifetimeForAgent(agentRunId);
+       |                                ^
+     32|     if (!stamp) return undefined;
+     33|     const admission = await this.acquire(stamp.lifetimeId);
+ ❯ RootTaskExecutionLifecycle.acquireLiveLease src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:177:48
+ ❯ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts:370:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  tests/unit/projects/project-task-service.test.ts > ProjectTaskService > creates a TODO Task from a trimmed multi-line description and stores it inside the Project
+AssertionError: expected { taskId: 'project_task_1', …(7) } to deeply equal { taskId: 'project_task_1', …(6) }
+
+- Expected
++ Received
+
+  {
+    "contextFiles": [],
+    "createdAt": "2026-09-26T00:00:01.000Z",
+    "description": "Write release notes for 1.4.87
+  Include Projects and Tasks",
++   "executionLifetimes": [],
+    "projectId": "project_1",
+    "status": "TODO",
+    "taskId": "project_task_1",
+    "updatedAt": "2026-09-26T00:00:01.000Z",
+  }
+
+ ❯ tests/unit/projects/project-task-service.test.ts:58:18
+     56|     });
+     57| 
+     58|     expect(task).toEqual({
+       |                  ^
+     59|       taskId: "project_task_1",
+     60|       projectId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+ FAIL  tests/unit/projects/project-task-service.test.ts > ProjectTaskService > never changes the Project's own fields or updatedAt
+TypeError: (intermediate value) is not iterable
+ ❯ tests/unit/projects/project-task-service.test.ts:161:22
+    159| 
+    160|   it("never changes the Project's own fields or updatedAt", async () =…
+    161|     const [before] = await harness.readFile();
+       |                      ^
+    162| 
+    163|     const task = await harness.tasks.createTask({ projectId, descripti…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯
+
+ FAIL  tests/unit/projects/project-task-service.test.ts > ProjectTaskService > patches only supplied fields, supports reset/reopen, exact filtering and same-state retry
+TypeError: Cannot read properties of undefined (reading 'updatedAt')
+ ❯ tests/unit/projects/project-task-service.test.ts:209:42
+    207|     await harness.tasks.updateTask({projectId, taskId: task.taskId, st…
+    208|     await harness.tasks.updateTask({projectId, taskId: task.taskId, st…
+    209|     expect((await harness.readFile())[0].updatedAt).toBe(beforeProject…
+       |                                          ^
+    210|     await expectProjectError(harness.tasks.updateTask({projectId, task…
+    211|     await expectProjectError(harness.tasks.updateTask({projectId, task…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/13]⎯
+
+ FAIL  tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts > WorkspaceSkillMaterializer > rolls back every occurrence from a failed batch and rethrows the exact original error
+AssertionError: expected AggregateError: Workspace skill acquisiti… { errors: [ …(2) ] } to be Error: injected lstat failure { …(1) } // Object.is equality
+
+- Expected
++ Received
+
++ AggregateError {
++   "message": "Workspace skill acquisition and rollback failed.",
++   "errors": [
+      Error {
+        "message": "injected lstat failure",
+        "code": "EIO",
++     },
++     Error {
++       "message": "injected lstat failure",
++       "code": "EIO",
++     },
++   ],
+  }
+
+ ❯ tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts:309:22
+    307|       received = error;
+    308|     }
+    309|     expect(received).toBe(exactError);
+       |                      ^
+    310|     expect((await fs.lstat(preexisting.materializedRootPath)).isSymbol…
+    311|     await materializer.cleanupMaterializedWorkspaceSkills([preexisting…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/13]⎯
+
+ FAIL  tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts > WorkspaceSkillMaterializer > attempts all rollback releases even when one cleanup fails
+AssertionError: expected AggregateError: Workspace skill acquisiti… { errors: [ …(3) ] } to be Error: acquisition failed { code: 'E…' } // Object.is equality
+
+- Expected
++ Received
+
++ AggregateError {
++   "message": "Workspace skill acquisition and rollback failed.",
++   "errors": [
+      Error {
+        "message": "acquisition failed",
+        "code": "EIO",
++     },
++     Error {
++       "message": "acquisition failed",
++       "code": "EIO",
++     },
++     Error {
++       "message": "cleanup failed",
++       "code": "EIO",
++     },
++   ],
+  }
+
+ ❯ tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts:337:5
+    335|     } });
+    336| 
+    337|     await expect(run(materializer, workspace, [expose(first), expose(c…
+       |     ^
+    338|     expect(await isAbsent(firstPath)).toBe(true);
+    339|     expect((await fs.lstat(cleanupFailurePath)).isSymbolicLink()).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/13]⎯
+
+
+ Test Files  3 failed | 1 passed (4)
+      Tests  13 failed | 39 passed (52)
+   Start at  08:25:03
+   Duration  4.70s (transform 2.08s, setup 23ms, import 3.19s, tests 444ms, environment 0ms)
+

@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-03T17:24:56.227966+00:00",
+  "originalCount": 1262,
+  "unchanged": 1257,
+  "intentionalOwnedDocumentationChanged": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/design-spec.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/investigation-notes.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/requirements-doc.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-design-handoff.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-revision-record.md"
+  ],
+  "sourceDurableTestsAndSpecialistInputsAllUnchanged": true,
+  "missing": [],
+  "postExperimentOriginal1262Unchanged": true,
+  "matchingChildProcessesAfter": 0,
+  "ownedDependencySymlinkRemoved": true,
+  "unusedOwnedDatabaseAbsent": true
+}

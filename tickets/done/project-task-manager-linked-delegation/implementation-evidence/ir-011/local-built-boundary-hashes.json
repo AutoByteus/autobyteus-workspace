@@ -1,0 +1,26 @@
+[
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.js",
+    "sha256": "f211553c2ca80be18071865295eaf0d4ad922a936f6e0d8a72840dd4ac344977"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend.js",
+    "sha256": "ec4c8e22ad0c7bf32adf7b831abce0c2f13ae912db3d3a37b81638e5c8242182"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js",
+    "sha256": "783a21b3e0720939938ee973cb54a4189a5ac9b9955434ea7c164b0907abc731"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-org-execution/domain/agent-org-run.js",
+    "sha256": "4510b7d70ef42ebfe83d5df22ffd08e5bc2138c12f767ecd6a007b7f4071db31"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/standalone-agent-run-root/domain/standalone-agent-run-root.js",
+    "sha256": "ec3622658a773989c07fe701766e88021ffaa693488c884deb49e5c47c9c92c1"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/services/agent-streaming/collaboration-execution-tree-dto-projection.js",
+    "sha256": "9bfa8ef6270b1b26a259fe27a87585b14ee8eaec79d9ab7e07a8f2b7b6733f84"
+  }
+]

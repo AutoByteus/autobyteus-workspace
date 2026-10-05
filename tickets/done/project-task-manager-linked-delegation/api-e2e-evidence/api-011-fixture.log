@@ -1,0 +1,6 @@
+case=API-011
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/create-released-project-fixture.py
+/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/projects-released-array.json
+
+PROCESS_EXIT_CODE=0

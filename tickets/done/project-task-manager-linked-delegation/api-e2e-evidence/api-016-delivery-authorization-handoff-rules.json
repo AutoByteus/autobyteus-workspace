@@ -1,0 +1,37 @@
+{
+  "raw": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"handoffs\":[{\"when\":\"When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.\",\"recipient_address\":\"/software_engineering_team/code_reviewer\"},{\"when\":\"When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.\",\"recipient_address\":\"/software_engineering_team/code_reviewer\"},{\"when\":\"When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work.\",\"recipient_address\":\"/software_engineering_team/delivery_engineer\"},{\"when\":\"When coverage investigation or test-validity analysis establishes a Requirement Gap, Design Impact or Unclear upstream issue before executable validation can proceed. Include the supported scenario basis and concrete evidence. Execution failures still follow the Code Reviewer failure-origin route.\",\"recipient_address\":\"/software_engineering_team/solution_designer\"}]}"
+      }
+    ],
+    "structuredContent": {
+      "handoffs": [
+        {
+          "when": "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+          "recipient_address": "/software_engineering_team/code_reviewer"
+        },
+        {
+          "when": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+          "recipient_address": "/software_engineering_team/code_reviewer"
+        },
+        {
+          "when": "When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+          "recipient_address": "/software_engineering_team/delivery_engineer"
+        },
+        {
+          "when": "When coverage investigation or test-validity analysis establishes a Requirement Gap, Design Impact or Unclear upstream issue before executable validation can proceed. Include the supported scenario basis and concrete evidence. Execution failures still follow the Code Reviewer failure-origin route.",
+          "recipient_address": "/software_engineering_team/solution_designer"
+        }
+      ]
+    }
+  },
+  "decision": {
+    "purpose": "User-authorized continuation of completed reviewed-route package; not a new validation or test-review assignment",
+    "selectedRecipient": "/software_engineering_team/code_reviewer",
+    "selectedCondition": "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+    "evaluation": "Large / High / Reviewed policy remains authoritative. Its proportional gate is fulfilled by CRR-021 Pass. Return the completed package and newly released Delivery authorization to that same reviewer so it can apply its fresh successful-test Delivery rule; do not bypass the reviewed route using the API direct-low-risk Delivery rule. No rerun, re-review, score or classification change requested.",
+    "deliveryAuthorization": "User: then do the handoff. This releases the previously explicit Delivery hold for workflow advance, not blanket approval to merge, push, release, deploy or disrupt user resources."
+  }
+}

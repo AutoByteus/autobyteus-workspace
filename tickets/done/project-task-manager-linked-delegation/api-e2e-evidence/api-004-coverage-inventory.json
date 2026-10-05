@@ -1,0 +1,105 @@
+{
+  "retained": [
+    "autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs",
+    "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+    "autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts",
+    "autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+    "autobyteus-server-ts/tests/e2e/projects/projects-startup-no-write.e2e.test.ts",
+    "autobyteus-server-ts/tests/fixtures/projects-released-array.json",
+    "autobyteus-server-ts/tests/fixtures/projects-released-array.provenance.json",
+    "autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+    "autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+    "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+    "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts",
+    "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts"
+  ],
+  "added": [
+    "autobyteus-server-ts/tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts"
+  ],
+  "removed": [],
+  "hashes": [
+    {
+      "path": "autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs",
+      "expected": "762671965de0fdc54c9e563817a1ab02fea8fbb79ad86e7345421fb476594e1d",
+      "current": "762671965de0fdc54c9e563817a1ab02fea8fbb79ad86e7345421fb476594e1d",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
+      "expected": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "current": "afcd93117dc7374f93c8f61cd6815d14286cc355c72a20d01efa02753d3fa4cc",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts",
+      "expected": "acce34ce0a4535f8ccbd02c5718af23408d3bb272e5d9f34aa09f5000f8db28f",
+      "current": "acce34ce0a4535f8ccbd02c5718af23408d3bb272e5d9f34aa09f5000f8db28f",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts",
+      "expected": "e74df30a17940fa4260a5e8ba394efa1d5f2e62f58c5cc9d789fbdad7baa92a1",
+      "current": "e74df30a17940fa4260a5e8ba394efa1d5f2e62f58c5cc9d789fbdad7baa92a1",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+      "expected": "46a9e961cfa98224adba30eb55797020e3ce1bda3675087c579341034d2edf76",
+      "current": "46a9e961cfa98224adba30eb55797020e3ce1bda3675087c579341034d2edf76",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/projects/projects-startup-no-write.e2e.test.ts",
+      "expected": "de0149eea93d5a91062c5a0492b4539e440b774c4a8baef247cffd2144ccff24",
+      "current": "de0149eea93d5a91062c5a0492b4539e440b774c4a8baef247cffd2144ccff24",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/projects-released-array.json",
+      "expected": "2c3e0ce7eff6abcee143bef23fecc1c1657359bc99a7b9612cb67da50209520e",
+      "current": "2c3e0ce7eff6abcee143bef23fecc1c1657359bc99a7b9612cb67da50209520e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/projects-released-array.provenance.json",
+      "expected": "1746ed7ccc406348784e2f9b497b516f83913eadde71e0a32b01cd61711f2e17",
+      "current": "1746ed7ccc406348784e2f9b497b516f83913eadde71e0a32b01cd61711f2e17",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+      "expected": "5b89f89dbf1cadcd5348592cc4fbcfe993108a1f6c86237159e7feca2699b057",
+      "current": "5b89f89dbf1cadcd5348592cc4fbcfe993108a1f6c86237159e7feca2699b057",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+      "expected": "edcee6190f989db9cdafbdf4cd2835faffd463edbfca0d3e0dfbd22ae9805083",
+      "current": "edcee6190f989db9cdafbdf4cd2835faffd463edbfca0d3e0dfbd22ae9805083",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+      "expected": "0fa0788c48e46fc8b5bfa714f4b06c560a3ec01a6a5bd376b7623bb7003122eb",
+      "current": "0fa0788c48e46fc8b5bfa714f4b06c560a3ec01a6a5bd376b7623bb7003122eb",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts",
+      "expected": "706eb96c58c1e5575e516b06c8a653647c09428571f078bfe9e940869ef06a6e",
+      "current": "706eb96c58c1e5575e516b06c8a653647c09428571f078bfe9e940869ef06a6e",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts",
+      "expected": "4a730e55d6f8968bfdbe9709353470928c087703f37a27d3c2ddf4010cea95fa",
+      "current": "4a730e55d6f8968bfdbe9709353470928c087703f37a27d3c2ddf4010cea95fa",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts",
+      "sha256": "c0e8d624e7aa3d6fa747b5b51f2bcc3d4d5fac5e0ae0ca4c40d2a914473c16d8"
+    }
+  ]
+}

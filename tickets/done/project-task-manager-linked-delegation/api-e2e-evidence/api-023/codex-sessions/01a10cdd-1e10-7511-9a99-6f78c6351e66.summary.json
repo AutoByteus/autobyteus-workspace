@@ -1,0 +1,39 @@
+{
+ "thread": "01a10cdd-1e10-7511-9a99-6f78c6351e66",
+ "originator": "autobyteus-server-ts",
+ "cli": "0.160.0",
+ "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rQphUM/server-data/temp_workspace",
+ "base_instructions_head": "## Agent Identity\n\n- Name: UI Report Worker\n- Description: Does assigned work and reports the result back.\n\n### Responsi",
+ "turn_context_multi_agent_version": [
+  "v2"
+ ],
+ "has_multi_agent_role_developer_prompt": true,
+ "calls": [
+  {
+   "name": "exec",
+   "autobyteus_tools": [],
+   "target": null
+  },
+  {
+   "name": "exec",
+   "autobyteus_tools": [],
+   "target": null
+  },
+  {
+   "name": "send_message",
+   "autobyteus_tools": [],
+   "target": "/project_task_manager"
+  },
+  {
+   "output": "absolute agent paths must start with `/root` or be `/morpheus`"
+  },
+  {
+   "name": "send_message",
+   "autobyteus_tools": [],
+   "target": "/root/project_task_manager"
+  },
+  {
+   "output": "live agent path `/root/project_task_manager` not found"
+  }
+ ]
+}

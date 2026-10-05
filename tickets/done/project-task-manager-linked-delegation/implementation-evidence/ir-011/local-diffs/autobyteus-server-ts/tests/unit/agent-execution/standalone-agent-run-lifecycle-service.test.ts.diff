@@ -1,0 +1,46 @@
+--- incoming-merge/autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
++++ IR-011/autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+@@ -245,17 +245,12 @@
+     const preparedCandidate = candidate({ run, order });
+     const current = harness({ metadataStates: [{ kind: "present", metadata: metadata() }], preparedCandidate });
+ 
+-<<<<<<< HEAD
+-    await expect(current.service.activatePreparedRun(RUN_ID)).resolves.toBe(run);
+-    expect(current.agentRunManager.newPreparation).toHaveBeenCalledWith({
+-=======
+     await expect(current.service.activateHost(RUN_ID, { memberExecutionContext: null }))
+       .rejects.toThrow("is activated only by its standalone run root");
+-    expect(current.agentRunManager.prepareNewAgentRun).not.toHaveBeenCalled();
++    expect(current.agentRunManager.newPreparation).not.toHaveBeenCalled();
+ 
+     await expect(current.service.activateHost(RUN_ID, HOST)).resolves.toMatchObject({ run });
+-    expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledWith({
+->>>>>>> origin/personal
++    expect(current.agentRunManager.newPreparation).toHaveBeenCalledWith({
+       runId: RUN_ID,
+       config: expect.objectContaining({ memberExecutionContext: HOST_CONTEXT }),
+     });
+@@ -268,7 +263,7 @@
+     const current = harness({ metadataStates: [{ kind: "present", metadata: helper }], preparedCandidate: candidate({ run }) });
+     await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cannot host collaborators");
+     await expect(current.service.activateHost(RUN_ID, { memberExecutionContext: null })).resolves.toMatchObject({ run });
+-    expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledWith({
++    expect(current.agentRunManager.newPreparation).toHaveBeenCalledWith({
+       runId: RUN_ID,
+       config: expect.objectContaining({ memberExecutionContext: null }),
+     });
+@@ -367,13 +362,8 @@
+       .rejects.toThrow("activation metadata did not commit");
+     expect(firstCandidate.abort).toHaveBeenCalledOnce();
+ 
+-<<<<<<< HEAD
+-    await expect(current.service.activatePreparedRun(RUN_ID)).resolves.toMatchObject({ runId: RUN_ID });
++    await expect(current.service.activateHost(RUN_ID, HOST).then((result) => result.run)).resolves.toMatchObject({ runId: RUN_ID });
+     expect(current.agentRunManager.newPreparation).toHaveBeenCalledTimes(2);
+-=======
+-    await expect(current.service.activateHost(RUN_ID, HOST).then((result) => result.run)).resolves.toMatchObject({ runId: RUN_ID });
+-    expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledTimes(2);
+->>>>>>> origin/personal
+     expect(secondCandidate.commitPublication).toHaveBeenCalledOnce();
+   });
+ 

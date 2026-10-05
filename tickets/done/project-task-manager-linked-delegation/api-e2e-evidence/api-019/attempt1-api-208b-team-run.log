@@ -1,0 +1,2 @@
+AssertionError [ERR_ASSERTION]: [{"message":"A project named 'API019 agent_team' already exists.","locations":[{"line":1,"column":34}],"path":["createProject"],"extensions":{"code":"PROJECT_NAME_TAKEN"}}]
+exit 1

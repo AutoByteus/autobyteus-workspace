@@ -1,0 +1,53 @@
+{
+  "scope": "Independent reviewer source/contract checks only, no paid provider, packaged desktop or fresh API acceptance. Counts overlap.",
+  "checks": [
+    {
+      "name": "production-typecheck",
+      "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+      "started": "2026-10-04T05:24:07.226098+00:00",
+      "seconds": 7.42,
+      "exit": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-017-production-typecheck.log"
+    },
+    {
+      "name": "history-agy-builtin",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts tests/unit/run-history/services/collaboration-root-history-readiness.test.ts tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts tests/unit/agent-execution/backends/antigravity/agy-native-argument-lifecycle.test.ts tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts --no-watch",
+      "started": "2026-10-04T05:24:14.650598+00:00",
+      "seconds": 9.48,
+      "exit": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-017-history-agy-builtin.log"
+    },
+    {
+      "name": "native-integration",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts --no-watch",
+      "started": "2026-10-04T05:24:24.132154+00:00",
+      "seconds": 10.08,
+      "exit": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-017-native-integration.log"
+    },
+    {
+      "name": "terminal-neighbors",
+      "command": "bash tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-006-terminal-neighbors-command.sh",
+      "started": "2026-10-04T05:24:34.215598+00:00",
+      "seconds": 9.61,
+      "exit": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-017-terminal-neighbors.log"
+    },
+    {
+      "name": "web-history",
+      "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts tests/integration/web-boundary-guard.integration.test.ts --run",
+      "started": "2026-10-04T05:24:43.826709+00:00",
+      "seconds": 9.1,
+      "exit": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-017-web-history.log"
+    },
+    {
+      "name": "diffcheck",
+      "command": "git diff HEAD --check && git diff --cached --check && test -z \"$(git ls-files -u)\"",
+      "started": "2026-10-04T05:24:52.929604+00:00",
+      "seconds": 0.35,
+      "exit": 0,
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-017-diffcheck.log"
+    }
+  ]
+}

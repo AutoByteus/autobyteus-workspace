@@ -1,0 +1,125 @@
+{
+  "scope": "Implementation local checks only; counts overlap, skips and baseline failures not Pass.",
+  "logs": [
+    {
+      "name": "focused-initial",
+      "exit": 1,
+      "result": "5 failed /116 passed files;13 failed /1071 passed tests; integration API/fixture defects subsequently corrected",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/focused-initial.log"
+    },
+    {
+      "name": "reconciled-focused",
+      "exit": 1,
+      "result": "2 failed /6 passed files;4 failed /72 passed tests; remaining AGY/private API and public fixture imports corrected",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/reconciled-focused.log"
+    },
+    {
+      "name": "managed-admission",
+      "exit": 0,
+      "result": "2 files /34 tests",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/managed-admission.log"
+    },
+    {
+      "name": "reconciled-focused-final",
+      "exit": 0,
+      "result": "3 files /58 tests",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/reconciled-focused-final.log"
+    },
+    {
+      "name": "cumulative-units",
+      "exit": 1,
+      "result": "3 failed /227 passed /3 skipped files;4 failed /2046 passed /5 skipped tests; unchanged broader baseline",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/cumulative-units.log"
+    },
+    {
+      "name": "native-integration",
+      "exit": 1,
+      "result": "1 failed /3 passed files;2 failed /29 passed tests; duplicate test catalog key corrected",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/native-integration.log"
+    },
+    {
+      "name": "native-integration-final",
+      "exit": 0,
+      "result": "4 files /31 tests",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/native-integration-final.log"
+    },
+    {
+      "name": "web-units",
+      "exit": 0,
+      "result": "5 files /74 tests; absent requested hydration-spec selector contributes no file/test",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/web-units.log"
+    },
+    {
+      "name": "strict-checked-units-final",
+      "exit": 0,
+      "result": "4 files /47 tests; includes unchanged actual Claude terminal/input 6-case suite",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/strict-checked-units-final.log"
+    },
+    {
+      "name": "architecture-units",
+      "exit": 1,
+      "result": "1 failed /3 passed files;1 failed /43 passed tests; exact checkpoint blanket boundary assertion retained",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/architecture-units.log"
+    },
+    {
+      "name": "tests-typecheck",
+      "exit": 2,
+      "result": "two fixture type errors",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/tests-typecheck.log"
+    },
+    {
+      "name": "tests-typecheck-second",
+      "exit": 2,
+      "result": "optional fixture stamp narrow required",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/tests-typecheck-second.log"
+    },
+    {
+      "name": "tests-typecheck-final",
+      "exit": 0,
+      "result": "strict selected 7 test files and imported current helpers",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/tests-typecheck-final.log"
+    },
+    {
+      "name": "typecheck-production-initial",
+      "exit": 2,
+      "result": "merged recipient type recursion, stale DTO import and missing locked tar dependency; corrected",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/typecheck-production-initial.log"
+    },
+    {
+      "name": "typecheck-production-final",
+      "exit": 0,
+      "result": "tsconfig.build.json production noEmit",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/typecheck-production-final.log"
+    },
+    {
+      "name": "server-build-final",
+      "exit": 0,
+      "result": "shared dependencies/core/SDK build, Prisma generation, clean server build/assets, sanitized bootstrap",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/server-build-final.log"
+    },
+    {
+      "name": "dependency-install",
+      "exit": 0,
+      "result": "locked frozen install --ignore-scripts, no lockfile change; two unbuilt devkit bin warnings",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/dependency-install.log"
+    },
+    {
+      "name": "rendered-preview-initial",
+      "exit": 1,
+      "result": "own ambiguous aside locator; both real rows and labels passed before geometry; no product edit",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/rendered-preview-initial.log"
+    },
+    {
+      "name": "rendered-preview",
+      "exit": 0,
+      "result": "current local Nuxt/Chrome interactive preview; not API/E2E",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/rendered-preview.log"
+    },
+    {
+      "name": "typecheck-initial",
+      "exit": 2,
+      "result": "generic tsconfig test/rootDir TS6059 configuration attempt; not production compile",
+      "log": "tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-011/typecheck-initial.log"
+    }
+  ]
+}

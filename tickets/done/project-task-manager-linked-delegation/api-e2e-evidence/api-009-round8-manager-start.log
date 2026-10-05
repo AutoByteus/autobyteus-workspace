@@ -1,0 +1,6 @@
+case=API-009
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round8-manager-probe.mjs start
+Pass: real ordinary Manager fresh Agent+Team saved-ID/immutable context/link/stamp and visible rows; release/reconnect/inspection pending.
+
+PROCESS_EXIT_CODE=0

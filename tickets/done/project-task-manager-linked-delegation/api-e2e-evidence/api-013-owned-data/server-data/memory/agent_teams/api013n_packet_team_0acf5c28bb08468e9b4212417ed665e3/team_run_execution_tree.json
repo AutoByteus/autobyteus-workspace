@@ -1,0 +1,60 @@
+{
+  "createdAt": "2026-10-04T06:01:42.281Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "api013n-packet-team",
+    "teamDefinitionName": "API013N Packet Team",
+    "teamRunId": "api013n_packet_team_0acf5c28bb08468e9b4212417ed665e3",
+    "coordinatorAddress": "/coordinator",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "deepseek-v4-flash",
+      "llmConfig": {
+        "thinking_type": "disabled"
+      },
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-XerRkK/validation-workspace/team-b"
+    },
+    "members": [
+      {
+        "address": "/coordinator",
+        "agentDefinitionId": "api013n-team-coordinator",
+        "role": null,
+        "description": null,
+        "agentRunId": "api013n_team_coordinator_d340d1e3682442e9b42e83736ef9c7b9",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-XerRkK/validation-workspace/team-b"
+        }
+      },
+      {
+        "address": "/reader",
+        "agentDefinitionId": "api013n-team-reader",
+        "role": null,
+        "description": null,
+        "agentRunId": "api013n_team_reader_a6fb45133cc0413fa531260c1ddf2c92",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": {
+            "thinking_type": "disabled"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-XerRkK/validation-workspace/team-b"
+        }
+      }
+    ],
+    "collaborators": [],
+    "taskExecutions": []
+  }
+}

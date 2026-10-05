@@ -1,0 +1,6 @@
+START 2026-10-05T04:52:25.965024+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-quiescent.mjs"]
+Scoped Pass one bounded Org original worker and Manager actual public snapshot idle + empty input/no recoverable block before normal whole-app restart
+
+INNER_EXIT_CODE=0

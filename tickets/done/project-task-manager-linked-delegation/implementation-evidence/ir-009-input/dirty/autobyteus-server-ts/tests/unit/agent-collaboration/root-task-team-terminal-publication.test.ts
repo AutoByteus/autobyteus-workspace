@@ -1,0 +1,88 @@
+import { describe, expect, it, vi } from 'vitest';
+import { AgentRunEventType, type AgentRunEvent } from '../../../src/agent-execution/domain/agent-run-event.js';
+import { createRootExecutionPhysicalScope } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
+import { releaseGenerationFixture } from '../../fixtures/task-release-generation-fixtures.js';
+import { testAgentNode, testAgentTeamNode } from '../../fixtures/current-team-run-fixtures.js';
+
+// Real directory/factory/configured handles; provider events and exact release are controlled.
+// The packaged Codex/Manager reproduction, not this fixture, proves the live UI boundary.
+function fixture() {
+  const f = releaseGenerationFixture('agent');
+  const node = testAgentTeamNode({
+    address: '/Workers', teamRunId: 'task-team', coordinatorAddress: '/Workers/Lead',
+    children: [
+      testAgentNode('/Workers/Lead', { agentRunId: 'task-lead' }),
+      testAgentNode('/Workers/Reader', { agentRunId: 'task-reader' }),
+    ],
+  });
+  const listeners = new Map<string, (event: AgentRunEvent) => void>();
+  const publishedDuringBinding: number[] = [];
+  const emit = (id: string, status: 'idle' | 'offline') => listeners.get(id)?.({
+    eventType: AgentRunEventType.AGENT_STATUS, runId: id,
+    payload: { status }, statusHint: status === 'idle' ? 'IDLE' : null,
+  });
+  f.manager.releaseExactRun = vi.fn(async (run: any) => {
+    const wasActive = run.isActive();
+    const result = await f.stop(run);
+    // Canonical termination publishes the transition once, not every idempotent receipt.
+    if (result.accepted && wasActive) emit(run.runId, 'offline');
+    return result;
+  });
+  const operation = f.teams.beginRootTaskTeam({
+    task: { address: node.address, teamRunId: node.teamRunId, teamNode: node, handoffs: [] },
+    physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [node.teamRunId] }),
+    callbacks: f.callbacks,
+  });
+  const bindProviderEvents = () => {
+    for (const run of f.acquired) {
+      run.subscribeToEvents = (listener: (event: AgentRunEvent) => void) => {
+        listeners.set(run.runId, listener);
+        emit(run.runId, 'idle');
+        publishedDuringBinding.push(f.callbacks.publishAgentEvent.mock.calls.length);
+        return () => { listeners.delete(run.runId); };
+      };
+    }
+  };
+  const statuses = () => f.callbacks.publishAgentEvent.mock.calls
+    .filter(([, event]) => event.kind === 'agent_run' && event.event.eventType === AgentRunEventType.AGENT_STATUS)
+    .map(([identity, event]) => ({
+      id: identity.agentRunId, address: identity.memberAddress, root: identity.root,
+      status: event.event.payload.status,
+    }));
+  return { ...f, node, operation, bindProviderEvents, publishedDuringBinding, statuses };
+}
+
+describe('root-hosted Task Team terminal publication (AC-006/007)', () => {
+  it('keeps private prepared/aborted Team members unpublished', async () => {
+    const f = fixture();
+    const prepared = await f.operation.prepare();
+    expect(f.acquired).toHaveLength(2);
+    expect(f.active.size).toBe(0);
+    expect(f.callbacks.publishAgentEvent).not.toHaveBeenCalled();
+    await prepared.abort();
+    expect(f.active.size).toBe(0);
+    expect(f.teams.list()).toEqual([]);
+    expect(f.callbacks.publishAgentEvent).not.toHaveBeenCalled();
+  });
+
+  it('forwards every committed configured member terminal event after exact successful Task release', async () => {
+    const f = fixture();
+    const prepared = await f.operation.prepare();
+    f.bindProviderEvents();
+    prepared.sealForCommit();
+    prepared.commitAfterDurability();
+    f.teams.reserveTaskSubtree(prepared.preparedTeamRuns).commit();
+    expect(f.publishedDuringBinding).toEqual([0, 0]);
+    const expected = f.node.children.filter(member => member.kind === 'agent').map(member => ({
+      id: member.agentRunId, address: member.address, root: f.root, status: 'idle',
+    }));
+    expect(f.statuses()).toEqual(expected);
+    f.callbacks.publishAgentEvent.mockClear();
+
+    expect(await f.teams.releaseTask(f.node.teamRunId)).toEqual({ accepted: true });
+    expect(f.active.size).toBe(0);
+    expect(prepared.preparedTeamRuns[0].isTerminated()).toBe(true);
+    expect([...new Set(f.stopped.map(run => run.runId))].sort()).toEqual(['task-lead', 'task-reader']);
+    expect(f.statuses()).toEqual(expected.map(member => ({ ...member, status: 'offline' })));
+  });
+});

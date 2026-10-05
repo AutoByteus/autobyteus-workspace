@@ -1,0 +1,46 @@
+2026-10-04T06:37:08.197773+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["bash", "-c", "python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-own-lifecycle.py list-after && python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-cleanup-check.py"]
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": [
+      {
+        "instanceId": "iso-52483-84f0",
+        "pid": 64222,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:52484",
+        "graphqlUrl": "http://127.0.0.1:52484/graphql",
+        "controlEndpoint": "http://127.0.0.1:52483",
+        "controlPort": 52483,
+        "serverPort": 52484,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5bvwnO",
+        "ownsDataRoot": true,
+        "keepDataRoot": false,
+        "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5bvwnO/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52483-84f0.log",
+        "startedAt": "2026-09-30T10:40:07.537Z",
+        "running": false
+      }
+    ]
+  }
+}
+
+
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-cleanup-check.py", line 8, in <module>
+    for n in ['api-014-instance.json','api-014-restart.json','api-014-history-restart.json']:pids.add(read(n)['result']['pid'])
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round14-cleanup-check.py", line 4, in <lambda>
+    read=lambda n:json.loads((E/n).read_text())
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1256, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1242, in open
+    return io.open(self, mode, buffering, encoding, errors, newline,
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1110, in _opener
+    return self._accessor.open(self, flags, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-014-history-restart.json'
+
+INNER_EXIT=1
+ELAPSED=0.31

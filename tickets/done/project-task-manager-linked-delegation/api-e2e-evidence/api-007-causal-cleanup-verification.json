@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-03T15:31:29.252531+00:00",
+  "instanceId": "iso-53457-6620",
+  "documentedStop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-53457-6620",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-sqBllc",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "ownRootRemoved": true,
+  "ownImportedDbVaultKeyRemoved": true,
+  "portsFree": [
+    53457,
+    53458,
+    9229
+  ],
+  "otherRecordsExactlyUnchanged": 4,
+  "capturedOwnPids": 92,
+  "capturedOwnPidsRemaining": [],
+  "scope": "Environment cleanup NOT original failed Task repair"
+}

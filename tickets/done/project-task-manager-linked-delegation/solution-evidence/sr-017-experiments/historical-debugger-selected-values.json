@@ -1,0 +1,316 @@
+[
+  {
+    "at": "2026-10-03T16:19:07.314Z",
+    "event": "error-caller-facts",
+    "trigger": "team-release-start",
+    "value": {
+      "teamRunId": "api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb",
+      "lifecycle": "active",
+      "configured": [
+        {
+          "address": "/borrowed",
+          "runId": "api008_packet_agent_d89d4f7914b0409abadfce1f3d396b1b",
+          "identity": {
+            "root": {
+              "rootSubjectKind": "agent_team",
+              "rootRunId": "api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb"
+            },
+            "memberAddress": "/borrowed",
+            "agentRunId": "api008_packet_agent_d89d4f7914b0409abadfce1f3d396b1b"
+          },
+          "generation": "b3461bf8-9e96-4dc2-b106-3d0b3b57460c"
+        },
+        {
+          "address": "/manager",
+          "runId": "project_task_manager_e2ba134e193e4786b004abb78512bf6e",
+          "identity": {
+            "root": {
+              "rootSubjectKind": "agent_team",
+              "rootRunId": "api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb"
+            },
+            "memberAddress": "/manager",
+            "agentRunId": "project_task_manager_e2ba134e193e4786b004abb78512bf6e"
+          },
+          "generation": "e87f20a6-3f67-4560-8383-a6d06e5d1656"
+        }
+      ]
+    },
+    "evaluationException": null
+  },
+  {
+    "at": "2026-10-03T16:19:07.317Z",
+    "event": "input-unresolved-assertion",
+    "trigger": null,
+    "value": {
+      "accepting": false,
+      "rootShutdownFenced": true,
+      "activeClaimSequence": null,
+      "entries": [
+        {
+          "sequence": 1,
+          "state": "forwarded",
+          "dispatchKind": "start_turn",
+          "associatedTurnId": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "observedTurnId": null,
+          "pendingTerminal": null,
+          "heldTurnId": null,
+          "notInto": null
+        }
+      ]
+    },
+    "evaluationException": null
+  },
+  {
+    "at": "2026-10-03T16:19:07.317Z",
+    "event": "error-caller-facts",
+    "trigger": "input-unresolved-assertion",
+    "value": {
+      "runId": "api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148",
+      "runInstanceId": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "backendResult": null,
+      "activeInputDispatch": false,
+      "uncertainInputDispatch": false,
+      "input": {
+        "accepting": false,
+        "rootShutdownFenced": true,
+        "activeClaimSequence": null,
+        "entries": [
+          {
+            "sequence": 1,
+            "state": "forwarded",
+            "dispatchKind": "start_turn",
+            "associatedTurnId": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+            "observedTurnId": null,
+            "pendingTerminal": null,
+            "heldTurnId": null,
+            "notInto": null
+          }
+        ]
+      },
+      "canonical": {
+        "lastStatus": "offline",
+        "activeTurn": {
+          "kind": "NONE"
+        },
+        "pendingCommand": false,
+        "retiredTurnIds": [
+          "01a1027e-9fe9-7973-b782-12d26f003c9f"
+        ]
+      },
+      "provider": {
+        "threadId": "01a1027e-3ae7-75f2-ac7a-96b5d899d188",
+        "activeTurnId": null,
+        "lastTerminalTurnId": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+        "status": "IDLE",
+        "workingDirectory": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/validation-workspace/concrete-agent_team",
+        "threadInManager": false,
+        "preparationInManager": false,
+        "exactThreadReleased": true,
+        "releaseScope": {
+          "closed": true,
+          "pendingCount": 0,
+          "unknownInputOutcome": false
+        },
+        "clientEntry": {
+          "holders": 2,
+          "closing": false,
+          "hasClient": true,
+          "closeAttempt": false
+        }
+      },
+      "sourceSubscribed": true
+    },
+    "evaluationException": null
+  },
+  {
+    "at": "2026-10-03T16:19:07.320Z",
+    "event": "team-proof-settled",
+    "trigger": null,
+    "value": {
+      "results": [
+        {
+          "index": 0,
+          "status": "fulfilled",
+          "value": {
+            "accepted": true
+          },
+          "error": null
+        },
+        {
+          "index": 1,
+          "status": "rejected",
+          "value": null,
+          "error": {
+            "name": "AggregateError",
+            "message": "Exact AgentRun runtime/component release failed.",
+            "stack": "AggregateError: Exact AgentRun runtime/component release failed.\n    at AgentRunManager.releaseExactRun (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/services/agent-run-manager.js:282:19)\n    at async ConfiguredAgentExecutionHandle.releaseRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/backends/configured-agent-execution-handle.js:164:28)\n    at async Promise.allSettled (index 1)\n    at async releaseOwnedFlatTeamRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/owned-flat-team-runtime-release.js:3:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/flat-team-execution-factory.js:81:44",
+            "errors": [
+              {
+                "name": "Error",
+                "message": "AgentRun termination cannot settle while submitted input remains unresolved.",
+                "stack": "Error: AgentRun termination cannot settle while submitted input remains unresolved.\n    at AgentRunInputAdmissionState.settleAcceptedTermination (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/input/agent-run-input-admission-state.js:351:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/domain/agent-run.js:472:38",
+                "errors": null,
+                "cause": null
+              }
+            ],
+            "cause": null
+          }
+        }
+      ]
+    },
+    "evaluationException": null
+  },
+  {
+    "at": "2026-10-03T16:19:07.321Z",
+    "event": "team-proof-settled",
+    "trigger": null,
+    "value": {
+      "results": [
+        {
+          "index": 0,
+          "status": "fulfilled",
+          "value": {
+            "accepted": true
+          },
+          "error": null
+        },
+        {
+          "index": 1,
+          "status": "rejected",
+          "value": null,
+          "error": {
+            "name": "AggregateError",
+            "message": "Exact AgentRun runtime/component release failed.",
+            "stack": "AggregateError: Exact AgentRun runtime/component release failed.\n    at AgentRunManager.releaseExactRun (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/services/agent-run-manager.js:282:19)\n    at async ConfiguredAgentExecutionHandle.releaseRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/backends/configured-agent-execution-handle.js:164:28)\n    at async Promise.allSettled (index 1)\n    at async releaseOwnedFlatTeamRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/owned-flat-team-runtime-release.js:3:21)\n    at async Promise.allSettled (index 1)\n    at async TaskTeamExecutionRegistry.release (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/registries/task-team-execution-registry.js:160:25)\n    at async Promise.allSettled (index 1)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/task/root-task-lifetime-scope.js:96:33\n    at async Promise.all (index 0)\n    at async RootTaskLifetimeScope.release (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/task/root-task-lifetime-scope.js:85:26)",
+            "errors": [
+              {
+                "name": "Error",
+                "message": "AgentRun termination cannot settle while submitted input remains unresolved.",
+                "stack": "Error: AgentRun termination cannot settle while submitted input remains unresolved.\n    at AgentRunInputAdmissionState.settleAcceptedTermination (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/input/agent-run-input-admission-state.js:351:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/domain/agent-run.js:472:38",
+                "errors": null,
+                "cause": null
+              }
+            ],
+            "cause": null
+          }
+        }
+      ]
+    },
+    "evaluationException": null
+  },
+  {
+    "at": "2026-10-03T16:19:07.322Z",
+    "event": "root-proof-settled",
+    "trigger": null,
+    "value": {
+      "lifetimeId": null,
+      "key": "team:api008_packet_team_66adda0d15544a6aa0f186ed58465aa2",
+      "execution": {
+        "teamRunId": "api008_packet_team_66adda0d15544a6aa0f186ed58465aa2"
+      },
+      "actual": {
+        "root": {
+          "rootSubjectKind": "agent_team",
+          "rootRunId": "api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb"
+        },
+        "execution": {
+          "teamRunId": "api008_packet_team_66adda0d15544a6aa0f186ed58465aa2"
+        },
+        "ingressAgentRunId": "api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8",
+        "purpose": "assignment"
+      },
+      "registeredControl": true,
+      "physicalAdapter": true,
+      "proofs": [
+        {
+          "branch": "registered-control",
+          "status": "rejected",
+          "value": null,
+          "error": {
+            "name": "AggregateError",
+            "message": "Owned Team exact release failed.",
+            "stack": "AggregateError: Owned Team exact release failed.\n    at releaseOwnedFlatTeamRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/owned-flat-team-runtime-release.js:6:15)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/flat-team-execution-factory.js:81:44",
+            "errors": [
+              {
+                "name": "AggregateError",
+                "message": "Exact AgentRun runtime/component release failed.",
+                "stack": "AggregateError: Exact AgentRun runtime/component release failed.\n    at AgentRunManager.releaseExactRun (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/services/agent-run-manager.js:282:19)\n    at async ConfiguredAgentExecutionHandle.releaseRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/backends/configured-agent-execution-handle.js:164:28)\n    at async Promise.allSettled (index 1)\n    at async releaseOwnedFlatTeamRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/owned-flat-team-runtime-release.js:3:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/flat-team-execution-factory.js:81:44",
+                "errors": [
+                  {
+                    "name": "Error",
+                    "message": "AgentRun termination cannot settle while submitted input remains unresolved.",
+                    "stack": "Error: AgentRun termination cannot settle while submitted input remains unresolved.\n    at AgentRunInputAdmissionState.settleAcceptedTermination (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/input/agent-run-input-admission-state.js:351:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/domain/agent-run.js:472:38",
+                    "errors": null,
+                    "cause": null
+                  }
+                ],
+                "cause": null
+              }
+            ],
+            "cause": null
+          }
+        },
+        {
+          "branch": "physical-adapter",
+          "status": "rejected",
+          "value": null,
+          "error": {
+            "name": "AggregateError",
+            "message": "Exact Task Team cleanup failed.",
+            "stack": "AggregateError: Exact Task Team cleanup failed.\n    at TaskTeamExecutionRegistry.release (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/registries/task-team-execution-registry.js:163:19)\n    at async Promise.allSettled (index 1)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/task/root-task-lifetime-scope.js:96:33\n    at async Promise.all (index 0)\n    at async RootTaskLifetimeScope.release (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/task/root-task-lifetime-scope.js:85:26)\n    at async ProjectTaskRuntimeRelease.run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/projects/runtime/project-task-runtime-release.js:36:24)",
+            "errors": [
+              {
+                "name": "AggregateError",
+                "message": "Owned Team exact release failed.",
+                "stack": "AggregateError: Owned Team exact release failed.\n    at releaseOwnedFlatTeamRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/owned-flat-team-runtime-release.js:6:15)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/flat-team-execution-factory.js:81:44",
+                "errors": [
+                  {
+                    "name": "AggregateError",
+                    "message": "Exact AgentRun runtime/component release failed.",
+                    "stack": "AggregateError: Exact AgentRun runtime/component release failed.\n    at AgentRunManager.releaseExactRun (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/services/agent-run-manager.js:282:19)\n    at async ConfiguredAgentExecutionHandle.releaseRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/backends/configured-agent-execution-handle.js:164:28)\n    at async Promise.allSettled (index 1)\n    at async releaseOwnedFlatTeamRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/owned-flat-team-runtime-release.js:3:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/flat-team-execution-factory.js:81:44",
+                    "errors": [
+                      {
+                        "name": "Error",
+                        "message": "AgentRun termination cannot settle while submitted input remains unresolved.",
+                        "stack": "Error: AgentRun termination cannot settle while submitted input remains unresolved.\n    at AgentRunInputAdmissionState.settleAcceptedTermination (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/input/agent-run-input-admission-state.js:351:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/domain/agent-run.js:472:38",
+                        "errors": null,
+                        "cause": null
+                      }
+                    ],
+                    "cause": null
+                  }
+                ],
+                "cause": null
+              },
+              {
+                "name": "AggregateError",
+                "message": "Owned Team exact release failed.",
+                "stack": "AggregateError: Owned Team exact release failed.\n    at releaseOwnedFlatTeamRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/owned-flat-team-runtime-release.js:6:15)\n    at async Promise.allSettled (index 1)\n    at async TaskTeamExecutionRegistry.release (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/registries/task-team-execution-registry.js:160:25)\n    at async Promise.allSettled (index 1)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/task/root-task-lifetime-scope.js:96:33\n    at async Promise.all (index 0)\n    at async RootTaskLifetimeScope.release (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/task/root-task-lifetime-scope.js:85:26)\n    at async ProjectTaskRuntimeRelease.run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/projects/runtime/project-task-runtime-release.js:36:24)",
+                "errors": [
+                  {
+                    "name": "AggregateError",
+                    "message": "Exact AgentRun runtime/component release failed.",
+                    "stack": "AggregateError: Exact AgentRun runtime/component release failed.\n    at AgentRunManager.releaseExactRun (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/services/agent-run-manager.js:282:19)\n    at async ConfiguredAgentExecutionHandle.releaseRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/backends/configured-agent-execution-handle.js:164:28)\n    at async Promise.allSettled (index 1)\n    at async releaseOwnedFlatTeamRuntime (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/owned-flat-team-runtime-release.js:3:21)\n    at async Promise.allSettled (index 1)\n    at async TaskTeamExecutionRegistry.release (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-team-execution/local/registries/task-team-execution-registry.js:160:25)\n    at async Promise.allSettled (index 1)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/task/root-task-lifetime-scope.js:96:33\n    at async Promise.all (index 0)\n    at async RootTaskLifetimeScope.release (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-collaboration/execution/task/root-task-lifetime-scope.js:85:26)",
+                    "errors": [
+                      {
+                        "name": "Error",
+                        "message": "AgentRun termination cannot settle while submitted input remains unresolved.",
+                        "stack": "Error: AgentRun termination cannot settle while submitted input remains unresolved.\n    at AgentRunInputAdmissionState.settleAcceptedTermination (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/input/agent-run-input-admission-state.js:351:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/domain/agent-run.js:472:38",
+                        "errors": null,
+                        "cause": null
+                      }
+                    ],
+                    "cause": null
+                  }
+                ],
+                "cause": null
+              }
+            ],
+            "cause": null
+          }
+        }
+      ]
+    },
+    "evaluationException": null
+  }
+]

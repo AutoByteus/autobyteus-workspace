@@ -1,0 +1,730 @@
+--- original-index
++++ current-index
+@@ -689,187 +689,187 @@
+   uid: 501	gid: 20
+   size: 2121	flags: 0
+ autobyteus-agent-presentation-contracts/LICENSE
+-  ctime: 1791087632:467384731
++  ctime: 1791093145:848824232
+   mtime: 1791001443:872078667
+   dev: 16777231	ino: 453870520
+   uid: 501	gid: 20
+   size: 19	flags: 0
+ autobyteus-agent-presentation-contracts/README.md
+-  ctime: 1791087632:497076986
++  ctime: 1791093145:866541615
+   mtime: 1791001443:872163626
+   dev: 16777231	ino: 453870521
+   uid: 501	gid: 20
+   size: 303	flags: 0
+ autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts
+-  ctime: 1791087632:497763146
++  ctime: 1791093145:867957172
+   mtime: 1791006603:383505438
+   dev: 16777231	ino: 453870523
+   uid: 501	gid: 20
+   size: 597	flags: 0
+ autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts.map
+-  ctime: 1791087632:473143758
++  ctime: 1791093145:855789937
+   mtime: 1791006603:383381938
+   dev: 16777231	ino: 453870524
+   uid: 501	gid: 20
+   size: 502	flags: 0
+ autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js
+-  ctime: 1791087632:468229056
++  ctime: 1791093145:849357764
+   mtime: 1791006603:378632699
+   dev: 16777231	ino: 453870525
+   uid: 501	gid: 20
+   size: 740	flags: 0
+ autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js.map
+-  ctime: 1791087632:473684337
++  ctime: 1791093145:856466841
+   mtime: 1791006603:378395489
+   dev: 16777231	ino: 453870526
+   uid: 501	gid: 20
+   size: 963	flags: 0
+ autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts
+-  ctime: 1791087632:498836302
++  ctime: 1791093145:868934737
+   mtime: 1791006603:398642494
+   dev: 16777231	ino: 453870527
+   uid: 501	gid: 20
+   size: 4270	flags: 0
+ autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts.map
+-  ctime: 1791087632:488679108
++  ctime: 1791093145:857333034
+   mtime: 1791006603:398205616
+   dev: 16777231	ino: 453870528
+   uid: 501	gid: 20
+   size: 740	flags: 0
+ autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js
+-  ctime: 1791087632:469104547
++  ctime: 1791093145:849965253
+   mtime: 1791006603:391391156
+   dev: 16777231	ino: 453870529
+   uid: 501	gid: 20
+   size: 1795	flags: 0
+ autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js.map
+-  ctime: 1791087632:489330935
++  ctime: 1791093145:858210143
+   mtime: 1791006603:391216238
+   dev: 16777231	ino: 453870530
+   uid: 501	gid: 20
+   size: 1901	flags: 0
+ autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts
+-  ctime: 1791087632:500076207
++  ctime: 1791093145:869780930
+   mtime: 1791006603:432990840
+   dev: 16777231	ino: 453870531
+   uid: 501	gid: 20
+   size: 29183	flags: 0
+ autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts.map
+-  ctime: 1791087632:490438425
++  ctime: 1791093145:859208916
+   mtime: 1791006603:432620755
+   dev: 16777231	ino: 453870532
+   uid: 501	gid: 20
+   size: 1660	flags: 0
+ autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js
+-  ctime: 1791087632:469943539
++  ctime: 1791093145:850649448
+   mtime: 1791006603:411944455
+   dev: 16777231	ino: 453870533
+   uid: 501	gid: 20
+   size: 11376	flags: 0
+ autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map
+-  ctime: 1791087632:491424124
++  ctime: 1791093145:859993860
+   mtime: 1791006603:411539994
+   dev: 16777231	ino: 453870534
+   uid: 501	gid: 20
+   size: 9382	flags: 0
+ autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.d.ts
+-  ctime: 1791087632:500973698
++  ctime: 1791093145:870458460
+   mtime: 1791006603:440803182
+   dev: 16777231	ino: 453870535
+   uid: 501	gid: 20
+   size: 2643	flags: 0
+ autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.d.ts.map
+-  ctime: 1791087632:492350906
++  ctime: 1791093145:860647098
+   mtime: 1791006603:440662556
+   dev: 16777231	ino: 453870536
+   uid: 501	gid: 20
+   size: 1109	flags: 0
+ autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.js
+-  ctime: 1791087632:470646616
++  ctime: 1791093145:851379477
+   mtime: 1791006603:436905782
+   dev: 16777231	ino: 453870537
+   uid: 501	gid: 20
+   size: 4594	flags: 0
+ autobyteus-agent-presentation-contracts/dist/collaborator-mention-note.js.map
+-  ctime: 1791087632:493150024
++  ctime: 1791093145:861396168
+   mtime: 1791006603:436728448
+   dev: 16777231	ino: 453870538
+   uid: 501	gid: 20
+   size: 3729	flags: 0
+ autobyteus-agent-presentation-contracts/dist/index.d.ts
+-  ctime: 1791087632:502143062
++  ctime: 1791093145:871105989
+   mtime: 1791006603:441708688
+   dev: 16777231	ino: 453870539
+   uid: 501	gid: 20
+   size: 315	flags: 0
+ autobyteus-agent-presentation-contracts/dist/index.d.ts.map
+-  ctime: 1791087632:493880267
++  ctime: 1791093145:862082738
+   mtime: 1791006603:441627729
+   dev: 16777231	ino: 453870540
+   uid: 501	gid: 20
+   size: 240	flags: 0
+ autobyteus-agent-presentation-contracts/dist/index.js
+-  ctime: 1791087632:471132361
++  ctime: 1791093145:852323376
+   mtime: 1791006603:441317977
+   dev: 16777231	ino: 453870541
+   uid: 501	gid: 20
+   size: 313	flags: 0
+ autobyteus-agent-presentation-contracts/dist/index.js.map
+-  ctime: 1791087632:494498886
++  ctime: 1791093145:862865266
+   mtime: 1791006603:441232602
+   dev: 16777231	ino: 453870542
+   uid: 501	gid: 20
+   size: 238	flags: 0
+ autobyteus-agent-presentation-contracts/dist/schema-helpers.d.ts
+-  ctime: 1791087632:502680265
++  ctime: 1791093145:871767394
+   mtime: 1791006603:389604061
+   dev: 16777231	ino: 453870543
+   uid: 501	gid: 20
+   size: 557	flags: 0
+ autobyteus-agent-presentation-contracts/dist/schema-helpers.d.ts.map
+-  ctime: 1791087632:495093047
++  ctime: 1791093145:863921496
+   mtime: 1791006603:389488102
+   dev: 16777231	ino: 453870544
+   uid: 501	gid: 20
+   size: 525	flags: 0
+ autobyteus-agent-presentation-contracts/dist/schema-helpers.js
+-  ctime: 1791087632:471634565
++  ctime: 1791093145:853179527
+   mtime: 1791006603:385549910
+   dev: 16777231	ino: 453870545
+   uid: 501	gid: 20
+   size: 995	flags: 0
+ autobyteus-agent-presentation-contracts/dist/schema-helpers.js.map
+-  ctime: 1791087632:495612791
++  ctime: 1791093145:864688316
+   mtime: 1791006603:385453493
+   dev: 16777231	ino: 453870546
+   uid: 501	gid: 20
+   size: 1351	flags: 0
+ autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts
+-  ctime: 1791087632:504131084
++  ctime: 1791093145:872357758
+   mtime: 1791006603:405876416
+   dev: 16777231	ino: 453870547
+   uid: 501	gid: 20
+   size: 5986	flags: 0
+ autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts.map
+-  ctime: 1791087632:496094204
++  ctime: 1791093145:865240764
+   mtime: 1791006603:405712456
+   dev: 16777231	ino: 453870548
+   uid: 501	gid: 20
+   size: 442	flags: 0
+ autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+-  ctime: 1791087632:472099269
++  ctime: 1791093145:854129426
+   mtime: 1791006603:402545061
+   dev: 16777231	ino: 453870549
+   uid: 501	gid: 20
+   size: 3353	flags: 0
+ autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js.map
+-  ctime: 1791087632:496602574
++  ctime: 1791093145:865751879
+   mtime: 1791006603:402427060
+   dev: 16777231	ino: 453870550
+   uid: 501	gid: 20
+   size: 2170	flags: 0
+ autobyteus-agent-presentation-contracts/package.json
+-  ctime: 1791087632:472573931
++  ctime: 1791093145:854895037
+   mtime: 1791001443:876218617
+   dev: 16777231	ino: 453870551
+   uid: 501	gid: 20
+@@ -1733,13 +1733,13 @@
+   uid: 501	gid: 20
+   size: 159	flags: 0
+ autobyteus-application-sdk-contracts/README.md
+-  ctime: 1791087632:458888313
++  ctime: 1791093145:983379803
+   mtime: 1791001443:896006402
+   dev: 16777231	ino: 453870756
+   uid: 501	gid: 20
+   size: 9864	flags: 0
+ autobyteus-application-sdk-contracts/package.json
+-  ctime: 1791087632:439568208
++  ctime: 1791093145:965163012
+   mtime: 1791001443:896266112
+   dev: 16777231	ino: 453870757
+   uid: 501	gid: 20
+@@ -1841,115 +1841,115 @@
+   uid: 501	gid: 20
+   size: 370	flags: 0
+ autobyteus-collaboration-stream-contracts/LICENSE
+-  ctime: 1791087632:451991796
++  ctime: 1791093145:912874306
+   mtime: 1791001443:898119210
+   dev: 16777231	ino: 453870777
+   uid: 501	gid: 20
+   size: 19	flags: 0
+ autobyteus-collaboration-stream-contracts/README.md
+-  ctime: 1791087632:461246124
++  ctime: 1791093145:944994549
+   mtime: 1791001443:898208919
+   dev: 16777231	ino: 453870778
+   uid: 501	gid: 20
+   size: 207	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts
+-  ctime: 1791087632:462338404
++  ctime: 1791093145:945973864
+   mtime: 1791021408:386636393
+   dev: 16777231	ino: 453870780
+   uid: 501	gid: 20
+   size: 33047	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts.map
+-  ctime: 1791087632:456717375
++  ctime: 1791093145:936937489
+   mtime: 1791021408:385707534
+   dev: 16777231	ino: 453870781
+   uid: 501	gid: 20
+   size: 3138	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js
+-  ctime: 1791087632:452696456
++  ctime: 1791093145:913687707
+   mtime: 1791021408:341081478
+   dev: 16777231	ino: 453870782
+   uid: 501	gid: 20
+   size: 7804	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js.map
+-  ctime: 1791087632:457328453
++  ctime: 1791093145:937473937
+   mtime: 1791021408:340539505
+   dev: 16777231	ino: 453870783
+   uid: 501	gid: 20
+   size: 7288	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts
+-  ctime: 1791087632:464206220
++  ctime: 1791093145:946818599
+   mtime: 1791021408:419576004
+   dev: 16777231	ino: 453870784
+   uid: 501	gid: 20
+   size: 37343	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts.map
+-  ctime: 1791087632:457828906
++  ctime: 1791093145:937938054
+   mtime: 1791021408:418642603
+   dev: 16777231	ino: 453870785
+   uid: 501	gid: 20
+   size: 1426	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js
+-  ctime: 1791087632:454215316
++  ctime: 1791093145:914377570
+   mtime: 1791021408:389533639
+   dev: 16777231	ino: 453870786
+   uid: 501	gid: 20
+   size: 2540	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js.map
+-  ctime: 1791087632:458431567
++  ctime: 1791093145:938512085
+   mtime: 1791021408:389122044
+   dev: 16777231	ino: 453870787
+   uid: 501	gid: 20
+   size: 2144	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/index.d.ts
+-  ctime: 1791087632:464902671
++  ctime: 1791093145:947464962
+   mtime: 1791021408:505324103
+   dev: 16777231	ino: 453870788
+   uid: 501	gid: 20
+   size: 180	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/index.d.ts.map
+-  ctime: 1791087632:458942687
++  ctime: 1791093145:939113115
+   mtime: 1791021408:505114222
+   dev: 16777231	ino: 453870789
+   uid: 501	gid: 20
+   size: 171	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/index.js
+-  ctime: 1791087632:454945018
++  ctime: 1791093145:934449118
+   mtime: 1791021408:504465329
+   dev: 16777231	ino: 453870790
+   uid: 501	gid: 20
+   size: 178	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/index.js.map
+-  ctime: 1791087632:459501474
++  ctime: 1791093145:939825936
+   mtime: 1791021408:504162780
+   dev: 16777231	ino: 453870791
+   uid: 501	gid: 20
+   size: 169	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts
+-  ctime: 1791087632:465585873
++  ctime: 1791093145:947924537
+   mtime: 1791021408:502857785
+   dev: 16777231	ino: 453870792
+   uid: 501	gid: 20
+   size: 191435	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map
+-  ctime: 1791087632:460063301
++  ctime: 1791093145:940569755
+   mtime: 1791021408:500790895
+   dev: 16777231	ino: 453870793
+   uid: 501	gid: 20
+   size: 4579	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js
+-  ctime: 1791087632:455542720
++  ctime: 1791093145:935784177
+   mtime: 1791021408:430058874
+   dev: 16777231	ino: 453870794
+   uid: 501	gid: 20
+   size: 12738	flags: 0
+ autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js.map
+-  ctime: 1791087632:460637546
++  ctime: 1791093145:942786090
+   mtime: 1791021408:429141266
+   dev: 16777231	ino: 453870795
+   uid: 501	gid: 20
+   size: 12042	flags: 0
+ autobyteus-collaboration-stream-contracts/package.json
+-  ctime: 1791087632:456119048
++  ctime: 1791093145:936314292
+   mtime: 1791001443:902179118
+   dev: 16777231	ino: 453870796
+   uid: 501	gid: 20
+@@ -20063,283 +20063,283 @@
+   uid: 501	gid: 20
+   size: 932	flags: 0
+ autobyteus-team-stream-contracts/LICENSE
+-  ctime: 1791087632:473055926
++  ctime: 1791093145:949491842
+   mtime: 1791001444:336109992
+   dev: 16777231	ino: 453874500
+   uid: 501	gid: 20
+   size: 19	flags: 0
+ autobyteus-team-stream-contracts/README.md
+-  ctime: 1791087632:514977563
++  ctime: 1791093145:975122163
+   mtime: 1791001444:336202910
+   dev: 16777231	ino: 453874501
+   uid: 501	gid: 20
+   size: 237	flags: 0
+ autobyteus-team-stream-contracts/dist/index.d.ts
+-  ctime: 1791087632:515763097
++  ctime: 1791093145:975757234
+   mtime: 1791006607:187792831
+   dev: 16777231	ino: 453874503
+   uid: 501	gid: 20
+   size: 516	flags: 0
+ autobyteus-team-stream-contracts/dist/index.d.ts.map
+-  ctime: 1791087632:496990237
++  ctime: 1791093145:958754172
+   mtime: 1791006607:187718873
+   dev: 16777231	ino: 453874504
+   uid: 501	gid: 20
+   size: 332	flags: 0
+ autobyteus-team-stream-contracts/dist/index.js
+-  ctime: 1791087632:488719400
++  ctime: 1791093145:950037540
+   mtime: 1791006607:187519746
+   dev: 16777231	ino: 453874505
+   uid: 501	gid: 20
+   size: 514	flags: 0
+ autobyteus-team-stream-contracts/dist/index.js.map
+-  ctime: 1791087632:497760646
++  ctime: 1791093145:959396868
+   mtime: 1791006607:187440121
+   dev: 16777231	ino: 453874506
+   uid: 501	gid: 20
+   size: 330	flags: 0
+ autobyteus-team-stream-contracts/dist/schema-helpers.d.ts
+-  ctime: 1791087632:516445049
++  ctime: 1791093145:976383681
+   mtime: 1791006607:89414448
+   dev: 16777231	ino: 453874507
+   uid: 501	gid: 20
+   size: 578	flags: 0
+ autobyteus-team-stream-contracts/dist/schema-helpers.d.ts.map
+-  ctime: 1791087632:498832760
++  ctime: 1791093145:960045981
+   mtime: 1791006607:89298031
+   dev: 16777231	ino: 453874508
+   uid: 501	gid: 20
+   size: 565	flags: 0
+ autobyteus-team-stream-contracts/dist/schema-helpers.js
+-  ctime: 1791087632:489329810
++  ctime: 1791093145:950692986
+   mtime: 1791006607:82869573
+   dev: 16777231	ino: 453874509
+   uid: 501	gid: 20
+   size: 787	flags: 0
+ autobyteus-team-stream-contracts/dist/schema-helpers.js.map
+-  ctime: 1791087632:500070332
++  ctime: 1791093145:960594221
+   mtime: 1791006607:82717280
+   dev: 16777231	ino: 453874510
+   uid: 501	gid: 20
+   size: 1070	flags: 0
+ autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts
+-  ctime: 1791087632:517025710
++  ctime: 1791093145:977106293
+   mtime: 1791006607:143816382
+   dev: 16777231	ino: 453874511
+   uid: 501	gid: 20
+   size: 29468	flags: 0
+ autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map
+-  ctime: 1791087632:500942323
++  ctime: 1791093145:961300083
+   mtime: 1791006607:143442379
+   dev: 16777231	ino: 453874512
+   uid: 501	gid: 20
+   size: 1146	flags: 0
+ autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js
+-  ctime: 1791087632:490393050
++  ctime: 1791093145:951275392
+   mtime: 1791006607:114654611
+   dev: 16777231	ino: 453874513
+   uid: 501	gid: 20
+   size: 4283	flags: 0
+ autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map
+-  ctime: 1791087632:502150687
++  ctime: 1791093145:962223066
+   mtime: 1791006607:114496568
+   dev: 16777231	ino: 453874514
+   uid: 501	gid: 20
+   size: 3079	flags: 0
+ autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.d.ts
+-  ctime: 1791087632:517758703
++  ctime: 1791093145:977710907
+   mtime: 1791006607:151522140
+   dev: 16777231	ino: 453874515
+   uid: 501	gid: 20
+   size: 2877	flags: 0
+ autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.d.ts.map
+-  ctime: 1791087632:504607621
++  ctime: 1791093145:963013093
+   mtime: 1791006607:151404264
+   dev: 16777231	ino: 453874516
+   uid: 501	gid: 20
+   size: 651	flags: 0
+ autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.js
+-  ctime: 1791087632:491296667
++  ctime: 1791093145:951863798
+   mtime: 1791006607:149353334
+   dev: 16777231	ino: 453874517
+   uid: 501	gid: 20
+   size: 1493	flags: 0
+ autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.js.map
+-  ctime: 1791087632:505061034
++  ctime: 1791093145:963904535
+   mtime: 1791006607:149256208
+   dev: 16777231	ino: 453874518
+   uid: 501	gid: 20
+   size: 1363	flags: 0
+ autobyteus-team-stream-contracts/dist/team-control-message-dtos.d.ts
+-  ctime: 1791087632:518529612
++  ctime: 1791093145:978322645
+   mtime: 1791006607:153316318
+   dev: 16777231	ino: 453874519
+   uid: 501	gid: 20
+   size: 1201	flags: 0
+ autobyteus-team-stream-contracts/dist/team-control-message-dtos.d.ts.map
+-  ctime: 1791087632:505640695
++  ctime: 1791093145:965047764
+   mtime: 1791006607:153221776
+   dev: 16777231	ino: 453874520
+   uid: 501	gid: 20
+   size: 375	flags: 0
+ autobyteus-team-stream-contracts/dist/team-control-message-dtos.js
+-  ctime: 1791087632:492186908
++  ctime: 1791093145:952508995
+   mtime: 1791006607:152181060
+   dev: 16777231	ino: 453874521
+   uid: 501	gid: 20
+   size: 1286	flags: 0
+ autobyteus-team-stream-contracts/dist/team-control-message-dtos.js.map
+-  ctime: 1791087632:506218064
++  ctime: 1791093145:966001997
+   mtime: 1791006607:152094685
+   dev: 16777231	ino: 453874522
+   uid: 501	gid: 20
+   size: 1168	flags: 0
+ autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts
+-  ctime: 1791087632:519124856
++  ctime: 1791093145:979205838
+   mtime: 1791006607:109418785
+   dev: 16777231	ino: 453874523
+   uid: 501	gid: 20
+   size: 7189	flags: 0
+ autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts.map
+-  ctime: 1791087632:506905974
++  ctime: 1791093145:966663526
+   mtime: 1791006607:109252493
+   dev: 16777231	ino: 453874524
+   uid: 501	gid: 20
+   size: 4964	flags: 0
+ autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js
+-  ctime: 1791087632:492778444
++  ctime: 1791093145:953054401
+   mtime: 1791006607:103216620
+   dev: 16777231	ino: 453874525
+   uid: 501	gid: 20
+   size: 7125	flags: 0
+ autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js.map
+-  ctime: 1791087632:507471219
++  ctime: 1791093145:967444304
+   mtime: 1791006607:102972327
+   dev: 16777231	ino: 453874526
+   uid: 501	gid: 20
+   size: 6539	flags: 0
+ autobyteus-team-stream-contracts/dist/team-reference-file-dto.d.ts
+-  ctime: 1791087632:519903474
++  ctime: 1791093145:979860492
+   mtime: 1791006607:111739884
+   dev: 16777231	ino: 453874527
+   uid: 501	gid: 20
+   size: 574	flags: 0
+ autobyteus-team-stream-contracts/dist/team-reference-file-dto.d.ts.map
+-  ctime: 1791087632:508054963
++  ctime: 1791093145:968142166
+   mtime: 1791006607:111609549
+   dev: 16777231	ino: 453874528
+   uid: 501	gid: 20
+   size: 312	flags: 0
+ autobyteus-team-stream-contracts/dist/team-reference-file-dto.js
+-  ctime: 1791087632:493473437
++  ctime: 1791093145:954405543
+   mtime: 1791006607:110600001
+   dev: 16777231	ino: 453874529
+   uid: 501	gid: 20
+   size: 437	flags: 0
+ autobyteus-team-stream-contracts/dist/team-reference-file-dto.js.map
+-  ctime: 1791087632:508856830
++  ctime: 1791093145:968700114
+   mtime: 1791006607:110482126
+   dev: 16777231	ino: 453874530
+   uid: 501	gid: 20
+   size: 524	flags: 0
+ autobyteus-team-stream-contracts/dist/team-stream-client-message.d.ts
+-  ctime: 1791087632:521055421
++  ctime: 1791093145:980525647
+   mtime: 1791006607:160687282
+   dev: 16777231	ino: 453874531
+   uid: 501	gid: 20
+   size: 1748	flags: 0
+ autobyteus-team-stream-contracts/dist/team-stream-client-message.d.ts.map
+-  ctime: 1791087632:509526324
++  ctime: 1791093145:969250770
+   mtime: 1791006607:160531698
+   dev: 16777231	ino: 453874532
+   uid: 501	gid: 20
+   size: 460	flags: 0
+ autobyteus-team-stream-contracts/dist/team-stream-client-message.js
+-  ctime: 1791087632:494136806
++  ctime: 1791093145:955266861
+   mtime: 1791006607:154865619
+   dev: 16777231	ino: 453874533
+   uid: 501	gid: 20
+   size: 1126	flags: 0
+ autobyteus-team-stream-contracts/dist/team-stream-client-message.js.map
+-  ctime: 1791087632:510037402
++  ctime: 1791093145:970073005
+   mtime: 1791006607:154777911
+   dev: 16777231	ino: 453874534
+   uid: 501	gid: 20
+   size: 1218	flags: 0
+ autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts
+-  ctime: 1791087632:521925579
++  ctime: 1791093145:981118886
+   mtime: 1791006607:186949034
+   dev: 16777231	ino: 453874535
+   uid: 501	gid: 20
+   size: 50544	flags: 0
+ autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map
+-  ctime: 1791087632:510892144
++  ctime: 1791093145:970750659
+   mtime: 1791006607:186740866
+   dev: 16777231	ino: 453874536
+   uid: 501	gid: 20
+   size: 2994	flags: 0
+ autobyteus-team-stream-contracts/dist/team-stream-server-message.js
+-  ctime: 1791087632:494751133
++  ctime: 1791093145:955925098
+   mtime: 1791006607:162585711
+   dev: 16777231	ino: 453874537
+   uid: 501	gid: 20
+   size: 4906	flags: 0
+ autobyteus-team-stream-contracts/dist/team-stream-server-message.js.map
+-  ctime: 1791087632:511397722
++  ctime: 1791093145:971360773
+   mtime: 1791006607:162445502
+   dev: 16777231	ino: 453874538
+   uid: 501	gid: 20
+   size: 4143	flags: 0
+ autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.d.ts
+-  ctime: 1791087632:522616156
++  ctime: 1791093145:981886163
+   mtime: 1791006607:148509704
+   dev: 16777231	ino: 453874539
+   uid: 501	gid: 20
+   size: 2647	flags: 0
+ autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.d.ts.map
+-  ctime: 1791087632:511860385
++  ctime: 1791093145:971963846
+   mtime: 1791006607:148344494
+   dev: 16777231	ino: 453874540
+   uid: 501	gid: 20
+   size: 500	flags: 0
+ autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.js
+-  ctime: 1791087632:495384877
++  ctime: 1791093145:956755750
+   mtime: 1791006607:144675929
+   dev: 16777231	ino: 453874541
+   uid: 501	gid: 20
+   size: 896	flags: 0
+ autobyteus-team-stream-contracts/dist/team-task-execution-message-dtos.js.map
+-  ctime: 1791087632:512757126
++  ctime: 1791093145:972597084
+   mtime: 1791006607:144508011
+   dev: 16777231	ino: 453874542
+   uid: 501	gid: 20
+   size: 755	flags: 0
+ autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.d.ts
+-  ctime: 1791087632:523245733
++  ctime: 1791093145:982693524
+   mtime: 1791006607:98173546
+   dev: 16777231	ino: 453874543
+   uid: 501	gid: 20
+   size: 9447	flags: 0
+ autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.d.ts.map
+-  ctime: 1791087632:513567993
++  ctime: 1791093145:973449068
+   mtime: 1791006607:97878711
+   dev: 16777231	ino: 453874544
+   uid: 501	gid: 20
+   size: 765	flags: 0
+ autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.js
+-  ctime: 1791087632:495943247
++  ctime: 1791093145:957363364
+   mtime: 1791006607:91274960
+   dev: 16777231	ino: 453874545
+   uid: 501	gid: 20
+   size: 4018	flags: 0
+ autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.js.map
+-  ctime: 1791087632:514230028
++  ctime: 1791093145:974404551
+   mtime: 1791006607:91175543
+   dev: 16777231	ino: 453874546
+   uid: 501	gid: 20
+   size: 2265	flags: 0
+ autobyteus-team-stream-contracts/package.json
+-  ctime: 1791087632:496475992
++  ctime: 1791093145:958018185
+   mtime: 1791001444:344366309
+   dev: 16777231	ino: 453874547
+   uid: 501	gid: 20
+@@ -26465,20 +26465,20 @@
+   uid: 501	gid: 20
+   size: 943	flags: 0
+ autobyteus-web/build/icons/16x16.png
+-  ctime: 1791087665:298837927
+-  mtime: 1791087665:298837927
++  ctime: 1791093176:884901759
++  mtime: 1791093176:884901759
+   dev: 16777231	ino: 453875783
+   uid: 501	gid: 20
+   size: 439	flags: 0
+ autobyteus-web/build/icons/32x32.png
+-  ctime: 1791087665:300868824
+-  mtime: 1791087665:300868824
++  ctime: 1791093176:886582186
++  mtime: 1791093176:886582186
+   dev: 16777231	ino: 453875784
+   uid: 501	gid: 20
+   size: 853	flags: 0
+ autobyteus-web/build/icons/48x48.png
+-  ctime: 1791087665:302107937
+-  mtime: 1791087665:302107937
++  ctime: 1791093176:887819414
++  mtime: 1791093176:887819414
+   dev: 16777231	ino: 453875785
+   uid: 501	gid: 20
+   size: 1210	flags: 0

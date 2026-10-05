@@ -1,0 +1,49 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts > witness: partial private Team release waits for member 1 before initiating member 2 cleanup
+PRIVATE_RELEASE_BEFORE_FIRST_DRAIN []
+
+ ❯ tests/unit/reviewer/cleanup-witness.test.ts (2 tests | 2 failed) 8ms
+   × witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending 5ms
+   × witness: partial private Team release waits for member 1 before initiating member 2 cleanup 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/reviewer/cleanup-witness.test.ts > witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending
+TypeError: Cannot assign to read only property 'taskExecutions' of object '#<Object>'
+ ❯ tests/unit/reviewer/cleanup-witness.test.ts:51:13
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/reviewer/cleanup-witness.test.ts > witness: partial private Team release waits for member 1 before initiating member 2 cleanup
+AssertionError: expected [] to deeply equal [ 'first' ]
+
+- Expected
++ Received
+
+- [
+-   "first",
+- ]
++ []
+
+ ❯ tests/unit/reviewer/cleanup-witness.test.ts:85:151
+     83|   const op = f.factory.beginMaterialization({ physicalScope: scope, te…
+     84|   await op.prepare(); const releasing = op.release();
+     85|   try { for (let n = 0; n < 30; n++) await Promise.resolve(); console.…
+       |                                                                                                                                                       ^
+     86|   finally { unblock(); await releasing; }
+     87|   expect(calls).toEqual(['first', 'second']);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  10:27:45
+   Duration  3.85s (transform 2.47s, setup 0ms, import 3.75s, tests 8ms, environment 0ms)
+

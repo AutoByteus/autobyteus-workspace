@@ -1,0 +1,9 @@
+case=API-008
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=python3 tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-cleanup-check.py
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round11r-cleanup-check.py", line 37, in <module>
+    assert all(v is True for v in ports.values()) and not out['capturedOwnPidsStillPresent']
+AssertionError
+
+PROCESS_EXIT_CODE=1

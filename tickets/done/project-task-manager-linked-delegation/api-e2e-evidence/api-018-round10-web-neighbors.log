@@ -1,0 +1,464 @@
+case=API-018
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=pnpm -C autobyteus-web test:nuxt services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --run
+
+> autobyteus@1.4.92-beta.12 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (6 tests) 6ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts (3 tests) 14ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (12 tests) 13ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (7 tests) 15ms
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts (8 tests | 7 failed) 33ms
+   × exact Org task inspection independent of history drawer initialization > awaits the canonical cold read, then opens the shut-down non-coordinator; warm same-name links keep exact identity 13ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+   ✓ exact Org task inspection independent of history drawer initialization > resolves inactive history through the same read owner and inspects without Restore, transport or activation 11ms
+   × exact Org task inspection independent of history drawer initialization > retains strict network unavailability without inferring root activity from the current context 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+   × exact Org task inspection independent of history drawer initialization > retains strict graphql unavailability without inferring root activity from the current context 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+   × exact Org task inspection independent of history drawer initialization > retains strict schema unavailability without inferring root activity from the current context 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+   × exact Org task inspection independent of history drawer initialization > retains strict missing unavailability without inferring root activity from the current context 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+   × exact Org task inspection independent of history drawer initialization > does not substitute a configured or same-address execution for an unknown exact AgentRun 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+   × exact Org task inspection independent of history drawer initialization > retains the exact AgentRun requirement before issuing navigation 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (3 tests) 85ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (45 tests) 483ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (15 tests) 1362ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > awaits the canonical cold read, then opens the shut-down non-coordinator; warm same-name links keep exact identity
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+ ❯ readAgentOrgRunInspection services/agentOrgExecution/agentOrgRunInspection.ts:10:47
+      8|     variables: { orgRunId }, fetchPolicy: 'network-only', context: { q…
+      9|   if (result.errors?.length) throw new Error(result.errors.map((error:…
+     10|   const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAg…
+       |                                               ^
+     11|   if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_…
+     12|     throw new Error('AgentOrg inspection root mismatch.')
+ ❯ readInspection stores/agentOrgContextsStore.ts:132:20
+ ❯ setup composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:68:5
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:97:63
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > retains strict network unavailability without inferring root activity from the current context
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > retains strict graphql unavailability without inferring root activity from the current context
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > retains strict schema unavailability without inferring root activity from the current context
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > retains strict missing unavailability without inferring root activity from the current context
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+ ❯ readAgentOrgRunInspection services/agentOrgExecution/agentOrgRunInspection.ts:10:47
+      8|     variables: { orgRunId }, fetchPolicy: 'network-only', context: { q…
+      9|   if (result.errors?.length) throw new Error(result.errors.map((error:…
+     10|   const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAg…
+       |                                               ^
+     11|   if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_…
+     12|     throw new Error('AgentOrg inspection root mismatch.')
+ ❯ readInspection stores/agentOrgContextsStore.ts:132:20
+ ❯ setup composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:68:5
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:131:55
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > does not substitute a configured or same-address execution for an unknown exact AgentRun
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+ ❯ readAgentOrgRunInspection services/agentOrgExecution/agentOrgRunInspection.ts:10:47
+      8|     variables: { orgRunId }, fetchPolicy: 'network-only', context: { q…
+      9|   if (result.errors?.length) throw new Error(result.errors.map((error:…
+     10|   const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAg…
+       |                                               ^
+     11|   if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_…
+     12|     throw new Error('AgentOrg inspection root mismatch.')
+ ❯ readInspection stores/agentOrgContextsStore.ts:132:20
+ ❯ setup composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:68:5
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:148:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts > exact Org task inspection independent of history drawer initialization > retains the exact AgentRun requirement before issuing navigation
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      7,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "root_org",
+      "agent_statuses",
+      8,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+ ❯ readAgentOrgRunInspection services/agentOrgExecution/agentOrgRunInspection.ts:10:47
+      8|     variables: { orgRunId }, fetchPolicy: 'network-only', context: { q…
+      9|   if (result.errors?.length) throw new Error(result.errors.map((error:…
+     10|   const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAg…
+       |                                               ^
+     11|   if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_…
+     12|     throw new Error('AgentOrg inspection root mismatch.')
+ ❯ readInspection stores/agentOrgContextsStore.ts:132:20
+ ❯ setup composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:68:5
+ ❯ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts:156:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  7 failed | 92 passed (99)
+   Start at  22:19:49
+   Duration  9.03s (transform 4.32s, setup 50.98s, collect 3.46s, tests 2.01s, environment 2.97s, prepare 1.84s)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+PROCESS_EXIT_CODE=1

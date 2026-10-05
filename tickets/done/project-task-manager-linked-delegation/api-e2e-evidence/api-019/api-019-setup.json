@@ -1,0 +1,37 @@
+{
+  "instanceId": "iso-49296-0746",
+  "at": "2026-10-05T14:18:06.156Z",
+  "modelOffered": [
+    {
+      "modelIdentifier": "deepseek-v4-flash"
+    }
+  ],
+  "packetAgent": {
+    "id": "api019-packet-agent",
+    "name": "API019 Packet Agent"
+  },
+  "delegateHelper": {
+    "id": "api019-delegate-helper",
+    "name": "API019 Delegate Helper"
+  },
+  "bringHelper": {
+    "id": "api019-bring-helper",
+    "name": "API019 Bring Helper"
+  },
+  "coordinator": {
+    "id": "api019-team-coordinator",
+    "name": "API019 Team Coordinator"
+  },
+  "reader": {
+    "id": "api019-team-reader",
+    "name": "API019 Team Reader"
+  },
+  "team": {
+    "id": "api019-packet-team",
+    "name": "API019 Packet Team"
+  },
+  "manager": {
+    "id": "autobyteus-project-task-manager",
+    "name": "Project Task Manager"
+  }
+}

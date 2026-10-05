@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "orgRunId": "api005_concrete_root_org_af2403dd74514643ae7d2b09b1b450d6",
+  "messages": [
+    {
+      "messageId": "collabmsg_ECfxQuQcDY5DHT9NvnsTib8tin-iclAV",
+      "senderAgentRunId": "api005_packet_agent_ec5162b9fda84eb9910559b877e717de",
+      "receiverAgentRunId": "project_task_manager_a9ddc11fc7364323802547296d3275c0",
+      "content": "Read the supplied saved Task attachment using read-only cat. Exact actual read marker: API005_agent_org_A_52a50683-5561-4da1-9295-46b32a0821fe. No files or Task statuses changed.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-10-03T13:47:25.558Z"
+    }
+  ]
+}

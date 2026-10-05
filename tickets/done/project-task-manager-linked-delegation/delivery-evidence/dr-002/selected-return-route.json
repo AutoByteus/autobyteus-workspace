@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-05T05:32:49.002251+00:00",
+  "result": "Blocked",
+  "matchingRule": null,
+  "reason": "Clear user-verification hold only. No code/packaging Local Fix, Design Impact, Requirement Gap or Unclear issue discovered; no need for upstream classification. Delivery Completed rule fails because verification/finalization/safe cleanup incomplete.",
+  "fallback": "Incoming work result to exact requesting agent run only",
+  "targetAgentRunId": "code_reviewer_324c9986b1b745749a92256d790995c4",
+  "newReviewOrAPIWorkRequested": false,
+  "successfulTerminal": false
+}

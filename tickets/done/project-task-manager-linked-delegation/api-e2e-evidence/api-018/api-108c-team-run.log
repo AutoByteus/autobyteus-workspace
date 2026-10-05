@@ -1,0 +1,12 @@
+STEP agent_team run root created
+STEP agent_team run borrowed member read its sentinel
+STEP agent_team run project and saved tasks created
+STEP agent_team run A/B dispatched, bytes read, links delivered
+STEP agent_team run write window: operator post + Task-team messaging made 0 projects.json writes
+STEP agent_team run DONE B closed lifetime and released its links
+STEP agent_team run fence: input to closed B coordinator and reader rejected
+STEP agent_team run repeat DONE: no new agents, closed lifetime byte-equal
+STEP agent_team run borrowed member still usable after DONE B
+STEP agent_team run open A still usable after DONE B
+STEP agent_team run run phase complete; A kept open for restart phase
+exit 0

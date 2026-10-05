@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-03T16:19:19.209125+00:00",
+  "receiptAudit": [
+    {
+      "path": "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-008-input-git-status.txt",
+      "exists": false,
+      "api010ExactPathPresent": null
+    },
+    {
+      "path": "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-causal-final-git-status.txt",
+      "exists": true,
+      "api010ExactPathPresent": false
+    },
+    {
+      "path": "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-007-causal-reference-files.json",
+      "exists": true,
+      "api010ExactPathPresent": false
+    }
+  ],
+  "finding": "Bad wrapper call created api-010.log; not present in incoming reference inventory or entry/prior final git status. No evidence of overwritten earlier log. Retain new API-owned setup error separately and do not claim historical loss."
+}

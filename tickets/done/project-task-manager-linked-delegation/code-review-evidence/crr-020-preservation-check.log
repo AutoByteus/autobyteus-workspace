@@ -1,0 +1,26 @@
+{
+  "scope": "Reviewer checkpoint before primary API handoff; authorized downstream changes after handoff are not Reviewer drift",
+  "head": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "branch": "codex/project-task-manager-linked-delegation",
+  "stashUnchanged": true,
+  "indexUnchanged": true,
+  "stagesUnchanged": true,
+  "zeroUnmerged": true,
+  "diffAndCachedChecks": [
+    0,
+    0
+  ],
+  "incomingReferences": 3825,
+  "exactIncomingReferences": 3823,
+  "authorizedChangedReferences": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-revision-record.md"
+  ],
+  "currentCandidate": 300,
+  "allCandidateBytesAndStatusExact": true,
+  "all136SourceHashesStable": true,
+  "apiDurable20Exact": true,
+  "priorCRR001Through019Exact": true,
+  "priorCanonicalArchivesExact": true,
+  "reviewerSourceTestIndexCommitSDKCredentialAppEdits": false
+}

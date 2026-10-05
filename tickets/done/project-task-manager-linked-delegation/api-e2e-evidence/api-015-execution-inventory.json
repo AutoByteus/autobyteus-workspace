@@ -1,0 +1,230 @@
+{
+  "at": "2026-10-04T08:25:31.632498+00:00",
+  "attemptsThroughFinalDiff": 64,
+  "exit0": 55,
+  "exit1": 9,
+  "productFailureObservedThisRound": false,
+  "caseIds": [
+    "API-001@round15-narrow",
+    "API-002@round15-owner",
+    "API-002@round15-production",
+    "API-002@round15-test-typecheck",
+    "API-006@round15-web",
+    "API-006@round15-native-input",
+    "API-005@round15-durables",
+    "API-002@round15-cumulative",
+    "API-004@round15-integration",
+    "API-003@round15-project-e2e",
+    "API-006@round15-web-context",
+    "API-017@round15-repository-preservation",
+    "API-017@round15-repository-diff",
+    "API-014@round15-scoped-http",
+    "API-008@round15-build",
+    "API-008@round15-provenance",
+    "API-019@round15-census-start",
+    "API-014@round15-emulated-http",
+    "API-008@round15-import-preview",
+    "API-008@round15-import",
+    "API-008@round15-import-restart",
+    "API-008@round15-catalog",
+    "API-008@round15-claude-setup",
+    "API-008@round15-import-prompt-corrected",
+    "API-008@round15-corrected-import-restart",
+    "API-008@round15-corrected-catalog",
+    "API-008@round15-post-import-provenance",
+    "API-019@round15-census-prelive",
+    "API-010@round15-Claude-Org",
+    "API-010@round15-Claude-Team",
+    "API-011@round15-Claude-physical-recursive",
+    "API-011@round15-inspector-owner",
+    "API-011@round15-retained-physical",
+    "API-014@round15-public-quiet",
+    "API-013@round15-claude-snapshot",
+    "API-013@round15-byte-before",
+    "API-019@round15-census-before-normal-restart",
+    "API-013@round15-whole-app-restart",
+    "API-013@round15-byte-stored",
+    "API-013@round15-Claude-resume",
+    "API-013@round15-byte-restored",
+    "API-013@round15-whole-app-PID-proof",
+    "API-019@round15-census-post-resume",
+    "API-010@round15-Claude-final-A",
+    "API-013@round15-byte-final",
+    "API-013@round15-byte-restored-corrected",
+    "API-013@round15-whole-app-PID-proof-corrected",
+    "API-019@round15-census-post-resume-corrected",
+    "API-010@round15-Claude-final-A-corrected",
+    "API-013@round15-byte-final-corrected",
+    "API-008@round15-residual-preflight",
+    "API-014@round15-postfinal-history",
+    "API-017@round15-final-typecheck",
+    "API-019@round15-archive",
+    "API-019@round15-census-before-stop",
+    "API-019@round15-list-before-stop",
+    "API-019@round15-stop",
+    "API-019@round15-list-after",
+    "API-019@round15-cleanup",
+    "API-019@round15-cleanup-recheck",
+    "API-017@round15-final-pre-report-preservation-original",
+    "API-017@round15-final-index-audit",
+    "API-017@round15-final-preservation",
+    "API-017@round15-final-diff"
+  ],
+  "failures": [
+    {
+      "id": "API-008@round15-import",
+      "label": "Unchanged importer explicit IMPORT in owned PTY into fresh own DB only",
+      "at": "2026-10-04T08:00:58.042563+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-import.py",
+        "execute"
+      ],
+      "exit": 1,
+      "elapsed": 15.69,
+      "result": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-008@round15-import.log"
+    },
+    {
+      "id": "API-011@round15-Claude-physical-recursive",
+      "label": "Corrected Sonnet5 actual recursive Task-owned6 SDK actors; exclusive own child/descendant exit and protected Manager/B before wholeapp teardown",
+      "at": "2026-10-04T08:06:49.316926+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "command": [
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-physical-recursive-probe.mjs"
+      ],
+      "exit": 1,
+      "elapsed": 77.48,
+      "result": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-011@round15-Claude-physical-recursive.log"
+    },
+    {
+      "id": "API-013@round15-byte-restored",
+      "at": "2026-10-04T08:18:00.687541+00:00",
+      "command": [
+        "--",
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-byte-guard.py",
+        "restored"
+      ],
+      "exit": 1,
+      "innerExit": null,
+      "result": "Fail",
+      "classification": "API-owned launcher syntax, no product action executed",
+      "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-013@round15-byte-restored.log",
+      "observation": "Wrapper forwarded unsupported -- executable; subprocess FileNotFoundError before any selected command."
+    },
+    {
+      "id": "API-013@round15-whole-app-PID-proof",
+      "at": "2026-10-04T08:18:00.687541+00:00",
+      "command": [
+        "--",
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-restart-proof.py"
+      ],
+      "exit": 1,
+      "innerExit": null,
+      "result": "Fail",
+      "classification": "API-owned launcher syntax, no product action executed",
+      "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-013@round15-whole-app-PID-proof.log",
+      "observation": "Wrapper forwarded unsupported -- executable; subprocess FileNotFoundError before any selected command."
+    },
+    {
+      "id": "API-019@round15-census-post-resume",
+      "at": "2026-10-04T08:18:00.687541+00:00",
+      "command": [
+        "--",
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-own-census.py",
+        "post-resume"
+      ],
+      "exit": 1,
+      "innerExit": null,
+      "result": "Fail",
+      "classification": "API-owned launcher syntax, no product action executed",
+      "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-019@round15-census-post-resume.log",
+      "observation": "Wrapper forwarded unsupported -- executable; subprocess FileNotFoundError before any selected command."
+    },
+    {
+      "id": "API-010@round15-Claude-final-A",
+      "at": "2026-10-04T08:18:00.687541+00:00",
+      "command": [
+        "--",
+        "node",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-final-a.mjs",
+        "claude"
+      ],
+      "exit": 1,
+      "innerExit": null,
+      "result": "Fail",
+      "classification": "API-owned launcher syntax, no product action executed",
+      "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-010@round15-Claude-final-A.log",
+      "observation": "Wrapper forwarded unsupported -- executable; subprocess FileNotFoundError before any selected command."
+    },
+    {
+      "id": "API-013@round15-byte-final",
+      "at": "2026-10-04T08:18:00.687541+00:00",
+      "command": [
+        "--",
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-final-byte-guard.py"
+      ],
+      "exit": 1,
+      "innerExit": null,
+      "result": "Fail",
+      "classification": "API-owned launcher syntax, no product action executed",
+      "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-013@round15-byte-final.log",
+      "observation": "Wrapper forwarded unsupported -- executable; subprocess FileNotFoundError before any selected command."
+    },
+    {
+      "id": "API-019@round15-cleanup",
+      "label": "Verify captured own PIDs/profile/ports removed/archive hashes/foreign metadata equal, environment-only",
+      "at": "2026-10-04T08:20:16.696509+00:00",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-cleanup-check.py"
+      ],
+      "exit": 1,
+      "elapsed": 0.08,
+      "result": "Fail",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-019@round15-cleanup.log"
+    },
+    {
+      "id": "API-017@round15-final-pre-report-preservation-original",
+      "at": "2026-10-04T08:21:43.041551+00:00",
+      "command": [
+        "python3",
+        "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-preservation.py",
+        "final-pre-report"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+      "exit": 1,
+      "innerExit": 1,
+      "result": "Fail",
+      "classification": "API-owned binary-index byte oracle after Git stat-cache refresh; semantic fields require independent audit",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-015-final-pre-report-preservation-original.log"
+    }
+  ],
+  "scope": "Command attempts include five launcher failures with no selected inner command. Counts are not unique test totals or product success certificates. All original attempts retained; capability discovery command0 does not mean blocked provider passed.",
+  "finalRegisteredAttempts": 65,
+  "finalExit0": 56,
+  "finalExit1": 9,
+  "postReportVerificationCase": {
+    "id": "API-017@round15-post-report-preservation",
+    "label": "After canonical reports/fresh rules, all incoming authority/histories300candidates/all20/currentHEADstash/semanticindex exact apart from owncanon/stat-only exception",
+    "at": "2026-10-04T08:26:04.691247+00:00",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+    "command": [
+      "python3",
+      "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round15-preservation.py",
+      "post-report"
+    ],
+    "exit": 0,
+    "elapsed": 1.37,
+    "result": "Pass",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/API-017@round15-post-report-preservation.log"
+  }
+}

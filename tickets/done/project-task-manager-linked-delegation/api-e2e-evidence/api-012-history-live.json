@@ -1,0 +1,2273 @@
+{
+  "mode": "live",
+  "instanceId": "iso-59466-55bb",
+  "at": "2026-10-04T04:34:45.555Z",
+  "requests": [
+    {
+      "query": "mutation($i:CreateAgentOrgRunInput!){createAgentOrgRun(input:$i){success message agentOrgRunId}}",
+      "variables": {
+        "i": {
+          "agentOrgDefinitionId": "api012p-physical-org-ef6f178f-0829-444d-9224-38bf68127d57",
+          "rootConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+          }
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "createAgentOrgRun": {
+            "success": true,
+            "message": "Agent organization run created successfully.",
+            "agentOrgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_e68c0cdfdc9a434c84ca13563e86e284"
+          }
+        }
+      }
+    },
+    {
+      "query": "mutation($i:CreateAgentTeamRunInput!){createAgentTeamRun(input:$i){success message teamRunId}}",
+      "variables": {
+        "i": {
+          "teamDefinitionId": "api012n-packet-team",
+          "teamConfigs": [
+            {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": {
+                "thinking_type": "disabled"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/team-b",
+              "autoExecuteTools": true,
+              "teamAddress": "/"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": {
+                "thinking_type": "disabled"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/team-b",
+              "autoExecuteTools": true,
+              "memberAddress": "/coordinator",
+              "agentDefinitionId": "api012n-team-coordinator"
+            },
+            {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": {
+                "thinking_type": "disabled"
+              },
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/team-b",
+              "autoExecuteTools": true,
+              "memberAddress": "/reader",
+              "agentDefinitionId": "api012n-team-reader"
+            }
+          ]
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "createAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run created successfully.",
+            "teamRunId": "api012n_packet_team_c75ee46fc96b46d58f0d6891d4bc7bd1"
+          }
+        }
+      }
+    },
+    {
+      "query": "query ListCollaborationRootHistory{listCollaborationRootHistory{__typename ... on AgentOrgRootHistoryObject{root_subject_kind root_run_id created_at archived_at is_active summary org} ... on AgentTeamRootHistoryObject{root_subject_kind root_run_id}}}",
+      "variables": {},
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "listCollaborationRootHistory": [
+            {
+              "__typename": "AgentTeamRootHistoryObject",
+              "root_subject_kind": "agent_team",
+              "root_run_id": "api012n_packet_team_c75ee46fc96b46d58f0d6891d4bc7bd1"
+            },
+            {
+              "__typename": "AgentOrgRootHistoryObject",
+              "root_subject_kind": "agent_org",
+              "root_run_id": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_e68c0cdfdc9a434c84ca13563e86e284",
+              "created_at": "2026-10-04T04:34:45.586Z",
+              "archived_at": null,
+              "is_active": true,
+              "summary": "",
+              "org": {
+                "subjectKind": "agent_org",
+                "createdAt": "2026-10-04T04:34:45.586Z",
+                "archivedAt": null,
+                "applicationBinding": null,
+                "handoffs": [],
+                "rootOrg": {
+                  "address": "/",
+                  "orgDefinitionId": "api012p-physical-org-ef6f178f-0829-444d-9224-38bf68127d57",
+                  "orgDefinitionName": "API012P Physical Org ef6f178f-0829-444d-9224-38bf68127d57",
+                  "orgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_e68c0cdfdc9a434c84ca13563e86e284",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                  },
+                  "members": [
+                    {
+                      "address": "/manager",
+                      "agentDefinitionId": "autobyteus-project-task-manager",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "project_task_manager_c0e967492d7e4fd185f6598beef7299b",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                      }
+                    },
+                    {
+                      "address": "/borrowed",
+                      "agentDefinitionId": "api012p-borrowed-packet-agent",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api012p_borrowed_packet_agent_3b54246956c248349c1d51ac1770b898",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                      }
+                    },
+                    {
+                      "address": "/workers",
+                      "teamDefinitionId": "api012p-physical-workers",
+                      "role": null,
+                      "description": null,
+                      "teamRunId": "api012p_physical_workers_63d5b7b43fce49719d18a64a0f0cb70d",
+                      "coordinatorAddress": "/workers/coordinator",
+                      "defaultLaunchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                      },
+                      "members": [
+                        {
+                          "address": "/workers/coordinator",
+                          "agentDefinitionId": "api012p-physical-coordinator",
+                          "role": null,
+                          "description": null,
+                          "agentRunId": "api012p_physical_coordinator_28f50c22000e41a488c697b2bc1978b4",
+                          "platformAgentRunId": null,
+                          "launchConfiguration": {
+                            "runtimeKind": "codex_app_server",
+                            "llmModelIdentifier": "gpt-6.1-sol",
+                            "llmConfig": {
+                              "reasoning_effort": "low"
+                            },
+                            "autoExecuteTools": true,
+                            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                          }
+                        },
+                        {
+                          "address": "/workers/reader",
+                          "agentDefinitionId": "api012p-physical-reader",
+                          "role": null,
+                          "description": null,
+                          "agentRunId": "api012p_physical_reader_6eaaf43ac91847788431509668a571fa",
+                          "platformAgentRunId": null,
+                          "launchConfiguration": {
+                            "runtimeKind": "codex_app_server",
+                            "llmModelIdentifier": "gpt-6.1-sol",
+                            "llmConfig": {
+                              "reasoning_effort": "low"
+                            },
+                            "autoExecuteTools": true,
+                            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                          }
+                        }
+                      ],
+                      "taskExecutions": []
+                    }
+                  ],
+                  "collaborators": [],
+                  "taskExecutions": []
+                }
+              }
+            },
+            {
+              "__typename": "AgentOrgRootHistoryObject",
+              "root_subject_kind": "agent_org",
+              "root_run_id": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+              "created_at": "2026-10-04T04:26:43.434Z",
+              "archived_at": null,
+              "is_active": true,
+              "summary": "Authorized own isolated validation. Resolve Project project_c35351f8-613f-43e4-a04c-e8af2d7ad573;...",
+              "org": {
+                "subjectKind": "agent_org",
+                "createdAt": "2026-10-04T04:26:43.434Z",
+                "archivedAt": null,
+                "applicationBinding": null,
+                "handoffs": [],
+                "rootOrg": {
+                  "address": "/",
+                  "orgDefinitionId": "api012p-physical-org-ef6f178f-0829-444d-9224-38bf68127d57",
+                  "orgDefinitionName": "API012P Physical Org ef6f178f-0829-444d-9224-38bf68127d57",
+                  "orgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                  },
+                  "members": [
+                    {
+                      "address": "/manager",
+                      "agentDefinitionId": "autobyteus-project-task-manager",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                      "platformAgentRunId": "01a1052a-0d1b-7232-b2f5-939675755bc7",
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                      }
+                    },
+                    {
+                      "address": "/borrowed",
+                      "agentDefinitionId": "api012p-borrowed-packet-agent",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                      }
+                    },
+                    {
+                      "address": "/workers",
+                      "teamDefinitionId": "api012p-physical-workers",
+                      "role": null,
+                      "description": null,
+                      "teamRunId": "api012p_physical_workers_29f5f2c504394cc787512f00355600af",
+                      "coordinatorAddress": "/workers/coordinator",
+                      "defaultLaunchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                      },
+                      "members": [
+                        {
+                          "address": "/workers/coordinator",
+                          "agentDefinitionId": "api012p-physical-coordinator",
+                          "role": null,
+                          "description": null,
+                          "agentRunId": "api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+                          "platformAgentRunId": null,
+                          "launchConfiguration": {
+                            "runtimeKind": "codex_app_server",
+                            "llmModelIdentifier": "gpt-6.1-sol",
+                            "llmConfig": {
+                              "reasoning_effort": "low"
+                            },
+                            "autoExecuteTools": true,
+                            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                          }
+                        },
+                        {
+                          "address": "/workers/reader",
+                          "agentDefinitionId": "api012p-physical-reader",
+                          "role": null,
+                          "description": null,
+                          "agentRunId": "api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+                          "platformAgentRunId": null,
+                          "launchConfiguration": {
+                            "runtimeKind": "codex_app_server",
+                            "llmModelIdentifier": "gpt-6.1-sol",
+                            "llmConfig": {
+                              "reasoning_effort": "low"
+                            },
+                            "autoExecuteTools": true,
+                            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                          }
+                        }
+                      ],
+                      "taskExecutions": []
+                    }
+                  ],
+                  "collaborators": [],
+                  "taskExecutions": [
+                    {
+                      "address": "/workers",
+                      "startedAt": "2026-10-04T04:26:59.004Z",
+                      "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                      "teamRunId": "api012p_physical_workers_37e496b0fed1411195aa860e1786487d",
+                      "members": [
+                        {
+                          "address": "/workers/coordinator",
+                          "agentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                          "platformAgentRunId": "01a1052a-4696-70c2-87ba-34b4c9f5089d"
+                        },
+                        {
+                          "address": "/workers/reader",
+                          "agentRunId": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+                          "platformAgentRunId": "01a1052a-4721-7723-8b57-2332565fa10e"
+                        }
+                      ],
+                      "taskExecutions": []
+                    },
+                    {
+                      "address": "/borrowed",
+                      "startedAt": "2026-10-04T04:26:59.405Z",
+                      "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                      "agentRunId": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+                      "platformAgentRunId": "01a1052a-47e2-74c1-a12a-3f1a9b13b7f8"
+                    },
+                    {
+                      "address": "/api012p_physical_leaf",
+                      "startedAt": "2026-10-04T04:27:30.945Z",
+                      "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                      "agentRunId": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+                      "platformAgentRunId": "01a1052a-c31e-7c92-828a-8a82752059c6",
+                      "source": {
+                        "kind": "agent",
+                        "agentDefinitionId": "api012p-physical-leaf",
+                        "launchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-6.1-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": true,
+                          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                        }
+                      }
+                    },
+                    {
+                      "address": "/api012p_physical_helper_team",
+                      "startedAt": "2026-10-04T04:27:31.122Z",
+                      "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                      "teamRunId": "api012p_physical_helper_team_7e036514213940678cfc84d4691e0797",
+                      "members": [
+                        {
+                          "address": "/api012p_physical_helper_team/coordinator",
+                          "agentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                          "platformAgentRunId": "01a1052a-c3c5-7b42-bea8-e2fd6544f6c3"
+                        },
+                        {
+                          "address": "/api012p_physical_helper_team/reader",
+                          "agentRunId": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+                          "platformAgentRunId": "01a1052a-c446-7d10-9739-371b0441d61e"
+                        }
+                      ],
+                      "taskExecutions": [],
+                      "source": {
+                        "kind": "agent_team",
+                        "teamDefinitionId": "api012p-physical-helper-team",
+                        "coordinatorAddress": "/api012p_physical_helper_team/coordinator",
+                        "members": [
+                          {
+                            "address": "/api012p_physical_helper_team/coordinator",
+                            "agentDefinitionId": "api012p-physical-helper-coordinator"
+                          },
+                          {
+                            "address": "/api012p_physical_helper_team/reader",
+                            "agentDefinitionId": "api012p-physical-reader"
+                          }
+                        ],
+                        "handoffs": [],
+                        "defaultLaunchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-6.1-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": true,
+                          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                        }
+                      }
+                    },
+                    {
+                      "address": "/api012p_physical_leaf",
+                      "startedAt": "2026-10-04T04:27:54.359Z",
+                      "delegatorAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                      "agentRunId": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+                      "platformAgentRunId": "01a1052b-1e91-7b23-8fee-d6ef715ad9dc",
+                      "source": {
+                        "kind": "agent",
+                        "agentDefinitionId": "api012p-physical-leaf",
+                        "launchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-6.1-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": true,
+                          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "query": "query($id:String!){getAgentOrgRunInspection(orgRunId:$id)}",
+      "variables": {
+        "id": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "getAgentOrgRunInspection": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+            "root_org": {
+              "base_change_sequence": 2517,
+              "is_active": true,
+              "execution_tree": {
+                "subjectKind": "agent_org",
+                "createdAt": "2026-10-04T04:26:43.434Z",
+                "archivedAt": null,
+                "applicationBinding": null,
+                "handoffs": [],
+                "rootOrg": {
+                  "address": "/",
+                  "orgDefinitionId": "api012p-physical-org-ef6f178f-0829-444d-9224-38bf68127d57",
+                  "orgDefinitionName": "API012P Physical Org ef6f178f-0829-444d-9224-38bf68127d57",
+                  "orgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                  },
+                  "members": [
+                    {
+                      "address": "/manager",
+                      "agentDefinitionId": "autobyteus-project-task-manager",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                      "platformAgentRunId": "01a1052a-0d1b-7232-b2f5-939675755bc7",
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                      }
+                    },
+                    {
+                      "address": "/borrowed",
+                      "agentDefinitionId": "api012p-borrowed-packet-agent",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                      }
+                    },
+                    {
+                      "address": "/workers",
+                      "teamDefinitionId": "api012p-physical-workers",
+                      "role": null,
+                      "description": null,
+                      "teamRunId": "api012p_physical_workers_29f5f2c504394cc787512f00355600af",
+                      "coordinatorAddress": "/workers/coordinator",
+                      "defaultLaunchConfiguration": {
+                        "runtimeKind": "codex_app_server",
+                        "llmModelIdentifier": "gpt-6.1-sol",
+                        "llmConfig": {
+                          "reasoning_effort": "low"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                      },
+                      "members": [
+                        {
+                          "address": "/workers/coordinator",
+                          "agentDefinitionId": "api012p-physical-coordinator",
+                          "role": null,
+                          "description": null,
+                          "agentRunId": "api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+                          "platformAgentRunId": null,
+                          "launchConfiguration": {
+                            "runtimeKind": "codex_app_server",
+                            "llmModelIdentifier": "gpt-6.1-sol",
+                            "llmConfig": {
+                              "reasoning_effort": "low"
+                            },
+                            "autoExecuteTools": true,
+                            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                          }
+                        },
+                        {
+                          "address": "/workers/reader",
+                          "agentDefinitionId": "api012p-physical-reader",
+                          "role": null,
+                          "description": null,
+                          "agentRunId": "api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+                          "platformAgentRunId": null,
+                          "launchConfiguration": {
+                            "runtimeKind": "codex_app_server",
+                            "llmModelIdentifier": "gpt-6.1-sol",
+                            "llmConfig": {
+                              "reasoning_effort": "low"
+                            },
+                            "autoExecuteTools": true,
+                            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                          }
+                        }
+                      ],
+                      "taskExecutions": []
+                    }
+                  ],
+                  "collaborators": [],
+                  "taskExecutions": [
+                    {
+                      "address": "/workers",
+                      "teamRunId": "api012p_physical_workers_37e496b0fed1411195aa860e1786487d",
+                      "members": [
+                        {
+                          "address": "/workers/coordinator",
+                          "agentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                          "platformAgentRunId": "01a1052a-4696-70c2-87ba-34b4c9f5089d"
+                        },
+                        {
+                          "address": "/workers/reader",
+                          "agentRunId": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+                          "platformAgentRunId": "01a1052a-4721-7723-8b57-2332565fa10e"
+                        }
+                      ],
+                      "taskExecutions": [],
+                      "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                      "startedAt": "2026-10-04T04:26:59.004Z"
+                    },
+                    {
+                      "address": "/borrowed",
+                      "agentRunId": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+                      "platformAgentRunId": "01a1052a-47e2-74c1-a12a-3f1a9b13b7f8",
+                      "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                      "startedAt": "2026-10-04T04:26:59.405Z"
+                    },
+                    {
+                      "address": "/api012p_physical_leaf",
+                      "agentRunId": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+                      "platformAgentRunId": "01a1052a-c31e-7c92-828a-8a82752059c6",
+                      "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                      "startedAt": "2026-10-04T04:27:30.945Z",
+                      "source": {
+                        "kind": "agent",
+                        "agentDefinitionId": "api012p-physical-leaf",
+                        "launchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-6.1-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": true,
+                          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                        }
+                      }
+                    },
+                    {
+                      "address": "/api012p_physical_helper_team",
+                      "teamRunId": "api012p_physical_helper_team_7e036514213940678cfc84d4691e0797",
+                      "members": [
+                        {
+                          "address": "/api012p_physical_helper_team/coordinator",
+                          "agentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                          "platformAgentRunId": "01a1052a-c3c5-7b42-bea8-e2fd6544f6c3"
+                        },
+                        {
+                          "address": "/api012p_physical_helper_team/reader",
+                          "agentRunId": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+                          "platformAgentRunId": "01a1052a-c446-7d10-9739-371b0441d61e"
+                        }
+                      ],
+                      "taskExecutions": [],
+                      "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                      "startedAt": "2026-10-04T04:27:31.122Z",
+                      "source": {
+                        "kind": "agent_team",
+                        "teamDefinitionId": "api012p-physical-helper-team",
+                        "coordinatorAddress": "/api012p_physical_helper_team/coordinator",
+                        "members": [
+                          {
+                            "address": "/api012p_physical_helper_team/coordinator",
+                            "agentDefinitionId": "api012p-physical-helper-coordinator"
+                          },
+                          {
+                            "address": "/api012p_physical_helper_team/reader",
+                            "agentDefinitionId": "api012p-physical-reader"
+                          }
+                        ],
+                        "handoffs": [],
+                        "defaultLaunchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-6.1-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": true,
+                          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                        }
+                      }
+                    },
+                    {
+                      "address": "/api012p_physical_leaf",
+                      "agentRunId": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+                      "platformAgentRunId": "01a1052b-1e91-7b23-8fee-d6ef715ad9dc",
+                      "delegatorAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                      "startedAt": "2026-10-04T04:27:54.359Z",
+                      "source": {
+                        "kind": "agent",
+                        "agentDefinitionId": "api012p-physical-leaf",
+                        "launchConfiguration": {
+                          "runtimeKind": "codex_app_server",
+                          "llmModelIdentifier": "gpt-6.1-sol",
+                          "llmConfig": {
+                            "reasoning_effort": "low"
+                          },
+                          "autoExecuteTools": true,
+                          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "communication_messages": {
+                "schemaVersion": 1,
+                "subjectKind": "agent_org",
+                "orgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+                "messages": [
+                  {
+                    "messageId": "collabmsg_r7KAhAsP4ALVC94UoMfChufoXVenZu8U",
+                    "senderAgentRunId": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+                    "receiverAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                    "content": "Read the supplied saved packet using native read-only cat. Exact marker: API012P_PHYSICAL_B_02526894-42df-4a97-af5f-6f90f190f98d. No copies, status changes, or file changes.",
+                    "messageType": "agent_message",
+                    "referenceFiles": [],
+                    "createdAt": "2026-10-04T04:27:16.795Z"
+                  },
+                  {
+                    "messageId": "collabmsg_mIGtlojuJdvR3mr7HaTadzh9fvfhFrDC",
+                    "senderAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                    "receiverAgentRunId": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+                    "content": "Read the actual saved packet read-only and report its exact marker. Preserve bytes; no status changes or root Stop. Packet: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt",
+                    "messageType": "work",
+                    "referenceFiles": [
+                      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt"
+                    ],
+                    "createdAt": "2026-10-04T04:27:20.334Z"
+                  },
+                  {
+                    "messageId": "collabmsg_dRElWdzuGzKS7E6aIPpZMyIOCdL7UNLv",
+                    "senderAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                    "receiverAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                    "content": "Read the actual saved packet through your configured members as lifetime-local helper Team and report exact marker and concrete returned IDs. Preserve bytes; no file or Task status changes or root Stop. Packet: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt",
+                    "messageType": "work",
+                    "referenceFiles": [
+                      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt"
+                    ],
+                    "createdAt": "2026-10-04T04:27:31.431Z"
+                  },
+                  {
+                    "messageId": "collabmsg_OBrZa4oN30a_pwMEkY3f9l6qWfcJx4Yy",
+                    "senderAgentRunId": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+                    "receiverAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                    "content": "Read the supplied saved packet using read-only cat. Exact marker: API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db. Bytes preserved; no status changes or root Stop.",
+                    "messageType": "agent_message",
+                    "referenceFiles": [],
+                    "createdAt": "2026-10-04T04:27:34.913Z"
+                  },
+                  {
+                    "messageId": "collabmsg_0HI2a_ARAvtHiPLMHU6ZKr9cQhU8eXVo",
+                    "senderAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                    "receiverAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                    "content": "Read actual saved packet with native read-only cat. Actual marker: API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db. Consulted available agents. Exactly one configured-reader work message accepted: api012p_physical_reader_66c26152f00e41618294f26e0e30763c. Exactly one unlinked Leaf delegation (description/reference_files, no task_id) returned api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62. Exactly one helper Team work message accepted: coordinator api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd. All received exact packet path. No additional copies, file changes, status changes, or root Stop. Handoff rules empty. Downstream results not yet received.",
+                    "messageType": "result",
+                    "referenceFiles": [],
+                    "createdAt": "2026-10-04T04:27:42.266Z"
+                  },
+                  {
+                    "messageId": "collabmsg_0kzJi0PTfUNLbiysfIqNhQOXjHmdMbSg",
+                    "senderAgentRunId": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+                    "receiverAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                    "content": "Read the supplied saved packet using native read-only cat. Exact marker: API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db. No file or status changes.",
+                    "messageType": "agent_message",
+                    "referenceFiles": [],
+                    "createdAt": "2026-10-04T04:27:47.951Z"
+                  },
+                  {
+                    "messageId": "collabmsg_sm3lN3SHARm2zsMNdZM2-CeHQY74uceT",
+                    "senderAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                    "receiverAgentRunId": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+                    "content": "Read the saved packet using native read-only cat or read_file and return exact read marker. Preserve bytes; no files/Task status changes or root Stop. Exact packet: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt",
+                    "messageType": "agent_message",
+                    "referenceFiles": [
+                      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt"
+                    ],
+                    "createdAt": "2026-10-04T04:27:48.774Z"
+                  },
+                  {
+                    "messageId": "collabmsg_IAVflbeYVbGT5XNBQP3356AxiOSdj0kZ",
+                    "senderAgentRunId": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+                    "receiverAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                    "content": "API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db",
+                    "messageType": "agent_message",
+                    "referenceFiles": [],
+                    "createdAt": "2026-10-04T04:28:03.963Z"
+                  },
+                  {
+                    "messageId": "collabmsg_oP19OdQuctowuVeIgzeth0LVYubp57mX",
+                    "senderAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                    "receiverAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                    "content": "Actual saved packet read via native cat. Own exact marker: API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db. Configured reader request accepted with concrete ID api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4. Consulted available Agents and delegated exactly one additional unlinked Physical Leaf copy, returned concrete ID api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74. Same exact packet path supplied in description/reference_files, no task_id. No file or Task status changes or root Stop.",
+                    "messageType": "agent_message",
+                    "referenceFiles": [],
+                    "createdAt": "2026-10-04T04:28:07.949Z"
+                  }
+                ]
+              },
+              "agent_statuses": [
+                {
+                  "member_address": "/manager",
+                  "agent_run_id": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                  "status": "idle",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/borrowed",
+                  "agent_run_id": "api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+                  "status": "offline",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/borrowed",
+                  "agent_run_id": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+                  "status": "idle",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/api012p_physical_leaf",
+                  "agent_run_id": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+                  "status": "offline",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/api012p_physical_leaf",
+                  "agent_run_id": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+                  "status": "offline",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/workers/coordinator",
+                  "agent_run_id": "api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+                  "status": "offline",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/workers/reader",
+                  "agent_run_id": "api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+                  "status": "offline",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/workers/coordinator",
+                  "agent_run_id": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                  "status": "offline",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/workers/reader",
+                  "agent_run_id": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+                  "status": "offline",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/api012p_physical_helper_team/coordinator",
+                  "agent_run_id": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                  "status": "offline",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                },
+                {
+                  "member_address": "/api012p_physical_helper_team/reader",
+                  "agent_run_id": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+                  "status": "offline",
+                  "trigger": null,
+                  "tool_name": null,
+                  "error_message": null,
+                  "error_details": null,
+                  "recoverableBlock": null
+                }
+              ],
+              "agent_input_states": [
+                {
+                  "agent_run_id": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+                  "state": {
+                    "run_instance_id": "06aaec69-ae3a-48c9-83b4-57cc7960bdda",
+                    "revision": 11,
+                    "entries": [],
+                    "recoverableBlock": null
+                  }
+                },
+                {
+                  "agent_run_id": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+                  "state": {
+                    "run_instance_id": "339cfe53-016c-4fd2-ac9c-2e20d4e92b7a",
+                    "revision": 4,
+                    "entries": [],
+                    "recoverableBlock": null
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "query": "query($id:String!){getTeamRunResumeConfig(teamRunId:$id){teamRunId isActive executionTree}}",
+      "variables": {
+        "id": "api012n_packet_team_c75ee46fc96b46d58f0d6891d4bc7bd1"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "getTeamRunResumeConfig": {
+            "teamRunId": "api012n_packet_team_c75ee46fc96b46d58f0d6891d4bc7bd1",
+            "isActive": true,
+            "executionTree": {
+              "created_at": "2026-10-04T04:34:45.651Z",
+              "archived_at": null,
+              "application_binding": null,
+              "handoffs": [],
+              "root_team": {
+                "address": "/",
+                "team_definition_id": "api012n-packet-team",
+                "team_definition_name": "API012N Packet Team",
+                "team_run_id": "api012n_packet_team_c75ee46fc96b46d58f0d6891d4bc7bd1",
+                "coordinator_address": "/coordinator",
+                "default_launch_configuration": {
+                  "runtime_kind": "autobyteus",
+                  "llm_model_identifier": "deepseek-v4-flash",
+                  "llm_config": {
+                    "thinking_type": "disabled"
+                  },
+                  "auto_execute_tools": true,
+                  "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/team-b"
+                },
+                "members": [
+                  {
+                    "kind": "configured_agent",
+                    "address": "/coordinator",
+                    "agent_definition_id": "api012n-team-coordinator",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "api012n_team_coordinator_a50bbd56b60344ebafe74c47b74adc74",
+                    "platform_agent_run_id": null,
+                    "launch_configuration": {
+                      "runtime_kind": "autobyteus",
+                      "llm_model_identifier": "deepseek-v4-flash",
+                      "llm_config": {
+                        "thinking_type": "disabled"
+                      },
+                      "auto_execute_tools": true,
+                      "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/team-b"
+                    }
+                  },
+                  {
+                    "kind": "configured_agent",
+                    "address": "/reader",
+                    "agent_definition_id": "api012n-team-reader",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "api012n_team_reader_57cf6d3abadb48b2a47f5be49a6d3215",
+                    "platform_agent_run_id": null,
+                    "launch_configuration": {
+                      "runtime_kind": "autobyteus",
+                      "llm_model_identifier": "deepseek-v4-flash",
+                      "llm_config": {
+                        "thinking_type": "disabled"
+                      },
+                      "auto_execute_tools": true,
+                      "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/team-b"
+                    }
+                  }
+                ],
+                "collaborators": [],
+                "task_executions": []
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "console": [],
+  "unlinked": {
+    "success": true,
+    "message": "Agent organization run created successfully.",
+    "agentOrgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_e68c0cdfdc9a434c84ca13563e86e284"
+  },
+  "team": {
+    "success": true,
+    "message": "Agent team run created successfully.",
+    "teamRunId": "api012n_packet_team_c75ee46fc96b46d58f0d6891d4bc7bd1"
+  },
+  "rows": [
+    {
+      "__typename": "AgentTeamRootHistoryObject",
+      "root_subject_kind": "agent_team",
+      "root_run_id": "api012n_packet_team_c75ee46fc96b46d58f0d6891d4bc7bd1"
+    },
+    {
+      "__typename": "AgentOrgRootHistoryObject",
+      "root_subject_kind": "agent_org",
+      "root_run_id": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_e68c0cdfdc9a434c84ca13563e86e284",
+      "created_at": "2026-10-04T04:34:45.586Z",
+      "archived_at": null,
+      "is_active": true,
+      "summary": "",
+      "org": {
+        "subjectKind": "agent_org",
+        "createdAt": "2026-10-04T04:34:45.586Z",
+        "archivedAt": null,
+        "applicationBinding": null,
+        "handoffs": [],
+        "rootOrg": {
+          "address": "/",
+          "orgDefinitionId": "api012p-physical-org-ef6f178f-0829-444d-9224-38bf68127d57",
+          "orgDefinitionName": "API012P Physical Org ef6f178f-0829-444d-9224-38bf68127d57",
+          "orgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_e68c0cdfdc9a434c84ca13563e86e284",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+          },
+          "members": [
+            {
+              "address": "/manager",
+              "agentDefinitionId": "autobyteus-project-task-manager",
+              "role": null,
+              "description": null,
+              "agentRunId": "project_task_manager_c0e967492d7e4fd185f6598beef7299b",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              }
+            },
+            {
+              "address": "/borrowed",
+              "agentDefinitionId": "api012p-borrowed-packet-agent",
+              "role": null,
+              "description": null,
+              "agentRunId": "api012p_borrowed_packet_agent_3b54246956c248349c1d51ac1770b898",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              }
+            },
+            {
+              "address": "/workers",
+              "teamDefinitionId": "api012p-physical-workers",
+              "role": null,
+              "description": null,
+              "teamRunId": "api012p_physical_workers_63d5b7b43fce49719d18a64a0f0cb70d",
+              "coordinatorAddress": "/workers/coordinator",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              },
+              "members": [
+                {
+                  "address": "/workers/coordinator",
+                  "agentDefinitionId": "api012p-physical-coordinator",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api012p_physical_coordinator_28f50c22000e41a488c697b2bc1978b4",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                  }
+                },
+                {
+                  "address": "/workers/reader",
+                  "agentDefinitionId": "api012p-physical-reader",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api012p_physical_reader_6eaaf43ac91847788431509668a571fa",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                  }
+                }
+              ],
+              "taskExecutions": []
+            }
+          ],
+          "collaborators": [],
+          "taskExecutions": []
+        }
+      }
+    },
+    {
+      "__typename": "AgentOrgRootHistoryObject",
+      "root_subject_kind": "agent_org",
+      "root_run_id": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+      "created_at": "2026-10-04T04:26:43.434Z",
+      "archived_at": null,
+      "is_active": true,
+      "summary": "Authorized own isolated validation. Resolve Project project_c35351f8-613f-43e4-a04c-e8af2d7ad573;...",
+      "org": {
+        "subjectKind": "agent_org",
+        "createdAt": "2026-10-04T04:26:43.434Z",
+        "archivedAt": null,
+        "applicationBinding": null,
+        "handoffs": [],
+        "rootOrg": {
+          "address": "/",
+          "orgDefinitionId": "api012p-physical-org-ef6f178f-0829-444d-9224-38bf68127d57",
+          "orgDefinitionName": "API012P Physical Org ef6f178f-0829-444d-9224-38bf68127d57",
+          "orgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+          },
+          "members": [
+            {
+              "address": "/manager",
+              "agentDefinitionId": "autobyteus-project-task-manager",
+              "role": null,
+              "description": null,
+              "agentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+              "platformAgentRunId": "01a1052a-0d1b-7232-b2f5-939675755bc7",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              }
+            },
+            {
+              "address": "/borrowed",
+              "agentDefinitionId": "api012p-borrowed-packet-agent",
+              "role": null,
+              "description": null,
+              "agentRunId": "api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              }
+            },
+            {
+              "address": "/workers",
+              "teamDefinitionId": "api012p-physical-workers",
+              "role": null,
+              "description": null,
+              "teamRunId": "api012p_physical_workers_29f5f2c504394cc787512f00355600af",
+              "coordinatorAddress": "/workers/coordinator",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+              },
+              "members": [
+                {
+                  "address": "/workers/coordinator",
+                  "agentDefinitionId": "api012p-physical-coordinator",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                  }
+                },
+                {
+                  "address": "/workers/reader",
+                  "agentDefinitionId": "api012p-physical-reader",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                  }
+                }
+              ],
+              "taskExecutions": []
+            }
+          ],
+          "collaborators": [],
+          "taskExecutions": [
+            {
+              "address": "/workers",
+              "startedAt": "2026-10-04T04:26:59.004Z",
+              "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+              "teamRunId": "api012p_physical_workers_37e496b0fed1411195aa860e1786487d",
+              "members": [
+                {
+                  "address": "/workers/coordinator",
+                  "agentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                  "platformAgentRunId": "01a1052a-4696-70c2-87ba-34b4c9f5089d"
+                },
+                {
+                  "address": "/workers/reader",
+                  "agentRunId": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+                  "platformAgentRunId": "01a1052a-4721-7723-8b57-2332565fa10e"
+                }
+              ],
+              "taskExecutions": []
+            },
+            {
+              "address": "/borrowed",
+              "startedAt": "2026-10-04T04:26:59.405Z",
+              "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+              "agentRunId": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+              "platformAgentRunId": "01a1052a-47e2-74c1-a12a-3f1a9b13b7f8"
+            },
+            {
+              "address": "/api012p_physical_leaf",
+              "startedAt": "2026-10-04T04:27:30.945Z",
+              "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+              "agentRunId": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+              "platformAgentRunId": "01a1052a-c31e-7c92-828a-8a82752059c6",
+              "source": {
+                "kind": "agent",
+                "agentDefinitionId": "api012p-physical-leaf",
+                "launchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                }
+              }
+            },
+            {
+              "address": "/api012p_physical_helper_team",
+              "startedAt": "2026-10-04T04:27:31.122Z",
+              "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+              "teamRunId": "api012p_physical_helper_team_7e036514213940678cfc84d4691e0797",
+              "members": [
+                {
+                  "address": "/api012p_physical_helper_team/coordinator",
+                  "agentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                  "platformAgentRunId": "01a1052a-c3c5-7b42-bea8-e2fd6544f6c3"
+                },
+                {
+                  "address": "/api012p_physical_helper_team/reader",
+                  "agentRunId": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+                  "platformAgentRunId": "01a1052a-c446-7d10-9739-371b0441d61e"
+                }
+              ],
+              "taskExecutions": [],
+              "source": {
+                "kind": "agent_team",
+                "teamDefinitionId": "api012p-physical-helper-team",
+                "coordinatorAddress": "/api012p_physical_helper_team/coordinator",
+                "members": [
+                  {
+                    "address": "/api012p_physical_helper_team/coordinator",
+                    "agentDefinitionId": "api012p-physical-helper-coordinator"
+                  },
+                  {
+                    "address": "/api012p_physical_helper_team/reader",
+                    "agentDefinitionId": "api012p-physical-reader"
+                  }
+                ],
+                "handoffs": [],
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                }
+              }
+            },
+            {
+              "address": "/api012p_physical_leaf",
+              "startedAt": "2026-10-04T04:27:54.359Z",
+              "delegatorAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+              "agentRunId": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+              "platformAgentRunId": "01a1052b-1e91-7b23-8fee-d6ef715ad9dc",
+              "source": {
+                "kind": "agent",
+                "agentDefinitionId": "api012p-physical-leaf",
+                "launchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "row": {
+    "__typename": "AgentOrgRootHistoryObject",
+    "root_subject_kind": "agent_org",
+    "root_run_id": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+    "created_at": "2026-10-04T04:26:43.434Z",
+    "archived_at": null,
+    "is_active": true,
+    "summary": "Authorized own isolated validation. Resolve Project project_c35351f8-613f-43e4-a04c-e8af2d7ad573;...",
+    "org": {
+      "subjectKind": "agent_org",
+      "createdAt": "2026-10-04T04:26:43.434Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "api012p-physical-org-ef6f178f-0829-444d-9224-38bf68127d57",
+        "orgDefinitionName": "API012P Physical Org ef6f178f-0829-444d-9224-38bf68127d57",
+        "orgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+        },
+        "members": [
+          {
+            "address": "/manager",
+            "agentDefinitionId": "autobyteus-project-task-manager",
+            "role": null,
+            "description": null,
+            "agentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+            "platformAgentRunId": "01a1052a-0d1b-7232-b2f5-939675755bc7",
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+            }
+          },
+          {
+            "address": "/borrowed",
+            "agentDefinitionId": "api012p-borrowed-packet-agent",
+            "role": null,
+            "description": null,
+            "agentRunId": "api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+            }
+          },
+          {
+            "address": "/workers",
+            "teamDefinitionId": "api012p-physical-workers",
+            "role": null,
+            "description": null,
+            "teamRunId": "api012p_physical_workers_29f5f2c504394cc787512f00355600af",
+            "coordinatorAddress": "/workers/coordinator",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-6.1-sol",
+              "llmConfig": {
+                "reasoning_effort": "low"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+            },
+            "members": [
+              {
+                "address": "/workers/coordinator",
+                "agentDefinitionId": "api012p-physical-coordinator",
+                "role": null,
+                "description": null,
+                "agentRunId": "api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                }
+              },
+              {
+                "address": "/workers/reader",
+                "agentDefinitionId": "api012p-physical-reader",
+                "role": null,
+                "description": null,
+                "agentRunId": "api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                }
+              }
+            ],
+            "taskExecutions": []
+          }
+        ],
+        "collaborators": [],
+        "taskExecutions": [
+          {
+            "address": "/workers",
+            "startedAt": "2026-10-04T04:26:59.004Z",
+            "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+            "teamRunId": "api012p_physical_workers_37e496b0fed1411195aa860e1786487d",
+            "members": [
+              {
+                "address": "/workers/coordinator",
+                "agentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                "platformAgentRunId": "01a1052a-4696-70c2-87ba-34b4c9f5089d"
+              },
+              {
+                "address": "/workers/reader",
+                "agentRunId": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+                "platformAgentRunId": "01a1052a-4721-7723-8b57-2332565fa10e"
+              }
+            ],
+            "taskExecutions": []
+          },
+          {
+            "address": "/borrowed",
+            "startedAt": "2026-10-04T04:26:59.405Z",
+            "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+            "agentRunId": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+            "platformAgentRunId": "01a1052a-47e2-74c1-a12a-3f1a9b13b7f8"
+          },
+          {
+            "address": "/api012p_physical_leaf",
+            "startedAt": "2026-10-04T04:27:30.945Z",
+            "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+            "agentRunId": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+            "platformAgentRunId": "01a1052a-c31e-7c92-828a-8a82752059c6",
+            "source": {
+              "kind": "agent",
+              "agentDefinitionId": "api012p-physical-leaf",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              }
+            }
+          },
+          {
+            "address": "/api012p_physical_helper_team",
+            "startedAt": "2026-10-04T04:27:31.122Z",
+            "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+            "teamRunId": "api012p_physical_helper_team_7e036514213940678cfc84d4691e0797",
+            "members": [
+              {
+                "address": "/api012p_physical_helper_team/coordinator",
+                "agentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                "platformAgentRunId": "01a1052a-c3c5-7b42-bea8-e2fd6544f6c3"
+              },
+              {
+                "address": "/api012p_physical_helper_team/reader",
+                "agentRunId": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+                "platformAgentRunId": "01a1052a-c446-7d10-9739-371b0441d61e"
+              }
+            ],
+            "taskExecutions": [],
+            "source": {
+              "kind": "agent_team",
+              "teamDefinitionId": "api012p-physical-helper-team",
+              "coordinatorAddress": "/api012p_physical_helper_team/coordinator",
+              "members": [
+                {
+                  "address": "/api012p_physical_helper_team/coordinator",
+                  "agentDefinitionId": "api012p-physical-helper-coordinator"
+                },
+                {
+                  "address": "/api012p_physical_helper_team/reader",
+                  "agentDefinitionId": "api012p-physical-reader"
+                }
+              ],
+              "handoffs": [],
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              }
+            }
+          },
+          {
+            "address": "/api012p_physical_leaf",
+            "startedAt": "2026-10-04T04:27:54.359Z",
+            "delegatorAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+            "agentRunId": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+            "platformAgentRunId": "01a1052b-1e91-7b23-8fee-d6ef715ad9dc",
+            "source": {
+              "kind": "agent",
+              "agentDefinitionId": "api012p-physical-leaf",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "positionedFacts": 141,
+  "internalPrivateStamps": 5,
+  "publicPrivateStamps": 0,
+  "agentIds": [
+    "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+    "api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+    "api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+    "api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+    "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+    "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+    "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+    "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+    "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+    "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+    "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74"
+  ],
+  "furtherLeaf": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+  "inspection": {
+    "root_subject_kind": "agent_org",
+    "root_run_id": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+    "root_org": {
+      "base_change_sequence": 2517,
+      "is_active": true,
+      "execution_tree": {
+        "subjectKind": "agent_org",
+        "createdAt": "2026-10-04T04:26:43.434Z",
+        "archivedAt": null,
+        "applicationBinding": null,
+        "handoffs": [],
+        "rootOrg": {
+          "address": "/",
+          "orgDefinitionId": "api012p-physical-org-ef6f178f-0829-444d-9224-38bf68127d57",
+          "orgDefinitionName": "API012P Physical Org ef6f178f-0829-444d-9224-38bf68127d57",
+          "orgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-6.1-sol",
+            "llmConfig": {
+              "reasoning_effort": "low"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+          },
+          "members": [
+            {
+              "address": "/manager",
+              "agentDefinitionId": "autobyteus-project-task-manager",
+              "role": null,
+              "description": null,
+              "agentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+              "platformAgentRunId": "01a1052a-0d1b-7232-b2f5-939675755bc7",
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              }
+            },
+            {
+              "address": "/borrowed",
+              "agentDefinitionId": "api012p-borrowed-packet-agent",
+              "role": null,
+              "description": null,
+              "agentRunId": "api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+              }
+            },
+            {
+              "address": "/workers",
+              "teamDefinitionId": "api012p-physical-workers",
+              "role": null,
+              "description": null,
+              "teamRunId": "api012p_physical_workers_29f5f2c504394cc787512f00355600af",
+              "coordinatorAddress": "/workers/coordinator",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6.1-sol",
+                "llmConfig": {
+                  "reasoning_effort": "low"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+              },
+              "members": [
+                {
+                  "address": "/workers/coordinator",
+                  "agentDefinitionId": "api012p-physical-coordinator",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                  }
+                },
+                {
+                  "address": "/workers/reader",
+                  "agentDefinitionId": "api012p-physical-reader",
+                  "role": null,
+                  "description": null,
+                  "agentRunId": "api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+                  "platformAgentRunId": null,
+                  "launchConfiguration": {
+                    "runtimeKind": "codex_app_server",
+                    "llmModelIdentifier": "gpt-6.1-sol",
+                    "llmConfig": {
+                      "reasoning_effort": "low"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-task-workers-round12"
+                  }
+                }
+              ],
+              "taskExecutions": []
+            }
+          ],
+          "collaborators": [],
+          "taskExecutions": [
+            {
+              "address": "/workers",
+              "teamRunId": "api012p_physical_workers_37e496b0fed1411195aa860e1786487d",
+              "members": [
+                {
+                  "address": "/workers/coordinator",
+                  "agentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+                  "platformAgentRunId": "01a1052a-4696-70c2-87ba-34b4c9f5089d"
+                },
+                {
+                  "address": "/workers/reader",
+                  "agentRunId": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+                  "platformAgentRunId": "01a1052a-4721-7723-8b57-2332565fa10e"
+                }
+              ],
+              "taskExecutions": [],
+              "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+              "startedAt": "2026-10-04T04:26:59.004Z"
+            },
+            {
+              "address": "/borrowed",
+              "agentRunId": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+              "platformAgentRunId": "01a1052a-47e2-74c1-a12a-3f1a9b13b7f8",
+              "delegatorAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+              "startedAt": "2026-10-04T04:26:59.405Z"
+            },
+            {
+              "address": "/api012p_physical_leaf",
+              "agentRunId": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+              "platformAgentRunId": "01a1052a-c31e-7c92-828a-8a82752059c6",
+              "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+              "startedAt": "2026-10-04T04:27:30.945Z",
+              "source": {
+                "kind": "agent",
+                "agentDefinitionId": "api012p-physical-leaf",
+                "launchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                }
+              }
+            },
+            {
+              "address": "/api012p_physical_helper_team",
+              "teamRunId": "api012p_physical_helper_team_7e036514213940678cfc84d4691e0797",
+              "members": [
+                {
+                  "address": "/api012p_physical_helper_team/coordinator",
+                  "agentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+                  "platformAgentRunId": "01a1052a-c3c5-7b42-bea8-e2fd6544f6c3"
+                },
+                {
+                  "address": "/api012p_physical_helper_team/reader",
+                  "agentRunId": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+                  "platformAgentRunId": "01a1052a-c446-7d10-9739-371b0441d61e"
+                }
+              ],
+              "taskExecutions": [],
+              "delegatorAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+              "startedAt": "2026-10-04T04:27:31.122Z",
+              "source": {
+                "kind": "agent_team",
+                "teamDefinitionId": "api012p-physical-helper-team",
+                "coordinatorAddress": "/api012p_physical_helper_team/coordinator",
+                "members": [
+                  {
+                    "address": "/api012p_physical_helper_team/coordinator",
+                    "agentDefinitionId": "api012p-physical-helper-coordinator"
+                  },
+                  {
+                    "address": "/api012p_physical_helper_team/reader",
+                    "agentDefinitionId": "api012p-physical-reader"
+                  }
+                ],
+                "handoffs": [],
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                }
+              }
+            },
+            {
+              "address": "/api012p_physical_leaf",
+              "agentRunId": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+              "platformAgentRunId": "01a1052b-1e91-7b23-8fee-d6ef715ad9dc",
+              "delegatorAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+              "startedAt": "2026-10-04T04:27:54.359Z",
+              "source": {
+                "kind": "agent",
+                "agentDefinitionId": "api012p-physical-leaf",
+                "launchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-6.1-sol",
+                  "llmConfig": {
+                    "reasoning_effort": "low"
+                  },
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/physical-manager-round12"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "communication_messages": {
+        "schemaVersion": 1,
+        "subjectKind": "agent_org",
+        "orgRunId": "api012p_physical_org_ef6f178f_0829_444d_9224_38bf68127d57_ddeba11eb12e484f94117748c047e348",
+        "messages": [
+          {
+            "messageId": "collabmsg_r7KAhAsP4ALVC94UoMfChufoXVenZu8U",
+            "senderAgentRunId": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+            "receiverAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+            "content": "Read the supplied saved packet using native read-only cat. Exact marker: API012P_PHYSICAL_B_02526894-42df-4a97-af5f-6f90f190f98d. No copies, status changes, or file changes.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-04T04:27:16.795Z"
+          },
+          {
+            "messageId": "collabmsg_mIGtlojuJdvR3mr7HaTadzh9fvfhFrDC",
+            "senderAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+            "receiverAgentRunId": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+            "content": "Read the actual saved packet read-only and report its exact marker. Preserve bytes; no status changes or root Stop. Packet: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt",
+            "messageType": "work",
+            "referenceFiles": [
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt"
+            ],
+            "createdAt": "2026-10-04T04:27:20.334Z"
+          },
+          {
+            "messageId": "collabmsg_dRElWdzuGzKS7E6aIPpZMyIOCdL7UNLv",
+            "senderAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+            "receiverAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+            "content": "Read the actual saved packet through your configured members as lifetime-local helper Team and report exact marker and concrete returned IDs. Preserve bytes; no file or Task status changes or root Stop. Packet: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt",
+            "messageType": "work",
+            "referenceFiles": [
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt"
+            ],
+            "createdAt": "2026-10-04T04:27:31.431Z"
+          },
+          {
+            "messageId": "collabmsg_OBrZa4oN30a_pwMEkY3f9l6qWfcJx4Yy",
+            "senderAgentRunId": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+            "receiverAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+            "content": "Read the supplied saved packet using read-only cat. Exact marker: API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db. Bytes preserved; no status changes or root Stop.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-04T04:27:34.913Z"
+          },
+          {
+            "messageId": "collabmsg_0HI2a_ARAvtHiPLMHU6ZKr9cQhU8eXVo",
+            "senderAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+            "receiverAgentRunId": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+            "content": "Read actual saved packet with native read-only cat. Actual marker: API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db. Consulted available agents. Exactly one configured-reader work message accepted: api012p_physical_reader_66c26152f00e41618294f26e0e30763c. Exactly one unlinked Leaf delegation (description/reference_files, no task_id) returned api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62. Exactly one helper Team work message accepted: coordinator api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd. All received exact packet path. No additional copies, file changes, status changes, or root Stop. Handoff rules empty. Downstream results not yet received.",
+            "messageType": "result",
+            "referenceFiles": [],
+            "createdAt": "2026-10-04T04:27:42.266Z"
+          },
+          {
+            "messageId": "collabmsg_0kzJi0PTfUNLbiysfIqNhQOXjHmdMbSg",
+            "senderAgentRunId": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+            "receiverAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+            "content": "Read the supplied saved packet using native read-only cat. Exact marker: API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db. No file or status changes.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-04T04:27:47.951Z"
+          },
+          {
+            "messageId": "collabmsg_sm3lN3SHARm2zsMNdZM2-CeHQY74uceT",
+            "senderAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+            "receiverAgentRunId": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+            "content": "Read the saved packet using native read-only cat or read_file and return exact read marker. Preserve bytes; no files/Task status changes or root Stop. Exact packet: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt",
+            "messageType": "agent_message",
+            "referenceFiles": [
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt"
+            ],
+            "createdAt": "2026-10-04T04:27:48.774Z"
+          },
+          {
+            "messageId": "collabmsg_IAVflbeYVbGT5XNBQP3356AxiOSdj0kZ",
+            "senderAgentRunId": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+            "receiverAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+            "content": "API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-04T04:28:03.963Z"
+          },
+          {
+            "messageId": "collabmsg_oP19OdQuctowuVeIgzeth0LVYubp57mX",
+            "senderAgentRunId": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+            "receiverAgentRunId": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+            "content": "Actual saved packet read via native cat. Own exact marker: API012P_PHYSICAL_A_40f79307-0f2a-4de8-a000-547c7efa65db. Configured reader request accepted with concrete ID api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4. Consulted available Agents and delegated exactly one additional unlinked Physical Leaf copy, returned concrete ID api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74. Same exact packet path supplied in description/reference_files, no task_id. No file or Task status changes or root Stop.",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-04T04:28:07.949Z"
+          }
+        ]
+      },
+      "agent_statuses": [
+        {
+          "member_address": "/manager",
+          "agent_run_id": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/borrowed",
+          "agent_run_id": "api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/borrowed",
+          "agent_run_id": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+          "status": "idle",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api012p_physical_leaf",
+          "agent_run_id": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api012p_physical_leaf",
+          "agent_run_id": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/workers/coordinator",
+          "agent_run_id": "api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/workers/reader",
+          "agent_run_id": "api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/workers/coordinator",
+          "agent_run_id": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/workers/reader",
+          "agent_run_id": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api012p_physical_helper_team/coordinator",
+          "agent_run_id": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        },
+        {
+          "member_address": "/api012p_physical_helper_team/reader",
+          "agent_run_id": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+          "status": "offline",
+          "trigger": null,
+          "tool_name": null,
+          "error_message": null,
+          "error_details": null,
+          "recoverableBlock": null
+        }
+      ],
+      "agent_input_states": [
+        {
+          "agent_run_id": "project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+          "state": {
+            "run_instance_id": "06aaec69-ae3a-48c9-83b4-57cc7960bdda",
+            "revision": 11,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        },
+        {
+          "agent_run_id": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+          "state": {
+            "run_instance_id": "339cfe53-016c-4fd2-ac9c-2e20d4e92b7a",
+            "revision": 4,
+            "entries": [],
+            "recoverableBlock": null
+          }
+        }
+      ]
+    }
+  },
+  "teamInspection": {
+    "teamRunId": "api012n_packet_team_c75ee46fc96b46d58f0d6891d4bc7bd1",
+    "isActive": true,
+    "executionTree": {
+      "created_at": "2026-10-04T04:34:45.651Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [],
+      "root_team": {
+        "address": "/",
+        "team_definition_id": "api012n-packet-team",
+        "team_definition_name": "API012N Packet Team",
+        "team_run_id": "api012n_packet_team_c75ee46fc96b46d58f0d6891d4bc7bd1",
+        "coordinator_address": "/coordinator",
+        "default_launch_configuration": {
+          "runtime_kind": "autobyteus",
+          "llm_model_identifier": "deepseek-v4-flash",
+          "llm_config": {
+            "thinking_type": "disabled"
+          },
+          "auto_execute_tools": true,
+          "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/team-b"
+        },
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/coordinator",
+            "agent_definition_id": "api012n-team-coordinator",
+            "role": null,
+            "description": null,
+            "agent_run_id": "api012n_team_coordinator_a50bbd56b60344ebafe74c47b74adc74",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "autobyteus",
+              "llm_model_identifier": "deepseek-v4-flash",
+              "llm_config": {
+                "thinking_type": "disabled"
+              },
+              "auto_execute_tools": true,
+              "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/team-b"
+            }
+          },
+          {
+            "kind": "configured_agent",
+            "address": "/reader",
+            "agent_definition_id": "api012n-team-reader",
+            "role": null,
+            "description": null,
+            "agent_run_id": "api012n_team_reader_57cf6d3abadb48b2a47f5be49a6d3215",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "autobyteus",
+              "llm_model_identifier": "deepseek-v4-flash",
+              "llm_config": {
+                "thinking_type": "disabled"
+              },
+              "auto_execute_tools": true,
+              "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/validation-workspace/team-b"
+            }
+          }
+        ],
+        "collaborators": [],
+        "task_executions": []
+      }
+    }
+  },
+  "selectedLeaf": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+  "uiRows": [
+    {
+      "test": "agent-org-agent-row-project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+      "agent": null,
+      "status": "idle",
+      "label": "manager, idle, /manager, project_task_manager_6fb4aa4d53284205b2d2f6999810d9e5",
+      "text": "Mmanager"
+    },
+    {
+      "test": "agent-org-agent-row-api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+      "agent": null,
+      "status": "offline",
+      "label": "borrowed, offline, /borrowed, api012p_borrowed_packet_agent_0341ca8b538447dd8b4dcf8efe5f6d41",
+      "text": "Bborrowed"
+    },
+    {
+      "test": "agent-org-team-row-api012p_physical_workers_29f5f2c504394cc787512f00355600af",
+      "agent": null,
+      "status": null,
+      "label": "workers. Team status: Offline",
+      "text": "workers"
+    },
+    {
+      "test": "agent-org-agent-row-api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+      "agent": null,
+      "status": "offline",
+      "label": "coordinator, offline, /workers/coordinator, api012p_physical_coordinator_6c79940057984895b95aa6848909fff8",
+      "text": "Ccoordinator"
+    },
+    {
+      "test": "agent-org-agent-row-api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+      "agent": null,
+      "status": "offline",
+      "label": "reader, offline, /workers/reader, api012p_physical_reader_460de5daaed347a1835a93d56e77d2a8",
+      "text": "Rreader"
+    },
+    {
+      "test": "agent-org-task-team-row-api012p_physical_workers_37e496b0fed1411195aa860e1786487d",
+      "agent": null,
+      "status": null,
+      "label": "workers, Started by manager, /workers, api012p_physical_workers_37e496b0fed1411195aa860e1786487d",
+      "text": "workers"
+    },
+    {
+      "test": "agent-org-task-agent-row-api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+      "agent": "api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+      "status": "offline",
+      "label": "coordinator, offline, /workers/coordinator, api012p_physical_coordinator_2f1469a5217d4dcabb12fd6c6f94be97",
+      "text": "Ccoordinator"
+    },
+    {
+      "test": "agent-org-task-agent-row-api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+      "agent": "api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+      "status": "offline",
+      "label": "reader, offline, /workers/reader, api012p_physical_reader_66c26152f00e41618294f26e0e30763c",
+      "text": "Rreader"
+    },
+    {
+      "test": "agent-org-task-agent-row-api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+      "agent": "api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+      "status": "idle",
+      "label": "borrowed, idle, Started by manager, /borrowed, api012p_borrowed_packet_agent_c8290fa42a354c43989906618aecae3a",
+      "text": "Bborrowed"
+    },
+    {
+      "test": "agent-org-task-agent-row-api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+      "agent": "api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+      "status": "offline",
+      "label": "api012p physical leaf, offline, Started by coordinator, /api012p_physical_leaf, api012p_physical_leaf_bb8f3359bcbb47ec841a44f3d1808f62",
+      "text": "APapi012p physical leaf"
+    },
+    {
+      "test": "agent-org-task-team-row-api012p_physical_helper_team_7e036514213940678cfc84d4691e0797",
+      "agent": null,
+      "status": null,
+      "label": "api012p physical helper team, Started by coordinator, /api012p_physical_helper_team, api012p_physical_helper_team_7e036514213940678cfc84d4691e0797",
+      "text": "api012p physical helper team"
+    },
+    {
+      "test": "agent-org-task-agent-row-api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+      "agent": "api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+      "status": "offline",
+      "label": "coordinator, offline, /api012p_physical_helper_team/coordinator, api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd",
+      "text": "Ccoordinator"
+    },
+    {
+      "test": "agent-org-task-agent-row-api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+      "agent": "api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+      "status": "offline",
+      "label": "reader, offline, /api012p_physical_helper_team/reader, api012p_physical_reader_d2fb8bf73c9e4a2e8c4d7a19a442d0a4",
+      "text": "Rreader"
+    },
+    {
+      "test": "agent-org-task-agent-row-api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+      "agent": "api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+      "status": "offline",
+      "label": "api012p physical leaf, offline, Started by coordinator, /api012p_physical_leaf, api012p_physical_leaf_4a13cf0d1c3e4d01ba4f15f5b7a92b74",
+      "text": "APapi012p physical leaf"
+    }
+  ],
+  "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nmanager\nphysical-manager-round12\nORGS\nAPI012P Physical Org ef6f178f-0829-444d-9224-38bf68127d57\n(2)\nNew - API012P Physical Org ef6f178f-0829-444d-9224-38bf68127d57\nnow\nAuthorized own isolated validation. Resolve Project project_c35351f8-613f-43e4-a04c-e8af2d7ad573;...\n8m\nM\nmanager\nB\nborrowed\nworkers\nC\ncoordinator\nR\nreader\nworkers\nC\ncoordinator\nR\nreader\nB\nborrowed\nAP\napi012p physical leaf\napi012p physical helper team\nC\ncoordinator\nR\nreader\nAP\napi012p physical leaf\nphysical-task-workers-round12\nTemp Workspace\nSettings\nAP\napi012p physical leaf - 2B74\nOffline\nYou\nTask delegator address: /api012p_physical_helper_team/coordinator\nTask delegator AgentRun ID: api012p_physical_helper_coordinator_1b3b6d181c3b4051bebce005a2f026cd\n\nDescription:\nRead actual saved packet /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt via native read-only cat or read_file. Return exact marker. This is further work inside inherited Task lifetime. Preserve bytes; no file or Task status changes, no root Stop, no additional copies.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt\nAP\napi012p physical leaf\nrun_bash\n· /bin/bash -lc 'cat /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biyGLM/server-data/projects/task_context_files/project_c35351f8-613f-43e4-a04c-e8af2d7ad573/project_task_699b724c-30b7-4feb-94d6-5be08b277883/ctx_f7b13690e4d5__physical-A.txt'\nget_handoff_rules\nContext Files (0)\n(drag, paste, or upload)\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+  "noWrite": {
+    "projectSha": "9762611cdfea95485e02f02a1fc458740a0606434842166a579b4db63afb097a",
+    "privateTreeSha": "38ec31fd4d76963b17a8e568e9999c3daf1afbea0b5f66a540c9838c219e8350",
+    "projectUnchanged": true,
+    "treeUnchanged": true
+  },
+  "boundaryHashes": {
+    "run-history/services/collaboration-root-history-service.js": "3a5f841cf969b54df2737a915d3f5af7e298cbc7b11f0132984c65feb765d688",
+    "api/graphql/types/collaboration-root-history.js": "f363225a564948f4279c4653d395f979db42af97cc68fef85d4dca0d3bd11b0b",
+    "services/agent-streaming/collaboration-execution-tree-dto-projection.js": "9bfa8ef6270b1b26a259fe27a87585b14ee8eaec79d9ab7e07a8f2b7b6733f84"
+  },
+  "result": "Scoped Pass live actual mixed Org/Team facade and single strict inspection retain multilevel six-worker full forest/further Leaf selection, public0/private5; no Project/private-tree rewrite or implicit cold restoration."
+}

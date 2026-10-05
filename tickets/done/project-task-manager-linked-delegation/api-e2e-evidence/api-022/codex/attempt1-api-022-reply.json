@@ -1,0 +1,97 @@
+{
+  "instanceId": "iso-52127-37fa",
+  "steps": [
+    {
+      "name": "root, project and Task created",
+      "at": "2026-10-05T15:45:42.496Z",
+      "rootId": "project_task_manager_6575e1badd6244a0b793db69834cc6dd",
+      "task": {
+        "taskId": "project_task_18bf35a0-98f1-47e5-b21e-1a70ca1b86d5"
+      }
+    },
+    {
+      "name": "Task R assigned to W",
+      "at": "2026-10-05T15:45:58.068Z",
+      "W": "api022r_packet_agent_50cb7c10dadf43a89cce6cccebc94222"
+    }
+  ],
+  "packetAgent": {
+    "id": "api022r-packet-agent",
+    "name": "API022R Packet Agent"
+  },
+  "helper": {
+    "id": "api022r-delegate-helper",
+    "name": "API022R Delegate Helper"
+  },
+  "manager": {
+    "id": "autobyteus-project-task-manager",
+    "name": "Project Task Manager"
+  },
+  "rootId": "project_task_manager_6575e1badd6244a0b793db69834cc6dd",
+  "project": {
+    "projectId": "project_c41cc2c2-f39b-4c73-91c3-7821a9f4f9e4"
+  },
+  "task": {
+    "taskId": "project_task_18bf35a0-98f1-47e5-b21e-1a70ca1b86d5"
+  },
+  "W": "api022r_packet_agent_50cb7c10dadf43a89cce6cccebc94222",
+  "runIdMarker": "API022R_RUNID_REPLY_f13d745b-f76f-4d00-99c4-67fb48d22cf2",
+  "runIdReceivers": [
+    "api022r_packet_agent_50cb7c10dadf43a89cce6cccebc94222"
+  ],
+  "fileAfterA": {
+    "taskId": "project_task_18bf35a0-98f1-47e5-b21e-1a70ca1b86d5",
+    "agentRunResources": [
+      {
+        "role": "assigned",
+        "assignedBy": "project_task_manager_6575e1badd6244a0b793db69834cc6dd",
+        "hostRoot": {
+          "kind": "agent",
+          "runId": "project_task_manager_6575e1badd6244a0b793db69834cc6dd"
+        },
+        "agentRun": {
+          "kind": "agent",
+          "agentRunId": "api022r_packet_agent_50cb7c10dadf43a89cce6cccebc94222"
+        },
+        "linkedAt": "2026-10-05T15:45:52.028Z",
+        "start": "started",
+        "closedAt": null
+      },
+      {
+        "role": "delegated",
+        "hostRoot": {
+          "kind": "agent",
+          "runId": "project_task_manager_6575e1badd6244a0b793db69834cc6dd"
+        },
+        "agentRun": {
+          "kind": "agent",
+          "agentRunId": "api022r_delegate_helper_2f2535db07e341758e0f0151eb39396c"
+        },
+        "linkedAt": "2026-10-05T15:46:07.222Z",
+        "start": "started",
+        "closedAt": null
+      }
+    ]
+  },
+  "H": "api022r_delegate_helper_2f2535db07e341758e0f0151eb39396c",
+  "hToolResult": {
+    "id": "rt_1791215175511_2824d098-07b5-4bbb-94d2-049b90a89239",
+    "ts": 1791215175.511,
+    "turn_id": "01a10cbe-6780-7da2-a5e4-5464aef16b52",
+    "seq": 3,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "send_message_to",
+    "tool_call_id": "exec-2556d44f-c38e-4bee-9711-84322dfba93b",
+    "tool_result": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Message delivered.",
+      "target_agent_run_id": "api022r_packet_agent_50cb7c10dadf43a89cce6cccebc94222"
+    },
+    "tool_error": null
+  },
+  "error": "AssertionError [ERR_ASSERTION]: H used target_agent_run_id",
+  "stack": "AssertionError [ERR_ASSERTION]: H used target_agent_run_id\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-022/rt-reply.mjs:118:3"
+}

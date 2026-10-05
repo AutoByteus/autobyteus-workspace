@@ -1,0 +1,275 @@
+{
+  "instanceId": "iso-50993-65ad",
+  "kind": "agent_org",
+  "steps": [
+    {
+      "phase": "run",
+      "name": "root created",
+      "at": "2026-10-05T15:09:45.591Z",
+      "rootId": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795",
+      "managerRunId": "project_task_manager_0d1e8d66ec67404b916c5b745512add3",
+      "borrowedRunId": "api021_packet_agent_a97fcef96a0e4b2a85558d0cf2641221"
+    },
+    {
+      "phase": "run",
+      "name": "assigned entries written and started; trees Task-free",
+      "at": "2026-10-05T15:09:52.639Z",
+      "files": {
+        "A": {
+          "taskId": "project_task_cc336be3-9ac2-4ece-a887-f985b12dd960",
+          "agentRunResources": [
+            {
+              "role": "assigned",
+              "assignedBy": "project_task_manager_0d1e8d66ec67404b916c5b745512add3",
+              "hostRoot": {
+                "kind": "agent_org",
+                "runId": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795"
+              },
+              "agentRun": {
+                "kind": "agent",
+                "agentRunId": "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505"
+              },
+              "linkedAt": "2026-10-05T15:09:48.268Z",
+              "start": "started",
+              "closedAt": null
+            }
+          ]
+        },
+        "B": {
+          "taskId": "project_task_17bc6e0f-7ca6-45bb-911f-f0141d9b37fc",
+          "agentRunResources": [
+            {
+              "role": "assigned",
+              "assignedBy": "project_task_manager_0d1e8d66ec67404b916c5b745512add3",
+              "hostRoot": {
+                "kind": "agent_org",
+                "runId": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795"
+              },
+              "agentRun": {
+                "kind": "team",
+                "teamRunId": "api021_packet_team_6b60aea9be0d48ae880463c7c53992f5",
+                "coordinatorAgentRunId": "api021_team_coordinator_82248665ebbc4175bd7e0a4cfb9829aa"
+              },
+              "linkedAt": "2026-10-05T15:09:48.324Z",
+              "start": "started",
+              "closedAt": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "phase": "run",
+      "name": "DONE A closed every A entry and stopped exactly A runs",
+      "at": "2026-10-05T15:10:03.252Z",
+      "closedA": {
+        "taskId": "project_task_cc336be3-9ac2-4ece-a887-f985b12dd960",
+        "agentRunResources": [
+          {
+            "role": "assigned",
+            "assignedBy": "project_task_manager_0d1e8d66ec67404b916c5b745512add3",
+            "hostRoot": {
+              "kind": "agent_org",
+              "runId": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795"
+            },
+            "agentRun": {
+              "kind": "agent",
+              "agentRunId": "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505"
+            },
+            "linkedAt": "2026-10-05T15:09:48.268Z",
+            "start": "started",
+            "closedAt": "2026-10-05T15:09:53.680Z"
+          }
+        ]
+      },
+      "aRuns": [
+        "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505"
+      ]
+    },
+    {
+      "phase": "run",
+      "name": "fence: every closed A run rejects input",
+      "at": "2026-10-05T15:10:06.791Z",
+      "receipts": {
+        "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505": {
+          "at": "2026-10-05T15:10:03.285Z",
+          "type": "AGENT_COMMAND_ACK",
+          "payload": {
+            "root_subject_kind": "agent_org",
+            "root_run_id": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795",
+            "command_id": "899cbb46-52b9-4632-a50a-a959d484741f",
+            "command_type": "SEND_MESSAGE",
+            "target_agent_run_id": "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505",
+            "state": "rejected",
+            "code": "TASK_AGENT_RESOURCE_CLOSED",
+            "message": "The Task work for this agent run is closed (Task DONE)."
+          }
+        }
+      }
+    },
+    {
+      "phase": "run",
+      "name": "Manager, open B and borrowed still usable",
+      "at": "2026-10-05T15:10:09.866Z"
+    },
+    {
+      "phase": "run",
+      "name": "repeat DONE: no resource file change",
+      "at": "2026-10-05T15:10:15.932Z"
+    },
+    {
+      "phase": "run",
+      "name": "run phase complete",
+      "at": "2026-10-05T15:10:15.968Z"
+    },
+    {
+      "phase": "resume",
+      "name": "root restored after whole-app restart",
+      "at": "2026-10-05T15:12:06.035Z"
+    },
+    {
+      "phase": "resume",
+      "name": "closed A runs rejected after restart (not woken/restored)",
+      "at": "2026-10-05T15:12:09.546Z",
+      "closedRuns": [
+        "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505"
+      ]
+    },
+    {
+      "phase": "resume",
+      "name": "open B resumes after restart",
+      "at": "2026-10-05T15:12:11.065Z"
+    },
+    {
+      "phase": "resume",
+      "name": "resume phase complete",
+      "at": "2026-10-05T15:12:11.067Z"
+    }
+  ],
+  "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api021-upgrade-root-dxrY/validation-workspace/agent_org",
+  "project": {
+    "projectId": "project_a75b0e74-e601-4f48-ae3c-3b6d45dad9e9"
+  },
+  "tasks": {
+    "A": {
+      "taskId": "project_task_cc336be3-9ac2-4ece-a887-f985b12dd960"
+    },
+    "B": {
+      "taskId": "project_task_17bc6e0f-7ca6-45bb-911f-f0141d9b37fc"
+    }
+  },
+  "rootId": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795",
+  "managerRunId": "project_task_manager_0d1e8d66ec67404b916c5b745512add3",
+  "borrowedRunId": "api021_packet_agent_a97fcef96a0e4b2a85558d0cf2641221",
+  "borrowedFirst": {
+    "nonce": "API021_4a15faeb-de30-42fa-a9d0-f23f5c5883cc",
+    "since": 1791212983.585
+  },
+  "dispatch": {
+    "nonce": "API021_430ea768-3055-454c-b963-3a6318f3499e",
+    "since": 1791212984.593
+  },
+  "filesAfterAssign": {
+    "A": {
+      "taskId": "project_task_cc336be3-9ac2-4ece-a887-f985b12dd960",
+      "agentRunResources": [
+        {
+          "role": "assigned",
+          "assignedBy": "project_task_manager_0d1e8d66ec67404b916c5b745512add3",
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795"
+          },
+          "agentRun": {
+            "kind": "agent",
+            "agentRunId": "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505"
+          },
+          "linkedAt": "2026-10-05T15:09:48.268Z",
+          "start": "started",
+          "closedAt": null
+        }
+      ]
+    },
+    "B": {
+      "taskId": "project_task_17bc6e0f-7ca6-45bb-911f-f0141d9b37fc",
+      "agentRunResources": [
+        {
+          "role": "assigned",
+          "assignedBy": "project_task_manager_0d1e8d66ec67404b916c5b745512add3",
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795"
+          },
+          "agentRun": {
+            "kind": "team",
+            "teamRunId": "api021_packet_team_6b60aea9be0d48ae880463c7c53992f5",
+            "coordinatorAgentRunId": "api021_team_coordinator_82248665ebbc4175bd7e0a4cfb9829aa"
+          },
+          "linkedAt": "2026-10-05T15:09:48.324Z",
+          "start": "started",
+          "closedAt": null
+        }
+      ]
+    }
+  },
+  "aWorker": "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505",
+  "bCoordinator": "api021_team_coordinator_82248665ebbc4175bd7e0a4cfb9829aa",
+  "done": {
+    "nonce": "API021_6e6c970f-a560-411a-884f-3bae6b699173",
+    "since": 1791212991.661
+  },
+  "closedA": {
+    "taskId": "project_task_cc336be3-9ac2-4ece-a887-f985b12dd960",
+    "agentRunResources": [
+      {
+        "role": "assigned",
+        "assignedBy": "project_task_manager_0d1e8d66ec67404b916c5b745512add3",
+        "hostRoot": {
+          "kind": "agent_org",
+          "runId": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795"
+        },
+        "agentRun": {
+          "kind": "agent",
+          "agentRunId": "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505"
+        },
+        "linkedAt": "2026-10-05T15:09:48.268Z",
+        "start": "started",
+        "closedAt": "2026-10-05T15:09:53.680Z"
+      }
+    ]
+  },
+  "fence": {
+    "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505": {
+      "at": "2026-10-05T15:10:03.285Z",
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "root_subject_kind": "agent_org",
+        "root_run_id": "api021_root_org_71f653f5_ebcb71b9d2de4796bfacdce0f575e795",
+        "command_id": "899cbb46-52b9-4632-a50a-a959d484741f",
+        "command_type": "SEND_MESSAGE",
+        "target_agent_run_id": "api021_packet_agent_afa9cca575a0408fb79d2dbfe3f0f505",
+        "state": "rejected",
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "The Task work for this agent run is closed (Task DONE)."
+      }
+    }
+  },
+  "bAlive": {
+    "nonce": "API021_ce07ccd7-b6c8-4bae-882c-d0134d9cd2ce",
+    "since": 1791213005.83
+  },
+  "borrowedAlive": {
+    "nonce": "API021_63749340-55bf-4cc9-b2db-42fad3f19ac4",
+    "since": 1791213007.345
+  },
+  "repeat": {
+    "nonce": "API021_d0ea9d39-fc2f-4b47-8427-60045abfed5e",
+    "since": 1791213008.906
+  },
+  "result": "run phase passed",
+  "bResume": {
+    "nonce": "API021_97174a47-736b-4786-ade6-0d7425753929",
+    "since": 1791213128.548
+  },
+  "resumeResult": "resume phase passed"
+}

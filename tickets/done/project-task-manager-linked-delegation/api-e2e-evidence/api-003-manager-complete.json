@@ -1,0 +1,363 @@
+{
+  "instanceId": "iso-58490-670f",
+  "started": "2026-10-03T09:56:23.386Z",
+  "ws": [],
+  "observedStates": [
+    {
+      "time": "2026-10-03T09:56:23.536Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:24.037Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:24.542Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:25.044Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:25.551Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:26.053Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:26.555Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:27.060Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:27.562Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:28.064Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:28.568Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:29.069Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:29.575Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:30.077Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:30.587Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:31.092Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:31.599Z",
+      "status": "IN_PROGRESS",
+      "completedAt": null,
+      "cleanup": [
+        "not_requested"
+      ]
+    },
+    {
+      "time": "2026-10-03T09:56:32.099Z",
+      "status": "DONE",
+      "completedAt": "2026-10-03T09:56:32.013Z",
+      "cleanup": [
+        "released"
+      ]
+    }
+  ],
+  "before": [
+    {
+      "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+      "name": "API003 saved-packet validation",
+      "description": "Owned isolated live validation; not production.",
+      "createdAt": "2026-10-03T09:53:53.121Z",
+      "updatedAt": "2026-10-03T09:53:53.121Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+          "description": "Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.",
+          "status": "IN_PROGRESS",
+          "createdAt": "2026-10-03T09:53:53.190Z",
+          "updatedAt": "2026-10-03T09:54:32.201Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_17e6e103abf5__saved-packet.txt",
+              "displayName": "saved-packet.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 72
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskLifetimes": [
+        {
+          "lifetimeId": "project_task_lifetime_9da7a658-dd62-4ad9-b5f8-1ffd683fdc03",
+          "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+          "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+          "openedAt": "2026-10-03T09:54:26.814Z",
+          "completedAt": null,
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+              },
+              "execution": {
+                "agentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768"
+              },
+              "ingressAgentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T09:54:26.833Z",
+              "dispatch": "delivered",
+              "cleanup": "not_requested"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "linkAndStampExact": true,
+  "managerModel": {
+    "getAgentRunResumeConfig": {
+      "isActive": true,
+      "metadataConfig": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-6.1-sol",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        }
+      }
+    }
+  },
+  "beforeText": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nvalidation-workspace\nPT\nProject Task Manager\n(1)\nThis is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.\n1m\nSettings\nPT\nThis is an explicitly authorized isolated…\nIdle\nYou\nThis is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.\nPT\nProject Task Manager\nlist_projects\nlist_available_agents\nlist_project_tasks\ndelegate_task\ncreate_or_update_task\n\nFrom Api003 Packet Worker D8a619938caa4106a4812182603d4768:\n\nAPI003_ATTACHMENT_ORIGINAL_project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\n\nAgentRun: api003_packet_worker_d8a619938caa4106a4812182603d4768\nSaved marker: API003_ATTACHMENT_ORIGINAL_project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\nTask status: IN_PROGRESS\n\nDelegated exactly once; description and context unchanged. Not marked DONE—awaiting your completion approval.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n6 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured 03.10.2026, 11:54:05 · 3824 characters\nAVAILABLE\n\nAutoByteus-supplied · Codex baseInstructions · Captured 03.10.2026, 11:54:05 · 3824 characters\n\n## Agent Identity\n\n- Name: Project Task Manager\n- Description: Reusable assistant for planning saved Project Tasks, delegating linked work, checking results, and explicitly completing Tasks.\n\n### Responsibilities and Boundaries\n\nYou are the Project Task Manager, an ordinary reusable Chat agent, not a scheduler.\n\n1. Resolve the user's Project through list_projects; use its real projectId. Ask a concise clarification when the Project or requested Task is ambiguous. Never invent IDs or silently select an unrelated Task.\n2. Use list_project_tasks to reuse an appropriate saved Task or create a TODO Task with create_or_update_task. Persist the complete work description before delegation. Saved Task context files are supplied by the system; keep the description self-contained.\n3. Consult list_available_agents to choose an eligible Agent or AgentTeam. Delegate using only recipient_address and task_id. Do not send project_id, description or reference_files with task_id; the saved Task is the work authority. Each call creates a fresh copy; a Team result names its coordinator AgentRun, not the TeamRun.\n4. Confirm the tool's successful target_agent_run_id before explicitly patching the Task to IN_PROGRESS. Do not resend the initial work. Follow up on that exact copy using send_message_to with target_agent_run_id. Failure or indeterminate dispatch is not success; inspect lifetime/execution outcomes before retrying so accepted work is not duplicated.\n5. Review the returned result and relevant artifacts before explicitly deciding DONE. Ask for missing information or report a blocker when completion is not justified. Workers' messages do not automatically complete Tasks.\n6. Explicit DONE permanently closes all current Task lifetimes and immediately initiates runtime release of owned assignments, follow-on delegations and helpers across roots. Inspect cleanup outcomes; report pending or failed cleanup truthfully and retry DONE when appropriate. Do not claim that DONE alone proves every runtime released.\n\nCompletion does not stop you, other Tasks or borrowed existing unowned runs. It does not delete outputs, conversations or worktrees. An edit or Delete is not a completion/stop request. Reopening a Task starts no work and never revives an old closed copy; a later linked delegation creates a new lifetime. Do not add a scheduler, automatic completion, new Project UI or hidden global Stop.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.\n\nYou can work with other agents and agent teams: the ones the user brings into this run, and any available agent or team.\n\n- A user message may end with a `[Mentioned collaborators]` note that lists each mentioned Agent or Agent Team with its address. Each one is already in the run.\n- `send_message_to` with an exact address as `recipient_address` reaches the one instance at that address; an available agent or team that is not yet in the run is brought in on first use and keeps its conversation. A message to an Agent Team goes to its coordinator.\n- `delegate_task` with an address always spawns a new, separate copy with your work description as its first message; copies can work in parallel. Follow up on a copy with `send_message_to` and its `target_agent_run_id`.\n- If you have `list_available_agents`, it lists the available agents and teams with their addresses.\n- Do not claim that a message or delegation succeeded unless the tool confirms it.\n\nYour address in this run is `/project_task_manager`.\nlist_projects\n#exec-b\nSUCCESS\nResult\n{\n  \"projects\": [\n    {\n      \"projectId\": \"project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\",\n      \"name\": \"API003 saved-packet validation\",\n      \"description\": \"Owned isolated live validation; not production.\"\n    }\n  ]\n}\nlist_available_agents\n#exec-f\nSUCCESS\nResult\nlist_project_tasks\n#exec-8\nSUCCESS\nArguments\n{\n  \"project_id\": \"project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\"\n}\nResult\ndelegate_task\n#exec-f\nSUCCESS\nArguments\n{\n  \"recipient_address\": \"/api003_packet_worker\",\n  \"task_id\": \"project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1\"\n}\nResult\n{\n  \"target_agent_run_id\": \"api003_packet_worker_d8a619938caa4106a4812182603d4768\"\n}\ncreate_or_update_task\n#exec-f\nSUCCESS\nArguments\nResult",
+  "delegation": {
+    "item": {
+      "type": "mcpToolCall",
+      "id": "exec-f1884225-9546-451a-a235-c31e11ac7089",
+      "tool": "delegate_task",
+      "status": "completed",
+      "arguments": {
+        "recipient_address": "/api003_packet_worker",
+        "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1"
+      },
+      "appContext": null,
+      "mcpAppUi": null,
+      "pluginId": null,
+      "readOnlyHint": null,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"target_agent_run_id\": \"api003_packet_worker_d8a619938caa4106a4812182603d4768\"\n}"
+          }
+        ],
+        "structuredContent": {
+          "target_agent_run_id": "api003_packet_worker_d8a619938caa4106a4812182603d4768"
+        },
+        "_meta": null
+      },
+      "error": null,
+      "durationMs": 727
+    },
+    "threadId": "01a1012f-65b2-7252-907d-d5ddb5eb54dc",
+    "turnId": "01a1012f-66e2-7063-863b-d1b138728ad5",
+    "completedAtMs": 1791021267195,
+    "turn_id": "01a1012f-66e2-7063-863b-d1b138728ad5",
+    "invocation_id": "exec-f1884225-9546-451a-a235-c31e11ac7089",
+    "tool_name": "delegate_task",
+    "arguments": {
+      "recipient_address": "/api003_packet_worker",
+      "task_id": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1"
+    },
+    "result": {
+      "target_agent_run_id": "api003_packet_worker_d8a619938caa4106a4812182603d4768"
+    }
+  },
+  "streamErrors": [
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_PROJECTION_FAILED",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"event\",\n      \"execution\"\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_UNAVAILABLE",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"root_agent\",\n      \"execution_tree\",\n      \"taskExecutions\",\n      0\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_UNAVAILABLE",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"root_agent\",\n      \"execution_tree\",\n      \"taskExecutions\",\n      0\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_UNAVAILABLE",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"root_agent\",\n      \"execution_tree\",\n      \"taskExecutions\",\n      0\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "AGENT_ROOT_STREAM_UNAVAILABLE",
+        "message": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [\n      [\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized key: \\\"taskLifetime\\\"\"\n        }\n      ],\n      [\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"teamRunId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"taskExecutions\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"code\": \"invalid_value\",\n          \"values\": [\n            \"agent_team\"\n          ],\n          \"path\": [\n            \"source\",\n            \"kind\"\n          ],\n          \"message\": \"Invalid input: expected \\\"agent_team\\\"\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"teamDefinitionId\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"string\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"coordinatorAddress\"\n          ],\n          \"message\": \"Invalid input: expected string, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"members\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"array\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"handoffs\"\n          ],\n          \"message\": \"Invalid input: expected array, received undefined\"\n        },\n        {\n          \"expected\": \"object\",\n          \"code\": \"invalid_type\",\n          \"path\": [\n            \"source\",\n            \"defaultLaunchConfiguration\"\n          ],\n          \"message\": \"Invalid input: expected object, received undefined\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentDefinitionId\",\n            \"launchConfiguration\"\n          ],\n          \"path\": [\n            \"source\"\n          ],\n          \"message\": \"Unrecognized keys: \\\"agentDefinitionId\\\", \\\"launchConfiguration\\\"\"\n        },\n        {\n          \"code\": \"unrecognized_keys\",\n          \"keys\": [\n            \"agentRunId\",\n            \"platformAgentRunId\",\n            \"taskLifetime\"\n          ],\n          \"path\": [],\n          \"message\": \"Unrecognized keys: \\\"agentRunId\\\", \\\"platformAgentRunId\\\", \\\"taskLifetime\\\"\"\n        }\n      ]\n    ],\n    \"path\": [\n      \"root_agent\",\n      \"execution_tree\",\n      \"taskExecutions\",\n      0\n    ],\n    \"message\": \"Invalid input\"\n  }\n]"
+      }
+    }
+  ],
+  "priorUnexpectedStreamErrors": true,
+  "request": "I reviewed the exact saved attachment marker returned by the worker and approve completion of Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1 in Project project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec. Explicitly patch DONE using create_or_update_task. Inspect/report exact cleanup outcomes truthfully. Do not stop this Manager/root, delete anything or delegate new work. After cleanup has released, repeat the same DONE patch once to exercise idempotence; then reply API003_DONE_VERIFIED with the actual cleanup result. If cleanup fails, report it rather than claim success.",
+  "after": [
+    {
+      "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+      "name": "API003 saved-packet validation",
+      "description": "Owned isolated live validation; not production.",
+      "createdAt": "2026-10-03T09:53:53.121Z",
+      "updatedAt": "2026-10-03T09:53:53.121Z",
+      "workspaces": [],
+      "tasks": [
+        {
+          "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+          "description": "Read the saved Task attachment with read_file. Return its exact API003_ATTACHMENT_ORIGINAL marker in your final response and use send_message_to to report it to the requester. Do not modify any files or delegate additional work in this first test.",
+          "status": "DONE",
+          "createdAt": "2026-10-03T09:53:53.190Z",
+          "updatedAt": "2026-10-03T09:56:32.013Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_17e6e103abf5__saved-packet.txt",
+              "displayName": "saved-packet.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 72
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskLifetimes": [
+        {
+          "lifetimeId": "project_task_lifetime_9da7a658-dd62-4ad9-b5f8-1ffd683fdc03",
+          "projectId": "project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec",
+          "taskId": "project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1",
+          "openedAt": "2026-10-03T09:54:26.814Z",
+          "completedAt": "2026-10-03T09:56:32.013Z",
+          "executions": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "project_task_manager_3fd94fdecc024d96be351ec36d62b53a"
+              },
+              "execution": {
+                "agentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768"
+              },
+              "ingressAgentRunId": "api003_packet_worker_d8a619938caa4106a4812182603d4768",
+              "purpose": "assignment",
+              "reservedAt": "2026-10-03T09:54:26.833Z",
+              "dispatch": "delivered",
+              "cleanup": "released"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "afterText": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nvalidation-workspace\nPT\nProject Task Manager\n(1)\nThis is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.\nnow\nSettings\nPT\nThis is an explicitly authorized isolated…\nIdle\nYou\nThis is an explicitly authorized isolated test. Resolve Project named \"API003 saved-packet validation\" through list_projects and list its saved Tasks. Reuse exact saved Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1; do not edit its description or context. Consult list_available_agents and delegate it ONCE to API003 Packet Worker using ONLY recipient_address and task_id. Upon confirmed successful dispatch, explicitly patch this Task to IN_PROGRESS. Do NOT mark DONE yet: wait for my completion approval even if the worker finishes. Wait for the worker result then report the target AgentRun ID, saved marker and current Task status. Do not create additional Projects or Tasks, do not read credentials or other workspaces.\nPT\nProject Task Manager\nlist_projects\nlist_available_agents\nlist_project_tasks\ndelegate_task\ncreate_or_update_task\n\nFrom Api003 Packet Worker D8a619938caa4106a4812182603d4768:\n\nAPI003_ATTACHMENT_ORIGINAL_project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\n\nAgentRun: api003_packet_worker_d8a619938caa4106a4812182603d4768\nSaved marker: API003_ATTACHMENT_ORIGINAL_project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\nTask status: IN_PROGRESS\n\nDelegated exactly once; description and context unchanged. Not marked DONE—awaiting your completion approval.\n\nYou\nI reviewed the exact saved attachment marker returned by the worker and approve completion of Task project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1 in Project project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec. Explicitly patch DONE using create_or_update_task. Inspect/report exact cleanup outcomes truthfully. Do not stop this Manager/root, delete anything or delegate new work. After cleanup has released, repeat the same DONE patch once to exercise idempotence; then reply API003_DONE_VERIFIED with the actual cleanup result. If cleanup fails, report it rather than claim success.\nPT\nProject Task Manager\ncreate_or_update_task\nlist_project_tasks\ncreate_or_update_task\n\nAPI003_DONE_VERIFIED\n\nTask status: DONE. Worker api003_packet_worker_d8a619938caa4106a4812182603d4768 cleanup transitioned from pending to released.\n\nRepeated DONE exactly once after release: cleanup remained released, with the same lifetime completion timestamp.\n\nNo Manager/root stop, deletion, or new delegation performed.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n9 Events\nSystem instructions\nAutoByteus-supplied · Codex baseInstructions\nCaptured 03.10.2026, 11:54:05 · 3824 characters\nAVAILABLE\n\nAutoByteus-supplied · Codex baseInstructions · Captured 03.10.2026, 11:54:05 · 3824 characters\n\n## Agent Identity\n\n- Name: Project Task Manager\n- Description: Reusable assistant for planning saved Project Tasks, delegating linked work, checking results, and explicitly completing Tasks.\n\n### Responsibilities and Boundaries\n\nYou are the Project Task Manager, an ordinary reusable Chat agent, not a scheduler.\n\n1. Resolve the user's Project through list_projects; use its real projectId. Ask a concise clarification when the Project or requested Task is ambiguous. Never invent IDs or silently select an unrelated Task.\n2. Use list_project_tasks to reuse an appropriate saved Task or create a TODO Task with create_or_update_task. Persist the complete work description before delegation. Saved Task context files are supplied by the system; keep the description self-contained.\n3. Consult list_available_agents to choose an eligible Agent or AgentTeam. Delegate using only recipient_address and task_id. Do not send project_id, description or reference_files with task_id; the saved Task is the work authority. Each call creates a fresh copy; a Team result names its coordinator AgentRun, not the TeamRun.\n4. Confirm the tool's successful target_agent_run_id before explicitly patching the Task to IN_PROGRESS. Do not resend the initial work. Follow up on that exact copy using send_message_to with target_agent_run_id. Failure or indeterminate dispatch is not success; inspect lifetime/execution outcomes before retrying so accepted work is not duplicated.\n5. Review the returned result and relevant artifacts before explicitly deciding DONE. Ask for missing information or report a blocker when completion is not justified. Workers' messages do not automatically complete Tasks.\n6. Explicit DONE permanently closes all current Task lifetimes and immediately initiates runtime release of owned assignments, follow-on delegations and helpers across roots. Inspect cleanup outcomes; report pending or failed cleanup truthfully and retry DONE when appropriate. Do not claim that DONE alone proves every runtime released.\n\nCompletion does not stop you, other Tasks or borrowed existing unowned runs. It does not delete outputs, conversations or worktrees. An edit or Delete is not a completion/stop request. Reopening a Task starts no work and never revives an old closed copy; a later linked delegation creates a new lifetime. Do not add a scheduler, automatic completion, new Project UI or hidden global Stop.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.\n\nYou can work with other agents and agent teams: the ones the user brings into this run, and any available agent or team.\n\n- A user message may end with a `[Mentioned collaborators]` note that lists each mentioned Agent or Agent Team with its address. Each one is already in the run.\n- `send_message_to` with an exact address as `recipient_address` reaches the one instance at that address; an available agent or team that is not yet in the run is brought in on first use and keeps its conversation. A message to an Agent Team goes to its coordinator.\n- `delegate_task` with an address always spawns a new, separate copy with your work description as its first message; copies can work in parallel. Follow up on a copy with `send_message_to` and its `target_agent_run_id`.\n- If you have `list_available_agents`, it lists the available agents and teams with their addresses.\n- Do not claim that a message or delegation succeeded unless the tool confirms it.\n\nYour address in this run is `/project_task_manager`.\nlist_projects\n#exec-b\nSUCCESS\nResult\n{\n  \"projects\": [\n    {\n      \"projectId\": \"project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\",\n      \"name\": \"API003 saved-packet validation\",\n      \"description\": \"Owned isolated live validation; not production.\"\n    }\n  ]\n}\nlist_available_agents\n#exec-f\nSUCCESS\nResult\nlist_project_tasks\n#exec-8\nSUCCESS\nArguments\n{\n  \"project_id\": \"project_03cdd3c2-0dd4-4607-8b25-2c5a7a9a86ec\"\n}\nResult\ndelegate_task\n#exec-f\nSUCCESS\nArguments\n{\n  \"recipient_address\": \"/api003_packet_worker\",\n  \"task_id\": \"project_task_d73bcf17-91a9-4b0e-8ff0-d355f8d54ce1\"\n}\nResult\n{\n  \"target_agent_run_id\": \"api003_packet_worker_d8a619938caa4106a4812182603d4768\"\n}\ncreate_or_update_task\n#exec-f\nSUCCESS\nArguments\nResult\ncreate_or_update_task\n#exec-0\nSUCCESS\nArguments\nResult\nlist_project_tasks\n#exec-3\nSUCCESS\nArguments\nResult\ncreate_or_update_task\n#exec-b\nSUCCESS\nArguments\nResult",
+  "managerAfter": {
+    "getAgentRunResumeConfig": {
+      "isActive": true
+    }
+  },
+  "managerWorkspacePreserved": true,
+  "result": "Pass — exact Agent root saved-ID MCP dispatch/stamp/link, actual attachment result, explicit DONE closure/released outcome/repeated DONE and Manager workspace preservation. Whole cumulative product FAIL due root collaboration stream rejection; full physical cascade/all roots not proven."
+}

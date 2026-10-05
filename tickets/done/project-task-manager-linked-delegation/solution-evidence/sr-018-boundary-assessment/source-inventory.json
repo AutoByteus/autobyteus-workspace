@@ -1,0 +1,216 @@
+{
+  "at": "2026-10-03T19:54:59.573855+00:00",
+  "method": "Read-only current static topology snapshot; not source/API review",
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+      "sha256": "558ceb7a072988d051bf0e63f949f36ae5e81899554555b87a876e374b657a2a",
+      "lines": 192
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+      "sha256": "d17e8dd5eb233ff0a3006eac93ff7ef37b5769e553faa8d880d3d76f7c0e665c",
+      "lines": 62
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+      "sha256": "aba392bd1de5089ed7461fca80175c22d6cfbe306631fd6b971f1aa2fb5ff1b4",
+      "lines": 232
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts",
+      "sha256": "fe0e73b4745c2aac6251cf71dbf8779c92d52a49b28abbd3267731b69920928e",
+      "lines": 108
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+      "sha256": "f07b2dbef5eaef03d9db83e61847742aa7629df581b6ba9a53f5bb532c29c3e5",
+      "lines": 83
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+      "sha256": "3864666cac4b631bfb33fafa0c8a0e781582baa4230083029e89bc1e0402673d",
+      "lines": 95
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-stream-handler.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-stream-handler.ts",
+      "sha256": "b783bb838dc75af42dec1e28de951531f264547b986afa31a85c9ba00fd9a9ae",
+      "lines": 162
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/services/agent-streaming/agent-org-stream-handler.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/services/agent-streaming/agent-org-stream-handler.ts",
+      "sha256": "1ce4e95988230992b8d050520bca701dc2b46864c61d62ccfa08cca0f940f5d9",
+      "lines": 207
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/api/graphql/types/agent-run-collaboration.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/api/graphql/types/agent-run-collaboration.ts",
+      "sha256": "44f0d6146b0348d049ec76ddf40f7689e5fe4348700b3e3c79df35f26d9c56ba",
+      "lines": 87
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts",
+      "sha256": "168ff1eb05a51a3ee3c7d6fc50ed62149425cf7a440088caa3c241c2ac33ea9a",
+      "lines": 260
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/api/graphql/types/collaboration-root-history.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/api/graphql/types/collaboration-root-history.ts",
+      "sha256": "e4b76371ab609411ff92d6ab4411270f945bc0ef0213ca62a85018ff023d735e",
+      "lines": 38
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/api/graphql/types/run-history.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/api/graphql/types/run-history.ts",
+      "sha256": "aeea436adf590e984f4f0f32244e237ef170c543b0057d240e818d373b2d803e",
+      "lines": 324
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts",
+      "sha256": "326229759b6dbb63b3b24d1b1e8d79634e4b606268451d10f468046022cf69dc",
+      "lines": 114
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/api/websocket/index.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/api/websocket/index.ts",
+      "sha256": "bf99223245e68895edf5d2528b11dd3b0751f209b32402db25d6779aadda4634",
+      "lines": 46
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/api/websocket/agent.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/api/websocket/agent.ts",
+      "sha256": "bdb32f78325db887c43e6f66cf4d912a61240336b2d3f5cc9bb146b556759a36",
+      "lines": 202
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "sha256": "692fe53516726f02c3e2404854481f45a417b00e5e0696ef184cc1c956dffca3",
+      "lines": 425
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-service.ts",
+      "sha256": "4ae42fcd0950940b2b294f12c9f537238013ab67ea05768f2492afb30d7385ab",
+      "lines": 260
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "sha256": "769aca848213d31270943a4068bec69470e046911b21b3124e39cf21678e8a03",
+      "lines": 428
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+      "sha256": "783547fc842ff46a63b53cc2fc5cd2f9d93e6284614daa206109c5eec95ab905",
+      "lines": 259
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/run-history/services/collaboration-root-history-service.ts",
+      "sha256": "daa8284478d806370c10f8af1f87bd4d19f4dc28e9dbfddf43536812ed2ecb8b",
+      "lines": 59
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/run-history/store/agent-org-run-execution-tree-store.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/run-history/store/agent-org-run-execution-tree-store.ts",
+      "sha256": "b4892ba837701b419ed13c143675a4cb6f69441ebc6be82e8c29ce1a0454a3fc",
+      "lines": 38
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/run-history/store/agent-org-run-execution-tree-schema.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/run-history/store/agent-org-run-execution-tree-schema.ts",
+      "sha256": "f25dcfd3a870bb0856eee6e463b26f0f1a94b0e7a07bd0aa25f48ea9c8688558",
+      "lines": 141
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts",
+      "sha256": "61f71a04bf6ca80d94e4b7d5385e1a16d063721c4661a8abb2549b63aa435745",
+      "lines": 475
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts",
+      "sha256": "fd12c36a87aac884a2de8e02223c6911f73a581655980eb973c17195487c3051",
+      "lines": 178
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+      "sha256": "fbffbd9b5f44aad4bd668b7f33d0aeaafabdb7b35915b414ba3134d759cda1bb",
+      "lines": 484
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/stores/runHistoryLoadActions.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/stores/runHistoryLoadActions.ts",
+      "sha256": "e0be3a84b1d435366f74a7609f24ff33a873eda613872893c6441fa797cb6514",
+      "lines": 438
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/stores/runHistoryStoreSupport.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/stores/runHistoryStoreSupport.ts",
+      "sha256": "bea93e460db5786a42475dc9f18bbcb413e795d5dec0ddc38cc72751176df5d7",
+      "lines": 147
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/graphql/queries/collaborationRootHistoryQueries.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/graphql/queries/collaborationRootHistoryQueries.ts",
+      "sha256": "11f82c4ed3b7414608b72670506aa99542b7c45689f15805a609eda499b4c3f3",
+      "lines": 22
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/types/collaboration/agentOrgExecution.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/types/collaboration/agentOrgExecution.ts",
+      "sha256": "8682e011a6d8fef9d55d93d8833da0a5d143d8decbac38f06641ad9f03f00403",
+      "lines": 23
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+      "sha256": "289769da9217733e6ad2c1aa2c720af04519c49fdeb17d8539a9622f83a49acb",
+      "lines": 117
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+      "sha256": "695ea6df22c706db1ab7598c7e75f75484758365634219dee50b041279c643c3",
+      "lines": 267
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/stores/agentRunCollaborationStore.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/stores/agentRunCollaborationStore.ts",
+      "sha256": "49f9683df1ef9a46f96b8346d14c329d1bbc19dad0ac98931e8cf85b5c9c5a28",
+      "lines": 304
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/services/agentOrgExecution/agentOrgRunInspection.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/services/agentOrgExecution/agentOrgRunInspection.ts",
+      "sha256": "cbbd87271b7a705eb80b719660761f9fd77d3bab0fd2fb40b383cdb9d1078214",
+      "lines": 15
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+      "sha256": "7dff6062cf759dc71aaf604aff76753460f468a859e4cb9aa68c3e48a1f2fdba",
+      "lines": 507
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/stores/agentOrgContextsStore.ts",
+      "snapshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/solution-evidence/sr-018-boundary-assessment/source-snapshot/autobyteus-web/stores/agentOrgContextsStore.ts",
+      "sha256": "d93adbd2426aad8e1fdeb351d1dab5663afa0386fd1c3128acd0c32b1fc9c0c5",
+      "lines": 367
+    }
+  ]
+}

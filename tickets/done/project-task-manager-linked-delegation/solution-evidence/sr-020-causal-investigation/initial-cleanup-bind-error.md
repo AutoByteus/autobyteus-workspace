@@ -1,0 +1,1 @@
+First inline cleanup verifier exited1 on OSError48 Address already in use after own stop/profile/PID checks. It did not persist which port failed; no listener or cause inferred. Subsequent verify-cleanup.py exits0, all own ports free-bind, PIDs absent/profile removed. Environment observation only, not Task release repair.

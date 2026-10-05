@@ -1,0 +1,284 @@
+import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
+import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
+import { afterEach, describe, expect, it } from "vitest";
+import { promises as fs } from "node:fs";
+import path from "node:path";
+import type { AgentConfig } from "autobyteus-ts/agent/context/agent-config.js";
+import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
+import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
+import {
+  parseAgentMd,
+  serializeAgentMd,
+} from "../../../src/agent-definition/utils/agent-md-parser.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { createStandaloneRunRootsFixture } from "../../fixtures/standalone-run-roots-fixture.js";
+
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
+
+describe("AgentRunService fresh definition runtime integration", () => {
+  const cleanupPaths = new Set<string>();
+
+  afterEach(async () => {
+    for (const target of cleanupPaths) {
+      await fs.rm(target, { recursive: true, force: true }).catch(() => undefined);
+    }
+    cleanupPaths.clear();
+  });
+
+  const buildRunService = (
+    agentDefinitionService: AgentDefinitionService,
+    onCreateAgent: (config: AgentConfig) => void,
+  ) => {
+    const workspaceById = new Map<string, { workspaceId: string; getBasePath: () => string }>();
+    const activeAgents = new Map<string, any>();
+    const workspaceManager = {
+      ensureWorkspaceByRootPath: async (workspaceRootPath: string) => {
+        const workspace = {
+          workspaceId: "ws_runtime_fresh_definition",
+          getBasePath: () => workspaceRootPath,
+          getName: () => "ws_runtime_fresh_definition",
+        };
+        workspaceById.set(workspace.workspaceId, workspace);
+        return workspace;
+      },
+      getWorkspaceById: (workspaceId: string) => workspaceById.get(workspaceId) ?? null,
+      getOrCreateTempWorkspace: async () => ({
+        workspaceId: "ws_runtime_fresh_definition",
+        getBasePath: () => appConfigProvider.config.getMemoryDir(),
+        getName: () => "ws_runtime_fresh_definition",
+      }),
+    };
+    const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService,
+      createLLM: async () => ({}) as any,
+      agentFactory: {
+        createAgentWithId: (agentId: string, config: AgentConfig) => {
+          onCreateAgent(config);
+          const agent = {
+            agentId,
+            currentStatus: "IDLE",
+            context: {
+              config,
+              state: {
+                activeTurnId: null,
+                takePendingSystemInstructionCapture: () => null,
+              },
+            },
+            start: () => undefined,
+            postUserMessage: async () => undefined,
+            postToolExecutionApproval: async () => undefined,
+            stop: async () => undefined,
+          };
+          activeAgents.set(agentId, agent);
+          return agent;
+        },
+        restoreAgent: (agentId: string, config: AgentConfig) => {
+          const agent = {
+            agentId,
+            currentStatus: "IDLE",
+            context: {
+              config,
+              state: {
+                activeTurnId: null,
+                takePendingSystemInstructionCapture: () => null,
+              },
+            },
+            start: () => undefined,
+            postUserMessage: async () => undefined,
+            postToolExecutionApproval: async () => undefined,
+            stop: async () => undefined,
+          };
+          activeAgents.set(agentId, agent);
+          return agent;
+        },
+        getAgent: (agentId: string) => activeAgents.get(agentId) ?? null,
+        listActiveAgentIds: () => Array.from(activeAgents.keys()),
+        removeAgent: async (agentId: string) => activeAgents.delete(agentId),
+      } as any,
+      workspaceManager: workspaceManager as any,
+      skillService: {
+        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+      } as any,
+      registries: {
+        input: {
+          getProcessor: () => undefined,
+          getOrderedProcessorOptions: () => [],
+        },
+        llmResponse: {
+          getProcessor: () => undefined,
+          getOrderedProcessorOptions: () => [],
+        },
+        systemPrompt: {
+          getProcessor: () => undefined,
+          getOrderedProcessorOptions: () => [],
+        },
+        toolExecutionResult: {
+          getProcessor: () => undefined,
+          getOrderedProcessorOptions: () => [],
+        },
+        toolInvocationPreprocessor: {
+          getPreprocessor: () => undefined,
+          getOrderedProcessorOptions: () => [],
+        },
+        lifecycle: {
+          getProcessor: () => undefined,
+          getOrderedProcessorOptions: () => [],
+        },
+      },
+      waitForIdle: async () => undefined,
+    });
+
+    const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
+    const infrastructure = createAgentRunManagerInfrastructureFixture({
+      agentToolMcpRunSessionDeactivator: deactivator,
+    });
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory,
+      codexBackendFactory: unavailableBackendFactory,
+      claudeBackendFactory: unavailableBackendFactory,
+      agyBackendFactory: unavailableBackendFactory,
+      grokBackendFactory: unavailableBackendFactory,
+      activationRegistry: infrastructure.activationRegistry,
+      memoryRecorder: infrastructure.memoryRecorder,
+      providerInputNormalizer: infrastructure.providerInputNormalizer,
+      agentToolMcpRunSessionDeactivator: deactivator,
+    });
+    const memoryDir = appConfigProvider.config.getMemoryDir();
+    const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
+      agentRunManager: manager,
+      workspaceManager: workspaceManager as never,
+      modelSelectionValidator: {
+        validate: async ({ selection }) => ({ kind: "valid", selection }),
+      },
+    });
+    return new AgentRunService(memoryDir, {
+      agentRunManager: manager,
+      workspaceManager: workspaceManager as never,
+      lifecycleService,
+      standaloneRuns: createStandaloneRunRootsFixture({ memoryDir, lifecycleService, agentRunManager: manager }),
+      agentRunIdentityAllocator: {
+        allocateForAgentDefinition: async (agentDefinitionId: string) =>
+          `${agentDefinitionId}-run`,
+      },
+    });
+  };
+
+  it("uses fresh definition instructions for the next run even when the cache is stale", async () => {
+    const agentDefinitionService = new AgentDefinitionService();
+    const unique = `fresh_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
+    const initialInstructions = `Initial instructions for ${unique}`;
+    const updatedInstructions = `Updated instructions for ${unique}`;
+    const description = `Description fallback for ${unique}`;
+
+    const created = await agentDefinitionService.createAgentDefinition({
+      name: `Fresh Agent ${unique}`,
+      role: "assistant",
+      description,
+      instructions: initialInstructions,
+      toolNames: [],
+    });
+    expect(created.id).toBeTruthy();
+
+    const agentDir = path.join(appConfigProvider.config.getAppDataDir(), "agents", created.id as string);
+    cleanupPaths.add(agentDir);
+
+    const cachedBeforeEdit = await agentDefinitionService.getAgentDefinitionById(created.id as string);
+    expect(cachedBeforeEdit?.instructions).toBe(initialInstructions);
+
+    const agentMdPath = path.join(agentDir, "agent.md");
+    const parsedBeforeEdit = parseAgentMd(await fs.readFile(agentMdPath, "utf-8"), agentMdPath);
+    await fs.writeFile(
+      agentMdPath,
+      serializeAgentMd(
+        {
+          name: parsedBeforeEdit.name,
+          description: parsedBeforeEdit.description,
+          category: parsedBeforeEdit.category,
+          role: parsedBeforeEdit.role,
+        },
+        updatedInstructions,
+      ),
+      "utf-8",
+    );
+
+    const cachedAfterEdit = await agentDefinitionService.getAgentDefinitionById(created.id as string);
+    expect(cachedAfterEdit?.instructions).toBe(initialInstructions);
+
+    let capturedConfig: AgentConfig | null = null;
+    const runService = buildRunService(agentDefinitionService, (config) => {
+      capturedConfig = config;
+    });
+
+    await runService.createAgentRun({
+      agentDefinitionId: created.id as string,
+      workspaceRootPath: appConfigProvider.config.getMemoryDir(),
+      llmModelIdentifier: "dummy-model",
+      autoExecuteTools: false,
+      runtimeKind: "autobyteus",
+      llmConfig: null,
+    });
+
+    expect(capturedConfig?.systemPrompt).toContain(updatedInstructions);
+  });
+
+  it("falls back to description when fresh definition instructions are blank", async () => {
+    const agentDefinitionService = new AgentDefinitionService();
+    const unique = `blank_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
+    const initialInstructions = `Initial instructions for ${unique}`;
+    const description = `Fallback description for ${unique}`;
+
+    const created = await agentDefinitionService.createAgentDefinition({
+      name: `Blank Instructions Agent ${unique}`,
+      role: "assistant",
+      description,
+      instructions: initialInstructions,
+      toolNames: [],
+    });
+    expect(created.id).toBeTruthy();
+
+    const agentDir = path.join(appConfigProvider.config.getAppDataDir(), "agents", created.id as string);
+    cleanupPaths.add(agentDir);
+
+    await agentDefinitionService.getAgentDefinitionById(created.id as string);
+
+    const agentMdPath = path.join(agentDir, "agent.md");
+    const parsed = parseAgentMd(await fs.readFile(agentMdPath, "utf-8"), agentMdPath);
+    await fs.writeFile(
+      agentMdPath,
+      serializeAgentMd(
+        {
+          name: parsed.name,
+          description,
+          category: parsed.category,
+          role: parsed.role,
+        },
+        "",
+      ),
+      "utf-8",
+    );
+
+    let capturedConfig: AgentConfig | null = null;
+    const runService = buildRunService(agentDefinitionService, (config) => {
+      capturedConfig = config;
+    });
+
+    await runService.createAgentRun({
+      agentDefinitionId: created.id as string,
+      workspaceRootPath: appConfigProvider.config.getMemoryDir(),
+      llmModelIdentifier: "dummy-model",
+      autoExecuteTools: false,
+      runtimeKind: "autobyteus",
+      llmConfig: null,
+    });
+
+    expect(capturedConfig?.systemPrompt).toContain(description);
+  });
+});

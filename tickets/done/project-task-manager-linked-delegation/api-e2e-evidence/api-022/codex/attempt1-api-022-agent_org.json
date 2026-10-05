@@ -1,0 +1,141 @@
+{
+  "instanceId": "iso-52127-37fa",
+  "kind": "agent_org",
+  "steps": [
+    {
+      "phase": "run",
+      "name": "root created",
+      "at": "2026-10-05T15:43:59.536Z",
+      "rootId": "api022_root_org_7b45f56d_f4c6d07019154a0d9ea5d3c4d0b62624",
+      "managerRunId": "project_task_manager_58bdcfad63274a4b972da3710cffe936",
+      "borrowedRunId": "api022_packet_agent_d208909a79d54c63a80a52dd848a8dc9"
+    },
+    {
+      "phase": "run",
+      "name": "assigned entries written and started; trees Task-free",
+      "at": "2026-10-05T15:44:21.619Z",
+      "files": {
+        "A": {
+          "taskId": "project_task_c8cc83eb-e463-4807-a398-c1ba0138c1f3",
+          "agentRunResources": [
+            {
+              "role": "assigned",
+              "assignedBy": "project_task_manager_58bdcfad63274a4b972da3710cffe936",
+              "hostRoot": {
+                "kind": "agent_org",
+                "runId": "api022_root_org_7b45f56d_f4c6d07019154a0d9ea5d3c4d0b62624"
+              },
+              "agentRun": {
+                "kind": "agent",
+                "agentRunId": "api022_packet_agent_cf51668dc53644a3aa567c742b48b2e1"
+              },
+              "linkedAt": "2026-10-05T15:44:10.153Z",
+              "start": "started",
+              "closedAt": null
+            }
+          ]
+        },
+        "B": {
+          "taskId": "project_task_1a57abb6-ee75-422c-9f72-e04141a6e6d7",
+          "agentRunResources": [
+            {
+              "role": "assigned",
+              "assignedBy": "project_task_manager_58bdcfad63274a4b972da3710cffe936",
+              "hostRoot": {
+                "kind": "agent_org",
+                "runId": "api022_root_org_7b45f56d_f4c6d07019154a0d9ea5d3c4d0b62624"
+              },
+              "agentRun": {
+                "kind": "team",
+                "teamRunId": "api022_packet_team_33f6dbb960fb495b9696a0d2682ee537",
+                "coordinatorAgentRunId": "api022_team_coordinator_e0ef3df3c92042ceaa3f7272505a4fc0"
+              },
+              "linkedAt": "2026-10-05T15:44:12.765Z",
+              "start": "started",
+              "closedAt": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "phase": "resume",
+      "name": "root restored after whole-app restart",
+      "at": "2026-10-05T15:50:37.097Z"
+    }
+  ],
+  "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8oa1Cb/validation-workspace/agent_org",
+  "project": {
+    "projectId": "project_ceba3973-8b36-49bd-8395-09d326f82bd7"
+  },
+  "tasks": {
+    "A": {
+      "taskId": "project_task_c8cc83eb-e463-4807-a398-c1ba0138c1f3"
+    },
+    "B": {
+      "taskId": "project_task_1a57abb6-ee75-422c-9f72-e04141a6e6d7"
+    }
+  },
+  "rootId": "api022_root_org_7b45f56d_f4c6d07019154a0d9ea5d3c4d0b62624",
+  "managerRunId": "project_task_manager_58bdcfad63274a4b972da3710cffe936",
+  "borrowedRunId": "api022_packet_agent_d208909a79d54c63a80a52dd848a8dc9",
+  "borrowedFirst": {
+    "nonce": "API022_c0d214a5-d2e4-4a81-acc1-e8ce822a66ab",
+    "since": 1791215034.021
+  },
+  "dispatch": {
+    "nonce": "API022_95c98c9b-6051-4a4b-9fa5-8068bfa47f14",
+    "since": 1791215038.537
+  },
+  "filesAfterAssign": {
+    "A": {
+      "taskId": "project_task_c8cc83eb-e463-4807-a398-c1ba0138c1f3",
+      "agentRunResources": [
+        {
+          "role": "assigned",
+          "assignedBy": "project_task_manager_58bdcfad63274a4b972da3710cffe936",
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "api022_root_org_7b45f56d_f4c6d07019154a0d9ea5d3c4d0b62624"
+          },
+          "agentRun": {
+            "kind": "agent",
+            "agentRunId": "api022_packet_agent_cf51668dc53644a3aa567c742b48b2e1"
+          },
+          "linkedAt": "2026-10-05T15:44:10.153Z",
+          "start": "started",
+          "closedAt": null
+        }
+      ]
+    },
+    "B": {
+      "taskId": "project_task_1a57abb6-ee75-422c-9f72-e04141a6e6d7",
+      "agentRunResources": [
+        {
+          "role": "assigned",
+          "assignedBy": "project_task_manager_58bdcfad63274a4b972da3710cffe936",
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "api022_root_org_7b45f56d_f4c6d07019154a0d9ea5d3c4d0b62624"
+          },
+          "agentRun": {
+            "kind": "team",
+            "teamRunId": "api022_packet_team_33f6dbb960fb495b9696a0d2682ee537",
+            "coordinatorAgentRunId": "api022_team_coordinator_e0ef3df3c92042ceaa3f7272505a4fc0"
+          },
+          "linkedAt": "2026-10-05T15:44:12.765Z",
+          "start": "started",
+          "closedAt": null
+        }
+      ]
+    }
+  },
+  "aWorker": "api022_packet_agent_cf51668dc53644a3aa567c742b48b2e1",
+  "bCoordinator": "api022_team_coordinator_e0ef3df3c92042ceaa3f7272505a4fc0",
+  "done": {
+    "nonce": "API022_7689d305-058c-4093-9935-a790900dcefa",
+    "since": 1791215060.622
+  },
+  "error": "TypeError: Cannot read properties of undefined (reading 'agentRunResources')",
+  "stack": "TypeError: Cannot read properties of undefined (reading 'agentRunResources')\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-022/rt-probe.mjs:317:36"
+}

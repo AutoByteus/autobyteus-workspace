@@ -1,0 +1,573 @@
+{
+  "source": "api-008-round8-concrete-agent_team.json",
+  "filter": "payload.agent_run_id === exact reader (not text substring recipient mentions)",
+  "reader": "api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148",
+  "counts": {
+    "AGENT_INPUT_STATE": 18,
+    "AGENT_STATUS": 22,
+    "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 3,
+    "TOOL_EXECUTION_STARTED": 3,
+    "TOOL_EXECUTION_SUCCEEDED": 3,
+    "SEGMENT_END": 3,
+    "TOKEN_USAGE_UPDATED": 4
+  },
+  "facts": [
+    {
+      "frameIndex": 1918,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 1915,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 1,
+      "entries": []
+    },
+    {
+      "frameIndex": 2246,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2243,
+      "status": "initializing"
+    },
+    {
+      "frameIndex": 2247,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2244,
+      "status": "initializing"
+    },
+    {
+      "frameIndex": 2248,
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "changeSequence": 2245
+    },
+    {
+      "frameIndex": 2249,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2246,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 2,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": null,
+          "state": "queued",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2250,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2247,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2251,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2248,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2272,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2269,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2273,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2270,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2274,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2271,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2275,
+      "type": "TURN_STARTED",
+      "changeSequence": 2272,
+      "turnId": "01a1027e-9fe9-7973-b782-12d26f003c9f"
+    },
+    {
+      "frameIndex": 2276,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2273,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2277,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2274,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2278,
+      "type": "SEGMENT_START",
+      "changeSequence": 2275
+    },
+    {
+      "frameIndex": 2279,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2276,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2280,
+      "type": "TOOL_EXECUTION_STARTED",
+      "changeSequence": 2277
+    },
+    {
+      "frameIndex": 2281,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2278,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2282,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2279,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2283,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "changeSequence": 2280
+    },
+    {
+      "frameIndex": 2284,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2281,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2285,
+      "type": "SEGMENT_END",
+      "changeSequence": 2282
+    },
+    {
+      "frameIndex": 2286,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2283,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2287,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2284,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2288,
+      "type": "TOKEN_USAGE_UPDATED",
+      "changeSequence": 2285
+    },
+    {
+      "frameIndex": 2289,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2286,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2360,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2357,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2361,
+      "type": "SEGMENT_START",
+      "changeSequence": 2358
+    },
+    {
+      "frameIndex": 2362,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2359,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2363,
+      "type": "TOOL_EXECUTION_STARTED",
+      "changeSequence": 2360
+    },
+    {
+      "frameIndex": 2364,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2361,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2365,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2362,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2366,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "changeSequence": 2363
+    },
+    {
+      "frameIndex": 2367,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2364,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2368,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2365,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2369,
+      "type": "SEGMENT_END",
+      "changeSequence": 2366
+    },
+    {
+      "frameIndex": 2370,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2367,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2371,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2368,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2372,
+      "type": "TOKEN_USAGE_UPDATED",
+      "changeSequence": 2369
+    },
+    {
+      "frameIndex": 2373,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2370,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2656,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2653,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2657,
+      "type": "SEGMENT_START",
+      "changeSequence": 2654
+    },
+    {
+      "frameIndex": 2658,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2655,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2659,
+      "type": "TOOL_EXECUTION_STARTED",
+      "changeSequence": 2656
+    },
+    {
+      "frameIndex": 2660,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2657,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2665,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2662,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2666,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "changeSequence": 2663
+    },
+    {
+      "frameIndex": 2667,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2664,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2668,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2665,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2669,
+      "type": "SEGMENT_END",
+      "changeSequence": 2666
+    },
+    {
+      "frameIndex": 2670,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2667,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2677,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2674,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2678,
+      "type": "TOKEN_USAGE_UPDATED",
+      "changeSequence": 2675
+    },
+    {
+      "frameIndex": 2679,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2676,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2711,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2708,
+      "status": "running"
+    },
+    {
+      "frameIndex": 2712,
+      "type": "TOKEN_USAGE_UPDATED",
+      "changeSequence": 2709
+    },
+    {
+      "frameIndex": 2713,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2710,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    },
+    {
+      "frameIndex": 2714,
+      "type": "AGENT_STATUS",
+      "changeSequence": 2711,
+      "status": "idle"
+    },
+    {
+      "frameIndex": 2715,
+      "type": "AGENT_INPUT_STATE",
+      "changeSequence": 2712,
+      "run_instance_id": "06c3bcb3-80d8-4229-a311-f18673ab85e2",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "dedupe_key": "member_input:api008_concrete_root_team_b1450c819aa949079b05eadc6d52f9fb:api008_team_reader_68e39fdf22fe4d12bdf8e3512805b148:memberinput_JYQ6cb7Tr8c6CdHo6F6kmACmlzc6rR0U",
+          "turn_id": "01a1027e-9fe9-7973-b782-12d26f003c9f",
+          "state": "forwarded",
+          "content": "You received a message from sender name: coordinator, sender id: api008_team_coordinator_1c86cad97e984c9caf9105543e0bbdd8\nmessage:\nRead only the supplied saved Task attachment at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt using read_file or runtime-native read-only cat. Report its exact actual marker. Do not modify files, create copies, delegate, or change Task status.\n\nReference files:\n- /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-7tRVK1/server-data/projects/task_context_files/project_0fc2e5bd-e806-4406-802f-a20b83b742a6/project_task_17cd817c-f8bf-41f2-911e-392e6d5d5773/ctx_dab44ab08e79__saved-agent_team-B.txt",
+          "sender_type": "agent",
+          "file_attachments": []
+        }
+      ]
+    }
+  ],
+  "scope": "First capture only; no terminal/offline in this reader stream. Absence is not a backend return or proof of which native message/converter path was missed."
+}

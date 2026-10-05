@@ -1,0 +1,161 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-manager-probe.mjs setup
+{
+  "instanceId": "iso-63749-7f67",
+  "project": {
+    "projectId": "project_a2c4b814-aec9-4ef7-a458-25c1ad092235",
+    "name": "API010 saved-ID visible workers"
+  },
+  "tasks": {
+    "A": {
+      "taskId": "project_task_5805441d-9682-4485-a9f6-521287b318fc",
+      "projectId": "project_a2c4b814-aec9-4ef7-a458-25c1ad092235",
+      "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API010_ATTACHMENT_A_project_a2c4b814-aec9-4ef7-a458-25c1ad092235 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+      "status": "TODO",
+      "contextFiles": [
+        {
+          "storedFilename": "ctx_889bf073d576__saved-packet-A.txt",
+          "displayName": "saved-packet-A.txt",
+          "locator": "/rest/projects/project_a2c4b814-aec9-4ef7-a458-25c1ad092235/tasks/project_task_5805441d-9682-4485-a9f6-521287b318fc/context-files/ctx_889bf073d576__saved-packet-A.txt"
+        }
+      ],
+      "marker": "API010_ATTACHMENT_A_project_a2c4b814-aec9-4ef7-a458-25c1ad092235"
+    },
+    "B": {
+      "taskId": "project_task_cdec4953-e326-4aaf-8800-d98589061f6f",
+      "projectId": "project_a2c4b814-aec9-4ef7-a458-25c1ad092235",
+      "description": "Read the supplied saved Task attachment using read_file or runtime-native read-only cat and return its exact API010_ATTACHMENT_B_project_a2c4b814-aec9-4ef7-a458-25c1ad092235 marker; report to requester through existing send_message_to. Do not modify files, create copies, or change any Task status.",
+      "status": "TODO",
+      "contextFiles": [
+        {
+          "storedFilename": "ctx_c25440636e45__saved-packet-B.txt",
+          "displayName": "saved-packet-B.txt",
+          "locator": "/rest/projects/project_a2c4b814-aec9-4ef7-a458-25c1ad092235/tasks/project_task_cdec4953-e326-4aaf-8800-d98589061f6f/context-files/ctx_c25440636e45__saved-packet-B.txt"
+        }
+      ],
+      "marker": "API010_ATTACHMENT_B_project_a2c4b814-aec9-4ef7-a458-25c1ad092235"
+    }
+  },
+  "agents": [
+    {
+      "id": "api010-packet-agent",
+      "name": "API010 Packet Agent",
+      "defaultLaunchConfig": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-6.1-sol",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        }
+      }
+    },
+    {
+      "id": "api010-team-coordinator",
+      "name": "API010 Team Coordinator",
+      "defaultLaunchConfig": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-6.1-sol",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        }
+      }
+    },
+    {
+      "id": "api010-team-reader",
+      "name": "API010 Team Reader",
+      "defaultLaunchConfig": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-6.1-sol",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        }
+      }
+    }
+  ],
+  "team": {
+    "id": "api010-packet-team",
+    "name": "API010 Packet Team"
+  },
+  "catalogModels": {
+    "codex_app_server": [
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra",
+      "gpt-6-luna",
+      "gpt-6-sol",
+      "gpt-6.1-sol"
+    ],
+    "antigravity_cli": [
+      "gemini-3.1-pro-high",
+      "gemini-3.1-pro-low",
+      "gemini-3.6-flash-high",
+      "gemini-3.6-flash-low",
+      "gemini-3.6-flash-medium",
+      "gemini-3.7-flash-high",
+      "gemini-3.7-flash-low",
+      "gemini-3.7-flash-medium",
+      "gemini-3.8-flash-high",
+      "gemini-3.8-flash-low",
+      "gemini-3.8-flash-medium",
+      "claude-opus-5-5-high",
+      "claude-opus-5-5-low",
+      "claude-opus-5-5-medium",
+      "claude-sonnet-5-5-high",
+      "claude-sonnet-5-5-low",
+      "claude-sonnet-5-5-medium",
+      "gpt-oss-120b-medium"
+    ],
+    "autobyteus": [
+      "claude-fable-5",
+      "claude-fable-5-1",
+      "claude-opus-4.7",
+      "claude-opus-4.8",
+      "claude-opus-5",
+      "claude-opus-5-5",
+      "claude-sonnet-4.6",
+      "claude-sonnet-5",
+      "deepseek-v4-flash",
+      "deepseek-v4-pro",
+      "gemini-3.1-pro-preview",
+      "gemini-3.8-flash",
+      "glm-5.3",
+      "grok-4.7",
+      "kimi-k3",
+      "minimax-m3",
+      "devstral-2",
+      "mistral-large-3",
+      "gpt-5.4",
+      "gpt-5.4-mini",
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra",
+      "gpt-6-luna",
+      "gpt-6-sol",
+      "qwen:deepseek-v4-flash-0731",
+      "qwen:deepseek-v4-pro",
+      "qwen:glm-5.2",
+      "qwen3-max",
+      "qwen3.7-max",
+      "qwen3.8-max"
+    ],
+    "claude_agent_sdk": [
+      "claude-fable-5",
+      "claude-fable-5-1[1m]",
+      "haiku",
+      "claude-opus-4-6",
+      "claude-opus-4-7",
+      "claude-opus-4-8",
+      "claude-opus-5",
+      "opus",
+      "claude-sonnet-4-6",
+      "sonnet"
+    ]
+  },
+  "settings": []
+}
+
+PROCESS_EXIT_CODE=0

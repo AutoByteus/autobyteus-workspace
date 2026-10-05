@@ -1,0 +1,35 @@
+case=API-014
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs live --reuse-controls
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('div[role="button"]').filter({ has: locator('[data-test="tool-context-summary"]') }).filter({ hasText: 'ctx_109987ee8f3e__saved-agent_org-B.txt' }).first()[22m
+[2m    - locator resolved to <div tabindex="0" role="button" data-v-8a8be8d5="" class="rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50">…</div>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div aria-hidden="true" class="fixed inset-0 z-40 bg-black/30" data-test="workspace-right-tool-drawer-backdrop"></div> intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div aria-hidden="true" class="fixed inset-0 z-40 bg-black/30" data-test="workspace-right-tool-drawer-backdrop"></div> intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    57 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <div aria-hidden="true" class="fixed inset-0 z-40 bg-black/30" data-test="workspace-right-tool-drawer-backdrop"></div> intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round10-history-product.mjs:38:517 {
+  name: 'TimeoutError'
+}
+
+PROCESS_EXIT_CODE=1

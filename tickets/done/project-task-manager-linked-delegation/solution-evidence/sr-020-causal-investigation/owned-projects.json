@@ -1,0 +1,96 @@
+[
+  {
+    "projectId": "project_7e74b261-8ec4-4f13-9f30-9f1abe87c121",
+    "name": "SR020_CLAUDE agent_org saved-IDs 67b6b427-d77d-4c03-9039-1e1d14ba4ad6",
+    "description": "Actual root-bound task proof",
+    "createdAt": "2026-10-04T06:57:42.129Z",
+    "updatedAt": "2026-10-04T06:57:42.129Z",
+    "workspaces": [],
+    "tasks": [
+      {
+        "taskId": "project_task_18e5b460-387d-418b-8664-1a443fd9eb0d",
+        "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+        "status": "IN_PROGRESS",
+        "createdAt": "2026-10-04T06:57:42.186Z",
+        "updatedAt": "2026-10-04T06:58:06.852Z",
+        "contextFiles": [
+          {
+            "storedFilename": "ctx_682372544eee__saved-agent_org-A.txt",
+            "displayName": "saved-agent_org-A.txt",
+            "mimeType": "text/plain",
+            "sizeBytes": 62
+          }
+        ]
+      },
+      {
+        "taskId": "project_task_efdc5587-7a0f-4b49-b41e-08283ad06b31",
+        "description": "Read supplied saved Task attachment using runtime-native read-only cat or read_file; report exact actual read marker to requester through existing messaging/final answer. Do not modify files, create copies, or change any Task status.",
+        "status": "DONE",
+        "createdAt": "2026-10-04T06:57:42.248Z",
+        "updatedAt": "2026-10-04T06:58:24.968Z",
+        "contextFiles": [
+          {
+            "storedFilename": "ctx_0ad25cc6cad1__saved-agent_org-B.txt",
+            "displayName": "saved-agent_org-B.txt",
+            "mimeType": "text/plain",
+            "sizeBytes": 62
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "taskLifetimes": [
+      {
+        "lifetimeId": "project_task_lifetime_001d8f76-8aca-44c6-b94e-6ba86e3c2155",
+        "projectId": "project_7e74b261-8ec4-4f13-9f30-9f1abe87c121",
+        "taskId": "project_task_18e5b460-387d-418b-8664-1a443fd9eb0d",
+        "openedAt": "2026-10-04T06:58:01.072Z",
+        "completedAt": null,
+        "executions": [
+          {
+            "root": {
+              "rootSubjectKind": "agent_org",
+              "rootRunId": "sr020_claude_concrete_root_org_rerun_889e3343_1946_4b0f_9dd7_11d409cbdae8_68982ecb6a0f48f1880372275783e343"
+            },
+            "execution": {
+              "agentRunId": "sr020_claude_packet_agent_ac03e83d77b740c29ee47f096f133ea9"
+            },
+            "ingressAgentRunId": "sr020_claude_packet_agent_ac03e83d77b740c29ee47f096f133ea9",
+            "purpose": "assignment",
+            "reservedAt": "2026-10-04T06:58:01.080Z",
+            "dispatch": "delivered",
+            "cleanup": "not_requested"
+          }
+        ]
+      },
+      {
+        "lifetimeId": "project_task_lifetime_bf3537b2-d515-4958-9e4f-90783c9a6f2e",
+        "projectId": "project_7e74b261-8ec4-4f13-9f30-9f1abe87c121",
+        "taskId": "project_task_efdc5587-7a0f-4b49-b41e-08283ad06b31",
+        "openedAt": "2026-10-04T06:58:02.872Z",
+        "completedAt": "2026-10-04T06:58:24.968Z",
+        "executions": [
+          {
+            "root": {
+              "rootSubjectKind": "agent_org",
+              "rootRunId": "sr020_claude_concrete_root_org_rerun_889e3343_1946_4b0f_9dd7_11d409cbdae8_68982ecb6a0f48f1880372275783e343"
+            },
+            "execution": {
+              "teamRunId": "sr020_claude_packet_team_e86be4b9df0f46ffafa1e5534c458dd8"
+            },
+            "ingressAgentRunId": "sr020_claude_team_coordinator_2e350e493e6b4d52863e20e76f1d85ed",
+            "purpose": "assignment",
+            "reservedAt": "2026-10-04T06:58:02.880Z",
+            "dispatch": "delivered",
+            "cleanup": "failed",
+            "error": {
+              "code": "TASK_RELEASE_FAILED",
+              "message": "Exact Task execution cleanup failed."
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

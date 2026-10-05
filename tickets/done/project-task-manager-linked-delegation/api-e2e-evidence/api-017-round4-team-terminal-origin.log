@@ -1,0 +1,6 @@
+case=API-017
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/team-terminal-ui-origin-probe.mjs
+Origin isolation Pass: released Team configured members remained idle live, exact current snapshot offline, normal reload restores retained offline rows. Current acceptance remains Fail, not repaired by reload.
+
+PROCESS_EXIT_CODE=0

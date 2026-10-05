@@ -1,0 +1,6 @@
+START 2026-10-05T04:57:49.067661+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["node", "tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/api-017-final-public.mjs"]
+Scoped Pass five original/reopened/current workers offline; existing live inputs empty, retired input handles absent, Manager idle/root active; all full public frames/forests strict, private stamps absent; three lifetimes closed/all released without business recreation.
+
+INNER_EXIT_CODE=0

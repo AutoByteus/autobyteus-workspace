@@ -1,0 +1,309 @@
+# IR-007 current source inventory
+
+Cumulative dirty non-ticket package: 287 paths, {'other': 66, 'source/template': 135, 'tests/fixtures': 86}. Preserved prior work is not reclassified as a new IR-007 edit.
+
+## Current correction inventory (against incoming CRR-010)
+
+- Modify `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts`: +17/-8 lines; existing exact owner only.
+- Modify `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts`: +15/-2 lines; existing exact owner only.
+- Modify `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts`: +3/-9 lines; existing exact owner only.
+- Add `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/codex-owned-terminal-cli.mjs`: durable provider-free local regression/owned JSON-RPC child.
+- Add `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts`: durable provider-free local regression/owned JSON-RPC child.
+
+Detailed responsibilities, supported production/event spines and causal limitations: `ir-007-owner-causal-investigation.md`. No new production file, coordinator, global ledger or scheduler.
+
+## Complete current source/template paths
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/collaborators/message-recipient-resolution.ts` — 124 raw non-empty / 95 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/collaborators/task-scoped-message-recipient.ts` — 31 raw non-empty / 30 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` — 118 raw non-empty / 118 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts` — 170 raw non-empty / 169 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts` — 433 raw non-empty / 423 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts` — 54 raw non-empty / 53 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts` — 297 raw non-empty / 279 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts` — 294 raw non-empty / 278 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts` — 39 raw non-empty / 38 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts` — 81 raw non-empty / 80 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/services/active-collaboration-root-directory.ts` — 95 raw non-empty / 93 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-dispatch.ts` — 70 raw non-empty / 69 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-adapter.ts` — 96 raw non-empty / 93 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts` — 256 raw non-empty / 234 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-lifetime-scope.ts` — 89 raw non-empty / 86 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts` — 50 raw non-empty / 47 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-input.ts` — 36 raw non-empty / 35 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-lifetime.ts` — 34 raw non-empty / 34 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-seed-admission.ts` — 11 raw non-empty / 10 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-tree-projection.ts` — 55 raw non-empty / 53 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-collaboration/execution/task/task-lifetime-operation-gate.ts` — 27 raw non-empty / 26 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts` — 225 raw non-empty / 217 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts` — 115 raw non-empty / 107 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-factory.ts` — 10 raw non-empty / 9 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/agent-run-backend-preparation.ts` — 59 raw non-empty / 58 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts` — 119 raw non-empty / 117 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts` — 144 raw non-empty / 142 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-process-groups.ts` — 76 raw non-empty / 63 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts` — 144 raw non-empty / 138 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` — 485 raw non-empty / 485 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts` — 63 raw non-empty / 63 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts` — 58 raw non-empty / 58 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts` — 122 raw non-empty / 122 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts` — 37 raw non-empty / 36 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts` — 173 raw non-empty / 173 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts` — 116 raw non-empty / 112 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts` — 23 raw non-empty / 23 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` — 484 raw non-empty / 463 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts` — 57 raw non-empty / 57 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts` — 237 raw non-empty / 234 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` — 393 raw non-empty / 390 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-cleanup.ts` — 38 raw non-empty / 38 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts` — 68 raw non-empty / 68 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts` — 110 raw non-empty / 110 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-input-submission.ts` — 99 raw non-empty / 99 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts` — 233 raw non-empty / 233 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-release-scope.ts` — 48 raw non-empty / 47 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts` — 424 raw non-empty / 420 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts` — 8 raw non-empty / 7 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts` — 328 raw non-empty / 312 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts` — 499 raw non-empty / 489 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts` — 48 raw non-empty / 48 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/input/agent-run-execution-admission-fence.ts` — 14 raw non-empty / 13 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts` — 210 raw non-empty / 210 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts` — 288 raw non-empty / 288 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts` — 64 raw non-empty / 60 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/services/agent-run-activation-operation.ts` — 115 raw non-empty / 114 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts` — 324 raw non-empty / 322 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts` — 124 raw non-empty / 124 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/services/managed-agent-run-termination.ts` — 55 raw non-empty / 54 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts` — 412 raw non-empty / 409 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts` — 36 raw non-empty / 35 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts` — 464 raw non-empty / 445 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts` — 76 raw non-empty / 75 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts` — 326 raw non-empty / 308 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts` — 223 raw non-empty / 213 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts` — 73 raw non-empty / 59 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts` — 359 raw non-empty / 357 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts` — 480 raw non-empty / 457 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts` — 77 raw non-empty / 76 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts` — 279 raw non-empty / 263 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts` — 67 raw non-empty / 56 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts` — 179 raw non-empty / 168 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts` — 347 raw non-empty / 341 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts` — 42 raw non-empty / 41 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/domain/prepared-task-execution.ts` — 67 raw non-empty / 64 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts` — 451 raw non-empty / 436 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/domain/task-agent-execution.ts` — 17 raw non-empty / 15 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/domain/task-team-execution.ts` — 18 raw non-empty / 16 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts` — 87 raw non-empty / 83 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts` — 188 raw non-empty / 187 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-callbacks.ts` — 25 raw non-empty / 23 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts` — 168 raw non-empty / 164 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager-options.ts` — 15 raw non-empty / 14 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts` — 462 raw non-empty / 453 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts` — 50 raw non-empty / 50 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/owned-flat-team-runtime-release.ts` — 14 raw non-empty / 13 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/prepare-flat-team-configured-activation.ts` — 26 raw non-empty / 25 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts` — 73 raw non-empty / 67 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts` — 256 raw non-empty / 236 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/registries/task-team-execution-registry.ts` — 189 raw non-empty / 185 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/local/task-team-execution-factory.ts` — 81 raw non-empty / 80 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts` — 376 raw non-empty / 355 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts` — 93 raw non-empty / 91 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts` — 133 raw non-empty / 131 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts` — 111 raw non-empty / 102 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/services/team-run-resolver.ts` — 96 raw non-empty / 95 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts` — 302 raw non-empty / 300 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service-contract.ts` — 38 raw non-empty / 37 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts` — 51 raw non-empty / 50 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts` — 227 raw non-empty / 227 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts` — 55 raw non-empty / 54 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts` — 63 raw non-empty / 61 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts` — 28 raw non-empty / 28 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts` — 43 raw non-empty / 43 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts` — 246 raw non-empty / 246 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts` — 35 raw non-empty / 31 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent-config.json` — 12 raw non-empty / 12 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/built-in-agents/templates/project-task-manager/agent.md` — 11 raw non-empty / 11 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/llm-management/services/codex-model-catalog.ts` — 51 raw non-empty / 51 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/persistence/file/store-utils.ts` — 237 raw non-empty / 236 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/context/project-task-context-store.ts` — 181 raw non-empty / 177 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/domain/models.ts` — 90 raw non-empty / 83 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/domain/project-errors.ts` — 30 raw non-empty / 30 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/domain/project-task-execution-state.ts` — 47 raw non-empty / 47 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/domain/project-task-execution.ts` — 13 raw non-empty / 13 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/runtime/project-task-runtime-release.ts` — 44 raw non-empty / 43 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/services/project-task-service.ts` — 271 raw non-empty / 269 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/stores/project-metadata-schema.ts` — 54 raw non-empty / 50 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/stores/project-state-schema.ts` — 95 raw non-empty / 93 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/projects/stores/project-store.ts` — 49 raw non-empty / 47 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts` — 152 raw non-empty / 128 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts` — 448 raw non-empty / 426 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/runtime-management/acp/acp-agent-process.ts` — 79 raw non-empty / 71 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts` — 457 raw non-empty / 450 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-process-owner.ts` — 187 raw non-empty / 179 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-session-opening.ts` — 99 raw non-empty / 97 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-streaming-session.ts` — 140 raw non-empty / 131 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts` — 108 raw non-empty / 106 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts` — 358 raw non-empty / 355 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts` — 80 raw non-empty / 79 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts` — 91 raw non-empty / 91 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/services/agent-streaming/collaboration-execution-tree-dto-projection.ts` — 100 raw non-empty / 98 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts` — 102 raw non-empty / 101 effective estimate.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-ts/src/agent/factory/agent-factory.ts` — 214 raw non-empty / 213 effective estimate.
+
+## Complete current tests/fixtures paths
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/e2e/projects/projects-startup-no-write.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/agent-run-preparation-fixtures.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/codex-owned-terminal-cli.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/collaboration-public-projection-fixtures.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/configured-root-first-work-fixture.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/projects-released-array.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/projects-released-array.provenance.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/fixtures/task-release-generation-fixtures.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/helpers/fake-claude-streaming-sdk.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/configured-root-first-work.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/root-task-team-terminal-publication.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-dispatch-races.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-quiet-generation.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/task-lifetime-tree-scope.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-collaboration/task-terminal-publication-lifecycle.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/services/agent-run-activation-operation.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-scope.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-task-publication.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-execution-factory.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-private-release-independence.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-liveness.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/task-agent-execution-registry-memory.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/team-root-agent-initiated-collaborators.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-work-source.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/api/graphql/project-tasks-schema.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-state-schema.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-lifetime.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/projects/project-task-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/agent-streaming/team-execution-view-projector.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts`
+
+## Retained other dirty paths
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/application-agent-target-address.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/index.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/index.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/index.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/index.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/launch-profile.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/launch-profile.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-backend-sdk/dist/launch-profile.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-bindings.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-communication.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-events.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-events.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-member-address.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-target-url.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-tools.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-iframe-contract.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-websockets.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-websockets.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/application-websockets.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/execution-resources.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/execution-resources.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/execution-resources.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/index.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/index.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/index.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/index.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/manifests.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/manifests.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/manifests.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/manifests.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/docs/modules/prompt_engineering.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs`

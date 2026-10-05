@@ -1,0 +1,48 @@
+2026-10-04T07:54:22.454826+00:00
+CWD /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+COMMAND ["pnpm", "-C", "autobyteus-web", "test:nuxt", "services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts", "services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts", "composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts", "--run"]
+
+> autobyteus@1.4.94-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (6 tests) 6ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (12 tests) 12ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (7 tests) 15ms
+
+ Test Files  3 passed (3)
+      Tests  25 passed (25)
+   Start at  09:54:24
+   Duration  5.95s (transform 3.27s, setup 15.42s, collect 727ms, tests 34ms, environment 535ms, prepare 383ms)
+
+
+INNER_EXIT=0
+ELAPSED=8.4

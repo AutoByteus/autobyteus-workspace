@@ -1,0 +1,646 @@
+# AgentOrg
+
+## Scope
+
+AgentOrg is the coordinator-free persistent composition root for multiple
+independent Agents and reusable flat AgentTeams. The configured topology has one
+fixed shape:
+
+```text
+AgentOrg
+├── Agent
+└── AgentTeam
+    └── Agent
+```
+
+AGY is a supported Agent runtime at direct and Team-nested member addresses;
+the Org's native execution tree and public member projection keep the exact
+root/address/member identities. See [Antigravity CLI Runtime](./antigravity_cli_runtime.md)
+for its provider binding, run capsule, and permission/trace semantics.
+For AGY Org creation, all root, Team, and Agent placements are validated in
+one ordered request-local model-selection batch. Equivalent runtime/workspace
+contexts share fresh catalog evidence for that launch only; failures retain
+the first affected placement address and a safe discovery reason when the CLI
+catalog probe fails. A valid catalog missing the selected model remains a
+distinct model-unavailable error. The bounded asynchronous AGY probe does not
+block unrelated backend health requests while it is pending. Creating the
+Org persists its configured tree without eagerly opening every member's
+provider conversation.
+
+An AgentTeam contains Agents only. AgentOrg cannot contain another AgentOrg, and
+configured Team-within-Team nesting is rejected. Task-scoped delegation to a
+flat Team remains supported and is not configured membership.
+
+## Definition Contract
+
+A normal AgentOrg definition uses
+`agent-orgs/<org-definition-id>/org-config.json` with one strict current shape
+and **no authored `schemaVersion` field**:
+
+```json
+{
+  "members": [
+    {
+      "memberName": "software_engineering_team",
+      "ref": "software-engineering-team",
+      "refType": "agent_team",
+      "refScope": "shared"
+    }
+  ],
+  "handoffs": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}
+```
+
+The adjacent `org.md` owns authored name, description, category, and
+instructions.
+
+The example is canonical output. Normal Org reads permit omitted `avatarUrl`,
+normalizing it to null without source writes; explicit null means the same thing.
+A supplied string is preserved and malformed non-null values remain rejected.
+The same input reader serves the provider, admission and owned-source index, so
+an omitted parent image does not hide otherwise valid owned Agents or Teams.
+Only this optional field is defaulted: unknown Org keys and missing required
+`defaultLaunchConfig` remain invalid. Builders/transaction validation stay strict.
+Agent inputs already normalize omitted/null avatars, including their supported
+owned placements; their existing non-string-to-null policy is unchanged rather
+than tightened to match Team/Org validation.
+
+
+- `refType` is exactly `agent` or `agent_team`.
+- Authored `refScope` is `shared`, `org_local`, or `application_owned` when
+  valid for the source owner. Internal source tags remain `agent_org_owned`,
+  and GraphQL retains `AGENT_ORG_OWNED`; these are not authored values. Unknown
+  values are rejected rather than falling through to another source family.
+- An Org has no `coordinatorMemberName`, initial recipient, focus, or fallback
+  field.
+- Referenced Teams must be admitted current field-free flat Team definitions.
+- Any authored `schemaVersion`, unknown/missing keys, unresolved references, deeper configured composition, and
+  unavailable external dependencies fail target admission without mutation or
+  legacy fallback.
+
+## Exact Org-Owned Team And Team-Local Agent Reads
+
+A self-contained Org can keep its Team definition beneath the Org package and
+that Team's local Agents beneath its own `agents/` directory. Exact reads use
+`findTeamSourcePaths` with the registered Org read roots as well as Team and
+application source context. An Org-owned Team ID is only a family discriminator;
+the exact owned-source index, not a decoded name or guessed path, establishes
+its owner and physical directory. Missing indexed owners return no definition
+rather than borrowing a same-named shared Team. The Agent provider supplies the
+same Org-root context when reading a Team-local Agent.
+
+The Team cache delegates Org-owned exact IDs directly to persistence without
+inserting them into the public catalog snapshot. Exact readability and shared
+catalog visibility are separate facts: valid self-contained packages need no
+extraction, publication, copying or migration. Reads leave authored files intact.
+Existing source writability and mutation boundaries are unchanged.
+
+Frontend catalog getters likewise describe only the current public inventory.
+Org detail/editor, owned Team detail and enclosing Org launch use the selected
+Org's exact reference reader, including Team-local Agents. Launch must resolve
+that graph independently; visiting detail first is not a prerequisite. The
+selected-key loading/ready/unavailable snapshot blocks Create until complete and
+rejects stale completions without replacing another selection's draft. Runtime,
+model, Workspace and override validation still apply afterward. See the
+[frontend read contract](../../../autobyteus-web/docs/agent_orgs.md#catalog-lookups-versus-exact-org-references).
+
+This does not grant independent Run/Edit permissions for owned Teams, add a
+global recursive inventory, or change configured topology, runtime identity,
+provider behavior or schema. Ordinary enclosing Org execution retains the exact
+Agent and enclosing Team instruction sources.
+
+### Correlation core and skills
+
+The correlation from `org_local` members to local folders is one pure function,
+`correlateAgentOrgOwnedMembers` in
+`agent-org-definition/providers/agent-org-owned-definition-correlation.ts`. It
+does no I/O. Two thin readers in `agent-org-owned-definition-source-index.ts`
+use it: the async `listAgentOrgOwnedDefinitionSources` /
+`findAgentOrgOwnedDefinitionSource` for the definition providers and admission,
+and the sync `listAgentOrgOwnedDefinitionSourcesSync` for the skill catalog.
+The skill catalog lists org-owned agents' and teams' `skills/*` folders
+(see [Skills](./skills.md)), so org agents run with their own skills on every
+runtime.
+
+## Addresses And Handoffs
+
+Configured placement addresses are root-relative and exact:
+
+- direct Org Agent: `/concierge`
+- Team placement: `/software_engineering_team`
+- Agent inside a mounted Team: `/software_engineering_team/code_reviewer`
+
+AgentOrg handoff sources are Agent addresses. Destinations may be Agent or Team
+addresses. A Team destination resolves to that mounted Team's direct coordinator
+ingress. Handoff rules remain ordered natural-language guidance. The compiler
+rejects invalid/self-resolving endpoints and duplicate effective pairs.
+
+Runtime collaboration tools operate only inside the active root scope.
+`get_handoff_rules` exposes the current Agent's eligible rules,
+`send_message_to` reaches the one instance at an address (an available catalog
+Agent or Team is brought in on its first message), and `delegate_task` always
+spawns a new copy (a task Agent or task Team) and returns its run ID. Logical
+addresses never discover unrelated roots.
+
+**Team copies are one unit (REQ-007, behavior change).** A message from inside a
+Team instance to an address inside that Team resolves within that same instance.
+A delegated copy of a mounted Team therefore reaches its own members, no longer
+the mounted Team's. Configured Org handoffs between configured placements are
+unchanged (the sender's instance is the mounted Team itself). Reaching another
+instance of the same Team is possible only by run ID.
+
+## Launch Configuration And Admission
+
+AgentOrg Run opens one configuration surface for the complete mounted scope.
+The root configuration supplies required runtime/model/tool/skill/workspace
+values, while sparse Team and Agent placement overrides add only local intent:
+
+```text
+direct Org Agent: exact Agent override -> Org root
+mounted Team Agent: exact Agent override -> Team placement override -> Org root
+```
+
+Definition defaults continue to seed standalone Agent or Team launches; merely
+referencing a definition does not make its default replace the active Org
+configuration.
+
+All exact root, Team, and Agent scopes must have resolved valid runtime/model
+schema state before launch. Pending, invalid, or unavailable catalog/schema
+state blocks Run with an exact diagnostic. A failed Agent runtime choice remains
+visible and retryable but is not committed; returning to the actual current or
+global-default choice abandons the failed operation, restores readiness, and
+cannot leave a stale override in the launch payload.
+
+Server-side projection and validation remain authoritative. The browser does not
+allocate run IDs, infer missing settings, mutate referenced definitions, or
+supply a recipient.
+
+## Runtime And Focus
+
+`AgentOrgRunService` plans and validates the fixed-depth definition,
+`AgentOrgRunManager` owns root lifecycle, and `AgentOrgRun` owns the
+coordinator-free root scope. Direct Agents use configured-Agent execution
+handles. Each mounted Team uses the same flat Team execution machinery as a
+standalone Team while keeping its definition identity, direct coordinator,
+Team-local handoffs, and independent launchability.
+
+Launching makes the full Org scope available with no focused recipient. Unused
+configured Agents, both direct and inside mounted Teams, remain genuinely
+unstarted and provider-unbound with Offline status. Fresh creation publishes
+their exact handles and placements without calling configured activation
+preparation; root availability does not imply that every worker has started.
+Restore likewise reconstructs the full direct-Agent and mounted-Team scope
+without preparing any configured runtime. Retained history and bindings remain
+intact; only supported first work readies the addressed execution, preserving
+restore mode and exact conversation identity. Later human or peer work can ready
+another member while unrelated members remain Offline. Binding adoption or
+verified no-conversation replacement commits through
+`AgentOrgRun.commitAgentPlatformBindingChange` against its current durable tree
+before cache update, runtime publication or accepted input. Expected-old
+replacement checks and indeterminate/nonretryable failure semantics are retained.
+Task-execution preparation still stages its assigned execution before the
+single durable tree write, publication, and work release. Scope restore never
+relaunches delegated children; they come back shut down and are woken on
+demand.
+
+Org message receiver admission checks exact published membership, allowing an
+unused configured recipient to receive its first work. Sender and task-origin
+authentication still require the active/current exact Agent identity; published
+membership is not a replacement for origin authorization.
+
+The user must
+select an exact Agent or Team before a recipient-requiring interaction. Selecting
+a Team focuses its direct coordinator; there is no first-member or Org
+coordinator fallback.
+
+The shared collaboration stream uses `root_subject_kind: "agent_org"` and
+`root_run_id`. Commands carry one exact member execution identity. Supported
+client commands are `SEND_MESSAGE`, `INTERRUPT_GENERATION`,
+`APPROVE_TOOL`, and `DENY_TOOL`. Unknown roots, stale run IDs, incomplete
+task lineage, and cross-root targets fail closed.
+
+The AgentOrg communication sidecar remains the single root message authority.
+After an inter-Agent append is durable, the root stream publishes that message.
+For every admitted ordinary endpoint pair, the same commit also presents exactly
+one `MEMBER_INPUT_MESSAGE` to the receiving Agent before releasing its reserved
+input. Configured direct/mounted Agents, task Agents, and task-Team Agents all
+use this path. Presentation correlates retained exact identities; it does not
+re-admit a committed message against later liveness or a configured-only gate.
+The presentation preserves canonical sender address, content, reference context,
+parent message id, origin, and committed time.
+Rejected, failed, self-targeted, cross-root, or uncommitted sends publish no
+receiver input event.
+
+The delegation work packet is the only task-system input. The shared
+`task-system-input-presentation.ts` helper marks its SYSTEM provenance, display
+content, and backend-response suppression. There are no later task
+notifications (submission, review, interruption); older conversations that
+contain them still render as history. There is no notification ledger or retry
+queue.
+
+## Delegated Children, Status, And Lifecycle
+
+- Direct Org Agents and mounted-Team Agents can message and delegate through
+  canonical addresses.
+- Task Agents and task Teams are delegated children recorded in the execution
+  tree (with `delegatorAgentRunId` for children created since the resource
+  lifecycle); they do not alter configured topology. There are no task records.
+- Collaborators: a shared Agent or Agent Team the user brought into the Org run
+  with `@` (see [Agent Communication](./agent_communication.md#collaborators)).
+  Each is one hosted instance recorded as a `rootOrg.collaborators` entry with
+  its run IDs, at its own root-level address. The Org hosts it like a configured
+  member (AR-006): a collaborator Agent through
+  `RootAgentExecutionRegistry.prepareConfigured`, a collaborator Team as one
+  mounted-style TeamRun through `RootTeamExecutionDirectory.prepareConfigured`
+  (members prepared lazily). Admission prepares the handles, commits the entries,
+  then publishes them (Offline) and emits `collaborator_added`; restore re-hosts
+  them in `restore` mode; termination includes them. `send_message_to` resolves
+  configured placements, then collaborators (a Team goes to its coordinator) and
+  collaborator Team members; the first message starts the instance. Member
+  contexts follow the shared member-scope owner (see
+  [Agent Team Execution](./agent_team_execution.md)): a mounted Team member keeps the Org handoffs
+  its TeamRun carries and its Team instruction; a configured direct Agent gets the Org's; a member
+  of a collaborator Team or of any copy (including a catalog copy) gets that instance's; a
+  collaborator Agent or catalog Agent copy gets none. The Org's
+  index records `collaborator` and `collaborator_team_member` executions; a
+  collaborator Team hosts its members' delegations in its entry's
+  `taskExecutions`. `delegate_task` to a collaborator address starts an extra
+  copy (`AgentOrgTaskSourceResolver` projects it from the entry). The Org, its
+  members and its mounted Teams are never offered with `@`.
+- Copy placement by address (REQ-012, behavior change): a delegated copy is recorded inside the
+  delegator's own Team instance only when the copy's address is a member of it (a teammate copy);
+  any other copy (an Org-level Agent or mounted Team, a collaborator, a catalog Agent or Team) is
+  recorded in `rootOrg.taskExecutions` at the Org top level, with `delegatorAgentRunId`. Earlier copies
+  keep their recorded host. One owner: `resolveTaskCopyHost`.
+- Agent-initiated collaborators and catalog copies: `AgentOrgRecipientResolver`
+  resolves `send_message_to(address)` with the shared `MessageRecipientResolution`
+  (sender instance, run-wide, then a catalog bring-in through
+  `AgentOrgRunCollaborators.bringInAt`, serialized with `@` admissions by the
+  root's `CollaboratorAdmissionQueue`; see
+  [Agent Communication](./agent_communication.md#address-resolution-order-messagerecipientresolution)) and
+  `delegate_task(address)` with a catalog placement after configured and
+  collaborator placements. A catalog copy records its `source`, which
+  `AgentOrgTaskSourceResolver` reads first on activation and restore.
+  `AgentOrgRun.listAvailableAgents(sender)` serves `list_available_agents`.
+- Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
+  through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
+  same-root wake-on-message in `restore` mode, one liveness predicate
+  (`RootAgentExecutionRegistry.isTaskLive` or the hosting Team
+  registry), and open work counting only `initializing`/`running` children. See
+  [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
+- Each Agent owns its exact five-state runtime status.
+- Status snapshots start only from structural Org execution roots: direct Org
+  Agent handles, directly mounted configured TeamRuns, and live root-hosted
+  task TeamRuns. Shut-down task Agents report `offline`. Each TeamRun recursively projects its own descendants. The flat
+  Team execution directory remains an exact lookup/lifecycle index and is not
+  walked as a second set of recursive roots, preventing duplicate Agent status
+  identities for nested task Teams.
+- A mounted Team row may show a presentation-only aggregate over its descendant
+  Agent statuses with precedence
+  `running > initializing > error > idle > offline`. The aggregate is not a
+  persisted Team status or lifecycle authority.
+- Root lifecycle, WebSocket connection, Agent status, delegated-child liveness,
+  and command overlays are separate facts.
+- Stop Org fences new work, drains or interrupts admitted work according to the
+  root shutdown contract, terminates the entire materialized scope, and retains
+  durable history. Restore uses stored run identities and provider bindings,
+  not mutable current definitions.
+- Stop succeeds even when a member's runtime already died, because a member the
+  AgentRunManager no longer publishes counts as already terminated. A failed or
+  unaccepted termination attempt is not cached, so a retry re-runs it. A retry
+  of a fail-stop termination keeps the fail-stop settlement. Restore of an Org
+  that is still registered but no longer active completes its termination first
+  and then restores it. If termination still fails, restore reports
+  `AGENT_ORG_STOP_INCOMPLETE`, never "already active".
+- A message to a member whose runtime died while the Org stays active
+  re-activates that member in `restore` mode. The member continues its persisted
+  provider conversation, and other members are unaffected.
+
+## Persistence And History
+
+AgentOrg has its own durable family:
+
+```text
+memory/agent_org_run_history_index.json
+memory/agent_orgs/<org-run-id>/
+  agent_org_run_execution_tree.json
+  agent_org_communication_messages.json
+  <rooted member memory...>
+```
+
+`AgentOrgRunExecutionTreeFile` has `subjectKind: "agent_org"` and a
+coordinator-free `rootOrg`. It stores direct Agent placements, direct
+mounted-Team placements with their Agent members, compiled handoffs, effective
+launch configurations, concrete local and provider identities, application
+binding, timestamps, delegated child executions, and `collaborators` (read as
+`[]` when absent, always written). Like the Team tree it is
+read tolerantly (known required fields and invariants checked, `schemaVersion`,
+`settledAt`, and unknown keys ignored) and written exactly with no
+`schemaVersion`. Older packages may still hold an
+`agent_org_task_delegation_records.json`; it is neither required nor read and
+stays untouched.
+
+Native standalone Teams remain byte/path native Team packages under
+`memory/agent_teams/<team-run-id>/team_run_execution_tree.json`. Generic
+history uses an explicit `agent_team | agent_org` root union; it does not force
+both families into one persisted generic root. `listCollaborationRootHistory`
+exposes the two root kinds while family-specific loaders retain strict package
+validation.
+
+`getAgentOrgRootHistory(orgRunId)` exposes the same authoritative projection
+for one admitted Org. Creation and subsequent context/tree publication use this
+scoped read; initial/full history resynchronization remains available. Projection
+does not traverse every Org tree to publish one changed row, but global
+structural readiness/admission is still required. Scoped null/error and
+concurrent-publication handling are documented in [Run History](./run_history.md#scoped-org-publication-and-full-resynchronization).
+
+Fresh member identity allocation uses the current definition plus a new UUID,
+without saved-tree collision membership scans. Required owned-definition,
+workspace, model/schema and structural-admission checks are separate and remain
+mandatory. No stored identity or package format is rewritten. See
+[Runtime Identity Allocation](./agent_execution.md#runtime-identity-allocation).
+
+An AgentOrg history row starts with an empty `summary`, displayed by clients as
+`New - <AgentOrg name>`. The first successfully accepted external
+`SEND_MESSAGE` whose compacted content is non-empty and whose exact target is a
+configured direct Org Agent or an Agent inside a directly mounted Team becomes
+the durable summary. Whitespace sequences collapse to one space; values longer
+than 100 characters use the first 97 characters plus `...`. Task-scoped
+recipients, rejected or failed sends, later user messages, inter-Agent traffic,
+task/system input, and approval or interrupt commands never set or replace the
+summary.
+
+The command boundary identifies configured versus task-scoped execution from
+the strict execution tree. After configured Agent admission succeeds, the
+AgentOrg history catalog serializes summary attempts, commits the first
+non-empty value through the shared atomic JSON writer, strictly rereads the
+index, and only then returns the truthful accepted command acknowledgement.
+History-write failure is derived-metadata failure: it is logged without
+replaying or relabelling the accepted Agent input. The per-path writer retains
+a handled settlement tail, so one caller-visible write rejection cannot escape
+as an unhandled rejection, poison later same-path writes, or retain stale queue
+ownership.
+
+### Retained Execution Inspection
+
+`getAgentOrgRunInspection` returns the existing execution-view DTO through the
+run service and manager's existing per-root transition lane. For an active root,
+the manager captures and closes a coherent package snapshot connection. For an
+inactive root, it reads and jointly validates the execution tree and
+communication sidecar. Missing or unreadable families fail instead
+of becoming empty history. Inactive views have no live statuses; retained client
+contexts initialize offline.
+
+Inspection does not activate providers, Restore, rewrite packages, migrate, or
+repair data. Exact retained task Agent/Team identity survives idle shutdown and
+distinguishes repeated runs at one logical address. Member projections use the
+actual retained physical execution/provider binding, not the configured source's
+memory directory or an Org-root fallback. Configuration derives from captured
+launch data rather than current mutable definitions. The existing tree and
+communication families are sufficient; this inspection query adds no persisted
+family or migration. Idle shutdown keeps delegated rows in the view with
+`offline` status; it does not retire them.
+
+### Stopped History Archive And Delete
+
+Stopped top-level AgentOrg history roots support two subject-explicit commands:
+
+- `archiveStoredAgentOrgRun(orgRunId)` records one canonical archive timestamp
+  in the execution tree and projects it into the AgentOrg history index. The
+  complete package remains on disk and the inactive row leaves the default
+  history view.
+- `deleteStoredAgentOrgRun(orgRunId)` permanently removes only the confirmed
+  exact AgentOrg package and its index row.
+
+Both commands execute inside the manager's exact-root lifecycle transition and
+reject an active or otherwise managed root without restoring it or starting any
+provider. The catalog remains the only tree/index/package mutation and
+compensation owner. Delete does not remove the AgentOrg definition, referenced
+Agent/Team definitions, workspace registration, sibling roots, or external
+state. There is no unarchive/trash UI or data migration in this capability.
+
+## Migration And External Publication
+
+Required startup migration
+`20260901_agent_org_flat_team_families_v1` performs the fixed-depth cutover for
+software-owned memory run packages, history and token ownership. This remains
+one unreleased migration identity, not a follow-up repair migration. The existing
+token source-shaping chain and `20260819_token_usage_run_records_v1` run before
+it; both current token materialization and Team execution-tree V2 are declared
+prerequisites. Authored definitions are not migration inputs.
+
+One metadata-only plan selects nested-Team sources, partial Org targets retaining
+retired Team authorities, and exact pending history-index transfers. Root directory
+enumeration, execution trees, index metadata and source-marker existence checks
+are allowed. Standalone histories are not inventoried. Once a Team is classified
+as flat, its member traces, archives, attachments and sidecars are not traversed.
+A flat configured Team with delegated task Teams remains a non-candidate.
+
+That plan governs locator conversion, runtime package conversion, selected index
+updates and cleanup. Index files are atomic whole-file stores: unselected rows
+remain semantically unchanged, unchanged indexes are not rewritten, and no
+candidate means no history-content work or global Org-index rebuild. Invalid
+metadata is diagnosed rather than guessed into a conversion candidate.
+
+The migration preflights selected references, uses atomic replacement or same-root
+family rename, and rereads target packages. It retains source authorities through
+token correction, paired index publication/reread and candidate-dependency
+validation, retiring the Team execution tree last. Per-root SQL transactions and
+staged filesystem/index commits are distinct recovery boundaries, not one
+cross-store transaction. Failures remain truthful and ordinary retries finish
+remaining source work without duplicating accounting.
+
+Token candidates are discovered independently from history candidates using
+bounded SQL root selection and exact Org execution-tree membership. An ordinary
+invocation with no history source can still correct stale token ownership without
+history traversal. Only the three ownership fields change; counts, costs,
+checkpoints, identities and analytics facets are preserved. See
+[Token usage — Org family ownership](token_usage.md#org-family-ownership).
+Successful migration ledger records retain ordinary skip semantics: no version
+marker, successful-record detection/reopening hook or automatic ledger reset was
+added. Normal readers remain current-only, with no repair on access.
+
+Two root-local conditions are terminal warning items. First, a legacy Team root
+that lacks its required `team_run_execution_tree.json` before a candidate plan
+exists produces no target, token or index effect and its source directory remains
+unchanged. Second, explicitly classified malformed or conflicting legacy token
+attribution data rolls back that root's SQL transaction; the root is not reported
+as token-migrated and remains locally unavailable through
+`AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY`. Both remain failed item details and
+contribute to `failedCount`. If these are the only failures, the migration returns
+`SUCCEEDED_WITH_WARNINGS` and the shared startup runner skips the terminal record
+on later launches. Unrelated roots remain usable.
+
+All root/family/tree structural failures, SQL query/update failures, changed
+update preconditions, strict reread failures, dependency failures, and other
+locator, writer, commit, index, cleanup, concurrency, postcondition or unknown
+failures remain `FAILED` and retryable. Global token discovery remains
+attempt-fatal, and any fatal failure dominates root-local warnings. Warning
+classification comes from the migration repository's typed data check, never
+from a root key or error-message string.
+
+Before restoring an Org runtime, `TokenUsageRunStore.assertAgentOrgRecordsReady`
+checks existing records for the exact tree Agent IDs, in batches, before scope
+construction/provider startup. Incompatible ownership is rejected with
+`AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY`; absent usage records are not fabricated.
+Normal root-package readiness checks the current family, manifest, the
+tolerantly read tree, and message authorities, but does not repeat the migration's
+whole-history attachment-locator audit or read raw-trace payloads. Candidate-only
+migration I/O remains owned by the one-time transition.
+
+The later required startup migration
+`20260905_agent_org_history_first_message_summary_v1` reconciles only empty
+AgentOrg summary metadata. It preserves every existing non-empty summary and
+backfills an empty row only when strict current Org packages, configured-member
+trace corpora, and root sidecar exclusion evidence establish one uniquely
+earliest qualifying external user message. Missing, invalid, contradictory, or
+ambiguous evidence leaves the valid empty summary unchanged and reports a
+bounded `SUCCEEDED_WITH_WARNINGS`; required current-structure or selected
+write/reread failure is `FAILED`. Normal runtime never infers titles from trace
+files or performs backfill on read.
+
+Authored definition packages are maintainer-owned inputs, including definitions
+stored under server-data paths. The family migration no longer converts, moves,
+or cleans Team/Org definitions. The former definition-only authoring migration
+is unregistered and removed; existing ledger rows remain inert, without reset,
+replay, reversal, or automatic repair of partial authored conversions. The
+runtime family ID remains unchanged; token prerequisite ordering and
+candidate-scoped history behavior are described above.
+
+Team readers accept unused metadata and omitted package launch defaults while
+preserving required-field and real scoped Agent admission. Org input validation
+and strict canonical writes remain unchanged. An incompatible definition becomes
+individually unavailable; it does not require startup to rewrite authoring data.
+Stored Org root restore uses persisted execution state rather than fresh enclosing
+Org instructions; individual Agent restoration still needs the appropriate Agent
+definition. Ordinary explicit authoring saves and transaction recovery remain
+separate supported operations.
+
+## Exact Context Files And Saved References
+
+Org draft and final attachment owners include both `orgRunId` and the exact
+`agentRunId`. The strict stored execution tree proves membership and resolves
+the physical directory; logical address alone cannot distinguish repeated task
+executions. Draft/final owner equality is checked before file movement. The
+current context-file routes include:
+
+```text
+/drafts/agent-org-runs/:orgRunId/agent-runs/:agentRunId/context-files/:storedFilename
+/agent-org-runs/:orgRunId/agent-runs/:agentRunId/context-files/:storedFilename
+```
+
+These are context-file paths, distinct from message/task-owned reference routes.
+Ordinary readers do not accept retired address-only Org locators, activate a
+runtime, guess a configured source at the same address, or migrate on access.
+Missing/invalid ownership and internal failures retain distinct error outcomes.
+Native Team attachment ownership and physical layout remain native Team paths.
+
+The existing initial family migration owns the bounded saved-reference
+transition within selected candidates. Its typed JSON/JSONL visitor covers
+recognized attachment fields in selected traces and complete archived segments,
+preserving unrelated values, lines and file bytes. An exact current-Org owner
+referenced from a candidate permits owner-tree metadata and attachment stat
+checks, not enumeration or rewriting of that owner's history. No global
+cross-cohort reference repair is promised. Strict source/target package and unique physical-file
+proof precede writes. Committed atomic writes, strict reread, root move and
+cleanup must succeed; current packages are zero-write. Normal readiness checks
+structural authorities without opening saved traces or checking every referenced
+file. Exact current attachment access instead resolves the requested root and
+AgentRun, validates the safe stored filename/path, and checks that one file.
+Missing bytes return a request-scoped `404` and do not hide the otherwise valid
+Org root. No second cache, legacy parser, repair path or backfill of absent
+associations is introduced.
+
+**Before actual installation cutover:** Architecture must adjudicate the real
+installation inventory and any already-completed/intermediate migration state
+(IR049). Local branch/test exposure is not proof of public deployment or global
+absence of saved locators. Preserve originals and existing completion status;
+do not reset/replay a migration or invent another migration to bypass this gate.
+This operational decision does not block source-branch finalization.
+
+## API Surface
+
+Definition GraphQL operations:
+
+- `agentOrgDefinitions`, `agentOrgDefinition`,
+  `agentOrgEndpointCatalog`
+- `createAgentOrgDefinition`, `updateAgentOrgDefinition`,
+  `deleteAgentOrgDefinition`
+
+Run GraphQL operations:
+
+- `createAgentOrgRun`, `restoreAgentOrgRun`, `terminateAgentOrgRun`
+- `archiveStoredAgentOrgRun`, `deleteStoredAgentOrgRun` (stopped exact root)
+- `getAgentOrgRunInspection` (read-only retained package, distinct from Restore)
+- `getAgentOrgMemberRunProjection`
+- `getAgentOrgMemberEventMonitorActiveTracePage`
+- `getAgentOrgExecutionCheckpoint`
+- `getAgentOrgMemberTokenUsageSummary`
+- `listCollaborationRootHistory`
+
+Reference-content REST routes are rooted below
+`/agent-org-runs/:orgRunId/communication/messages/...`. The former
+`/agent-org-runs/:orgRunId/task-delegations/...` route is removed.
+
+## Key Source
+
+- `src/agent-org-definition`
+- `src/agent-org-execution`
+- `src/agent-collaboration`
+- `src/api/graphql/types/agent-org-definition.ts`
+- `src/api/graphql/types/agent-org-run.ts`
+- `src/api/graphql/types/collaboration-root-history.ts`
+- `src/api/rest/agent-org-references.ts`
+- `src/run-history/store/agent-org-*`
+- `src/run-history/services/agent-org-*`
+- `src/app-data-migrations/migrations/agent-org-flat-team-families-v1`
+- `src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1`
+- `@autobyteus/collaboration-stream-contracts`
+
+## Stopped AgentOrg Run Configuration
+
+`AgentOrgRunService.getRunConfig`, `runModelOptions`, and
+`updateStoppedRunConfig` use one exact `orgRunId` subject. The GraphQL mutation
+`updateStoppedAgentOrgRunConfig` carries independent `modelPatches` and
+`teamWorkspacePatches` in one command. The manager owns the same root transition
+lane as restore and resolves explicit Org, mounted-Team, and configured-Agent
+scope addresses before validating any selection. Managed roots (including
+fail-stopped), archived/unadmitted roots and application bindings cannot be
+edited. Runtime, topology, handoffs, delegated children, application/archive metadata and
+identities are not patched.
+
+A workspace patch may target only an exact configured mounted-Team address. Its
+path is canonicalized and admitted through the workspace service, then applied
+to the Team default and every directly configured child, including a child with
+a previously distinct path or model/runtime override. The Org root, direct Org
+Agents, sibling Teams, delegated child records and project files remain
+unchanged. Workspace registration is a non-destructive registry side effect
+outside the execution-tree commit: a descriptor admitted before a later failed
+tree write may remain registered, but that does not represent partial run
+configuration success and never moves or deletes files.
+
+The injected `RunModelSelectionService` enforces same-runtime catalog membership
+and schema-valid settings. AutoByteus replacements additionally require verified
+positive, non-decreasing context capacity; Claude Agent SDK, Codex App Server,
+and Antigravity CLI replacements have no platform capacity gate. For Claude,
+a proven redundant `default` is omitted from new offers, while a scope already
+saved as exact `default` retains a separately resolved current descriptor for
+same-model settings and unaffected-scope continuity. Model options
+and Save validation use each scope's effective workspace after the submitted
+Team workspace patches, so workspace-contextual catalogs cannot be validated
+against the old path. Same-model settings need no native replacement-capacity
+comparison. No Agent/provider activation occurs during read/save. Every requested model scope
+is validated through one request-local `validateMany` operation before the
+workspace and model changes are composed into one immutable tree and written
+once.
+
+The strict execution-tree writer is unchanged: no-op writes are skipped,
+not-renamed failure remains failed, and post-rename/unreadable/mismatched
+readback remains indeterminate. `UPDATED` requires strict readback equal to the
+expected whole tree; unknown canonical values are null, never echoed request
+values. No persisted-schema migration, repair, mutation replay, provider-session
+reset or separate standalone Agent/Team writer is introduced. Ordinary restore
+reads the updated canonical root under the same lane and retains the existing
+run and provider identities while using the saved child workspace.

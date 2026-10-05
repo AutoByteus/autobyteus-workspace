@@ -1,0 +1,635 @@
+{
+  "instanceId": "iso-59466-55bb",
+  "captures": [
+    {
+      "at": "2026-10-04T04:25:04.390979+00:00",
+      "phase": "fresh-build",
+      "current": [
+        {
+          "pid": 17120,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 17167,
+          "ppid": 17120,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 17168,
+          "ppid": 17120,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 18095,
+          "ppid": 17120,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 18723,
+          "ppid": 17120,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        },
+        {
+          "pid": 18775,
+          "ppid": 17120,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 18776,
+          "ppid": 17120,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-04T04:26:19.974990+00:00",
+      "phase": "after-import-restart",
+      "current": [
+        {
+          "pid": 24246,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 24247,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 24248,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 25176,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 25182,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        },
+        {
+          "pid": 25235,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 25236,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 26467,
+          "ppid": 25176,
+          "comm": "/Users/normy/.local/bin/claude"
+        },
+        {
+          "pid": 26480,
+          "ppid": 26467,
+          "comm": "/Applications/Xcode.app/Contents/Developer/usr/bin/git"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-04T04:27:29.853077+00:00",
+      "phase": "recursive-running",
+      "current": [
+        {
+          "pid": 24246,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 24247,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 24248,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 25176,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 25182,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        },
+        {
+          "pid": 25235,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 25236,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 27811,
+          "ppid": 25176,
+          "comm": "codex"
+        },
+        {
+          "pid": 28089,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 28090,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 28114,
+          "ppid": 28089,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 28983,
+          "ppid": 27811,
+          "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+        },
+        {
+          "pid": 30329,
+          "ppid": 25176,
+          "comm": "codex"
+        },
+        {
+          "pid": 30436,
+          "ppid": 30329,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 30437,
+          "ppid": 30329,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 30478,
+          "ppid": 30437,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 30668,
+          "ppid": 30329,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 30669,
+          "ppid": 30329,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 30732,
+          "ppid": 30668,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 31034,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 31036,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 31118,
+          "ppid": 31036,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 33133,
+          "ppid": 30329,
+          "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-04T04:33:59.262723+00:00",
+      "phase": "native-pre-recovery",
+      "current": [
+        {
+          "pid": 24246,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 24247,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 24248,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 25176,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 25182,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        },
+        {
+          "pid": 25235,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 25236,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 27811,
+          "ppid": 25176,
+          "comm": "codex"
+        },
+        {
+          "pid": 28089,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 28090,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 28114,
+          "ppid": 28089,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 28983,
+          "ppid": 27811,
+          "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+        },
+        {
+          "pid": 31034,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 31036,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 31118,
+          "ppid": 31036,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35061,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 35062,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35106,
+          "ppid": 35061,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35330,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 35331,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35379,
+          "ppid": 35330,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35637,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 35639,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35749,
+          "ppid": 35637,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 39296,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 39297,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 39314,
+          "ppid": 39297,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-04T04:39:36.311449+00:00",
+      "phase": "pre-history-restart",
+      "current": [
+        {
+          "pid": 24246,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 24247,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 24248,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 25176,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 25182,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        },
+        {
+          "pid": 25235,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 25236,
+          "ppid": 24246,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 27811,
+          "ppid": 25176,
+          "comm": "codex"
+        },
+        {
+          "pid": 28089,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 28090,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 28114,
+          "ppid": 28089,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 28983,
+          "ppid": 27811,
+          "comm": "/Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+        },
+        {
+          "pid": 31034,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 31036,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 31118,
+          "ppid": 31036,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35061,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 35062,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35106,
+          "ppid": 35061,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35330,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 35331,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35379,
+          "ppid": 35330,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35637,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 35639,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 35749,
+          "ppid": 35637,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 39296,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        },
+        {
+          "pid": 39297,
+          "ppid": 27811,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+        },
+        {
+          "pid": 39314,
+          "ppid": 39297,
+          "comm": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-04T04:40:10.985380+00:00",
+      "phase": "post-history-restart",
+      "current": [
+        {
+          "pid": 84010,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 84014,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 84015,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 84944,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 85556,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        },
+        {
+          "pid": 85608,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 85609,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        }
+      ]
+    },
+    {
+      "at": "2026-10-04T04:41:02.916044+00:00",
+      "phase": "immediately-before-stop",
+      "current": [
+        {
+          "pid": 84010,
+          "ppid": 1,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 84014,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 84015,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 84944,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        },
+        {
+          "pid": 85556,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)"
+        },
+        {
+          "pid": 85608,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        },
+        {
+          "pid": 85609,
+          "ppid": 84010,
+          "comm": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper"
+        }
+      ]
+    }
+  ],
+  "capturedIds": [
+    17120,
+    17167,
+    17168,
+    18095,
+    18723,
+    18775,
+    18776,
+    24246,
+    24247,
+    24248,
+    25176,
+    25182,
+    25235,
+    25236,
+    26467,
+    26480,
+    27811,
+    28089,
+    28090,
+    28114,
+    28983,
+    30329,
+    30436,
+    30437,
+    30478,
+    30668,
+    30669,
+    30732,
+    31034,
+    31036,
+    31118,
+    33133,
+    35061,
+    35062,
+    35106,
+    35330,
+    35331,
+    35379,
+    35637,
+    35639,
+    35749,
+    39296,
+    39297,
+    39314,
+    84010,
+    84014,
+    84015,
+    84944,
+    85556,
+    85608,
+    85609
+  ]
+}

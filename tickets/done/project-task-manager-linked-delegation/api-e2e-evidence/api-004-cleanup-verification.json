@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-03T12:46:59.802471+00:00",
+  "instanceId": "iso-62535-1894",
+  "ownRecordAbsent": true,
+  "autoOwnedRootRemoved": true,
+  "ownPortsReleased": {
+    "62536": true,
+    "62535": true
+  },
+  "allPriorOtherRecordsUnchanged": true,
+  "otherRecordChecks": {
+    "iso-60383-3d28": true,
+    "iso-62694-9b10": true,
+    "iso-61026-fa48": true,
+    "iso-52483-84f0": true
+  },
+  "newOtherRecords": []
+}

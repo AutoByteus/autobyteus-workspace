@@ -1,0 +1,63 @@
+{
+  "at": "2026-10-05T02:59:11.704Z",
+  "kind": "Administrative continuation of completed CRR-021; no new review result",
+  "selectedRule": {
+    "when": "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+    "recipient_address": "/software_engineering_team/delivery_engineer"
+  },
+  "conditionEvidence": [
+    "CRR-021 proportional successful test-code review Pass for all 20 cumulative durable paths, no actionable findings",
+    "API-REV-016 independent current Pass / 95.00%, broader validation Required — completed",
+    "User instruction “then do the handoff” on 2026-10-05 releases prior Delivery authorization hold"
+  ],
+  "otherRules": "No new source review, Local Fix, failure-origin or upstream revision applies; no API rerun or informational Implementation notification",
+  "authorizationLimits": "Normal Delivery handoff only; Delivery follows its own instructions. No blanket merge, push, release, deployment, paid execution or user-resource disruption authority",
+  "freshRawRules": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"handoffs\":[{\"when\":\"When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.\",\"recipient_address\":\"/software_engineering_team/api_e2e_engineer\"},{\"when\":\"When a test-code, stale-test, fixture, environment, execution, or reporting Local Fix is complete and API/E2E must rerun the affected validation.\",\"recipient_address\":\"/software_engineering_team/api_e2e_engineer\"},{\"when\":\"When API/E2E failure-origin review confirms that the owning problem is in coverage, test code, fixtures, environment, execution, or reporting.\",\"recipient_address\":\"/software_engineering_team/api_e2e_engineer\"},{\"when\":\"When post-API/E2E test-code review fails and an API/E2E-owned correction is required.\",\"recipient_address\":\"/software_engineering_team/api_e2e_engineer\"},{\"when\":\"When source review identifies an implementation-owned Local Fix or packaging defect that must be corrected before executable coverage.\",\"recipient_address\":\"/software_engineering_team/implementation_engineer\"},{\"when\":\"When API/E2E failure-origin review confirms that the owning problem is an implementation defect.\",\"recipient_address\":\"/software_engineering_team/implementation_engineer\"},{\"when\":\"When implementation review passes and Implementation Engineer needs the informational pass notification after the primary API/E2E handoff succeeds.\",\"recipient_address\":\"/software_engineering_team/implementation_engineer\"},{\"when\":\"When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.\",\"recipient_address\":\"/software_engineering_team/solution_designer\"},{\"when\":\"When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work.\",\"recipient_address\":\"/software_engineering_team/delivery_engineer\"}]}"
+      }
+    ],
+    "structuredContent": {
+      "handoffs": [
+        {
+          "when": "When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.",
+          "recipient_address": "/software_engineering_team/api_e2e_engineer"
+        },
+        {
+          "when": "When a test-code, stale-test, fixture, environment, execution, or reporting Local Fix is complete and API/E2E must rerun the affected validation.",
+          "recipient_address": "/software_engineering_team/api_e2e_engineer"
+        },
+        {
+          "when": "When API/E2E failure-origin review confirms that the owning problem is in coverage, test code, fixtures, environment, execution, or reporting.",
+          "recipient_address": "/software_engineering_team/api_e2e_engineer"
+        },
+        {
+          "when": "When post-API/E2E test-code review fails and an API/E2E-owned correction is required.",
+          "recipient_address": "/software_engineering_team/api_e2e_engineer"
+        },
+        {
+          "when": "When source review identifies an implementation-owned Local Fix or packaging defect that must be corrected before executable coverage.",
+          "recipient_address": "/software_engineering_team/implementation_engineer"
+        },
+        {
+          "when": "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+          "recipient_address": "/software_engineering_team/implementation_engineer"
+        },
+        {
+          "when": "When implementation review passes and Implementation Engineer needs the informational pass notification after the primary API/E2E handoff succeeds.",
+          "recipient_address": "/software_engineering_team/implementation_engineer"
+        },
+        {
+          "when": "When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.",
+          "recipient_address": "/software_engineering_team/solution_designer"
+        },
+        {
+          "when": "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+          "recipient_address": "/software_engineering_team/delivery_engineer"
+        }
+      ]
+    }
+  }
+}

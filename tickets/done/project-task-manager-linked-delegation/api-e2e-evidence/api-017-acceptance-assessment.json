@@ -1,0 +1,89 @@
+{
+  "at": "2026-10-05T05:03:28.289969+00:00",
+  "authority": "REQ-BL-008 / scoped SD-AP-001+002 / semantic SR-014 / ARCH-REV-005 / IR-011 / CRR-022",
+  "result": "Pass",
+  "confidence": 95.0,
+  "criteria": [
+    {
+      "id": "AC-001",
+      "result": "Pass",
+      "currentEvidence": "Fresh current ordinary Chat/@ shipped Manager: two own Projects, one original actual turn/sole list_projects, clarification DOM, canonical idle/empty, no Task/delegation/write; current bootstrap/template exact."
+    },
+    {
+      "id": "AC-002",
+      "result": "Pass",
+      "currentEvidence": "Actual current Org Manager saved-ID Agent A / Team B, exact links/ingress vs TeamRun, actual byte reads and explicit IN_PROGRESS; current Project/tool/dispatch controls."
+    },
+    {
+      "id": "AC-003",
+      "result": "Pass",
+      "currentEvidence": "Current actual A/B original + new B + SAME post-restart A reads of saved uploaded markers; packet/description/context preserved; current durable missing/edit guards."
+    },
+    {
+      "id": "AC-004",
+      "result": "Pass",
+      "currentEvidence": "Current Project HTTP/MCP boundaries/schema and dispatch/failure/quiet-generation checks; malformed/unknown/mixed payload refuses fallback; not a contrived race."
+    },
+    {
+      "id": "AC-005",
+      "result": "Pass",
+      "currentEvidence": "Current complete delegation integration + ownership/admission units preserve no-ID fresh copies/reference semantics; no legacy compatibility branch."
+    },
+    {
+      "id": "AC-006",
+      "result": "Pass",
+      "currentEvidence": "Current Native standalone fixture/termination and five actual Org original/reopened worker rows/full strict forest; normal whole-app SAME A/Manager restore/read/DOM; pre-refresh named Native/Codex/Claude views remain supplementary, not a new universal paid sweep."
+    },
+    {
+      "id": "AC-007",
+      "result": "Pass",
+      "currentEvidence": "Actual current business DONE B/new B/final A, real member terminal/live offline rows and platform released diagnostics; protected A/borrowed/root/bytes. Current exact SDK real-child/IO release and Native controls independently execute physical boundary; no inference from ACK alone."
+    },
+    {
+      "id": "AC-008",
+      "result": "Pass",
+      "currentEvidence": "Current current-owner terminal failure/retry/root lifetime integration controls; repeat explicit DONE/no new copy/idempotence helper tests. Actual lifecycle outcome diagnostic separate from business recorded-status ACK."
+    },
+    {
+      "id": "AC-009",
+      "result": "Pass",
+      "currentEvidence": "Actual B closed ingress before/restart after completion; TODO no tree/runtime start, next B dispatch new lifetime/exact IDs, old history preserved; all current dispatch/late-message/no-scheduler units."
+    },
+    {
+      "id": "AC-010",
+      "result": "Pass",
+      "currentEvidence": "Current real RootTeam/catalog/ProjectStore helper cases actively Delete B with no hidden stop/history loss/business recreation; current Project HTTP deletion/startup last-project [] and migrations preservation controls."
+    },
+    {
+      "id": "AC-011",
+      "result": "Pass",
+      "currentEvidence": "Current recursive Task/tree/fence units + actual RootTeam helper lifetime integration across root/native hosted-child adapters; full strict original/reopened visible forests. Pre-refresh genuine recursive physical scope is retained separately over unchanged release owners, not paid/OS proof from controlled helpers."
+    },
+    {
+      "id": "AC-012",
+      "result": "Pass",
+      "currentEvidence": "Both current same-catalog address Agent/Team helper cases: own A/B admission/reuse, borrowed adviser not adopted, exact A-only stop set, repeat/closed ingress/active-B Delete, all original assertions; actual broader borrowed/A protection."
+    },
+    {
+      "id": "AC-013",
+      "result": "Pass",
+      "currentEvidence": "Current independent same-definition A/A/B copy controls and same-catalog bring-in distinction; actual reopened Team B new IDs/lifetime while A/definition/borrowed preserved."
+    },
+    {
+      "id": "AC-014",
+      "result": "Pass",
+      "currentEvidence": "Current source/shipped Manager instructions/tools exact; current business payload/schema/native-MCP/HTTP guards and actual ordinary Manager work/DONE, no lifecycle/resource duty or echoed mechanics."
+    },
+    {
+      "id": "AC-015",
+      "result": "Pass",
+      "currentEvidence": "Current retained failed-only exact retry, managed-generation receipts/acquisition fence/rollback and business uncertainty controls; actual released diagnostics distinct from ordinary business ACK; no scheduler."
+    },
+    {
+      "id": "AC-016",
+      "result": "Pass",
+      "currentEvidence": "Current shipped prompt + quiet/no-auto-status/business tests; actual workers finish/read/report without any Task auto-DONE, status changed only by explicit Manager instructions; no notification/report protocol guarantee invented."
+    }
+  ],
+  "scope": "Proportionate current integrated-build validation; pre-refresh matrices are supplementary, not rerun or conversion; boundaries/limits in canonical report."
+}

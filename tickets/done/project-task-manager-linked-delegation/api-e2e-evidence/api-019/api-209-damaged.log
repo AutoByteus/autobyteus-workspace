@@ -1,0 +1,6 @@
+STEP agent damaged list_project_tasks marks damaged B assignmentsUnavailable
+STEP agent damaged DONE on damaged B fails with the clear error; status unchanged
+STEP agent damaged description-only delegation rejected up front while a file is damaged
+STEP agent damaged messaging the damaged Task copy is rejected
+STEP agent damaged a readable Task still assigns normally
+STEP agent damaged damaged phase complete

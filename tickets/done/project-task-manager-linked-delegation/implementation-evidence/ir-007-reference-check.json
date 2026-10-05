@@ -1,0 +1,9 @@
+{
+  "incomingReferences": 1206,
+  "outgoingReferences": 1254,
+  "incomingOmitted": [],
+  "missingReferences": [],
+  "allAbsolute": true,
+  "preservationScope": "789 specialist snapshot/upstream canonicals exact; 679 reviewer protected except 3 owned implementation canonical updates; IR-006 archives and record/investigation prefixes exact",
+  "receiptStatus": "Delivery pending; no future receipt attached as if it existed."
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "name": "owner-units",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude tests/unit/runtime-management/claude tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/agent-run-resource-manager.test.ts tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts tests/unit/agent-team-execution/flat-team-private-release-independence.test.ts --no-watch",
+    "exit": 0,
+    "elapsedSeconds": 35.85,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-020-owner-units.log"
+  },
+  {
+    "name": "narrow-integration",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts --no-watch",
+    "exit": 0,
+    "elapsedSeconds": 10.83,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-020-narrow-integration.log"
+  },
+  {
+    "name": "production-typecheck",
+    "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+    "exit": 0,
+    "elapsedSeconds": 8.25,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-020-production-typecheck.log"
+  },
+  {
+    "name": "changed-tests-typecheck",
+    "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p ../tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-tests-tsconfig.json",
+    "exit": 0,
+    "elapsedSeconds": 5.22,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-020-changed-tests-typecheck.log"
+  },
+  {
+    "name": "diffcheck",
+    "command": "git diff --check HEAD && git diff --cached --check",
+    "exit": 0,
+    "elapsedSeconds": 0.4,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/code-review-evidence/crr-020-diffcheck.log"
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "scope": "Implementation-local only; overlapping counts, no API/E2E acceptance",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation",
+  "checks": [
+    {
+      "name": "regression-before",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts --no-watch",
+      "exit": 1,
+      "result": "Original source: 3 failures, including exact unresolved-input assertion; one unhandled held-release rejection from diagnostic harness, subsequently caught. Not final candidate.",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-regression-before.log"
+    },
+    {
+      "name": "focused-first",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts --no-watch",
+      "exit": 0,
+      "result": "2 files / 4 tests; initial corrected candidate before adding three controls.",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-focused-first.log"
+    },
+    {
+      "name": "owner-units",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude tests/unit/runtime-management/claude tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/agent-run-resource-manager.test.ts tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts tests/unit/agent-team-execution/flat-team-private-release-independence.test.ts --no-watch",
+      "exit": 0,
+      "result": "32 files / 316 tests; no skips/unhandled errors.",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-owner-units.log"
+    },
+    {
+      "name": "production-typecheck",
+      "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+      "exit": 0,
+      "result": "Current production compilation.",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-production-typecheck.log"
+    },
+    {
+      "name": "server-build",
+      "command": "pnpm -C autobyteus-server-ts build",
+      "exit": 0,
+      "result": "Shared core/SDK prebuild, Prisma generation, full server compile/assets/sanitized built-module bootstrap. No desktop packaging.",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-server-build.log"
+    },
+    {
+      "name": "cumulative-unit",
+      "command": "bash /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-cumulative-unit-command.sh",
+      "exit": 0,
+      "result": "151 passed / 3 skipped files; 1504 passed / 5 skipped tests. AGY live opt-ins absent; skips are not Pass. Same selected cumulative owner set as IR009 plus new regression.",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-cumulative-unit.log"
+    },
+    {
+      "name": "test-typecheck",
+      "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p ../tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-tests-tsconfig.json",
+      "exit": 0,
+      "result": "Narrow actual changed-test/helper/source typecheck. Initial ticket-config typeRoots error and test enum typing error retained separately and corrected.",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-test-typecheck.log"
+    },
+    {
+      "name": "narrow-integration-final",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts --no-watch",
+      "exit": 0,
+      "result": "Final current test bytes: 6 files / 36 tests = 7 focused unit + 29 narrow Native/task integration. No unhandled errors.",
+      "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-narrow-integration-final.log"
+    }
+  ]
+}

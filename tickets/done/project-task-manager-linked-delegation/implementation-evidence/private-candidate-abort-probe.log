@@ -1,0 +1,9 @@
+{
+  "result": "PASS — current-boundary obstruction reproduced, NOT implementation acceptance",
+  "firstAbort": "quarantined",
+  "retryAbort": "quarantined",
+  "cleanupAttempts": 1,
+  "successfulControlAttempts": 1,
+  "providerCalls": 0,
+  "applicationDataWrites": 0
+}

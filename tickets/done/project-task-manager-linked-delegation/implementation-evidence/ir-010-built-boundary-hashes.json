@@ -1,0 +1,15 @@
+{
+  "scope": "Current local server build only; packaged app not rebuilt or certified",
+  "source": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts": "f474b05512612fb0af7953ea18291a107b77a4cc7b806a0c9b845f456d7f37fb",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts": "aa7f47584a722c8c932c57dff37889f4245004e89055ce5711f8bae03252f4ea"
+  },
+  "built": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session-cleanup.js": "0cd2057d3b1d853b843868e30a95aa34c178020e567bf2d5e19057902de3b357",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session-cleanup.d.ts": "71f67191921a60f3d9b3a676e1bbe8e3717e7e444fcd6b94150a8c70f8d250e9",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session-cleanup.d.ts.map": "6ab906f53448add2343cc265209822250bcfb2e6f1a020ea6f29bc76a3ceb3ff",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.js": "a5deb623778f74128007799f26c1a4079d6fe9b75ed47ed56e538501747a4dcd",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.d.ts": "3f11d909c001504b37ac8d82484e8a0a8c776e4f98991f83adffbc88b4c80dc1",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts/dist/agent-execution/backends/claude/session/claude-session.d.ts.map": "2a0525579159ce5bb31ac5a0fff36517eaede4283ded31bfdebd5bc7604f92a3"
+  }
+}

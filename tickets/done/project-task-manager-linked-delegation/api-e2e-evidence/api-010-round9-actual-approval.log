@@ -1,0 +1,9 @@
+case=API-010
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/round9-approval-probe.mjs
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(/lifetime|closed|completed/i.test(JSON.stringify(out.lateAck.payload)))
+
+
+PROCESS_EXIT_CODE=1

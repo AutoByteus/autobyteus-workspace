@@ -1,0 +1,24 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts > witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-server-ts
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts > witness: genuine quiet shutdown / coordinator-only restoration makes exact historical descendant permanently pending
+NESTED_RESTORE_WITNESS {"first":[{"execution":{"teamRunId":"A-team"},"cleanup":"released"},{"execution":{"agentRunId":"A-child"},"cleanup":"pending","error":{"code":"EXACT_RELEASE_AUTHORITY_UNAVAILABLE","message":"Exact release proof is unavailable; retry DONE."}}],"retry":[{"execution":{"agentRunId":"A-child"},"cleanup":"pending","error":{"code":"EXACT_RELEASE_AUTHORITY_UNAVAILABLE","message":"Exact release proof is unavailable; retry DONE."}}],"active":[],"rootActive":true}
+
+stdout | tests/unit/reviewer/cleanup-witness.test.ts > witness: partial private Team release waits for member 1 before initiating member 2 cleanup
+PRIVATE_RELEASE_BEFORE_FIRST_DRAIN ["first"]
+
+ ✓ tests/unit/reviewer/cleanup-witness.test.ts (2 tests) 12ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  10:35:42
+   Duration  4.33s (transform 2.82s, setup 0ms, import 4.20s, tests 12ms, environment 0ms)
+

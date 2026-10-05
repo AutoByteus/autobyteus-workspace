@@ -1,0 +1,93 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-ts
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > does not mutate the tool catalog when the factory module is imported or constructed
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > initializes without legacy dependencies
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > does not expose a default turn-control handler registry
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > creates agents and stores them
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'factorytestagent_factory_tester_7328'.
+Agent 'factorytestagent_factory_tester_7328' created and stored successfully.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > rejects invalid config types
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > prepares tool instances by name
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > warns and overwrites duplicate tool names
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > populates runtime state with LLM and tools
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'test-runtime-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test-runtime-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'test-runtime-agent'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test-runtime-agent' with config: 'FactoryTestAgent'.
+AgentWorker initialized for agent_id 'test-runtime-agent'.
+Registered AgentContext for agent_id 'test-runtime-agent'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test-runtime-agent'. Context registered.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > installs supplied memory compaction without inventing another policy
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'enabled-memory-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'enabled-memory-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'enabled-memory-agent'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'enabled-memory-agent' with config: 'FactoryTestAgent'.
+AgentWorker initialized for agent_id 'enabled-memory-agent'.
+Registered AgentContext for agent_id 'enabled-memory-agent'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'enabled-memory-agent'. Context registered.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > restores agents with existing id
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'restored-agent'.
+Agent 'restored-agent' restored and stored successfully.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > treats explicit config memoryDir as a leaf directory without team metadata branching
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'explicit-memory-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'explicit-memory-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'explicit-memory-agent'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'explicit-memory-agent' with config: 'FactoryTestAgent'.
+AgentWorker initialized for agent_id 'explicit-memory-agent'.
+Registered AgentContext for agent_id 'explicit-memory-agent'. Total registered contexts: 3
+AgentRuntime initialized for agent_id 'explicit-memory-agent'. Context registered.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > keeps stopping agents known to removal but non-routable until stop completes
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'stopping-agent'.
+Agent 'stopping-agent' created and stored successfully.
+Removing agent 'stopping-agent'. Attempting graceful shutdown.
+Agent 'stopping-agent' requesting runtime to stop (timeout: 10s).
+Agent 'stopping-agent' is already stopping. Awaiting existing shutdown.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > retains a failed non-routable exact owner for cleanup-only retry
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'failing-stop-agent'.
+Agent 'failing-stop-agent' created and stored successfully.
+Removing agent 'failing-stop-agent'. Attempting graceful shutdown.
+Agent 'failing-stop-agent' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > retains a failed non-routable exact owner for cleanup-only retry
+Removing agent 'failing-stop-agent'. Attempting graceful shutdown.
+Agent 'failing-stop-agent' requesting runtime to stop (timeout: 10s).
+
+stderr | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > retains a failed non-routable exact owner for cleanup-only retry
+Agent with ID 'failing-stop-agent' not found for removal.
+
+ ✓ tests/unit/agent/factory/agent-factory.test.ts (13 tests) 22ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  09:58:34
+   Duration  924ms (transform 567ms, setup 21ms, import 778ms, tests 22ms, environment 0ms)
+

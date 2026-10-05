@@ -1,0 +1,53 @@
+[
+  {
+    "projectId": "project_b0c76874-5ae3-41eb-88b2-708ed40e08cd",
+    "name": "Upgrade witness A",
+    "description": "Written by the released app",
+    "createdAt": "2026-10-05T15:05:34.128Z",
+    "updatedAt": "2026-10-05T15:05:34.128Z",
+    "workspaces": [],
+    "tasks": [
+      {
+        "taskId": "project_task_1e6b0192-5baf-42bc-8e26-c5f19217c498",
+        "description": "Released Task with a saved file",
+        "status": "TODO",
+        "createdAt": "2026-10-05T15:05:34.201Z",
+        "updatedAt": "2026-10-05T15:05:34.201Z",
+        "contextFiles": [
+          {
+            "storedFilename": "ctx_61eeb1a8a558__requirements.txt",
+            "displayName": "requirements.txt",
+            "mimeType": "text/plain",
+            "sizeBytes": 27
+          }
+        ]
+      },
+      {
+        "taskId": "project_task_1552214b-41fd-4873-8346-20bcf21a9fd5",
+        "description": "Released Task without files",
+        "status": "TODO",
+        "createdAt": "2026-10-05T15:05:34.228Z",
+        "updatedAt": "2026-10-05T15:05:34.228Z",
+        "contextFiles": []
+      }
+    ]
+  },
+  {
+    "projectId": "project_3c4b2ff5-601a-46bb-89d5-9bc4ccf96606",
+    "name": "Upgrade witness B",
+    "description": "Second released Project",
+    "createdAt": "2026-10-05T15:05:34.146Z",
+    "updatedAt": "2026-10-05T15:05:34.146Z",
+    "workspaces": [],
+    "tasks": [
+      {
+        "taskId": "project_task_d8e62c1b-e9dd-4655-b7af-3025966bea89",
+        "description": "Released Task in Project B",
+        "status": "TODO",
+        "createdAt": "2026-10-05T15:05:34.237Z",
+        "updatedAt": "2026-10-05T15:05:34.237Z",
+        "contextFiles": []
+      }
+    ]
+  }
+]

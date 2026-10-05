@@ -1,0 +1,18 @@
+case=API-009
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation
+command=node tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/isolated-manager-probe.mjs
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.inputValue: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByPlaceholder('Ask anything · / for skills · @ for an agent or team')[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/api-e2e-evidence/isolated-manager-probe.mjs:21:97 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1
+
+PROCESS_EXIT_CODE=1

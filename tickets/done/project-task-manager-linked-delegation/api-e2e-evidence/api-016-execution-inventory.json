@@ -1,0 +1,47 @@
+{
+  "round": "API-REV-016",
+  "at": "2026-10-04T18:44:39.164583+00:00",
+  "result": "Pass",
+  "confidence": 95.0,
+  "postRepositoryConfidence": 87.86,
+  "scores": {
+    "postRepository": [
+      90,
+      95,
+      75,
+      95,
+      90,
+      75,
+      95
+    ],
+    "final": [
+      95,
+      95,
+      95,
+      95,
+      95,
+      95,
+      95
+    ]
+  },
+  "criticalAC": 16,
+  "scenarios": 12,
+  "attempts": 31,
+  "exit0": 26,
+  "unsuccessfulAPIowned": 5,
+  "unresolvedCurrentSelectedCases": [],
+  "durables": 20,
+  "updated": 1,
+  "retainedExact": 19,
+  "broaderValidation": "Required \u2014 completed",
+  "taskSize": "Large",
+  "architecturalRisk": "High",
+  "route": "Reviewed",
+  "testReview": "Completed \u2014 CRR-021 Pass; required Large / High policy satisfied; all20 reviewed",
+  "originalFAPI007": "Open / Unclear / Not Reproduced",
+  "originalFAPI011": "Original inner/physical/sole-cause attribution unobserved; not backfilled",
+  "delivery": "User-authorized workflow handoff; resume reviewer Delivery routing; not blanket Git/release/deployment approval",
+  "postReportPreservation": "API-017@round16-post-report-preservation exit0",
+  "postValidationAuthorizationAt": "2026-10-05T02:55:17.496579+00:00",
+  "validationRoundAndExecutionCountsUnchanged": true
+}

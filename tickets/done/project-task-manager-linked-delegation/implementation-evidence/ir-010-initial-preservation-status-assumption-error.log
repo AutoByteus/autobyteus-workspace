@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/tickets/in-progress/project-task-manager-linked-delegation/implementation-evidence/ir-010-finalize.py", line 11, in <module>
+    assert set(rows)==set(prior)|{new};assert all(rows[p]==v for p,v in prior.items())
+AssertionError

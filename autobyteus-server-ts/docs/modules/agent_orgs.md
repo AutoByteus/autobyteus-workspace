@@ -246,7 +246,11 @@ queue.
   canonical addresses.
 - Task Agents and task Teams are delegated children recorded in the execution
   tree (with `delegatorAgentRunId` for children created since the resource
-  lifecycle); they do not alter configured topology. There are no task records.
+  lifecycle); they do not alter configured topology or create a separate
+  delegation task-record subsystem. The Org tree carries no Task information.
+  Project Task ownership is recorded only in each Task's
+  `agent_run_resources.json` (see the
+  [Task agent run resources contract](projects.md#saved-id-delegation-and-agent-run-resources)).
 - Collaborators: a shared Agent or Agent Team the user brought into the Org run
   with `@` (see [Agent Communication](./agent_communication.md#collaborators)).
   Each is one hosted instance recorded as a `rootOrg.collaborators` entry with
@@ -290,6 +294,14 @@ queue.
   (`RootAgentExecutionRegistry.isTaskLive` or the hosting Team
   registry), and open work counting only `initializing`/`running` children. See
   [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
+- For Task-owned workers, address resolution keeps own-Team-instance priority.
+  It then reuses the Task's open helper at that address, or borrows an existing
+  unowned run. New helpers (`broughtIn`) and further delegations (`delegated`)
+  belong to the same Task, even when hosted at the Org top level. Another Task's
+  same-address helper is never reused. Explicit DONE closes and stops only that
+  Task's runs. Closed copies cannot wake after restore, and history is retained.
+  Ordinary unowned run-wide collaborator behavior is unchanged. See
+  [Task-linked message scope](agent_communication.md#task-linked-message-scope).
 - Each Agent owns its exact five-state runtime status.
 - Status snapshots start only from structural Org execution roots: direct Org
   Agent handles, directly mounted configured TeamRuns, and live root-hosted

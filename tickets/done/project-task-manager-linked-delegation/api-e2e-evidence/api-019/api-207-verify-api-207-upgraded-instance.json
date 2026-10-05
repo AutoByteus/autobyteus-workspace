@@ -1,0 +1,104 @@
+{
+  "at": "2026-10-05T14:17:26.987Z",
+  "instanceId": "iso-49296-0746",
+  "app": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-linked-delegation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+  "migration": {
+    "migrationId": "20261005_projects_per_folder_v1",
+    "status": "SUCCEEDED",
+    "attempts": 1,
+    "summary": "Scanned 2; migrated 2; skipped 0; failed 0.",
+    "errorMessage": null,
+    "logPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api019-upgrade-root-bg8c/server-data/logs/app-data-migrations/20261005_projects_per_folder_v1-2026-10-05T14-17-16-553Z.log"
+  },
+  "view": {
+    "projects": [
+      {
+        "projectId": "project_4252486c-5f5d-4296-9432-87e047386153",
+        "name": "Upgrade witness B",
+        "description": "Second released Project",
+        "taskCount": 1,
+        "openTaskCount": 1
+      },
+      {
+        "projectId": "project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b",
+        "name": "Upgrade witness A",
+        "description": "Written by the released app",
+        "taskCount": 2,
+        "openTaskCount": 2
+      }
+    ],
+    "tasks": {
+      "project_4252486c-5f5d-4296-9432-87e047386153": [
+        {
+          "taskId": "project_task_6d173705-25f4-4aa0-8c24-15330de8508f",
+          "description": "Released Task in Project B",
+          "status": "TODO",
+          "createdAt": "2026-10-05T14:05:46.367Z",
+          "updatedAt": "2026-10-05T14:05:46.367Z",
+          "contextFiles": []
+        }
+      ],
+      "project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b": [
+        {
+          "taskId": "project_task_1e13fcc4-def6-485c-bca0-6663403071ab",
+          "description": "Released Task without files",
+          "status": "TODO",
+          "createdAt": "2026-10-05T14:05:46.357Z",
+          "updatedAt": "2026-10-05T14:05:46.357Z",
+          "contextFiles": []
+        },
+        {
+          "taskId": "project_task_42241be0-8a55-4919-8f66-58833200ac73",
+          "description": "Released Task with a saved file",
+          "status": "TODO",
+          "createdAt": "2026-10-05T14:05:46.330Z",
+          "updatedAt": "2026-10-05T14:05:46.330Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_e2a3ed306df7__requirements.txt",
+              "displayName": "requirements.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 27
+            }
+          ]
+        }
+      ]
+    },
+    "bytes": {
+      "project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b/project_task_42241be0-8a55-4919-8f66-58833200ac73/ctx_e2a3ed306df7__requirements.txt": "API019 released saved file\n"
+    }
+  },
+  "disk": {
+    "entries": [
+      "project_4252486c-5f5d-4296-9432-87e047386153",
+      "project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b",
+      "projects.pre-folders.json"
+    ],
+    "retainedSha": "28f22ec321d423121e160cf6e0bc559f6e94db0d652f1717104fb6c92da047ee",
+    "projectsJsonPresent": false,
+    "taskA1": {
+      "taskId": "project_task_42241be0-8a55-4919-8f66-58833200ac73",
+      "projectId": "project_db2c1eff-81e9-40f7-b9b6-9ad4f643370b",
+      "description": "Released Task with a saved file",
+      "status": "TODO",
+      "createdAt": "2026-10-05T14:05:46.330Z",
+      "updatedAt": "2026-10-05T14:05:46.330Z",
+      "contextFiles": [
+        {
+          "storedFilename": "ctx_e2a3ed306df7__requirements.txt",
+          "displayName": "requirements.txt",
+          "mimeType": "text/plain",
+          "sizeBytes": 27
+        }
+      ]
+    },
+    "contextA1": [
+      "ctx_e2a3ed306df7__requirements.txt"
+    ],
+    "pendingDraft": [
+      "ctx_ddf428b1e079__draft-notes.txt",
+      "manifest.json"
+    ]
+  },
+  "pendingDraftBytes": "API019 pending draft bytes\n"
+}

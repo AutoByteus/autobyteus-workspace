@@ -1,0 +1,112 @@
+--- accepted/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts
++++ integrated/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-builder.ts
+@@ -26,22 +26,23 @@
+ import type { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
+ import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
+ import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+-import type { AgentRunCollaborationPackageStore } from "../../run-history/store/agent-run-collaboration-tree-store.js";
++import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
+ import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
+-import { AgentRunCollaborationRoot, type AgentRunCollaborationHostPort } from "../domain/agent-run-collaboration-root.js";
+-import type { AgentRunCollaborationRootEvent } from "../domain/agent-run-collaboration-root-event.js";
++import { StandaloneAgentRunRoot } from "../domain/standalone-agent-run-root.js";
++import type { StandaloneHostAgentHandle } from "../domain/standalone-host-agent-handle.js";
++import type { StandaloneRootEvent } from "../domain/standalone-root-event.js";
+ import type {
+-  AgentRunCollaborationMessagesFileV1,
+-  AgentRunCollaborationTreeSnapshot,
+-} from "../domain/agent-run-collaboration-tree.js";
+-import { AgentRunCollaborationPersistenceCoordinator } from "./agent-run-collaboration-persistence-coordinator.js";
++  StandaloneRootMessagesFileV1,
++  StandaloneRootTreeSnapshot,
++} from "../domain/standalone-root-tree.js";
++import { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
+ 
+-export type AgentRunCollaborationRootBuilderDependencies = Readonly<{
++export type StandaloneRootBuilderDependencies = Readonly<{
+   flatTeamExecutionFactory: FlatTeamExecutionFactory;
+   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
+   lifetimePort?: TaskExecutionLifetimePort;
+   teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
+-  packageStore: AgentRunCollaborationPackageStore;
++  packageStore: StandaloneRootPackageStore;
+   agentRunManager?: AgentRunManager;
+   memoryLocator?: RootedAgentMemoryLocator;
+   activityInspector?: AgentConversationActivityInspector;
+@@ -49,25 +50,25 @@
+   collaboratorAdmission?: CollaboratorAdmission;
+ }>;
+ 
+-/** Builds one complete Agent root (registries, callbacks, persistence) around a loaded package. */
+-export class AgentRunCollaborationRootBuilder {
+-  constructor(private readonly dependencies: AgentRunCollaborationRootBuilderDependencies) {}
++/** Builds one complete standalone root (registries, callbacks, persistence, host handle) around a loaded package. */
++export class StandaloneRootBuilder {
++  constructor(private readonly dependencies: StandaloneRootBuilderDependencies) {}
+ 
+   async build(input: Readonly<{
+-    tree: AgentRunCollaborationTreeSnapshot;
+-    messages: AgentRunCollaborationMessagesFileV1;
++    tree: StandaloneRootTreeSnapshot;
++    messages: StandaloneRootMessagesFileV1;
+     packageExists: boolean;
+     collaborationDir: string;
+-    host: AgentRunCollaborationHostPort;
++    host: StandaloneHostAgentHandle;
+     rootLaunchConfiguration: AgentLaunchConfiguration;
+     onPackageCreated(): Promise<void>;
+-    onTerminated(root: AgentRunCollaborationRoot): void;
+-  }>): Promise<AgentRunCollaborationRoot> {
++    onTerminated(root: StandaloneAgentRunRoot): void;
++  }>): Promise<StandaloneAgentRunRoot> {
+     const hostRunId = input.tree.host.agentRunId;
+     const root = createAgentRootExecutionIdentity(hostRunId);
+-    let run: AgentRunCollaborationRoot | null = null;
++    let run: StandaloneAgentRunRoot | null = null;
+     const retained: Array<Parameters<FlatTeamExecutionCallbacks["publishAgentEvent"]>> = [];
+-    const requireRun = (): AgentRunCollaborationRoot => {
++    const requireRun = (): StandaloneAgentRunRoot => {
+       if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root of this run is not active.");
+       return run;
+     };
+@@ -95,7 +96,7 @@
+       // Application-owned runs never host collaborators.
+       applicationExecutionContext: () => null,
+     });
+-    const persistence = new AgentRunCollaborationPersistenceCoordinator({
++    const persistence = new StandaloneRootPersistenceCoordinator({
+       hostRunId,
+       collaborationDir: input.collaborationDir,
+       store: this.dependencies.packageStore,
+@@ -114,11 +115,11 @@
+     });
+     const teams = new RootTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory);
+     // Member contexts read the live tree, so one callback set serves collaborator Teams too.
+-    const prepareCollaborators = (entries: AgentRunCollaborationTreeSnapshot["collaborators"], mode: ConfiguredAgentActivationMode) =>
++    const prepareCollaborators = (entries: StandaloneRootTreeSnapshot["collaborators"], mode: ConfiguredAgentActivationMode) =>
+       prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode });
+     // Collaborators are restored with the root, without preparing a runtime.
+     const restored = await prepareCollaborators(input.tree.collaborators, "restore");
+-    run = new AgentRunCollaborationRoot({
++    run = new StandaloneAgentRunRoot({
+       root,
+       tree: input.tree,
+       messages: input.messages,
+@@ -129,7 +130,7 @@
+       callbacks,
+       prepareCollaboratorHandles: (entries) => prepareCollaborators(entries, "fresh"),
+       persistence,
+-      publisher: new RootEventPublisher<AgentRunCollaborationRootEvent>(),
++      publisher: new RootEventPublisher<StandaloneRootEvent>(),
+       taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
+       lifetimePort: this.dependencies.lifetimePort ?? getProjectTaskService(),
+       memoryLocator: this.dependencies.memoryLocator,
+@@ -153,7 +154,7 @@
+     identity: CollaborationMemberExecutionIdentity;
+     physicalScope: RootExecutionPhysicalScope;
+     hostTeam?: MemberHostTeam | null;
+-    requireRun(): AgentRunCollaborationRoot;
++    requireRun(): StandaloneAgentRunRoot;
+   }>): Promise<MemberExecutionContext> {
+     const teamScoped = input.physicalScope.ancestorTeamRunIds.length > 0;
+     // CR-001: the one owner; an Agent root has no configured placements, handoffs or instruction of its own.

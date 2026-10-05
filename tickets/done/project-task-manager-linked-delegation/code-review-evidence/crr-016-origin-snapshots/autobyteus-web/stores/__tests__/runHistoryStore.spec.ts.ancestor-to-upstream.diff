@@ -1,0 +1,50 @@
+--- ancestor/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
++++ upstream/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+@@ -369,6 +369,7 @@
+ 
+ vi.mock('~/graphql/queries/collaborationRootHistoryQueries', () => ({
+   ListCollaborationRootHistory: 'ListCollaborationRootHistory',
++  GetAgentOrgRootHistory: 'GetAgentOrgRootHistory',
+ }));
+ 
+ vi.mock('~/stores/windowNodeContextStore', () => ({
+@@ -804,11 +805,13 @@
+     const original = projectedRows().find((run) => run.rootRunId === 'org-restored')!;
+     const unrelated = projectedRows().find((run) => run.rootRunId === 'org-unrelated')!;
+     store.applyAgentOrgActivity('org-restored', true);
++    const refresh = store.refreshAgentOrgHistoryItem('org-restored');
+     expect(projectedRows().find((run) => run.rootRunId === 'org-restored')).toEqual({ ...original, isActive: true });
+     expect(projectedRows().find((run) => run.rootRunId === 'org-unrelated')).toBe(unrelated);
+     expect(projectedRows()).toHaveLength(2);
+     await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(1));
+-    resolveRefresh({ data: { listCollaborationRootHistory: rows.map((row) => row.root_run_id === 'org-restored' ? { ...row, is_active: true } : row) }, errors: [] });
++    resolveRefresh({ data: { getAgentOrgRootHistory: { ...rows[0], is_active: true } }, errors: [] });
++    await refresh;
+     await vi.waitFor(() => expect(store.historyFamilyErrors.agentOrg).toBeNull());
+   });
+ 
+@@ -827,6 +830,7 @@
+     const pending = store.refreshAgentOrgHistory();
+     await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(1));
+     store.applyAgentOrgActivity('org-confirmed', false);
++    const refresh = store.refreshAgentOrgHistoryItem('org-confirmed');
+     expect(projectedRow()).toEqual({ ...original, isActive: false });
+     await vi.waitFor(() => expect(queryMock).toHaveBeenCalledTimes(2));
+     const releaseOld = async () => {
+@@ -836,13 +840,14 @@
+     };
+     const failFresh = async () => {
+       rejectFresh(new Error('fresh history unavailable'));
+-      await vi.waitFor(() => expect(store.historyFamilyErrors.agentOrg).toBe('fresh history unavailable'));
++      await refresh;
++      await vi.waitFor(() => expect(store.agentOrgHistoryItemErrors['org-confirmed']).toBe('fresh history unavailable'));
+       expect(projectedRow()).toEqual({ ...original, isActive: false });
+     };
+     if (order === 'old-first') { await releaseOld(); await failFresh(); }
+     else { await failFresh(); await releaseOld(); }
+     expect(store.agentOrgHistory).toEqual([{ ...original, isActive: false }]);
+-    expect(store.historyFamilyErrors.agentOrg).toBe('fresh history unavailable');
++    expect(store.agentOrgHistoryItemErrors['org-confirmed']).toBe('fresh history unavailable');
+   });
+ 
+   it('shares AgentOrg request generation between full history loads and focused refreshes', async () => {

@@ -1,0 +1,15 @@
+import json,pathlib,subprocess,hashlib,tarfile,collections
+W=pathlib.Path.cwd();T=W/'tickets/in-progress/project-task-manager-linked-delegation';C=T/'code-review-evidence';I=T/'implementation-evidence';h=lambda b:hashlib.sha256(b).hexdigest();g=lambda *a:subprocess.check_output(['git',*a]);fp=json.loads((I/'ir-009-package-fingerprints.json').read_text());inp=json.loads((I/'ir-009-input/preservation.json').read_text());current={p:h((W/p).read_bytes()) for p in fp['dirty']};changes=[p for p,v in inp['dirty_hashes'].items() if current.get(p)!=v];new=sorted(set(current)-set(inp['dirty_hashes']));a=(I/'ir-009-input/index').read_bytes()
+def parse(text):
+ d=collections.defaultdict(list)
+ for x in text.splitlines():
+  entry,p=x.split('\t');d[p].append(entry)
+ return {p:tuple(sorted(v)) for p,v in d.items()}
+pi=parse((C/'crr-017-prior-index-stage.txt').read_text());ci=parse(g('ls-files','--stage').decode());indexchanges=sorted(p for p in set(pi)|set(ci) if pi.get(p)!=ci.get(p))
+stash=fp['stash'];drift=json.loads((C/'crr-016-package-drift-check.json').read_text());backup=pathlib.Path(json.loads((I/'ir-009-package-preservation.json').read_text())['designerOriginalBackup']);pre={x['path']:x['sha256OrLink'] for x in json.loads((T/'solution-evidence/sr-019-base-practices/pre-refresh-preservation.json').read_text())['files']};checks=[]
+with tarfile.open(backup) as tf:
+ members={m.name.lstrip('./'):m for m in tf.getmembers()}
+ for p in drift['changedBytes']:
+  blob=tf.extractfile(members[p]).read();task=g('show',stash+':'+p);checks.append({'path':p,'backupSHA256':h(blob),'stashSHA256':h(task),'preRefreshSHA256':pre[p],'equal':blob==task and h(blob)==pre[p]})
+result={'head':g('rev-parse','HEAD').decode().strip(),'branch':g('branch','--show-current').decode().strip(),'stash':stash,'stashParent':g('rev-parse',stash+'^1').decode().strip(),'incomingDirty':len(inp['dirty_hashes']),'currentDirty':len(current),'unchanged':len(inp['dirty_hashes'])-len(changes),'changed':changes,'new':new,'indexChanges':indexchanges,'unmerged':g('ls-files','-u').decode(),'originalInputIndexMatchesCRR016':h(a)==json.loads((C/'crr-016-input-preservation.json').read_text())['indexSha256'],'all20CurrentFingerprintExact':all(current[p]==v for p,v in fp['apiDurable20'].items()),'apiDurableChangedFromIR009Input':[p for p,v in fp['apiDurable20'].items() if inp['dirty_hashes'].get(p)!=v],'backupSHA256':h(backup.read_bytes()),'eightOriginalBackupStashChecks':checks,'harnessNote':'Initial read-only stdin audit had quadratic grouping across 45,338 index entries; its exact owned PID was stopped before any product test or provenance conclusion. This linear replacement changes only reviewer evidence. Not a candidate/source/API failure.'}
+assert changes==fp['localChanged'];assert new==fp['newDirty'];assert indexchanges==sorted(fp['indexOnlyThreeConflictPathsChanged']);assert all(x['equal'] for x in checks);assert result['unmerged']=='';(C/'crr-017-provenance-verification.json').write_text(json.dumps(result,indent=2)+'\n');print({k:v for k,v in result.items() if k!='eightOriginalBackupStashChecks'})

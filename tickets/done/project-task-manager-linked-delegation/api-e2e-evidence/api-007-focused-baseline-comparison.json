@@ -1,0 +1,27 @@
+{
+  "head": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "baselineMigrationFailures": [
+    "FAIL  tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion",
+    "FAIL  tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts > TeamRunExecutionTreeV1AppDataMigration > keeps unresolved predecessor bytes retryable while leaving exact V1 roots for the V2 boundary",
+    "FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup",
+    "FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file",
+    "FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > rolls back an injected cleanup failure and succeeds through the same ordinary retry",
+    "FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts > token usage consolidation source-token decoding > imports later JSON integers after four leading NULLs in the same real Prisma batch"
+  ],
+  "currentMigrationFailures": [
+    "FAIL  tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion",
+    "FAIL  tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts > TeamRunExecutionTreeV1AppDataMigration > keeps unresolved predecessor bytes retryable while leaving exact V1 roots for the V2 boundary",
+    "FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup",
+    "FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file",
+    "FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > rolls back an injected cleanup failure and succeeds through the same ordinary retry",
+    "FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts > token usage consolidation source-token decoding > imports later JSON integers after four leading NULLs in the same real Prisma batch"
+  ],
+  "sameFailureTitles": true,
+  "observedSignatures": [
+    "migration adjacency [11,12,14] vs [11,12,13]",
+    "current rootTeam missing address/defaultLaunchConfiguration vs schemaVersion assertion",
+    "token fixture missing claude_sdk_usage_state_json in real Prisma query"
+  ],
+  "baselineScope": "Actual archived HEAD server/core, shared installed dependencies. Five files17fail12pass; four migration files6fail12pass subset.",
+  "limits": "No pristine dependency/whole baseline green/source-origin or fixture-policy certification; historical broad52files136tests4unhandled not fully reproduced. Request origin/disposition review before treating these failures as irrelevant or fixed."
+}

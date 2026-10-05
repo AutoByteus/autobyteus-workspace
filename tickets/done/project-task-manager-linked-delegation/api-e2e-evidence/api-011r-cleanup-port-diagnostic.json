@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-04T04:04:02.600580+00:00",
+  "ports": {
+    "58092": {
+      "connectExit": 61,
+      "listeners": "",
+      "lsofExit": 1,
+      "freeBind": true
+    },
+    "58093": {
+      "connectExit": 61,
+      "listeners": "",
+      "lsofExit": 1,
+      "freeBind": true
+    }
+  }
+}
