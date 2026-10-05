@@ -23,7 +23,7 @@ import { createStoredTeamRunExecutionTreeLocationService } from "../../run-histo
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
-import { AgentRunCollaborationLocationService } from "../../agent-run-collaboration/services/agent-run-collaboration-location-service.js";
+import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -41,7 +41,7 @@ const buildServices = () => {
     locations: new CollaborationExecutionLocationService({
       teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
       orgs: new AgentOrgExecutionTreeLocationService({ memoryDir }),
-      agents: new AgentRunCollaborationLocationService({ memoryDir }),
+      agents: new StandaloneRootLocationService({ memoryDir }),
     }),
   });
   const cleanupService = new ContextFileDraftCleanupService(layout);

@@ -4,15 +4,15 @@ import { agentRunCollaborationTreeDtoSchema, agentOrgExecutionTreeDtoSchema, Col
 import { agentProjectionTree, orgProjectionTree } from "../../../fixtures/collaboration-public-projection-fixtures.js";
 import { projectAgentCollaborationView, projectAgentCollaborationEvent } from "../../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 import { projectAgentOrgExecutionSnapshot, projectAgentOrgExecutionEvent } from "../../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
-import { AgentRunCollaborationExecutionIndex } from "../../../../src/agent-run-collaboration/services/agent-run-collaboration-execution-index.js";
+import { StandaloneRootExecutionIndex } from "../../../../src/standalone-agent-run-root/services/standalone-root-execution-index.js";
 import { AgentOrgExecutionIndex } from "../../../../src/agent-org-execution/services/agent-org-execution-index.js";
 import { AgentCollaborationStreamHandler } from "../../../../src/services/agent-streaming/agent-collaboration-stream-handler.js";
 import { AgentOrgStreamHandler } from "../../../../src/services/agent-streaming/agent-org-stream-handler.js";
 import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
-import type { AgentRunCollaborationRootEvent } from "../../../../src/agent-run-collaboration/domain/agent-run-collaboration-root-event.js";
+import type { StandaloneRootEvent } from "../../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
 import { AgentRunCollaborationResolver } from "../../../../src/api/graphql/types/agent-run-collaboration.js";
 import { AgentOrgRunService } from "../../../../src/agent-org-execution/services/agent-org-run-service.js";
-import { AgentRunCollaborationRootManager } from "../../../../src/agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
+import { bindProcessStandaloneAgentRunRootManager, releaseProcessStandaloneAgentRunRootManager } from "../../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
 import { createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
@@ -25,8 +25,9 @@ const packageSnapshot = <T>(tree: T, kind: "agent" | "agent_org") => ({
 const setup = (kind: "agent" | "agent_org", linked = true) => {
   const tree = kind === "agent" ? agentProjectionTree(linked) : orgProjectionTree(linked);
 
-  const run = { orgRunId: "org-root", isActive: () => true, getExecutionTreeSnapshot: () => tree };
-  const index = kind === "agent" ? new AgentRunCollaborationExecutionIndex(tree as ReturnType<typeof agentProjectionTree>)
+  const run = { orgRunId: "org-root", isActive: () => true, isHostLive: () => true,
+    ensureHostReady: async () => undefined, getExecutionTreeSnapshot: () => tree };
+  const index = kind === "agent" ? new StandaloneRootExecutionIndex(tree as ReturnType<typeof agentProjectionTree>)
     : new AgentOrgExecutionIndex(tree as ReturnType<typeof orgProjectionTree>);
   const snapshot = { ...packageSnapshot(tree, kind), statuses: index.listAgents().filter(agent => kind !== "agent" || agent.agentRunId !== "manager").map(agent => ({
     execution: createCollaborationMemberExecutionIdentity({ root: index.root, memberAddress: agent.address, agentRunId: agent.agentRunId }),
@@ -35,7 +36,7 @@ const setup = (kind: "agent" | "agent_org", linked = true) => {
   const projectView = () => kind === "agent"
     ? projectAgentCollaborationView({ hostRunId: "manager", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7 })
     : projectAgentOrgExecutionSnapshot({ orgRunId: "org-root", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7 });
-  const projectEvent = (event: AgentRunCollaborationRootEvent) => kind === "agent"
+  const projectEvent = (event: StandaloneRootEvent) => kind === "agent"
     ? projectAgentCollaborationEvent("manager", tree as ReturnType<typeof agentProjectionTree>, { event, changeSequence: 8 })
     : projectAgentOrgExecutionEvent(run as never, { event, changeSequence: 8 });
   return { tree, snapshot, index, run, projectView, projectEvent };
@@ -85,10 +86,10 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
     expect(() => current.projectEvent({ kind: "collaborator_added", collaborator: { ...entries[0], agentRunId: "" } as never })).toThrow();
   });
   it("streams stamped snapshot/start/collaborator and reconnect through actual subscription boundary without false close1011", async () => {
-    const current = setup(kind), publisher = new RootEventPublisher<AgentRunCollaborationRootEvent>();
+    const current = setup(kind), publisher = new RootEventPublisher<StandaloneRootEvent>();
     const run = { ...current.run, openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => current.snapshot) };
     const handler = kind === "agent"
-      ? new AgentCollaborationStreamHandler({ resolveCommandReadyRoot: async () => run as never, getActive: () => run as never })
+      ? new AgentCollaborationStreamHandler({ resolveRoot: async () => run as never, getActive: () => run as never })
       : new AgentOrgStreamHandler({ getActive: () => run as never, recordRunActivity: async () => undefined });
     const wire: unknown[] = [], close = vi.fn();
     const connection = { send: (raw: string) => wire.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(raw))), close };
@@ -115,8 +116,11 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
 it("GraphQL Agent inspection reuses the exact public view without materialization or stamp loss", async () => {
   const current = setup("agent"), inspection = { hostRunId: "manager", isActive: false, snapshot: current.snapshot, baseChangeSequence: 7 };
   const getInspection = vi.fn(async () => inspection), restore = vi.fn();
-  vi.spyOn(AgentRunCollaborationRootManager, "getInstance").mockReturnValue({ getInspection, resolveCommandReadyRoot: restore } as never);
-  const result = await new AgentRunCollaborationResolver().agentRunCollaboration("manager");
+  const manager = { getInspection, resolveCommandReadyRoot: restore } as never;
+  bindProcessStandaloneAgentRunRootManager(manager);
+  let result: unknown;
+  try { result = await new AgentRunCollaborationResolver().agentRunCollaboration("manager"); }
+  finally { releaseProcessStandaloneAgentRunRootManager(manager); }
   expect(result).toEqual(projectAgentCollaborationView(inspection as never));
   expect(getInspection).toHaveBeenCalledWith("manager");
   expect(restore).not.toHaveBeenCalled();

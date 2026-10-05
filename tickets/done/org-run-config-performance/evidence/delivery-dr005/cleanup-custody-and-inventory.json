@@ -1,0 +1,723 @@
+{
+  "revision": "DR-005",
+  "at": "2026-10-04T05:13:29.787869+00:00",
+  "resumeScope": "Only unfinished bounded cleanup/final receipt; no release/acceptance/finalization/API replay",
+  "ownerDisposition": "Resolved, runtime-lifecycle Solution Designer releases old guide copy,14 referencing artifact aliases preserved",
+  "guideVersions": [
+    {
+      "label": "laterUserRequestedImprovement",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/SOLUTION_DESIGN_BEST_PRACTICES.md",
+      "sha256": "34476762da34b5f06ea84f78e5972880b006e18535c330b5b76a8c5ec3a6089a",
+      "bytes": 18816,
+      "publishedInBeta": false
+    },
+    {
+      "label": "historicallyReviewedPublishedBaseline",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/published-baseline-guide.md",
+      "publishedSourcePath": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/SOLUTION_DESIGN_BEST_PRACTICES.md",
+      "sha256": "ff6d2e1ecad2f475f79b9581ade6cbe53c96f3e414323e0266762ac999cc9342",
+      "bytes": 17365
+    },
+    {
+      "label": "exactArchivedPatch",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/runtime-lifecycle-guide-improvement.patch",
+      "sha256": "96a0fe79c097295921db4d3eadb90646d0dacc31f8cb45fae9ee43060717b756",
+      "bytes": 2019
+    }
+  ],
+  "externalInputs": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/org-run-config-performance-cleanup-dr004/ownership-read-evidence.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/org-run-config-performance-cleanup-dr004/delivery-cleanup-return-receipt.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/org-run-config-performance-cleanup-dr004/handoff-rules-cleanup-disposition.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/org-run-config-performance-cleanup-dr004/owner-clarification-request-receipt.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/org-run-config-performance-cleanup-dr004/custody-verification.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/org-run-config-performance-cleanup-dr004/cleanup-ownership-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/published-baseline-guide.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/runtime-lifecycle-guide-improvement.patch",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/owner-disposition.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/SOLUTION_DESIGN_BEST_PRACTICES.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/response-receipt.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/_solution-designer-reports/runtime-lifecycle-guide-custody-dr004/custody-manifest.json"
+  ],
+  "generatedOutputCustody": [
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map",
+      "sha256": "1a5a93ce98d7befb9e252dee78b8858265fc83a0889dbc72d51b79bd0e015316",
+      "bytes": 6825,
+      "mtimeUTC": "2026-10-04T03:10:00.476385+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/execution-resources.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/execution-resources.js.map",
+      "sha256": "896a152ed5bec8423fe2c716d9db2d6de08f3f178ba354682d23d93680b04f1d",
+      "bytes": 130,
+      "mtimeUTC": "2026-10-04T03:10:00.472823+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/execution-resources.d.ts",
+      "sha256": "8f076699a3e02df1c73d91508d1d421b16f3ec2812e8726f55265dfb253d1e77",
+      "bytes": 8622,
+      "mtimeUTC": "2026-10-04T03:10:00.476527+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-websockets.d.ts",
+      "sha256": "e298ac67d2003f79af57a1de9aca0055b1f17b44b455054becad99241ce11fa2",
+      "bytes": 1305,
+      "mtimeUTC": "2026-10-04T03:10:00.504803+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-communication.js",
+      "sha256": "00004fd8954d44028a724d97d70ea2830e8e00baa243f9d01efa755e6af71583",
+      "bytes": 752,
+      "mtimeUTC": "2026-10-04T03:10:00.482950+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map",
+      "sha256": "abe426d736ecbb988f36dea8318c40e8c1f70c2cab11c2f2cb965da72e2c8ac2",
+      "bytes": 336,
+      "mtimeUTC": "2026-10-04T03:10:00.479294+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts",
+      "sha256": "92a7953d0c6be93b3197e1c41cc224e093cb4b140df98e9b9242ddb3934e459c",
+      "bytes": 3559,
+      "mtimeUTC": "2026-10-04T03:10:00.494372+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-websockets.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-websockets.js.map",
+      "sha256": "b1bcc88bcbeb0d7b1462d81bb83348adc988fa5dfe9f9e41a6af414e64b27f39",
+      "bytes": 136,
+      "mtimeUTC": "2026-10-04T03:10:00.503897+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map",
+      "sha256": "9fc8c3e04902d8849811c4b0f6ff55ff0cae0ee2bb7bfcf4990b173c41a60510",
+      "bytes": 2721,
+      "mtimeUTC": "2026-10-04T03:10:00.498101+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map",
+      "sha256": "10f558b4a343441d4254762c0ddb4a537e68eb712d61f7f89724f8b7c2643ff9",
+      "bytes": 5261,
+      "mtimeUTC": "2026-10-04T03:10:00.491760+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map",
+      "sha256": "456b2aeb896be26ea795cd3b796a2807475bd7efc5b0d9fa46473d6832de3ce0",
+      "bytes": 2121,
+      "mtimeUTC": "2026-10-04T03:10:00.487434+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts",
+      "sha256": "ec8872c892ae9e809e8909286e4d44623f113f00418dae8da44a5543eeef4885",
+      "bytes": 2993,
+      "mtimeUTC": "2026-10-04T03:10:00.469694+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map",
+      "sha256": "1931697506cf1ca1cdec5974e9265ccd1ab6829caf96b07aedea4044cc9190ff",
+      "bytes": 380,
+      "mtimeUTC": "2026-10-04T03:10:00.488725+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map",
+      "sha256": "f81a383fe9aef767e26797009f54c8a5771407f077b80ea98d29c1d8cc5a87c4",
+      "bytes": 683,
+      "mtimeUTC": "2026-10-04T03:10:00.496732+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts",
+      "sha256": "006a7d414226aa8670b288ee3536d9045e91dba880bb34c5d4164fc24ee5f406",
+      "bytes": 1069,
+      "mtimeUTC": "2026-10-04T03:10:00.498900+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js",
+      "sha256": "a92f9273c2dc5f3f282d445f7b592df907809131e7688bd822c144ce529bdf0d",
+      "bytes": 2881,
+      "mtimeUTC": "2026-10-04T03:10:00.496085+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts",
+      "sha256": "3eade94c01c3ee8a859e403087558c991d5f28271d5820b2a0995f8e242e3cbf",
+      "bytes": 2155,
+      "mtimeUTC": "2026-10-04T03:10:00.481425+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map",
+      "sha256": "ac3be91f5599be58359b182baa67260397e5cce6e212ba8b577058e6514c71a1",
+      "bytes": 144,
+      "mtimeUTC": "2026-10-04T03:10:00.480252+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts",
+      "sha256": "d32606dc371d7eb53ceff9ac2fe574339a7a4bed7abf07d1c63828be9f71e9f2",
+      "bytes": 696,
+      "mtimeUTC": "2026-10-04T03:10:00.482203+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map",
+      "sha256": "e6b6189c28bedc19021347cc8aaa314148a101fc055b809f55a805bd2defbeaa",
+      "bytes": 738,
+      "mtimeUTC": "2026-10-04T03:10:00.482865+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map",
+      "sha256": "147f0744192bf77832d42e46c80798bfdc68f809ff5d9fff8d1ab2021fb04fd6",
+      "bytes": 1390,
+      "mtimeUTC": "2026-10-04T03:10:00.504697+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/index.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/index.js",
+      "sha256": "251aa9169c72bc841eb7d66f80740ea4a2c62e120e3128ee069663ba0babc95c",
+      "bytes": 874,
+      "mtimeUTC": "2026-10-04T03:10:00.499635+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js",
+      "sha256": "65f0e957cf24f61163a466d3715105a8a94e200a4d5d90b2ac8c795ed5776a20",
+      "bytes": 2939,
+      "mtimeUTC": "2026-10-04T03:10:00.498194+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/execution-resources.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/execution-resources.js",
+      "sha256": "701b64cb0afa3e3d65671dcd5b18f4a1b5a437827a9bc5f26de906a0721cacc6",
+      "bytes": 58,
+      "mtimeUTC": "2026-10-04T03:10:00.473077+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/manifests.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/manifests.d.ts.map",
+      "sha256": "27ac8c91a2119c40fa4c307fd7cf4ad2e4b2a018c4cb1d4780dfd75cd0b864bd",
+      "bytes": 1800,
+      "mtimeUTC": "2026-10-04T03:10:00.472195+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/manifests.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/manifests.js",
+      "sha256": "138353f936d015a9d869c83906d5cb0fba5306ec0eabd66ce80b4608a42a04d3",
+      "bytes": 86,
+      "mtimeUTC": "2026-10-04T03:10:00.470503+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-tools.js",
+      "sha256": "b4971792d41a31602603efee84de51e45aebb7c27e74fa9dd5ed4209c56f546f",
+      "bytes": 9907,
+      "mtimeUTC": "2026-10-04T03:10:00.461572+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts",
+      "sha256": "6af1a20dce1e8b621ba36774a212746e3f877de724e5e9f922ddad4c7a5d38cd",
+      "bytes": 349,
+      "mtimeUTC": "2026-10-04T03:10:00.479409+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map",
+      "sha256": "6e959615b3bf5cc5ac3487acc874208b422f2144f11bba29a4688ce0f1161d2b",
+      "bytes": 2720,
+      "mtimeUTC": "2026-10-04T03:10:00.485830+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/manifests.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/manifests.js.map",
+      "sha256": "6223b1d547c6e71bceb9fac76b28d730caf2f7b91d9e357857b109ae1652152b",
+      "bytes": 151,
+      "mtimeUTC": "2026-10-04T03:10:00.470394+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map",
+      "sha256": "16361848fb226a04b016aa3aa6b5d370458d80f87dc9cb306fa836c834925422",
+      "bytes": 1949,
+      "mtimeUTC": "2026-10-04T03:10:00.481303+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map",
+      "sha256": "91ab4024355be9c6207ff70a8a0c1a66c87d6e7d5e4f403e871ef8583c72977f",
+      "bytes": 2780,
+      "mtimeUTC": "2026-10-04T03:10:00.495984+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-member-address.js",
+      "sha256": "458ee497eece6227aa7a6360d4c950f11c1ee5bab7cb0c1b33cfda5655075e8c",
+      "bytes": 688,
+      "mtimeUTC": "2026-10-04T03:10:00.477910+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map",
+      "sha256": "849ec74f2ed68f338cc635fed6006d5223fd7bb334a8373589e81c24582552cc",
+      "bytes": 783,
+      "mtimeUTC": "2026-10-04T03:10:00.498798+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map",
+      "sha256": "042a2c0b3b2c6016799f4becf39b41592ad48c09ebf2b77e33852add0cf632e9",
+      "bytes": 2670,
+      "mtimeUTC": "2026-10-04T03:10:00.469467+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map",
+      "sha256": "9f84f7a7d16ad70d2da120c6f1c383d0bd19bef84d3358aa377e6f0ff8bf7d96",
+      "bytes": 703,
+      "mtimeUTC": "2026-10-04T03:10:00.482126+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-events.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-events.js.map",
+      "sha256": "979139c60bfc991b573fa5c957744d0d58d5ab8cd2b18c96c4eebf6752b5e17f",
+      "bytes": 140,
+      "mtimeUTC": "2026-10-04T03:10:00.481681+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/index.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/index.js.map",
+      "sha256": "13fd55377993390db563b5a2463d6407dd6dd06f070b78e85ca410bb6345a753",
+      "bytes": 550,
+      "mtimeUTC": "2026-10-04T03:10:00.499542+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-iframe-contract.js",
+      "sha256": "a47cf1818019108570002ca3bc589db266e359d208856ecc29864b3096b2fcf7",
+      "bytes": 6167,
+      "mtimeUTC": "2026-10-04T03:10:00.491905+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/manifests.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/manifests.d.ts",
+      "sha256": "b1c7039ec91211f90b90b05289fec071e3028775c5ccce216b80ca93495a7b6b",
+      "bytes": 2175,
+      "mtimeUTC": "2026-10-04T03:10:00.472333+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-bindings.js",
+      "sha256": "5d6bc94d25b435fcd7139519cdcdccae0bbc9e493910e847411368e10c7a02c1",
+      "bytes": 65,
+      "mtimeUTC": "2026-10-04T03:10:00.480340+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-events.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-events.js",
+      "sha256": "010591b002515e0dc231a63e3f07f583608c3accf8ca4559be2848fa92abb671",
+      "bytes": 63,
+      "mtimeUTC": "2026-10-04T03:10:00.481770+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map",
+      "sha256": "a3ae5904afe2257dfcd9685832cfbba2a7f3c1ddeab183c6d30b929de1f2a61d",
+      "bytes": 2451,
+      "mtimeUTC": "2026-10-04T03:10:00.494270+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts",
+      "sha256": "8c31dac7590ecc69e52142ca79c09c70b741943d03ac3ff9e4d673e7cbe3fb57",
+      "bytes": 3795,
+      "mtimeUTC": "2026-10-04T03:10:00.485967+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map",
+      "sha256": "456b4a6bfbd529c14623429401acfb9d1fee7c06bbeb8dbe87fbd0752a2a0702",
+      "bytes": 9585,
+      "mtimeUTC": "2026-10-04T03:10:00.461310+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/index.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/index.d.ts",
+      "sha256": "31b7018454cb7721433a337d2a38c1cd35e75f7c96d97f40da50c2f9519fe0f8",
+      "bytes": 12670,
+      "mtimeUTC": "2026-10-04T03:10:00.503604+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts",
+      "sha256": "5e6093ee59029f72d3dcf7d27ad2b6b9f29ce9146d0062536172672a517f51ba",
+      "bytes": 804,
+      "mtimeUTC": "2026-10-04T03:10:00.496816+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-target-url.js",
+      "sha256": "b77ce83d9188a9ce63ca413cf67db85342b9b37e10810909e58a91323b7e9354",
+      "bytes": 1917,
+      "mtimeUTC": "2026-10-04T03:10:00.487574+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-websockets.js",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-websockets.js",
+      "sha256": "d9004bf25435c48a7a1eadbd51cc4881b372a707d06f77b75c3b948f23965a6b",
+      "bytes": 61,
+      "mtimeUTC": "2026-10-04T03:10:00.504002+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/index.d.ts.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/index.d.ts.map",
+      "sha256": "f7b10a5e26d8aaa5c95107a7f9d79da0090a97065dbf067e110be4224d10a287",
+      "bytes": 10377,
+      "mtimeUTC": "2026-10-04T03:10:00.503419+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts",
+      "sha256": "0d67f4f2c5661a24d84e2bb48d910e2efe29c080c4c21ee7b8f759ff3ac09e12",
+      "bytes": 473,
+      "mtimeUTC": "2026-10-04T03:10:00.488875+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map",
+      "sha256": "0a08ea3e52a6c9e5f5223847517f8a46fd55dabb2d37b2cbd02e25265bc65d02",
+      "bytes": 895,
+      "mtimeUTC": "2026-10-04T03:10:00.477780+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+      "sha256": "f0472f756d17847391f5f39abbc784f1d737229c75e767b3d0fde02a4b6f5e48",
+      "bytes": 262144,
+      "mtimeUTC": "2026-10-04T03:08:41.358873+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal",
+      "sha256": "0c1d2e79f3ae5133b99f33afab939b59327fd2964fff5f9bf6f7ef0fa24f3998",
+      "bytes": 45656,
+      "mtimeUTC": "2026-10-04T03:08:41.358893+00:00"
+    },
+    {
+      "originalRelativePath": "autobyteus-web/.nuxtrc",
+      "custody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody/autobyteus-web/.nuxtrc",
+      "sha256": "202ec14536c3e409f45ca34d9ec9a145692ebca9e3383b4b0498693e723201e8",
+      "bytes": 32,
+      "mtimeUTC": "2026-10-03T19:39:04.873803+00:00"
+    }
+  ],
+  "sdkContractsOwnership": "52 tsc outputs: DR003 prebuild explicitly builds contracts and rebuilt packaged-freshness step reruns it;03:10UTC mtime matches that owned build. Sources/package build recipe remain committed; exact52 files independently copied/hashed, no regeneration needed",
+  "testDBOwnership": "Prisma tests/setup/prisma-test-config.ts points to tests/.tmp/autobyteus-server-test.db;03:08:41UTC mtime matches owned DR003 AGY transport25 test command starting03:08:40; DB+journal copied/hashed, no active runtime",
+  "nuxtConfigOwnership": "Generated setups.@nuxt/test-utils=3.23.0 in dedicated ticket validation workspace; copied/hashed",
+  "otherGeneratedRoots": "Known pnpm dependency trees and core/server/Nuxt/mobile/Electron build/deploy/icon outputs from ticket implementation/API/DR003 commands; regenerated outputs, no user source/data. No symlink targets followed/deleted. All generated roots explicitly listed; empty server data directories contain no user state. Current app.asar matches recorded DR003 build proof",
+  "roots": [
+    "applications/brief-studio/node_modules/",
+    "applications/socratic-math-teacher/node_modules/",
+    "autobyteus-agent-presentation-contracts/node_modules/",
+    "autobyteus-application-backend-sdk/node_modules/",
+    "autobyteus-application-devkit/node_modules/",
+    "autobyteus-application-frontend-sdk/node_modules/",
+    "autobyteus-application-sdk-contracts/node_modules/",
+    "autobyteus-collaboration-stream-contracts/node_modules/",
+    "autobyteus-server-ts/autobyteus-web/",
+    "autobyteus-server-ts/dist/",
+    "autobyteus-server-ts/node_modules/",
+    "autobyteus-server-ts/tests/.tmp/",
+    "autobyteus-team-stream-contracts/node_modules/",
+    "autobyteus-ts/dist/",
+    "autobyteus-ts/node_modules/",
+    "autobyteus-web/.nuxt/",
+    "autobyteus-web/.nuxtrc",
+    "autobyteus-web/build/dist/",
+    "autobyteus-web/build/icons/1024x1024.png",
+    "autobyteus-web/build/icons/128x128.png",
+    "autobyteus-web/build/icons/256x256.png",
+    "autobyteus-web/build/icons/512x512.png",
+    "autobyteus-web/build/icons/64x64.png",
+    "autobyteus-web/build/icons/icon.icns",
+    "autobyteus-web/build/icons/icon.ico",
+    "autobyteus-web/dist-mobile/",
+    "autobyteus-web/dist/",
+    "autobyteus-web/electron-dist/",
+    "autobyteus-web/node_modules/",
+    "autobyteus-web/resources/",
+    "node_modules/",
+    "autobyteus-application-sdk-contracts/dist/",
+    "autobyteus-server-ts/agents",
+    "autobyteus-server-ts/agent-orgs",
+    "autobyteus-server-ts/agent-teams",
+    "autobyteus-server-ts/db",
+    "autobyteus-server-ts/memory"
+  ],
+  "rootTotals": {
+    "applications/brief-studio/node_modules/": {
+      "entries": 10,
+      "regularFiles": 2,
+      "symlinks": 5,
+      "regularBytes": 3098
+    },
+    "applications/socratic-math-teacher/node_modules/": {
+      "entries": 10,
+      "regularFiles": 2,
+      "symlinks": 5,
+      "regularBytes": 3098
+    },
+    "autobyteus-agent-presentation-contracts/node_modules/": {
+      "entries": 7,
+      "regularFiles": 2,
+      "symlinks": 3,
+      "regularBytes": 3098
+    },
+    "autobyteus-application-backend-sdk/node_modules/": {
+      "entries": 10,
+      "regularFiles": 3,
+      "symlinks": 4,
+      "regularBytes": 4658
+    },
+    "autobyteus-application-devkit/node_modules/": {
+      "entries": 16,
+      "regularFiles": 4,
+      "symlinks": 9,
+      "regularBytes": 5794
+    },
+    "autobyteus-application-frontend-sdk/node_modules/": {
+      "entries": 8,
+      "regularFiles": 2,
+      "symlinks": 3,
+      "regularBytes": 3098
+    },
+    "autobyteus-application-sdk-contracts/node_modules/": {
+      "entries": 6,
+      "regularFiles": 2,
+      "symlinks": 2,
+      "regularBytes": 3098
+    },
+    "autobyteus-collaboration-stream-contracts/node_modules/": {
+      "entries": 9,
+      "regularFiles": 2,
+      "symlinks": 4,
+      "regularBytes": 3098
+    },
+    "autobyteus-server-ts/autobyteus-web/": {
+      "entries": 10,
+      "regularFiles": 6,
+      "symlinks": 0,
+      "regularBytes": 12976
+    },
+    "autobyteus-server-ts/dist/": {
+      "entries": 4606,
+      "regularFiles": 4292,
+      "symlinks": 0,
+      "regularBytes": 8869833
+    },
+    "autobyteus-server-ts/node_modules/": {
+      "entries": 56,
+      "regularFiles": 7,
+      "symlinks": 36,
+      "regularBytes": 13683
+    },
+    "autobyteus-server-ts/tests/.tmp/": {
+      "entries": 2,
+      "regularFiles": 2,
+      "symlinks": 0,
+      "regularBytes": 307800
+    },
+    "autobyteus-team-stream-contracts/node_modules/": {
+      "entries": 9,
+      "regularFiles": 2,
+      "symlinks": 4,
+      "regularBytes": 3098
+    },
+    "autobyteus-ts/dist/": {
+      "entries": 1830,
+      "regularFiles": 1752,
+      "symlinks": 0,
+      "regularBytes": 3282621
+    },
+    "autobyteus-ts/node_modules/": {
+      "entries": 36,
+      "regularFiles": 11,
+      "symlinks": 19,
+      "regularBytes": 18848
+    },
+    "autobyteus-web/.nuxt/": {
+      "entries": 252,
+      "regularFiles": 238,
+      "symlinks": 0,
+      "regularBytes": 12420889
+    },
+    "autobyteus-web/.nuxtrc": {
+      "entries": 1,
+      "regularFiles": 1,
+      "symlinks": 0,
+      "regularBytes": 32
+    },
+    "autobyteus-web/build/dist/": {
+      "entries": 9,
+      "regularFiles": 9,
+      "symlinks": 0,
+      "regularBytes": 47699
+    },
+    "autobyteus-web/build/icons/1024x1024.png": {
+      "entries": 1,
+      "regularFiles": 1,
+      "symlinks": 0,
+      "regularBytes": 45987
+    },
+    "autobyteus-web/build/icons/128x128.png": {
+      "entries": 1,
+      "regularFiles": 1,
+      "symlinks": 0,
+      "regularBytes": 3917
+    },
+    "autobyteus-web/build/icons/256x256.png": {
+      "entries": 1,
+      "regularFiles": 1,
+      "symlinks": 0,
+      "regularBytes": 8627
+    },
+    "autobyteus-web/build/icons/512x512.png": {
+      "entries": 1,
+      "regularFiles": 1,
+      "symlinks": 0,
+      "regularBytes": 19946
+    },
+    "autobyteus-web/build/icons/64x64.png": {
+      "entries": 1,
+      "regularFiles": 1,
+      "symlinks": 0,
+      "regularBytes": 1725
+    },
+    "autobyteus-web/build/icons/icon.icns": {
+      "entries": 1,
+      "regularFiles": 1,
+      "symlinks": 0,
+      "regularBytes": 45987
+    },
+    "autobyteus-web/build/icons/icon.ico": {
+      "entries": 1,
+      "regularFiles": 1,
+      "symlinks": 0,
+      "regularBytes": 276710
+    },
+    "autobyteus-web/dist-mobile/": {
+      "entries": 235,
+      "regularFiles": 215,
+      "symlinks": 0,
+      "regularBytes": 10922624
+    },
+    "autobyteus-web/dist/": {
+      "entries": 288,
+      "regularFiles": 268,
+      "symlinks": 0,
+      "regularBytes": 11224622
+    },
+    "autobyteus-web/electron-dist/": {
+      "entries": 39465,
+      "regularFiles": 33152,
+      "symlinks": 1123,
+      "regularBytes": 3284582732
+    },
+    "autobyteus-web/node_modules/": {
+      "entries": 354,
+      "regularFiles": 249,
+      "symlinks": 79,
+      "regularBytes": 23291792
+    },
+    "autobyteus-web/resources/": {
+      "entries": 38864,
+      "regularFiles": 32876,
+      "symlinks": 1109,
+      "regularBytes": 744250294
+    },
+    "node_modules/": {
+      "entries": 85192,
+      "regularFiles": 67376,
+      "symlinks": 4978,
+      "regularBytes": 1483399639
+    },
+    "autobyteus-application-sdk-contracts/dist/": {
+      "entries": 52,
+      "regularFiles": 52,
+      "symlinks": 0,
+      "regularBytes": 125542
+    },
+    "autobyteus-server-ts/agents": {
+      "entries": 0,
+      "regularFiles": 0,
+      "symlinks": 0,
+      "regularBytes": 0
+    },
+    "autobyteus-server-ts/agent-orgs": {
+      "entries": 0,
+      "regularFiles": 0,
+      "symlinks": 0,
+      "regularBytes": 0
+    },
+    "autobyteus-server-ts/agent-teams": {
+      "entries": 0,
+      "regularFiles": 0,
+      "symlinks": 0,
+      "regularBytes": 0
+    },
+    "autobyteus-server-ts/db": {
+      "entries": 0,
+      "regularFiles": 0,
+      "symlinks": 0,
+      "regularBytes": 0
+    },
+    "autobyteus-server-ts/memory": {
+      "entries": 0,
+      "regularFiles": 0,
+      "symlinks": 0,
+      "regularBytes": 0
+    }
+  },
+  "inventoryRows": 171344,
+  "metadataFingerprint": "a945caf5e7f8ff24b37f220598d063882f1d4ba03607a365dcb31f349b9cb6e3",
+  "independentInventory": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-root-inventory.json.gz",
+  "knownEmptyDataRoots": [
+    "autobyteus-server-ts/agents",
+    "autobyteus-server-ts/agent-orgs",
+    "autobyteus-server-ts/agent-teams",
+    "autobyteus-server-ts/db",
+    "autobyteus-server-ts/memory"
+  ],
+  "currentWorktreeStatus": " M SOLUTION_DESIGN_BEST_PRACTICES.md\n?? autobyteus-application-sdk-contracts/dist/",
+  "currentWorktreeHead": "2eb8732c7243aec7883a99107032f73e972d8b9a",
+  "currentOriginPersonal": "86beba43c9e8a435a82c50628758f84ba3ef304b",
+  "candidateReachable": true,
+  "publishedTag": "v1.4.94-beta.2",
+  "publishedSHA": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "sharedHeadBefore": "63aac5939f1ebcfb691f796990739a3e94fd5f45",
+  "sharedDirtyTrackedHashesBefore": {
+    "tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/cumulative-package.json": "c29bc19a01d7f6a17cc3820409532722fe46d36080fa05f56710739c0718a98b",
+    "tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/final-repository-state.json": "4637f836f243fae90d1b89cb3643a67a102eb0c1296994451f5142503f5aba70",
+    "tickets/done/antigravity-tool-argument-visibility/delivery-revision-record.md": "d302f8d4bcda1370e485945b52294a1a65ad45a8cffea4708f9379fa6f72fc1f",
+    "tickets/done/embedded-browser-open-tab-investigation/docs-sync-report.md": "9c76e8385462af2a575046189664077c2b17aae2b4947d1db4e375bc4ae15c5b",
+    "tickets/done/embedded-browser-open-tab-investigation/handoff-summary.md": "fa3a499601d07a9ae1b40f93e88a19d0b83eb79929b233241fccd0afca41102d",
+    "tickets/done/embedded-browser-open-tab-investigation/release-deployment-report.md": "a5c56a4cd3eea6823afec1a504793365a9bff8d549bf42c0ff69036d83b46452"
+  },
+  "noNewRuntimeLaunched": true,
+  "beforeRemovalGuardRequired": true
+}

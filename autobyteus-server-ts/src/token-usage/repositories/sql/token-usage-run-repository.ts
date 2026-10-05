@@ -68,6 +68,20 @@ export class SqlTokenUsageRunRepository {
     return result;
   }
 
+  /** The records of exactly these runs (absent runs have no record), each once. */
+  async listByRunIds(runIds: readonly string[]): Promise<TokenUsageRunRecord[]> {
+    const ids = [...new Set(runIds.map((runId) => runId.trim()).filter(Boolean))];
+    const result: TokenUsageRunRecord[] = [];
+    for (let start = 0; start < ids.length; start += 250) {
+      const records = await this.client.tokenUsageRunRecord.findMany({
+        where: { runId: { in: ids.slice(start, start + 250) } },
+        orderBy: [{ runId: "asc" }],
+      });
+      result.push(...records.map(fromPrismaTokenUsageRunRecord));
+    }
+    return result;
+  }
+
   async listByRootTeamRunId(rootTeamRunId: string): Promise<TokenUsageRunRecord[]> {
     const normalized = rootTeamRunId.trim();
     if (!normalized) return [];

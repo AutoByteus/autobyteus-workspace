@@ -161,4 +161,40 @@ describe("TokenUsageRunStore", () => {
     const standalone = await store.getAgentRunSummary(standaloneRunId);
     expect(standalone.gross_input_tokens).toBe(2);
   });
+
+  it("rolls a standalone run up over its children once each, keeping the host's context and model (REQ-006)", async () => {
+    const hostRunId = remember("standalone-rollup-host");
+    const collaborator = remember("standalone-rollup-collaborator");
+    const copy = remember("standalone-rollup-copy");
+    const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
+    await store.recordObservation(buildCurrentTokenUsagePayload({
+      runId: hostRunId, inputTokens: 100, outputTokens: 10, agentName: "Host",
+      latestPromptTokens: 1_000, effectiveContextWindowTokens: 10_000, contextWindowUsagePercent: 10,
+    }));
+    // The children report later, so their records are the newest overall.
+    await store.recordObservation(buildCurrentTokenUsagePayload({
+      runId: collaborator, inputTokens: 20, outputTokens: 2, agentName: "Collaborator",
+      latestPromptTokens: 9_000, effectiveContextWindowTokens: 10_000, contextWindowUsagePercent: 90,
+    }));
+    await store.recordObservation(buildCurrentTokenUsagePayload({ runId: copy, inputTokens: 3, outputTokens: 1, agentName: "Copy" }));
+
+    const summary = await store.getStandaloneRunSummary({
+      hostRunId,
+      // A repeated ID and an ID without a record (a child that never reported) are harmless.
+      childAgentRunIds: [collaborator, copy, collaborator, "standalone-rollup-never-reported"],
+    });
+    expect(summary).toMatchObject({
+      run_id: hostRunId,
+      gross_input_tokens: 100 + 20 + 3,
+      output_tokens: 10 + 2 + 1,
+      usage_report_count: 3,
+      latest_prompt_tokens: 1_000,
+      context_window_usage_percent: 10,
+    });
+    const exact = await Promise.all([hostRunId, collaborator, copy].map((runId) => store.getAgentRunSummary(runId)));
+    expect(summary.total_tokens).toBe(exact.reduce((sum, item) => sum + item.total_tokens, 0));
+
+    const alone = await store.getStandaloneRunSummary({ hostRunId, childAgentRunIds: [] });
+    expect(alone).toEqual(await store.getAgentRunSummary(hostRunId));
+  });
 });

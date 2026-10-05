@@ -1,0 +1,1850 @@
+Merge made by the 'ort' strategy.
+ AGENTS.md                                          |     26 +
+ SOLUTION_DESIGN_BEST_PRACTICES.md                  |    313 +
+ TESTING.md                                         |     32 +
+ .../docs/modules/agent_execution.md                |     37 +-
+ autobyteus-server-ts/docs/modules/agent_orgs.md    |     13 +
+ autobyteus-server-ts/docs/modules/run_history.md   |     23 +
+ .../collaboration-execution-location-service.ts    |     10 +-
+ .../runtime/general-process-run-supervisor.ts      |      5 -
+ .../services/agent-run-identity-allocator.ts       |    103 +-
+ .../services/agent-run-provisioning-service.ts     |      6 +-
+ .../agent-org-execution-tree-location-service.ts   |     14 +-
+ .../agent-run-collaboration-location-service.ts    |     12 -
+ .../services/team-run-service.ts                   |      4 +-
+ .../graphql/types/collaboration-root-history.ts    |      6 +-
+ .../src/api/graphql/types/runtime-availability.ts  |     19 +-
+ .../application-execution-scope-kernel-builder.ts  |      4 -
+ .../services/collaboration-root-history-service.ts |     42 +-
+ .../team-run-execution-tree-location-service.ts    |     14 -
+ .../runtime-availability-service.ts                |      6 +-
+ .../controlled-org-publication-http.e2e.test.ts    |    136 +
+ .../scoped-org-history-graphql.e2e.test.ts         |    129 +
+ .../runtime/grok-build-live-runtime.e2e.test.ts    |      6 +-
+ .../runtime/runtime-capability-graphql.e2e.test.ts |     28 +-
+ .../tests/fixtures/agy-failure-cli.mjs             |      5 +-
+ .../native-compaction-root-fixture.ts              |    203 +-
+ ...native-root-fixture-cleanup.integration.test.ts |     68 +
+ .../agent-team-run-manager.integration.test.ts     |     29 +-
+ ...k-delegation-tool-lifecycle.integration.test.ts |      8 -
+ ...m-agent-tools-mcp-lifecycle.integration.test.ts |      8 +-
+ .../agent-run-identity-allocator.test.ts           |    150 +-
+ ...ent-org-execution-tree-location-service.test.ts |     10 +-
+ .../collaboration-root-history-scoped.test.ts      |     38 +
+ .../runtime-availability-service.test.ts           |     27 +
+ .../launch-config/RuntimeModelConfigFields.vue     |      6 +-
+ .../__tests__/RuntimeCapabilityReadiness.spec.ts   |     80 +
+ .../__tests__/RuntimeModelConfigFields.spec.ts     |      3 +-
+ .../workspace/config/AgentOrgRunConfigPanel.vue    |      2 +-
+ .../workspace/config/MemberOverrideItem.vue        |     27 +-
+ .../__tests__/AgentOrgCatalogRecovery.spec.ts      |    155 +
+ .../config/__tests__/AgentOrgOwnedLaunch.spec.ts   |     16 +
+ .../config/__tests__/AgentOrgSeededLaunch.spec.ts  |     15 +-
+ .../config/__tests__/AgentRunConfigForm.spec.ts    |      3 +-
+ .../config/__tests__/MemberOverrideItem.spec.ts    |      3 +-
+ .../history/WorkspaceAgentRunsTreePanel.vue        |      4 +-
+ .../WorkspaceAgentOrgActivityPublication.spec.ts   |     20 +-
+ .../WorkspaceHistoryFamilyPublication.spec.ts      |      4 +-
+ .../team/__tests__/TeamCanonicalPlus.spec.ts       |      3 +-
+ .../useRuntimeScopedModelSelection.spec.ts         |     13 +-
+ .../composables/useRuntimeScopedModelSelection.ts  |    140 +-
+ autobyteus-web/docs/agent_orgs.md                  |     29 +
+ autobyteus-web/docs/agent_teams.md                 |      8 +
+ autobyteus-web/generated/graphql.ts                |    386 +-
+ .../queries/collaborationRootHistoryQueries.ts     |      8 +
+ .../queries/runtime_availability_queries.ts        |     16 +-
+ .../__tests__/agentOrgComposerSubmission.spec.ts   |     16 +-
+ .../__tests__/agentOrgContextFiles.spec.ts         |      7 +-
+ .../__tests__/agentOrgStreamingService.spec.ts     |     20 +
+ .../agentOrgExecution/agentOrgStreamingService.ts  |      4 +
+ .../stores/__tests__/agentOrgContextsStore.spec.ts |     14 +-
+ .../stores/__tests__/agentOrgHistoryApollo.spec.ts |    198 +-
+ .../stores/__tests__/agentOrgInspection.spec.ts    |      2 +-
+ .../__tests__/agentOrgRetainedRecovery.spec.ts     |      2 +-
+ .../__tests__/agentOrgRunConfigPublication.spec.ts |      2 +-
+ .../runHistoryNavigationProjection.spec.ts         |     50 +
+ .../stores/__tests__/runHistoryStore.spec.ts       |     11 +-
+ .../__tests__/runtimeCapabilitiesStore.spec.ts     |    113 +-
+ autobyteus-web/stores/agentOrgContextsStore.ts     |      6 +-
+ autobyteus-web/stores/runHistoryLoadActions.ts     |     81 +-
+ .../stores/runHistoryNavigationProjection.ts       |     53 +-
+ autobyteus-web/stores/runHistoryStore.ts           |     19 +-
+ autobyteus-web/stores/runHistoryStoreSupport.ts    |     61 +-
+ autobyteus-web/stores/runtimeAvailabilityStore.ts  |    136 +-
+ .../tests/e2e/existing-run-model-config-probe.mjs  |      3 +-
+ .../tests/e2e/fresh-run-auto-approval-probe.mjs    |      3 +-
+ autobyteus-web/utils/llmConfigSchema.ts            |     13 +
+ .../api-e2e-coverage-investigation.md              |    171 +
+ .../api-e2e-execution-coverage-report.md           |    112 +
+ .../api-e2e-revision-record.md                     |     58 +
+ .../api-e2e-test-case-ledger.md                    |    579 +
+ .../api-e2e-test-review-report.md                  |     73 +
+ .../architecture-design-result.md                  |    114 +
+ .../architecture-review-revision-record.md         |     40 +
+ .../code-review-report.md                          |     76 +
+ .../code-review-revision-record.md                 |    147 +
+ .../delivery-authorization-result.md               |     67 +
+ .../delivery-revision-record.md                    |     52 +
+ .../design-guideline-result.md                     |     49 +
+ .../design-review-report.md                        |    312 +
+ .../done/org-run-config-performance/design-spec.md |    284 +
+ .../org-run-config-performance/docs-sync-report.md |     42 +
+ .../evidence/api-baseline-fixture-comparison.json  |      6 +
+ .../evidence/api-baseline-initial.json             |    194 +
+ .../evidence/api-capability-e2e.log                |    112 +
+ .../evidence/api-cleanup.json                      |     42 +
+ .../evidence/api-config-passive.js                 |      8 +
+ .../evidence/api-coverage-inventory.json           |    278 +
+ .../evidence/api-current-provenance.json           |     11 +
+ .../evidence/api-execution-commands.json           |   1382 +
+ .../evidence/api-existing-model-probe.log          |     10 +
+ .../API-E2E-004-A-agent-saved.png                  |    Bin 0 -> 80274 bytes
+ .../API-E2E-004-B-team-saved.png                   |    Bin 0 -> 190786 bytes
+ .../API-E2E-004-C-team-narrow.png                  |    Bin 0 -> 42148 bytes
+ .../API-E2E-004-D-agent-run-active.png             |    Bin 0 -> 79863 bytes
+ .../API-E2E-004-E-agent-replaced.png               |    Bin 0 -> 85256 bytes
+ .../API-E2E-004-F-team-verified-narrow.png         |    Bin 0 -> 179428 bytes
+ .../existing-run-model-config-evidence.json        |    503 +
+ .../evidence/api-existing-model/nuxt-dev.log       |     40 +
+ .../api-failure-handoff-receipt-api-rev001.json    |     14 +
+ .../api-failure-handoff-receipt-api-rev002.json    |     14 +
+ .../evidence/api-fresh-approval-probe-warm.log     |    346 +
+ .../evidence/api-fresh-approval-probe.log          |    142 +
+ .../api-fresh-approval-warm/B08-agent-fresh.png    |    Bin 0 -> 76097 bytes
+ .../api-fresh-approval-warm/B08-team-fresh.png     |    Bin 0 -> 76392 bytes
+ .../fresh-run-auto-approval-evidence.json          |   1758 +
+ .../evidence/api-fresh-approval-warm/nuxt-dev.log  |     21 +
+ .../evidence/api-fresh-approval/B04-failure.png    |    Bin 0 -> 35128 bytes
+ .../api-fresh-approval/B08-agent-fresh.png         |    Bin 0 -> 76045 bytes
+ .../evidence/api-fresh-approval/B08-team-fresh.png |    Bin 0 -> 76392 bytes
+ .../fresh-run-auto-approval-evidence.json          |    622 +
+ .../evidence/api-fresh-approval/nuxt-dev.log       |     23 +
+ .../evidence/api-isolated-list-final.json          |     77 +
+ .../evidence/api-nuxt-prepare.log                  |      9 +
+ .../evidence/api-package-index.json                |    899 +
+ .../evidence/api-packaged-app-before-restart.log   |   3059 +
+ .../api-packaged-backend-hooks-install.json        |     21 +
+ .../evidence/api-packaged-backend-hooks.js         |     32 +
+ .../evidence/api-packaged-backend-install.log      |      6 +
+ .../evidence/api-packaged-backend-trace.json       |   1287 +
+ .../evidence/api-packaged-backend-trace.log        |      8 +
+ .../evidence/api-packaged-backend-trace.mjs        |     22 +
+ .../evidence/api-packaged-build-provenance.json    |     33 +
+ .../evidence/api-packaged-build.log                |    640 +
+ .../evidence/api-packaged-continuity.log           |     21 +
+ .../evidence/api-packaged-continuity.mjs           |      9 +
+ .../evidence/api-packaged-debugger-ownership.json  |      9 +
+ ...-packaged-functional-catalog-label-failure.json |    394 +
+ .../api-packaged-functional-catalog-labeled.log    |     12 +
+ ...ed-functional-confirmed-root-retry-failure.json |    408 +
+ .../evidence/api-packaged-functional-failure.png   |    Bin 0 -> 166348 bytes
+ .../api-packaged-functional-route-synchronized.log |     14 +
+ ...-packaged-functional-route-unroute-failure.json |    391 +
+ .../api-packaged-functional-runtime-corrected.log  |     15 +
+ ...ckaged-functional-runtime-selector-failure.json |    391 +
+ .../evidence/api-packaged-functional.json          |    408 +
+ .../evidence/api-packaged-functional.log           |     10 +
+ .../evidence/api-packaged-functional.mjs           |     16 +
+ .../evidence/api-packaged-import.png               |    Bin 0 -> 216038 bytes
+ .../evidence/api-packaged-org-catalog-direct.json  |    148 +
+ .../evidence/api-packaged-populate.mjs             |     20 +
+ .../evidence/api-packaged-population.json          |   2586 +
+ .../evidence/api-packaged-population.log           |     29 +
+ .../evidence/api-packaged-restart.json             |     20 +
+ .../evidence/api-packaged-restart.log              |      0
+ .../evidence/api-packaged-retry-repro.json         |   1093 +
+ .../evidence/api-packaged-retry-repro.log          |     10 +
+ .../evidence/api-packaged-retry-repro.mjs          |     21 +
+ .../evidence/api-packaged-retry-repro.png          |    Bin 0 -> 183213 bytes
+ .../evidence/api-packaged-setup-after-reload.log   |     10 +
+ .../api-packaged-setup-duplicate-import.json       |   2880 +
+ .../evidence/api-packaged-setup-failure.png        |    Bin 0 -> 216038 bytes
+ ...pi-packaged-setup-initial-selector-failure.json |   2880 +
+ .../evidence/api-packaged-setup-pre-reload.json    |   2940 +
+ .../evidence/api-packaged-setup-resume.log         |      6 +
+ .../evidence/api-packaged-setup-retry.log          |     10 +
+ .../evidence/api-packaged-setup.json               |   3363 +
+ .../evidence/api-packaged-setup.log                |     10 +
+ .../evidence/api-packaged-setup.mjs                |     27 +
+ .../api-packaged-small-history-cold-renderer-1.png |    Bin 0 -> 143555 bytes
+ .../api-packaged-small-history-cold-renderer-2.png |    Bin 0 -> 143264 bytes
+ .../api-packaged-small-history-cold-renderer-3.png |    Bin 0 -> 143537 bytes
+ .../api-packaged-small-history-cold-renderer-4.png |    Bin 0 -> 143582 bytes
+ .../api-packaged-small-history-cold-renderer-5.png |    Bin 0 -> 143564 bytes
+ .../evidence/api-packaged-small-history-warm-1.png |    Bin 0 -> 110192 bytes
+ .../evidence/api-packaged-small-history-warm-2.png |    Bin 0 -> 132891 bytes
+ .../evidence/api-packaged-small-history-warm-3.png |    Bin 0 -> 142587 bytes
+ .../evidence/api-packaged-small-history-warm-4.png |    Bin 0 -> 142346 bytes
+ .../evidence/api-packaged-small-history-warm-5.png |    Bin 0 -> 142497 bytes
+ .../evidence/api-packaged-small-history.json       |  15741 ++
+ .../evidence/api-packaged-small-timing.log         |     15 +
+ .../evidence/api-packaged-start.json               |     20 +
+ .../evidence/api-packaged-stop.json                |     15 +
+ .../evidence/api-packaged-stop.log                 |      0
+ ...packaged-stored-history-500-cold-renderer-1.png |    Bin 0 -> 132891 bytes
+ ...packaged-stored-history-500-cold-renderer-2.png |    Bin 0 -> 132617 bytes
+ ...packaged-stored-history-500-cold-renderer-3.png |    Bin 0 -> 132891 bytes
+ ...packaged-stored-history-500-cold-renderer-4.png |    Bin 0 -> 132891 bytes
+ ...packaged-stored-history-500-cold-renderer-5.png |    Bin 0 -> 132624 bytes
+ .../api-packaged-stored-history-500-warm-1.png     |    Bin 0 -> 147892 bytes
+ .../api-packaged-stored-history-500-warm-2.png     |    Bin 0 -> 143874 bytes
+ .../api-packaged-stored-history-500-warm-3.png     |    Bin 0 -> 143204 bytes
+ .../api-packaged-stored-history-500-warm-4.png     |    Bin 0 -> 143016 bytes
+ .../api-packaged-stored-history-500-warm-5.png     |    Bin 0 -> 142872 bytes
+ .../evidence/api-packaged-stored-history-500.json  |  18088 ++
+ .../evidence/api-packaged-stress-timing.log        |     15 +
+ .../evidence/api-packaged-timing.mjs               |     63 +
+ .../evidence/api-performance-summary.json          |   1010 +
+ .../evidence/api-performance-summary.log           |     11 +
+ .../evidence/api-prebuild.log                      |     29 +
+ .../evidence/api-run-command.py                    |     12 +
+ .../evidence/api-scoped-history-e2e.log            |    104 +
+ .../evidence/api-server-build.log                  |     12 +
+ .../evidence/api-server-narrow.log                 |    181 +
+ .../evidence/api-stopped-workspace-e2e.log         |    104 +
+ .../api-success-handoff-receipt-api-rev003.json    |     14 +
+ .../evidence/api-summarize-performance.py          |     19 +
+ .../evidence/api-web-narrow.log                    |   1102 +
+ .../evidence/api2-agy-failure-transport.log        |    877 +
+ .../evidence/api2-baseline-app-final.log           |    559 +
+ .../evidence/api2-baseline-source-pin-check.json   |     47 +
+ .../evidence/api2-baseline-start.json              |     20 +
+ .../evidence/api2-baseline-start.log               |      0
+ .../evidence/api2-baseline-stop.json               |     15 +
+ .../evidence/api2-baseline-stop.log                |      0
+ .../evidence/api2-capability-e2e.log               |    112 +
+ .../evidence/api2-cleanup.json                     |     76 +
+ .../evidence/api2-config-passive.js                |      8 +
+ .../evidence/api2-failure-origin-preliminary.json  |     29 +
+ .../evidence/api2-intake-provenance.json           |      8 +
+ .../evidence/api2-isolated-list-final.json         |     94 +
+ .../evidence/api2-native-fixture-cleanup.json      |     79 +
+ .../server-recovery-1H46CH/raw_traces_active.jsonl |      7 +
+ .../working_context_snapshot.json                  |      1 +
+ .../server-recovery-uXUI4z/raw_traces_active.jsonl |      7 +
+ .../working_context_snapshot.json                  |      1 +
+ .../api2-native-fixture-owned-candidates.json      |     47 +
+ .../evidence/api2-native-input-history.log         |    464 +
+ .../evidence/api2-nuxt-prepare.log                 |      9 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    461 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    461 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    461 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    461 +
+ .../team_communication_messages.json               |      5 +
+ .../team_run_execution_tree.json                   |    258 +
+ .../evidence/api2-packaged-app-before-restart.log  |   1192 +
+ .../evidence/api2-packaged-app-final.log           |   1389 +
+ .../evidence/api2-packaged-build-provenance.json   |     55 +
+ .../evidence/api2-packaged-build.log               |    650 +
+ .../api2-packaged-continuity-after-restart.json    |   5250 +
+ .../api2-packaged-continuity-after-restart.log     |      6 +
+ .../api2-packaged-continuity-after-restart.png     |    Bin 0 -> 130392 bytes
+ ...2-packaged-continuity-before-history-entry.json |   1691 +
+ ...i2-packaged-continuity-before-history-entry.mjs |     21 +
+ .../api2-packaged-continuity-bucket-expanded.log   |     10 +
+ .../api2-packaged-continuity-collapsed-bucket.json |   1692 +
+ ...2-packaged-continuity-collapsed-definition.json |   1693 +
+ .../api2-packaged-continuity-disclosures-ready.log |      6 +
+ ...-packaged-continuity-entry-not-yet-visible.json |   1691 +
+ .../api2-packaged-continuity-entry-ready.log       |     10 +
+ .../api2-packaged-continuity-normal-entry.log      |     10 +
+ .../evidence/api2-packaged-continuity.json         |   6873 +
+ .../evidence/api2-packaged-continuity.log          |     10 +
+ .../evidence/api2-packaged-continuity.mjs          |     22 +
+ .../evidence/api2-packaged-continuity.png          |    Bin 0 -> 146152 bytes
+ .../evidence/api2-packaged-import.png              |    Bin 0 -> 207238 bytes
+ .../evidence/api2-packaged-normal-failure.png      |    Bin 0 -> 183420 bytes
+ .../api2-packaged-normal-overbroad-identity.json   |    489 +
+ .../api2-packaged-normal-overbroad-identity.mjs    |     29 +
+ .../evidence/api2-packaged-normal-qualified.log    |     12 +
+ .../evidence/api2-packaged-normal-settled.log      |      5 +
+ .../api2-packaged-normal-team-catalog-pending.json |    987 +
+ ...-packaged-normal-team-library-before-ready.json |   1088 +
+ .../evidence/api2-packaged-normal-team-ready.log   |     12 +
+ .../evidence/api2-packaged-normal.json             |   1591 +
+ .../evidence/api2-packaged-normal.log              |     12 +
+ .../evidence/api2-packaged-normal.mjs              |     29 +
+ .../evidence/api2-packaged-recovery-failure.png    |    Bin 0 -> 157239 bytes
+ .../api2-packaged-recovery-inherited-member.png    |    Bin 0 -> 174975 bytes
+ .../api2-packaged-recovery-member-selector.mjs     |     44 +
+ .../evidence/api2-packaged-recovery-normal.log     |     20 +
+ .../evidence/api2-packaged-recovery-qualified.log  |      6 +
+ .../api2-packaged-recovery-readonly-setup.mjs      |     44 +
+ ...-recovery-root-pass-before-member-selector.json |   8090 +
+ .../evidence/api2-packaged-recovery-root.png       |    Bin 0 -> 174975 bytes
+ .../evidence/api2-packaged-recovery.json           |  15523 ++
+ .../evidence/api2-packaged-recovery.log            |     28 +
+ .../evidence/api2-packaged-recovery.mjs            |     44 +
+ .../evidence/api2-packaged-restart.json            |     20 +
+ .../evidence/api2-packaged-restart.log             |      0
+ .../evidence/api2-packaged-setup.json              |   3363 +
+ .../evidence/api2-packaged-setup.log               |      6 +
+ .../evidence/api2-packaged-setup.mjs               |     27 +
+ .../evidence/api2-packaged-start.json              |     20 +
+ .../evidence/api2-packaged-stop.json               |     15 +
+ .../evidence/api2-packaged-stop.log                |      0
+ .../evidence/api2-packaged-team-active.png         |    Bin 0 -> 177793 bytes
+ .../evidence/api2-packaged-timing.mjs              |     64 +
+ .../evidence/api2-pre-cleanup-verification.json    |    106 +
+ .../evidence/api2-prebuild.log                     |     29 +
+ .../evidence/api2-recovery-narrow.log              |    125 +
+ .../evidence/api2-scoped-history-e2e.log           |    104 +
+ .../evidence/api2-server-narrow.log                |    181 +
+ .../evidence/api2-stopped-workspace-e2e.log        |    104 +
+ .../evidence/api2-task-team-disclosure.log         |     10 +
+ .../api2-task-team-disclosure/b01-default-open.png |    Bin 0 -> 48209 bytes
+ .../api2-task-team-disclosure/b02-collapsed.png    |    Bin 0 -> 41134 bytes
+ .../b03-keyboard-collapsed.png                     |    Bin 0 -> 44540 bytes
+ .../b04-nested-collapsed.png                       |    Bin 0 -> 47190 bytes
+ .../b05-independent-state.png                      |    Bin 0 -> 37498 bytes
+ .../b06-live-collapsed.png                         |    Bin 0 -> 41181 bytes
+ .../api2-task-team-disclosure/evidence.json        |    298 +
+ .../evidence/api2-task-team-disclosure/nuxt.log    |     20 +
+ .../evidence/api2-web-broad.log                    |   1188 +
+ .../evidence/api3-actual-mcp-delegation.log        |    317 +
+ .../evidence/api3-agy-real-transport-browser.log   |    968 +
+ .../api3-agy-transport/API-A-credential.json       |    678 +
+ .../evidence/api3-agy-transport/API-A-empty.json   |    678 +
+ .../api3-agy-transport/API-A-malformed.json        |    678 +
+ .../evidence/api3-agy-transport/API-A-missing.json |    678 +
+ .../evidence/api3-agy-transport/API-A-quota.json   |    678 +
+ .../api3-agy-transport/API-A-structured.json       |    678 +
+ .../api3-agy-transport/API-A-unfamiliar.json       |    678 +
+ .../evidence/api3-agy-transport/API-C02.json       |    162 +
+ .../api3-agy-transport/API-O-credential.json       |   1582 +
+ .../evidence/api3-agy-transport/API-O-empty.json   |   1582 +
+ .../api3-agy-transport/API-O-malformed.json        |   1582 +
+ .../evidence/api3-agy-transport/API-O-missing.json |   1582 +
+ .../evidence/api3-agy-transport/API-O-quota.json   |   1582 +
+ .../api3-agy-transport/API-O-structured.json       |   1582 +
+ .../api3-agy-transport/API-O-unfamiliar.json       |   1582 +
+ .../api3-agy-transport/API-T-credential.json       |   1019 +
+ .../evidence/api3-agy-transport/API-T-empty.json   |   1019 +
+ .../api3-agy-transport/API-T-malformed.json        |   1019 +
+ .../evidence/api3-agy-transport/API-T-missing.json |   1019 +
+ .../evidence/api3-agy-transport/API-T-quota.json   |   1019 +
+ .../api3-agy-transport/API-T-structured.json       |   1019 +
+ .../api3-agy-transport/API-T-unfamiliar.json       |   1019 +
+ .../api3-agy-transport/agent-credential-1280.png   |    Bin 0 -> 8748 bytes
+ .../api3-agy-transport/agent-credential-390.png    |    Bin 0 -> 9611 bytes
+ .../api3-agy-transport/agent-quota-1280.png        |    Bin 0 -> 11197 bytes
+ .../api3-agy-transport/agent-quota-390.png         |    Bin 0 -> 12247 bytes
+ .../api3-agy-transport/browser-evidence.json       |  21296 ++
+ .../api3-agy-transport/browser-process.log         |      1 +
+ .../browser-server-correlation.json                |    937 +
+ .../evidence/api3-agy-transport/cleanup.json       |      9 +
+ .../evidence/api3-agy-transport/nuxt.log           |      3 +
+ .../api3-agy-transport/team-credential-1280.png    |    Bin 0 -> 8748 bytes
+ .../api3-agy-transport/team-credential-390.png     |    Bin 0 -> 9611 bytes
+ .../api3-agy-transport/team-quota-1280.png         |    Bin 0 -> 11197 bytes
+ .../evidence/api3-agy-transport/team-quota-390.png |    Bin 0 -> 12247 bytes
+ ...ved-base-current-reader-chat-entry-failure.json | 225304 +++++++++++++++++
+ ...oved-base-current-reader-chat-entry-failure.log |     10 +
+ ...oved-base-current-reader-chat-entry-failure.mjs |     40 +
+ .../api3-approved-base-current-reader-failure.png  |    Bin 0 -> 135396 bytes
+ ...ase-current-reader-workspace-entry-failure.json | 225304 +++++++++++++++++
+ ...base-current-reader-workspace-entry-failure.log |     10 +
+ ...base-current-reader-workspace-entry-failure.mjs |     40 +
+ .../api3-approved-base-current-reader.json         | 225764 ++++++++++++++++++
+ .../evidence/api3-approved-base-current-reader.log |      6 +
+ .../evidence/api3-approved-base-current-reader.mjs |     40 +
+ .../evidence/api3-approved-base-current-reader.png |    Bin 0 -> 156042 bytes
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../agent_org_communication_messages.json          |      6 +
+ .../agent_org_run_execution_tree.json              |    433 +
+ .../evidence/api3-baseline-app-final.log           |   2896 +
+ .../api3-baseline-backend-hooks-install.json       |     21 +
+ .../evidence/api3-baseline-backend-install.log     |      6 +
+ .../evidence/api3-baseline-backend-trace.json      |   1302 +
+ .../evidence/api3-baseline-backend-trace.log       |      8 +
+ .../evidence/api3-baseline-before-transition.json  |   5164 +
+ .../evidence/api3-baseline-debugger-ownership.json |      9 +
+ .../evidence/api3-baseline-import.png              |    Bin 0 -> 207587 bytes
+ .../evidence/api3-baseline-population.json         |   2586 +
+ .../evidence/api3-baseline-population.log          |     29 +
+ .../evidence/api3-baseline-setup.json              |   3385 +
+ .../evidence/api3-baseline-setup.log               |      6 +
+ ...api3-baseline-small-history-cold-renderer-1.png |    Bin 0 -> 143523 bytes
+ ...api3-baseline-small-history-cold-renderer-2.png |    Bin 0 -> 143264 bytes
+ ...api3-baseline-small-history-cold-renderer-3.png |    Bin 0 -> 143537 bytes
+ ...api3-baseline-small-history-cold-renderer-4.png |    Bin 0 -> 143527 bytes
+ ...api3-baseline-small-history-cold-renderer-5.png |    Bin 0 -> 143564 bytes
+ .../api3-baseline-small-history-warm-1.png         |    Bin 0 -> 110291 bytes
+ .../api3-baseline-small-history-warm-2.png         |    Bin 0 -> 132891 bytes
+ .../api3-baseline-small-history-warm-3.png         |    Bin 0 -> 142533 bytes
+ .../api3-baseline-small-history-warm-4.png         |    Bin 0 -> 142378 bytes
+ .../api3-baseline-small-history-warm-5.png         |    Bin 0 -> 142459 bytes
+ .../evidence/api3-baseline-small-history.json      |  21942 ++
+ .../evidence/api3-baseline-small-timing.log        |     15 +
+ .../evidence/api3-baseline-source-pin-check.json   |     47 +
+ .../evidence/api3-baseline-start.json              |     20 +
+ .../evidence/api3-baseline-start.log               |      0
+ .../evidence/api3-baseline-stop.json               |     15 +
+ .../evidence/api3-baseline-stop.log                |      0
+ ...baseline-stored-history-500-cold-renderer-1.png |    Bin 0 -> 148957 bytes
+ ...baseline-stored-history-500-cold-renderer-2.png |    Bin 0 -> 148821 bytes
+ ...baseline-stored-history-500-cold-renderer-3.png |    Bin 0 -> 149053 bytes
+ ...baseline-stored-history-500-cold-renderer-4.png |    Bin 0 -> 149038 bytes
+ ...baseline-stored-history-500-cold-renderer-5.png |    Bin 0 -> 148766 bytes
+ .../api3-baseline-stored-history-500-warm-1.png    |    Bin 0 -> 147892 bytes
+ .../api3-baseline-stored-history-500-warm-2.png    |    Bin 0 -> 143874 bytes
+ .../api3-baseline-stored-history-500-warm-3.png    |    Bin 0 -> 143204 bytes
+ .../api3-baseline-stored-history-500-warm-4.png    |    Bin 0 -> 143016 bytes
+ .../api3-baseline-stored-history-500-warm-5.png    |    Bin 0 -> 142872 bytes
+ .../evidence/api3-baseline-stored-history-500.json |  24446 ++
+ .../evidence/api3-baseline-stress-timing.log       |     15 +
+ .../evidence/api3-cleanup.json                     |     95 +
+ .../evidence/api3-config-passive.js                |      9 +
+ .../evidence/api3-current-artifact-continuity.json |     40 +
+ .../evidence/api3-durable-test-delta.patch         |    580 +
+ .../api3-final-agy-real-transport-browser.log      |    968 +
+ .../api3-final-agy-transport/API-A-credential.json |    678 +
+ .../api3-final-agy-transport/API-A-empty.json      |    678 +
+ .../api3-final-agy-transport/API-A-malformed.json  |    678 +
+ .../api3-final-agy-transport/API-A-missing.json    |    678 +
+ .../api3-final-agy-transport/API-A-quota.json      |    678 +
+ .../api3-final-agy-transport/API-A-structured.json |    678 +
+ .../api3-final-agy-transport/API-A-unfamiliar.json |    678 +
+ .../evidence/api3-final-agy-transport/API-C02.json |    162 +
+ .../api3-final-agy-transport/API-O-credential.json |   1582 +
+ .../api3-final-agy-transport/API-O-empty.json      |   1582 +
+ .../api3-final-agy-transport/API-O-malformed.json  |   1582 +
+ .../api3-final-agy-transport/API-O-missing.json    |   1582 +
+ .../api3-final-agy-transport/API-O-quota.json      |   1582 +
+ .../api3-final-agy-transport/API-O-structured.json |   1582 +
+ .../api3-final-agy-transport/API-O-unfamiliar.json |   1582 +
+ .../api3-final-agy-transport/API-T-credential.json |   1019 +
+ .../api3-final-agy-transport/API-T-empty.json      |   1019 +
+ .../api3-final-agy-transport/API-T-malformed.json  |   1019 +
+ .../api3-final-agy-transport/API-T-missing.json    |   1019 +
+ .../api3-final-agy-transport/API-T-quota.json      |   1019 +
+ .../api3-final-agy-transport/API-T-structured.json |   1019 +
+ .../api3-final-agy-transport/API-T-unfamiliar.json |   1019 +
+ .../agent-credential-1280.png                      |    Bin 0 -> 8748 bytes
+ .../agent-credential-390.png                       |    Bin 0 -> 9611 bytes
+ .../api3-final-agy-transport/agent-quota-1280.png  |    Bin 0 -> 11197 bytes
+ .../api3-final-agy-transport/agent-quota-390.png   |    Bin 0 -> 12247 bytes
+ .../api3-final-agy-transport/browser-evidence.json |  21177 ++
+ .../api3-final-agy-transport/browser-process.log   |      1 +
+ .../browser-server-correlation.json                |    937 +
+ .../evidence/api3-final-agy-transport/cleanup.json |      9 +
+ .../evidence/api3-final-agy-transport/nuxt.log     |      3 +
+ .../team-credential-1280.png                       |    Bin 0 -> 8748 bytes
+ .../team-credential-390.png                        |    Bin 0 -> 9611 bytes
+ .../api3-final-agy-transport/team-quota-1280.png   |    Bin 0 -> 11197 bytes
+ .../api3-final-agy-transport/team-quota-390.png    |    Bin 0 -> 12247 bytes
+ .../evidence/api3-final-mcp-regression.log         |    317 +
+ .../evidence/api3-final-source-checks.json         |    354 +
+ .../evidence/api3-finalize-report.py               |    122 +
+ .../evidence/api3-intake-provenance.json           |     88 +
+ .../evidence/api3-isolated-list-final.json         |     77 +
+ .../evidence/api3-native-fixture-cleanup.log       |   1205 +
+ .../evidence/api3-native-input-history.log         |   1041 +
+ .../evidence/api3-native-shared-callers.log        |   5056 +
+ .../evidence/api3-org-publication-http.log         |    335 +
+ .../evidence/api3-org-publication/cleanup.json     |      9 +
+ .../org-publication-chain.json                     |   4168 +
+ .../evidence/api3-org-reference-error.png          |    Bin 0 -> 200349 bytes
+ .../evidence/api3-org-reference-guards.json        |   1114 +
+ .../evidence/api3-org-reference-guards.log         |      5 +
+ .../evidence/api3-org-reference-guards.mjs         |     47 +
+ .../evidence/api3-org-reference-null.png           |    Bin 0 -> 171662 bytes
+ .../api3-org-reference-wrong-ownership.png         |    Bin 0 -> 171636 bytes
+ .../evidence/api3-package-reference-files.json     |    824 +
+ .../evidence/api3-packaged-app-final.log           |   3068 +
+ .../api3-packaged-backend-hooks-install.json       |     21 +
+ .../evidence/api3-packaged-backend-install.log     |      6 +
+ .../evidence/api3-packaged-backend-trace.json      |   1287 +
+ .../evidence/api3-packaged-backend-trace.log       |      8 +
+ .../evidence/api3-packaged-backend-trace.mjs       |     22 +
+ .../evidence/api3-packaged-debugger-ownership.json |      9 +
+ .../evidence/api3-packaged-import.png              |    Bin 0 -> 206972 bytes
+ .../evidence/api3-packaged-populate.mjs            |     20 +
+ .../evidence/api3-packaged-population.json         |   2586 +
+ .../evidence/api3-packaged-population.log          |     29 +
+ .../evidence/api3-packaged-setup.json              |   3363 +
+ .../evidence/api3-packaged-setup.log               |      6 +
+ .../evidence/api3-packaged-setup.mjs               |     27 +
+ ...api3-packaged-small-history-cold-renderer-1.png |    Bin 0 -> 143553 bytes
+ ...api3-packaged-small-history-cold-renderer-2.png |    Bin 0 -> 143264 bytes
+ ...api3-packaged-small-history-cold-renderer-3.png |    Bin 0 -> 143576 bytes
+ ...api3-packaged-small-history-cold-renderer-4.png |    Bin 0 -> 143527 bytes
+ ...api3-packaged-small-history-cold-renderer-5.png |    Bin 0 -> 143564 bytes
+ .../api3-packaged-small-history-warm-1.png         |    Bin 0 -> 110291 bytes
+ .../api3-packaged-small-history-warm-2.png         |    Bin 0 -> 132891 bytes
+ .../api3-packaged-small-history-warm-3.png         |    Bin 0 -> 142533 bytes
+ .../api3-packaged-small-history-warm-4.png         |    Bin 0 -> 142346 bytes
+ .../api3-packaged-small-history-warm-5.png         |    Bin 0 -> 142492 bytes
+ .../evidence/api3-packaged-small-history.json      |  22482 ++
+ .../evidence/api3-packaged-small-timing.log        |     15 +
+ .../evidence/api3-packaged-start.json              |     20 +
+ .../evidence/api3-packaged-start.log               |      0
+ .../evidence/api3-packaged-stop.json               |     15 +
+ .../evidence/api3-packaged-stop.log                |      5 +
+ ...packaged-stored-history-500-cold-renderer-1.png |    Bin 0 -> 132891 bytes
+ ...packaged-stored-history-500-cold-renderer-2.png |    Bin 0 -> 132619 bytes
+ ...packaged-stored-history-500-cold-renderer-3.png |    Bin 0 -> 132587 bytes
+ ...packaged-stored-history-500-cold-renderer-4.png |    Bin 0 -> 132891 bytes
+ ...packaged-stored-history-500-cold-renderer-5.png |    Bin 0 -> 132891 bytes
+ .../api3-packaged-stored-history-500-warm-1.png    |    Bin 0 -> 145586 bytes
+ .../api3-packaged-stored-history-500-warm-2.png    |    Bin 0 -> 143213 bytes
+ .../api3-packaged-stored-history-500-warm-3.png    |    Bin 0 -> 143204 bytes
+ .../api3-packaged-stored-history-500-warm-4.png    |    Bin 0 -> 143016 bytes
+ .../api3-packaged-stored-history-500-warm-5.png    |    Bin 0 -> 142872 bytes
+ .../evidence/api3-packaged-stored-history-500.json |  24875 ++
+ .../evidence/api3-packaged-stress-timing.log       |     15 +
+ .../evidence/api3-packaged-timing.mjs              |     70 +
+ .../evidence/api3-performance-summary.json         |    986 +
+ .../evidence/api3-pre-cleanup-verification.json    |   5144 +
+ .../evidence/api3-prebuild.log                     |     29 +
+ .../evidence/api3-team-member-freshness.log        |     10 +
+ .../evidence/api3-team-member-freshness/app.log    |    452 +
+ .../approval-agent-after-restart-off.png           |    Bin 0 -> 146288 bytes
+ .../approval-agent-after-restart-off.txt           |     39 +
+ .../approval-agent-after-restart-on.png            |    Bin 0 -> 143588 bytes
+ .../approval-agent-after-restart-on.txt            |     39 +
+ .../approval-team-after-reload-off.png             |    Bin 0 -> 162881 bytes
+ .../approval-team-after-reload-off.txt             |     42 +
+ .../approval-team-after-reload-on.png              |    Bin 0 -> 162600 bytes
+ .../approval-team-after-reload-on.txt              |     40 +
+ .../approval-team-after-restart-on.png             |    Bin 0 -> 163167 bytes
+ .../approval-team-after-restart-on.txt             |     42 +
+ .../api3-team-member-freshness/evidence.json       |   6782 +
+ .../api3-team-member-freshness/final-sources.json  |      8 +
+ .../evidence/api3-team-member-freshness/import.png |    Bin 0 -> 208695 bytes
+ .../evidence/api3-team-member-freshness/import.txt |     31 +
+ .../evidence/api3-team-member-freshness/list.json  |     94 +
+ .../evidence/api3-team-member-freshness/list.log   |      0
+ .../api3-team-member-freshness/pending-read.png    |    Bin 0 -> 103257 bytes
+ .../api3-team-member-freshness/pending-read.txt    |     33 +
+ .../api3-team-member-freshness/read-error.png      |    Bin 0 -> 81346 bytes
+ .../api3-team-member-freshness/read-error.txt      |     16 +
+ .../api3-team-member-freshness/restart.json        |     20 +
+ .../api3-team-member-freshness/restart.log         |      0
+ .../api3-team-member-freshness/shared-v1.png       |    Bin 0 -> 121117 bytes
+ .../api3-team-member-freshness/shared-v1.txt       |     52 +
+ .../api3-team-member-freshness/shared-v2.png       |    Bin 0 -> 121283 bytes
+ .../api3-team-member-freshness/shared-v2.txt       |     51 +
+ .../api3-team-member-freshness/shared-v3.png       |    Bin 0 -> 120892 bytes
+ .../api3-team-member-freshness/shared-v3.txt       |     50 +
+ .../api3-team-member-freshness/shared-v4.png       |    Bin 0 -> 120683 bytes
+ .../api3-team-member-freshness/shared-v4.txt       |     50 +
+ .../evidence/api3-team-member-freshness/start.json |     20 +
+ .../evidence/api3-team-member-freshness/start.log  |      0
+ .../evidence/api3-team-member-freshness/stop.json  |     15 +
+ .../evidence/api3-team-member-freshness/stop.log   |      0
+ .../api3-team-member-freshness/team-v1.png         |    Bin 0 -> 125039 bytes
+ .../api3-team-member-freshness/team-v1.txt         |     46 +
+ .../api3-team-member-freshness/team-v2.png         |    Bin 0 -> 125615 bytes
+ .../api3-team-member-freshness/team-v2.txt         |     46 +
+ .../api3-team-member-freshness/team-v3.png         |    Bin 0 -> 125827 bytes
+ .../api3-team-member-freshness/team-v3.txt         |     46 +
+ .../api3-team-member-freshness/team-v4.png         |    Bin 0 -> 125342 bytes
+ .../api3-team-member-freshness/team-v4.txt         |     46 +
+ .../api3-team-member-freshness/worker-v1.png       |    Bin 0 -> 129545 bytes
+ .../api3-team-member-freshness/worker-v1.txt       |     55 +
+ .../api3-team-member-freshness/worker-v2.png       |    Bin 0 -> 129757 bytes
+ .../api3-team-member-freshness/worker-v2.txt       |     54 +
+ .../api3-team-member-freshness/worker-v3.png       |    Bin 0 -> 129430 bytes
+ .../api3-team-member-freshness/worker-v3.txt       |     53 +
+ .../api3-team-member-freshness/worker-v4.png       |    Bin 0 -> 129189 bytes
+ .../api3-team-member-freshness/worker-v4.txt       |     53 +
+ .../evidence/api3-transition-app-final.log         |    309 +
+ .../evidence/api3-transition-start.json            |     20 +
+ .../evidence/api3-transition-start.log             |      5 +
+ .../evidence/api3-transition-stop.json             |     15 +
+ .../evidence/api3-transition-stop.log              |      5 +
+ .../evidence/api3-whitespace.log                   |      1 +
+ .../application-scope-approval-prompt.json         |     13 +
+ .../evidence/approved-requirements-sr006.md        |    106 +
+ .../architecture-handoff-receipt-sr010.json        |     14 +
+ ...chitecture-pass-handoff-receipt-archrev001.json |     14 +
+ ...cture-pass-notification-receipt-archrev001.json |     14 +
+ .../architecture-review-checks-archrev001.json     |    117 +
+ .../architecture-source-context-sr010.json         |    162 +
+ .../evidence/capability-cli-timings.json           |    278 +
+ .../evidence/cleanup-receipt.json                  |     29 +
+ ...de-review-catalog-consumers-command-crr003.json |     26 +
+ .../code-review-catalog-consumers-crr003.log       |     68 +
+ .../evidence/code-review-checks-crr001.json        |    283 +
+ .../evidence/code-review-checks-crr003.json        |    514 +
+ .../evidence/code-review-execution-crr003.json     |     28 +
+ ...code-review-failure-handoff-receipt-crr002.json |     20 +
+ ...code-review-failure-handoff-receipt-crr004.json |     14 +
+ .../code-review-failure-origin-crr002.json         |    380 +
+ .../code-review-failure-origin-crr004.json         |    273 +
+ .../evidence/code-review-focused-web-crr001.log    |    662 +
+ .../evidence/code-review-focused-web-crr003.log    |    232 +
+ .../evidence/code-review-package-index-crr003.json |    420 +
+ .../evidence/code-review-package-index-crr004.json |    550 +
+ .../evidence/code-review-package-index-crr005.json |    897 +
+ ...code-review-primary-handoff-receipt-crr001.json |      1 +
+ ...code-review-primary-handoff-receipt-crr003.json |     20 +
+ .../evidence/code-review-source-result-crr003.md   |    179 +
+ .../evidence/code-review-test-checks-crr005.json   |    486 +
+ .../code-review-test-handoff-receipt-crr005.json   |     14 +
+ .../evidence/codex-catalog-baseline.json           |   1402 +
+ .../collision-check-explanation-source.json        |     46 +
+ .../evidence/control-timing-caveats.md             |     19 +
+ .../evidence/definition-baseline.json              |    810 +
+ .../delivery-authorization-return-receipt.json     |     14 +
+ .../delivery-blocked-handoff-receipt-dr001.json    |      6 +
+ .../delivery-dr003/agy-transport-browser.log       |    957 +
+ .../agy-transport/API-A-credential.json            |    680 +
+ .../delivery-dr003/agy-transport/API-A-empty.json  |    680 +
+ .../agy-transport/API-A-malformed.json             |    680 +
+ .../agy-transport/API-A-missing.json               |    680 +
+ .../delivery-dr003/agy-transport/API-A-quota.json  |    680 +
+ .../agy-transport/API-A-structured.json            |    680 +
+ .../agy-transport/API-A-unfamiliar.json            |    680 +
+ .../delivery-dr003/agy-transport/API-C02.json      |    162 +
+ .../agy-transport/API-O-credential.json            |   1584 +
+ .../delivery-dr003/agy-transport/API-O-empty.json  |   1584 +
+ .../agy-transport/API-O-malformed.json             |   1584 +
+ .../agy-transport/API-O-missing.json               |   1584 +
+ .../delivery-dr003/agy-transport/API-O-quota.json  |   1584 +
+ .../agy-transport/API-O-structured.json            |   1584 +
+ .../agy-transport/API-O-unfamiliar.json            |   1584 +
+ .../agy-transport/API-T-credential.json            |   1021 +
+ .../delivery-dr003/agy-transport/API-T-empty.json  |   1021 +
+ .../agy-transport/API-T-malformed.json             |   1021 +
+ .../agy-transport/API-T-missing.json               |   1021 +
+ .../delivery-dr003/agy-transport/API-T-quota.json  |   1021 +
+ .../agy-transport/API-T-structured.json            |   1021 +
+ .../agy-transport/API-T-unfamiliar.json            |   1021 +
+ .../agy-transport/agent-credential-1280.png        |    Bin 0 -> 8748 bytes
+ .../agy-transport/agent-credential-390.png         |    Bin 0 -> 9611 bytes
+ .../agy-transport/agent-quota-1280.png             |    Bin 0 -> 11197 bytes
+ .../agy-transport/agent-quota-390.png              |    Bin 0 -> 12247 bytes
+ .../agy-transport/browser-evidence.json            |  21233 ++
+ .../agy-transport/browser-process.log              |      1 +
+ .../agy-transport/browser-server-correlation.json  |    937 +
+ .../delivery-dr003/agy-transport/cleanup.json      |      9 +
+ .../evidence/delivery-dr003/agy-transport/nuxt.log |      3 +
+ .../agy-transport/team-credential-1280.png         |    Bin 0 -> 8748 bytes
+ .../agy-transport/team-credential-390.png          |    Bin 0 -> 9611 bytes
+ .../agy-transport/team-quota-1280.png              |    Bin 0 -> 11197 bytes
+ .../agy-transport/team-quota-390.png               |    Bin 0 -> 12247 bytes
+ .../delivery-dr003/authorization-intake.json       |     79 +
+ .../evidence/delivery-dr003/check-execution.json   |    232 +
+ .../evidence/delivery-dr003/check-plan.json        |     43 +
+ .../evidence/delivery-dr003/checkpoint.log         |    585 +
+ .../evidence/delivery-dr003/docs-checks.json       |     19 +
+ .../evidence/delivery-dr003/frontend-sdk-build.log |      4 +
+ .../delivery-dr003/handoff-base-refresh.log        |      0
+ .../evidence/delivery-dr003/handoff-rules.json     |     24 +
+ .../delivery-dr003/integration-continuity.json     |    490 +
+ .../evidence/delivery-dr003/integration.log        |    895 +
+ .../delivery-dr003/native-arguments-http.log       |    377 +
+ .../delivery-dr003/native-input-history.log        |   1036 +
+ .../evidence/delivery-dr003/nuxt-prepare.log       |      4 +
+ .../delivery-dr003/org-publication-http.log        |    332 +
+ .../delivery-dr003/org-publication/cleanup.json    |      9 +
+ .../org-publication/org-publication-chain.json     |   4168 +
+ .../evidence/delivery-dr003/packaged-freshness.log |      5 +
+ .../evidence/delivery-dr003/prebuild.log           |     24 +
+ .../evidence/delivery-dr003/rule-evaluation.json   |     12 +
+ .../evidence/delivery-dr003/run-checks.py          |     21 +
+ .../delivery-dr003/scoped-history-http.log         |     99 +
+ .../evidence/delivery-dr003/server-build.log       |     35 +
+ .../evidence/delivery-dr003/server-narrow.log      |   6189 +
+ .../evidence/delivery-dr003/team-freshness/app.log |    450 +
+ .../approval-agent-after-restart-off.png           |    Bin 0 -> 146366 bytes
+ .../approval-agent-after-restart-off.txt           |     39 +
+ .../approval-agent-after-restart-on.png            |    Bin 0 -> 140742 bytes
+ .../approval-agent-after-restart-on.txt            |     39 +
+ .../approval-team-after-reload-off.png             |    Bin 0 -> 162627 bytes
+ .../approval-team-after-reload-off.txt             |     42 +
+ .../approval-team-after-reload-on.png              |    Bin 0 -> 163275 bytes
+ .../approval-team-after-reload-on.txt              |     40 +
+ .../approval-team-after-restart-on.png             |    Bin 0 -> 162971 bytes
+ .../approval-team-after-restart-on.txt             |     42 +
+ .../delivery-dr003/team-freshness/evidence.json    |   6646 +
+ .../team-freshness/final-sources.json              |      8 +
+ .../delivery-dr003/team-freshness/import.png       |    Bin 0 -> 209783 bytes
+ .../delivery-dr003/team-freshness/import.txt       |     31 +
+ .../delivery-dr003/team-freshness/list.json        |     26 +
+ .../delivery-dr003/team-freshness/list.log         |      0
+ .../delivery-dr003/team-freshness/pending-read.png |    Bin 0 -> 103225 bytes
+ .../delivery-dr003/team-freshness/pending-read.txt |     33 +
+ .../delivery-dr003/team-freshness/read-error.png   |    Bin 0 -> 81341 bytes
+ .../delivery-dr003/team-freshness/read-error.txt   |     16 +
+ .../delivery-dr003/team-freshness/restart.json     |     20 +
+ .../delivery-dr003/team-freshness/restart.log      |      0
+ .../delivery-dr003/team-freshness/shared-v1.png    |    Bin 0 -> 121117 bytes
+ .../delivery-dr003/team-freshness/shared-v1.txt    |     52 +
+ .../delivery-dr003/team-freshness/shared-v2.png    |    Bin 0 -> 121283 bytes
+ .../delivery-dr003/team-freshness/shared-v2.txt    |     51 +
+ .../delivery-dr003/team-freshness/shared-v3.png    |    Bin 0 -> 120892 bytes
+ .../delivery-dr003/team-freshness/shared-v3.txt    |     50 +
+ .../delivery-dr003/team-freshness/shared-v4.png    |    Bin 0 -> 120683 bytes
+ .../delivery-dr003/team-freshness/shared-v4.txt    |     50 +
+ .../delivery-dr003/team-freshness/start.json       |     20 +
+ .../delivery-dr003/team-freshness/start.log        |    742 +
+ .../delivery-dr003/team-freshness/stop.json        |     15 +
+ .../delivery-dr003/team-freshness/stop.log         |      0
+ .../delivery-dr003/team-freshness/team-v1.png      |    Bin 0 -> 125039 bytes
+ .../delivery-dr003/team-freshness/team-v1.txt      |     46 +
+ .../delivery-dr003/team-freshness/team-v2.png      |    Bin 0 -> 125615 bytes
+ .../delivery-dr003/team-freshness/team-v2.txt      |     46 +
+ .../delivery-dr003/team-freshness/team-v3.png      |    Bin 0 -> 125827 bytes
+ .../delivery-dr003/team-freshness/team-v3.txt      |     46 +
+ .../delivery-dr003/team-freshness/team-v4.png      |    Bin 0 -> 125342 bytes
+ .../delivery-dr003/team-freshness/team-v4.txt      |     46 +
+ .../delivery-dr003/team-freshness/worker-v1.png    |    Bin 0 -> 129511 bytes
+ .../delivery-dr003/team-freshness/worker-v1.txt    |     55 +
+ .../delivery-dr003/team-freshness/worker-v2.png    |    Bin 0 -> 129749 bytes
+ .../delivery-dr003/team-freshness/worker-v2.txt    |     54 +
+ .../delivery-dr003/team-freshness/worker-v3.png    |    Bin 0 -> 129436 bytes
+ .../delivery-dr003/team-freshness/worker-v3.txt    |     53 +
+ .../delivery-dr003/team-freshness/worker-v4.png    |    Bin 0 -> 129188 bytes
+ .../delivery-dr003/team-freshness/worker-v4.txt    |     53 +
+ .../delivery-dr003/validation-cleanup-summary.json |     78 +
+ .../evidence/delivery-dr003/web-narrow.log         |   1079 +
+ .../evidence/delivery-dr003/whitespace-all.log     |  12527 +
+ .../evidence/delivery-dr004/path-relocation.json   |      7 +
+ .../delivery-dr004/prior-dr003-docs-sync-report.md |     39 +
+ .../delivery-dr004/prior-dr003-handoff-summary.md  |     30 +
+ .../prior-dr003-release-deployment-report.md       |     67 +
+ .../delivery-dr004/stable-latest-before.json       |      1 +
+ .../evidence/delivery-dr004/user-verification.json |     25 +
+ .../evidence/delivery-intake-refresh-dr001.json    |    540 +
+ .../evidence/delivery-package-index.json           |   1016 +
+ .../evidence/delivery-rule-evaluation-dr002.json   |     27 +
+ ...ntation-checks-before-explicit-antipattern.json |     27 +
+ ...ocumentation-checks-before-mandatory-rules.json |     29 +
+ ...-documentation-checks-before-phased-design.json |     26 +
+ .../design-guide-documentation-checks-initial.json |     27 +
+ .../design-guide-documentation-checks.json         |     29 +
+ .../evidence/design-package-checks-sr010.json      |     44 +
+ .../handoff-rules-antipattern-confirmation.json    |     24 +
+ .../evidence/handoff-rules-api-rev001.json         |     28 +
+ .../evidence/handoff-rules-api-rev002.json         |     28 +
+ .../evidence/handoff-rules-api-rev003.json         |     28 +
+ .../evidence/handoff-rules-archrev001.json         |     16 +
+ .../evidence/handoff-rules-crr001.json             |      1 +
+ .../evidence/handoff-rules-crr002.json             |     57 +
+ .../evidence/handoff-rules-crr003.json             |     57 +
+ .../evidence/handoff-rules-crr004.json             |     48 +
+ .../evidence/handoff-rules-crr005.json             |     48 +
+ .../handoff-rules-delivery-authorization.json      |     24 +
+ .../handoff-rules-design-guide-naming.json         |     24 +
+ .../handoff-rules-design-guide-organization.json   |     24 +
+ .../handoff-rules-design-guide-refined.json        |     24 +
+ .../evidence/handoff-rules-design-guide.json       |     24 +
+ .../evidence/handoff-rules-dr001.json              |     24 +
+ .../evidence/handoff-rules-dr002.json              |     24 +
+ .../handoff-rules-frontend-discussion.json         |     24 +
+ .../handoff-rules-history-clarification.json       |     24 +
+ .../handoff-rules-informational-archrev001.json    |     24 +
+ .../evidence/handoff-rules-ir001.json              |     32 +
+ .../evidence/handoff-rules-ir002.json              |     32 +
+ .../evidence/handoff-rules-phased-design.json      |     24 +
+ .../handoff-rules-removal-recommendation.json      |     24 +
+ .../handoff-rules-scoped-history-confirmation.json |     24 +
+ .../evidence/handoff-rules-sr002.json              |      1 +
+ .../evidence/handoff-rules-sr003.json              |     24 +
+ .../evidence/handoff-rules-sr004.json              |     24 +
+ .../evidence/handoff-rules-sr005.json              |     24 +
+ .../evidence/handoff-rules-sr006.json              |     24 +
+ .../evidence/handoff-rules-sr010.json              |     24 +
+ .../evidence/handoff-rules-ticket-resume.json      |     24 +
+ .../evidence/handoff-rules.json                    |      1 +
+ .../evidence/implementation-checks.json            |    410 +
+ .../evidence/implementation-cleanup.json           |     34 +
+ .../evidence/implementation-codegen.log            |     12 +
+ .../implementation-handoff-ir001-received.md       |    144 +
+ .../implementation-handoff-receipt-ir001.json      |     14 +
+ .../implementation-handoff-receipt-ir002.json      |     14 +
+ .../evidence/implementation-ir002-action-trace.log |  25793 ++
+ .../evidence/implementation-ir002-caller-trace.log |   5003 +
+ .../implementation-ir002-catalog-debug.log         |     27 +
+ .../implementation-ir002-catalog-fixture.log       |  33982 +++
+ .../implementation-ir002-catalog-focused.log       |    155 +
+ .../implementation-ir002-catalog-initial.log       |     27 +
+ .../implementation-ir002-catalog-trace.log         |  11075 +
+ .../evidence/implementation-ir002-checks.json      |    111 +
+ .../evidence/implementation-ir002-cleanup.json     |     33 +
+ .../evidence/implementation-ir002-commands.json    |     79 +
+ .../implementation-ir002-focused-final.log         |    120 +
+ .../implementation-ir002-focused-retry.log         |    213 +
+ .../evidence/implementation-ir002-node-trace.log   |   5381 +
+ .../implementation-ir002-package-index.json        |    412 +
+ .../implementation-ir002-prerequisites.log         |     24 +
+ .../implementation-ir002-preview-fixture.vue.txt   |     72 +
+ .../implementation-ir002-preview-isolated.log      |     51 +
+ .../evidence/implementation-ir002-preview.log      |     38 +
+ .../implementation-ir002-provider-seed.log         |     34 +
+ .../implementation-ir002-rendered-result.md        |     11 +
+ ...plementation-ir002-reviewed-head-regression.log |    167 +
+ .../evidence/implementation-ir002-scope-trace.log  |  26140 ++
+ .../implementation-ir002-shared-consumers.log      |     58 +
+ .../implementation-ir002-source-delta.patch        |    445 +
+ .../implementation-ir002-web-build-final.log       |    256 +
+ .../evidence/implementation-ir002-web-build.log    |     26 +
+ .../evidence/implementation-ir002-web-final.log    |   1191 +
+ .../implementation-ir002-web-regression.log        |   1214 +
+ .../evidence/implementation-local-commands.json    |    156 +
+ .../evidence/implementation-nuxt-prepare.log       |      4 +
+ .../evidence/implementation-package-index.json     |    215 +
+ .../evidence/implementation-package-whitespace.log |    494 +
+ .../evidence/implementation-prerequisites.log      |     24 +
+ .../implementation-preview-server-retry.log        |    200 +
+ .../evidence/implementation-preview-server.log     |      6 +
+ .../evidence/implementation-preview-web-port.txt   |      1 +
+ .../evidence/implementation-preview-web-retry.log  |     21 +
+ .../evidence/implementation-preview-web.log        |    184 +
+ .../evidence/implementation-rendered-result.md     |     21 +
+ .../evidence/implementation-routing-commit.log     |     17 +
+ .../evidence/implementation-server-build-final.log |      7 +
+ .../evidence/implementation-server-build.log       |      7 +
+ .../evidence/implementation-server-final.log       |    176 +
+ .../evidence/implementation-server-mcp-retry.log   |    115 +
+ .../evidence/implementation-server-ownership.json  |      1 +
+ .../evidence/implementation-server-tests.log       |    204 +
+ .../implementation-server-typecheck-final.log      |      0
+ .../implementation-server-typecheck-initial.log    |    707 +
+ .../evidence/implementation-server-typecheck.log   |      0
+ .../evidence/implementation-web-build-complete.log |    256 +
+ .../evidence/implementation-web-build-final.log    |    256 +
+ .../evidence/implementation-web-build.log          |    256 +
+ .../implementation-web-collection-retry.log        |    124 +
+ .../evidence/implementation-web-command.json       |     41 +
+ .../evidence/implementation-web-complete.log       |   1097 +
+ .../evidence/implementation-web-contexts.log       |    123 +
+ .../evidence/implementation-web-final.log          |   1079 +
+ .../evidence/implementation-web-history.log        |   3778 +
+ .../evidence/implementation-web-initial.log        |     77 +
+ .../evidence/implementation-web-projection.log     |     26 +
+ .../evidence/implementation-web-publication.log    |    201 +
+ .../evidence/implementation-web-readiness.log      |     67 +
+ .../evidence/implementation-web-retry.log          |    252 +
+ .../evidence/implementation-web-typecheck.log      |      2 +
+ .../evidence/install.log                           |     28 +
+ .../evidence/isolated-app.log                      |    997 +
+ .../evidence/isolated-start.json                   |     20 +
+ .../evidence/isolated-stop.json                    |     15 +
+ .../evidence/launch-row-backend-hooks-install.json |     22 +
+ .../evidence/launch-row-backend-timing-hooks.js    |     33 +
+ .../evidence/launch-row-backend-trace.json         |   1290 +
+ .../evidence/launch-row-backend-trace.mjs          |     22 +
+ .../evidence/launch-row-caveats.md                 |     14 +
+ .../evidence/launch-row-cleanup-receipt.json       |     36 +
+ .../evidence/launch-row-debugger-ownership.json    |      9 +
+ .../evidence/launch-row-fixture-manifest.json      |   2858 +
+ .../evidence/launch-row-fixture-stops-100.json     |   1384 +
+ .../evidence/launch-row-fixture-stops-500.json     |   6545 +
+ .../launch-row-history-100-cold-renderer-1.png     |    Bin 0 -> 143929 bytes
+ .../evidence/launch-row-history-100-warm-1.png     |    Bin 0 -> 146260 bytes
+ .../evidence/launch-row-history-100-warm-2.png     |    Bin 0 -> 143188 bytes
+ .../evidence/launch-row-history-100-warm-3.png     |    Bin 0 -> 143001 bytes
+ .../evidence/launch-row-history-100-warm-4.png     |    Bin 0 -> 142835 bytes
+ .../evidence/launch-row-history-100-warm-5.png     |    Bin 0 -> 142931 bytes
+ .../evidence/launch-row-history-100.json           |   9526 +
+ .../evidence/launch-row-import.json                |     35 +
+ .../evidence/launch-row-installed-source-pin.json  |     39 +
+ .../evidence/launch-row-isolated-app.log           |   3855 +
+ .../evidence/launch-row-isolated-start.json        |     20 +
+ .../evidence/launch-row-isolated-stop.json         |     15 +
+ .../evidence/launch-row-packaged-initial.png       |    Bin 0 -> 127704 bytes
+ .../evidence/launch-row-passive.js                 |     20 +
+ .../evidence/launch-row-populate-to-100.json       |   1277 +
+ .../evidence/launch-row-populate-to-500.json       |   5450 +
+ .../evidence/launch-row-populate.mjs               |      9 +
+ .../evidence/launch-row-probe.mjs                  |     60 +
+ .../launch-row-profile-hotspot-excerpt.txt         |      1 +
+ .../launch-row-renderer-profile-summary.json       |    191 +
+ .../launch-row-renderer-profile-warm-1.png         |    Bin 0 -> 142776 bytes
+ .../launch-row-renderer-profile.cpuprofile         |      1 +
+ .../evidence/launch-row-renderer-profile.json      |   1511 +
+ .../launch-row-small-history-cold-renderer-1.png   |    Bin 0 -> 143562 bytes
+ .../launch-row-small-history-cold-renderer-2.png   |    Bin 0 -> 143264 bytes
+ .../launch-row-small-history-cold-renderer-3.png   |    Bin 0 -> 143537 bytes
+ .../launch-row-small-history-cold-renderer-4.png   |    Bin 0 -> 143527 bytes
+ .../launch-row-small-history-cold-renderer-5.png   |    Bin 0 -> 143564 bytes
+ .../evidence/launch-row-small-history-warm-1.png   |    Bin 0 -> 110291 bytes
+ .../evidence/launch-row-small-history-warm-2.png   |    Bin 0 -> 132617 bytes
+ .../evidence/launch-row-small-history-warm-3.png   |    Bin 0 -> 142533 bytes
+ .../evidence/launch-row-small-history-warm-4.png   |    Bin 0 -> 142346 bytes
+ .../evidence/launch-row-small-history-warm-5.png   |    Bin 0 -> 142459 bytes
+ .../evidence/launch-row-small-history.json         |  13997 ++
+ .../evidence/launch-row-stop-fixtures.mjs          |      6 +
+ ...unch-row-stored-history-100-cold-renderer-1.png |    Bin 0 -> 147912 bytes
+ .../launch-row-stored-history-100-warm-1.png       |    Bin 0 -> 141548 bytes
+ .../launch-row-stored-history-100-warm-2.png       |    Bin 0 -> 142393 bytes
+ .../launch-row-stored-history-100-warm-3.png       |    Bin 0 -> 142975 bytes
+ .../launch-row-stored-history-100-warm-4.png       |    Bin 0 -> 142716 bytes
+ .../launch-row-stored-history-100-warm-5.png       |    Bin 0 -> 142395 bytes
+ .../evidence/launch-row-stored-history-100.json    |   9587 +
+ ...unch-row-stored-history-500-cold-renderer-1.png |    Bin 0 -> 148910 bytes
+ ...unch-row-stored-history-500-cold-renderer-2.png |    Bin 0 -> 148766 bytes
+ ...unch-row-stored-history-500-cold-renderer-3.png |    Bin 0 -> 148509 bytes
+ ...unch-row-stored-history-500-cold-renderer-4.png |    Bin 0 -> 148655 bytes
+ ...unch-row-stored-history-500-cold-renderer-5.png |    Bin 0 -> 148767 bytes
+ ...ow-stored-history-500-light-cold-renderer-1.png |    Bin 0 -> 148853 bytes
+ ...ow-stored-history-500-light-cold-renderer-2.png |    Bin 0 -> 149015 bytes
+ ...ow-stored-history-500-light-cold-renderer-3.png |    Bin 0 -> 148659 bytes
+ ...ow-stored-history-500-light-cold-renderer-4.png |    Bin 0 -> 148957 bytes
+ ...ow-stored-history-500-light-cold-renderer-5.png |    Bin 0 -> 149043 bytes
+ .../launch-row-stored-history-500-light-warm-1.png |    Bin 0 -> 143234 bytes
+ .../launch-row-stored-history-500-light-warm-2.png |    Bin 0 -> 142454 bytes
+ .../launch-row-stored-history-500-light-warm-3.png |    Bin 0 -> 142984 bytes
+ .../launch-row-stored-history-500-light-warm-4.png |    Bin 0 -> 142730 bytes
+ .../launch-row-stored-history-500-light-warm-5.png |    Bin 0 -> 143011 bytes
+ .../launch-row-stored-history-500-light.json       |  15459 ++
+ .../launch-row-stored-history-500-warm-1.png       |    Bin 0 -> 146379 bytes
+ .../launch-row-stored-history-500-warm-2.png       |    Bin 0 -> 142925 bytes
+ .../launch-row-stored-history-500-warm-3.png       |    Bin 0 -> 143223 bytes
+ .../launch-row-stored-history-500-warm-4.png       |    Bin 0 -> 143007 bytes
+ .../launch-row-stored-history-500-warm-5.png       |    Bin 0 -> 143207 bytes
+ .../evidence/launch-row-stored-history-500.json    |  41744 ++++
+ .../evidence/launch-row-timing-summary.json        |    426 +
+ .../evidence/nuxt-dev.log                          |     32 +
+ .../evidence/org-idle-history-scaling.json         |    236 +
+ .../evidence/org-reader-baseline.json              |   4340 +
+ .../evidence/passive-collector.mjs                 |     10 +
+ .../evidence/passive-ui-events.jsonl               |    268 +
+ .../evidence/passive-ui-probe.ts                   |     43 +
+ .../evidence/resume-check.json                     |     25 +
+ .../evidence/source-context.json                   |     17 +
+ .../evidence/ticket-resume-source-context.json     |     58 +
+ .../evidence/timing-summary.json                   |    238 +
+ .../evidence/user-antipattern-confirmation.json    |      4 +
+ .../evidence/user-application-scope-approval.json  |     22 +
+ .../evidence/user-collision-check-question.json    |      4 +
+ .../evidence/user-design-guide-name-approval.json  |      5 +
+ .../user-design-guide-naming-question.json         |      6 +
+ .../evidence/user-design-guide-request.json        |      8 +
+ .../evidence/user-design-guide-start-simple.json   |      4 +
+ .../user-frontend-simplification-discussion.json   |      4 +
+ .../evidence/user-launch-row-clarification.json    |      5 +
+ .../evidence/user-local-node-clarification.json    |      7 +
+ .../evidence/user-new-org-scan-necessity.json      |      5 +
+ .../evidence/user-phased-design-guidance.json      |      8 +
+ .../evidence/user-refactor-removal-discussion.json |      8 +
+ .../evidence/user-ticket-resume.json               |      4 +
+ .../evidence/user-uuid-scan-objection.json         |      4 +
+ .../org-run-config-performance/handoff-summary.md  |     33 +
+ .../implementation-handoff.md                      |     90 +
+ .../implementation-revision-record.md              |     36 +
+ .../investigation-notes.md                         |    233 +
+ .../investigation-result.md                        |     90 +
+ .../launch-row-findings.md                         |     92 +
+ .../performance-findings.md                        |     65 +
+ .../release-deployment-report.md                   |     15 +
+ .../org-run-config-performance/release-notes.md    |      7 +
+ .../org-run-config-performance/requirements-doc.md |    106 +
+ .../solution-revision-record.md                    |    135 +
+ 957 files changed, 1395538 insertions(+), 863 deletions(-)
+ create mode 100644 AGENTS.md
+ create mode 100644 SOLUTION_DESIGN_BEST_PRACTICES.md
+ create mode 100644 autobyteus-server-ts/tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts
+ create mode 100644 autobyteus-server-ts/tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts
+ create mode 100644 autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/run-history/services/collaboration-root-history-scoped.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/runtime-management/runtime-availability-service.test.ts
+ create mode 100644 autobyteus-web/components/launch-config/__tests__/RuntimeCapabilityReadiness.spec.ts
+ create mode 100644 autobyteus-web/components/workspace/config/__tests__/AgentOrgCatalogRecovery.spec.ts
+ create mode 100644 tickets/done/org-run-config-performance/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/org-run-config-performance/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/org-run-config-performance/api-e2e-revision-record.md
+ create mode 100644 tickets/done/org-run-config-performance/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/org-run-config-performance/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/org-run-config-performance/architecture-design-result.md
+ create mode 100644 tickets/done/org-run-config-performance/architecture-review-revision-record.md
+ create mode 100644 tickets/done/org-run-config-performance/code-review-report.md
+ create mode 100644 tickets/done/org-run-config-performance/code-review-revision-record.md
+ create mode 100644 tickets/done/org-run-config-performance/delivery-authorization-result.md
+ create mode 100644 tickets/done/org-run-config-performance/delivery-revision-record.md
+ create mode 100644 tickets/done/org-run-config-performance/design-guideline-result.md
+ create mode 100644 tickets/done/org-run-config-performance/design-review-report.md
+ create mode 100644 tickets/done/org-run-config-performance/design-spec.md
+ create mode 100644 tickets/done/org-run-config-performance/docs-sync-report.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-baseline-fixture-comparison.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-baseline-initial.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-capability-e2e.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-config-passive.js
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-coverage-inventory.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-current-provenance.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-execution-commands.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-existing-model-probe.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-existing-model/API-E2E-004-A-agent-saved.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-existing-model/API-E2E-004-B-team-saved.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-existing-model/API-E2E-004-C-team-narrow.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-existing-model/API-E2E-004-D-agent-run-active.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-existing-model/API-E2E-004-E-agent-replaced.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-existing-model/API-E2E-004-F-team-verified-narrow.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-existing-model/existing-run-model-config-evidence.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-existing-model/nuxt-dev.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-failure-handoff-receipt-api-rev001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-failure-handoff-receipt-api-rev002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval-probe-warm.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval-probe.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval-warm/B08-agent-fresh.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval-warm/B08-team-fresh.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval-warm/fresh-run-auto-approval-evidence.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval-warm/nuxt-dev.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval/B04-failure.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval/B08-agent-fresh.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval/B08-team-fresh.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval/fresh-run-auto-approval-evidence.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-fresh-approval/nuxt-dev.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-isolated-list-final.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-nuxt-prepare.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-package-index.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-app-before-restart.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-backend-hooks-install.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-backend-hooks.js
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-backend-install.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-backend-trace.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-backend-trace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-backend-trace.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-build-provenance.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-build.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-continuity.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-continuity.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-debugger-ownership.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional-catalog-label-failure.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional-catalog-labeled.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional-confirmed-root-retry-failure.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional-failure.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional-route-synchronized.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional-route-unroute-failure.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional-runtime-corrected.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional-runtime-selector-failure.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-functional.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-import.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-org-catalog-direct.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-populate.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-population.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-population.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-restart.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-restart.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-retry-repro.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-retry-repro.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-retry-repro.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-retry-repro.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup-after-reload.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup-duplicate-import.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup-failure.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup-initial-selector-failure.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup-pre-reload.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup-resume.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup-retry.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-setup.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-cold-renderer-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-cold-renderer-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-cold-renderer-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-cold-renderer-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-history.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-small-timing.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stop.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-cold-renderer-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-cold-renderer-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-cold-renderer-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-cold-renderer-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stored-history-500.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-stress-timing.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-packaged-timing.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-performance-summary.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-performance-summary.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-prebuild.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-run-command.py
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-scoped-history-e2e.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-server-build.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-server-narrow.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-stopped-workspace-e2e.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-success-handoff-receipt-api-rev003.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-summarize-performance.py
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api-web-narrow.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-agy-failure-transport.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-baseline-app-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-baseline-source-pin-check.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-baseline-start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-baseline-start.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-baseline-stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-baseline-stop.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-capability-e2e.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-config-passive.js
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-failure-origin-preliminary.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-intake-provenance.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-isolated-list-final.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-native-fixture-cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-1H46CH/raw_traces_active.jsonl
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-1H46CH/working_context_snapshot.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-uXUI4z/raw_traces_active.jsonl
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-native-fixture-failed-setup/server-recovery-uXUI4z/working_context_snapshot.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-native-fixture-owned-candidates.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-native-input-history.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-nuxt-prepare.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_orgs/autobyteus_org_4782a680b8ac4d71a1245e5a7269ccb8/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_orgs/autobyteus_org_4782a680b8ac4d71a1245e5a7269ccb8/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_orgs/autobyteus_org_63cad2edbddb461ebf2bcfeabeeadcfe/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_orgs/autobyteus_org_63cad2edbddb461ebf2bcfeabeeadcfe/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_orgs/autobyteus_org_a2f2edeb1a24418c8cde042d7469befc/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_orgs/autobyteus_org_a2f2edeb1a24418c8cde042d7469befc/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_orgs/autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_orgs/autobyteus_org_aae2534ba8494f5db50a6fe94ae0d036/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_teams/software_engineering_team_7d1e3355cebe42c889a0fffd38755db7/team_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-owned-current-packages/agent_teams/software_engineering_team_7d1e3355cebe42c889a0fffd38755db7/team_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-app-before-restart.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-app-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-build-provenance.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-build.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-after-restart.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-after-restart.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-after-restart.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-before-history-entry.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-before-history-entry.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-bucket-expanded.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-collapsed-bucket.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-collapsed-definition.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-disclosures-ready.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-entry-not-yet-visible.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-entry-ready.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity-normal-entry.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-continuity.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-import.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal-failure.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal-overbroad-identity.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal-overbroad-identity.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal-qualified.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal-settled.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal-team-catalog-pending.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal-team-library-before-ready.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal-team-ready.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-normal.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery-failure.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery-inherited-member.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery-member-selector.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery-normal.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery-qualified.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery-readonly-setup.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery-root-pass-before-member-selector.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery-root.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-recovery.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-restart.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-restart.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-setup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-setup.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-setup.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-stop.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-team-active.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-packaged-timing.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-pre-cleanup-verification.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-prebuild.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-recovery-narrow.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-scoped-history-e2e.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-server-narrow.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-stopped-workspace-e2e.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-task-team-disclosure.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-task-team-disclosure/b01-default-open.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-task-team-disclosure/b02-collapsed.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-task-team-disclosure/b03-keyboard-collapsed.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-task-team-disclosure/b04-nested-collapsed.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-task-team-disclosure/b05-independent-state.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-task-team-disclosure/b06-live-collapsed.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-task-team-disclosure/evidence.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-task-team-disclosure/nuxt.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api2-web-broad.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-actual-mcp-delegation.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-real-transport-browser.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-A-credential.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-A-empty.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-A-malformed.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-A-missing.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-A-quota.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-A-structured.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-A-unfamiliar.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-C02.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-O-credential.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-O-empty.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-O-malformed.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-O-missing.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-O-quota.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-O-structured.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-O-unfamiliar.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-T-credential.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-T-empty.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-T-malformed.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-T-missing.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-T-quota.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-T-structured.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/API-T-unfamiliar.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/agent-credential-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/agent-credential-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/agent-quota-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/agent-quota-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/browser-evidence.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/browser-process.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/browser-server-correlation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/nuxt.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/team-credential-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/team-credential-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/team-quota-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-agy-transport/team-quota-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader-chat-entry-failure.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader-chat-entry-failure.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader-chat-entry-failure.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader-failure.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader-workspace-entry-failure.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader-workspace-entry-failure.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader-workspace-entry-failure.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-current-reader.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_0efc919e0d1244849dfce8cd22fa3d5b/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_0efc919e0d1244849dfce8cd22fa3d5b/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_77476fa06ba84fc0b68f51fd42e4d97e/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_77476fa06ba84fc0b68f51fd42e4d97e/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_8aea079a9f9e46c9ba9acec96e9290c6/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_8aea079a9f9e46c9ba9acec96e9290c6/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_8f93cf6e547743e58cfb9afcba1ecced/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_8f93cf6e547743e58cfb9afcba1ecced/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_c1604c8f0036466bbbadd7b4c101d202/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_c1604c8f0036466bbbadd7b4c101d202/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_d485543245ea44bcbbe7c609b65b5a24/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_d485543245ea44bcbbe7c609b65b5a24/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_dbfbd3b0911b402eac316f5a336bb83e/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_dbfbd3b0911b402eac316f5a336bb83e/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_e4ec59979da344b5b53f8beb1881fd4f/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_e4ec59979da344b5b53f8beb1881fd4f/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_fccc28194d1a4512b828cc5205cffede/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_fccc28194d1a4512b828cc5205cffede/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_ff0389c64bf843bb8a522499cab82992/agent_org_communication_messages.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-approved-base-packages/autobyteus_org_ff0389c64bf843bb8a522499cab82992/agent_org_run_execution_tree.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-app-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-backend-hooks-install.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-backend-install.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-backend-trace.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-backend-trace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-before-transition.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-debugger-ownership.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-import.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-population.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-population.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-setup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-setup.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-cold-renderer-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-cold-renderer-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-cold-renderer-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-cold-renderer-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-history.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-small-timing.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-source-pin-check.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-start.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stop.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-cold-renderer-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-cold-renderer-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-cold-renderer-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-cold-renderer-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stored-history-500.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-baseline-stress-timing.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-config-passive.js
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-current-artifact-continuity.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-durable-test-delta.patch
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-real-transport-browser.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-A-credential.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-A-empty.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-A-malformed.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-A-missing.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-A-quota.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-A-structured.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-A-unfamiliar.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-C02.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-O-credential.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-O-empty.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-O-malformed.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-O-missing.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-O-quota.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-O-structured.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-O-unfamiliar.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-T-credential.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-T-empty.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-T-malformed.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-T-missing.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-T-quota.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-T-structured.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/API-T-unfamiliar.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/agent-credential-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/agent-credential-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/agent-quota-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/agent-quota-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/browser-evidence.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/browser-process.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/browser-server-correlation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/nuxt.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/team-credential-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/team-credential-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/team-quota-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-agy-transport/team-quota-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-mcp-regression.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-final-source-checks.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-finalize-report.py
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-intake-provenance.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-isolated-list-final.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-native-fixture-cleanup.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-native-input-history.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-native-shared-callers.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-org-publication-http.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-org-publication/cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-org-publication/org-publication-chain.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-org-reference-error.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-org-reference-guards.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-org-reference-guards.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-org-reference-guards.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-org-reference-null.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-org-reference-wrong-ownership.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-package-reference-files.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-app-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-backend-hooks-install.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-backend-install.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-backend-trace.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-backend-trace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-backend-trace.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-debugger-ownership.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-import.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-populate.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-population.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-population.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-setup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-setup.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-setup.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-cold-renderer-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-cold-renderer-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-cold-renderer-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-cold-renderer-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-history.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-small-timing.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-start.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stop.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-cold-renderer-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-cold-renderer-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-cold-renderer-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-cold-renderer-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stored-history-500.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-stress-timing.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-packaged-timing.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-performance-summary.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-pre-cleanup-verification.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-prebuild.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/app.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-agent-after-restart-off.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-agent-after-restart-off.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-agent-after-restart-on.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-agent-after-restart-on.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-team-after-reload-off.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-team-after-reload-off.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-team-after-reload-on.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-team-after-reload-on.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-team-after-restart-on.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/approval-team-after-restart-on.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/evidence.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/final-sources.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/import.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/import.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/list.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/list.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/pending-read.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/pending-read.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/read-error.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/read-error.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/restart.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/restart.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/shared-v1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/shared-v1.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/shared-v2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/shared-v2.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/shared-v3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/shared-v3.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/shared-v4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/shared-v4.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/start.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/stop.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/team-v1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/team-v1.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/team-v2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/team-v2.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/team-v3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/team-v3.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/team-v4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/team-v4.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/worker-v1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/worker-v1.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/worker-v2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/worker-v2.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/worker-v3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/worker-v3.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/worker-v4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-team-member-freshness/worker-v4.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-transition-app-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-transition-start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-transition-start.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-transition-stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-transition-stop.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/api3-whitespace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/application-scope-approval-prompt.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/approved-requirements-sr006.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/architecture-handoff-receipt-sr010.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/architecture-pass-handoff-receipt-archrev001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/architecture-pass-notification-receipt-archrev001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/architecture-review-checks-archrev001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/architecture-source-context-sr010.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/capability-cli-timings.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/cleanup-receipt.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-catalog-consumers-command-crr003.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-catalog-consumers-crr003.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-checks-crr001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-checks-crr003.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-execution-crr003.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-failure-handoff-receipt-crr002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-failure-handoff-receipt-crr004.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-failure-origin-crr002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-failure-origin-crr004.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-focused-web-crr001.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-focused-web-crr003.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-package-index-crr003.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-package-index-crr004.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-package-index-crr005.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-primary-handoff-receipt-crr001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-primary-handoff-receipt-crr003.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-source-result-crr003.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-test-checks-crr005.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/code-review-test-handoff-receipt-crr005.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/codex-catalog-baseline.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/collision-check-explanation-source.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/control-timing-caveats.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/definition-baseline.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-authorization-return-receipt.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-blocked-handoff-receipt-dr001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport-browser.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-A-credential.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-A-empty.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-A-malformed.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-A-missing.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-A-quota.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-A-structured.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-A-unfamiliar.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-C02.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-O-credential.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-O-empty.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-O-malformed.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-O-missing.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-O-quota.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-O-structured.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-O-unfamiliar.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-T-credential.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-T-empty.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-T-malformed.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-T-missing.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-T-quota.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-T-structured.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/API-T-unfamiliar.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/agent-credential-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/agent-credential-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/agent-quota-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/agent-quota-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/browser-evidence.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/browser-process.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/browser-server-correlation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/nuxt.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/team-credential-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/team-credential-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/team-quota-1280.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/agy-transport/team-quota-390.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/authorization-intake.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/check-execution.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/check-plan.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/checkpoint.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/docs-checks.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/frontend-sdk-build.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/handoff-base-refresh.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/handoff-rules.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/integration-continuity.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/integration.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/native-arguments-http.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/native-input-history.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/nuxt-prepare.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/org-publication-http.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/org-publication/cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/org-publication/org-publication-chain.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/packaged-freshness.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/prebuild.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/rule-evaluation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/run-checks.py
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/scoped-history-http.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/server-build.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/server-narrow.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/app.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-agent-after-restart-off.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-agent-after-restart-off.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-agent-after-restart-on.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-agent-after-restart-on.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-team-after-reload-off.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-team-after-reload-off.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-team-after-reload-on.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-team-after-reload-on.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-team-after-restart-on.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/approval-team-after-restart-on.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/evidence.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/final-sources.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/import.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/import.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/list.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/list.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/pending-read.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/pending-read.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/read-error.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/read-error.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/restart.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/restart.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/shared-v1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/shared-v1.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/shared-v2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/shared-v2.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/shared-v3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/shared-v3.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/shared-v4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/shared-v4.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/start.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/stop.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/team-v1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/team-v1.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/team-v2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/team-v2.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/team-v3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/team-v3.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/team-v4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/team-v4.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/worker-v1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/worker-v1.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/worker-v2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/worker-v2.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/worker-v3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/worker-v3.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/worker-v4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/team-freshness/worker-v4.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/validation-cleanup-summary.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/web-narrow.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr003/whitespace-all.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/path-relocation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/prior-dr003-docs-sync-report.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/prior-dr003-handoff-summary.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/prior-dr003-release-deployment-report.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/stable-latest-before.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-dr004/user-verification.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-intake-refresh-dr001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-package-index.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/delivery-rule-evaluation-dr002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/design-guide-documentation-checks-before-explicit-antipattern.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/design-guide-documentation-checks-before-mandatory-rules.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/design-guide-documentation-checks-before-phased-design.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/design-guide-documentation-checks-initial.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/design-guide-documentation-checks.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/design-package-checks-sr010.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-antipattern-confirmation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-api-rev001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-api-rev002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-api-rev003.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-archrev001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-crr001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-crr002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-crr003.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-crr004.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-crr005.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-delivery-authorization.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-design-guide-naming.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-design-guide-organization.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-design-guide-refined.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-design-guide.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-dr001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-dr002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-frontend-discussion.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-history-clarification.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-informational-archrev001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-ir001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-ir002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-phased-design.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-removal-recommendation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-scoped-history-confirmation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-sr002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-sr003.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-sr004.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-sr005.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-sr006.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-sr010.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules-ticket-resume.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/handoff-rules.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-checks.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-codegen.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-handoff-ir001-received.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-handoff-receipt-ir001.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-handoff-receipt-ir002.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-action-trace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-caller-trace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-catalog-debug.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-catalog-fixture.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-catalog-focused.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-catalog-initial.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-catalog-trace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-checks.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-cleanup.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-commands.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-focused-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-focused-retry.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-node-trace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-package-index.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-prerequisites.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-preview-fixture.vue.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-preview-isolated.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-preview.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-provider-seed.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-rendered-result.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-reviewed-head-regression.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-scope-trace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-shared-consumers.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-source-delta.patch
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-web-build-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-web-build.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-web-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-ir002-web-regression.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-local-commands.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-nuxt-prepare.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-package-index.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-package-whitespace.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-prerequisites.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-preview-server-retry.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-preview-server.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-preview-web-port.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-preview-web-retry.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-preview-web.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-rendered-result.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-routing-commit.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-server-build-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-server-build.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-server-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-server-mcp-retry.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-server-ownership.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-server-tests.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-server-typecheck-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-server-typecheck-initial.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-server-typecheck.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-build-complete.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-build-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-build.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-collection-retry.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-command.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-complete.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-contexts.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-final.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-history.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-initial.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-projection.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-publication.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-readiness.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-retry.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/implementation-web-typecheck.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/install.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/isolated-app.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/isolated-start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/isolated-stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-backend-hooks-install.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-backend-timing-hooks.js
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-backend-trace.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-backend-trace.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-caveats.md
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-cleanup-receipt.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-debugger-ownership.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-fixture-manifest.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-fixture-stops-100.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-fixture-stops-500.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-history-100-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-history-100-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-history-100-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-history-100-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-history-100-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-history-100-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-history-100.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-import.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-installed-source-pin.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-isolated-app.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-isolated-start.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-isolated-stop.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-packaged-initial.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-passive.js
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-populate-to-100.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-populate-to-500.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-populate.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-probe.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-profile-hotspot-excerpt.txt
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-renderer-profile-summary.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-renderer-profile-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-renderer-profile.cpuprofile
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-renderer-profile.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-cold-renderer-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-cold-renderer-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-cold-renderer-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-cold-renderer-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-small-history.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stop-fixtures.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-100-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-100-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-100-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-100-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-100-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-100-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-100.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-cold-renderer-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-cold-renderer-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-cold-renderer-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-cold-renderer-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-cold-renderer-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-cold-renderer-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-cold-renderer-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-cold-renderer-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-cold-renderer-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-light.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-warm-1.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-warm-2.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-warm-3.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-warm-4.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500-warm-5.png
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-stored-history-500.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/launch-row-timing-summary.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/nuxt-dev.log
+ create mode 100644 tickets/done/org-run-config-performance/evidence/org-idle-history-scaling.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/org-reader-baseline.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/passive-collector.mjs
+ create mode 100644 tickets/done/org-run-config-performance/evidence/passive-ui-events.jsonl
+ create mode 100644 tickets/done/org-run-config-performance/evidence/passive-ui-probe.ts
+ create mode 100644 tickets/done/org-run-config-performance/evidence/resume-check.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/source-context.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/ticket-resume-source-context.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/timing-summary.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-antipattern-confirmation.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-application-scope-approval.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-collision-check-question.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-design-guide-name-approval.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-design-guide-naming-question.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-design-guide-request.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-design-guide-start-simple.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-frontend-simplification-discussion.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-launch-row-clarification.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-local-node-clarification.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-new-org-scan-necessity.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-phased-design-guidance.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-refactor-removal-discussion.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-ticket-resume.json
+ create mode 100644 tickets/done/org-run-config-performance/evidence/user-uuid-scan-objection.json
+ create mode 100644 tickets/done/org-run-config-performance/handoff-summary.md
+ create mode 100644 tickets/done/org-run-config-performance/implementation-handoff.md
+ create mode 100644 tickets/done/org-run-config-performance/implementation-revision-record.md
+ create mode 100644 tickets/done/org-run-config-performance/investigation-notes.md
+ create mode 100644 tickets/done/org-run-config-performance/investigation-result.md
+ create mode 100644 tickets/done/org-run-config-performance/launch-row-findings.md
+ create mode 100644 tickets/done/org-run-config-performance/performance-findings.md
+ create mode 100644 tickets/done/org-run-config-performance/release-deployment-report.md
+ create mode 100644 tickets/done/org-run-config-performance/release-notes.md
+ create mode 100644 tickets/done/org-run-config-performance/requirements-doc.md
+ create mode 100644 tickets/done/org-run-config-performance/solution-revision-record.md

@@ -9,6 +9,10 @@ import type {
 } from "../../../token-usage/domain/statistics-models.js";
 import { TokenUsageRunStore } from "../../../token-usage/providers/token-usage-run-store.js";
 import { TokenUsageStatisticsProvider } from "../../../token-usage/providers/statistics-provider.js";
+import { StandaloneRunTokenUsageSummaryService } from "../../../token-usage/services/standalone-run-token-usage-summary-service.js";
+import { StandaloneRootLocationService } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { findStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import { appConfigProvider } from "../../../config/app-config-provider.js";
 
 @ObjectType()
 export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateGraphql {
@@ -306,6 +310,25 @@ export class TokenUsageStatisticsResolver {
   ): Promise<TokenUsageRunSummaryGraphql> {
     const store = new TokenUsageRunStore();
     return toTokenUsageRunSummaryGraphql(await store.getAgentRunSummary(runId));
+  }
+
+  /** A standalone run's usage including its collaborators and task copies (REQ-006). */
+  @Query(() => TokenUsageRunSummaryGraphql)
+  async getStandaloneRunTokenUsageSummary(
+    @Arg("runId", () => String) runId: string,
+  ): Promise<TokenUsageRunSummaryGraphql> {
+    const locations = new StandaloneRootLocationService({
+      memoryDir: appConfigProvider.config.getMemoryDir(),
+      roots: { getActiveTree: (hostRunId) => findStandaloneAgentRunRootManager()?.getActiveTree(hostRunId) ?? null },
+    });
+    const service = new StandaloneRunTokenUsageSummaryService({
+      tree: {
+        listChildAgentRunIds: async (hostRunId) =>
+          (await locations.listAgents({ rootRunId: hostRunId })).map((agent) => agent.agentRunId),
+      },
+      store: new TokenUsageRunStore(),
+    });
+    return toTokenUsageRunSummaryGraphql(await service.getSummary(runId));
   }
 
   @Query(() => TokenUsageRunSummaryGraphql)

@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.94-beta.2 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/task-voice-success-cleanup/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.

@@ -396,7 +396,7 @@ and source projection live in
 `src/agent-collaboration/collaborators/`; each root implements
 `CollaboratorRootPort` and hosts its collaborators in its existing backends (see
 [Agent Team Execution](./agent_team_execution.md), [Agent Orgs](./agent_orgs.md)
-and [Agent Run Collaboration](./agent_run_collaboration.md)).
+and [Standalone Agent Run Root](./standalone_agent_run_root.md)).
 
 Known limits:
 
@@ -415,16 +415,31 @@ Known limits:
   catalog copy (unsupported downgrade). Stored runs need no migration: copies
   without `source` read as before, and earlier copies keep their recorded
   placement.
-- Self-delegation: Team and Org roots refuse it ("An Agent cannot delegate a task
-  to its own logical placement."). The Agent root refuses `delegate_task` to the
-  host's address (not found), but it has no other self-guard. A collaborator that
-  delegates to its own address gets an ordinary extra copy of itself
-  (code-review C-11; harmless).
+- Self-delegation: every root refuses it with `COLLABORATION_SELF_TARGET_REJECTED`
+  ("An Agent cannot delegate a task to its own logical placement."), including a
+  standalone run's root (REQ-004).
 
 ### Sender Of An Agent-To-Agent Message (RD-004)
 
 A `send_message_to` delivery reaches the receiver as input with
-`input_origin: inter_agent_delivery` and `sender_agent_id`. Memory recording
+`input_origin: inter_agent_delivery` and `sender_agent_id`. Its visible text names
+the sender by name, full address and run ID, so a reply by address reaches a
+sender inside a Team (REQ-005):
+
+```text
+You received a message from sender name: lead, sender address: /eng/lead, sender id: <runId>
+message:
+<body>
+```
+
+All three builders use this header: root deliveries
+(`root-communication-runtime-builder.ts`, Org and standalone roots),
+Team-run deliveries (`inter-agent-message-runtime-builders.ts`) and the direct
+`target_agent_run_id` route (`global-agent-run-message-runtime-builders.ts`, when
+the sender is inside a root; a sender outside any root has no address). Stored
+deliveries recorded before the address was added keep their old header; the web
+parser reads both forms. The released header is frozen in the Org first-message
+summary migration, which matches historical traces. Memory recording
 (native AutoByteus and the external-runtime recorder) stores that sender as the
 user trace's `senderId`; replay projects such a trace as an
 `inter_agent_message` conversation item, and the web shows it as

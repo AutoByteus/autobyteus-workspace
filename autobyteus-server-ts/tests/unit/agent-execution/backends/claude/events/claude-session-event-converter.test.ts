@@ -1067,34 +1067,36 @@ describe("ClaudeSessionEventConverter", () => {
     }));
   });
 
-  it("normalizes compacting status without rotation eligibility", () => {
+  it("maps a tracked compacting status to a non-rotating start keyed by the operation id", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
     const [status] = converter.convert({
       method: ClaudeSessionEventName.STATUS_COMPACTING,
-      params: {
-        sessionId: "session-1",
-        turnId: "turn-1",
-        uuid: "status-1",
-        pre_tokens: 100000,
-      },
+      params: { sessionId: "session-1", turnId: "turn-1", operationId: "op-1", frameUuid: "op-1" },
     });
 
-    expect(status).toMatchObject({
+    expect(status).toEqual({
       eventType: AgentRunEventType.COMPACTION_STATUS,
+      runId: "run-claude-converter",
+      statusHint: null,
       payload: {
         kind: "provider_compaction_boundary",
         runtime_kind: "CLAUDE",
         provider: "claude",
         source_surface: "claude.status_compacting",
-        boundary_key: "claude:session-1:claude.status_compacting:status-1:turn-1",
+        boundary_key: "claude:session-1:claude.status_compacting:op-1:turn-1",
+        provider_session_id: "session-1",
+        provider_event_id: "op-1",
+        provider_timestamp: null,
+        turn_id: "turn-1",
+        status: "compacting",
         rotation_eligible: false,
         semantic_compaction: false,
       },
     });
   });
 
-  it("normalizes compact_boundary as rotation eligible", () => {
+  it("maps a tracked compact boundary to a rotation-eligible completion with compact metadata", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
     const [boundary] = converter.convert({
@@ -1102,48 +1104,79 @@ describe("ClaudeSessionEventConverter", () => {
       params: {
         sessionId: "session-1",
         turnId: "turn-1",
-        uuid: "boundary-1",
+        operationId: "op-1",
+        frameUuid: "boundary-1",
+        trigger: "manual",
+        pre_tokens: 3350,
+        post_tokens: 1149,
+        duration_ms: 12216,
+        result: "success",
       },
     });
 
-    expect(boundary).toMatchObject({
-      eventType: AgentRunEventType.COMPACTION_STATUS,
-      payload: {
-        kind: "provider_compaction_boundary",
-        source_surface: "claude.compact_boundary",
-        boundary_key: "claude:session-1:claude.compact_boundary:boundary-1:turn-1",
-        rotation_eligible: true,
-        semantic_compaction: false,
-      },
+    expect(boundary?.payload).toEqual({
+      kind: "provider_compaction_boundary",
+      runtime_kind: "CLAUDE",
+      provider: "claude",
+      source_surface: "claude.compact_boundary",
+      boundary_key: "claude:session-1:claude.compact_boundary:boundary-1:turn-1",
+      provider_session_id: "session-1",
+      provider_event_id: "op-1",
+      provider_timestamp: null,
+      turn_id: "turn-1",
+      status: "compacted",
+      rotation_eligible: true,
+      semantic_compaction: false,
+      trigger: "manual",
+      pre_tokens: 3350,
+      post_tokens: 1149,
+      duration_ms: 12216,
     });
   });
 
-  it("keeps compacting status and compact boundary keys distinct when provider uuid matches", () => {
+  it("maps a tracked compaction failure to a non-rotating failed status with the error", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
-    const [status] = converter.convert({
-      method: ClaudeSessionEventName.STATUS_COMPACTING,
+    const [failed] = converter.convert({
+      method: ClaudeSessionEventName.COMPACTION_FAILED,
       params: {
         sessionId: "session-1",
         turnId: "turn-1",
-        uuid: "compaction-operation-1",
-      },
-    });
-    const [boundary] = converter.convert({
-      method: ClaudeSessionEventName.COMPACT_BOUNDARY,
-      params: {
-        sessionId: "session-1",
-        turnId: "turn-1",
-        uuid: "compaction-operation-1",
+        operationId: "op-1",
+        error_message: "too_few_groups",
+        reason: "compact_result_failed",
       },
     });
 
-    expect(status.payload.boundary_key).toBe(
-      "claude:session-1:claude.status_compacting:compaction-operation-1:turn-1",
-    );
-    expect(boundary.payload.boundary_key).toBe(
-      "claude:session-1:claude.compact_boundary:compaction-operation-1:turn-1",
-    );
-    expect(status.payload.boundary_key).not.toBe(boundary.payload.boundary_key);
+    expect(failed).toMatchObject({
+      eventType: AgentRunEventType.COMPACTION_STATUS,
+      payload: {
+        source_surface: "claude.compaction_failed",
+        boundary_key: "claude:session-1:claude.compaction_failed:op-1:turn-1",
+        provider_event_id: "op-1",
+        status: "failed",
+        error_message: "too_few_groups",
+        rotation_eligible: false,
+      },
+    });
+    expect(failed?.payload).not.toHaveProperty("trigger");
+  });
+
+  it("gives every event of one operation the same provider_event_id and distinct boundary keys", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+    const base = { sessionId: "session-1", turnId: "turn-1", operationId: "op-1" };
+
+    const [started] = converter.convert({
+      method: ClaudeSessionEventName.STATUS_COMPACTING,
+      params: { ...base, frameUuid: "op-1" },
+    });
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.COMPACT_BOUNDARY,
+      params: { ...base, frameUuid: "boundary-1" },
+    });
+
+    expect(started?.payload.provider_event_id).toBe("op-1");
+    expect(completed?.payload.provider_event_id).toBe("op-1");
+    expect(started?.payload.boundary_key).not.toBe(completed?.payload.boundary_key);
   });
 });

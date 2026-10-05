@@ -23,6 +23,7 @@ import {
   isMcpWireToolName,
 } from "../../../../agent-tools/mcp/mcp-tool-source.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
+import { buildClaudeCompactionStatusPayload } from "./claude-compaction-status-payload.js";
 import { parseSystemInstructionsSuppliedPayload } from "../../../domain/system-instructions-supplied-event.js";
 import { buildBackgroundTaskUpdatedPayload, parseBackgroundTaskUpdatedPayload } from "../../../domain/agent-background-task.js";
 import { isAgentSegmentType } from "../../../domain/agent-segment.js";
@@ -46,9 +47,6 @@ const resolveInvocationId = (payload: Record<string, unknown>): string | null =>
 
 const resolveTurnId = (payload: Record<string, unknown>): string | null =>
   asString(payload.turnId) ?? asString(payload.turn_id);
-
-const asNumber = (value: unknown): number | null =>
-  typeof value === "number" && Number.isFinite(value) ? value : null;
 
 const normalizeToolNameForEvent = (value: string | null): string | null => {
   if (!value) {
@@ -263,7 +261,7 @@ export class ClaudeSessionEventConverter {
         return [this.createEvent(
           claudeEventName,
           AgentRunEventType.COMPACTION_STATUS,
-          this.buildClaudeCompactionBoundaryPayload(payload, "claude.status_compacting", false),
+          buildClaudeCompactionStatusPayload(payload, "claude.status_compacting"),
         )];
       case ClaudeSessionEventName.TOKEN_USAGE_UPDATED:
         return [this.createEvent(
@@ -275,7 +273,13 @@ export class ClaudeSessionEventConverter {
         return [this.createEvent(
           claudeEventName,
           AgentRunEventType.COMPACTION_STATUS,
-          this.buildClaudeCompactionBoundaryPayload(payload, "claude.compact_boundary", true),
+          buildClaudeCompactionStatusPayload(payload, "claude.compact_boundary"),
+        )];
+      case ClaudeSessionEventName.COMPACTION_FAILED:
+        return [this.createEvent(
+          claudeEventName,
+          AgentRunEventType.COMPACTION_STATUS,
+          buildClaudeCompactionStatusPayload(payload, "claude.compaction_failed"),
         )];
       case ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA: {
         const id = resolveSegmentId(payload);
@@ -479,47 +483,5 @@ export class ClaudeSessionEventConverter {
       ? "ERROR"
       : null;
     return event;
-  }
-
-  private buildClaudeCompactionBoundaryPayload(
-    payload: Record<string, unknown>,
-    sourceSurface: "claude.status_compacting" | "claude.compact_boundary",
-    rotationEligible: boolean,
-  ): Record<string, unknown> {
-    const sessionId =
-      asString(payload.sessionId) ??
-      asString(payload.session_id) ??
-      asString(payload.threadId) ??
-      asString(payload.thread_id);
-    const turnId = resolveTurnId(payload);
-    const eventId =
-      asString(payload.uuid) ??
-      asString(payload.id) ??
-      asString(payload.event_id) ??
-      asString(payload.eventId);
-    const boundaryKey = [
-      "claude",
-      sessionId ?? "session",
-      sourceSurface,
-      eventId ?? "event",
-      turnId ?? "turn",
-    ].join(":");
-    return {
-      kind: "provider_compaction_boundary",
-      runtime_kind: "CLAUDE",
-      provider: "claude",
-      source_surface: sourceSurface,
-      boundary_key: boundaryKey,
-      provider_session_id: sessionId,
-      provider_event_id: eventId,
-      provider_timestamp: asNumber(payload.ts) ?? asNumber(payload.timestamp) ?? null,
-      turn_id: turnId,
-      trigger: asString(payload.trigger) ?? null,
-      status: sourceSurface === "claude.status_compacting" ? "compacting" : "compacted",
-      pre_tokens: asNumber(payload.pre_tokens) ?? asNumber(payload.input_tokens) ?? null,
-      rotation_eligible: rotationEligible,
-      semantic_compaction: false,
-      raw: serializePayload(payload),
-    };
   }
 }

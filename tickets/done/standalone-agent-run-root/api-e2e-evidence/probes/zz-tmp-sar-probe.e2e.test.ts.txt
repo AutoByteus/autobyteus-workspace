@@ -1,0 +1,363 @@
+import "reflect-metadata";
+import os from "node:os";
+import path from "node:path";
+import { execFileSync, spawnSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import type { FastifyInstance } from "fastify";
+import WebSocket from "ws";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+
+/**
+ * TEMPORARY API/E2E probe for standalone-agent-run-root (not durable coverage; removed after the run).
+ * AE-07 (SC-04/CR-001): after a host runtime crash, child commands on /ws/agent-collaboration do not restart the host;
+ *   a child→host message and a host message do.
+ * AE-09 (REQ-006/AC-006): getStandaloneRunTokenUsageSummary = sum of the exact-run summaries (host, collaborator, copy,
+ *   collaborator-Team members); context fields stay the host's; a child-only report is in the next query.
+ * AE-08 (REQ-005/AC-005): a reply by address to a collaborator-Team member sender reaches it; the host's input carries
+ *   `sender address: /<team>/lead`.
+ * Gate: RUN_SAR_PROBE=1, plus RUN_CLAUDE_E2E / RUN_CODEX_E2E per runtime.
+ */
+type RuntimeKind = "claude_agent_sdk" | "codex_app_server";
+const binaryReady = (command: string): boolean => spawnSync(command, ["--version"], { stdio: "ignore" }).status === 0;
+const RUNTIMES: Array<{ runtimeKind: RuntimeKind; enabled: boolean; pick(models: string[]): string | null }> = [
+  { runtimeKind: "claude_agent_sdk", enabled: process.env.RUN_CLAUDE_E2E === "1" && binaryReady("claude"),
+    pick: (m) => ["haiku", "sonnet"].find((x) => m.includes(x)) ?? m[0] ?? null },
+  { runtimeKind: "codex_app_server", enabled: process.env.RUN_CODEX_E2E === "1" && binaryReady("codex"),
+    pick: (m) => ["gpt-5.4-mini", "gpt-5.5"].find((x) => m.includes(x)) ?? m[0] ?? null },
+];
+const enabled = process.env.RUN_SAR_PROBE === "1" && RUNTIMES.some((r) => r.enabled);
+const describeLive = enabled ? describe : describe.skip;
+const STEP = 360_000;
+
+type WsMessage = { type: string; payload: Record<string, unknown> };
+type Connection = { socket: WebSocket; messages: WsMessage[] };
+type View = {
+  is_active: boolean;
+  execution_tree: { host: { address: string; agentRunId: string }; collaborators: Array<Record<string, any>>; taskExecutions: Array<Record<string, any>> };
+  communication_messages: { messages: Array<{ senderAgentRunId: string; receiverAgentRunId: string; content: string }> };
+  agent_statuses: Array<{ agent_run_id: string; status: string }>;
+};
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const log = (...args: unknown[]) => console.log("[SAR-PROBE]", ...args);
+
+/** All descendant processes of this test process whose command line looks like a runtime CLI. */
+const runtimeProcesses = (needle: RegExp): Array<{ pid: number; command: string }> => {
+  const rows = execFileSync("ps", ["-A", "-o", "pid=,ppid=,command="], { encoding: "utf-8" }).split("\n")
+    .map((line) => line.trim().match(/^(\d+)\s+(\d+)\s+(.*)$/)).filter(Boolean)
+    .map((m) => ({ pid: Number(m![1]), ppid: Number(m![2]), command: m![3] }));
+  const descendants = new Set<number>([process.pid]);
+  let grew = true;
+  while (grew) { grew = false; for (const row of rows) if (descendants.has(row.ppid) && !descendants.has(row.pid)) { descendants.add(row.pid); grew = true; } }
+  return rows.filter((row) => row.pid !== process.pid && descendants.has(row.pid) && needle.test(row.command)).map(({ pid, command }) => ({ pid, command: command.slice(0, 160) }));
+};
+const CLAUDE_PROC = /(^|\/)claude(\s|$)|claude-code|cli\.js.*stream-json/;
+
+describeLive("TEMP standalone-agent-run-root live probe", () => {
+  let dataDir = "";
+  let app: FastifyInstance | null = null;
+  let mainUrl: URL;
+  const sockets = new Set<WebSocket>();
+  const runIds = new Set<string>();
+  const definitionIds = new Set<string>();
+  const teamDefinitionIds = new Set<string>();
+  const workspaces = new Set<string>();
+
+  const gql = async <T>(query: string, variables: Record<string, unknown> = {}): Promise<T> => {
+    const response = await fetch(new URL("/graphql", mainUrl), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+    const body = (await response.json()) as { data?: T; errors?: Array<{ message: string }> };
+    if (body.errors?.length) throw new Error(`GraphQL: ${body.errors.map((e) => e.message).join("; ")}`);
+    return body.data as T;
+  };
+  const models = async (r: RuntimeKind) => (await gql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
+    "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }", { r })).providerModelCatalogSnapshots.flatMap((s) => s.llmModels.map((m) => m.modelIdentifier));
+  const createDef = async (name: string, instructions: string, toolNames: string[] = []) => {
+    const id = (await gql<{ createAgentDefinition: { id: string } }>("mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name, description: "SAR probe agent.", instructions, category: "runtime-e2e", toolNames } })).createAgentDefinition.id;
+    definitionIds.add(id); return id;
+  };
+  const createRun = async (agentDefinitionId: string, runtimeKind: RuntimeKind, model: string) => {
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "sar-probe-ws-")); workspaces.add(workspaceRootPath);
+    const r = (await gql<{ createAgentRun: { success: boolean; message: string; runId: string } }>("mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId, workspaceRootPath, llmModelIdentifier: model, autoExecuteTools: true, runtimeKind } })).createAgentRun;
+    expect(r.success, r.message).toBe(true); runIds.add(r.runId); return r.runId;
+  };
+  const view = async (runId: string) => (await gql<{ agentRunCollaboration: { root_agent: View } | null }>("query($runId: String!) { agentRunCollaboration(runId: $runId) }", { runId })).agentRunCollaboration?.root_agent ?? null;
+  const memberConversation = async (h: string, a: string, r: string) => (await gql<{ agentRunCollaborationMemberProjection: { conversation: Array<Record<string, any>> } }>(
+    "query($h: String!, $a: String!, $r: String!) { agentRunCollaborationMemberProjection(hostRunId: $h, memberAddress: $a, agentRunId: $r) { conversation } }", { h, a, r })).agentRunCollaborationMemberProjection.conversation;
+  const hostConversation = async (runId: string) => (await gql<{ getRunProjection: { conversation: Array<Record<string, any>> } }>(
+    "query($runId: String!) { getRunProjection(runId: $runId) { conversation } }", { runId })).getRunProjection.conversation;
+  const SUMMARY = "runId latestPromptTokens effectiveContextWindowTokens contextWindowUsagePercent latestModelIdentifier latestRuntimeKind totalTokens grossInputTokens outputTokens cacheReadInputTokens cacheCreationInputTokens estimatedApiInputCost estimatedApiOutputCost";
+  const exactSummary = async (runId: string) => (await gql<{ getAgentRunTokenUsageSummary: Record<string, any> }>(`query($id: String!) { getAgentRunTokenUsageSummary(runId: $id) { ${SUMMARY} } }`, { id: runId })).getAgentRunTokenUsageSummary;
+  const standaloneSummary = async (runId: string) => (await gql<{ getStandaloneRunTokenUsageSummary: Record<string, any> }>(`query($id: String!) { getStandaloneRunTokenUsageSummary(runId: $id) { ${SUMMARY} } }`, { id: runId })).getStandaloneRunTokenUsageSummary;
+
+  const waitFor = async (messages: WsMessage[], from: number, pred: (m: WsMessage) => boolean, label: string, timeoutMs = STEP) => {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) { const f = messages.slice(from).find(pred); if (f) return f; await wait(400); }
+    throw new Error(`Timed out: ${label}. Recent: ${messages.slice(-15).map((m) => `${m.type}:${JSON.stringify(m.payload).slice(0, 160)}`).join(" | ")}`);
+  };
+  const poll = async <T>(label: string, read: () => Promise<T | null | undefined | false>, timeoutMs = STEP): Promise<T> => {
+    const deadline = Date.now() + timeoutMs; let last: unknown = null;
+    while (Date.now() < deadline) { try { const v = await read(); if (v) return v as T; last = v; } catch (e) { last = e instanceof Error ? e.message : e; } await wait(1_500); }
+    throw new Error(`Timed out: ${label}. Last: ${JSON.stringify(last).slice(0, 1200)}`);
+  };
+  const openSocket = async (urlPath: string): Promise<Connection> => {
+    const socket = new WebSocket(`ws://${mainUrl.hostname}:${mainUrl.port}${urlPath}`); sockets.add(socket);
+    const messages: WsMessage[] = [];
+    socket.on("message", (raw) => { try { const p = JSON.parse(raw.toString()); if (typeof p.type === "string") messages.push({ type: p.type, payload: p.payload ?? {} }); } catch { /* */ } });
+    await new Promise<void>((res, rej) => { socket.once("open", () => res()); socket.once("error", rej); });
+    await waitFor(messages, 0, (m) => m.type === "CONNECTED", `CONNECTED ${urlPath}`, 120_000);
+    return { socket, messages };
+  };
+  const sendTurn = async (c: Connection, content: string, mentions?: Array<{ kind: string; definition_id: string }>) => {
+    const from = c.messages.length;
+    sendE2eSendMessageCommand(c.socket, { content, ...(mentions ? { mentions } : {}) });
+    const ack = await waitFor(c.messages, from, (m) => m.type === "AGENT_COMMAND_ACK" && m.payload.command_type === "SEND_MESSAGE", "SEND_MESSAGE ack", 180_000);
+    return { from, ack };
+  };
+  const waitIdle = (c: Connection, from: number, label: string) => waitFor(c.messages, from, (m) => m.type === "AGENT_STATUS" && m.payload.status === "idle", `${label} idle`);
+  const childCommand = (c: Connection, hostRunId: string, target: string, type: "SEND_MESSAGE" | "INTERRUPT_GENERATION", content?: string) => {
+    const from = c.messages.length;
+    const commandId = randomUUID();
+    c.socket.send(JSON.stringify({ type, payload: {
+      root_subject_kind: "agent", root_run_id: hostRunId, target_agent_run_id: target, command_id: commandId,
+      ...(type === "SEND_MESSAGE" ? { content, context_file_paths: [], image_urls: [], ...buildE2eClientCommandIds() } : {}),
+    } }));
+    return waitFor(c.messages, from, (m) => m.type === "AGENT_COMMAND_ACK" && m.payload.command_id === commandId, `${type} ack`, 180_000);
+  };
+  const statusOf = (v: View | null, runId: string) => v?.agent_statuses.find((s) => s.agent_run_id === runId)?.status ?? "(none)";
+  /** True when a memory file owned by `runId` (path segment `/<runId>/` with no `/collaboration/` after it) contains `needle`. */
+  const grepMemory = async (runId: string, needle: string): Promise<boolean> => {
+    const files: string[] = [];
+    const walk = async (dir: string): Promise<void> => {
+      for (const entry of await readdir(dir, { withFileTypes: true }).catch(() => [])) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) await walk(full); else files.push(full);
+      }
+    };
+    await walk(path.join(dataDir, "memory", "agents"));
+    for (const file of files) {
+      const at = file.lastIndexOf(`/${runId}/`);
+      if (at < 0 || file.slice(at).includes("/collaboration/") || file.endsWith("communication_messages.json")) continue;
+      if ((await readFile(file, "utf-8").catch(() => "")).includes(needle)) return true;
+    }
+    return false;
+  };
+  const sumOf = (rows: Array<Record<string, any>>, key: string) => rows.reduce((t, r) => t + (Number(r[key]) || 0), 0);
+  const assertRollUp = async (hostRunId: string, childRunIds: string[], label: string) => {
+    const host = await exactSummary(hostRunId);
+    const children = await Promise.all(childRunIds.map(exactSummary));
+    const rolled = await standaloneSummary(hostRunId);
+    const all = [host, ...children];
+    const row = { label, host: host.totalTokens, children: children.map((c) => `${c.runId}:${c.totalTokens}`), sum: sumOf(all, "totalTokens"), rolled: rolled.totalTokens,
+      rolledInput: rolled.grossInputTokens, sumInput: sumOf(all, "grossInputTokens"), rolledOutput: rolled.outputTokens, sumOutput: sumOf(all, "outputTokens"),
+      rolledCost: rolled.estimatedApiInputCost, sumCost: sumOf(all, "estimatedApiInputCost"),
+      ctx: { rolled: [rolled.latestPromptTokens, rolled.effectiveContextWindowTokens, rolled.latestModelIdentifier, rolled.runId], host: [host.latestPromptTokens, host.effectiveContextWindowTokens, host.latestModelIdentifier, host.runId] } };
+    log("ROLLUP", JSON.stringify(row));
+    expect(children.every((c) => c.totalTokens > 0), `every child has usage: ${JSON.stringify(row)}`).toBe(true);
+    expect(rolled.totalTokens).toBe(row.sum);
+    expect(rolled.grossInputTokens).toBe(row.sumInput);
+    expect(rolled.outputTokens).toBe(row.sumOutput);
+    if (rolled.estimatedApiInputCost != null) expect(rolled.estimatedApiInputCost).toBeCloseTo(row.sumCost, 9);
+    expect(rolled.latestPromptTokens).toBe(host.latestPromptTokens);
+    expect(rolled.effectiveContextWindowTokens).toBe(host.effectiveContextWindowTokens);
+    expect(rolled.latestModelIdentifier).toBe(host.latestModelIdentifier);
+    expect(rolled.runId).toBe(hostRunId);
+    return { rolled, host, children };
+  };
+
+  beforeAll(async () => {
+    dataDir = await mkdtemp(path.join(os.tmpdir(), "sar-probe-appdata-"));
+    await writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
+    appConfigProvider.config.setCustomAppDataDir(dataDir);
+    const started = await startStudioE2eRuntimeServer();
+    app = started.fastify; mainUrl = started.mainUrl;
+  }, 180_000);
+  afterEach(async () => {
+    for (const s of sockets) s.close(); sockets.clear();
+    for (const id of runIds) await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id }).catch(() => undefined);
+    runIds.clear();
+    for (const id of teamDefinitionIds) await gql("mutation($id: String!) { deleteAgentTeamDefinition(id: $id) { success } }", { id }).catch(() => undefined);
+    teamDefinitionIds.clear();
+    for (const id of definitionIds) await gql("mutation($id: String!) { deleteAgentDefinition(id: $id) { success } }", { id }).catch(() => undefined);
+    definitionIds.clear();
+  }, 180_000);
+  afterAll(async () => {
+    await app?.close(); app = null;
+    for (const w of workspaces) await rm(w, { recursive: true, force: true });
+    if (dataDir) await rm(dataDir, { recursive: true, force: true });
+  }, 180_000);
+
+  it.runIf(enabled && RUNTIMES[0].enabled)("claude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up", async () => {
+    const model = RUNTIMES[0].pick(await models("claude_agent_sdk"))!;
+    const suffix = randomUUID().slice(0, 6);
+    const token = `REPORT-${suffix}`;
+    const hostId = await createDef(`Crash Host ${suffix}`, "You are a precise tool operator. Follow the user's instructions exactly, call only the tools the user names, and keep every reply to one short sentence. When another agent messages you, do not call any tool; reply with one short sentence.");
+    const helperId = await createDef(`Crash Helper ${suffix}`,
+      "When another agent messages you, do what it asks: call send_message_to exactly once with target_agent_run_id set to the sender id given in the message and content set to the exact text it asks for. Then reply 'sent' and stop. "
+      + "When the user talks to you directly, do exactly what the user says.", ["send_message_to", "delegate_task"]);
+    const hostRunId = await createRun(hostId, "claude_agent_sdk", model);
+    const host = await openSocket(`/ws/agent/${hostRunId}`);
+    const preexisting = runtimeProcesses(CLAUDE_PROC).map((p) => p.pid);
+    log("processes before the first turn", JSON.stringify(runtimeProcesses(CLAUDE_PROC)));
+
+    const t0 = await sendTurn(host, "Reply with the single word READY. Do not call any tool.");
+    expect(t0.ack.payload.accepted).toBe(true);
+    await waitIdle(host, t0.from, "t0");
+    const afterHost = runtimeProcesses(CLAUDE_PROC);
+    log("processes after host turn", JSON.stringify(afterHost));
+    expect(afterHost.length, "one host runtime process").toBe(1);
+    const hostPid1 = afterHost[0].pid;
+    log("host pid", hostPid1, "preexisting", JSON.stringify(preexisting));
+
+    const t1 = await sendTurn(host, `Use send_message_to to message the mentioned collaborator at its address. Ask it to reply to you with send_message_to and the exact text "${token}". After the tool returns, reply with one short sentence.`,
+      [{ kind: "agent", definition_id: helperId }]);
+    expect(t1.ack.payload.accepted, JSON.stringify(t1.ack.payload)).toBe(true);
+    const v1 = (await view(hostRunId))!;
+    const helper = v1.execution_tree.collaborators[0];
+    const hostAddress = v1.execution_tree.host.address;
+    await poll("report reached host", async () => ((await view(hostRunId))?.communication_messages.messages ?? []).some((m) => m.senderAgentRunId === helper.agentRunId && m.receiverAgentRunId === hostRunId && m.content.includes(token)));
+    await waitIdle(host, t1.from, "t1");
+    const afterHelper = runtimeProcesses(CLAUDE_PROC);
+    log("processes after helper started", JSON.stringify(afterHelper));
+    const helperPids = afterHelper.filter((p) => p.pid !== hostPid1).map((p) => p.pid);
+    expect(afterHelper.map((p) => p.pid), "host process unchanged").toContain(hostPid1);
+    expect(helperPids.length, "one helper runtime process").toBe(1);
+
+    // The user has the collaborator view open (connect readies the host, which is live anyway).
+    const collab = await openSocket(`/ws/agent-collaboration/${hostRunId}`);
+
+    // CRASH 1: kill the host runtime process only.
+    process.kill(hostPid1, "SIGKILL");
+    log("killed host pid", hostPid1);
+    await poll("host process gone", async () => !runtimeProcesses(CLAUDE_PROC).some((p) => p.pid === hostPid1), 30_000);
+    await wait(3_000);
+    const vCrash = (await view(hostRunId))!;
+    log("after crash: root is_active", vCrash.is_active, "host status", statusOf(vCrash, hostRunId), "helper status", statusOf(vCrash, helper.agentRunId));
+    log("host socket tail after crash", JSON.stringify(host.messages.slice(-6).map((m) => [m.type, JSON.stringify(m.payload).slice(0, 160)])));
+
+    // Child SEND_MESSAGE on the collaboration stream: reaches the helper; the host is NOT restarted.
+    const childAck = await childCommand(collab, hostRunId, helper.agentRunId, "SEND_MESSAGE", "Reply with the single word CHILDOK. Do not call any tool.");
+    log("child SEND_MESSAGE ack", JSON.stringify(childAck.payload));
+    expect(childAck.payload.state, JSON.stringify(childAck.payload)).toBe("accepted");
+    await poll("helper answered CHILDOK", async () => (await memberConversation(hostRunId, helper.address, helper.agentRunId)).some((e) => e.role !== "user" && e.kind !== "inter_agent_message" && /CHILDOK/.test(e.content ?? "")));
+    const interruptAck = await childCommand(collab, hostRunId, helper.agentRunId, "INTERRUPT_GENERATION");
+    log("child INTERRUPT ack", JSON.stringify(interruptAck.payload));
+    expect(interruptAck.payload.state, "interrupt is not a root failure").not.toBe("failed");
+    await wait(3_000);
+    const afterChild = runtimeProcesses(CLAUDE_PROC);
+    log("processes after child commands", JSON.stringify(afterChild));
+    expect(afterChild.map((p) => p.pid).sort(), "no host runtime was restarted by child commands").toEqual(helperPids.sort());
+    const vChild = (await view(hostRunId))!;
+    log("after child commands: host status", statusOf(vChild, hostRunId));
+
+    // Child → host message restores the host.
+    const relayToken = `HELLO-HOST-${suffix}`;
+    const relayAck = await childCommand(collab, hostRunId, helper.agentRunId, "SEND_MESSAGE",
+      `Call send_message_to exactly once with recipient_address "${hostAddress}" and content "${relayToken}". Then reply 'sent'.`);
+    expect(relayAck.payload.state, JSON.stringify(relayAck.payload)).toBe("accepted");
+    await poll("child→host message delivered", async () => ((await view(hostRunId))?.communication_messages.messages ?? []).some((m) => m.senderAgentRunId === helper.agentRunId && m.receiverAgentRunId === hostRunId && m.content.includes(relayToken)));
+    const restored = await poll("host restored by child→host message", async () => { const ps = runtimeProcesses(CLAUDE_PROC).filter((p) => !helperPids.includes(p.pid)); return ps.length === 1 ? ps : null; });
+    const hostPid2 = restored[0].pid;
+    expect(hostPid2).not.toBe(hostPid1);
+    await poll("host conversation shows the relayed message", async () => (await hostConversation(hostRunId)).some((e) => e.kind === "inter_agent_message" && /HELLO-HOST/.test(e.content ?? "")));
+    log("host restored by child→host message; new pid", hostPid2, "host status", statusOf(await view(hostRunId), hostRunId));
+    await wait(8_000); // let the host's turn finish
+
+    // CRASH 2, then a host message on the host stream restores it.
+    process.kill(hostPid2, "SIGKILL");
+    await poll("host process 2 gone", async () => !runtimeProcesses(CLAUDE_PROC).some((p) => p.pid === hostPid2), 30_000);
+    await wait(3_000);
+    const t2 = await sendTurn(host, "Reply with the single word ALIVE. Do not call any tool.");
+    expect(t2.ack.payload.accepted, JSON.stringify(t2.ack.payload)).toBe(true);
+    await waitFor(host.messages, t2.from, (m) => /ALIVE/.test(JSON.stringify(m.payload)) && m.type !== "AGENT_COMMAND_ACK", "ALIVE reply");
+    await waitIdle(host, t2.from, "t2");
+    const hostPid3 = runtimeProcesses(CLAUDE_PROC).filter((p) => !helperPids.includes(p.pid));
+    log("host restored by host message; pids", JSON.stringify(hostPid3));
+    expect(hostPid3.length).toBe(1);
+
+    // AE-09: add a copy, then compare the roll-up with the exact-run records.
+    const t3 = await sendTurn(host, `Call the delegate_task tool exactly once with recipient_address "${helper.address}" and description "Reply in one short sentence without tools.". Do not call any other AutoByteus tool. Then reply with one short sentence.`);
+    expect(t3.ack.payload.accepted).toBe(true);
+    const withCopy = await poll("copy recorded", async () => { const v = await view(hostRunId); return v?.execution_tree.taskExecutions.find((t) => t.agentRunId) ? v : null; });
+    const copyRunId = withCopy.execution_tree.taskExecutions.find((t) => t.agentRunId)!.agentRunId as string;
+    await waitIdle(host, t3.from, "t3");
+    await poll("copy has usage", async () => (await exactSummary(copyRunId)).totalTokens > 0);
+    await wait(3_000);
+    await assertRollUp(hostRunId, [helper.agentRunId, copyRunId], "after copy (live root)");
+
+    // Child-only usage: the next roll-up query includes it (server-side, record-backed).
+    const beforeChild = await standaloneSummary(hostRunId);
+    const moreAck = await childCommand(collab, hostRunId, helper.agentRunId, "SEND_MESSAGE", "Reply with the single word MORE. Do not call any tool.");
+    expect(moreAck.payload.state).toBe("accepted");
+    await poll("helper answered MORE", async () => (await memberConversation(hostRunId, helper.address, helper.agentRunId)).some((e) => e.role !== "user" && /MORE/.test(e.content ?? "")));
+    const afterChildOnly = await poll("child-only usage in the roll-up", async () => { const s = await standaloneSummary(hostRunId); return s.totalTokens > beforeChild.totalTokens ? s : null; }, 60_000);
+    log("child-only roll-up delta", beforeChild.totalTokens, "→", afterChildOnly.totalTokens);
+    await assertRollUp(hostRunId, [helper.agentRunId, copyRunId], "after child-only report");
+
+    // Stored tree after Stop gives the same total.
+    const stopped = await gql<{ terminateAgentRun: { success: boolean; message: string } }>("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success message } }", { id: hostRunId });
+    expect(stopped.terminateAgentRun.success, stopped.terminateAgentRun.message).toBe(true);
+    await poll("stored view after Stop", async () => { const v = await view(hostRunId); return v && !v.is_active; });
+    await assertRollUp(hostRunId, [helper.agentRunId, copyRunId], "after Stop (stored tree)");
+    await poll("all runtime processes ended after Stop", async () => runtimeProcesses(CLAUDE_PROC).length === 0, 60_000);
+  }, 2_400_000);
+
+  for (const runtime of RUNTIMES) {
+    it.runIf(enabled && runtime.enabled && process.env.SAR_SKIP_AE08 !== "1")(`${runtime.runtimeKind}: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members`, async () => {
+      const model = runtime.pick(await models(runtime.runtimeKind))!;
+      const suffix = randomUUID().slice(0, 6);
+      const word = `PING${suffix.toUpperCase()}`;
+      const hostId = await createDef(`Addr Host ${suffix}`,
+        "You are a precise tool operator. When the user tells you to message a collaborator, call send_message_to exactly once as told, then reply with one short sentence. "
+        + "When another agent messages you with a word, call send_message_to exactly once with recipient_address set to the sender address given in the message header (not the sender id) and content 'ACK ' followed by that word. Then reply 'done'.");
+      const leadId = await createDef(`Addr Lead ${suffix}`,
+        "When an agent asks you to send it a word, call send_message_to exactly once with recipient_address set to the sender address given in the message header and content set to exactly that word. "
+        + "When a message starts with ACK, do not call any tool; reply 'ok'.");
+      const mateId = await createDef(`Addr Mate ${suffix}`, "Reply in one short sentence without tools.");
+      const team = await gql<{ createAgentTeamDefinition: { id: string } }>("mutation($input: CreateAgentTeamDefinitionInput!) { createAgentTeamDefinition(input: $input) { id } }", { input: {
+        name: `Addr Team ${suffix}`, description: "Address team.", instructions: "Work together.", coordinatorMemberName: "lead",
+        nodes: [{ memberName: "lead", ref: leadId, refScope: "SHARED" }, { memberName: "mate", ref: mateId, refScope: "SHARED" }], handoffs: [] } });
+      teamDefinitionIds.add(team.createAgentTeamDefinition.id);
+      const hostRunId = await createRun(hostId, runtime.runtimeKind, model);
+      const host = await openSocket(`/ws/agent/${hostRunId}`);
+      const t = await sendTurn(host, `Use send_message_to to message the mentioned team at its address, asking it to send you the word ${word}. Then reply with one short sentence.`,
+        [{ kind: "agent_team", definition_id: team.createAgentTeamDefinition.id }]);
+      expect(t.ack.payload.accepted, JSON.stringify(t.ack.payload)).toBe(true);
+      const teamEntry = (await view(hostRunId))!.execution_tree.collaborators[0];
+      const lead = teamEntry.members.find((m: any) => m.address.endsWith("/lead"));
+      const mate = teamEntry.members.find((m: any) => m.address.endsWith("/mate"));
+      log(runtime.runtimeKind, "team", teamEntry.address, "lead", lead.address, lead.agentRunId);
+      let recorded: unknown = null;
+      const flow = await poll("host → lead → host → lead(ACK)", async () => {
+        const msgs = (await view(hostRunId))?.communication_messages.messages ?? [];
+        recorded = msgs.map((m) => `${m.senderAgentRunId}→${m.receiverAgentRunId}: ${m.content.slice(0, 60)}`);
+        const ping = msgs.find((m) => m.senderAgentRunId === lead.agentRunId && m.receiverAgentRunId === hostRunId && m.content.includes(word));
+        const ack = msgs.find((m) => m.senderAgentRunId === hostRunId && m.receiverAgentRunId === lead.agentRunId && /ACK/.test(m.content));
+        return ping && ack ? msgs : null;
+      }).catch((e) => { throw new Error(`${e instanceof Error ? e.message : e} Recorded: ${JSON.stringify(recorded)}`); });
+      log(runtime.runtimeKind, "flow", JSON.stringify(flow.map((m) => `${m.senderAgentRunId}→${m.receiverAgentRunId}: ${m.content.slice(0, 60)}`)));
+      const sends = host.messages.filter((m) => m.type === "TOOL_EXECUTION_SUCCEEDED" && String(m.payload.tool_name ?? "").endsWith("send_message_to"));
+      const sendArgs = host.messages.filter((m) => String(m.payload.tool_name ?? "").endsWith("send_message_to") && m.payload.arguments).map((m) => JSON.stringify(m.payload.arguments));
+      log(runtime.runtimeKind, "host send_message_to args", JSON.stringify(sendArgs), "succeeded", sends.length);
+      expect(sendArgs.some((a) => a.includes(`"${lead.address}"`) && /ACK/.test(a)), `host replied by lead address ${lead.address}: ${JSON.stringify(sendArgs)}`).toBe(true);
+      const header = `sender address: ${lead.address}`;
+      expect(await poll("host input carries the lead's sender address", async () => grepMemory(hostRunId, header), 30_000)).toBe(true);
+      expect(await grepMemory(lead.agentRunId, `sender address: ${(await view(hostRunId))!.execution_tree.host.address}`), "lead input carries the host's address").toBe(true);
+      await poll("lead conversation shows the ACK from the host", async () => (await memberConversation(hostRunId, lead.address, lead.agentRunId)).some((e) => e.kind === "inter_agent_message" && e.senderAgentRunId === hostRunId && /ACK/.test(e.content ?? "")));
+      await wait(10_000);
+      const usage = await Promise.all([lead.agentRunId, mate.agentRunId].map(exactSummary));
+      log(runtime.runtimeKind, "member usage", JSON.stringify(usage.map((u) => [u.runId, u.totalTokens])));
+      const children = [lead.agentRunId, ...(usage[1].totalTokens > 0 ? [mate.agentRunId] : [])];
+      const rolled = await standaloneSummary(hostRunId);
+      const host1 = await exactSummary(hostRunId);
+      const expected = host1.totalTokens + usage.reduce((t, u) => t + u.totalTokens, 0);
+      log(runtime.runtimeKind, "team roll-up", rolled.totalTokens, "expected", expected, "children", JSON.stringify(children));
+      expect(rolled.totalTokens).toBe(expected);
+      expect(rolled.latestPromptTokens).toBe(host1.latestPromptTokens);
+    }, 2_400_000);
+  }
+});

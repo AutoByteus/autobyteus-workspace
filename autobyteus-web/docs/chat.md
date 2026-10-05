@@ -286,14 +286,19 @@ the launch target and is unchanged.
   - messages show as Team/Org tab rows and "From <Sender>:".
 - **Names (F-03).** Rows, the Team/Org tab and "From <Sender>:" use one formatter,
   `utils/collaboration/memberDisplayName.ts` (`product prototyper`, and
-  `Product Prototyper` in sentences).
+  `Product Prototyper` in sentences). In a standalone run's Team tab the run's own
+  agent reads in the title-case form (`Research Assistant`, as in "From Research
+  Assistant:", VIS-013); collaborators keep the row form.
 - **Agent-to-agent messages (RD-004).** A `send_message_to` delivery shows its
   sender with `InterAgentMessageSegment` ("From <Sender>:") inside the receiving
   agent's message block, live (`memberInputMessageHandler` for
-  `inter_agent_delivery`) and after reopen (`inter_agent_message` replay items).
-  Older stored deliveries without a recorded sender stay user-style. Known
-  limit: the Event Monitor's "earlier events" page (active-trace paging) still
-  shows deliveries user-style.
+  `inter_agent_delivery`), after reopen (`inter_agent_message` replay items) and
+  on the Event Monitor's "earlier events" page (`EventMonitorInterAgentVisual`,
+  rendered by `eventMonitorActiveTraceBrowsePresentation.ts` and
+  `EventMonitorBrowseAssistantRow`). Older stored deliveries without a recorded
+  sender stay user-style. `utils/collaboration/interAgentDelivery.ts` parses the
+  delivery header with or without its `sender address` part, so stored history
+  keeps rendering.
 - **Standalone runs** gain children: rows under the run row
   (`AgentRunTaskRows`), a child's own conversation (titled by its name, with the
   ⚙ and ＋ header controls and the mention-aware input described above), the run row

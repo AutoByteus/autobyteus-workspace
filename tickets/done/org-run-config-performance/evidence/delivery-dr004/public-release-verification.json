@@ -1,0 +1,54 @@
+{
+  "result": "Pass",
+  "tag": "v1.4.94-beta.2",
+  "releaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.94-beta.2",
+  "prerelease": true,
+  "draft": false,
+  "assetCount": 17,
+  "allFiveDesktopPlatformsAndSignedAndroidPresent": true,
+  "versionedAssetNamesMatch": true,
+  "stableLatestUnchanged": "v1.4.93",
+  "downloadedPublicByteChecks": [
+    {
+      "name": "AutoByteus_personal_android-1.4.94-beta.2-release.apk",
+      "sha256": "sha256:b8fa55cd846b95a8d5c1a4fd96981db8f9a421030d63644ca03c351b934a8ec3",
+      "apiAssetDigestMatch": true,
+      "size": 1846695
+    },
+    {
+      "name": "latest-mac.yml",
+      "sha256": "sha256:437f557c538b7c63a6cdb827085a45190c994bbf07c59d122c4dfb214f482639",
+      "apiAssetDigestMatch": true,
+      "size": 939
+    },
+    {
+      "name": "latest-linux-arm64.yml",
+      "sha256": "sha256:f54c89b66130deb0ba3f3c5d1c6c0c0c25cb6617163c22ec09bbe517ebfcb824",
+      "apiAssetDigestMatch": true,
+      "size": 438
+    },
+    {
+      "name": "latest.yml",
+      "sha256": "sha256:a9a3a3b31e2549d7b2736485c186670a5a9d3730f2f98d92b63e1683cab4618a",
+      "apiAssetDigestMatch": true,
+      "size": 375
+    },
+    {
+      "name": "latest-linux.yml",
+      "sha256": "sha256:24fa0ae9ed34969d84ff4749d4850828373bbb91a1c76b5673670244c01c2678",
+      "apiAssetDigestMatch": true,
+      "size": 434
+    },
+    {
+      "name": "AutoByteus_personal_android-1.4.94-beta.2-release.apk.sha256",
+      "sha256": "sha256:a390b6c89a709bdddd09a9088f0748d745c9d91ee861fe76346011341cb85c54",
+      "apiAssetDigestMatch": true,
+      "size": 120
+    }
+  ],
+  "apkSidecarMatchesActualDownloadedBytes": true,
+  "allUpdaterVersionsAndReferencesMatch": true,
+  "notesMode": "Generated GitHub notes per tagged prerelease workflows",
+  "verificationLimit": "Public YAML/APK/checksum bytes downloaded/hashed. Large desktop binaries not re-downloaded locally; required CI package/signing/native startup/metadata checks plus GitHub asset digest/size receipts support these publications.",
+  "apkDownloadCleanup": "Verified temporary public APK removed after actual-byte SHA256/sidecar check; external GitHub asset + durable hashes/JSON/sidecar retained; generated binaries not tracked"
+}

@@ -6,7 +6,7 @@ import type { AgentRunBackendInputDispatch, AgentRunBackendInputDispatchResult }
 import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import type { AgyRunContext } from "./agy-agent-run-context.js";
 import { AgyStreamProcess } from "../stream/agy-stream-process.js";
-import { AgyStreamEventConverter } from "../stream/agy-stream-event-converter.js";
+import { AgyStreamEventConverter, type AgyStreamEventConverterOptions } from "../stream/agy-stream-event-converter.js";
 import { recordAgyProviderDiagnostic } from "../stream/agy-provider-diagnostic-sink.js";
 import { readAgyNativeImagePath } from "../stream/agy-step-output-reader.js";
 import { readAgyNativeToolArguments } from "../stream/agy-native-tool-arguments-reader.js";
@@ -28,7 +28,8 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   private cancelled = false;
   private argumentLookup: AbortController | null = null;
 
-  constructor(private readonly context: AgyRunContext, private readonly process: AgyStreamProcess) {
+  constructor(private readonly context: AgyRunContext, private readonly process: AgyStreamProcess,
+    converterOptions: AgyStreamEventConverterOptions = { compactionDetection: false }) {
     const conversationId = context.runtimeContext.conversationId;
     // Background-task changes arrive between turns, so they bypass turn-scoped message handling.
     this.backgroundTasks = new AgyBackgroundTaskMonitor({ runId: context.runId, conversationId,
@@ -40,7 +41,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
           .catch(() => console.warn(`AGY_PROVIDER_DIAGNOSTIC_WRITE_FAILED: run=${context.runId}`));
       },
       (stepIndex) => readAgyNativeImagePath(conversationId, stepIndex),
-      (steps) => this.backgroundTasks.track(steps));
+      (steps) => this.backgroundTasks.track(steps), converterOptions);
     process.subscribe((message) => {
       if (message.event === "init") return;
       this.enqueue(() => this.handleMessage(message));

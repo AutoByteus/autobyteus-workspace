@@ -194,6 +194,35 @@ describe("AgentOrg first-message summary startup migration", () => {
     expect((await test.indexStore.readIndex())[0]?.summary).toBe("");
   });
 
+  it("matches internal deliveries against the released envelope header (without sender address)", async () => {
+    const test = await createPackage();
+    const layout = new AgentMemoryLayout(test.memoryDir);
+    const index = new AgentOrgExecutionIndex(test.tree);
+    const workerRunDir = layout.getRootedAgentRunDirPath(index.getPhysicalScopeForAgent("worker-run"), "worker-run");
+    // The earliest worker trace is an internal delivery as released versions recorded it.
+    await fs.writeFile(path.join(workerRunDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME), `${JSON.stringify({
+      id: "trace-worker-run", trace_type: "user", source_event: "AgentRun.postUserMessage", ts: 100,
+      content: "You received a message from sender name: director, sender id: direct-run\nmessage:\nInternal delivery",
+    })}\n`);
+    await new AgentOrgCommunicationMessagesV1Store().write(layout.getOrgDirPath(test.orgRunId), {
+      schemaVersion: 1,
+      subjectKind: "agent_org",
+      orgRunId: test.orgRunId,
+      messages: [{
+        messageId: "internal-message",
+        senderAgentRunId: "direct-run",
+        receiverAgentRunId: "worker-run",
+        content: "Internal delivery",
+        messageType: "agent_message",
+        referenceFiles: [],
+        createdAt: "1970-01-01T00:02:30.000Z",
+      }],
+    });
+    const result = await new AgentOrgHistoryFirstMessageSummaryV1AppDataMigration(test.memoryDir).execute();
+    expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+    expect((await test.indexStore.readIndex())[0]?.summary).toBe("");
+  });
+
   it("uses current Org task submission sidecars only as negative provenance evidence", async () => {
     const test = await createPackage({ taskEvidence: true });
     const result = await new AgentOrgHistoryFirstMessageSummaryV1AppDataMigration(test.memoryDir).execute();

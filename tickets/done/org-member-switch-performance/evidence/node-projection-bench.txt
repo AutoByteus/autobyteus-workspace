@@ -1,0 +1,5 @@
+solution_designer        messages= 19 referenceRows=  8265 oneProjectionMs=79
+architecture_reviewer    messages= 15 referenceRows=   604 oneProjectionMs=4
+implementation_engineer  messages= 24 referenceRows= 11896 oneProjectionMs=96
+code_reviewer            messages= 42 referenceRows= 41965 oneProjectionMs=350
+api_e2e_engineer         messages= 18 referenceRows= 22476 oneProjectionMs=187

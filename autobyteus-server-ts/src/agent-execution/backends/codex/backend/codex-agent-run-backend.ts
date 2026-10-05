@@ -186,6 +186,17 @@ export class CodexAgentRunBackend implements AgentRunBackend {
 
   async terminateRun(): Promise<string | null> {
     const platformAgentRunId = this.getPlatformAgentRunId();
+    // Close provider compaction progress while its canonical consumers remain attached.
+    const abandonedCompactions = this.eventConverter.closeOpenCompactions("run_terminated");
+    if (abandonedCompactions.length > 0) {
+      const work = Promise.all([...this.sourceListeners].map(async listener => {
+        await listener(abandonedCompactions);
+      })).then(() => undefined);
+      this.sourceEventWork.add(work);
+      void work.then(() => this.sourceEventWork.delete(work), (error: unknown) => {
+        logger.error(`Failed to publish abandoned Codex compactions for run '${this.runId}': ${String(error)}`);
+      });
+    }
     await this.threadManager.terminateThread(this.runId, this.codexThread);
     // The thread fence closed its finite native source. A synchronous native
     // terminal update does not mean its async canonical batch reached AgentRun.

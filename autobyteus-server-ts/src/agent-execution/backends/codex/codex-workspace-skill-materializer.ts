@@ -1,3 +1,4 @@
+import { SkillService } from "../../../skills/services/skill-service.js";
 import {
   WorkspaceSkillMaterializer,
   type WorkspaceSkillMaterializationProfile,
@@ -14,6 +15,7 @@ export const getCodexWorkspaceSkillMaterializer = (): WorkspaceSkillMaterializer
   if (!cachedCodexWorkspaceSkillMaterializer) {
     cachedCodexWorkspaceSkillMaterializer = new WorkspaceSkillMaterializer(
       CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE,
+      { resolveManagedSkill: (sourceId, name) => SkillService.getInstance().resolveManagedSkillForMaterialization(sourceId, name) },
     );
   }
   return cachedCodexWorkspaceSkillMaterializer;

@@ -3,7 +3,7 @@ import {
   AgentOrgReferenceContentError,
   AgentOrgReferenceContentService,
 } from "../../agent-org-execution/services/agent-org-reference-content-service.js";
-import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
+import { getStandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
 /**
  * Reference files of messages between the children of a standalone Agent run's collaboration
@@ -15,7 +15,7 @@ export async function registerAgentCollaborationReferenceRoutes(
 ): Promise<void> {
   const content = options.contentService ?? new AgentOrgReferenceContentService({
     getCollaborationRecordsSnapshot: async (hostRunId) => {
-      const inspection = await AgentRunCollaborationRootManager.getInstance().getInspection(hostRunId);
+      const inspection = await getStandaloneAgentRunRootManager().getInspection(hostRunId);
       if (!inspection) throw new AgentOrgReferenceContentError("REFERENCE_NOT_FOUND", "Agent collaboration reference was not found.");
       return { messages: inspection.snapshot.messages };
     },

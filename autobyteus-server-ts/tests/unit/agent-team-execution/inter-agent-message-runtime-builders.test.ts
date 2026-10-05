@@ -47,7 +47,7 @@ describe("inter-agent-message-runtime-builders", () => {
   it("formats content and exact current sender/receiver identity metadata", () => {
     const request = buildRequest();
     const expected =
-      "You received a message from sender name: Writer, sender id: run-writer\nmessage:\nPlease review the draft.";
+      "You received a message from sender name: Writer, sender address: /Writer, sender id: run-writer\nmessage:\nPlease review the draft.";
 
     expect(buildRecipientVisibleInterAgentMessageContent(request)).toBe(expected);
     const inputMessage = buildInterAgentDeliveryInputMessage(request);
@@ -73,7 +73,7 @@ describe("inter-agent-message-runtime-builders", () => {
     });
 
     expect(buildRecipientVisibleInterAgentMessageContent(request)).toBe(
-      "You received a message from sender name: Writer, sender id: run-writer\n" +
+      "You received a message from sender name: Writer, sender address: /Writer, sender id: run-writer\n" +
         "message:\nPlease review the draft summary.\n\n" +
         "Reference files:\n- /tmp/report.md\n- /tmp/evidence.log",
     );
@@ -114,7 +114,7 @@ describe("inter-agent-message-runtime-builders", () => {
     });
 
     expect(buildRecipientVisibleInterAgentMessageContent(request)).toBe(
-      "You received a message from sender name: Writer, sender id: run-writer-task-1\nmessage:\nhello",
+      "You received a message from sender name: Writer, sender address: /Writer, sender id: run-writer-task-1\nmessage:\nhello",
     );
     expect(buildInterAgentDeliveryInputMessage(request).metadata).toEqual(
       expect.objectContaining({ sender_agent_id: "run-writer-task-1", sender_member_address: "/Writer" }),

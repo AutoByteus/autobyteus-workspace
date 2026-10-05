@@ -289,6 +289,10 @@ const messages = {
     "Restore view",
   "workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam":
     "Represents",
+  "workspace.components.workspace.team.TeamCommunicationPanel.reference_count_label":
+    "{{count}} reference files",
+  "workspace.components.workspace.team.TeamCommunicationPanel.show_all_references":
+    "Show all {{count}} files",
   "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
     "Focused subteam",
   "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":

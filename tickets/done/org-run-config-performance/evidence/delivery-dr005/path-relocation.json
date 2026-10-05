@@ -1,0 +1,10 @@
+{
+  "revision": "DR-005",
+  "removedHistoricalWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-run-config-performance",
+  "durableSourceAndArchiveCheckout": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta",
+  "archivedTicket": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance",
+  "legacyTicketAlias": "tickets/in-progress/org-run-config-performance -> tickets/done/org-run-config-performance",
+  "ownerGuideVersionAliases": "/Users/normy/autobyteus_org/autobyteus-release-checkouts/org-run-config-performance-beta/tickets/done/org-run-config-performance/evidence/delivery-dr005/runtime-lifecycle-guide-custody-dr004/custody-manifest.json",
+  "preservedGeneratedOutputCustody": "/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-reports/org-run-config-performance-cleanup-dr005/generated-output-custody",
+  "policy": "Original upstream logs/review hashes/path manifests remain immutable historical provenance. Current cumulative index uses durable paths; expected guide hash selects published versus later unmerged custody version. Old ignored app binary removed after proof; published binary assets remain external release artifacts."
+}

@@ -4,7 +4,7 @@
       {{ $t('workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member') }}
     </div>
 
-    <div v-else-if="displayMessages.length === 0" class="flex flex-1 flex-col items-center justify-center p-6 text-center text-gray-400">
+    <div v-else-if="rows.length === 0" class="flex flex-1 flex-col items-center justify-center p-6 text-center text-gray-400">
       <Icon icon="heroicons:chat-bubble-left-right" class="mb-2 h-9 w-9 text-gray-300" />
       <p class="text-sm font-medium text-gray-500">{{ $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_title') }}</p>
       <p class="mt-1 text-sm">{{ $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_detail') }}</p>
@@ -18,7 +18,7 @@
       >
         <section class="pb-1" data-test="team-communication-message-list">
           <div
-            v-for="message in displayMessages"
+            v-for="message in rows"
             :key="message.messageId"
             class="border-l-2 transition-colors"
             :class="isMessageSelected(message) ? 'border-blue-500 bg-blue-50' : 'border-transparent'"
@@ -44,18 +44,34 @@
                     </span>
                     <span class="shrink-0 text-xs text-gray-400">{{ formatTimestamp(message.createdAt) }}</span>
                   </div>
-                  <p class="mt-0.5 truncate text-xs text-gray-500">
-                    {{ counterpartMetadata(message) }}
-                  </p>
+                  <div class="mt-0.5 flex items-center justify-between gap-2">
+                    <p class="min-w-0 truncate text-xs text-gray-500">
+                      {{ counterpartMetadata(message) }}
+                    </p>
+                    <span
+                      v-if="message.referenceFiles.length"
+                      class="flex shrink-0 items-center gap-0.5 text-xs text-gray-400"
+                      :title="referenceCountLabel(message)"
+                      data-test="team-communication-reference-count"
+                    >
+                      <Icon icon="heroicons:paper-clip" class="h-3.5 w-3.5" aria-hidden="true" />
+                      <span aria-hidden="true">{{ formatCount(message.referenceFiles.length) }}</span>
+                      <span class="sr-only">{{ referenceCountLabel(message) }}</span>
+                    </span>
+                  </div>
                   <p class="mt-1 line-clamp-2 whitespace-pre-line text-sm leading-5 text-gray-600">
                     {{ message.content }}
                   </p>
                 </div>
               </div>
             </button>
-            <div v-if="message.referenceFiles.length" class="space-y-1 px-3 pb-2 pl-9">
+            <div
+              v-if="isMessageSelected(message) && message.referenceFiles.length"
+              class="space-y-1 px-3 pb-2 pl-9"
+              data-test="team-communication-reference-list"
+            >
               <button
-                v-for="reference in message.referenceFiles"
+                v-for="reference in visibleReferences(message)"
                 :key="reference.referenceId"
                 class="flex w-full items-center gap-2 rounded px-1.5 py-1 text-left text-sm hover:bg-white focus:outline-none focus-visible:bg-white"
                 :class="selectedReferenceId === reference.referenceId && selectedMessageId === message.messageId ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600'"
@@ -69,6 +85,15 @@
                   :data-icon="referenceFileIcon(reference)"
                 />
                 <span class="truncate">{{ referenceFileName(reference.path) }}</span>
+              </button>
+              <button
+                v-if="!showAllReferences && message.referenceFiles.length > REFERENCE_PREVIEW_LIMIT"
+                type="button"
+                class="w-full rounded px-1.5 py-1 text-left text-xs font-medium text-blue-600 hover:bg-white hover:text-blue-700 focus:outline-none focus-visible:bg-white"
+                data-test="team-communication-show-all-references"
+                @click="showAllReferences = true"
+              >
+                {{ t('workspace.components.workspace.team.TeamCommunicationPanel.show_all_references', { count: formatCount(message.referenceFiles.length) }) }}
               </button>
             </div>
           </div>
@@ -159,15 +184,21 @@ import CollaborationMessageReferenceViewer from './CollaborationMessageReference
 
 const props = defineProps<{
   messages: CollaborationMessagesContextView;
+  /** The focused member's perspective rows, computed once by the owning Section. */
+  rows: readonly CollaborationMessagePerspectiveRow[];
 }>();
 
-const { t } = useLocalization();
+/** Reference rows shown under the selected message until the user asks for all of them. */
+const REFERENCE_PREVIEW_LIMIT = 20;
+
+const { t, resolvedLocale } = useLocalization();
 const identityOpen = ref(false);
 const identityId = useId();
 const selectedMessageId = ref<string | null>(null);
 const selectedReferenceId = ref<string | null>(null);
 const selectedType = ref<'message' | 'reference'>('message');
 const referenceRefreshSignal = ref(0);
+const showAllReferences = ref(false);
 const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
   initialWidth: 232,
   minWidth: 168,
@@ -179,17 +210,30 @@ const hasFocusedMemberIdentity = computed(() => Boolean(
     && props.messages.memberIdentityByAgentRunId()[props.messages.focusedAgentRunId],
 ));
 const teamRunId = computed(() => props.messages.rootRunId);
-const displayMessages = computed(() => props.messages.listMessages());
 const selectedMessage = computed(() =>
-  displayMessages.value.find((message) => message.messageId === selectedMessageId.value) || null,
+  props.rows.find((message) => message.messageId === selectedMessageId.value) || null,
 );
-const selectedReference = computed(() =>
-  selectedMessage.value?.referenceFiles.find((reference) => reference.referenceId === selectedReferenceId.value) || null,
-);
+const selectedReference = computed(() => {
+  const referenceId = selectedReferenceId.value;
+  if (!referenceId) return null;
+  return selectedMessage.value?.referenceFiles.find((reference) => reference.referenceId === referenceId) || null;
+});
 
 watch([() => props.messages.rootKind, () => props.messages.rootRunId, () => props.messages.focusedAgentRunId,
   () => props.messages.focusedMemberAddress, selectedMessageId, selectedReferenceId, selectedType],
 () => { identityOpen.value = false; });
+
+// A same-message live update keeps the expanded list; a new message, member or root collapses it.
+watch([selectedMessageId, () => props.messages.focusedAgentRunId, () => props.messages.rootRunId],
+  () => { showAllReferences.value = false; });
+
+const visibleReferences = (message: CollaborationMessagePerspectiveRow): readonly TeamReferenceFile[] =>
+  showAllReferences.value ? message.referenceFiles : message.referenceFiles.slice(0, REFERENCE_PREVIEW_LIMIT);
+const formatCount = (count: number): string => new Intl.NumberFormat(resolvedLocale.value).format(count);
+const referenceCountLabel = (message: CollaborationMessagePerspectiveRow): string =>
+  t('workspace.components.workspace.team.TeamCommunicationPanel.reference_count_label', {
+    count: formatCount(message.referenceFiles.length),
+  });
 
 const compactMessageLabel = (message: CollaborationMessagePerspectiveRow): string => {
   const normalized = (message.messageType || 'agent_message').trim();
@@ -240,16 +284,16 @@ const selectReference = (
 };
 
 watch(
-  () => displayMessages.value.map((message) => message.messageId).join('\n'),
+  () => props.rows.map((message) => message.messageId).join('\n'),
   () => {
-    if (displayMessages.value.length === 0) {
+    if (props.rows.length === 0) {
       selectedMessageId.value = null;
       selectedReferenceId.value = null;
       selectedType.value = 'message';
       return;
     }
     if (!selectedMessage.value) {
-      selectedMessageId.value = displayMessages.value[0].messageId;
+      selectedMessageId.value = props.rows[0].messageId;
       selectedReferenceId.value = null;
       selectedType.value = 'message';
     }

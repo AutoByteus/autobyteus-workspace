@@ -37,7 +37,7 @@ const deferred = () => {
 const acquire = (materializer: WorkspaceSkillMaterializer, workspace: string, skill: Skill,
   workspaceCollisionPolicy: WorkspaceCollisionPolicy, runId: string) =>
   materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace,
-    requests: [{ kind: "expose-resolved", skill }], workspaceCollisionPolicy });
+    requests: [{ kind: "expose-resolved", skill }], workspaceCollisionPolicy }).then(result => result.materializedSkills);
 
 const dispositions = (warn: ReturnType<typeof vi.fn>): string[] =>
   warn.mock.calls.map(([message]) => /disposition='([^']+)'/.exec(String(message))?.[1] ?? "");

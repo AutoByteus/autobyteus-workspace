@@ -22,4 +22,11 @@ describe('agent-to-agent delivery content (RD-004)', () => {
       .toEqual({ senderName: 'researcher', senderAgentRunId: 'r-1', body: 'Hello\n\nReference files:\n- /a.md' })
     expect(parseInterAgentDelivery('plain text')).toEqual({ senderName: null, senderAgentRunId: null, body: 'plain text' })
   })
+
+  it('reads the header with the sender address (REQ-005) and keeps stored headers without it parsing', () => {
+    expect(parseInterAgentDelivery('You received a message from sender name: lead, sender address: /eng/lead, sender id: lead_9a\nmessage:\nStatus?'))
+      .toEqual({ senderName: 'lead', senderAgentRunId: 'lead_9a', body: 'Status?' })
+    expect(parseInterAgentDelivery('You received a message from sender name: lead, sender id: lead_9a\nmessage:\nStatus?'))
+      .toEqual({ senderName: 'lead', senderAgentRunId: 'lead_9a', body: 'Status?' })
+  })
 })

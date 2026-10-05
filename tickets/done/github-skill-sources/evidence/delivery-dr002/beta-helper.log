@@ -1,0 +1,179 @@
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * [new branch]          codex/agent-initiated-collaborators -> origin/codex/agent-initiated-collaborators
+ * [new branch]          codex/agent-isolated-app-recording -> origin/codex/agent-isolated-app-recording
+ * [new branch]          codex/agent-run-id-sanitization -> origin/codex/agent-run-id-sanitization
+ * [new branch]          codex/agent-team-chevron-affordance -> origin/codex/agent-team-chevron-affordance
+ * [new branch]          codex/agent-team-codex-output-not-visible -> origin/codex/agent-team-codex-output-not-visible
+ * [new branch]          codex/agent-team-local-member-import-analysis -> origin/codex/agent-team-local-member-import-analysis
+ * [new branch]          codex/agent-team-universal-task-delegation -> origin/codex/agent-team-universal-task-delegation
+ * [new branch]          codex/agent-turn-model-refactor -> origin/codex/agent-turn-model-refactor
+ * [new branch]          codex/agent-work-request-prompt -> origin/codex/agent-work-request-prompt
+ * [new branch]          codex/agy-background-task-turn-liveness -> origin/codex/agy-background-task-turn-liveness
+ * [new branch]          codex/agy-empty-mcp-config-activation -> origin/codex/agy-empty-mcp-config-activation
+ * [new branch]          codex/agy-linked-skills-always-auto-approve -> origin/codex/agy-linked-skills-always-auto-approve
+ * [new branch]          codex/agy-mcp-tool-call-presentation-only -> origin/codex/agy-mcp-tool-call-presentation-only
+ * [new branch]          codex/agy-native-image-output-path -> origin/codex/agy-native-image-output-path
+ * [new branch]          codex/antigravity-marketing-turn-failure -> origin/codex/antigravity-marketing-turn-failure
+ * [new branch]          codex/antigravity-runtime-missing -> origin/codex/antigravity-runtime-missing
+ * [new branch]          codex/antigravity-tool-argument-visibility -> origin/codex/antigravity-tool-argument-visibility
+ * [new branch]          codex/application-communication-api-clarity -> origin/codex/application-communication-api-clarity
+ * [new branch]          codex/archive-run-history -> origin/codex/archive-run-history
+ * [new branch]          codex/artifact-edit-file-content-view-bug -> origin/codex/artifact-edit-file-content-view-bug
+ * [new branch]          codex/artifact-maximize-button -> origin/codex/artifact-maximize-button
+ * [new branch]          codex/artifact-touched-files-redesign -> origin/codex/artifact-touched-files-redesign
+ * [new branch]          codex/autobyteus-tool-result-continuation-regression -> origin/codex/autobyteus-tool-result-continuation-regression
+ * [new branch]          codex/browser-empty-tabstrip-cleanup -> origin/codex/browser-empty-tabstrip-cleanup
+ * [new branch]          codex/browser-mobile-view-support -> origin/codex/browser-mobile-view-support
+ * [new branch]          codex/browser-navigate-load-hang -> origin/codex/browser-navigate-load-hang
+ * [new branch]          codex/chat-composer-menus-open-upward -> origin/codex/chat-composer-menus-open-upward
+ * [new branch]          codex/chat-interface-entry -> origin/codex/chat-interface-entry
+ * [new branch]          codex/claude-sdk-builtin-tool-restriction -> origin/codex/claude-sdk-builtin-tool-restriction
+ + c20262dd8...aa555df75 codex/codex-installed-skill-dedup -> origin/codex/codex-installed-skill-dedup  (forced update)
+ * [new branch]          codex/codex-installed-skill-dedup-redo -> origin/codex/codex-installed-skill-dedup-redo
+ * [new branch]          codex/codex-stream-stall -> origin/codex/codex-stream-stall
+ * [new branch]          codex/compact-skill-details-header -> origin/codex/compact-skill-details-header
+ * [new branch]          codex/compaction-config-save-button -> origin/codex/compaction-config-save-button
+ * [new branch]          codex/compaction-icon-spinner -> origin/codex/compaction-icon-spinner
+ * [new branch]          codex/composer-mention-discoverability -> origin/codex/composer-mention-discoverability
+ * [new branch]          codex/context-attachment-draft-transfer-refactor -> origin/codex/context-attachment-draft-transfer-refactor
+ * [new branch]          codex/context-compaction-simplification-analysis -> origin/codex/context-compaction-simplification-analysis
+ * [new branch]          codex/context-file-reference-paths -> origin/codex/context-file-reference-paths
+ * [new branch]          codex/cross-scope-agent-mentions -> origin/codex/cross-scope-agent-mentions
+ * [new branch]          codex/default-temp-workspace-run-config -> origin/codex/default-temp-workspace-run-config
+ + d1023e2fd...6826e439f codex/desktop-invalid-package-agent-definitions -> origin/codex/desktop-invalid-package-agent-definitions  (forced update)
+ * [new branch]          codex/disable-artifact-auto-focus -> origin/codex/disable-artifact-auto-focus
+ * [new branch]          codex/docker-cli-latest-install -> origin/codex/docker-cli-latest-install
+ * [new branch]          codex/docker-launcher-container-lifecycle -> origin/codex/docker-launcher-container-lifecycle
+ * [new branch]          codex/electron-embedded-server-config-consistency -> origin/codex/electron-embedded-server-config-consistency
+ * [new branch]          codex/electron-migration-packaging-recovery -> origin/codex/electron-migration-packaging-recovery
+ * [new branch]          codex/explicit-agent-provider-composition-and-scope-assembly -> origin/codex/explicit-agent-provider-composition-and-scope-assembly
+ * [new branch]          codex/external-channel-sql-removal -> origin/codex/external-channel-sql-removal
+ + 0158b9324...c329717ac codex/external-turn-reply-aggregation -> origin/codex/external-turn-reply-aggregation  (forced update)
+ * [new branch]          codex/file-based-agent-refactor -> origin/codex/file-based-agent-refactor
+ * [new branch]          codex/fix-server-docker-build -> origin/codex/fix-server-docker-build
+ * [new branch]          codex/flat-agent-organization-model-follow-up -> origin/codex/flat-agent-organization-model-follow-up
+ * [new branch]          codex/frontend-agent-team-memory-visibility -> origin/codex/frontend-agent-team-memory-visibility
+ * [new branch]          codex/frontend-responsive-ux-audit -> origin/codex/frontend-responsive-ux-audit
+ * [new branch]          codex/gateway-dead-code-investigation -> origin/codex/gateway-dead-code-investigation
+ * [new branch]          codex/gemini-38-tts-upgrade -> origin/codex/gemini-38-tts-upgrade
+ * [new branch]          codex/gemini-latest-image-model-support -> origin/codex/gemini-latest-image-model-support
+ * [new branch]          codex/gemini-rpa-thinking-config-ts -> origin/codex/gemini-rpa-thinking-config-ts
+ * [new branch]          codex/gemini-tts-voice-schema-audit -> origin/codex/gemini-tts-voice-schema-audit
+ * [new branch]          codex/github-agent-package-import -> origin/codex/github-agent-package-import
+ * [new branch]          codex/hide-middle-success-tool-label -> origin/codex/hide-middle-success-tool-label
+ * [new branch]          codex/hierarchical-team-run-launch-config-recovery-20260824 -> origin/codex/hierarchical-team-run-launch-config-recovery-20260824
+ * [new branch]          codex/historical-run-config-readonly-ux -> origin/codex/historical-run-config-readonly-ux
+ * [new branch]          codex/instruction-panel-expand-collapse -> origin/codex/instruction-panel-expand-collapse
+ * [new branch]          codex/intel-mac-terminal-prompt-hang -> origin/codex/intel-mac-terminal-prompt-hang
+ * [new branch]          codex/intel-mac-zip-release -> origin/codex/intel-mac-zip-release
+ * [new branch]          codex/isolated-app-parallel-control-ports -> origin/codex/isolated-app-parallel-control-ports
+ * [new branch]          codex/linux-appimage-memory-dir-startup -> origin/codex/linux-appimage-memory-dir-startup
+ * [new branch]          codex/linux-appimage-prisma-erofs -> origin/codex/linux-appimage-prisma-erofs
+ * [new branch]          codex/llm-runtime-real-compaction -> origin/codex/llm-runtime-real-compaction
+ * [new branch]          codex/lmstudio-thinking-investigation -> origin/codex/lmstudio-thinking-investigation
+ * [new branch]          codex/logging-best-practice-refactor -> origin/codex/logging-best-practice-refactor
+ * [new branch]          codex/mac-intel-desktop-release-pipeline -> origin/codex/mac-intel-desktop-release-pipeline
+ * [new branch]          codex/mac-intel-prisma-engine-arch-mismatch -> origin/codex/mac-intel-prisma-engine-arch-mismatch
+ * [new branch]          codex/mcp-circular-result-investigation -> origin/codex/mcp-circular-result-investigation
+ * [new branch]          codex/mcp-json-view-preview-save -> origin/codex/mcp-json-view-preview-save
+ * [new branch]          codex/mcp-nullable-schema-mapping -> origin/codex/mcp-nullable-schema-mapping
+ * [new branch]          codex/mcp-tool-exposure-docker -> origin/codex/mcp-tool-exposure-docker
+ * [new branch]          codex/migration-startup-scope-recovery -> origin/codex/migration-startup-scope-recovery
+ * [new branch]          codex/mobile-run-config-chat-flow -> origin/codex/mobile-run-config-chat-flow
+ * [new branch]          codex/model-context-metadata -> origin/codex/model-context-metadata
+ * [new branch]          codex/nested-team-row-expand -> origin/codex/nested-team-row-expand
+ * [new branch]          codex/node-manager-tabs -> origin/codex/node-manager-tabs
+ * [new branch]          codex/node-manager-ui-cleanup -> origin/codex/node-manager-ui-cleanup
+ * [new branch]          codex/optional-definition-avatar -> origin/codex/optional-definition-avatar
+ * [new branch]          codex/org-history-startup-latency -> origin/codex/org-history-startup-latency
+ * [new branch]          codex/org-history-startup-latency-reopen -> origin/codex/org-history-startup-latency-reopen
+ * [new branch]          codex/org-member-switch-performance -> origin/codex/org-member-switch-performance
+ * [new branch]          codex/org-owned-team-local-agent-loading -> origin/codex/org-owned-team-local-agent-loading
+ * [new branch]          codex/org-run-config-performance -> origin/codex/org-run-config-performance
+ * [new branch]          codex/persist-terminal-session-tabs -> origin/codex/persist-terminal-session-tabs
+ * [new branch]          codex/preview-session-multi-runtime-design -> origin/codex/preview-session-multi-runtime-design
+ * [new branch]          codex/project-task-manager-foundations -> origin/codex/project-task-manager-foundations
+ * [new branch]          codex/project-testing-guideline -> origin/codex/project-testing-guideline
+ * [new branch]          codex/projects-primary-nav-order -> origin/codex/projects-primary-nav-order
+ * [new branch]          codex/read-media-file-tool-continuation -> origin/codex/read-media-file-tool-continuation
+ * [new branch]          codex/readable-org-catalog-member-names -> origin/codex/readable-org-catalog-member-names
+ * [new branch]          codex/remove-assistant-chunk-legacy-path -> origin/codex/remove-assistant-chunk-legacy-path
+ * [new branch]          codex/remove-deprecated-deepseek-kimi-models -> origin/codex/remove-deprecated-deepseek-kimi-models
+ * [new branch]          codex/remove-file-persistence-provider -> origin/codex/remove-file-persistence-provider
+ * [new branch]          codex/remove-skills-page-header -> origin/codex/remove-skills-page-header
+ * [new branch]          codex/retain-activity-after-termination -> origin/codex/retain-activity-after-termination
+ * [new branch]          codex/right-panel-resizer-visibility -> origin/codex/right-panel-resizer-visibility
+ * [new branch]          codex/rpa-gemini-include-thoughts-removal -> origin/codex/rpa-gemini-include-thoughts-removal
+ * [new branch]          codex/rpa-llm-session-resume -> origin/codex/rpa-llm-session-resume
+ * [new branch]          codex/rpa-visible-resume-prompt-cleanup -> origin/codex/rpa-visible-resume-prompt-cleanup
+ * [new branch]          codex/run-bash-tool-benchmarks -> origin/codex/run-bash-tool-benchmarks
+ * [new branch]          codex/run-service-layering-refactor -> origin/codex/run-service-layering-refactor
+ * [new branch]          codex/runtime-agent-tools-mcp-unification -> origin/codex/runtime-agent-tools-mcp-unification
+ * [new branch]          codex/runtime-stop-cleanup-and-org-recovery -> origin/codex/runtime-stop-cleanup-and-org-recovery
+ * [new branch]          codex/runtime-work-transfer-analysis -> origin/codex/runtime-work-transfer-analysis
+ * [new branch]          codex/send-message-global-run-routing -> origin/codex/send-message-global-run-routing
+ * [new branch]          codex/server-docker-preinstalled-clis -> origin/codex/server-docker-preinstalled-clis
+ * [new branch]          codex/server-settings-applications-toggle-card -> origin/codex/server-settings-applications-toggle-card
+ * [new branch]          codex/server-settings-basics-loading-fix -> origin/codex/server-settings-basics-loading-fix
+ * [new branch]          codex/session-discovery-ui -> origin/codex/session-discovery-ui
+ * [new branch]          codex/sidebar-team-icon-org-history-collapse -> origin/codex/sidebar-team-icon-org-history-collapse
+ * [new branch]          codex/simplify-server-settings-cards -> origin/codex/simplify-server-settings-cards
+ * [new branch]          codex/skill-access-mode-analysis -> origin/codex/skill-access-mode-analysis
+ * [new branch]          codex/skill-load-guidance-global-only -> origin/codex/skill-load-guidance-global-only
+ * [new branch]          codex/skill-prompt-absolute-paths -> origin/codex/skill-prompt-absolute-paths
+ * [new branch]          codex/skill-source-reload -> origin/codex/skill-source-reload
+ * [new branch]          codex/skill-source-removal-refresh -> origin/codex/skill-source-removal-refresh
+ * [new branch]          codex/startup-performance -> origin/codex/startup-performance
+ * [new branch]          codex/stopped-org-member-header-actions -> origin/codex/stopped-org-member-header-actions
+ * [new branch]          codex/stopped-org-whole-config -> origin/codex/stopped-org-whole-config
+ * [new branch]          codex/task-agent-identity-projection-refactor -> origin/codex/task-agent-identity-projection-refactor
+ * [new branch]          codex/task-agent-peer-sidebar -> origin/codex/task-agent-peer-sidebar
+ * [new branch]          codex/task-delegation-resource-lifecycle -> origin/codex/task-delegation-resource-lifecycle
+ * [new branch]          codex/task-voice-success-cleanup -> origin/codex/task-voice-success-cleanup
+ * [new branch]          codex/team-attachment-exact-execution -> origin/codex/team-attachment-exact-execution
+ * [new branch]          codex/team-attachment-startup-recovery -> origin/codex/team-attachment-startup-recovery
+ * [new branch]          codex/team-history-grouped-runs -> origin/codex/team-history-grouped-runs
+ * [new branch]          codex/team-reload-stale-member-instructions -> origin/codex/team-reload-stale-member-instructions
+ * [new branch]          codex/telegram-external-channel-outbound-reply -> origin/codex/telegram-external-channel-outbound-reply
+ * [new branch]          codex/temp-team-selection-metadata-error -> origin/codex/temp-team-selection-metadata-error
+ * [new branch]          codex/thinking-selector-auto-enable -> origin/codex/thinking-selector-auto-enable
+ * [new branch]          codex/token-input-prompt-discrepancy-analysis -> origin/codex/token-input-prompt-discrepancy-analysis
+ * [new branch]          codex/tolerant-flat-team-package-reading -> origin/codex/tolerant-flat-team-package-reading
+ * [new branch]          codex/ui-mcp-gateway-polish -> origin/codex/ui-mcp-gateway-polish
+ * [new branch]          codex/universal-application-framework-latest-personal-integration -> origin/codex/universal-application-framework-latest-personal-integration
+   c558f174e..a5ffd289a  codex/universal-application-framework-proposal-analysis -> origin/codex/universal-application-framework-proposal-analysis
+ * [new branch]          codex/upgrade-electron-latest-stable -> origin/codex/upgrade-electron-latest-stable
+ * [new branch]          codex/video-url-size-crash -> origin/codex/video-url-size-crash
+ * [new branch]          codex/voice-recording-unexpected-stop-analysis -> origin/codex/voice-recording-unexpected-stop-analysis
+ * [new branch]          codex/whole-skill-symlink-materialization -> origin/codex/whole-skill-symlink-materialization
+ * [new branch]          codex/windows-prisma-sqlite-url -> origin/codex/windows-prisma-sqlite-url
+ * [new branch]          codex/windows-prisma-url-regression -> origin/codex/windows-prisma-url-regression
+ * [new branch]          codex/workspace-run-config-ui-simplification -> origin/codex/workspace-run-config-ui-simplification
+ * [new branch]          codex/xml-tool-array-parser-fix -> origin/codex/xml-tool-array-parser-fix
+ * [new branch]          requirements/collaboration-follow-up-fixes -> origin/requirements/collaboration-follow-up-fixes
+ * [new branch]          requirements/stopped-run-compatible-model -> origin/requirements/stopped-run-compatible-model
+Updating autobyteus-web/package.json: 1.4.94-beta.3 -> 1.4.94-beta.4
+[personal 517409d40] chore(release): bump workspace release version to 1.4.94-beta.4
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+remote:
+remote: GitHub found 939 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 428 moderate, 70 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   dafdf8d8d..517409d40  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.94-beta.4 -> v1.4.94-beta.4
+Release complete and pushed: branch 'personal', tag 'v1.4.94-beta.4'.

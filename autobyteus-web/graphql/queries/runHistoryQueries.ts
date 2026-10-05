@@ -147,6 +147,10 @@ const activeTracePageFields = gql`
           kind visualId eventId kindOrdinal text
           attachments { attachmentId fileType fileName locator }
         }
+        ... on EventMonitorInterAgentVisual {
+          kind visualId eventId kindOrdinal senderAgentRunId senderAddress text
+          attachments { attachmentId fileType fileName locator }
+        }
         ... on EventMonitorAssistantTextVisual { kind visualId eventId kindOrdinal content }
         ... on EventMonitorThinkingVisual { kind visualId eventId kindOrdinal content }
         ... on EventMonitorToolCardVisual {
@@ -182,6 +186,21 @@ export const GetTeamMemberEventMonitorActiveTracePage = gql`
   ) {
     getTeamMemberEventMonitorActiveTracePage(
       teamRunId: $teamRunId, agentRunId: $agentRunId, beforeCursor: $beforeCursor
+    ) {
+      ...EventMonitorActiveTracePageFields
+    }
+  }
+  ${activeTracePageFields}
+`;
+
+/** A standalone run's collaborator or collaborator-Team member (its host keeps the run query). */
+export const GetAgentRunCollaborationMemberEventMonitorActiveTracePage = gql`
+  query GetAgentRunCollaborationMemberEventMonitorActiveTracePage(
+    $hostRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String
+  ) {
+    agentRunCollaborationMemberEventMonitorActiveTracePage(
+      hostRunId: $hostRunId, memberAddress: $memberAddress,
+      agentRunId: $agentRunId, beforeCursor: $beforeCursor
     ) {
       ...EventMonitorActiveTracePageFields
     }

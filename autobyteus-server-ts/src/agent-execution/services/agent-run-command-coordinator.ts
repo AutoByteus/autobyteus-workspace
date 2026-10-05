@@ -19,9 +19,13 @@ import {
   getAgentStreamBroadcaster,
 } from "../../services/agent-streaming/agent-stream-broadcaster.js";
 import { ServerMessage, ServerMessageType } from "../../services/agent-streaming/models.js";
-import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
-import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
-import type { RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
+import type { AgentRun } from "../domain/agent-run.js";
+import type { AgentOperationResult } from "../domain/agent-operation-result.js";
+import {
+  getProcessStandaloneRunCommandPort,
+  type StandaloneRunCommandPort,
+  type StandaloneRunPostResult,
+} from "./standalone-run-ports.js";
 import type {
   SendMessageCommandAckPayload,
   AgentRunCommandCoordinatorInput,
@@ -42,7 +46,8 @@ export class AgentRunCommandCoordinator {
     overlayStore?: AgentRunCommandStatusOverlayStore;
     projectionService?: AgentRunStatusProjectionService;
     broadcaster?: AgentStreamBroadcaster;
-    collaborationRoots?: Pick<AgentRunCollaborationRootManager, "getActive">;
+    /** The owner of eligible standalone runs; defaults to the process port. */
+    standaloneRuns?: StandaloneRunCommandPort | null;
   } = {}) {}
 
   async postUserMessage(
@@ -65,54 +70,33 @@ export class AgentRunCommandCoordinator {
     }
 
     try {
-      const activeRun = await this.agentRunService.resolveCommandReadyAgentRun(record.runId);
-      this.clearOverlayForCommand(record);
-      input.onActiveRunReady?.(activeRun);
-
-      let message = input.message;
-      if (input.mentions?.length) {
-        // The host is ready (its activation ensured the Agent root); admission runs in the root's
-        // gate after the lane was released, and the post stays here for dedupe and the overlay.
-        let admission: RootCollaboratorAdmissionResult;
-        try {
-          admission = await this.admitMentions(record.runId, input);
-        } catch (error) {
-          return this.failCommand(this.latestRecord(record), "COLLABORATOR_ADMISSION_FAILED", toMessage(error), { publishErrorStatus: false });
-        }
-        if (!admission.admitted) {
-          // Nothing was added or posted; the client keeps the draft and shows the notice.
-          this.registry.markRejected({
-            runId: record.runId,
-            messageId: record.messageId,
-            code: admission.code === "COLLABORATOR_ADD_FAILED" ? "COLLABORATOR_ADD_FAILED" : "COLLABORATOR_MENTION_UNAVAILABLE",
-            message: admission.message,
-            ...("collaboratorName" in admission ? { collaboratorName: admission.collaboratorName } : {}),
-          });
-          return this.recordResult(this.latestRecord(record), "rejected", false, false);
-        }
-        message = new AgentInputUserMessage(
-          composeCollaboratorMentionNote(message.content, admission.collaborators),
-          message.senderType, message.contextFiles, message.metadata,
-        );
+      const outcome = await this.post(record, input);
+      if (outcome.kind === "admission_failed") {
+        return this.failCommand(this.latestRecord(record), "COLLABORATOR_ADMISSION_FAILED", outcome.message, { publishErrorStatus: false });
       }
-
-      const result = await activeRun.postUserMessage(
-        this.withCommandMetadata(message, record),
-        {
-          lifecycleObserver: (fact) => this.applyInputLifecycle(record, fact),
-        },
-      );
-      if (!result.accepted) {
+      if (outcome.kind === "admission_rejected") {
+        // Nothing was added or posted; the client keeps the draft and shows the notice.
+        const { admission } = outcome;
+        this.registry.markRejected({
+          runId: record.runId,
+          messageId: record.messageId,
+          code: admission.code === "COLLABORATOR_ADD_FAILED" ? "COLLABORATOR_ADD_FAILED" : "COLLABORATOR_MENTION_UNAVAILABLE",
+          message: admission.message,
+          ...("collaboratorName" in admission ? { collaboratorName: admission.collaboratorName } : {}),
+        });
+        return this.recordResult(this.latestRecord(record), "rejected", false, false);
+      }
+      if (!outcome.post.accepted) {
         this.registry.markRejected({
           runId: record.runId,
           messageId: record.messageId,
           code: "RUNTIME_REJECTED",
-          message: result.message ?? "Runtime rejected the command.",
+          message: outcome.post.message ?? "Runtime rejected the command.",
         });
         return this.recordResult(this.latestRecord(record), "rejected", false, false);
       }
 
-      void this.agentRunService.recordRunActivity(activeRun, {
+      void this.agentRunService.recordRunActivity(outcome.run, {
         summary: input.summary ?? input.message.content,
       }).catch((error) => {
         logger.warn(`Failed to record activity for run '${record.runId}': ${String(error)}`);
@@ -126,12 +110,30 @@ export class AgentRunCommandCoordinator {
     }
   }
 
-  private admitMentions(runId: string, input: AgentRunCommandCoordinatorInput): Promise<RootCollaboratorAdmissionResult> {
-    const root = (this.deps.collaborationRoots ?? AgentRunCollaborationRootManager.getInstance()).getActive(runId);
-    if (!root) {
-      return Promise.resolve({ admitted: false, code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "This run cannot bring in collaborators." });
+  /**
+   * An eligible standalone run is activated, admits its mentions and posts inside its root's
+   * gate; any other run posts directly to its command-ready AgentRun (it hosts no collaborators).
+   */
+  private async post(record: AgentRunCommandRecord, input: AgentRunCommandCoordinatorInput): Promise<StandaloneRunPostResult> {
+    const message = this.withCommandMetadata(input.message, record);
+    const postOptions = { lifecycleObserver: (fact: AgentRunInputLifecycle) => this.applyInputLifecycle(record, fact) };
+    const onActiveRunReady = (run: AgentRun) => {
+      this.clearOverlayForCommand(record);
+      input.onActiveRunReady?.(run);
+    };
+    const owned = await this.standaloneRuns?.postUserMessage({
+      runId: record.runId, message, mentions: input.mentions, postOptions, onActiveRunReady,
+    }) ?? null;
+    if (owned) return owned;
+    const run = await this.agentRunService.resolveCommandReadyAgentRun(record.runId);
+    onActiveRunReady(run);
+    if (input.mentions?.length) {
+      return { kind: "admission_rejected", run, admission: {
+        admitted: false, code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "This run cannot bring in collaborators.",
+      } };
     }
-    return root.admitCollaboratorMentions({ focusedAgentRunId: runId, mentions: input.mentions ?? [] });
+    const post: AgentOperationResult = await run.postUserMessage(message, postOptions);
+    return { kind: "posted", run, post };
   }
 
   private applyInputLifecycle(
@@ -312,6 +314,9 @@ export class AgentRunCommandCoordinator {
     return message.includes("not found") || message.includes("metadata is missing");
   }
 
+  private get standaloneRuns(): StandaloneRunCommandPort | null {
+    return this.deps.standaloneRuns === undefined ? getProcessStandaloneRunCommandPort() : this.deps.standaloneRuns;
+  }
   private get agentRunService(): AgentRunService {
     return this.deps.agentRunService ?? getAgentRunService();
   }

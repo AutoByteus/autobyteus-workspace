@@ -22,9 +22,10 @@ package's script from its own directory.
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` (each package with a `test` script) |
 | Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
 | Real-provider E2E | Configured external providers, explicitly | `pnpm test:e2e:real:preflight`, then `pnpm test:e2e:real` |
-| Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run` |
-| Antigravity (AGY) runtime E2E, fake CLI | AGY stream conversion through the real server (WebSocket, history, Files) with a scripted CLI; no model call | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute path>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/<file> --no-watch` |
-| Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1` or `RUN_AGY_RECOVERY_E2E=1`, then the same `vitest run` command |
+| Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run`; the interrupted-compaction cases alone (interrupt, terminate and app-server crash during an automatic compaction): `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts --no-watch` (lowers the test app server's auto-compaction limit; a few turns of Codex quota per case) |
+| Claude compaction live E2E | Real Claude CLI/SDK `/compact`, Stop and CLI process exit during compaction, raw-trace rotation and reopened history, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts --no-watch`; add `RUN_CLAUDE_AUTO_COMPACTION_E2E=1` for the costly auto-compaction case (~300K input tokens) |
+| Antigravity (AGY) runtime E2E, fake CLI | AGY stream conversion through the real server (WebSocket, history, Files, compaction rotation in `agy-compaction-rotation-transport.e2e.test.ts`, compaction version gate off in `agy-compaction-gate-off-transport.e2e.test.ts`) with a scripted CLI; no model call. `AGY_FAKE_VERSION` overrides the fake CLI's `--version` output | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute path>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/<file> --no-watch` |
+| Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1`, `RUN_AGY_RECOVERY_E2E=1` or `RUN_AGY_COMPACTION_E2E=1` (automatic compaction from ~90K-token turns; uses AGY quota, leave `ANTIGRAVITY_CLI_COMMAND` unset; add `AGY_COMPACTION_E2E_CHECKPOINTS=2` to continue until a second compaction), then the same `vitest run` command |
 | Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
 | Composer voice lifetime regression | Unchanged Team publication vs genuine destination cancellation through run/Chat composers and native browser capture | `pnpm -C autobyteus-web test:e2e:composer-voice-lifetime --output-dir <fresh-dir>` |
 | Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
@@ -89,6 +90,29 @@ The optional `--ledger-file <absolute-path>` appends case results as they finish
 The probe stops its exact instance and removes its own data/source fixtures on
 success or failure. Inspect cleanup results as well as case results; unrelated
 instances and the user's app/data must remain untouched.
+
+### Project and Task Description Voice Regression
+
+Run the full Projects browser/API probe with optional native-browser voice cases:
+
+```bash
+pnpm -C autobyteus-web test:e2e:projects --voice-input --output-dir=<fresh-directory>
+```
+
+The existing probe builds this worktree's server, creates disposable SQLite
+nodes, and owns Nuxt/Chrome and cleanup. Chrome and installed dependencies are
+required; `--skip-server-build` is valid only after a current-worktree server build.
+`--ledger-file=<initialized-absolute-path>` appends every case's result. Relative
+output paths resolve from `autobyteus-web/`; existing output directories are refused.
+
+The six optional cases use real project/task routes, editors, voice store,
+native browser capture/AudioWorklet and real API/database reads/writes. They cover
+create/edit append, typing and explicit save, optional blank descriptions,
+quiet success, error/no-speech retry, recording cancellation and late-result
+rejection after navigation. Extension discovery and transcription IPC are fixture
+responses; Chrome supplies synthetic microphone input with a test permission
+grant. This does not prove physical microphones, OS permission dialogs, model
+quality, Electron IPC or packaged-shell behavior. No user app/data is used.
 
 ### Composer Voice Lifetime Regression
 
@@ -195,11 +219,48 @@ native-argument regression above when integrating changes to that fixture.
 
 The native outer fixture's current admission factory and acquired-resource
 cleanup are checked separately with
-`tests/integration/agent-run-collaboration/native-root-fixture-cleanup.integration.test.ts`.
+`tests/integration/standalone-agent-run-root/native-root-fixture-cleanup.integration.test.ts`.
 Its five cases cover defined successful/rejected setup paths after the
 underlying native fixture returns and preserve the original setup error. They
 are not an exhaustive infrastructure-failure guarantee; keep the workspace
 native-to-web and shared compaction/termination assertions intact.
+
+### GitHub Skill Sources Regression
+
+Run from the repository root with installed workspace dependencies and Chrome:
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts build
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/skills tests/integration/skills tests/unit/skills --no-watch
+pnpm -C autobyteus-web test:nuxt components/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts --run
+node autobyteus-web/tests/e2e/github-skill-sources-probe.mjs <fresh-output-directory>
+```
+
+The browser probe owns a real built backend, disposable SQLite/data/HOME,
+free-port Nuxt frontend and fresh Chrome. Its output path resolves from the
+current directory and must not exist. An optional second positional argument
+appends case results to a ledger; use a delivery-owned ledger for delivery
+reruns rather than modifying API-owner history. Normal prebuild regenerates
+cleaned SDK outputs; rebuild current server source before the browser check.
+
+Eight sequential cases cover Sources import, Files/socket lifecycle,
+check/cancel, failed update/retry, current files, actual header ＋/Send in the
+same workspace while an older run remains active, interrupted download, and
+permission-denied removal followed by restart/UI retry with local preservation.
+Outbound GitHub revisions/errors and an external Codex CLI are controlled;
+the CLI reads the real exposed skill bytes. Frontend stores, HTTP/GraphQL,
+archives, catalog, runtime adapter and filesystem are real. The 24-combination
+GraphQL adapter matrix separately covers Codex/Claude/Grok preparation, both
+skill scopes, retained/deleted old generation and both holder release orders.
+It is not three live-model browser journeys or paid inference proof.
+
+Inspect `result.json`, provider byte receipts, page errors and cleanup receipts.
+The probe closes Chrome, stops owned process groups, checks released ports and
+removes its private data even on failure. It never uses the installed app or
+user data. Controlled upstream fixtures do not replace a separately attributed
+public GitHub transport smoke. These are web/backend feature checks, not
+Windows or Electron-shell certification, nor exhaustive process-crash proof.
 
 ## Choosing the path
 

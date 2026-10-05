@@ -41,7 +41,7 @@ const createRunContext = (input: {
   });
 
 const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillScope: "CONFIGURED" | "ALL_INSTALLED" = "CONFIGURED") => {
-  const workspaceSkillMaterializer = { materializeConfiguredWorkspaceSkills: vi.fn(async () => []) };
+  const workspaceSkillMaterializer = { materializeConfiguredWorkspaceSkills: vi.fn(async (input: { requests?: unknown[] }) => ({ materializedSkills: [], effectiveRequests: input.requests ?? [] })) };
   const bootstrapper = new ClaudeSessionBootstrapper(
     { resolveWorkingDirectory: vi.fn(async () => WORKING_DIRECTORY) } as any,
     workspaceSkillMaterializer as any,
@@ -128,4 +128,16 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
       expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace" }));
   });
+  it("uses refreshed effective requests rather than the pre-preparation generation", async () => {
+    const oldSkill = new Skill({ name: "writer", description: "old", content: "old", rootPath: "/g1" });
+    const currentSkill = new Skill({ name: "writer", description: "current", content: "new", rootPath: "/g2" });
+    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([{ kind: "resolved", skill: oldSkill }]);
+    workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills.mockResolvedValue({
+      materializedSkills: [], effectiveRequests: [{ kind: "expose-resolved", skill: currentSkill }],
+    });
+    const context = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }),
+      { assertAccepting: () => undefined, ownSkill: () => undefined });
+    expect(context.runtimeContext.configuredSkills).toEqual([currentSkill]);
+  });
+
 });

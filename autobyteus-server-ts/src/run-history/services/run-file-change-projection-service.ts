@@ -5,7 +5,7 @@ import {
   locatedLaunchConfiguration,
   type LocatedCollaborationAgentExecution,
 } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
-import { AgentRunCollaborationLocationService } from "../../agent-run-collaboration/services/agent-run-collaboration-location-service.js";
+import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { canonicalizeRunFileChangePath, resolveRunFileChangeAbsolutePath } from "../../services/run-file-changes/run-file-change-path-identity.js";
@@ -56,7 +56,7 @@ export class RunFileChangeProjectionService {
     this.collaborationLocations = options.collaborationLocations ?? new CollaborationExecutionLocationService({
       teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
       orgs: new AgentOrgExecutionTreeLocationService({ memoryDir }),
-      agents: new AgentRunCollaborationLocationService({ memoryDir }),
+      agents: new StandaloneRootLocationService({ memoryDir }),
     });
   }
 

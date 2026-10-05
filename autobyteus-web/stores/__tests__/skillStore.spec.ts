@@ -151,4 +151,21 @@ describe('skillStore', () => {
     expect(skillStore.error).toBe('')
     expect(skillSourcesStore.error).toBe('')
   })
+  it('refreshes selected roots and clears removed selections on source mutations as well as Reload', async () => {
+    const store = useSkillStore()
+    const old = { name: 'writer', description: 'writer', content: 'old', rootPath: '/g1', fileCount: 1, isReadonly: false, isDisabled: true }
+    store.skills = [old]
+    store.currentSkill = old
+    store.currentSkillTree = 'old files'
+    const query = vi.fn().mockResolvedValueOnce({ data: { skills: [{ ...old, rootPath: '/g2', content: 'new' }] } })
+      .mockResolvedValueOnce({ data: { skills: [] } })
+    vi.mocked(getApolloClient).mockReturnValue({ query } as any)
+    await store.fetchAllSkills()
+    expect(store.currentSkill?.rootPath).toBe('/g2')
+    expect(store.currentSkill?.isDisabled).toBe(true)
+    expect(store.currentSkillTree).toBeNull()
+    await store.fetchAllSkills()
+    expect(store.currentSkill).toBeNull()
+  })
+
 })

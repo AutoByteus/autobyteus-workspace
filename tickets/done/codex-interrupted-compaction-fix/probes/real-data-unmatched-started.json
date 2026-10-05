@@ -1,0 +1,578 @@
+[
+ {
+  "dir": "agent_teams/software_engineering_team_15eb25f9280f4cc0910708e1495c53a4/implementation_engineer_0a5a31b208a846418b8418a4d59e313e",
+  "ev": "019f4c13-3c46-7aa3-8cdd-1b0e78a3f71a",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1783687756893_5eb05105-0343-425d-9ef7-0740f636df8f",
+    "ts": 1783687756.894,
+    "turn": "019f4bfb-cc4c-7cd2-95ab-c909df402ebd",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019f4b36-f8ed-7f10-8bd0-00705b0286ba:019f4c13-3c46-7aa3-8cdd-1b0e78a3f71a:compacting",
+    "ev": "019f4c13-3c46-7aa3-8cdd-1b0e78a3f71a",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_18262a8ace9447e29f7f92b8940a94fd/solution_designer_8fc61d4886ac4c189f9285f39e4d3bf4",
+  "ev": "01a05609-0c7c-7d30-8502-6ef996e6823c",
+  "ms": [
+   {
+    "file": "raw_traces_000002.jsonl",
+    "id": "rt_1788149828758_f58638ca-5cee-43a0-9133-5209869606a3",
+    "ts": 1788149828.758,
+    "turn": "01a05604-c952-7340-8bd7-f3738f3b3d62",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a053d0-2f86-71a3-b3f0-fd2074d0f02a:01a05609-0c7c-7d30-8502-6ef996e6823c:compacting",
+    "ev": "01a05609-0c7c-7d30-8502-6ef996e6823c",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_199f2474d1a94a0e9a3783a1e71615c2/solution_designer_c4b52f1dbd8a411f9afe34a779288e7d",
+  "ev": "019f84b0-e94a-7e93-a09d-188622f72c25",
+  "ms": [
+   {
+    "file": "raw_traces_000012.jsonl",
+    "id": "rt_1784637614490_78d17b4a-239e-4f84-a307-3bca9642e792",
+    "ts": 1784637614.49,
+    "turn": "019f84b0-e93f-7041-b920-9c7f653fab69",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019f7db6-5759-7511-a79a-9a4257e8bb85:019f84b0-e94a-7e93-a09d-188622f72c25:compacting",
+    "ev": "019f84b0-e94a-7e93-a09d-188622f72c25",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_22705c82e633476ca11d66da544abe51/code_reviewer_8fffc020f7f44fd2a0151eadc570c1bc",
+  "ev": "01a00423-578b-7e33-b725-e1e8779a4a23",
+  "ms": [
+   {
+    "file": "raw_traces_000004.jsonl",
+    "id": "rt_1786775820181_3a19bb1c-a3c5-41f7-9826-65312afed614",
+    "ts": 1786775820.181,
+    "turn": "01a00422-722a-7022-9ca0-92aab5052132",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a000e9-9653-7631-8057-530480fe4578:01a00423-578b-7e33-b725-e1e8779a4a23:compacting",
+    "ev": "01a00423-578b-7e33-b725-e1e8779a4a23",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_2dc498a64aa845a6b21b97d08d502a50/solution_designer_47a49d688ba74fc79428a4acc42b334a",
+  "ev": "5b76f98a-f8e6-40e0-9f76-54c2868f04ff",
+  "ms": [
+   {
+    "file": "raw_traces_000002.jsonl",
+    "id": "rt_1782965818675_291c84fc-4606-4b27-943f-2cc49b9b5a32",
+    "ts": 1782965818.675,
+    "turn": "019f210a-a6f6-7012-bb67-41f5ffaa3689",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019f1cdd-4724-75b2-9995-4ccf2b99e567:5b76f98a-f8e6-40e0-9f76-54c2868f04ff:compacting",
+    "ev": "5b76f98a-f8e6-40e0-9f76-54c2868f04ff",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_3240fb3c4a5e4133a1c5b3ef64e3e70b/solution_designer_e86db51ce2a24b15abe56a98c9c8114f",
+  "ev": "01a0e646-6711-7460-b31f-2b7ab2e50bdd",
+  "ms": [
+   {
+    "file": "raw_traces_000005.jsonl",
+    "id": "rt_1790569768732_0f8dad6b-bfc8-4b3e-9a3a-942172d963ca",
+    "ts": 1790569768.732,
+    "turn": "01a0e646-66a3-79f2-b957-44252ef046bd",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a0d8fa-9840-7100-ac7c-e0795146a6d5:01a0e646-6711-7460-b31f-2b7ab2e50bdd:compacting",
+    "ev": "01a0e646-6711-7460-b31f-2b7ab2e50bdd",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_4b7656ab6cf64a39aa06530a43429af9/code_reviewer_cd3f51833bdd4887bc4daf5e30b82079",
+  "ev": "019fb7d5-a231-7222-a94b-151c2b6b3d25",
+  "ms": [
+   {
+    "file": "raw_traces_000003.jsonl",
+    "id": "rt_1785495659107_bab9f3ac-a514-44d2-b9ec-1690bedf478c",
+    "ts": 1785495659.107,
+    "turn": "019fb7d5-604a-78d0-8fb4-71c75fded531",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019fb72a-1333-7322-b85e-cf96668bfc89:019fb7d5-a231-7222-a94b-151c2b6b3d25:compacting",
+    "ev": "019fb7d5-a231-7222-a94b-151c2b6b3d25",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/delivery_engineer_7f9c30051b4244e6b86584c456d36c4b",
+  "ev": "01a031f1-3a12-7422-91d2-bcebd73d8f2d",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1787544287776_d55f74f9-72df-44ed-a98f-1a5d65966293",
+    "ts": 1787544287.776,
+    "turn": "01a031f0-bced-7460-84e0-d638952f5bbd",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a02e82-66f4-7770-9188-94884c3f7d99:01a031f1-3a12-7422-91d2-bcebd73d8f2d:compacting",
+    "ev": "01a031f1-3a12-7422-91d2-bcebd73d8f2d",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_8df1e73481704c18b809e8af77c1ae90/solution_designer_c1e5be8cb19a44c787107f554f137098",
+  "ev": "01a0321f-d959-7392-a381-7a104f05989d",
+  "ms": [
+   {
+    "file": "raw_traces_000003.jsonl",
+    "id": "rt_1787547343232_f59f3cd8-5273-4a24-9986-d144640ab54b",
+    "ts": 1787547343.232,
+    "turn": "01a0321f-d949-7240-8211-e563278eda26",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a0279a-6f79-78e2-adf3-c58df77dbe58:01a0321f-d959-7392-a381-7a104f05989d:compacting",
+    "ev": "01a0321f-d959-7392-a381-7a104f05989d",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_8ef8085ebf32478d914b830c03de1ec8/solution_designer_730a016c106d45808ea9d89d70486eb9",
+  "ev": "019fd5ab-5bf0-7363-ba98-05c607bcf9c0",
+  "ms": [
+   {
+    "file": "raw_traces_000003.jsonl",
+    "id": "rt_1785996205049_53969406-30a7-4d70-8dc2-42431895b70e",
+    "ts": 1785996205.049,
+    "turn": "019fd5a8-c660-7221-bdba-cb7fc0ff4fef",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019fd1e6-d635-7901-82d2-aafbd0f8d60b:019fd5ab-5bf0-7363-ba98-05c607bcf9c0:compacting",
+    "ev": "019fd5ab-5bf0-7363-ba98-05c607bcf9c0",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_96f09bad9be2477bbba1882c070d6957/solution_designer_cbb9cac3558e4622a3f0a1564abe963a",
+  "ev": "019fbbde-83c8-7582-8d88-0ccfe92aa420",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1785563349981_5b757fb5-05bf-45c5-9836-1d07789b851f",
+    "ts": 1785563349.981,
+    "turn": "019fbbd9-2ecf-7160-b1f2-14f2e308c249",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019fbbd3-4ef2-7840-aee0-4f9c6dfb8563:019fbbde-83c8-7582-8d88-0ccfe92aa420:compacting",
+    "ev": "019fbbde-83c8-7582-8d88-0ccfe92aa420",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_989c6d9e84364c9e83495418f7d3df40/architecture_reviewer_62060b988d274facadad804fa093492f",
+  "ev": "019fa1fb-f347-7bc1-aa90-baf2debade49",
+  "ms": [
+   {
+    "file": "raw_traces_000018.jsonl",
+    "id": "rt_1785129071760_dbf77210-b644-438b-a48f-bf3e276ce325",
+    "ts": 1785129071.76,
+    "turn": "019fa1fb-ade4-7420-97ba-cda4fcab0cb2",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019f8363-36f1-77f2-873e-1ef81e5bc6c4:019fa1fb-f347-7bc1-aa90-baf2debade49:compacting",
+    "ev": "019fa1fb-f347-7bc1-aa90-baf2debade49",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_9ad10f02dc874099aef34d346267a2f8/code_reviewer_d110f007728d4fb285108844961d76c7",
+  "ev": "01a06010-a9e8-7a00-9871-4d68c38496fc",
+  "ms": [
+   {
+    "file": "raw_traces_000002.jsonl",
+    "id": "rt_1788318099959_50687041-3186-4e84-aaee-56217ed9ec56",
+    "ts": 1788318099.959,
+    "turn": "01a0600c-fdaa-7c72-83b6-4293858ebebc",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a05d22-57bd-74a3-b8bb-7a0bdece0805:01a06010-a9e8-7a00-9871-4d68c38496fc:compacting",
+    "ev": "01a06010-a9e8-7a00-9871-4d68c38496fc",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_b3f88fb11b864c60a2ff6d59190546fd/solution_designer_9c42ee429ded46a495abb303dceecf5b",
+  "ev": "9f60d88c-a275-448b-89dd-3ce08624253a",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1781876841555_0db7fe70-a7ba-4392-8b41-36655c2876ff",
+    "ts": 1781876841.555,
+    "turn": "019ee01c-f837-7970-b015-9d17548e5efc",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019ee002-3937-7881-9b25-651df7a2b563:9f60d88c-a275-448b-89dd-3ce08624253a:compacting",
+    "ev": "9f60d88c-a275-448b-89dd-3ce08624253a",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_b7a6c85f813644a498d282c8056e5b4a/solution_designer_e6d95009de2547e4b239538889b53f64",
+  "ev": "01a018d7-d64f-73a3-8aac-01951c2cc25d",
+  "ms": [
+   {
+    "file": "raw_traces_000010.jsonl",
+    "id": "rt_1787123193432_20a36049-cb8c-48cb-b7bd-26b101c161ed",
+    "ts": 1787123193.432,
+    "turn": "01a018d6-b5d2-7a90-bc48-e68ca48632f8",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019ff6c3-3eb7-7872-8c57-1e18e7115032:01a018d7-d64f-73a3-8aac-01951c2cc25d:compacting",
+    "ev": "01a018d7-d64f-73a3-8aac-01951c2cc25d",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_b7a6c85f813644a498d282c8056e5b4a/solution_designer_e6d95009de2547e4b239538889b53f64",
+  "ev": "01a018d9-6f10-7f61-9c15-0b9630b6f1dd",
+  "ms": [
+   {
+    "file": "raw_traces_000010.jsonl",
+    "id": "rt_1787123298075_9ea064d2-c0d7-440d-9aa1-8f112f2d94ce",
+    "ts": 1787123298.075,
+    "turn": "01a018d9-6ee0-7512-9a4b-fe1b52fb1093",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019ff6c3-3eb7-7872-8c57-1e18e7115032:01a018d9-6f10-7f61-9c15-0b9630b6f1dd:compacting",
+    "ev": "01a018d9-6f10-7f61-9c15-0b9630b6f1dd",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_bae6f5bae2c0428f9fe311c713fa4fda/solution_designer_9f614210eb874a28be0782af42ca3cd7",
+  "ev": "019fb7c3-a76e-7441-b614-59036fe6bb83",
+  "ms": [
+   {
+    "file": "raw_traces_000027.jsonl",
+    "id": "rt_1785494480756_cd318f74-bd49-495d-a3cf-ade4745fa99e",
+    "ts": 1785494480.756,
+    "turn": "019fb7b9-58c1-7f72-9ebf-23fc97013459",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019f693f-0fd4-7193-8bf7-72f888a38263:019fb7c3-a76e-7441-b614-59036fe6bb83:compacting",
+    "ev": "019fb7c3-a76e-7441-b614-59036fe6bb83",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_c57fdd5438cd4fa18e8d7ea3a738750a/implementation_engineer_6f8e1c2fafd741038009ef9dd154eb20",
+  "ev": "01a102a4-eb77-7f70-ba47-50db2e1a9a05",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1791045725103_0cb74640-8afe-4edb-b330-2582fb3b93cf",
+    "ts": 1791045725.103,
+    "turn": "01a1029b-2f2f-7132-b458-6223d052c5c1",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a1023a-0167-7fd1-9ec6-c17518924374:01a102a4-eb77-7f70-ba47-50db2e1a9a05:compacting",
+    "ev": "01a102a4-eb77-7f70-ba47-50db2e1a9a05",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_d4b69cbef1994bfe861c0eb187b863d6/solution_designer_0a949a6851b041d9ba95080fd9e1a4ec",
+  "ev": "d7f24b7b-77dd-4cd2-b655-e2f5a6cbe135",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1783483413801_53160924-ac61-43e6-b4ef-e6b84506c6c2",
+    "ts": 1783483413.801,
+    "turn": "019f3fde-dd6d-7563-8562-7a1e21149d10",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019f3ce6-9fd7-78c0-9f76-f0a3e05d1dc7:d7f24b7b-77dd-4cd2-b655-e2f5a6cbe135:compacting",
+    "ev": "d7f24b7b-77dd-4cd2-b655-e2f5a6cbe135",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_ecc29f0d32b146a0afb457e3b2696927/solution_designer_9a3ccf7c6d6d44cb8a9af72fe7485d5e",
+  "ev": "01a0fc8e-cb69-74e1-b079-d469f624b356",
+  "ms": [
+   {
+    "file": "raw_traces_000004.jsonl",
+    "id": "rt_1790943611804_80195c58-1d2a-4d9f-9444-c59efb76669d",
+    "ts": 1790943611.804,
+    "turn": "01a0fc8e-84c0-7aa1-a795-ed8af1b9a623",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a0d2c0-487f-7973-a4e7-dc218b0362a4:01a0fc8e-cb69-74e1-b079-d469f624b356:compacting",
+    "ev": "01a0fc8e-cb69-74e1-b079-d469f624b356",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/software_engineering_team_fc1c5b67be974539812159024d2c9edb/delivery_engineer_2b8c09f867d8410a9f5b589ea924caea",
+  "ev": "019f4cd3-6c3f-76e1-928e-7427ef1a7649",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1783700352086_e163e69c-7e1a-4b89-854c-2ce065a4b441",
+    "ts": 1783700352.086,
+    "turn": "019f4cd3-2b02-7230-979f-70a2ba69bc0c",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019f4c71-57df-71a3-81e1-cc6230bb7071:019f4cd3-6c3f-76e1-928e-7427ef1a7649:compacting",
+    "ev": "019f4cd3-6c3f-76e1-928e-7427ef1a7649",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agent_teams/team_software-engineering-team_c23502de/implementation_engineer_cdb3b9ce7e4f031c",
+  "ev": "2b40dc0f-5b55-4d42-b63b-741ab7a1542e",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1781884259614_3a851f07-b310-49e4-9d8a-0f5373446895",
+    "ts": 1781884259.614,
+    "turn": "019ee092-bb3d-7f10-8211-c4d344f8547f",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019e7d1d-69ee-7a51-9b00-d45140f6f6d4:2b40dc0f-5b55-4d42-b63b-741ab7a1542e:compacting",
+    "ev": "2b40dc0f-5b55-4d42-b63b-741ab7a1542e",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "agents/codex_45ce1b9e80ea42db869dc86615d51fc3",
+  "ev": "01a05ea4-fbf5-7243-817f-eedf11495ec1",
+  "ms": [
+   {
+    "file": "raw_traces_000010.jsonl",
+    "id": "rt_1788294265870_4554f69b-44b6-4bab-b15c-84c18ae78b8a",
+    "ts": 1788294265.87,
+    "turn": "01a05ea4-f836-7742-b1de-cf51da96e1a3",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a038c4-03c6-7a83-80cb-10a99331ae18:01a05ea4-fbf5-7243-817f-eedf11495ec1:compacting",
+    "ev": "01a05ea4-fbf5-7243-817f-eedf11495ec1",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "imports/docker-node-1/agent_teams/marketing_team_20e51f53d2964db9b81194f8746ca7fe/weixin_gongzhonghao_marketer_7c4b05b8a0574f14b31145df6ee5457e",
+  "ev": "80bb1f2f-212c-4d8c-b58c-1c72912cd7c9",
+  "ms": [
+   {
+    "file": "raw_traces_000002.jsonl",
+    "id": "rt_1782302770228_19e7b147-fc56-4ed6-9688-ab16ffce8b78",
+    "ts": 1782302770.228,
+    "turn": "019ef985-565e-7123-b117-69ffabcc36f6",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019ee0a7-8610-7743-9c0d-e3a6b0bf56c2:80bb1f2f-212c-4d8c-b58c-1c72912cd7c9:compacting",
+    "ev": "80bb1f2f-212c-4d8c-b58c-1c72912cd7c9",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "imports/docker-node-1/agent_teams/software_development_department_85300d057ba3418c83e65f4b53f94dc6/software_engineering_team_1e864532f84d4fe0a35ba12343b08dff/code_reviewer_93d15a8a66944971a1dd31e4018cddef",
+  "ev": "01a067d5-009f-7853-a3a3-795b6abae51b",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1788448407734_50e384cb-b8ca-45fd-92e5-f05c0d8f3bf5",
+    "ts": 1788448407.734,
+    "turn": "01a067d5-0012-73e2-87d8-db5eeb8bda7c",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a0678c-b701-7d22-8888-b80d205a7ebf:01a067d5-009f-7853-a3a3-795b6abae51b:compacting",
+    "ev": "01a067d5-009f-7853-a3a3-795b6abae51b",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "imports/docker-node-1/agent_teams/software_development_department_d2b93633ad6b4d969e6e0d776dda7721/product_design_prototyping_team_31bff2ebb9c0486dbdd38b835609a177/product_prototyper_32f0b05629874df1b1fe3baa585775bc",
+  "ev": "01a056fd-d1ce-7032-a84f-5245f3be4eed",
+  "ms": [
+   {
+    "file": "raw_traces_000002.jsonl",
+    "id": "rt_1788165870076_6f72e26d-7854-4780-9220-1904d5a0212d",
+    "ts": 1788165870.076,
+    "turn": "01a056fd-846f-7d83-bd48-2901eebd4d16",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a05615-8a99-7bc1-82e1-e92b3f783673:01a056fd-d1ce-7032-a84f-5245f3be4eed:compacting",
+    "ev": "01a056fd-d1ce-7032-a84f-5245f3be4eed",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "imports/docker-node-1/agent_teams/software_development_department_d2b93633ad6b4d969e6e0d776dda7721/product_design_prototyping_team_31bff2ebb9c0486dbdd38b835609a177/product_prototyper_32f0b05629874df1b1fe3baa585775bc",
+  "ev": "01a05726-fff7-79d3-9d78-4a0b3a16d1b8",
+  "ms": [
+   {
+    "file": "raw_traces_000003.jsonl",
+    "id": "rt_1788168568868_197996ef-4095-4fc2-97ee-fc2967629689",
+    "ts": 1788168568.868,
+    "turn": "01a05725-7870-7473-92b6-3cffa3769b7c",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a05615-8a99-7bc1-82e1-e92b3f783673:01a05726-fff7-79d3-9d78-4a0b3a16d1b8:compacting",
+    "ev": "01a05726-fff7-79d3-9d78-4a0b3a16d1b8",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "imports/docker-node-1/agent_teams/software_development_department_d2b93633ad6b4d969e6e0d776dda7721/software_engineering_team_570be46d520142849ac61785be03dca1/implementation_engineer_c58a9da47f7346ad84da5ce2486ab593",
+  "ev": "01a06833-b17c-7a23-9a89-c8afb7d3c368",
+  "ms": [
+   {
+    "file": "raw_traces_000054.jsonl",
+    "id": "rt_1788454613388_d5b34ce0-5bc2-4c55-94fa-ea43bdd5533f",
+    "ts": 1788454613.388,
+    "turn": "01a06817-f443-79b0-996a-3f009627128b",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a05b34-e55f-7171-9f51-f69af1d81284:01a06833-b17c-7a23-9a89-c8afb7d3c368:compacting",
+    "ev": "01a06833-b17c-7a23-9a89-c8afb7d3c368",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "imports/docker-node-1/agent_teams/software_development_department_fccba22e6afe4135adc5f291e40d0c11/software_engineering_team_90449d1073c84060aae6f6d417bd541e/api_e2e_engineer_428d1e8eee9746e783c5afa4bd695020",
+  "ev": "01a04eee-bc4d-7541-8630-7179d6de8367",
+  "ms": [
+   {
+    "file": "raw_traces_000002.jsonl",
+    "id": "rt_1788030663784_c2c44b96-7537-4b6f-bea0-49a1419e62f9",
+    "ts": 1788030663.784,
+    "turn": "01a04eee-bc3a-72b2-8fdd-c39fd649cecc",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:01a04e98-9e46-7b92-9f79-b6dd7a882c74:01a04eee-bc4d-7541-8630-7179d6de8367:compacting",
+    "ev": "01a04eee-bc4d-7541-8630-7179d6de8367",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "imports/docker-node-1/agent_teams/software_engineering_team_cfa22c21dace401ba00d365fb95b57dd/api_e2e_engineer_3e639b535fa64015b12e33e4bb4939e8",
+  "ev": "019f7dd9-c0cd-7c62-8895-6d6e278e91d1",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1784522850525_31ac094e-4cca-40b6-ad6c-a27789f56640",
+    "ts": 1784522850.525,
+    "turn": "019f7dc7-8fd5-7743-940a-a88cbfbc119c",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019f7dc7-8f93-7833-8957-6b55b3de2030:019f7dd9-c0cd-7c62-8895-6d6e278e91d1:compacting",
+    "ev": "019f7dd9-c0cd-7c62-8895-6d6e278e91d1",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "imports/docker-node-1/agents/codex_1f93842e37614fd48aecc257f00cb85e",
+  "ev": "2ad792fd-ebce-4526-abd5-4ebb0154e097",
+  "ms": [
+   {
+    "file": "raw_traces_000001.jsonl",
+    "id": "rt_1783329344772_fb1204de-a57a-4aaf-973b-4f6a08177a83",
+    "ts": 1783329344.772,
+    "turn": "019f36b3-ba71-7920-8f0d-b923397eed15",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019f367e-4f58-7280-8f0d-61eb8bfa7a92:2ad792fd-ebce-4526-abd5-4ebb0154e097:compacting",
+    "ev": "2ad792fd-ebce-4526-abd5-4ebb0154e097",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ },
+ {
+  "dir": "imports/docker-node-1/agents/skill_optimizer_4fdc765a7d4d4b54b651a65ad4d8c7dc",
+  "ev": "019fc636-9267-7c43-a532-19a2592765cd",
+  "ms": [
+   {
+    "file": "raw_traces_000002.jsonl",
+    "id": "rt_1785736893040_a97ebb59-e17a-4fce-9cf3-907c868a4918",
+    "ts": 1785736893.04,
+    "turn": "019fc635-ee0d-74d2-ae45-c4a926f9f5b8",
+    "surface": "codex.context_compaction_started",
+    "key": "codex:019fc0e1-9690-7403-b48c-7ad5ecb00361:019fc636-9267-7c43-a532-19a2592765cd:compacting",
+    "ev": "019fc636-9267-7c43-a532-19a2592765cd",
+    "status": "compacting",
+    "rot": false,
+    "trigger": "auto"
+   }
+  ]
+ }
+]

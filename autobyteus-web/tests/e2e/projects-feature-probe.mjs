@@ -6,6 +6,8 @@
 // Chromium. Every case records Pass/Fail independently
 // in <output-dir>/result.json; owned processes and the temp root are always cleaned up.
 //
+// Optional --voice-input adds actual browser microphone/worklet + fixture transcription, real project/task CRUD.
+// --ledger-file=<initialized absolute path> appends each case outcome.
 // Usage: node tests/e2e/projects-feature-probe.mjs [--skip-server-build] [--output-dir=...]
 //        [--browser-executable=...] [--timeout-ms=30000]
 import { createWriteStream, existsSync } from 'node:fs';
@@ -18,6 +20,8 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
+import { runProjectVoiceCases } from './projects-voice-cases.mjs';
+
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
 const webDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -28,6 +32,8 @@ const arg = (name, fallback) => {
   return value ? value.slice(name.length + 3) : fallback;
 };
 const outputDir = path.resolve(webDir, arg('output-dir', 'test-results/projects-feature'));
+const voiceInput = process.argv.includes('--voice-input');
+const ledger = arg('ledger-file', null);
 const skipServerBuild = process.argv.includes('--skip-server-build');
 const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find(existsSync);
@@ -169,7 +175,8 @@ const runCase = async (id, title, fn) => {
   await writeEvidence(); process.stdout.write(`[${id}] ${title}\n`);
   try { await fn(record.observations); record.result = 'Pass'; await screenshot(`${id}-pass`); }
   catch (error) { record.result = 'Fail'; record.error = error.stack || String(error); await screenshot(`${id}-failure`).catch(() => {}); }
-  record.finishedAt = new Date().toISOString(); await writeEvidence(); process.stdout.write(`[${id}] ${record.result}${record.error ? ': ' + record.error.split('\n')[0] : ''}\n`);
+  record.finishedAt = new Date().toISOString(); await writeEvidence();
+  if (ledger) await fs.appendFile(ledger, '\n' + id + ': ' + record.result + '; ' + title + '; ' + path.join(outputDir, 'result.json') + '\n'); process.stdout.write(`[${id}] ${record.result}${record.error ? ': ' + record.error.split('\n')[0] : ''}\n`);
 };
 let writerSequence = 0;
 const toolWrite = async args => {
@@ -179,6 +186,7 @@ const toolWrite = async args => {
 };
 const blankProject = async name => { await goto('/projects'); await page.getByTestId('projects-new-button').click(); await page.getByTestId('project-name-input').fill(name); await page.getByTestId('project-form-submit').click(); await page.getByTestId('project-detail-name').waitFor(); return (await api.projects(nodeA)).find(p => p.name === name); };
 try {
+  assert(!ledger || existsSync(ledger), 'Initialize ledger before execution');
   assert(!existsSync(outputDir), `Use a new owned output directory, refusing to delete existing ${outputDir}`);
   await fs.mkdir(outputDir, { recursive: true });
   if (!skipServerBuild) await run('corepack', ['pnpm', '-C', serverDir, 'build'], root, process.env, path.join(outputDir, 'server-build.log'));
@@ -189,7 +197,8 @@ try {
   evidence.isolation = { tempRoot: ownedRoot, nodeA: nodeA.url, nodeB: nodeB.url, frontend: frontendUrl };
   frontend = start('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...scrubbedEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: nodeA.url }, path.join(outputDir, 'frontend.log'));
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then(r => r.ok).catch(() => false); }, 240000);
-  browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage'] });
+  browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage', ...(voiceInput ? ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] : [])] });
+  evidence.browserVersion = browser.version();
   const context = await browser.newContext({ viewport: { width: 1512, height: 862 }, locale: 'en-US', timezoneId: 'Europe/Berlin' });
   await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   page = await context.newPage(); page.on('pageerror', e => evidence.browserErrors.push(e.message));
@@ -407,10 +416,17 @@ try {
     obs.rawKeys = 0; await api.deleteProject(nodeA, id);
     await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   });
+  if (voiceInput) {
+    await runProjectVoiceCases({ page, context, goto, api, node: nodeA, runCase, waitFor, screenshot });
+    assert(evidence.browserErrors.length === 0, 'Unexpected browser page errors: ' + evidence.browserErrors.join('; '));
+  }
   evidence.result = Object.values(evidence.cases).some(c => c.result === 'Fail') ? 'Fail' : 'Pass';
 } catch (error) { evidence.error = error.stack || String(error); evidence.result = 'Fail'; }
 finally {
-  if (browser) await browser.close().catch(e => { evidence.cleanup.browser = String(e); });
+  if (browser) {
+    try { await browser.close(); evidence.cleanup.browser = 'closed'; }
+    catch (e) { evidence.cleanup.browser = String(e); evidence.result = 'Fail'; }
+  }
   for (const [name, child] of [['frontend', frontend], ['nodeA', nodeA?.process], ['nodeB', nodeB?.process]]) {
     try { evidence.cleanup[name] = await stop(child); } catch (e) { evidence.cleanup[name] = String(e); evidence.result = 'Fail'; }
   }

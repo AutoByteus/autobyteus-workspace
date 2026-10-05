@@ -1,4 +1,5 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { resolveActiveTracePageSenderAddresses } from "../projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../projection/run-projection-types.js";
 import { AgentOrgExecutionIndex } from "../../agent-org-execution/services/agent-org-execution-index.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
@@ -82,12 +83,14 @@ export class AgentOrgMemberRunViewProjectionService {
     beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePage> {
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
-    return this.agentViews.getActiveTracePageFromMetadata({
+    const page = await this.agentViews.getActiveTracePageFromMetadata({
       runId: location.agentRunId,
       metadata: metadataFor(location),
       beforeCursor,
       canonicalSubject: `org:${location.rootRunId}:member:${location.memberAddress}:agent:${location.agentRunId}`,
     });
+    const index = new AgentOrgExecutionIndex(location.tree);
+    return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
   }
 
   async getTokenUsageSummary(

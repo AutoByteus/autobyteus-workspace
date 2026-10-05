@@ -26,7 +26,7 @@ const createSubject = () => {
   const lifecycleService = Object.assign(
     Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
     {
-    activatePreparedRun: vi.fn().mockResolvedValue(activeRun),
+    activateHost: vi.fn().mockResolvedValue({ run: activeRun, metadata: {} }),
     },
   );
   const service = new AgentRunService("/tmp/agent-run-service-test", {
@@ -66,11 +66,12 @@ describe("AgentRunService create", () => {
     });
 
     expect(mocks.provisioningService.prepareAgentRun).toHaveBeenCalledExactlyOnceWith(input);
-    expect(mocks.lifecycleService.activatePreparedRun).toHaveBeenCalledExactlyOnceWith(
+    expect(mocks.lifecycleService.activateHost).toHaveBeenCalledExactlyOnceWith(
       "support_agent_00000000000000000000000000000001",
+      { memberExecutionContext: null },
     );
     expect(mocks.provisioningService.prepareAgentRun.mock.invocationCallOrder[0])
-      .toBeLessThan(mocks.lifecycleService.activatePreparedRun.mock.invocationCallOrder[0]!);
+      .toBeLessThan(mocks.lifecycleService.activateHost.mock.invocationCallOrder[0]!);
   });
 
   it("records activity through the history catalog without rewriting resume metadata", async () => {

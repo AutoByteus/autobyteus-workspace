@@ -1,0 +1,198 @@
+{
+ "model": "opus",
+ "cli": {
+  "label": "path-claude",
+  "executablePath": "/Users/normy/.local/bin/claude",
+  "version": "2.1.283 (Claude Code)"
+ },
+ "timeline": [
+  {
+   "t": 13,
+   "type": "TURN_STARTED"
+  },
+  {
+   "t": 5337,
+   "type": "TURN_COMPLETED"
+  },
+  {
+   "t": 5438,
+   "type": "TURN_STARTED"
+  },
+  {
+   "t": 5456,
+   "type": "COMPACTION_STATUS",
+   "payload": {
+    "kind": "provider_compaction_boundary",
+    "runtime_kind": "CLAUDE",
+    "provider": "claude",
+    "source_surface": "claude.status_compacting",
+    "boundary_key": "claude:1b8f1f45-4246-46fe-9ba3-16e20294c6e5:claude.status_compacting:f2b2e818-f808-4a48-bbb2-6b2b044f1aec:claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:a9aae674-a6b7-4fd5-a6ac-937b9ce55bf0",
+    "provider_session_id": "1b8f1f45-4246-46fe-9ba3-16e20294c6e5",
+    "provider_event_id": "f2b2e818-f808-4a48-bbb2-6b2b044f1aec",
+    "provider_timestamp": null,
+    "turn_id": "claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:a9aae674-a6b7-4fd5-a6ac-937b9ce55bf0",
+    "status": "compacting",
+    "rotation_eligible": false,
+    "semantic_compaction": false
+   }
+  },
+  {
+   "t": 5457,
+   "type": "COMPACTION_STATUS",
+   "payload": {
+    "kind": "provider_compaction_boundary",
+    "runtime_kind": "CLAUDE",
+    "provider": "claude",
+    "source_surface": "claude.compaction_failed",
+    "boundary_key": "claude:1b8f1f45-4246-46fe-9ba3-16e20294c6e5:claude.compaction_failed:f2b2e818-f808-4a48-bbb2-6b2b044f1aec:claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:a9aae674-a6b7-4fd5-a6ac-937b9ce55bf0",
+    "provider_session_id": "1b8f1f45-4246-46fe-9ba3-16e20294c6e5",
+    "provider_event_id": "f2b2e818-f808-4a48-bbb2-6b2b044f1aec",
+    "provider_timestamp": null,
+    "turn_id": "claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:a9aae674-a6b7-4fd5-a6ac-937b9ce55bf0",
+    "status": "failed",
+    "rotation_eligible": false,
+    "semantic_compaction": false,
+    "error_message": "too_few_groups"
+   }
+  },
+  {
+   "t": 11224,
+   "type": "TURN_COMPLETED"
+  },
+  {
+   "t": 11260,
+   "type": "TURN_STARTED"
+  },
+  {
+   "t": 11270,
+   "type": "COMPACTION_STATUS",
+   "payload": {
+    "kind": "provider_compaction_boundary",
+    "runtime_kind": "CLAUDE",
+    "provider": "claude",
+    "source_surface": "claude.status_compacting",
+    "boundary_key": "claude:1b8f1f45-4246-46fe-9ba3-16e20294c6e5:claude.status_compacting:d569f018-0525-49ff-9a7b-adba580e7671:claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:589b3834-b984-4173-b6ba-d8550e3c50db",
+    "provider_session_id": "1b8f1f45-4246-46fe-9ba3-16e20294c6e5",
+    "provider_event_id": "d569f018-0525-49ff-9a7b-adba580e7671",
+    "provider_timestamp": null,
+    "turn_id": "claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:589b3834-b984-4173-b6ba-d8550e3c50db",
+    "status": "compacting",
+    "rotation_eligible": false,
+    "semantic_compaction": false
+   }
+  },
+  {
+   "t": 21545,
+   "type": "COMPACTION_STATUS",
+   "payload": {
+    "kind": "provider_compaction_boundary",
+    "runtime_kind": "CLAUDE",
+    "provider": "claude",
+    "source_surface": "claude.compact_boundary",
+    "boundary_key": "claude:1b8f1f45-4246-46fe-9ba3-16e20294c6e5:claude.compact_boundary:2eaadeaa-e46d-47d6-b95b-b98fe5917b5d:claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:589b3834-b984-4173-b6ba-d8550e3c50db",
+    "provider_session_id": "1b8f1f45-4246-46fe-9ba3-16e20294c6e5",
+    "provider_event_id": "d569f018-0525-49ff-9a7b-adba580e7671",
+    "provider_timestamp": null,
+    "turn_id": "claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:589b3834-b984-4173-b6ba-d8550e3c50db",
+    "status": "compacted",
+    "rotation_eligible": true,
+    "semantic_compaction": false,
+    "trigger": "auto",
+    "pre_tokens": 170796,
+    "post_tokens": 1196,
+    "duration_ms": 10268
+   }
+  },
+  {
+   "t": 22901,
+   "type": "TURN_COMPLETED"
+  }
+ ],
+ "markers": [
+  {
+   "provider": "claude",
+   "runtime_kind": "CLAUDE",
+   "boundary_key": "claude:1b8f1f45-4246-46fe-9ba3-16e20294c6e5:claude.status_compacting:f2b2e818-f808-4a48-bbb2-6b2b044f1aec:claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:a9aae674-a6b7-4fd5-a6ac-937b9ce55bf0",
+   "provider_timestamp": null,
+   "trigger": null,
+   "status": "compacting",
+   "pre_tokens": null,
+   "rotation_eligible": false,
+   "semantic_compaction": false,
+   "source_surface": "claude.status_compacting",
+   "provider_thread_id": null,
+   "provider_session_id": "1b8f1f45-4246-46fe-9ba3-16e20294c6e5",
+   "provider_event_id": "f2b2e818-f808-4a48-bbb2-6b2b044f1aec",
+   "provider_response_id": null
+  },
+  {
+   "provider": "claude",
+   "runtime_kind": "CLAUDE",
+   "boundary_key": "claude:1b8f1f45-4246-46fe-9ba3-16e20294c6e5:claude.compaction_failed:f2b2e818-f808-4a48-bbb2-6b2b044f1aec:claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:a9aae674-a6b7-4fd5-a6ac-937b9ce55bf0",
+   "provider_timestamp": null,
+   "trigger": null,
+   "status": "failed",
+   "pre_tokens": null,
+   "error_message": "too_few_groups",
+   "rotation_eligible": false,
+   "semantic_compaction": false,
+   "source_surface": "claude.compaction_failed",
+   "provider_thread_id": null,
+   "provider_session_id": "1b8f1f45-4246-46fe-9ba3-16e20294c6e5",
+   "provider_event_id": "f2b2e818-f808-4a48-bbb2-6b2b044f1aec",
+   "provider_response_id": null
+  },
+  {
+   "provider": "claude",
+   "runtime_kind": "CLAUDE",
+   "boundary_key": "claude:1b8f1f45-4246-46fe-9ba3-16e20294c6e5:claude.status_compacting:d569f018-0525-49ff-9a7b-adba580e7671:claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:589b3834-b984-4173-b6ba-d8550e3c50db",
+   "provider_timestamp": null,
+   "trigger": null,
+   "status": "compacting",
+   "pre_tokens": null,
+   "rotation_eligible": false,
+   "semantic_compaction": false,
+   "source_surface": "claude.status_compacting",
+   "provider_thread_id": null,
+   "provider_session_id": "1b8f1f45-4246-46fe-9ba3-16e20294c6e5",
+   "provider_event_id": "d569f018-0525-49ff-9a7b-adba580e7671",
+   "provider_response_id": null
+  },
+  {
+   "provider": "claude",
+   "runtime_kind": "CLAUDE",
+   "boundary_key": "claude:1b8f1f45-4246-46fe-9ba3-16e20294c6e5:claude.compact_boundary:2eaadeaa-e46d-47d6-b95b-b98fe5917b5d:claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:589b3834-b984-4173-b6ba-d8550e3c50db",
+   "provider_timestamp": null,
+   "trigger": "auto",
+   "status": "compacted",
+   "pre_tokens": 170796,
+   "post_tokens": 1196,
+   "duration_ms": 10268,
+   "rotation_eligible": true,
+   "semantic_compaction": false,
+   "source_surface": "claude.compact_boundary",
+   "provider_thread_id": null,
+   "provider_session_id": "1b8f1f45-4246-46fe-9ba3-16e20294c6e5",
+   "provider_event_id": "d569f018-0525-49ff-9a7b-adba580e7671",
+   "provider_response_id": null
+  }
+ ],
+ "segments": [
+  {
+   "index": 1,
+   "file_name": "raw_traces_000001.jsonl",
+   "boundary_type": "provider_compaction_boundary",
+   "boundary_key": "claude:1b8f1f45-4246-46fe-9ba3-16e20294c6e5:claude.compact_boundary:2eaadeaa-e46d-47d6-b95b-b98fe5917b5d:claude-tmp01-513f602c-7acc-4d97-b6f3-b729051c928b:turn:589b3834-b984-4173-b6ba-d8550e3c50db",
+   "boundary_trace_id": "rt_1791098943268_5da98944-e6ac-4d19-88f3-09dbda5e53b1",
+   "runtime_kind": "CLAUDE",
+   "source_event": "claude.compact_boundary",
+   "archived_at": 1791098943.268,
+   "first_trace_id": "rt_1791098921734_24495ba1-749e-43c7-beaa-e9cbaf6bf5e9",
+   "last_trace_id": "rt_1791098932995_ebeb8e68-3982-4f83-a8bb-4b801a364488",
+   "first_ts": 1791098921.734,
+   "last_ts": 1791098932.995,
+   "record_count": 6,
+   "status": "complete"
+  }
+ ]
+}

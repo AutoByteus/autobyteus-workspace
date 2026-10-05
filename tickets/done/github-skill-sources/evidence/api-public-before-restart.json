@@ -1,0 +1,64 @@
+{
+  "skillSources": [
+    {
+      "sourceId": "local:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HtIpHA/server-data/skills",
+      "sourceKind": "DEFAULT",
+      "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HtIpHA/server-data/skills",
+      "skillCount": 0,
+      "isDefault": true,
+      "github": null
+    },
+    {
+      "sourceId": "fe6c427d-4faf-44f1-aeba-641def1898cf",
+      "sourceKind": "GITHUB_REPOSITORY",
+      "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HtIpHA/server-data/skill-sources/github/fe6c427d-4faf-44f1-aeba-641def1898cf/generations/28bb560a-3306-4cf3-9428-ab3b32e9f52b/repository",
+      "skillCount": 2,
+      "isDefault": false,
+      "github": {
+        "repositoryUrl": "https://github.com/squirrelscan/skills",
+        "installedRevision": "dcf16bf83a4267fcf6a913e89ab9209072b28a94",
+        "latestRevision": "dcf16bf83a4267fcf6a913e89ab9209072b28a94",
+        "latestCheckedAt": "2026-10-04T10:53:43.716Z",
+        "status": "UP_TO_DATE",
+        "lastError": null
+      }
+    },
+    {
+      "sourceId": "a1b984dd-ccce-462c-b59b-d0a13ed20536",
+      "sourceKind": "GITHUB_REPOSITORY",
+      "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HtIpHA/server-data/skill-sources/github/a1b984dd-ccce-462c-b59b-d0a13ed20536/generations/027a5621-8502-489f-9859-e9fcd00e2263/repository",
+      "skillCount": 1,
+      "isDefault": false,
+      "github": {
+        "repositoryUrl": "https://github.com/blader/humanizer",
+        "installedRevision": "225a6f39ac85f76ee48dbad772ea4abe4ed6c9d8",
+        "latestRevision": "225a6f39ac85f76ee48dbad772ea4abe4ed6c9d8",
+        "latestCheckedAt": "2026-10-04T10:53:44.468Z",
+        "status": "UP_TO_DATE",
+        "lastError": null
+      }
+    }
+  ],
+  "skills": [
+    {
+      "name": "audit-website",
+      "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HtIpHA/server-data/skill-sources/github/fe6c427d-4faf-44f1-aeba-641def1898cf/generations/28bb560a-3306-4cf3-9428-ab3b32e9f52b/repository/skills/audit-website",
+      "fileCount": 6
+    },
+    {
+      "name": "humanizer",
+      "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HtIpHA/server-data/skill-sources/github/a1b984dd-ccce-462c-b59b-d0a13ed20536/generations/027a5621-8502-489f-9859-e9fcd00e2263/repository",
+      "fileCount": 14
+    },
+    {
+      "name": "retrospective-skill-improver",
+      "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HtIpHA/server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver",
+      "fileCount": 4
+    },
+    {
+      "name": "squirrelscan",
+      "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HtIpHA/server-data/skill-sources/github/fe6c427d-4faf-44f1-aeba-641def1898cf/generations/28bb560a-3306-4cf3-9428-ab3b32e9f52b/repository/skills/squirrelscan",
+      "fileCount": 5
+    }
+  ]
+}

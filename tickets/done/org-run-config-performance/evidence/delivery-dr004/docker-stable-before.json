@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-04T04:05:54.853706+00:00",
+  "tag": "latest",
+  "digest": "sha256:6bd413de476de077c0af39cf5a0bcaeab224389d1e349e6efc3b6e00fbe448c0",
+  "manifest": {
+    "schemaVersion": 2,
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "manifests": [
+      {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:a807e185a529d087f9a6be595d8ad66979736dd1eef5abd81c42012af63e6d91",
+        "size": 10889,
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        }
+      },
+      {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:527101837c0fda05433c9162b9e1a710deea170c3d73003d8531a1944b096bb6",
+        "size": 10889,
+        "platform": {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-04T04:57:17.662856+00:00",
+  "personalTip": "86beba43c9e8a435a82c50628758f84ba3ef304b",
+  "remotePersonalConfirmedSame": true,
+  "receiptOnlyAuditCommit": true,
+  "publishedTagStill": "v1.4.94-beta.2",
+  "releaseSha": "a4a5a1ce6cf9b7909429f858a0894eb58d5f86b2",
+  "releaseAndRepositoryFinalization": "Completed",
+  "safeCleanup": "Blocked, unknown-owner tracked guide edit retained",
+  "notes": "Post-push/handoff audit files are durable local receipts, not source changes or a new release"
+}

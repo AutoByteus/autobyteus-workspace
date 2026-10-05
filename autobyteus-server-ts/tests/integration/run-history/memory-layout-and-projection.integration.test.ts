@@ -12,6 +12,7 @@ import { AgentRunViewProjectionService } from "../../../src/run-history/services
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunActivationCandidate } from "../../../src/agent-execution/services/agent-run-activation-candidate.js";
+import { createStandaloneRunRootsFixture } from "../../fixtures/standalone-run-roots-fixture.js";
 
 const tempDirs = new Set<string>();
 
@@ -117,6 +118,7 @@ describe("memory layout and projection integration", () => {
         historyCatalogService,
         workspaceManager,
         lifecycleService,
+        standaloneRuns: createStandaloneRunRootsFixture({ memoryDir, lifecycleService, agentRunManager: agentRunManager as never, metadataService }),
         agentDefinitionService: {
           getFreshAgentDefinitionById: vi.fn().mockResolvedValue({
             name: "Projection Agent",

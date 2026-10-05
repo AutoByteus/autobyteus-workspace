@@ -21,12 +21,7 @@
 
     <textarea id="task-page-description" :value="modelValue" rows="8" :disabled="disabled" :placeholder="placeholder" :aria-invalid="error ? 'true' : 'false'" :aria-describedby="error ? 'task-page-help task-page-error' : 'task-page-help'" class="block w-full resize-y rounded-none border-0 bg-transparent px-3 py-3 text-base leading-6 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0 sm:text-sm" data-testid="task-page-description-input" @input="emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)" @keydown.enter.ctrl.exact.prevent="emit('save')" @keydown.enter.meta.exact.prevent="emit('save')" />
 
-    <div v-if="voicePhase !== 'idle' || voiceMessage" class="mx-3 mb-3 rounded-lg border px-3 py-2.5 text-xs leading-5" :class="voicePhase === 'recording' ? 'border-red-200 bg-red-50 text-red-700' : voiceError ? 'border-red-200 bg-red-50 text-red-700' : 'border-blue-200 bg-blue-50 text-blue-700'" :role="voiceError ? 'alert' : 'status'" data-testid="task-voice-status">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <span class="flex items-center gap-2"><span v-if="voicePhase !== 'idle'" class="h-2 w-2 flex-shrink-0 rounded-full" :class="voicePhase === 'recording' ? 'animate-pulse bg-red-500 motion-reduce:animate-none' : 'bg-blue-500'"></span>{{ voiceStatus }}</span>
-        <button v-if="voicePhase === 'recording'" type="button" class="min-h-8 rounded px-1 underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500" data-testid="task-voice-cancel" @click="cancelVoice">{{ t('projects.ui.cancelRecording') }}</button>
-      </div>
-    </div>
+    <ProjectVoiceStatus :target="target" class="mx-3 mb-3" status-test-id="task-voice-status" cancel-test-id="task-voice-cancel" />
 
     <div class="flex flex-wrap items-center justify-between gap-2 rounded-b-xl border-t border-slate-100 px-3 py-2">
       <p class="text-xs text-slate-500">{{ t('projects.ui.shortcut') }}</p>
@@ -37,26 +32,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import TaskContextFiles from './TaskContextFiles.vue'
 import VoiceInputButton from '~/components/voiceInput/VoiceInputButton.vue'
-import { useVoiceInputStore } from '~/stores/voiceInputStore'
+import ProjectVoiceStatus from './ProjectVoiceStatus.vue'
 import { useLocalization } from '~/composables/useLocalization'
-import type { VoiceTranscriptTarget, VoiceInputLatestResult } from '~/types/voiceInput'
+import type { VoiceTranscriptTarget } from '~/types/voiceInput'
 import type { ProjectTaskContextFile } from '~/types/project'
 import type { createProjectTaskContextClient } from '~/services/projects/projectTaskContextClient'
 const props = defineProps<{modelValue: string; files: ProjectTaskContextFile[]; client: ReturnType<typeof createProjectTaskContextClient>; draftId?: string; savedFilenames?: string[]; target: VoiceTranscriptTarget; disabled?: boolean; adding?: boolean; error?: string; placeholder: string}>()
 const emit = defineEmits<{'update:modelValue': [value: string]; add: [files: File[]]; remove: [filename: string]; clear: []; save: []}>()
-const {t} = useLocalization(), voice = useVoiceInputStore()
-const fileInput = ref<HTMLInputElement | null>(null), expanded = ref(true), result = ref<VoiceInputLatestResult | null>(null)
-const ownsCapture = computed(() => voice.transcriptTarget?.key === props.target.key)
-const voicePhase = computed(() => !ownsCapture.value ? 'idle' : voice.isStarting ? 'starting' : voice.isRecording ? 'recording' : voice.isTranscribing ? 'transcribing' : 'idle')
-const voiceError = computed(() => result.value?.outcome === 'error')
-const voiceMessage = computed(() => !result.value ? '' : result.value.outcome === 'transcript-ready' ? t('projects.ui.voiceReady') : result.value.outcome === 'no-speech' || result.value.outcome === 'empty-transcript' ? t('projects.ui.voiceNoSpeech') : voiceError.value ? t('projects.ui.voiceFailed') : '')
-const voiceStatus = computed(() => voicePhase.value === 'recording' ? t('projects.ui.voiceRecording') : voicePhase.value === 'starting' ? t('projects.ui.voiceStarting') : voicePhase.value === 'transcribing' ? t('projects.ui.voiceTranscribing') : voiceMessage.value)
-watch(() => voice.latestResult, (latest) => {if (ownsCapture.value) result.value = latest}, {flush: 'sync'})
-const cancelVoice = () => {result.value = null; void voice.cancelOperationForTarget(props.target.key)}
+const {t} = useLocalization()
+const fileInput = ref<HTMLInputElement | null>(null), expanded = ref(true)
 const addFiles = (files: File[]) => {if (!props.disabled && !props.adding && files.length) {expanded.value = true; emit('add', files)}}
 const onSelect = (event: Event) => {const input = event.target as HTMLInputElement; addFiles(Array.from(input.files ?? [])); input.value = ''}
 const onDrop = (event: DragEvent) => addFiles(Array.from(event.dataTransfer?.files ?? []))

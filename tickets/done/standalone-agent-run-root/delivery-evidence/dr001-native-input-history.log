@@ -1,0 +1,59 @@
+
+> autobyteus-workspace@ test:native-input-history /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root
+> pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web test:nuxt --config ../test-support/native-input-history/vitest.config.mts --run
+
+
+> autobyteus@1.4.94-beta.3 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.94-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-web
+> cross-env NUXT_TEST=true vitest --config ../test-support/native-input-history/vitest.config.mts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-web
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  ../test-support/native-input-history/native-accepted-input-history.integration.test.ts [ ../test-support/native-input-history/native-accepted-input-history.integration.test.ts ]
+Error: Failed to resolve import "../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture" from "../test-support/native-input-history/native-accepted-input-history.integration.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/test-support/native-input-history/native-accepted-input-history.integration.test.ts:10:0
+  11 |  const __vi_import_6__ = await import("../../autobyteus-ts/dist/agent/sender-type.js");
+  12 |  const __vi_import_7__ = await import("node:path");
+  13 |  const __vi_import_8__ = await import("../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-com...
+     |                                       ^
+  14 |  const __vi_import_9__ = await import("../../autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture");
+  15 |  const __vi_import_10__ = await import("../../autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-vi...
+ ❯ TransformPluginContext._formatLog ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43
+ ❯ TransformPluginContext.error ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  15:57:57
+   Duration  4.62s (transform 2.66s, setup 4.17s, collect 0ms, tests 0ms, environment 146ms, prepare 118ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.

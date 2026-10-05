@@ -129,12 +129,12 @@ const createMaterializerMock = () => ({
     workingDirectory: string;
     requests?: Array<{ kind: string; skill?: Skill }> | null;
   }) =>
-    (input.requests ?? []).filter((request) => request.kind === "expose-resolved").map((request) => ({
+    ({ effectiveRequests: input.requests ?? [], materializedSkills: (input.requests ?? []).filter((request) => request.kind === "expose-resolved").map((request) => ({
       name: request.skill!.name,
       sourceRootPath: request.skill!.rootPath,
       materializedRootPath: path.join(input.workingDirectory, ".codex", "skills", request.skill!.name),
       registryKey: `${input.workingDirectory}::${request.skill!.rootPath}`,
-    }))),
+    })) })),
 }) as unknown as WorkspaceSkillMaterializer;
 
 const createBootstrapper = (input: {

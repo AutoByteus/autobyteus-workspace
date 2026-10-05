@@ -56,7 +56,8 @@ describe('AgentRunCollaborationContext', () => {
     const host = context.messagesView('host-run')
     expect(host).toMatchObject({ rootKind: 'agent', rootRunId: 'host-run', focusedMemberAddress: '/research_assistant' })
     expect(host.listMessages()).toMatchObject([{ direction: 'received', counterpart: { label: 'computer use agent', kind: 'delegated' } }])
-    expect(context.messagesView('cua-run').listMessages()).toMatchObject([{ direction: 'sent', counterpart: { label: 'research assistant', kind: 'configured' } }])
+    // REQ-008: the run's own agent reads as its name (VIS-013); the collaborator keeps the lowercase row label above.
+    expect(context.messagesView('cua-run').listMessages()).toMatchObject([{ direction: 'sent', counterpart: { label: 'Research Assistant', kind: 'configured' } }])
     expect(host.referenceContentPath('m1', 'r1')).toBe('agent-collaborations/host-run/communication/messages/m1/references/r1/content')
   })
 

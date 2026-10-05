@@ -1,0 +1,1 @@
+export default async ({ page, shot }) => { const b = page.getByRole("button", { name: "Deny", exact: true }); const n = await b.count(); if (n) await b.first().click(); await page.waitForTimeout(3000); await shot("r5-79-denied"); return { denied: n }; };

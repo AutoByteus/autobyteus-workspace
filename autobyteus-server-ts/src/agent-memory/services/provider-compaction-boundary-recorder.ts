@@ -10,6 +10,15 @@ import {
   extractTurnId,
 } from "./runtime-memory-event-payload.js";
 
+/** Provider-specific details are persisted only when the provider reports them. */
+const optionalBoundaryFields = (
+  boundary: ProviderCompactionBoundaryPayload,
+): Record<string, number | string> => ({
+  ...(boundary.post_tokens != null ? { post_tokens: boundary.post_tokens } : {}),
+  ...(boundary.duration_ms != null ? { duration_ms: boundary.duration_ms } : {}),
+  ...(boundary.error_message != null ? { error_message: boundary.error_message } : {}),
+});
+
 export class ProviderCompactionBoundaryRecorder {
   private readonly seenBoundaryKeys = new Set<string>();
 
@@ -43,6 +52,7 @@ export class ProviderCompactionBoundaryRecorder {
         trigger: boundary.trigger ?? null,
         status: boundary.status ?? null,
         pre_tokens: boundary.pre_tokens ?? null,
+        ...optionalBoundaryFields(boundary),
         rotation_eligible: boundary.rotation_eligible,
         semantic_compaction: false,
         source_surface: boundary.source_surface,
@@ -128,6 +138,9 @@ export class ProviderCompactionBoundaryRecorder {
       trigger: asString(payload.trigger) ?? asString(toolResult?.trigger),
       status: asString(payload.status) ?? asString(toolResult?.status),
       pre_tokens: asNumber(payload.pre_tokens) ?? asNumber(toolResult?.pre_tokens),
+      post_tokens: asNumber(payload.post_tokens),
+      duration_ms: asNumber(payload.duration_ms),
+      error_message: asString(payload.error_message),
       rotation_eligible: rotationEligible,
       semantic_compaction: false,
     };

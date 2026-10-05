@@ -7,7 +7,7 @@ import { ContextFile } from '../../autobyteus-ts/dist/agent/message/context-file
 import { ContextFileType } from '../../autobyteus-ts/dist/agent/message/context-file-type.js';
 import { SenderType } from '../../autobyteus-ts/dist/agent/sender-type.js';
 import path from 'node:path';
-import { createNativeRootFixture, HOST } from '../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture';
+import { createNativeRootFixture, HOST } from '../../autobyteus-server-ts/tests/integration/standalone-agent-run-root/native-compaction-root-fixture';
 import { eventually, summary } from '../../autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture';
 import { projectAgentCollaborationView } from '../../autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector';
 import { toMemoryTraceEvent } from '../../autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer';

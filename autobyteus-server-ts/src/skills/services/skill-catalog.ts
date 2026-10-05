@@ -11,6 +11,7 @@ import type {
 import {
   scanBundledSkillsFromDefinitionRoot,
   scanSkillDirectory,
+  inspectGitHubSkillRepository,
   type SkillDiscoveryDependencies,
 } from "./skill-discovery.js";
 
@@ -23,7 +24,8 @@ import {
 export type SkillCatalogSource = {
   path: string;
   tier: SkillCatalogTier;
-  layout: "skill_directory" | "definition_root" | "skill_path";
+  layout: "skill_directory" | "definition_root" | "skill_path" | "github_repository";
+  managedSource?: { sourceId: string; generation: string };
   /** Where this root's Agent Orgs live when not `<path>/agent-orgs` (the app data dir's org folder). */
   orgRoot?: string;
 };
@@ -48,6 +50,7 @@ export type SkillCatalog = {
 export const listSkillCatalogSources = (
   config: SkillCatalogConfig,
   isRuntimeDefaultFolder: (directory: string) => boolean,
+  managedSources: SkillCatalogSource[] = [],
 ): SkillCatalogSource[] => {
   const seenDefinitionRoots = new Set<string>();
   const definitionRoots = [config.getAppDataDir(), ...config.getAdditionalAgentPackageRoots()]
@@ -80,6 +83,7 @@ export const listSkillCatalogSources = (
       ...(index === 0 ? { orgRoot: config.getAgentOrgsDir() } : {}),
     })),
     ...addedFolders.filter((source) => source.tier === 3),
+    ...managedSources,
     ...addedFolders.filter((source) => source.tier === 4),
   ];
 };
@@ -89,15 +93,26 @@ export const scanSkillCatalogSource = (
   source: SkillCatalogSource,
   dependencies: SkillDiscoveryDependencies,
 ): InstalledSkillRecord[] => {
-  const discovered = source.layout === "skill_directory"
-    ? scanSkillDirectory(source.path, dependencies)
-    : source.layout === "definition_root"
-      ? scanBundledSkillsFromDefinitionRoot(source.path, dependencies, source.orgRoot)
-      : [
-          ...scanSkillDirectory(source.path, dependencies),
-          ...scanBundledSkillsFromDefinitionRoot(source.path, dependencies),
-        ];
-  return discovered.map((record) => ({ ...record, tier: source.tier, sourcePath: path.resolve(source.path) }));
+  let discovered;
+  try {
+    discovered = source.layout === "github_repository"
+      ? inspectGitHubSkillRepository(source.path, dependencies).records
+      : source.layout === "skill_directory"
+        ? scanSkillDirectory(source.path, dependencies)
+        : source.layout === "definition_root"
+          ? scanBundledSkillsFromDefinitionRoot(source.path, dependencies, source.orgRoot)
+          : [
+              ...scanSkillDirectory(source.path, dependencies),
+              ...scanBundledSkillsFromDefinitionRoot(source.path, dependencies),
+            ];
+  } catch (error) {
+    dependencies.logger.warn(`Unable to scan skill source ${source.path}: ${String(error)}`);
+    return [];
+  }
+  return discovered.map((record) => {
+    record.skill.managedSource = source.managedSource ?? null;
+    return { ...record, tier: source.tier, sourcePath: path.resolve(source.path) };
+  });
 };
 
 const realSkillRoot = (record: InstalledSkillRecord): string => {

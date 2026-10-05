@@ -1,4 +1,5 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { resolveActiveTracePageSenderAddresses } from "../projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../projection/run-projection-types.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import type { EventMonitorActiveTracePage } from "../projection/event-monitor-active-trace-page-types.js";
@@ -63,12 +64,14 @@ export class TeamMemberRunViewProjectionService {
     beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePage> {
     const location = await this.requireLocation(rootTeamRunId, agentRunId);
-    return this.agentViews.getActiveTracePageFromMetadata({
+    const page = await this.agentViews.getActiveTracePageFromMetadata({
       runId: location.agentRunId,
       metadata: metadataFor(location),
       beforeCursor,
       canonicalSubject: `team:${location.rootTeamRunId}:agent:${location.agentRunId}`,
     });
+    const index = new TeamExecutionIndex(location.tree);
+    return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
   }
 
   private async requireLocation(rootTeamRunId: string, agentRunId: string) {

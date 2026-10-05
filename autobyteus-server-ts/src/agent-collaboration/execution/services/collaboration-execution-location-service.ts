@@ -1,16 +1,16 @@
 import type { TeamRunExecutionTreeLocationService, LocatedTeamAgentExecution } from "../../../run-history/services/team-run-execution-tree-location-service.js";
 import type { AgentOrgExecutionTreeLocationService, LocatedAgentOrgAgentExecution } from "../../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
-import type { AgentRunCollaborationLocationService, LocatedAgentRunCollaborationAgentExecution } from "../../../agent-run-collaboration/services/agent-run-collaboration-location-service.js";
+import type { StandaloneRootLocationService, LocatedStandaloneRootAgentExecution } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
 import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { RootSubjectKind } from "../domain/root-execution-identity.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../../../run-history/services/team-run-execution-tree-location-service.js";
 import { AgentOrgExecutionTreeLocationService as StoredAgentOrgExecutionTreeLocationService } from "../../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
-import { AgentRunCollaborationLocationService as StoredAgentRunCollaborationLocationService } from "../../../agent-run-collaboration/services/agent-run-collaboration-location-service.js";
+import { StandaloneRootLocationService as StoredStandaloneRootLocationService } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
 
 export type LocatedCollaborationAgentExecution =
   | Readonly<LocatedTeamAgentExecution & { rootSubjectKind: "agent_team"; rootRunId: string }>
   | LocatedAgentOrgAgentExecution
-  | LocatedAgentRunCollaborationAgentExecution;
+  | LocatedStandaloneRootAgentExecution;
 
 type Input = { rootSubjectKind?: RootSubjectKind | null; rootRunId?: string | null; agentRunId?: string | null; memberAddress?: string | null; containingTeamRunId?: string | null };
 type Family = "findAgent" | "findAgentSync" | "listAgents";
@@ -31,7 +31,7 @@ export class CollaborationExecutionLocationService {
   constructor(private readonly input: Readonly<{
     teams: Pick<TeamRunExecutionTreeLocationService, Family>;
     orgs: Pick<AgentOrgExecutionTreeLocationService, Family>;
-    agents: Pick<AgentRunCollaborationLocationService, Family>;
+    agents: Pick<StandaloneRootLocationService, Family>;
   }>) {}
   async findAgent(input: Input): Promise<LocatedCollaborationAgentExecution | null> {
     switch (input.rootSubjectKind) {
@@ -91,5 +91,5 @@ export const createStoredCollaborationExecutionLocationService = (
 ): CollaborationExecutionLocationService => new CollaborationExecutionLocationService({
   teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
   orgs: new StoredAgentOrgExecutionTreeLocationService({ memoryDir }),
-  agents: new StoredAgentRunCollaborationLocationService({ memoryDir }),
+  agents: new StoredStandaloneRootLocationService({ memoryDir }),
 });

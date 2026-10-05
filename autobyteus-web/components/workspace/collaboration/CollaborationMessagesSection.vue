@@ -17,6 +17,7 @@
 
     <CollaborationMessagesPanel
       :messages="messages"
+      :rows="rows"
       class="min-h-0 flex-1"
     />
   </section>
@@ -31,5 +32,7 @@ const props = defineProps<{
   messages: CollaborationMessagesContextView
 }>()
 
-const messageCount = computed(() => props.messages.listMessages().length)
+// The single perspective computation for this view; the Panel renders these rows.
+const rows = computed(() => props.messages.listMessages())
+const messageCount = computed(() => rows.value.length)
 </script>

@@ -1,3 +1,4 @@
+import { SkillSourceService } from "../../../../src/skills/services/skill-source-service.js";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -177,7 +178,7 @@ describe("SkillService catalog: one skill per name (D-19)", () => {
       const incoming = writeSkill(path.join(added, "dup"), "dup");
       const updateSetting = vi.spyOn(getServerSettingsService(), "updateSetting");
 
-      const error = (() => { try { service.addSkillSource(added); } catch (caught) { return caught; } return null; })();
+      const error = (() => { try { new SkillSourceService({ config: service.config, catalog: service }).addSkillSource(added); } catch (caught) { return caught; } return null; })();
 
       expect(error).toBeInstanceOf(SkillNameConflictError);
       expect((error as SkillNameConflictError).conflicts).toEqual([{ name: "dup", existingPath: existing, incomingPath: incoming }]);

@@ -11,6 +11,7 @@ import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../sr
 import type { PreparedLocalExecutionTermination } from "../../../src/agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
+import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
 import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../../../src/agent-team-execution/domain/task-team-execution.js";
@@ -47,7 +48,6 @@ import { TeamCommunicationV1Store } from "../../../src/services/team-communicati
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
-import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
@@ -314,7 +314,7 @@ const createHarness = async (linked = false) => {
       allocateForAgentDefinition: async (agentDefinitionId) => `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
     }),
     rootRun: new TeamRun(backend.context, backend),
-    ...(linked ? { lifetimePort: tasks, collaboratorAdmission: helperAdmission } : {}),
+    ...(linked ? { lifetimePort: tasks } : {}),
     // Collaborators are covered by the Team-root collaborator unit test over the real flat manager.
     collaboratorHost: {
       prepareCollaboratorAgent: () => { throw new Error("No collaborators in this scenario."); },
@@ -328,6 +328,11 @@ const createHarness = async (linked = false) => {
     publisher,
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
+    // Linked cases admit Task-owned helpers; unlinked cases have an empty catalog.
+    collaboratorAdmission: linked ? helperAdmission : createCollaboratorAdmission({
+      listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
+      getAgentDefinition: async () => null, getTeamDefinition: async () => null,
+    }, { validate: vi.fn(), validateMany: async () => [] } as never),
   });
   const commands: MemberTaskCommandCapability = Object.freeze({
     root: createTeamRootExecutionIdentity(rootTeamRunId),

@@ -7,7 +7,10 @@ import readline from "node:readline";
 const arg = process.argv[2];
 const argValue = (name) => process.argv.includes(name) ? process.argv[process.argv.indexOf(name) + 1] : null;
 if (arg === "--version") {
-  process.stdout.write("agy version 1.2.11\n");
+  // auto_compaction models the AGY version proven to stream compactions as checkpoint steps;
+  // AGY_FAKE_VERSION overrides the reported version (e.g. an older CLI for the detection gate).
+  process.stdout.write(process.env.AGY_FAKE_VERSION ? `${process.env.AGY_FAKE_VERSION}\n`
+    : process.env.AGY_FAKE_CASE === "auto_compaction" ? "1.2.16\n" : "agy version 1.2.11\n");
 } else if (arg === "--help") {
   process.stdout.write("--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\n");
 } else if (arg === "models") {
@@ -22,8 +25,10 @@ if (arg === "--version") {
   // Native image DONE uses a UUID conversation; the test owns that conversation's (temporary) AGY brain files.
   const imageDone = process.env.AGY_FAKE_CASE === "image_done";
   const nativeArguments = process.env.AGY_FAKE_CASE === "native_arguments";
+  const autoCompaction = process.env.AGY_FAKE_CASE === "auto_compaction";
   // These independent fixtures all model exact conversation binding on resume.
-  const conversation_id = runtimeError || linkedSkills || nativeArguments ? argValue("--conversation") || randomUUID()
+  const conversation_id = runtimeError || linkedSkills || nativeArguments || autoCompaction
+    ? argValue("--conversation") || randomUUID()
     : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
   const emit = (value) => process.stdout.write(JSON.stringify(value) + "\n");
   // As the real CLI does: headless AGY reports `always-proceed` only with skip-permissions, else `request-review`.
@@ -116,6 +121,18 @@ if (arg === "--version") {
     if (linkedSkills) {
       linkedSkillsTurn(line).catch((error) => emit({ event: "result", result: { conversation_id, status: "ERROR",
         error: String(error?.message ?? error), response: "" } }));
+      return;
+    }
+    if (autoCompaction) {
+      // Real AGY 1.2.16 shape (probes A15/A17): the automatic compaction is a checkpoint DONE step
+      // inside the turn, after user_input and before the reply. Turn 2 compacts; others do not.
+      const base = (turns - 1) * 3;
+      emit({ event: "step_update", step_update: { conversation_id, step_index: base, step_type: "user_input", state: "DONE" } });
+      if (turns === 2) emit({ event: "step_update", step_update: { conversation_id, step_index: base + 1,
+        step_type: "checkpoint", state: "DONE", duration_seconds: 7.293076 } });
+      const text = turns === 1 ? "BEFORE_COMPACTION_REPLY" : turns === 2 ? "AFTER_COMPACTION_REPLY" : "LATER_REPLY";
+      reply(base + 2, text);
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: text } });
       return;
     }
     if (process.env.AGY_FAKE_CASE === "daemon_background" && turns === 1) {

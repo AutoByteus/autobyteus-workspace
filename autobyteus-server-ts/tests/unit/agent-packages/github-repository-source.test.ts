@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   normalizeGitHubRepositorySource,
-} from "../../../src/agent-packages/utils/github-repository-source.js";
+} from "../../../src/integrations/github/github-repository-source.js";
 
 describe("normalizeGitHubRepositorySource", () => {
   it("normalizes a repository homepage URL", () => {

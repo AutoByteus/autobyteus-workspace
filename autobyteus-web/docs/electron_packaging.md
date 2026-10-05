@@ -959,7 +959,7 @@ platform validation responsibility rather than an inferred pass.
   - `AutoByteus/autobyteus-voice-runtime`
 - The extension lifecycle is:
   - `Install` downloads the platform runtime bundle into `~/.autobyteus/extensions/voice-input` and then performs local backend/model bootstrap for that machine
-  - `Enable` turns on shared composer/Task dictation without re-downloading
+  - `Enable` turns on shared composer/Project/Task dictation without re-downloading
   - `Disable` turns off dictation while keeping the installed assets on disk
   - `Remove` deletes the managed extension assets and resets Voice Input-specific state
 - The published runtime release stays lightweight:
@@ -975,16 +975,16 @@ platform validation responsibility rather than an inferred pass.
 #### Capture Startup And Ownership
 
 The renderer's `voiceInputStore` owns one shared capture lifecycle for composer,
-Project Task draft and Settings test controls:
+Project description, Project Task draft and Settings test controls:
 
 - activation sets isStarting synchronously before permission, device,
   getUserMedia, AudioContext or AudioWorklet initialization. Pending resources
   remain local until the same attempt and destination are current; denial,
   startup failure, cancellation and unmount dispose partially acquired capture;
-- recordingSource distinguishes composer, project-task and settings-test.
-  Composer/Task callers supply a VoiceTranscriptTarget with key, isCurrent and
+- recordingSource distinguishes composer, project-description, project-task and
+  settings-test. Composer/Project/Task callers supply a VoiceTranscriptTarget with key, isCurrent and
   appendTranscript. useComposerVoiceTarget adapts the actual composer context;
-  the Task draft owns its editable text. No active-AgentContext lookup, fake run
+  ProjectEditor and the Task draft each own their editable text. No active-AgentContext lookup, fake run
   identity, auto-save/run launch or automatic audio attachment is involved;
 - each mounted useComposerVoiceTarget owns one current destination lifetime.
   An eligible exact context object under the same node binding revision retains
@@ -1020,7 +1020,7 @@ Synthetic archive-timestamp hazards are not proof of an actual installed failure
 
 These destination/resource rules do not change managed release assets, local
 model policy, IPC result shape or persisted extension settings. See
-[Projects](projects.md#optional-local-voice-destination) for Task authoring scope
+[Projects](projects.md#optional-local-voice-destination) for Project/Task authoring scope
 and the [composer voice lifetime regression](../../TESTING.md#composer-voice-lifetime-regression)
 for repeatable renderer/native-browser coverage and its evidence limits.
 

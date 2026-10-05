@@ -1,0 +1,14 @@
+{
+  "verification": "USER-VERIFY-DR002",
+  "checkedBase": "1b9739cadba18125ac766b458fc2e4c0d392044e",
+  "ticketCommit": "dafdf8d8d",
+  "ticketPush": "Completed",
+  "targetFastForwardAndPush": "Completed",
+  "releaseCommit": "517409d404a0731675943735c0810348000cb2e0",
+  "tag": "v1.4.94-beta.4",
+  "tagPush": "Completed",
+  "sharedCheckoutFastForward": "Completed; original six modified-file hashes and all porcelain entries unchanged",
+  "publication": "Pending workflow completion",
+  "cleanup": "Pending publication",
+  "recordKind": "Historical post-tag progress snapshot; superseded by release-deployment-report.md and cleanup-receipt.json"
+}

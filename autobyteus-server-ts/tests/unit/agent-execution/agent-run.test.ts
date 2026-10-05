@@ -994,3 +994,80 @@ describe("AgentRun input admission", () => {
     )).rejects.toThrow("another-run");
   });
 });
+
+describe("AgentRun root shutdown attempts (SR-006, F-1–F-4)", () => {
+  const busy: AgentRuntimeLifecycleSnapshot = { availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: "turn-busy" } };
+  const idle: AgentRuntimeLifecycleSnapshot = { availability: "active", phase: "idle", currentTurn: { kind: "NONE" } };
+  const rejected = { accepted: false, code: "AGENT_RUN_INTERRUPT_REJECTED", message: "no active turn" };
+  const completeTurn = async (harness: ReturnType<typeof createHarness>) => {
+    harness.setSnapshot(idle);
+    await harness.getSourceListener()?.([event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-busy" })]);
+  };
+
+  it("settles accepted when the turn completes after a rejected interrupt, with no second interrupt (F-1)", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const harness = createHarness({ snapshot: busy, interrupt: vi.fn().mockResolvedValue(rejected) });
+    let settled = false;
+    const fence = harness.run.fenceInputAndInterruptForRootShutdown().then((result) => { settled = true; return result; });
+    await vi.waitFor(() => expect(console.warn).toHaveBeenCalledWith(expect.stringContaining(
+      `root shutdown interrupt rejected; awaiting quiescence for run '${harness.run.runId}': activeTurn=IDENTIFIED(turn-busy)`,
+    )));
+    expect(settled).toBe(false);
+
+    await completeTurn(harness);
+    await expect(fence).resolves.toEqual({ accepted: true });
+    expect(harness.backend.interrupt).toHaveBeenCalledOnce();
+    vi.restoreAllMocks();
+  });
+
+  it("ends a failed attempt at the bound, keeps input fenced, and lets the next call start a new attempt (F-2, F-3)", async () => {
+    vi.useFakeTimers();
+    try {
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      const harness = createHarness({ snapshot: busy, interrupt: vi.fn().mockResolvedValue(rejected) });
+      const first = harness.run.fenceInputAndInterruptForRootShutdown();
+      await vi.advanceTimersByTimeAsync(0);
+      expect(harness.backend.interrupt).toHaveBeenCalledOnce();
+      await vi.advanceTimersByTimeAsync(5000);
+      await expect(first).resolves.toEqual(rejected);
+      expect(console.warn).toHaveBeenLastCalledWith(expect.stringContaining("quiescence wait expired"));
+      expect(vi.getTimerCount()).toBe(0);
+
+      await expect(harness.run.postUserMessage(new AgentInputUserMessage("between attempts")))
+        .resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT" });
+
+      await completeTurn(harness);
+      await expect(harness.run.fenceInputAndInterruptForRootShutdown()).resolves.toEqual({ accepted: true });
+      expect(harness.backend.interrupt).toHaveBeenCalledOnce();
+      expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+      vi.restoreAllMocks();
+    }
+  });
+
+  it("shares one pending attempt between concurrent callers and keeps an accepted result latched (F-3)", async () => {
+    const harness = createHarness({ snapshot: busy, interrupt: vi.fn().mockResolvedValue({ accepted: true, turnId: "turn-busy" }) });
+    const first = harness.run.fenceInputAndInterruptForRootShutdown();
+    const second = harness.run.fenceInputAndInterruptForRootShutdown();
+    await vi.waitFor(() => expect(harness.backend.interrupt).toHaveBeenCalledOnce());
+    await completeTurn(harness);
+    await expect(Promise.all([first, second])).resolves.toEqual([{ accepted: true }, { accepted: true }]);
+    harness.setSnapshot(busy);
+    await expect(harness.run.fenceInputAndInterruptForRootShutdown()).resolves.toEqual({ accepted: true });
+    expect(harness.backend.interrupt).toHaveBeenCalledOnce();
+  });
+
+  it("fails only the attempt whose interrupt throws; the next call interrupts again (F-3)", async () => {
+    const interrupt = vi.fn()
+      .mockRejectedValueOnce(new Error("transport closed"))
+      .mockResolvedValue({ accepted: true, turnId: "turn-busy" });
+    const harness = createHarness({ snapshot: busy, interrupt });
+    await expect(harness.run.fenceInputAndInterruptForRootShutdown()).rejects.toThrow("transport closed");
+
+    const retry = harness.run.fenceInputAndInterruptForRootShutdown();
+    await vi.waitFor(() => expect(interrupt).toHaveBeenCalledTimes(2));
+    await completeTurn(harness);
+    await expect(retry).resolves.toEqual({ accepted: true });
+  });
+});

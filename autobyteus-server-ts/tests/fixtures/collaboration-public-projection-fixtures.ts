@@ -1,4 +1,4 @@
-import { validateAgentRunCollaborationTreePayload } from "../../src/run-history/store/agent-run-collaboration-tree-schema.js";
+import { validateStandaloneRootTreePayload } from "../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { testOrgAgentNode, testOrgTeamNode, testAgentOrgExecutionTree } from "./current-agent-org-run-fixtures.js";
 
@@ -47,7 +47,7 @@ const collaborators = (linked: boolean) => [{
   taskExecutions: [taskAgent("/shared/helper", "shared-helper", linked, "shared-lead")],
   addedAt: startedAt, addedViaAgentRunId: "manager",
 }];
-export const agentProjectionTree = (linked: boolean) => validateAgentRunCollaborationTreePayload({
+export const agentProjectionTree = (linked: boolean) => validateStandaloneRootTreePayload({
   subjectKind: "agent", createdAt: startedAt,
   host: { address: "/manager", agentRunId: "manager", agentDefinitionId: "manager-definition" },
   collaborators: collaborators(linked),

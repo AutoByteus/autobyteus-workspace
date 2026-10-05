@@ -243,6 +243,24 @@ Replacement runs are never released by stale cleanup. Thrown finalization,
 identity mismatch, or accepted-but-active outcomes are terminal for the
 committed attempt rather than being converted into success.
 
+### Root Shutdown Fence
+
+When a Team, Org or standalone Agent root stops, every configured Agent
+execution it hosts (`ConfiguredAgentExecutionHandle`: members, collaborators
+and task copies; the standalone host stops separately) first calls
+`AgentRun.fenceInputAndInterruptForRootShutdown()`. On the run's serialized
+dispatch lane it fences new input admission and opens one
+`AgentRunRootShutdownFence` attempt
+(`domain/agent-run-root-shutdown-fence.ts`). The attempt interrupts an active
+turn at most once and settles `{ accepted: true }` only when the run is
+quiescent. A rejected interrupt (for example "no active turn" because the turn
+completed between the snapshot and the interrupt) is not a result. The
+attempt stays open until the local turn-completion dispatch makes the run
+quiescent, or until `ROOT_SHUTDOWN_REJECTED_INTERRUPT_QUIESCENCE_TIMEOUT_MS`
+(5 s) expires, when it settles the original rejected result. Only acceptance
+is final; after a not-accepted or failed attempt, the next Stop opens a new
+attempt.
+
 ## Stopped Model Configuration And Restore Serialization
 
 `StandaloneAgentRunLifecycleService` also owns the narrow stopped-run

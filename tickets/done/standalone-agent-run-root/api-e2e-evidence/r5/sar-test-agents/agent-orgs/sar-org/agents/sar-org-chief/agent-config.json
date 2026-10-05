@@ -1,0 +1,4 @@
+{
+  "toolNames": ["send_message_to", "get_handoff_rules", "list_available_agents"],
+  "skillNames": []
+}

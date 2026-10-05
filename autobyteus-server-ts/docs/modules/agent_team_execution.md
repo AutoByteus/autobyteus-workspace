@@ -397,11 +397,14 @@ collaborator Team member: one execution per address.
 A Team root hosts each collaborator in its root TeamRun's
 `FlatTeamExecutionManager`:
 
-- a collaborator Agent is a direct Agent of the root TeamRun:
-  `prepareCollaboratorAgent` registers its node with `FlatTeamMemberConfigResolver`
-  (configured children first, then collaborator nodes, each with the activation
-  mode it was added with) and its context in `runtimeContext.memberContexts`, so
-  routing (`getConfiguredAgent`), status snapshots and lazy handles reach it;
+- a collaborator Agent is a direct Agent of the root TeamRun, held by
+  `local/registries/team-root-collaborator-agent-registry.ts`
+  (`TeamRootCollaboratorAgentRegistry`, beside the collaborator Team registry):
+  `prepareCollaboratorAgent` prepares its lazy handle with the activation mode it
+  was added with. Direct-agent commands, input reservation, delivery, status and
+  input snapshots, root-termination freeze and restore consult configured handles
+  first, then this registry. `FlatTeamMemberConfigResolver` and
+  `runtimeContext.memberContexts` hold configured members only (REQ-002);
 - a collaborator Team is one TeamRun under the root, held by
   `local/registries/collaborator-team-execution-registry.ts` (lazy members, no
   idle shutdown) and registered with the root's `TeamRunResolver`;

@@ -449,7 +449,7 @@ Current archive/rotation behavior:
   record, they rotate with that completed segment so active-file Activity and
   raw inspection remain truthful. Normal Activity does not read the rotated
   copy; the Memory Inspector can still select its completed segment explicitly.
-- Codex/Claude provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
+- Codex/Claude/Antigravity provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
 - New rotated segment files live directly beside `raw_traces_active.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
 - New writes use `raw_traces_manifest.json` and never create `raw_traces_archive_manifest.json` or `raw_traces_archive/`.
 - Readers prefer `raw_traces_manifest.json`; old `raw_traces_archive_manifest.json` plus `raw_traces_archive/` are data-read/migration fallback only when no new manifest exists.
@@ -470,15 +470,19 @@ Current non-goals:
 
 ## Provider Compaction Boundaries
 
-Codex and Claude provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
+Codex, Claude and Antigravity (AGY) provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
 
 Normalized provider-boundary handling is storage-only:
 
 - Codex `item/started` with `item.type = "contextCompaction"` normalizes to a non-rotating `provider_compaction_boundary` status so live clients can show provider compaction in progress without moving raw traces.
 - Codex `item/completed` with `item.type = "contextCompaction"`, `rawResponseItem/completed` with raw Responses `type = "context_compaction"`, older raw Responses `type = "compaction"`, and deprecated `thread/compacted` normalize to deduplicated completed provider-boundary markers.
 - Codex `compaction_trigger` is treated as a trigger signal only; it must not write a provider-boundary marker or rotate raw traces.
-- Claude `status: "compacting"` normalizes to non-rotating provenance.
-- Claude `compact_boundary` normalizes to a rotation-eligible `provider_compaction_boundary` marker.
+- A Codex compaction whose turn or run ends before its `item/completed` (interrupt, failed turn, terminal error, app-server close, run terminate) is closed as a non-rotating `codex.context_compaction_abandoned` marker (status `failed`, same `provider_event_id`, `error_message` with the reason), emitted before the ending event. See [Codex integration](codex_integration.md).
+- Claude compaction is recognized only from real SDK frames (`type: "system"` with `subtype: "status"` or `subtype: "compact_boundary"`) by the per-session `ClaudeCompactionOperationTracker`, which models one compaction operation at a time. The first `status: "compacting"` frame opens the operation and normalizes to non-rotating `claude.status_compacting` provenance (status `compacting`). Repeated `compacting` keepalive frames while the operation is open are suppressed and add nothing. A `compact_boundary` without a preceding status frame opens and closes its own operation.
+- Claude `compact_boundary` closes the operation as a rotation-eligible `claude.compact_boundary` marker (status `compacted`) carrying `trigger`, `pre_tokens`, `post_tokens`, and `duration_ms` from `compact_metadata`. Its boundary key uses the boundary frame uuid, so a replayed frame cannot rotate twice.
+- Claude `status: null` with `compact_result: "failed"` closes the operation as a non-rotating `claude.compaction_failed` marker (status `failed`) carrying `error_message`. If the turn settles while an operation is still open, `ClaudeSession` closes it as `failed` first, before any turn-settlement event. The reason is `interrupted`, `process_exited` or `turn_ended_before_boundary`. A failed operation never archives raw traces.
+- All events of one Claude compaction operation share one operation id, emitted as `provider_event_id`, so live clients render a single compaction activity. The recorder persists the optional `post_tokens`, `duration_ms`, and `error_message` fields only when they are reported; Codex markers are unchanged.
+- AGY (CLI ≥ 1.2.16) reports each automatic compaction as one `step_update` with `step_type: "checkpoint"` and `state: "DONE"`; `AgyStreamEventConverter` normalizes it to a single rotation-eligible `antigravity.checkpoint` marker (status `compacted`, trigger `auto`, `duration_ms`) keyed `agy:<conversation_id>:checkpoint:<step_index>`. There is no started phase. Older or unreadable CLI versions keep checkpoint steps ignored. See [Antigravity CLI Runtime](antigravity_cli_runtime.md#automatic-compaction).
 - `ProviderCompactionBoundaryRecorder` writes provider-boundary status/marker payloads as raw traces with `semantic_compaction:false` metadata.
 - If the marker is rotation-eligible, settled active raw traces before the marker rotate into a complete direct raw-trace segment. The marker remains active, and active plus complete rotated segments remain the complete raw-trace corpus.
 

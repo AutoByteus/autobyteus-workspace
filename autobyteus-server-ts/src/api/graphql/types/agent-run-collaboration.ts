@@ -2,8 +2,8 @@ import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
 import { isRootSubjectKind } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getCollaboratorAdmission } from "../../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
-import { AgentRunCollaborationRootManager } from "../../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
-import { getAgentRunCollaborationMemberViewProjectionService } from "../../../agent-run-collaboration/services/agent-run-collaboration-member-view-projection-service.js";
+import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import { getStandaloneRootMemberViewProjectionService } from "../../../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import { projectAgentCollaborationView } from "../../../services/agent-streaming/agent-collaboration-view-projector.js";
 import { resolveCollaboratorRootPort } from "../services/collaborator-root-port-resolver.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
@@ -44,7 +44,7 @@ export class AgentRunCollaborationResolver {
    */
   @Query(() => GraphQLJSON, { nullable: true })
   async agentRunCollaboration(@Arg("runId", () => String) runId: string): Promise<unknown> {
-    const inspection = await AgentRunCollaborationRootManager.getInstance().getInspection(runId);
+    const inspection = await getStandaloneAgentRunRootManager().getInspection(runId);
     return inspection ? projectAgentCollaborationView(inspection) : null;
   }
 
@@ -54,7 +54,7 @@ export class AgentRunCollaborationResolver {
     @Arg("memberAddress", () => String) memberAddress: string,
     @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<AgentRunCollaborationMemberProjectionPayload> {
-    return getAgentRunCollaborationMemberViewProjectionService().getProjection(hostRunId, memberAddress, agentRunId);
+    return getStandaloneRootMemberViewProjectionService().getProjection(hostRunId, memberAddress, agentRunId);
   }
 
   @Query(() => EventMonitorActiveTracePageObject)
@@ -64,7 +64,7 @@ export class AgentRunCollaborationResolver {
     @Arg("agentRunId", () => String) agentRunId: string,
     @Arg("beforeCursor", () => String, { nullable: true }) beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePageObject> {
-    return getAgentRunCollaborationMemberViewProjectionService().getActiveTracePage(hostRunId, memberAddress, agentRunId, beforeCursor);
+    return getStandaloneRootMemberViewProjectionService().getActiveTracePage(hostRunId, memberAddress, agentRunId, beforeCursor);
   }
 
   /** `@` menu options for a live run's root, from the one server-owned candidate policy. */

@@ -1,0 +1,531 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:28889) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/standalone-agent-run-root/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-04T11:01:19.422Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-appdata-fJnKQM/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-04T11:01:19.884Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39m[2026-10-04T11:01:19.889Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mIn-memory cache: Added new agent definition with ID crash-host-72cf9b.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mAgent Definition created successfully with ID: crash-host-72cf9b
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mIn-memory cache: Added new agent definition with ID crash-helper-72cf9b.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mAgent Definition created successfully with ID: crash-helper-72cf9b
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-tKXSsx
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-tKXSsx.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mCreated and registered workspace ID: agent_ws_7bc18db4d9e087f41d432389b18a843095c6d9a6efdca1f8e6390c01924c5292
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-tKXSsx
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-tKXSsx.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mReusing registered workspace ID: agent_ws_7bc18db4d9e087f41d432389b18a843095c6d9a6efdca1f8e6390c01924c5292
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mPublished claude_agent_sdk agent run 'crash_host_72cf9b_fb274ed357dd4598aee39c7fc3449784'.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mAgent websocket attached for run crash_host_72cf9b_fb274ed357dd4598aee39c7fc3449784
+Created agent session d77ee271-24a4-45bc-9394-ea0a3509636c for run crash_host_72cf9b_fb274ed357dd4598aee39c7fc3449784
+Agent WebSocket connected: session=d77ee271-24a4-45bc-9394-ea0a3509636c, run=crash_host_72cf9b_fb274ed357dd4598aee39c7fc3449784
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mClosed agent session d77ee271-24a4-45bc-9394-ea0a3509636c
+Agent WebSocket disconnected: d77ee271-24a4-45bc-9394-ea0a3509636c
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mIn-memory cache: Removed agent definition with ID crash-host-72cf9b.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mAgent Definition with ID crash-host-72cf9b deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mIn-memory cache: Removed agent definition with ID crash-helper-72cf9b.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[22m[39mAgent Definition with ID crash-helper-72cf9b deleted successfully.
+
+ [31m×[39m tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22mTEMP standalone-agent-run-root live probe[2m > [22mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up[33m 1285[2mms[22m[39m
+[31m   → no runtime process before the first turn: expected [ { pid: 29311, …(1) } ] to deeply equal [][39m
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Added new agent definition with ID addr-host-c7a74a.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition created successfully with ID: addr-host-c7a74a
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Added new agent definition with ID addr-lead-c7a74a.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition created successfully with ID: addr-lead-c7a74a
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Added new agent definition with ID addr-mate-c7a74a.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition created successfully with ID: addr-mate-c7a74a
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[2026-10-04T11:01:22.133Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID addr-team-c7a74a.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Team Definition created successfully with ID: addr-team-c7a74a
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-b47Ads
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-b47Ads.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mCreated and registered workspace ID: agent_ws_581eb1d8a92a81c4e8f057ba1a42d85bff7de6156ef7e54324238528653ea166
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-b47Ads
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-b47Ads.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mReusing registered workspace ID: agent_ws_581eb1d8a92a81c4e8f057ba1a42d85bff7de6156ef7e54324238528653ea166
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mPublished claude_agent_sdk agent run 'addr_host_c7a74a_f41cae21602f47c1a87637cfdf6134fa'.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent websocket attached for run addr_host_c7a74a_f41cae21602f47c1a87637cfdf6134fa
+Created agent session 82af5d41-9714-49d1-a255-1db3a8db1101 for run addr_host_c7a74a_f41cae21602f47c1a87637cfdf6134fa
+Agent WebSocket connected: session=82af5d41-9714-49d1-a255-1db3a8db1101, run=addr_host_c7a74a_f41cae21602f47c1a87637cfdf6134fa
+
+(node:28889) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[SAR-PROBE] claude_agent_sdk team /addr_team_c7a74a lead /addr_team_c7a74a/lead addr_lead_c7a74a_0cf4a524825849deab557282836618fe
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-b47Ads
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-b47Ads.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mReusing registered workspace ID: agent_ws_581eb1d8a92a81c4e8f057ba1a42d85bff7de6156ef7e54324238528653ea166
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mPublished claude_agent_sdk agent run 'addr_lead_c7a74a_0cf4a524825849deab557282836618fe'.
+
+(node:28889) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[SAR-PROBE] claude_agent_sdk flow ["addr_host_c7a74a_f41cae21602f47c1a87637cfdf6134fa→addr_lead_c7a74a_0cf4a524825849deab557282836618fe: Please send me the word PINGC7A74A.","addr_lead_c7a74a_0cf4a524825849deab557282836618fe→addr_host_c7a74a_f41cae21602f47c1a87637cfdf6134fa: PINGC7A74A","addr_host_c7a74a_f41cae21602f47c1a87637cfdf6134fa→addr_lead_c7a74a_0cf4a524825849deab557282836618fe: ACK PINGC7A74A"]
+[SAR-PROBE] claude_agent_sdk host send_message_to args ["{\"recipient_address\":\"/addr_team_c7a74a\",\"content\":\"Please send me the word PINGC7A74A.\"}","{\"recipient_address\":\"/addr_team_c7a74a\",\"content\":\"Please send me the word PINGC7A74A.\"}","{\"recipient_address\":\"/addr_team_c7a74a/lead\",\"content\":\"ACK PINGC7A74A\"}","{\"recipient_address\":\"/addr_team_c7a74a/lead\",\"content\":\"ACK PINGC7A74A\"}"] succeeded [33m2[39m
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mClosed agent session 82af5d41-9714-49d1-a255-1db3a8db1101
+Agent WebSocket disconnected: 82af5d41-9714-49d1-a255-1db3a8db1101
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[2026-10-04T11:01:35.125Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID addr-team-c7a74a.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Team Definition with ID addr-team-c7a74a deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Removed agent definition with ID addr-host-c7a74a.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition with ID addr-host-c7a74a deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Removed agent definition with ID addr-lead-c7a74a.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition with ID addr-lead-c7a74a deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Removed agent definition with ID addr-mate-c7a74a.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition with ID addr-mate-c7a74a deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-04T11:01:35.196977Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [31m×[39m tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22mTEMP standalone-agent-run-root live probe[2m > [22mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members[33m 13929[2mms[22m[39m
+[31m   → lead input carries the host's address: expected false to be true // Object.is equality[39m
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Added new agent definition with ID addr-host-7fbbbc.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition created successfully with ID: addr-host-7fbbbc
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Added new agent definition with ID addr-lead-7fbbbc.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition created successfully with ID: addr-lead-7fbbbc
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Added new agent definition with ID addr-mate-7fbbbc.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition created successfully with ID: addr-mate-7fbbbc
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[2026-10-04T11:01:35.311Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID addr-team-7fbbbc.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Team Definition created successfully with ID: addr-team-7fbbbc
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-vzczsG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-vzczsG.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mCreated and registered workspace ID: agent_ws_547f8fe6aab251029a40caf84f2db856de68453f004403b121698b3285a59988
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-vzczsG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-vzczsG.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mReusing registered workspace ID: agent_ws_547f8fe6aab251029a40caf84f2db856de68453f004403b121698b3285a59988
+
+[90mstderr[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-04T11:01:35.433237Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mPublished codex_app_server agent run 'addr_host_7fbbbc_30d7074637954010a23cb443b3cd1c69'.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent websocket attached for run addr_host_7fbbbc_30d7074637954010a23cb443b3cd1c69
+Created agent session 22ca2c6d-981e-46bf-858d-b2f73da701e7 for run addr_host_7fbbbc_30d7074637954010a23cb443b3cd1c69
+Agent WebSocket connected: session=22ca2c6d-981e-46bf-858d-b2f73da701e7, run=addr_host_7fbbbc_30d7074637954010a23cb443b3cd1c69
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[SAR-PROBE] codex_app_server team /addr_team_7fbbbc lead /addr_team_7fbbbc/lead addr_lead_7fbbbc_307fea53af554a459fe86b1cede5e29d
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-vzczsG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sar-probe-ws-vzczsG.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mReusing registered workspace ID: agent_ws_547f8fe6aab251029a40caf84f2db856de68453f004403b121698b3285a59988
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mPublished codex_app_server agent run 'addr_lead_7fbbbc_307fea53af554a459fe86b1cede5e29d'.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[SAR-PROBE] codex_app_server flow ["addr_host_7fbbbc_30d7074637954010a23cb443b3cd1c69→addr_lead_7fbbbc_307fea53af554a459fe86b1cede5e29d: Please send me the word PING7FBBBC.","addr_lead_7fbbbc_307fea53af554a459fe86b1cede5e29d→addr_host_7fbbbc_30d7074637954010a23cb443b3cd1c69: PING7FBBBC","addr_host_7fbbbc_30d7074637954010a23cb443b3cd1c69→addr_lead_7fbbbc_307fea53af554a459fe86b1cede5e29d: ACK PING7FBBBC"]
+[SAR-PROBE] codex_app_server host send_message_to args ["{\"recipient_address\":\"/addr_team_7fbbbc\",\"content\":\"Please send me the word PING7FBBBC.\"}","{\"recipient_address\":\"/addr_team_7fbbbc\",\"content\":\"Please send me the word PING7FBBBC.\"}","{\"recipient_address\":\"/addr_team_7fbbbc/lead\",\"content\":\"ACK PING7FBBBC\"}","{\"recipient_address\":\"/addr_team_7fbbbc/lead\",\"content\":\"ACK PING7FBBBC\"}"] succeeded [33m2[39m
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mClosed agent session 22ca2c6d-981e-46bf-858d-b2f73da701e7
+Agent WebSocket disconnected: 22ca2c6d-981e-46bf-858d-b2f73da701e7
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39m[2026-10-04T11:01:58.082Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID addr-team-7fbbbc.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Team Definition with ID addr-team-7fbbbc deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Removed agent definition with ID addr-host-7fbbbc.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition with ID addr-host-7fbbbc deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Removed agent definition with ID addr-lead-7fbbbc.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition with ID addr-lead-7fbbbc deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mIn-memory cache: Removed agent definition with ID addr-mate-7fbbbc.
+
+[90mstdout[2m | tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22m[2mTEMP standalone-agent-run-root live probe[2m > [22m[2mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[22m[39mAgent Definition with ID addr-mate-7fbbbc deleted successfully.
+
+ [31m×[39m tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22mTEMP standalone-agent-run-root live probe[2m > [22mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members[33m 22957[2mms[22m[39m
+[31m   → lead input carries the host's address: expected false to be true // Object.is equality[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22mTEMP standalone-agent-run-root live probe[2m > [22mclaude_agent_sdk: AE-07 host crash → child commands do not restart the host; child→host and host message restore it; AE-09 roll-up
+[31m[1mAssertionError[22m: no runtime process before the first turn: expected [ { pid: 29311, …(1) } ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   {[39m
+[31m+     "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --setting-sources=user --permission-mode plan",[39m
+[31m+     "pid": 29311,[39m
+[31m+   },[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts:[2m199:87[22m[39m
+    [90m197| [39m    const hostRunId = await createRun(hostId, "claude_agent_sdk", mode…
+    [90m198| [39m    [35mconst[39m host [33m=[39m [35mawait[39m [34mopenSocket[39m([32m`/ws/agent/[39m[36m${[39mhostRunId[36m}[39m[32m`[39m)[33m;[39m
+    [90m199| [39m    expect(runtimeProcesses(CLAUDE_PROC), "no runtime process before t…
+    [90m   | [39m                                                                                      [31m^[39m
+    [90m200| [39m
+    [90m201| [39m    const t0 = await sendTurn(host, "Reply with the single word READY.…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22mTEMP standalone-agent-run-root live probe[2m > [22mclaude_agent_sdk: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[41m[1m FAIL [22m[49m tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts[2m > [22mTEMP standalone-agent-run-root live probe[2m > [22mcodex_app_server: AE-08 reply by address to a collaborator-Team member sender reaches it; AE-09 roll-up with Team members
+[31m[1mAssertionError[22m: lead input carries the host's address: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/e2e/runtime/zz-tmp-sar-probe.e2e.test.ts:[2m342:165[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[90m (3)[39m
+[2m   Start at [22m 13:01:12
+[2m   Duration [22m 46.04s[2m (transform 4.67s, setup 13ms, import 6.85s, tests 38.69s, environment 0ms)[22m
+
+EXIT=1

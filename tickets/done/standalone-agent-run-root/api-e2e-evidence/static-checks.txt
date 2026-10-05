@@ -1,0 +1,15 @@
+## REQ-003 sizes (total lines / effective non-empty)
+src/standalone-agent-run-root/domain/standalone-agent-run-root.ts      399 376
+src/agent-execution/services/standalone-agent-run-lifecycle-service.ts      347 325
+src/agent-org-execution/domain/agent-org-run.ts      392 371
+## AC-001/AC-002 removed names (src+tests)
+AgentRunCollaborationRootManager:        0
+standalone-agent-run-collaboration-binding:        0
+bindCollaboration:        0
+onHostPublished:        0
+resolveCommandReadyRoot:        0
+agent-run-collaboration/:        0
+addCollaborator:        3
+ls: src/agent-run-collaboration: No such file or directory
+## memberContexts.push in flat team manager
+       0

@@ -1,0 +1,18 @@
+Application, 0x1030766a0, pid: 10720, label: 'AutoByteus' <App element pid: 10720>
+  Window (Main), 0x103072840, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 10720, elementOrHash.elementID: 4317022736.3>
+    Other, 0x1030724a0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 10720, elementOrHash.elementID: 4319410672.116>
+      Other, 0x1030739e0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 10720, elementOrHash.elementID: 4317336672.117>
+        Other, 0x103073660, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'webshell.root' <AX element pid: 10720, elementOrHash.elementID: 4317311536.118>
+          WebView, 0x103072bd0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'webshell.webview' <AX element pid: 10720, elementOrHash.elementID: 4329493504.119>
+            WebView, 0x1030732d0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 10720, elementOrHash.elementID: 4320939520.120>
+              Other, 0x103072f50, {{369.0, 62.0}, {30.0, 750.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 10720, elementOrHash.elementID: 4316746640.121>
+                Other, 0x103074410, {{396.0, 808.0}, {3.0, 7.0}} <AX element pid: 10720, elementOrHash.elementID: 4316747408.123>
+              Other, 0x1030716e0, {{62.0, 841.0}, {278.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0% <AX element pid: 10720, elementOrHash.elementID: 4316564336.122>
+                Other, 0x103071380, {{336.0, 868.0}, {7.0, 3.0}} <AX element pid: 10720, elementOrHash.elementID: 4316565104.124>
+              Other, 0x103075200, {{369.0, 62.0}, {30.0, 750.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 10720, elementOrHash.elementID: 4316746640.121>
+                Other, 0x103074780, {{396.0, 808.0}, {3.0, 7.0}} <AX element pid: 10720, elementOrHash.elementID: 4316747408.123>
+              Other, 0x103075c10, {{62.0, 841.0}, {278.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0% <AX element pid: 10720, elementOrHash.elementID: 4316564336.122>
+                Other, 0x103074e90, {{336.0, 868.0}, {7.0, 3.0}} <AX element pid: 10720, elementOrHash.elementID: 4316565104.124>
+  Window, 0x103074b00, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 10720, elementOrHash.elementID: 4329360384.39>
+    Other, 0x103076310, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 10720, elementOrHash.elementID: 4319622096.41>
+      Other, 0x103075fa0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 10720, elementOrHash.elementID: 4319651392.43>

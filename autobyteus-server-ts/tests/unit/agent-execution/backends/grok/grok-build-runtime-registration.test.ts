@@ -71,7 +71,7 @@ describe("grok_build runtime registration", () => {
     await fs.writeFile(path.join(source, "SKILL.md"), "# Grok\n", "utf8");
     const skill = new Skill({ name: "grok-profile", description: "test", content: "# Grok", rootPath: source });
     const materializer = getGrokWorkspaceSkillMaterializer();
-    const descriptors = await materializer.materializeConfiguredWorkspaceSkills({
+    const { materializedSkills: descriptors } = await materializer.materializeConfiguredWorkspaceSkills({
       runId: "grok-run", workingDirectory: workspace, requests: [{ kind: "expose-resolved", skill }],
     });
     const link = path.join(workspace, ".grok", "skills", "grok-profile");

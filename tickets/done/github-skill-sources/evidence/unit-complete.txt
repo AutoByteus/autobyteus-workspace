@@ -1,0 +1,191 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/skills/github/runtime-generation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/skills/github/runtime-generation.test.ts (15 tests) 466ms
+stdout | tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts (11 tests) 381ms
+stdout | tests/unit/skills/github/source-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/skills/github/source-lifecycle.test.ts > GitHub skill source lifecycle through its public owner > rejects conflicts as one operation, while runtime defaults remain notices
+Skill 'writer': '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-LnjV11/data/skill-sources/github/0a1b8f19-063e-4600-a7d8-6b8a1acd719c/generations/fd2084a3-cd15-4dc8-b85d-fe4068ef2eb4/repository' takes precedence; ignoring the runtime default copy '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-LnjV11/runtime-default/writer'.
+
+stderr | tests/unit/skills/github/source-lifecycle.test.ts > GitHub skill source lifecycle through its public owner > rejects conflicts as one operation, while runtime defaults remain notices
+Skill name 'writer' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-LnjV11/data/skill-sources/github/0a1b8f19-063e-4600-a7d8-6b8a1acd719c/generations/fd2084a3-cd15-4dc8-b85d-fe4068ef2eb4/repository', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skill-unit-LnjV11/runtime-default/writer'.
+
+ ✓ tests/unit/skills/github/source-lifecycle.test.ts (26 tests) 357ms
+stdout | tests/unit/agent-packages/agent-package-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts (11 tests) 203ms
+ ✓ tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts (16 tests) 46ms
+stderr | tests/unit/skills/services/skill-service.test.ts > SkillService > returns resolved skills by configured names and skips unknown entries
+Skill 'missing' could not be resolved via SkillService. Skipping.
+
+stderr | tests/unit/skills/services/skill-service.test.ts > SkillService > prefers standalone skills over bundled canonical agent package skills when names collide
+Skill name 'requirements-engineer' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-eFpiwO/skills/requirements-engineer', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-eFpiwO/package-root/agents/requirements-engineer/skills/requirements-engineer'.
+
+stdout | tests/unit/skills/services/skill-service.test.ts > SkillService > returns a skill file tree
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-PQtv78/skills/tree_skill' with max_depth=null
+
+stdout | tests/unit/skills/services/skill-service.test.ts > SkillService > returns a skill file tree
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-PQtv78/skills/tree_skill' completed in 0.0020 seconds.
+
+ ✓ tests/unit/skills/services/skill-service.test.ts (42 tests) 115ms
+stderr | tests/unit/skills/services/skill-service-all-installed-scope.test.ts > SkillService ALL_INSTALLED skill scope > keeps listSkills precedence: a global skill wins over a bundled skill with the same name
+Skill name 'global-writer' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-all-installed-o3wtuS/skills/global-writer', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-all-installed-o3wtuS/autobyteus-agents/agents/research-engineer/skills/global-writer'.
+
+ ✓ tests/unit/skills/services/skill-service-all-installed-scope.test.ts (9 tests) 86ms
+stdout | tests/unit/agent-packages/agent-package-skill-name-validation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-packages/agent-package-skill-name-validation.test.ts (7 tests) 72ms
+stdout | tests/unit/skills/github/archive-boundary.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/skills/github/archive-boundary.test.ts (21 tests) 71ms
+stdout | tests/unit/skills/services/skill-catalog-one-per-name.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/skills/services/skill-catalog-one-per-name.test.ts (11 tests) 67ms
+ ✓ tests/unit/skills/services/skill-catalog-agent-orgs.test.ts (7 tests) 60ms
+ ✓ tests/unit/agent-execution/backends/shared/workspace-skill-materializer-collision-policy.test.ts (8 tests) 22ms
+stdout | tests/unit/skills/services/skill-sources-management.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/skills/services/skill-sources-management.test.ts
+Initialized server settings service with 22 predefined settings
+
+stderr | tests/unit/skills/services/skill-sources-management.test.ts > SkillService skill source management > prefers the default directory when duplicates exist
+Skill name 'shared_skill' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-src-ur4LZX/default_skills/shared_skill', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-src-ur4LZX/extra_skills/shared_skill'.
+
+ ✓ tests/unit/skills/services/skill-sources-management.test.ts (15 tests) 29ms
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (32 tests) 15ms
+ ✓ tests/unit/skills/github/github-client.test.ts (5 tests) 16ms
+ ✓ tests/unit/skills/loader.test.ts (10 tests) 11ms
+stdout | tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts > grok_build runtime registration > restores from the stored Grok session id and references it as the run session
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/github-skill-sources/autobyteus-server-ts
+
+ ✓ tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts (6 tests) 11ms
+stderr | tests/unit/skills/disabled-skills-store.test.ts > DisabledSkillsStore > handles corrupted file gracefully
+Failed to parse disabled_skills.json: SyntaxError: Unexpected token 'o', "not valid json {{{" is not valid JSON. Starting with empty list.
+
+ ✓ tests/unit/skills/disabled-skills-store.test.ts (10 tests) 9ms
+stdout | tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts (4 tests) 6ms
+ ✓ tests/unit/agent-execution/backends/codex/codex-workspace-skill-materializer.test.ts (2 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts (2 tests) 6ms
+ ✓ tests/unit/agent-packages/github-repository-source.test.ts (3 tests) 2ms
+ ✓ tests/unit/agent-packages/github-agent-package-installer.test.ts (2 tests) 2ms
+ ✓ tests/unit/skills/domain/models.test.ts (2 tests) 2ms
+
+ Test Files  24 passed (24)
+      Tests  277 passed (277)
+   Start at  12:19:20
+   Duration  15.19s (transform 2.52s, setup 95ms, import 10.68s, tests 2.06s, environment 2ms)

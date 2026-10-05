@@ -1,0 +1,4489 @@
+[
+ {
+  "beforeCursor": null,
+  "hasEarlier": false,
+  "loadedEarlierCount": 27,
+  "activeGeneration": "6da955ab921f30110e2793bcd338be3154c3cfedf604cbc92b6e4149a7df295e",
+  "cursorStatus": "VALID",
+  "events": [
+   {
+    "eventId": "raw:v1:53:rt_1791110401736_30e611bf-649a-422c-b5cf-268c8a85e09e",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:223fd9dc-8973-4932-8d14-6c78cab2cee5",
+    "occurredAtMs": 1791110401735,
+    "visuals": [
+     {
+      "kind": "inter_agent",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA0MDE3MzZfMzBlNjExYmYtNjQ5YS00MjJjLWI1Y2YtMjY4YzhhODVlMDll:inter-agent:0",
+      "eventId": "raw:v1:53:rt_1791110401736_30e611bf-649a-422c-b5cf-268c8a85e09e",
+      "kindOrdinal": 0,
+      "senderAgentRunId": "general_agent_9c7e1362169f406eb2ef6b7a3d6f0fc6",
+      "senderAddress": "/general_agent",
+      "text": "You received a message from sender name: general_agent, sender id: general_agent_9c7e1362169f406eb2ef6b7a3d6f0fc6\nmessage:\nPlease reply to me with send_message_to and include the exact text SEEDED-ONE in your message.",
+      "attachments": []
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:223fd9dc-8973-4932-8d14-6c78cab2cee5:30:toolu_01CWHFgEHdCkTW9Nw8kRUJBQ",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:223fd9dc-8973-4932-8d14-6c78cab2cee5",
+    "occurredAtMs": 1791110406731,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46MjIzZmQ5ZGMtODk3My00OTMyLThkMTQtNmM3OGNhYjJjZWU1OjMwOnRvb2x1XzAxQ1dIRmdFSGRDa1RXOU53OGtSVUpCUQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:223fd9dc-8973-4932-8d14-6c78cab2cee5:30:toolu_01CWHFgEHdCkTW9Nw8kRUJBQ",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01CWHFgEHdCkTW9Nw8kRUJBQ",
+      "cardKind": "tool_call",
+      "toolName": "send_message_to",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": null,
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "raw:v1:53:rt_1791110407564_af009293-a604-45a9-9dbc-7ab5b7d9c3ce",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:223fd9dc-8973-4932-8d14-6c78cab2cee5",
+    "occurredAtMs": 1791110407564,
+    "visuals": [
+     {
+      "kind": "assistant_text",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA0MDc1NjRfYWYwMDkyOTMtYTYwNC00NWE5LTlkYmMtN2FiNWI3ZDljM2Nl:assistant-text:0",
+      "eventId": "raw:v1:53:rt_1791110407564_af009293-a604-45a9-9dbc-7ab5b7d9c3ce",
+      "kindOrdinal": 0,
+      "content": "sent"
+     }
+    ]
+   },
+   {
+    "eventId": "raw:v1:53:rt_1791110633612_379f82a3-0fb7-497c-9ac4-0080767f9062",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:5a47b531-6987-4a7a-85df-5169c453290a",
+    "occurredAtMs": 1791110633608,
+    "visuals": [
+     {
+      "kind": "user",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA2MzM2MTJfMzc5ZjgyYTMtMGZiNy00OTdjLTlhYzQtMDA4MDc2N2Y5MDYy:user:0",
+      "eventId": "raw:v1:53:rt_1791110633612_379f82a3-0fb7-497c-9ac4-0080767f9062",
+      "kindOrdinal": 0,
+      "text": "Reply with the single word CLICKED. Do not call any tool.",
+      "attachments": []
+     }
+    ]
+   },
+   {
+    "eventId": "raw:v1:53:rt_1791110636021_73f41d51-de21-419a-98b5-81a07c90ac0e",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:5a47b531-6987-4a7a-85df-5169c453290a",
+    "occurredAtMs": 1791110636021,
+    "visuals": [
+     {
+      "kind": "assistant_text",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA2MzYwMjFfNzNmNDFkNTEtZGUyMS00MTlhLTk4YjUtODFhMDdjOTBhYzBl:assistant-text:0",
+      "eventId": "raw:v1:53:rt_1791110636021_73f41d51-de21-419a-98b5-81a07c90ac0e",
+      "kindOrdinal": 0,
+      "content": "CLICKED"
+     }
+    ]
+   },
+   {
+    "eventId": "raw:v1:53:rt_1791110660031_29f6fe7e-3faf-4259-b50c-5e287d76fdf9",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:876002de-d123-4cec-9853-b89329052e2b",
+    "occurredAtMs": 1791110660029,
+    "visuals": [
+     {
+      "kind": "inter_agent",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA2NjAwMzFfMjlmNmZlN2UtM2ZhZi00MjU5LWI1MGMtNWUyODdkNzZmZGY5:inter-agent:0",
+      "eventId": "raw:v1:53:rt_1791110660031_29f6fe7e-3faf-4259-b50c-5e287d76fdf9",
+      "kindOrdinal": 0,
+      "senderAgentRunId": "general_agent_9c7e1362169f406eb2ef6b7a3d6f0fc6",
+      "senderAddress": "/general_agent",
+      "text": "You received a message from sender name: general_agent, sender address: /general_agent, sender id: general_agent_9c7e1362169f406eb2ef6b7a3d6f0fc6\nmessage:\nPlease reply to me with send_message_to and include the exact text NEWHDR-ONE in your message.",
+      "attachments": []
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:876002de-d123-4cec-9853-b89329052e2b:30:toolu_01W2HJdcQd1wHyxQ28r6fMZT",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:876002de-d123-4cec-9853-b89329052e2b",
+    "occurredAtMs": 1791110662499,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ODc2MDAyZGUtZDEyMy00Y2VjLTk4NTMtYjg5MzI5MDUyZTJiOjMwOnRvb2x1XzAxVzJISmRjUWQxd0h5eFEyOHI2Zk1aVA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:876002de-d123-4cec-9853-b89329052e2b:30:toolu_01W2HJdcQd1wHyxQ28r6fMZT",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01W2HJdcQd1wHyxQ28r6fMZT",
+      "cardKind": "tool_call",
+      "toolName": "send_message_to",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": null,
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "raw:v1:53:rt_1791110663266_60a33baa-44d4-4e35-83d1-7bbd589935b8",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:876002de-d123-4cec-9853-b89329052e2b",
+    "occurredAtMs": 1791110663266,
+    "visuals": [
+     {
+      "kind": "assistant_text",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA2NjMyNjZfNjBhMzNiYWEtNDRkNC00ZTM1LTgzZDEtN2JiZDU4OTkzNWI4:assistant-text:0",
+      "eventId": "raw:v1:53:rt_1791110663266_60a33baa-44d4-4e35-83d1-7bbd589935b8",
+      "kindOrdinal": 0,
+      "content": "sent"
+     }
+    ]
+   },
+   {
+    "eventId": "raw:v1:53:rt_1791110671549_2d691314-1cf4-4d98-9730-7c20e79f3b30",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110671546,
+    "visuals": [
+     {
+      "kind": "user",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA2NzE1NDlfMmQ2OTEzMTQtMWNmNC00ZDk4LTk3MzAtN2MyMGU3OWYzYjMw:user:0",
+      "eventId": "raw:v1:53:rt_1791110671549_2d691314-1cf4-4d98-9730-7c20e79f3b30",
+      "kindOrdinal": 0,
+      "text": "Call the run_bash tool 55 separate times, one call after another, with the commands echo 1, echo 2, echo 3 and so on up to echo 55. Do not combine commands. After the last call, reply with the single word FINISHED.",
+      "attachments": []
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01WDpkFLZqxuuhTuSabQcEQZ",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676667,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxV0Rwa0ZMWnF4dXVoVHVTYWJRY0VRWg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01WDpkFLZqxuuhTuSabQcEQZ",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01WDpkFLZqxuuhTuSabQcEQZ",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 1",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01461jzPuicr6h1ip58Wbirj",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676672,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxNDYxanpQdWljcjZoMWlwNThXYmlyag:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01461jzPuicr6h1ip58Wbirj",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01461jzPuicr6h1ip58Wbirj",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 2",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01UQ2QVs4S3wiUHYaE6D7Mzw",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676664,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxVVEyUVZzNFMzd2lVSFlhRTZEN016dw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01UQ2QVs4S3wiUHYaE6D7Mzw",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01UQ2QVs4S3wiUHYaE6D7Mzw",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 3",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01JYaQmsbTExW5T3LLgxVvJy",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676675,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxSllhUW1zYlRFeFc1VDNMTGd4VnZKeQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01JYaQmsbTExW5T3LLgxVvJy",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01JYaQmsbTExW5T3LLgxVvJy",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 4",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_013nUiHCzumyAQ9VBEvkxPUT",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676677,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxM25VaUhDenVteUFROVZCRXZreFBVVA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_013nUiHCzumyAQ9VBEvkxPUT",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_013nUiHCzumyAQ9VBEvkxPUT",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 5",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01NsqfKiE8UZMQQTzDwjV91Z",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676669,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxTnNxZktpRThVWk1RUVR6RHdqVjkxWg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01NsqfKiE8UZMQQTzDwjV91Z",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01NsqfKiE8UZMQQTzDwjV91Z",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 6",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01XPKmju3PaCCT9Xhch9BVoL",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676679,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxWFBLbWp1M1BhQ0NUOVhoY2g5QlZvTA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01XPKmju3PaCCT9Xhch9BVoL",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01XPKmju3PaCCT9Xhch9BVoL",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 7",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Vod71xxxGH4HPUPteGZKFA",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676682,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxVm9kNzF4eHhHSDRIUFVQdGVHWktGQQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Vod71xxxGH4HPUPteGZKFA",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Vod71xxxGH4HPUPteGZKFA",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 8",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01PbwYCuCd2eARWDWCyRvNAK",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676760,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxUGJ3WUN1Q2QyZUFSV0RXQ3lSdk5BSw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01PbwYCuCd2eARWDWCyRvNAK",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01PbwYCuCd2eARWDWCyRvNAK",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 9",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01YW1NwwnJ1kuXE3PzcE4sgg",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110676927,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxWVcxTnd3bkoxa3VYRTNQemNFNHNnZw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01YW1NwwnJ1kuXE3PzcE4sgg",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01YW1NwwnJ1kuXE3PzcE4sgg",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 10",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_018rt1wtE72mF4pfchMCrhm6",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110677061,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxOHJ0MXd0RTcybUY0cGZjaE1DcmhtNg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_018rt1wtE72mF4pfchMCrhm6",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_018rt1wtE72mF4pfchMCrhm6",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 11",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01K6R41SKQPjB4KtcmBbXVcw",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110677214,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxSzZSNDFTS1FQakI0S3RjbUJiWFZjdw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01K6R41SKQPjB4KtcmBbXVcw",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01K6R41SKQPjB4KtcmBbXVcw",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 12",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01KSGadgn1m7g8vd8gNDBoYp",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110677449,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxS1NHYWRnbjFtN2c4dmQ4Z05EQm9ZcA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01KSGadgn1m7g8vd8gNDBoYp",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01KSGadgn1m7g8vd8gNDBoYp",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 13",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Ur2dN3hWEhzyPmovt9f4zK",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110677519,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxVXIyZE4zaFdFaHp5UG1vdnQ5ZjR6Sw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Ur2dN3hWEhzyPmovt9f4zK",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Ur2dN3hWEhzyPmovt9f4zK",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 14",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01GERjwn98K3jJChscjBdEAP",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110677689,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxR0VSanduOThLM2pKQ2hzY2pCZEVBUA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01GERjwn98K3jJChscjBdEAP",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01GERjwn98K3jJChscjBdEAP",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 15",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Q4yFkQWcQ1r1TrWuHoF1mZ",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110677839,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxUTR5RmtRV2NRMXIxVHJXdUhvRjFtWg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Q4yFkQWcQ1r1TrWuHoF1mZ",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Q4yFkQWcQ1r1TrWuHoF1mZ",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 16",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_012WpcR4UZG3cNRX4z3tDKRx",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110677989,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxMldwY1I0VVpHM2NOUlg0ejN0REtSeA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_012WpcR4UZG3cNRX4z3tDKRx",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_012WpcR4UZG3cNRX4z3tDKRx",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 17",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01RNv6amw72E5FqTUR2eH8aL",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110678145,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxUk52NmFtdzcyRTVGcVRVUjJlSDhhTA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01RNv6amw72E5FqTUR2eH8aL",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01RNv6amw72E5FqTUR2eH8aL",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 18",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01JKfe6hRoE9AforMUHxUdka",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110678299,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxSktmZTZoUm9FOUFmb3JNVUh4VWRrYQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01JKfe6hRoE9AforMUHxUdka",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01JKfe6hRoE9AforMUHxUdka",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 19",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01JahMWDM4Jcw9nUmXTuHACC",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110678496,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxSmFoTVdETTRKY3c5blVtWFR1SEFDQw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01JahMWDM4Jcw9nUmXTuHACC",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01JahMWDM4Jcw9nUmXTuHACC",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 20",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01AEMUe5dfRQ92GdWM2infWu",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110678622,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxQUVNVWU1ZGZSUTkyR2RXTTJpbmZXdQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01AEMUe5dfRQ92GdWM2infWu",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01AEMUe5dfRQ92GdWM2infWu",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 21",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01TKSfjgsnTFmep4yeGWdStG",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110678766,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxVEtTZmpnc25URm1lcDR5ZUdXZFN0Rw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01TKSfjgsnTFmep4yeGWdStG",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01TKSfjgsnTFmep4yeGWdStG",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 22",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01SCitcak2cgmVNNNoRwoCGc",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110678916,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxU0NpdGNhazJjZ21WTk5Ob1J3b0NHYw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01SCitcak2cgmVNNNoRwoCGc",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01SCitcak2cgmVNNNoRwoCGc",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 23",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_012QsqzahJ3Zrp8fNveUmuf2",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110679065,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxMlFzcXphaEozWnJwOGZOdmVVbXVmMg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_012QsqzahJ3Zrp8fNveUmuf2",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_012QsqzahJ3Zrp8fNveUmuf2",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 24",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Ma8xfKgWTvjnX5BnK1KEFj",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110679216,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxTWE4eGZLZ1dUdmpuWDVCbksxS0VGag:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Ma8xfKgWTvjnX5BnK1KEFj",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Ma8xfKgWTvjnX5BnK1KEFj",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 25",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01EEerJnBWk9vG9LmFYLzaiT",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110679385,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxRUVlckpuQldrOXZHOUxtRllMemFpVA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01EEerJnBWk9vG9LmFYLzaiT",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01EEerJnBWk9vG9LmFYLzaiT",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 26",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01KiwXmjAeogbBiD7GWfr6Df",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110679557,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxS2l3WG1qQWVvZ2JCaUQ3R1dmcjZEZg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01KiwXmjAeogbBiD7GWfr6Df",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01KiwXmjAeogbBiD7GWfr6Df",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 27",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01DJdsTS6c8V6PKXZGVrhdVw",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110679701,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxREpkc1RTNmM4VjZQS1haR1ZyaGRWdw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01DJdsTS6c8V6PKXZGVrhdVw",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01DJdsTS6c8V6PKXZGVrhdVw",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 28",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01NyfbnkD9FtJvB2Nzd5ku2a",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110679868,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxTnlmYm5rRDlGdEp2QjJOemQ1a3UyYQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01NyfbnkD9FtJvB2Nzd5ku2a",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01NyfbnkD9FtJvB2Nzd5ku2a",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 29",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01VoxPC6yeZ7rSttMTVBti53",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110680104,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxVm94UEM2eWVaN3JTdHRNVFZCdGk1Mw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01VoxPC6yeZ7rSttMTVBti53",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01VoxPC6yeZ7rSttMTVBti53",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 30",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01GkWvopTz3jBQKPwQQKVbcK",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110680165,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxR2tXdm9wVHozakJRS1B3UVFLVmJjSw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01GkWvopTz3jBQKPwQQKVbcK",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01GkWvopTz3jBQKPwQQKVbcK",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 31",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01MHVqzFUdKn4dyYqRsomojc",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110680304,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxTUhWcXpGVWRLbjRkeVlxUnNvbW9qYw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01MHVqzFUdKn4dyYqRsomojc",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01MHVqzFUdKn4dyYqRsomojc",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 32",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_012EGqanvm7XLwiMnVf55wkA",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110680484,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxMkVHcWFudm03WEx3aU1uVmY1NXdrQQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_012EGqanvm7XLwiMnVf55wkA",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_012EGqanvm7XLwiMnVf55wkA",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 33",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01BqWgFLQjmWXV5QzpVWsaYq",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110680618,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxQnFXZ0ZMUWptV1hWNVF6cFZXc2FZcQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01BqWgFLQjmWXV5QzpVWsaYq",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01BqWgFLQjmWXV5QzpVWsaYq",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 34",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_011KZC1haRAun2F14bTLmH2k",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110680768,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxMUtaQzFoYVJBdW4yRjE0YlRMbUgyaw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_011KZC1haRAun2F14bTLmH2k",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_011KZC1haRAun2F14bTLmH2k",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 35",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Jtdj5zzZ5WKat8kbyMw1RU",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110680919,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxSnRkajV6elo1V0thdDhrYnlNdzFSVQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Jtdj5zzZ5WKat8kbyMw1RU",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Jtdj5zzZ5WKat8kbyMw1RU",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 36",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_019oqcB8JmQoasLrgRDgBMsA",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110681114,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxOW9xY0I4Sm1Rb2FzTHJnUkRnQk1zQQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_019oqcB8JmQoasLrgRDgBMsA",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_019oqcB8JmQoasLrgRDgBMsA",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 37",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01V7gennKSyyGGyhGv5ZGg9B",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110681216,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxVjdnZW5uS1N5eUdHeWhHdjVaR2c5Qg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01V7gennKSyyGGyhGv5ZGg9B",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01V7gennKSyyGGyhGv5ZGg9B",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 38",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Hu5yTUp7mDPY5gwM5vtBR8",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110681394,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxSHU1eVRVcDdtRFBZNWd3TTV2dEJSOA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Hu5yTUp7mDPY5gwM5vtBR8",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Hu5yTUp7mDPY5gwM5vtBR8",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 39",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_018XphZ6816QV5Rpxfy5RxkH",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110681542,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxOFhwaFo2ODE2UVY1UnB4Znk1UnhrSA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_018XphZ6816QV5Rpxfy5RxkH",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_018XphZ6816QV5Rpxfy5RxkH",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 40",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Pkxe8iLQfyTvU9rQ9vZk1X",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110681694,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxUGt4ZThpTFFmeVR2VTlyUTl2WmsxWA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Pkxe8iLQfyTvU9rQ9vZk1X",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Pkxe8iLQfyTvU9rQ9vZk1X",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 41",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01MMzicfp5siD7vq1A1dkSja",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110681843,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxTU16aWNmcDVzaUQ3dnExQTFka1NqYQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01MMzicfp5siD7vq1A1dkSja",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01MMzicfp5siD7vq1A1dkSja",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 42",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_017ZSiQUn44ZHEBxa5psf8AL",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110681996,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxN1pTaVFVbjQ0WkhFQnhhNXBzZjhBTA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_017ZSiQUn44ZHEBxa5psf8AL",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_017ZSiQUn44ZHEBxa5psf8AL",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 43",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01VFfshLutoQ9uzTQurUjrYu",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110682173,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxVkZmc2hMdXRvUTl1elRRdXJVanJZdQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01VFfshLutoQ9uzTQurUjrYu",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01VFfshLutoQ9uzTQurUjrYu",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 44",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01NxeAkKnGK7nmLccYKjeZVZ",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110682318,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxTnhlQWtLbkdLN25tTGNjWUtqZVpWWg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01NxeAkKnGK7nmLccYKjeZVZ",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01NxeAkKnGK7nmLccYKjeZVZ",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 45",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01RaVTQRk8jbFS4tkt4PFxqd",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110682468,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxUmFWVFFSazhqYkZTNHRrdDRQRnhxZA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01RaVTQRk8jbFS4tkt4PFxqd",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01RaVTQRk8jbFS4tkt4PFxqd",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 46",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01NDYs9R2zAUp5gHuqq814dR",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110682692,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxTkRZczlSMnpBVXA1Z0h1cXE4MTRkUg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01NDYs9R2zAUp5gHuqq814dR",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01NDYs9R2zAUp5gHuqq814dR",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 47",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_019hFxQYXRce1zAJ6phd5i1i",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110682769,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxOWhGeFFZWFJjZTF6QUo2cGhkNWkxaQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_019hFxQYXRce1zAJ6phd5i1i",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_019hFxQYXRce1zAJ6phd5i1i",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 48",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01EhZ5jSFvM2uFT75qdbJTw1",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110682920,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxRWhaNWpTRnZNMnVGVDc1cWRiSlR3MQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01EhZ5jSFvM2uFT75qdbJTw1",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01EhZ5jSFvM2uFT75qdbJTw1",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 49",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_011BVXwMMNBP1N24dY26yQwq",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110683095,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxMUJWWHdNTU5CUDFOMjRkWTI2eVF3cQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_011BVXwMMNBP1N24dY26yQwq",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_011BVXwMMNBP1N24dY26yQwq",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 50",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_012Pq8fPEZ65gr7VfjXrKjcH",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110683248,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxMlBxOGZQRVo2NWdyN1ZmalhyS2pjSA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_012Pq8fPEZ65gr7VfjXrKjcH",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_012Pq8fPEZ65gr7VfjXrKjcH",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 51",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01C5PpwvwYxKFYUar12yGPqx",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110683394,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxQzVQcHd2d1l4S0ZZVWFyMTJ5R1BxeA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01C5PpwvwYxKFYUar12yGPqx",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01C5PpwvwYxKFYUar12yGPqx",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 52",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Pbki8ChWrWivykMZtVWtYF",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110683546,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxUGJraThDaFdyV2l2eWtNWnRWV3RZRg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01Pbki8ChWrWivykMZtVWtYF",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Pbki8ChWrWivykMZtVWtYF",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 53",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01TRyKzSZYH9wL1FCbVrJ31X",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110683743,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxVFJ5S3pTWllIOXdMMUZDYlZySjMxWA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01TRyKzSZYH9wL1FCbVrJ31X",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01TRyKzSZYH9wL1FCbVrJ31X",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 54",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01EL2WhQejVXrhEMbygkyENR",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110683872,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46YjdjMGE2NmQtZjNiYi00MGJmLThiZWUtYWZjMDJhNmExMzFkOjMwOnRvb2x1XzAxRUwyV2hRZWpWWHJoRU1ieWdreUVOUg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d:30:toolu_01EL2WhQejVXrhEMbygkyENR",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01EL2WhQejVXrhEMbygkyENR",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 55",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "raw:v1:53:rt_1791110684843_265f4dc8-7cbb-405e-9000-3bbf3e8e75c2",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:b7c0a66d-f3bb-40bf-8bee-afc02a6a131d",
+    "occurredAtMs": 1791110684843,
+    "visuals": [
+     {
+      "kind": "assistant_text",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA2ODQ4NDNfMjY1ZjRkYzgtN2NiYi00MDVlLTkwMDAtM2JiZjNlOGU3NWMy:assistant-text:0",
+      "eventId": "raw:v1:53:rt_1791110684843_265f4dc8-7cbb-405e-9000-3bbf3e8e75c2",
+      "kindOrdinal": 0,
+      "content": "FINISHED"
+     }
+    ]
+   },
+   {
+    "eventId": "raw:v1:53:rt_1791110709609_462cf805-0d19-4e06-be57-fc715c1f8a61",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110709607,
+    "visuals": [
+     {
+      "kind": "user",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA3MDk2MDlfNDYyY2Y4MDUtMGQxOS00ZTA2LWJlNTctZmM3MTVjMWY4YTYx:user:0",
+      "eventId": "raw:v1:53:rt_1791110709609_462cf805-0d19-4e06-be57-fc715c1f8a61",
+      "kindOrdinal": 0,
+      "text": "Call the run_bash tool 60 separate times, one call after another, with the commands echo 101, echo 102 and so on up to echo 160. Do not combine commands. After the last call, reply with the single word FINISHED2.",
+      "attachments": []
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01VsCA77XwWLuCyHtskbwKue",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110710848,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxVnNDQTc3WHdXTHVDeUh0c2tid0t1ZQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01VsCA77XwWLuCyHtskbwKue",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01VsCA77XwWLuCyHtskbwKue",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 101",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01EDwmMhjZUQHqpsp7ycKtoL",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110710998,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxRUR3bU1oalpVUUhxcHNwN3ljS3RvTA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01EDwmMhjZUQHqpsp7ycKtoL",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01EDwmMhjZUQHqpsp7ycKtoL",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 102",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_016bwWZa9u1KJzX9Y6HJWEiD",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110711175,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxNmJ3V1phOXUxS0p6WDlZNkhKV0VpRA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_016bwWZa9u1KJzX9Y6HJWEiD",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_016bwWZa9u1KJzX9Y6HJWEiD",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 103",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01AzTMnSn16hWmwGbHGwnxhh",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110711326,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxQXpUTW5TbjE2aFdtd0diSEd3bnhoaA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01AzTMnSn16hWmwGbHGwnxhh",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01AzTMnSn16hWmwGbHGwnxhh",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 104",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_012pEDFXiTw1iXT635Eox9Sb",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110711527,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxMnBFREZYaVR3MWlYVDYzNUVveDlTYg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_012pEDFXiTw1iXT635Eox9Sb",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_012pEDFXiTw1iXT635Eox9Sb",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 105",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_018G9NqpGD8x6SiHHSEutPKf",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110711634,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxOEc5TnFwR0Q4eDZTaUhIU0V1dFBLZg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_018G9NqpGD8x6SiHHSEutPKf",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_018G9NqpGD8x6SiHHSEutPKf",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 106",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01WbvWEJucyeEbtefBNkZowf",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110711797,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxV2J2V0VKdWN5ZUVidGVmQk5rWm93Zg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01WbvWEJucyeEbtefBNkZowf",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01WbvWEJucyeEbtefBNkZowf",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 107",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_013MSYCTKgt6NXbzjFfEzoQJ",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110711959,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxM01TWUNUS2d0Nk5YYnpqRmZFem9RSg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_013MSYCTKgt6NXbzjFfEzoQJ",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_013MSYCTKgt6NXbzjFfEzoQJ",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 108",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_019zvGWz3rFZXLkwv8sLfzVA",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110712111,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxOXp2R1d6M3JGWlhMa3d2OHNMZnpWQQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_019zvGWz3rFZXLkwv8sLfzVA",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_019zvGWz3rFZXLkwv8sLfzVA",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 109",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_015LcuLCG6dg4AZyW7tqoVi1",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110712265,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxNUxjdUxDRzZkZzRBWnlXN3Rxb1ZpMQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_015LcuLCG6dg4AZyW7tqoVi1",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_015LcuLCG6dg4AZyW7tqoVi1",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 110",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01W4tkSUX6Gdho2QJf15rsVH",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110712415,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxVzR0a1NVWDZHZGhvMlFKZjE1cnNWSA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01W4tkSUX6Gdho2QJf15rsVH",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01W4tkSUX6Gdho2QJf15rsVH",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 111",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01JR6HbHbMuA1cwsXN5iUyUn",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110712581,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxSlI2SGJIYk11QTFjd3NYTjVpVXlVbg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01JR6HbHbMuA1cwsXN5iUyUn",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01JR6HbHbMuA1cwsXN5iUyUn",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 112",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_011oZD8CAwfwcY3QZsks29Qc",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110712784,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxMW9aRDhDQXdmd2NZM1Fac2tzMjlRYw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_011oZD8CAwfwcY3QZsks29Qc",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_011oZD8CAwfwcY3QZsks29Qc",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 113",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01HU5L676SkrNS2UxWWD7NgY",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110712882,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxSFU1TDY3NlNrck5TMlV4V1dEN05nWQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01HU5L676SkrNS2UxWWD7NgY",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01HU5L676SkrNS2UxWWD7NgY",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 114",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_013NtzfiCk4qWUmzMKwX1aG9",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110713112,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxM050emZpQ2s0cVdVbXpNS3dYMWFHOQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_013NtzfiCk4qWUmzMKwX1aG9",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_013NtzfiCk4qWUmzMKwX1aG9",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 115",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_013oz9DZ6ZBeNtxKLBzYU5C4",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110713190,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxM296OURaNlpCZU50eEtMQnpZVTVDNA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_013oz9DZ6ZBeNtxKLBzYU5C4",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_013oz9DZ6ZBeNtxKLBzYU5C4",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 116",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_015X8VLJw8TfajBVqewo38L8",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110713336,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxNVg4VkxKdzhUZmFqQlZxZXdvMzhMOA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_015X8VLJw8TfajBVqewo38L8",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_015X8VLJw8TfajBVqewo38L8",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 117",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_012YoA8jmEg6bZEAeaFHEkCd",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110713477,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxMllvQThqbUVnNmJaRUFlYUZIRWtDZA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_012YoA8jmEg6bZEAeaFHEkCd",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_012YoA8jmEg6bZEAeaFHEkCd",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 118",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01S53kYLQjgxxSngUxsKynyn",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110713629,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxUzUza1lMUWpneHhTbmdVeHNLeW55bg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01S53kYLQjgxxSngUxsKynyn",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01S53kYLQjgxxSngUxsKynyn",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 119",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01UVEbW3bcodkwxu4DVjaY6b",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110713781,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxVVZFYlczYmNvZGt3eHU0RFZqYVk2Yg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01UVEbW3bcodkwxu4DVjaY6b",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01UVEbW3bcodkwxu4DVjaY6b",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 120",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01XoDFrEB7HL6AgLd8DKCJjc",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110713954,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxWG9ERnJFQjdITDZBZ0xkOERLQ0pqYw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01XoDFrEB7HL6AgLd8DKCJjc",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01XoDFrEB7HL6AgLd8DKCJjc",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 121",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_014JVnoxYb6j98tsJU7pZkhG",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110714147,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxNEpWbm94WWI2ajk4dHNKVTdwWmtoRw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_014JVnoxYb6j98tsJU7pZkhG",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_014JVnoxYb6j98tsJU7pZkhG",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 122",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01BBXjeWeN1KdojfzxPr56rA",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110714253,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxQkJYamVXZU4xS2RvamZ6eFByNTZyQQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01BBXjeWeN1KdojfzxPr56rA",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01BBXjeWeN1KdojfzxPr56rA",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 123",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01GkAxfmboRimsUYBbRrduHL",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110714406,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxR2tBeGZtYm9SaW1zVVlCYlJyZHVITA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01GkAxfmboRimsUYBbRrduHL",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01GkAxfmboRimsUYBbRrduHL",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 124",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01UcoaEBvKfcqBh27xrArLWT",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110714553,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxVWNvYUVCdktmY3FCaDI3eHJBckxXVA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01UcoaEBvKfcqBh27xrArLWT",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01UcoaEBvKfcqBh27xrArLWT",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 125",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_013EYCGGrMAfJ2cscZ53gXbx",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110714712,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxM0VZQ0dHck1BZkoyY3NjWjUzZ1hieA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_013EYCGGrMAfJ2cscZ53gXbx",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_013EYCGGrMAfJ2cscZ53gXbx",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 126",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01GaCH9URBQdehNEdEWrcBtF",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110714879,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxR2FDSDlVUkJRZGVoTkVkRVdyY0J0Rg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01GaCH9URBQdehNEdEWrcBtF",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01GaCH9URBQdehNEdEWrcBtF",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 127",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_017iua3t6kC8yhCEoKwwhwWS",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110715028,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxN2l1YTN0NmtDOHloQ0VvS3d3aHdXUw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_017iua3t6kC8yhCEoKwwhwWS",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_017iua3t6kC8yhCEoKwwhwWS",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 128",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_011VmiTBobWrwypL6SVf9zKo",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110715195,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxMVZtaVRCb2JXcnd5cEw2U1ZmOXpLbw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_011VmiTBobWrwypL6SVf9zKo",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_011VmiTBobWrwypL6SVf9zKo",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 129",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01CwH8P6WXgUWbmfdgbeQmtZ",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110715329,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxQ3dIOFA2V1hnVVdibWZkZ2JlUW10Wg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01CwH8P6WXgUWbmfdgbeQmtZ",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01CwH8P6WXgUWbmfdgbeQmtZ",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 130",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01V4mjn6v2pBzQzLHtET7xJf",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110715496,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxVjRtam42djJwQnpRekxIdEVUN3hKZg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01V4mjn6v2pBzQzLHtET7xJf",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01V4mjn6v2pBzQzLHtET7xJf",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 131",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01E6VsETM8MPC4SfdjfYViQ5",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110715723,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxRTZWc0VUTThNUEM0U2ZkamZZVmlRNQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01E6VsETM8MPC4SfdjfYViQ5",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01E6VsETM8MPC4SfdjfYViQ5",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 132",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01UuxEbpU3TLk9pqoNBuz4w7",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110715803,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxVXV4RWJwVTNUTGs5cHFvTkJ1ejR3Nw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01UuxEbpU3TLk9pqoNBuz4w7",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01UuxEbpU3TLk9pqoNBuz4w7",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 133",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01YAbDFHg3wjpTijYBVE6eVf",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110715953,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxWUFiREZIZzN3anBUaWpZQlZFNmVWZg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01YAbDFHg3wjpTijYBVE6eVf",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01YAbDFHg3wjpTijYBVE6eVf",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 134",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01DbtM7AvHRo1pH2NDFipZ5V",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110716104,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxRGJ0TTdBdkhSbzFwSDJOREZpcFo1Vg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01DbtM7AvHRo1pH2NDFipZ5V",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01DbtM7AvHRo1pH2NDFipZ5V",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 135",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Doj66HqfKqSsZvKpobFoED",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110716262,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxRG9qNjZIcWZLcVNzWnZLcG9iRm9FRA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Doj66HqfKqSsZvKpobFoED",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Doj66HqfKqSsZvKpobFoED",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 136",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01MoVrAgNaw4gX4FfFcBoQAz",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110716405,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxTW9WckFnTmF3NGdYNEZmRmNCb1FBeg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01MoVrAgNaw4gX4FfFcBoQAz",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01MoVrAgNaw4gX4FfFcBoQAz",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 137",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_012tRVcmwabGbGZsiBsdgEAE",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110716564,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxMnRSVmNtd2FiR2JHWnNpQnNkZ0VBRQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_012tRVcmwabGbGZsiBsdgEAE",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_012tRVcmwabGbGZsiBsdgEAE",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 138",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01NaDb5AYe2XxCAbCWnVnkTe",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110716770,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxTmFEYjVBWWUyWHhDQWJDV25WbmtUZQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01NaDb5AYe2XxCAbCWnVnkTe",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01NaDb5AYe2XxCAbCWnVnkTe",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 139",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01FZFytuVVre68nVmRicZBK3",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110716879,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxRlpGeXR1VlZyZTY4blZtUmljWkJLMw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01FZFytuVVre68nVmRicZBK3",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01FZFytuVVre68nVmRicZBK3",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 140",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Mx82mtGxLCrbJnoc9T4Xvy",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110717029,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxTXg4Mm10R3hMQ3JiSm5vYzlUNFh2eQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Mx82mtGxLCrbJnoc9T4Xvy",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Mx82mtGxLCrbJnoc9T4Xvy",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 141",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_019jwMqPbiC8CNAeS7NLnKvo",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110717178,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxOWp3TXFQYmlDOENOQWVTN05Mbkt2bw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_019jwMqPbiC8CNAeS7NLnKvo",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_019jwMqPbiC8CNAeS7NLnKvo",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 142",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01SAJZPgZeJRKNJsVMrRa7Zq",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110717330,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxU0FKWlBnWmVKUktOSnNWTXJSYTdacQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01SAJZPgZeJRKNJsVMrRa7Zq",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01SAJZPgZeJRKNJsVMrRa7Zq",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 143",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_014JBESHFiyHx8tCi8n2QaUG",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110717478,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxNEpCRVNIRml5SHg4dENpOG4yUWFVRw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_014JBESHFiyHx8tCi8n2QaUG",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_014JBESHFiyHx8tCi8n2QaUG",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 144",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_017hcXFFcdPDsFvV5Ky18ZvU",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110717655,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxN2hjWEZGY2RQRHNGdlY1S3kxOFp2VQ:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_017hcXFFcdPDsFvV5Ky18ZvU",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_017hcXFFcdPDsFvV5Ky18ZvU",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 145",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_015ueMvXY6ohymztWeRNnr4o",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110717824,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxNXVlTXZYWTZvaHltenRXZVJObnI0bw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_015ueMvXY6ohymztWeRNnr4o",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_015ueMvXY6ohymztWeRNnr4o",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 146",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01BEnpQngdrZRNoMhwrUxwnV",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110717954,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxQkVucFFuZ2RyWlJOb01od3JVeHduVg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01BEnpQngdrZRNoMhwrUxwnV",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01BEnpQngdrZRNoMhwrUxwnV",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 147",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Ljxrv7LkPQYGnRfrLZiV5X",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110718102,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxTGp4cnY3TGtQUVlHblJmckxaaVY1WA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Ljxrv7LkPQYGnRfrLZiV5X",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Ljxrv7LkPQYGnRfrLZiV5X",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 148",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01G1BXRVToDAqjNp7SoYnUwN",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110718342,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxRzFCWFJWVG9EQXFqTnA3U29ZblV3Tg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01G1BXRVToDAqjNp7SoYnUwN",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01G1BXRVToDAqjNp7SoYnUwN",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 149",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01BKW4bzr48h7KhBHqPiEcR6",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110718411,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxQktXNGJ6cjQ4aDdLaEJIcVBpRWNSNg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01BKW4bzr48h7KhBHqPiEcR6",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01BKW4bzr48h7KhBHqPiEcR6",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 150",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01JJMucARoShxYkgRZT3EJv6",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110718581,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxSkpNdWNBUm9TaHhZa2dSWlQzRUp2Ng:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01JJMucARoShxYkgRZT3EJv6",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01JJMucARoShxYkgRZT3EJv6",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 151",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_015PXVJgJEXAktLMV6GQojBC",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110718742,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxNVBYVkpnSkVYQWt0TE1WNkdRb2pCQw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_015PXVJgJEXAktLMV6GQojBC",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_015PXVJgJEXAktLMV6GQojBC",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 152",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01PgpXa2vA1yzJdEbfuZWqck",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110718899,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxUGdwWGEydkExeXpKZEViZnVaV3Fjaw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01PgpXa2vA1yzJdEbfuZWqck",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01PgpXa2vA1yzJdEbfuZWqck",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 153",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Li6azAJwUJc5WLrypZzicV",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110719033,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxTGk2YXpBSndVSmM1V0xyeXBaemljVg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Li6azAJwUJc5WLrypZzicV",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Li6azAJwUJc5WLrypZzicV",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 154",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_017ZdXhBYtveHnr8p25UnZKv",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110719182,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxN1pkWGhCWXR2ZUhucjhwMjVVblpLdg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_017ZdXhBYtveHnr8p25UnZKv",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_017ZdXhBYtveHnr8p25UnZKv",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 155",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01SSpb2TesLtM6oNg1cHyAiP",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110719395,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxU1NwYjJUZXNMdE02b05nMWNIeUFpUA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01SSpb2TesLtM6oNg1cHyAiP",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01SSpb2TesLtM6oNg1cHyAiP",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 156",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01BckvCVq48J6WyGLSNmUFQ7",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110719507,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxQmNrdkNWcTQ4SjZXeUdMU05tVUZRNw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01BckvCVq48J6WyGLSNmUFQ7",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01BckvCVq48J6WyGLSNmUFQ7",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 157",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Vnq9m9YwL5SGLD7DZBREJ8",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110719659,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxVm5xOW05WXdMNVNHTEQ3RFpCUkVKOA:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01Vnq9m9YwL5SGLD7DZBREJ8",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01Vnq9m9YwL5SGLD7DZBREJ8",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 158",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01DnyJyc1Fag1B5tBq5MACcc",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110719809,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxRG55SnljMUZhZzFCNXRCcTVNQUNjYw:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_01DnyJyc1Fag1B5tBq5MACcc",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_01DnyJyc1Fag1B5tBq5MACcc",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 159",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_016wpQLMkf7eyDsSfrdMsbKv",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110719957,
+    "visuals": [
+     {
+      "kind": "tool_card",
+      "visualId": "active-trace-visual:v1:dG9vbDp2MTo5MTplY2hvX2hlbHBlcl9iN2VhXzE2NmM1NjMyMmE3MzQwODY5NWIxMTk2NDhhYzZiN2E1OnR1cm46ZTAyODUyMTEtYjRhZi00N2Q5LWI5ODAtMDk2NjIxOGExZjc3OjMwOnRvb2x1XzAxNndwUUxNa2Y3ZXlEc1NmcmRNc2JLdg:tool-card:0",
+      "eventId": "tool:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77:30:toolu_016wpQLMkf7eyDsSfrdMsbKv",
+      "kindOrdinal": 0,
+      "invocationId": "toolu_016wpQLMkf7eyDsSfrdMsbKv",
+      "cardKind": "terminal_command",
+      "toolName": "Bash",
+      "statusKey": "success",
+      "errorMessage": null,
+      "summaryArgs": {
+       "path": null,
+       "file_path": null,
+       "filepath": null,
+       "filename": null,
+       "target_path": null,
+       "command": "echo 160",
+       "cmd": null,
+       "script": null,
+       "query": null,
+       "prompt": null,
+       "url": null,
+       "message": null,
+       "text": null,
+       "title": null,
+       "name": null,
+       "raw": null
+      },
+      "approvalTarget": null
+     }
+    ]
+   },
+   {
+    "eventId": "raw:v1:53:rt_1791110721068_350a5c6b-da9e-45cd-8c17-cf7192bd50c8",
+    "turnGroupId": "turn:v1:91:echo_helper_b7ea_166c56322a73408695b119648ac6b7a5:turn:e0285211-b4af-47d9-b980-0966218a1f77",
+    "occurredAtMs": 1791110721068,
+    "visuals": [
+     {
+      "kind": "assistant_text",
+      "visualId": "active-trace-visual:v1:cmF3OnYxOjUzOnJ0XzE3OTExMTA3MjEwNjhfMzUwYTVjNmItZGE5ZS00NWNkLThjMTctY2Y3MTkyYmQ1MGM4:assistant-text:0",
+      "eventId": "raw:v1:53:rt_1791110721068_350a5c6b-da9e-45cd-8c17-cf7192bd50c8",
+      "kindOrdinal": 0,
+      "content": "FINISHED2"
+     }
+    ]
+   }
+  ]
+ }
+]

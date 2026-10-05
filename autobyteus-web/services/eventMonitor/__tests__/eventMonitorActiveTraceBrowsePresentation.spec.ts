@@ -38,6 +38,40 @@ describe('event monitor active trace browse presentation', () => {
     });
   });
 
+  it('renders an agent-to-agent delivery as "From <Sender>:" opening the reply block (REQ-007, RD-004)', () => {
+    const delivery = (eventId: string, text: string, senderAddress: string | null): EventMonitorActiveTracePageEventDto => ({
+      __typename: 'EventMonitorActiveTracePageEvent', eventId, turnGroupId: `turn:${eventId}`, occurredAtMs: 9,
+      visuals: [{
+        __typename: 'EventMonitorInterAgentVisual', kind: 'inter_agent', eventId, visualId: `visual:${eventId}`,
+        kindOrdinal: 0, senderAgentRunId: 'lead-run', senderAddress, text, attachments: [],
+      }],
+    });
+    const presentation = buildEventMonitorActiveTraceBrowsePresentation([
+      delivery('with-address', 'You received a message from sender name: lead, sender address: /eng/lead, sender id: lead-run\nmessage:\nStatus?', '/eng/lead'),
+      textEvent('raw:reply', 'visual:reply', 'turn:with-address'),
+      // A stored delivery from before the header carried the address, on a host page (no resolved address).
+      delivery('stored', 'You received a message from sender name: lead, sender id: lead-run\nmessage:\nEarlier', null),
+    ]);
+    expect(presentation).toEqual([
+      expect.objectContaining({
+        kind: 'assistant', key: 'browse-assistant-group:turn:with-address:visual:with-address',
+        visuals: [
+          { kind: 'inter_agent', visualId: 'visual:with-address', segment: expect.objectContaining({
+            type: 'inter_agent_message', senderAgentRunId: 'lead-run', senderAddress: '/eng/lead', senderName: 'lead', content: 'Status?',
+          }) },
+          expect.objectContaining({ kind: 'text', visualId: 'visual:reply' }),
+        ],
+      }),
+      expect.objectContaining({
+        kind: 'assistant',
+        visuals: [{ kind: 'inter_agent', visualId: 'visual:stored', segment: expect.objectContaining({
+          senderAddress: null, senderName: 'lead', content: 'Earlier',
+        }) }],
+      }),
+    ]);
+    expect(presentation.some((item) => item.kind === 'user')).toBe(false);
+  });
+
   it('uses stable turn-group row keys while retaining carried visual identities', () => {
     const presentation = buildEventMonitorActiveTraceBrowsePresentation([
       textEvent('raw:r17', 'visual:r17'),

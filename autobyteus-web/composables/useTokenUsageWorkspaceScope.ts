@@ -74,6 +74,8 @@ export function useTokenUsageWorkspaceScope() {
         agentRunId: identity.agentRunId,
       });
     }
+    // A standalone run's usage includes its collaborators and task copies (REQ-006).
+    if (current?.kind === 'standalone_agent') return meter.getStandaloneRunSummary(identity.agentRunId);
     return meter.getRunSummary(identity.agentRunId);
   };
   const teamRows = computed<TokenUsageTeamMemberRow[]>(() => teamMemberIdentities.value.map((identity) => {
@@ -89,7 +91,10 @@ export function useTokenUsageWorkspaceScope() {
   const primarySummary = computed<TokenUsageRunSummary | null>(() => {
     const current = target.value;
     if (!current) return null;
-    return hasTeam(current) ? focusedTeamRow.value?.summary ?? null : meter.getRunSummary(current.context.state.runId);
+    if (hasTeam(current)) return focusedTeamRow.value?.summary ?? null;
+    return current.kind === 'standalone_agent'
+      ? meter.getStandaloneRunSummary(current.context.state.runId)
+      : meter.getRunSummary(current.context.state.runId);
   });
   const primaryKey = computed(() => focusedAgentRunId.value
     ? memberKey(scopeKey.value, focusedAgentRunId.value)
@@ -115,6 +120,8 @@ export function useTokenUsageWorkspaceScope() {
           teamRunId: current.team.rootRunId,
           agentRunId: identity.agentRunId,
         });
+      } else if (current.kind === 'standalone_agent') {
+        await meter.fetchStandaloneRunSummary(identity.agentRunId);
       } else if (isOrg(current)) {
         await meter.fetchAgentOrgMemberSummary({
           orgRunId: current.root.orgRunId,
@@ -142,6 +149,17 @@ export function useTokenUsageWorkspaceScope() {
     };
   });
   watch([directIdentity, scopeKey], ([identity]) => { if (identity) void hydrateIdentity(identity); }, { immediate: true });
+  // The host's live usage reports advance its exact summary; the roll-up follows by refetching.
+  const standaloneHostReportCount = computed(() => target.value?.kind === 'standalone_agent'
+    ? meter.getRunSummary(target.value.context.state.runId)?.usageReportCount ?? null
+    : null);
+  watch(standaloneHostReportCount, (count, previous) => {
+    const current = target.value;
+    if (current?.kind !== 'standalone_agent' || count === null || count === previous) return;
+    void meter.fetchStandaloneRunSummary(current.context.state.runId).catch((error: unknown) => {
+      errorByKey[memberKey(scopeKey.value, current.context.state.runId)] = fetchErrorMessage(error);
+    });
+  });
   watch(teamIdentityKey, () => {
     for (const identity of teamMemberIdentities.value) void hydrateIdentity(identity);
   }, { immediate: true });

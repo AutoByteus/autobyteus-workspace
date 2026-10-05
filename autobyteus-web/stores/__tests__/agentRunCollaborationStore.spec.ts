@@ -68,6 +68,19 @@ describe('agentRunCollaborationStore', () => {
     expect(store.childTargetFor('host-run')).toBeNull()
   })
 
+  it('reads a child\'s earlier events from the host\'s collaboration package, not as a top-level run (CR-002)', async () => {
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    store.selectChild('host-run', 'pp-run')
+    expect(store.childTargetFor('host-run')?.browse).toEqual({
+      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run',
+    })
+    store.selectChild('host-run', 'cua-run')
+    expect(store.childTargetFor('host-run')?.browse).toEqual({
+      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/computer_use_agent', agentRunId: 'cua-run',
+    })
+  })
+
   it('sending to a child attaches the stream (which restores the host) and carries mentions', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')

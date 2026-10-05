@@ -139,7 +139,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     const definition = await this.deps.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`ACP_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     const bindings = this.deps.skills.resolveConfiguredSkillBindingsForAgent(definition);
-    const materializedSkills = await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
+    const { materializedSkills } = await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
       runId, workingDirectory,
       onAcquired: (skill) => { owner.skills.push(skill); }, assertAccepting,
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.deps.skills.resolveSkillScope(definition)),
