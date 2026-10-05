@@ -1,0 +1,4 @@
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (18.909 seconds).
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' passed (12.948 seconds).
+** TEST SUCCEEDED **
+exit=0

@@ -1,0 +1,1 @@
+export default async ({ page }) => { const s = page.getByRole("switch", { name: "Auto approve tools" }).first(); if ((await s.getAttribute("aria-checked")) !== "true") await s.click(); await page.waitForTimeout(500); return { autoApprove: await s.getAttribute("aria-checked") }; };

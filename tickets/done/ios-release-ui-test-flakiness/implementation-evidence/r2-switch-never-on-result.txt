@@ -1,0 +1,9 @@
+    t =     8.26s Tap "connection.httpAcknowledgement" Switch
+    t =    40.79s Tap "connection.httpAcknowledgement" Switch
+    t =    73.34s Tap "connection.httpAcknowledgement" Switch
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:84: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent] : XCTAssertTrue failed - HTTP acknowledgement switch should be on before Connect
+    t =   105.87s Tap "connection.connect" Button
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:32: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent] : XCTAssertTrue failed - Expected native unreachable diagnostic
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' failed (196.951 seconds).
+** TEST FAILED **
+exit=65

@@ -182,7 +182,7 @@ describe('AgentDefinitionForm', () => {
         submitButtonText: 'Save',
         isCreateMode: false,
         initialData: {
-          name: 'General Agent',
+          name: 'Daily Assistant',
           description: 'General',
           instructions: 'Help.',
           skillNames: [],

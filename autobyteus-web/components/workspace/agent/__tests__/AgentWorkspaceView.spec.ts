@@ -30,7 +30,7 @@ vi.mock('~/composables/chat/useChatComposerOptions', () => ({
 
 const buildTarget = (runId: string, firstMessage: string | null) => {
   const context = reactive(new AgentContext({
-    agentDefinitionId: 'autobyteus-daily-assistant', agentDefinitionName: 'General Agent', llmModelIdentifier: 'gpt-5.5',
+    agentDefinitionId: 'autobyteus-daily-assistant', agentDefinitionName: 'Daily Assistant', llmModelIdentifier: 'gpt-5.5',
     runtimeKind: 'codex_app_server', workspaceId: 'ws-1',
     workspaceMetadata: { workspaceId: 'ws-1', workspaceRootPath: '/Users/me/project', displayName: 'project', kind: 'filesystem' } as any,
     autoExecuteTools: true, isLocked: false,
@@ -70,7 +70,7 @@ describe('AgentWorkspaceView (the chat run view, D-17)', () => {
 
   it('keeps the product title for a draft without messages', () => {
     mocks.target = buildTarget('temp-1', null)
-    expect(mountView().get('[data-test="agent-workspace-title"]').text()).toBe('New - General Agent')
+    expect(mountView().get('[data-test="agent-workspace-title"]').text()).toBe('New - Daily Assistant')
   })
 
   it('＋ starts a New chat preset to this agent and workspace; ⚙ opens the run settings', async () => {

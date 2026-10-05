@@ -1,0 +1,7 @@
+
+> autobyteus@1.4.94 test:e2e:chat-entry-live /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-web
+> node tests/e2e/chat-entry-live-probe.mjs --cases C01,C02,C13 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/tickets/in-progress/daily-assistant-display-name/api-e2e-evidence/chat-entry-live
+
+C01 Pass Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED
+C02 Pass Landing: / → /chat, Chat first with pencil, New chat defaults
+C13 Pass Daily Assistant platform-owned restart lifecycle: edited prompt overwritten; deleted config restored

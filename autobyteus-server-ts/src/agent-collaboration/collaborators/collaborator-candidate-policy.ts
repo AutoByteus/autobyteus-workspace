@@ -60,7 +60,7 @@ const preferredInRunAddress = (placements: readonly InRunPlacement[]): AgentTeam
   return best?.address ?? null;
 };
 
-/** General Agent (the default chat agent) and the internal helpers are never collaborators. */
+/** Daily Assistant (the default chat agent) and the internal helpers are never collaborators. */
 const EXCLUDED_AGENT_DEFINITION_IDS: ReadonlySet<string> = new Set(BUILT_IN_AGENT_DEFINITIONS.map((entry) => entry.id));
 
 const hasId = <T extends { id?: string | null }>(definition: T): definition is T & { id: string } =>

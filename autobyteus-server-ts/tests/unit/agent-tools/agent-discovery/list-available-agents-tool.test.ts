@@ -33,7 +33,7 @@ const withLister = () => testMemberExecutionContext({ listAvailableAgents: vi.fn
 const withoutLister = () => testMemberExecutionContext();
 
 describe("list_available_agents (REQ-001/002)", () => {
-  it("exposes actual General Agent discovery through native and MCP bindings in a standalone host context", async () => {
+  it("exposes actual Daily Assistant discovery through native and MCP bindings in a standalone host context", async () => {
     const context = new MemberExecutionContext({ ...withLister(), teamScoped: false });
     const exposure = buildRuntimeAgentToolExposure(generalAgentConfig.toolNames, context);
     expect(exposure.listAvailableAgentsEnabled).toBe(true);
@@ -41,7 +41,7 @@ describe("list_available_agents (REQ-001/002)", () => {
     expect(exposure.enabledTaskDelegationToolNames).toContain("delegate_task");
     expect(exposure.getHandoffRulesEnabled).toBe(false);
     const resolved = resolveAutoByteusAgentTools({
-      agentDefinition: { name: "General Agent", toolNames: generalAgentConfig.toolNames } as never,
+      agentDefinition: { name: "Daily Assistant", toolNames: generalAgentConfig.toolNames } as never,
       runtimeToolExposure: exposure,
       senderRunId: "run-general-agent",
       memberExecutionContext: context,
@@ -76,7 +76,7 @@ describe("list_available_agents (REQ-001/002)", () => {
     expect(claude.agentToolsMcpEnabledToolNames).toContain(LIST_AVAILABLE_AGENTS_TOOL_NAME);
   });
 
-  it("keeps an empty eligible catalog a valid discovery result for General Agent", async () => {
+  it("keeps an empty eligible catalog a valid discovery result for Daily Assistant", async () => {
     const context = new MemberExecutionContext({
       ...testMemberExecutionContext({ listAvailableAgents: async () => [] }),
       teamScoped: false,

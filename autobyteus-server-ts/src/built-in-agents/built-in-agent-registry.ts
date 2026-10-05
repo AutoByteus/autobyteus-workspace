@@ -34,6 +34,6 @@ export const BUILT_IN_AGENT_DEFINITIONS = [
   {
     id: DAILY_ASSISTANT_AGENT_DEFINITION_ID,
     templateDirName: "daily-assistant",
-    displayName: "General Agent",
+    displayName: "Daily Assistant",
   },
 ] as const satisfies readonly BuiltInAgentDefinition[];

@@ -1,0 +1,729 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:84893) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T04:36:39.298Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-Ef9Dxp/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-05T04:36:39.743Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39m[2026-10-05T04:36:39.747Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:36:39.867057Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mautobyteus: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+ [2m[90m↓[39m[22m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mautobyteus: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mIn-memory cache: Added new agent definition with ID mention-host-dfc11d.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent Definition created successfully with ID: mention-host-dfc11d
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mIn-memory cache: Added new agent definition with ID mention-helper-dfc11d.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent Definition created successfully with ID: mention-helper-dfc11d
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreated and registered workspace ID: agent_ws_58f839d97231ddeca920c33a27de9901c1e83c147e0d864c7a0de856af87706a
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_58f839d97231ddeca920c33a27de9901c1e83c147e0d864c7a0de856af87706a
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:36:40.106483Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished codex_app_server agent run 'mention_host_dfc11d_0bbab05a5d9b4bf699503a9f0d771df0'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent websocket attached for run mention_host_dfc11d_0bbab05a5d9b4bf699503a9f0d771df0
+Created agent session 0ada7131-201e-4363-91e4-69ed2330c3d0 for run mention_host_dfc11d_0bbab05a5d9b4bf699503a9f0d771df0
+Agent WebSocket connected: session=0ada7131-201e-4363-91e4-69ed2330c3d0, run=mention_host_dfc11d_0bbab05a5d9b4bf699503a9f0d771df0
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_58f839d97231ddeca920c33a27de9901c1e83c147e0d864c7a0de856af87706a
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished codex_app_server agent run 'mention_helper_dfc11d_dee0c40d8467473ea5a96d4678d58544'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_58f839d97231ddeca920c33a27de9901c1e83c147e0d864c7a0de856af87706a
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished codex_app_server agent run 'mention_helper_dfc11d_3867bc53165f4b9a8ad92cd462bfe067'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-5xV9Ek
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-5xV9Ek.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreated and registered workspace ID: agent_ws_d3d13460baa4cc823f1dcc5d5dbfdfea5e032ef608b064a09cdb7257d56d2810
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-5xV9Ek
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-5xV9Ek.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_d3d13460baa4cc823f1dcc5d5dbfdfea5e032ef608b064a09cdb7257d56d2810
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:37:07.879314Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished codex_app_server agent run 'mention_host_dfc11d_01d60ed982974b3799fba25f738112fa'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent websocket attached for run mention_host_dfc11d_01d60ed982974b3799fba25f738112fa
+Created agent session 79204b16-ec2a-49c3-aeed-cc867164c228 for run mention_host_dfc11d_01d60ed982974b3799fba25f738112fa
+Agent WebSocket connected: session=79204b16-ec2a-49c3-aeed-cc867164c228, run=mention_host_dfc11d_01d60ed982974b3799fba25f738112fa
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_58f839d97231ddeca920c33a27de9901c1e83c147e0d864c7a0de856af87706a
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:37:20.190512Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished codex_app_server agent run 'mention_host_dfc11d_0bbab05a5d9b4bf699503a9f0d771df0'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4IzIjL.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_58f839d97231ddeca920c33a27de9901c1e83c147e0d864c7a0de856af87706a
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'deprecationNotice'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m2[39m,
+  paramKeys: [ [32m'summary'[39m, [32m'details'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished codex_app_server agent run 'mention_helper_dfc11d_dee0c40d8467473ea5a96d4678d58544'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mClosed agent session 79204b16-ec2a-49c3-aeed-cc867164c228
+Agent WebSocket disconnected: 79204b16-ec2a-49c3-aeed-cc867164c228
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mClosed agent session 0ada7131-201e-4363-91e4-69ed2330c3d0
+Agent WebSocket disconnected: 0ada7131-201e-4363-91e4-69ed2330c3d0
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mIn-memory cache: Removed agent definition with ID mention-host-dfc11d.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent Definition with ID mention-host-dfc11d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mIn-memory cache: Removed agent definition with ID mention-helper-dfc11d.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent Definition with ID mention-helper-dfc11d deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:37:24.050712Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [32m✓[39m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mcodex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake[33m 44215[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Added new agent definition with ID team-host-6fd05e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition created successfully with ID: team-host-6fd05e
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Added new agent definition with ID obs-lead-6fd05e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition created successfully with ID: obs-lead-6fd05e
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Added new agent definition with ID obs-mate-6fd05e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition created successfully with ID: obs-mate-6fd05e
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39m[2026-10-05T04:37:24.179Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID obs-team-6fd05e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Team Definition created successfully with ID: obs-team-6fd05e
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-39RS4q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-39RS4q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mCreated and registered workspace ID: agent_ws_b83c805b1ab2815fa8b959eddb4c6ede3ed96b134548a3af88d400e77e6231a5
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-39RS4q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-39RS4q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mReusing registered workspace ID: agent_ws_b83c805b1ab2815fa8b959eddb4c6ede3ed96b134548a3af88d400e77e6231a5
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:37:24.300448Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mPublished codex_app_server agent run 'team_host_6fd05e_ab6e1ec09f854c459ada42401d554948'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent websocket attached for run team_host_6fd05e_ab6e1ec09f854c459ada42401d554948
+Created agent session b1dbb7c3-a2b0-4839-898e-e73347fc0227 for run team_host_6fd05e_ab6e1ec09f854c459ada42401d554948
+Agent WebSocket connected: session=b1dbb7c3-a2b0-4839-898e-e73347fc0227, run=team_host_6fd05e_ab6e1ec09f854c459ada42401d554948
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-39RS4q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-39RS4q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mReusing registered workspace ID: agent_ws_b83c805b1ab2815fa8b959eddb4c6ede3ed96b134548a3af88d400e77e6231a5
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mPublished codex_app_server agent run 'obs_lead_6fd05e_70feb2ae79b5402d9f980f577e2e0c48'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-39RS4q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-39RS4q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mReusing registered workspace ID: agent_ws_b83c805b1ab2815fa8b959eddb4c6ede3ed96b134548a3af88d400e77e6231a5
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'thread/started'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m3[39m,
+  paramKeys: [ [32m'thread'[39m ]
+}
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'warning'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m3[39m,
+  paramKeys: [ [32m'threadId'[39m, [32m'message'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mPublished codex_app_server agent run 'obs_mate_6fd05e_80eda90085b9449dafec845343b36190'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mClosed agent session b1dbb7c3-a2b0-4839-898e-e73347fc0227
+Agent WebSocket disconnected: b1dbb7c3-a2b0-4839-898e-e73347fc0227
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39m[2026-10-05T04:38:05.831Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID obs-team-6fd05e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Team Definition with ID obs-team-6fd05e deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Removed agent definition with ID team-host-6fd05e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition with ID team-host-6fd05e deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Removed agent definition with ID obs-lead-6fd05e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition with ID obs-lead-6fd05e deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Removed agent definition with ID obs-mate-6fd05e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition with ID obs-mate-6fd05e deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mIn-memory cache: Added new agent definition with ID mention-host-3f0d44.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent Definition created successfully with ID: mention-host-3f0d44
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mIn-memory cache: Added new agent definition with ID mention-helper-3f0d44.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent Definition created successfully with ID: mention-helper-3f0d44
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreated and registered workspace ID: agent_ws_0cbae20049fa46e60ec8234877862142d463173d9e77393c9e9fa0bfe7b075ac
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_0cbae20049fa46e60ec8234877862142d463173d9e77393c9e9fa0bfe7b075ac
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished claude_agent_sdk agent run 'mention_host_3f0d44_f81ec5c658d640ec97b3cfd134a91654'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent websocket attached for run mention_host_3f0d44_f81ec5c658d640ec97b3cfd134a91654
+Created agent session a6049a01-f8bd-41cc-8100-6ce022812f9d for run mention_host_3f0d44_f81ec5c658d640ec97b3cfd134a91654
+Agent WebSocket connected: session=a6049a01-f8bd-41cc-8100-6ce022812f9d, run=mention_host_3f0d44_f81ec5c658d640ec97b3cfd134a91654
+
+(node:84893) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_0cbae20049fa46e60ec8234877862142d463173d9e77393c9e9fa0bfe7b075ac
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished claude_agent_sdk agent run 'mention_helper_3f0d44_b90735af42f446afaebf8d1996f38759'.
+
+(node:84893) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_0cbae20049fa46e60ec8234877862142d463173d9e77393c9e9fa0bfe7b075ac
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished claude_agent_sdk agent run 'mention_helper_3f0d44_6432294ebdeb4bd487e945bd44aaa25b'.
+
+(node:84893) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-amOLjV
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-amOLjV.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreated and registered workspace ID: agent_ws_c35c5b1fd79e096f4eb072ddf8415ad117efdb50fb9119b2c9b7a6a09cb08f83
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-amOLjV
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-amOLjV.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_c35c5b1fd79e096f4eb072ddf8415ad117efdb50fb9119b2c9b7a6a09cb08f83
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished claude_agent_sdk agent run 'mention_host_3f0d44_1b0cd6e4d2ca42f29c9d88977d48605b'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent websocket attached for run mention_host_3f0d44_1b0cd6e4d2ca42f29c9d88977d48605b
+Created agent session c7636062-3049-481d-a2f5-41e610794d1c for run mention_host_3f0d44_1b0cd6e4d2ca42f29c9d88977d48605b
+Agent WebSocket connected: session=c7636062-3049-481d-a2f5-41e610794d1c, run=mention_host_3f0d44_1b0cd6e4d2ca42f29c9d88977d48605b
+
+(node:84893) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_0cbae20049fa46e60ec8234877862142d463173d9e77393c9e9fa0bfe7b075ac
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished claude_agent_sdk agent run 'mention_host_3f0d44_f81ec5c658d640ec97b3cfd134a91654'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-D3QK6q.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mReusing registered workspace ID: agent_ws_0cbae20049fa46e60ec8234877862142d463173d9e77393c9e9fa0bfe7b075ac
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mPublished claude_agent_sdk agent run 'mention_helper_3f0d44_b90735af42f446afaebf8d1996f38759'.
+
+(node:84893) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+ [32m✓[39m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mcodex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)[33m 41849[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mClosed agent session c7636062-3049-481d-a2f5-41e610794d1c
+Agent WebSocket disconnected: c7636062-3049-481d-a2f5-41e610794d1c
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mClosed agent session a6049a01-f8bd-41cc-8100-6ce022812f9d
+Agent WebSocket disconnected: a6049a01-f8bd-41cc-8100-6ce022812f9d
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mIn-memory cache: Removed agent definition with ID mention-host-3f0d44.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent Definition with ID mention-host-3f0d44 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mIn-memory cache: Removed agent definition with ID mention-helper-3f0d44.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+[22m[39mAgent Definition with ID mention-helper-3f0d44 deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mclaude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake[33m 32054[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Added new agent definition with ID team-host-ba79bd.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition created successfully with ID: team-host-ba79bd
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Added new agent definition with ID obs-lead-ba79bd.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition created successfully with ID: obs-lead-ba79bd
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Added new agent definition with ID obs-mate-ba79bd.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition created successfully with ID: obs-mate-ba79bd
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39m[2026-10-05T04:38:38.781Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID obs-team-ba79bd.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Team Definition created successfully with ID: obs-team-ba79bd
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-ZAHzGw
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-ZAHzGw.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mCreated and registered workspace ID: agent_ws_0ca0d78818177a3a7c5ed112bed2b1db48c99e5a392f615ea1e8c7c1d6c9be16
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-ZAHzGw
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-ZAHzGw.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mReusing registered workspace ID: agent_ws_0ca0d78818177a3a7c5ed112bed2b1db48c99e5a392f615ea1e8c7c1d6c9be16
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mPublished claude_agent_sdk agent run 'team_host_ba79bd_58c3eaaa564d4862a4478f3372981415'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent websocket attached for run team_host_ba79bd_58c3eaaa564d4862a4478f3372981415
+Created agent session 855afa94-cade-4287-89fd-a44abbdca925 for run team_host_ba79bd_58c3eaaa564d4862a4478f3372981415
+Agent WebSocket connected: session=855afa94-cade-4287-89fd-a44abbdca925, run=team_host_ba79bd_58c3eaaa564d4862a4478f3372981415
+
+(node:84893) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-ZAHzGw
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-ZAHzGw.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mReusing registered workspace ID: agent_ws_0ca0d78818177a3a7c5ed112bed2b1db48c99e5a392f615ea1e8c7c1d6c9be16
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mPublished claude_agent_sdk agent run 'obs_lead_ba79bd_c5578b6a2dee49d29ecfac121419cf89'.
+
+(node:84893) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mClosed agent session 855afa94-cade-4287-89fd-a44abbdca925
+Agent WebSocket disconnected: 855afa94-cade-4287-89fd-a44abbdca925
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39m[2026-10-05T04:44:41.795Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID obs-team-ba79bd.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Team Definition with ID obs-team-ba79bd deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Removed agent definition with ID team-host-ba79bd.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition with ID team-host-ba79bd deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Removed agent definition with ID obs-lead-ba79bd.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition with ID obs-lead-ba79bd deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mIn-memory cache: Removed agent definition with ID obs-mate-ba79bd.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22m[2mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[22m[39mAgent Definition with ID obs-mate-ba79bd deleted successfully.
+
+ [31m×[39m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)[33m 363909[2mms[22m[39m
+[31m   → Timed out waiting for lead → mate → lead → host. Last: null Recorded: ["team_host_ba79bd_58c3eaaa564d4862a4478f3372981415 → obs_lead_ba79bd_c5578b6a2dee49d29ecfac121419cf89: Please help plan a tiny settings page. What should it include, what's the best s"] Lead obs_lead_ba79bd_c5578b6a2dee49d29ecfac121419cf89, mate obs_mate_ba79bd_b3d6b73c646547d993ed59caa86130c4.[39m
+ [2m[90m↓[39m[22m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mantigravity_cli: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+ [2m[90m↓[39m[22m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mantigravity_cli: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+ [2m[90m↓[39m[22m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mgrok_build: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake
+ [2m[90m↓[39m[22m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mgrok_build: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborators on real runtimes (SR-010)[2m > [22mclaude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)
+[31m[1mError[22m: Timed out waiting for lead → mate → lead → host. Last: null Recorded: ["team_host_ba79bd_58c3eaaa564d4862a4478f3372981415 → obs_lead_ba79bd_c5578b6a2dee49d29ecfac121419cf89: Please help plan a tiny settings page. What should it include, what's the best s"] Lead obs_lead_ba79bd_c5578b6a2dee49d29ecfac121419cf89, mate obs_mate_ba79bd_b3d6b73c646547d993ed59caa86130c4.[39m
+[36m [2m❯[22m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts:[2m511:44[22m[39m
+
+[90m [2m❯[22m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts:[2m504:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[2m | [22m[33m6 skipped[39m[90m (10)[39m
+[2m   Start at [22m 06:36:32
+[2m   Duration [22m 489.76s[2m (transform 4.60s, setup 13ms, import 6.72s, tests 482.53s, environment 0ms)[22m
+
+EXIT=1

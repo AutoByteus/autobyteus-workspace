@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import time
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 
@@ -10,6 +11,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urlparse(self.path)
         if parsed.path == "/rest/remote-access/status":
+            if self.server.status_delay_seconds > 0:
+                # Local regression only: simulates a slow host answering the app's connection check.
+                time.sleep(self.server.status_delay_seconds)
             body = json.dumps({
                 "phoneAccessEnabled": self.server.phone_access_enabled,
                 "pairingAvailable": True,
@@ -46,8 +50,13 @@ if __name__ == "__main__":
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=29876)
     parser.add_argument("--phone-access-enabled", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--status-delay-seconds", type=float, default=0.0,
+                        help="Delay each /rest/remote-access/status response (local slow-host regression; CI uses 0).")
     args = parser.parse_args()
+    if args.status_delay_seconds < 0:
+        parser.error("--status-delay-seconds must not be negative")
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     server.phone_access_enabled = args.phone_access_enabled
+    server.status_delay_seconds = args.status_delay_seconds
     print(f"Fake AutoByteus node listening on http://{args.host}:{args.port}", flush=True)
     server.serve_forever()

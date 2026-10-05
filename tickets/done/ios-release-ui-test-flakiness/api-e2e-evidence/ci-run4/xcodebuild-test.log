@@ -1,0 +1,708 @@
+Command line invocation:
+    /Applications/Xcode_26.3.app/Contents/Developer/usr/bin/xcodebuild -project /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination "platform=iOS Simulator,id=5FEB61C5-E3F5-471D-AE23-8A07438D5E92" -resultBundlePath /Users/runner/work/_temp/ios-smoke/AutoByteusMobile.xcresult "-only-testing:AutoByteusMobileUITests" IOS_BUNDLE_ID=org.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=org.autobyteus.mobile.share MARKETING_VERSION=0.1.0 CURRENT_PROJECT_VERSION=193 "AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29876/mobile" AUTOBYTEUS_SMOKE_TESTS_REQUIRED=1 test
+
+Build settings from command line:
+    AUTOBYTEUS_SMOKE_TESTS_REQUIRED = 1
+    AUTOBYTEUS_TEST_NODE_URL = http://127.0.0.1:29876/mobile
+    CURRENT_PROJECT_VERSION = 193
+    IOS_BUNDLE_ID = org.autobyteus.mobile
+    IOS_SHARE_EXTENSION_BUNDLE_ID = org.autobyteus.mobile.share
+    MARKETING_VERSION = 0.1.0
+
+Writing result bundle at path:
+	/Users/runner/work/_temp/ios-smoke/AutoByteusMobile.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (5 targets)
+    Target 'AutoByteusMobileUITests' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobile' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileCoreTests' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobile' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileShareExtension' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileShareExtension' in project 'AutoByteusMobile'
+        ➜ Explicit dependency on target 'AutoByteusMobileCore' in project 'AutoByteusMobile'
+    Target 'AutoByteusMobileCore' in project 'AutoByteusMobile' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode_26.3.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode_26.3.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+Build description signature: f958c6a5c41c3db06ff5ee2e7d5b58a6
+Build description path: /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/XCBuildData/f958c6a5c41c3db06ff5ee2e7d5b58a6.xcbuilddata
+ClangStatCache /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk /Users/runner/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-dc75598d0054f22ec865fa860f139d72e244bd9a5feaf902f95f61bf06266e52.sdkstatcache
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile.xcodeproj
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -o /Users/runner/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-dc75598d0054f22ec865fa860f139d72e244bd9a5feaf902f95f61bf06266e52.sdkstatcache
+
+ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCore.framework/Info.plist /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCore.build/empty-AutoByteusMobileCore.plist (in target 'AutoByteusMobileCore' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-infoPlistUtility /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCore.build/empty-AutoByteusMobileCore.plist -producttype com.apple.product-type.framework -expandbuildsettings -format binary -platform iphonesimulator -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCore.framework/Info.plist
+
+ProcessProductPackaging /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Entitlements:
+
+    {
+    "application-identifier" = "FAKETEAMID.org.autobyteus.mobile.share";
+    "com.apple.security.application-groups" =     (
+        "group.org.autobyteus.mobile"
+    );
+}
+
+    builtin-productPackagingUtility /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements -entitlements -format xml -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent
+
+ProcessProductPackagingDER /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent.der (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent.der --raw
+
+ProcessProductPackaging /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Entitlements:
+
+    {
+}
+
+    builtin-productPackagingUtility /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileShareExtension/AutoByteusMobileShareExtension.entitlements -entitlements -format xml -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent
+
+ProcessProductPackagingDER /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent.der (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent.der --raw
+
+ProcessProductPackaging /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Entitlements:
+
+    {
+    "application-identifier" = "FAKETEAMID.org.autobyteus.mobile";
+    "com.apple.security.application-groups" =     (
+        "group.org.autobyteus.mobile"
+    );
+}
+
+    builtin-productPackagingUtility /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements -entitlements -format xml -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent
+
+ProcessProductPackagingDER /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent.der (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent.der --raw
+
+ProcessProductPackaging /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Entitlements:
+
+    {
+}
+
+    builtin-productPackagingUtility /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile/AutoByteusMobile.entitlements -entitlements -format xml -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent
+
+ProcessProductPackagingDER /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent.der (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent.der --raw
+
+ProcessProductPackaging "" /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Entitlements:
+
+    {
+    "application-identifier" = "FAKETEAMID.org.autobyteus.mobile.ui-tests.xctrunner";
+    "keychain-access-groups" =     (
+        "FAKETEAMID.org.autobyteus.mobile.ui-tests.xctrunner"
+    );
+}
+
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent
+
+ProcessProductPackagingDER /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent.der (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /usr/bin/derq query -f xml -i /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent.der --raw
+
+ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/Info.plist /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileShareExtension/Info.plist (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-infoPlistUtility /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileShareExtension/Info.plist -producttype com.apple.product-type.app-extension -expandbuildsettings -format binary -platform iphonesimulator -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/Info.plist
+
+Ld /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib normal (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -dynamiclib -isysroot /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -F/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -filelist /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share.LinkFileList -install_name @rpath/AutoByteus\ Share.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/../../Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share_dependency_info.dat -fapplication-extension -fobjc-link-runtime -L/Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus_Share.swiftmodule @/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus_Share-linker-args.resp -Xlinker -alias -Xlinker _NSExtensionMain -Xlinker ___debug_main_executable_dylib_entry_point -framework AutoByteusMobileCore -Xlinker -no_adhoc_codesign -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib
+
+ConstructStubExecutorLinkFileList /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-ExecutorLinkFileList-normal-arm64.txt (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    construct-stub-executor-link-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library without Swift entry point. (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+
+Ld /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share normal (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -isysroot /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -F/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/../../Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_entry -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-DebugEntryPoint-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share-ExecutorLinkFileList-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __ents_der -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex-Simulated.xcent.der /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib -Xlinker -no_adhoc_codesign -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share
+
+ExtractAppIntentsMetadata (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.tW3brx/Metal.xctoolchain --module-name AutoByteus_Share --sdk-root /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk --xcode-version 17C529 --platform-family iOS --deployment-target 17.0 --bundle-identifier org.autobyteus.mobile.share --output /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex --target-triple arm64-apple-ios17.0-simulator --binary-file /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share --dependency-file /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share_dependency_info.dat --stringsdata-file /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share.SwiftFileList --metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.DependencyMetadataFileList --static-metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.DependencyStaticMetadataFileList --swift-const-vals-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/Objects-normal/arm64/AutoByteus\ Share.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-10-05 07:22:38.324 appintentsmetadataprocessor[14008:45595] Starting appintentsmetadataprocessor export
+2026-10-05 07:22:38.333 appintentsmetadataprocessor[14008:45595] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CodeSign /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Signing Identity:     "Sign to Run Locally"
+
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex/AutoByteus\ Share.debug.dylib
+
+CodeSign /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex (in target 'AutoByteusMobileShareExtension' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Signing Identity:     "Sign to Run Locally"
+
+    /usr/bin/codesign --force --sign - --entitlements /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileShareExtension.build/AutoByteus\ Share.appex.xcent --timestamp\=none --generate-entitlement-der /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex
+
+Ld /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib normal (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -dynamiclib -isysroot /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -F/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -filelist /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.LinkFileList -install_name @rpath/AutoByteus.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.swiftmodule @/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus-linker-args.resp -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -framework AutoByteusMobileCore -Xlinker -no_adhoc_codesign -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib
+
+ConstructStubExecutorLinkFileList /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-ExecutorLinkFileList-normal-arm64.txt (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    construct-stub-executor-link-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+
+Ld /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus normal (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -isysroot /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -F/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus-ExecutorLinkFileList-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __ents_der -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app-Simulated.xcent.der /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib -Xlinker -no_adhoc_codesign -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns/AutoByteus\ Share.appex /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks -remove-static-executable /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus\ Share.appex /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns
+
+ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/Info.plist /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile/Info.plist (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-infoPlistUtility /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobile/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/assetcatalog_generated_info.plist -scanforprivacyfile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/Frameworks/AutoByteusMobileCore.framework -scanforprivacyfile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns/AutoByteus\ Share.appex -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/Info.plist
+
+ExtractAppIntentsMetadata (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.tW3brx/Metal.xctoolchain --module-name AutoByteus --sdk-root /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk --xcode-version 17C529 --platform-family iOS --deployment-target 17.0 --bundle-identifier org.autobyteus.mobile --output /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app --target-triple arm64-apple-ios17.0-simulator --binary-file /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus --dependency-file /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus_dependency_info.dat --stringsdata-file /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.SwiftFileList --metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.DependencyMetadataFileList --static-metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.DependencyStaticMetadataFileList --swift-const-vals-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/Objects-normal/arm64/AutoByteus.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-10-05 07:22:40.797 appintentsmetadataprocessor[14320:46288] Starting appintentsmetadataprocessor export
+2026-10-05 07:22:40.801 appintentsmetadataprocessor[14320:46288] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CopySwiftLibs /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/Frameworks --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/SystemExtensions --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/Extensions --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCore.framework --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.tW3brx/Metal.xctoolchain --toolchain /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CodeSign /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Signing Identity:     "Sign to Run Locally"
+
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/AutoByteus.debug.dylib
+
+CodeSign /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/__preview.dylib (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Signing Identity:     "Sign to Run Locally"
+
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/__preview.dylib
+/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/__preview.dylib: replacing existing signature
+
+CodeSign /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Signing Identity:     "Sign to Run Locally"
+
+    /usr/bin/codesign --force --sign - --entitlements /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobile.build/AutoByteus.app.xcent --timestamp\=none --generate-entitlement-der /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app
+
+ValidateEmbeddedBinary /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns/AutoByteus\ Share.appex (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/usr/bin/embeddedBinaryValidationUtility /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/PlugIns/AutoByteus\ Share.appex -signing-cert - -info-plist-path /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app/Info.plist
+
+Validate /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app (in target 'AutoByteusMobile' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-validationUtility /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteus.app -shallow-bundle -infoplist-subpath Info.plist
+
+Ld /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/AutoByteusMobileUITests normal (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -bundle -isysroot /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -L/Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator -iframework /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -iframework /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/Developer/Library/Frameworks -filelist /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests.swiftmodule @/Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests-linker-args.resp -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __ents_der -Xlinker /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.xctest-Simulated.xcent.der -Xlinker -no_adhoc_codesign -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/AutoByteusMobileUITests
+
+ExtractAppIntentsMetadata (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.tW3brx/Metal.xctoolchain --module-name AutoByteusMobileUITests --sdk-root /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk --xcode-version 17C529 --platform-family iOS --deployment-target 17.0 --bundle-identifier org.autobyteus.mobile.ui-tests --output /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest --target-triple arm64-apple-ios17.0-simulator --binary-file /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/AutoByteusMobileUITests --dependency-file /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests_dependency_info.dat --stringsdata-file /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests.SwiftFileList --metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.DependencyMetadataFileList --static-metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.DependencyStaticMetadataFileList --swift-const-vals-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/Objects-normal/arm64/AutoByteusMobileUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-10-05 07:22:44.864 appintentsmetadataprocessor[14720:47176] Starting appintentsmetadataprocessor export
+2026-10-05 07:22:44.869 appintentsmetadataprocessor[14720:47176] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Info.plist /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileUITests/Info.plist (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-infoPlistUtility /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileUITests/Info.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/ProductTypeInfoPlistAdditions.plist -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Info.plist
+
+ProcessInfoPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Info.plist /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCoreTests.build/empty-AutoByteusMobileCoreTests.plist (in target 'AutoByteusMobileCoreTests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-infoPlistUtility /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCoreTests.build/empty-AutoByteusMobileCoreTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -o /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Info.plist
+
+AppIntentsSSUTraining (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Info.plist --temp-dir-path /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/ssu --bundle-id org.autobyteus.mobile.ui-tests --product-path /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest --extracted-metadata-path /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Metadata.appintents --metadata-file-list /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/AutoByteusMobileUITests.DependencyMetadataFileList --archive-ssu-assets
+2026-10-05 07:22:45.077 appintentsnltrainingprocessor[14721:47195] Parsing options for appintentsnltrainingprocessor
+2026-10-05 07:22:45.078 appintentsnltrainingprocessor[14721:47195] No AppShortcuts found - Skipping.
+
+CopySwiftLibs /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/AutoByteusMobileUITests --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Frameworks --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/PlugIns --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/SystemExtensions --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Extensions --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.tW3brx/Metal.xctoolchain --toolchain /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CopySwiftLibs /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest (in target 'AutoByteusMobileCoreTests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/AutoByteusMobileCoreTests --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Frameworks --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/PlugIns --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/SystemExtensions --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Extensions --scan-folder /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCore.framework --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.tW3brx/Metal.xctoolchain --toolchain /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileCoreTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Intermediates.noindex/AutoByteusMobile.build/Debug-iphonesimulator/AutoByteusMobileCoreTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CopyPlistFile /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/Info.plist /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/Info.plist (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+    builtin-copyPlist --validate --convert xml1 --macro-expansion WRAPPEDPRODUCTNAME AutoByteusMobileUITests-Runner --macro-expansion WRAPPEDPRODUCTBUNDLEIDENTIFIER org.autobyteus.mobile.ui-tests.xctrunner --macro-expansion TESTPRODUCTNAME AutoByteusMobileUITests --macro-expansion TESTPRODUCTBUNDLEIDENTIFIER org.autobyteus.mobile.ui-tests --copy-value UIDeviceFamily /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest/Info.plist --outdir /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app -- /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/Info.plist
+
+CodeSign /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest (in target 'AutoByteusMobileUITests' from project 'AutoByteusMobile')
+    cd /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios
+
+    Signing Identity:     "Sign to Run Locally"
+
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/runner/Library/Developer/Xcode/DerivedData/AutoByteusMobile-cswwofbhrcnggmfwuxfpbtrwjhrw/Build/Products/Debug-iphonesimulator/AutoByteusMobileUITests-Runner.app/PlugIns/AutoByteusMobileUITests.xctest
+
+2026-10-05 07:23:34.764361+0000 AutoByteusMobileUITests-Runner[15400:49577] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'All tests' started at 2026-10-05 07:23:47.190.
+Test Suite 'AutoByteusMobileUITests.xctest' started at 2026-10-05 07:23:47.192.
+Test Suite 'AutoByteusMobileUITests' started at 2026-10-05 07:23:47.193.
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' started.
+    t =     0.00s Start Test at 2026-10-05 07:23:47.195
+    t =     3.32s Set Up
+    t =     3.36s Open org.autobyteus.mobile
+    t =     3.36s     Launch org.autobyteus.mobile
+    t =    20.12s         Setting up automation session
+    t =    25.97s         Wait for org.autobyteus.mobile to idle
+    t =    29.18s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.input" TextView`
+    t =    29.18s     Checking existence of `"connection.input" TextView`
+    t =    29.47s     Find the "connection.input" TextView
+    t =    29.78s Tap "connection.input" TextView
+    t =    29.79s     Wait for org.autobyteus.mobile to idle
+    t =    29.82s     Find the "connection.input" TextView
+    t =    30.41s     Check for interrupting elements affecting "connection.input" TextView
+    t =    30.56s     Synthesize event
+    t =    31.06s     Wait for org.autobyteus.mobile to idle
+    t =    35.70s Checking `Expect predicate `hasKeyboardFocus == 1` for object "connection.input" TextView`
+    t =    35.70s     Find the "connection.input" TextView
+    t =    36.02s Type 'http://127.0.0.1:2...' into "connection.input" TextView
+    t =    36.02s     Wait for org.autobyteus.mobile to idle
+    t =    36.04s     Find the "connection.input" TextView
+    t =    36.39s     Check for interrupting elements affecting "connection.input" TextView
+    t =    36.50s     Synthesize event
+    t =    37.21s     Wait for org.autobyteus.mobile to idle
+    t =    38.26s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.httpAcknowledgement" Switch`
+    t =    38.28s     Checking existence of `"connection.httpAcknowledgement" Switch`
+    t =    38.72s     Find the "connection.httpAcknowledgement" Switch
+    t =    38.95s Tap "connection.httpAcknowledgement" Switch
+    t =    38.95s     Wait for org.autobyteus.mobile to idle
+    t =    38.98s     Find the "connection.httpAcknowledgement" Switch
+    t =    39.18s     Check for interrupting elements affecting "connection.httpAcknowledgement" Switch
+    t =    39.33s     Synthesize event
+    t =    39.68s     Wait for org.autobyteus.mobile to idle
+    t =    42.06s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.connect" Button`
+    t =    42.06s     Checking existence of `"connection.connect" Button`
+    t =    43.05s     Find the "connection.connect" Button
+    t =    43.68s Tap "connection.connect" Button
+    t =    43.68s     Wait for org.autobyteus.mobile to idle
+    t =    43.69s     Find the "connection.connect" Button
+    t =    43.79s     Check for interrupting elements affecting "connection.connect" Button
+    t =    43.91s     Synthesize event
+    t =    44.23s     Wait for org.autobyteus.mobile to idle
+    t =    44.50s Waiting 60.0s for WebView (First Match) to exist
+    t =    45.58s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    45.59s         Checking existence of `WebView (First Match)`
+    t =    47.19s         Capturing element debug description
+    t =    47.52s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    47.52s         Checking existence of `WebView (First Match)`
+    t =    47.63s Waiting 60.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+    t =    48.63s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    48.63s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    48.69s         Capturing element debug description
+    t =    49.64s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    49.64s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    49.75s         Capturing element debug description
+    t =    50.70s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    50.70s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    50.72s         Capturing element debug description
+    t =    51.66s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    51.66s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    51.69s         Capturing element debug description
+    t =    52.63s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    52.64s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    52.72s         Capturing element debug description
+    t =    53.66s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    53.66s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    53.68s         Capturing element debug description
+    t =    54.63s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    54.65s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    54.80s Find the Target Application 'org.autobyteus.mobile'
+    t =    55.80s Added attachment named 'fake-mobile-opened'
+    t =    55.80s Terminate org.autobyteus.mobile:16341
+    t =    56.82s Open org.autobyteus.mobile
+    t =    56.82s     Launch org.autobyteus.mobile
+    t =    58.95s         Setting up automation session
+    t =    61.00s         Wait for org.autobyteus.mobile to idle
+    t =    62.66s Waiting 60.0s for WebView (First Match) to exist
+    t =    63.73s     Checking `Expect predicate `existsNoRetry == 1` for object WebView (First Match)`
+    t =    63.73s         Checking existence of `WebView (First Match)`
+    t =    63.78s Waiting 60.0s for "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText to exist
+    t =    64.80s     Checking `Expect predicate `existsNoRetry == 1` for object "AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    64.80s         Checking existence of `"AUTOBYTEUS_FAKE_MOBILE_READY" StaticText`
+    t =    64.91s Find the Target Application 'org.autobyteus.mobile'
+    t =    65.15s Added attachment named 'fake-mobile-restored'
+    t =    65.15s Tear Down
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (65.844 seconds).
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' started.
+    t =     0.01s Start Test at 2026-10-05 07:24:53.046
+    t =     0.22s Set Up
+    t =     0.22s Open org.autobyteus.mobile
+    t =     0.22s     Launch org.autobyteus.mobile
+    t =     0.22s         Terminate org.autobyteus.mobile:17444
+    t =    12.16s         Setting up automation session
+    t =    15.62s         Wait for org.autobyteus.mobile to idle
+    t =    18.50s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.input" TextView`
+    t =    18.65s     Checking existence of `"connection.input" TextView`
+    t =    20.34s     Find the "connection.input" TextView
+    t =    23.98s Tap "connection.input" TextView
+    t =    23.98s     Wait for org.autobyteus.mobile to idle
+    t =    24.04s     Find the "connection.input" TextView
+    t =    25.63s     Check for interrupting elements affecting "connection.input" TextView
+    t =    28.44s     Synthesize event
+    t =    29.22s     Wait for org.autobyteus.mobile to idle
+    t =    31.48s Checking `Expect predicate `hasKeyboardFocus == 1` for object "connection.input" TextView`
+    t =    31.52s     Find the "connection.input" TextView
+    t =    52.87s Type 'http://127.0.0.1:9...' into "connection.input" TextView
+    t =    52.87s     Wait for org.autobyteus.mobile to idle
+    t =    53.17s     Find the "connection.input" TextView
+    t =    58.90s     Check for interrupting elements affecting "connection.input" TextView
+    t =    59.13s     Synthesize event
+    t =    59.83s     Wait for org.autobyteus.mobile to idle
+    t =    60.98s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.httpAcknowledgement" Switch`
+    t =    60.98s     Checking existence of `"connection.httpAcknowledgement" Switch`
+    t =    61.03s     Find the "connection.httpAcknowledgement" Switch
+    t =    61.16s Tap "connection.httpAcknowledgement" Switch
+    t =    61.16s     Wait for org.autobyteus.mobile to idle
+    t =    61.17s     Find the "connection.httpAcknowledgement" Switch
+    t =    61.25s     Check for interrupting elements affecting "connection.httpAcknowledgement" Switch
+    t =    61.29s     Synthesize event
+    t =    63.04s     Wait for org.autobyteus.mobile to idle
+    t =    64.10s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "connection.connect" Button`
+    t =    64.10s     Checking existence of `"connection.connect" Button`
+    t =    64.16s     Find the "connection.connect" Button
+    t =    64.26s Tap "connection.connect" Button
+    t =    64.26s     Wait for org.autobyteus.mobile to idle
+    t =    64.26s     Find the "connection.connect" Button
+    t =    64.32s     Check for interrupting elements affecting "connection.connect" Button
+    t =    65.69s     Synthesize event
+    t =    66.06s     Wait for org.autobyteus.mobile to idle
+    t =    66.27s Waiting 90.0s for StaticText (First Match) to exist
+    t =    67.36s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    67.36s         Checking existence of `StaticText (First Match)`
+    t =    67.97s         Capturing element debug description
+    t =    68.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    68.40s         Checking existence of `StaticText (First Match)`
+    t =    69.45s         Capturing element debug description
+    t =    70.41s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    70.41s         Checking existence of `StaticText (First Match)`
+    t =    70.63s         Capturing element debug description
+    t =    71.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    71.40s         Checking existence of `StaticText (First Match)`
+    t =    71.49s         Capturing element debug description
+    t =    72.36s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    72.37s         Checking existence of `StaticText (First Match)`
+    t =    72.48s         Capturing element debug description
+    t =    73.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    73.40s         Checking existence of `StaticText (First Match)`
+    t =    73.53s         Capturing element debug description
+    t =    74.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    74.37s         Checking existence of `StaticText (First Match)`
+    t =    74.48s         Capturing element debug description
+    t =    75.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    75.39s         Checking existence of `StaticText (First Match)`
+    t =    75.65s         Capturing element debug description
+    t =    76.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    76.39s         Checking existence of `StaticText (First Match)`
+    t =    76.85s         Capturing element debug description
+    t =    77.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    77.37s         Checking existence of `StaticText (First Match)`
+    t =    77.66s         Capturing element debug description
+    t =    78.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    78.39s         Checking existence of `StaticText (First Match)`
+    t =    78.80s         Capturing element debug description
+    t =    79.44s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    79.44s         Checking existence of `StaticText (First Match)`
+    t =    79.61s         Capturing element debug description
+    t =    80.35s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    80.35s         Checking existence of `StaticText (First Match)`
+    t =    80.52s         Capturing element debug description
+    t =    81.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    81.37s         Checking existence of `StaticText (First Match)`
+    t =    81.56s         Capturing element debug description
+    t =    82.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    82.39s         Checking existence of `StaticText (First Match)`
+    t =    82.55s         Capturing element debug description
+    t =    83.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    83.38s         Checking existence of `StaticText (First Match)`
+    t =    83.51s         Capturing element debug description
+    t =    84.35s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    84.35s         Checking existence of `StaticText (First Match)`
+    t =    84.48s         Capturing element debug description
+    t =    85.44s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    85.44s         Checking existence of `StaticText (First Match)`
+    t =    85.52s         Capturing element debug description
+    t =    86.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    86.37s         Checking existence of `StaticText (First Match)`
+    t =    86.42s         Capturing element debug description
+    t =    87.36s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    87.36s         Checking existence of `StaticText (First Match)`
+    t =    87.41s         Capturing element debug description
+    t =    88.35s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    88.35s         Checking existence of `StaticText (First Match)`
+    t =    88.48s         Capturing element debug description
+    t =    89.41s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    89.41s         Checking existence of `StaticText (First Match)`
+    t =    89.55s         Capturing element debug description
+    t =    90.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    90.37s         Checking existence of `StaticText (First Match)`
+    t =    90.47s         Capturing element debug description
+    t =    91.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    91.42s         Checking existence of `StaticText (First Match)`
+    t =    91.51s         Capturing element debug description
+    t =    92.36s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    92.36s         Checking existence of `StaticText (First Match)`
+    t =    92.44s         Capturing element debug description
+    t =    93.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    93.39s         Checking existence of `StaticText (First Match)`
+    t =    93.45s         Capturing element debug description
+    t =    94.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    94.40s         Checking existence of `StaticText (First Match)`
+    t =    94.54s         Capturing element debug description
+    t =    95.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    95.38s         Checking existence of `StaticText (First Match)`
+    t =    95.46s         Capturing element debug description
+    t =    96.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    96.38s         Checking existence of `StaticText (First Match)`
+    t =    96.51s         Capturing element debug description
+    t =    97.45s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    97.45s         Checking existence of `StaticText (First Match)`
+    t =    97.53s         Capturing element debug description
+    t =    98.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    98.37s         Checking existence of `StaticText (First Match)`
+    t =    98.48s         Capturing element debug description
+    t =    99.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    99.42s         Checking existence of `StaticText (First Match)`
+    t =    99.46s         Capturing element debug description
+    t =   100.45s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   100.45s         Checking existence of `StaticText (First Match)`
+    t =   100.68s         Capturing element debug description
+    t =   101.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   101.40s         Checking existence of `StaticText (First Match)`
+    t =   101.50s         Capturing element debug description
+    t =   102.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   102.40s         Checking existence of `StaticText (First Match)`
+    t =   102.49s         Capturing element debug description
+    t =   103.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   103.42s         Checking existence of `StaticText (First Match)`
+    t =   103.51s         Capturing element debug description
+    t =   104.36s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   104.36s         Checking existence of `StaticText (First Match)`
+    t =   104.43s         Capturing element debug description
+    t =   105.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   105.38s         Checking existence of `StaticText (First Match)`
+    t =   105.42s         Capturing element debug description
+    t =   106.36s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   106.36s         Checking existence of `StaticText (First Match)`
+    t =   106.46s         Capturing element debug description
+    t =   107.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   107.43s         Checking existence of `StaticText (First Match)`
+    t =   107.50s         Capturing element debug description
+    t =   108.36s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   108.36s         Checking existence of `StaticText (First Match)`
+    t =   108.55s         Capturing element debug description
+    t =   109.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   109.40s         Checking existence of `StaticText (First Match)`
+    t =   109.49s         Capturing element debug description
+    t =   110.41s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   110.41s         Checking existence of `StaticText (First Match)`
+    t =   110.48s         Capturing element debug description
+    t =   111.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   111.38s         Checking existence of `StaticText (First Match)`
+    t =   111.44s         Capturing element debug description
+    t =   112.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   112.39s         Checking existence of `StaticText (First Match)`
+    t =   112.48s         Capturing element debug description
+    t =   113.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   113.39s         Checking existence of `StaticText (First Match)`
+    t =   113.62s         Capturing element debug description
+    t =   114.45s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   114.45s         Checking existence of `StaticText (First Match)`
+    t =   114.50s         Capturing element debug description
+    t =   115.43s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   115.43s         Checking existence of `StaticText (First Match)`
+    t =   115.49s         Capturing element debug description
+    t =   116.41s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   116.41s         Checking existence of `StaticText (First Match)`
+    t =   116.48s         Capturing element debug description
+    t =   117.41s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   117.41s         Checking existence of `StaticText (First Match)`
+    t =   117.47s         Capturing element debug description
+    t =   118.43s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   118.43s         Checking existence of `StaticText (First Match)`
+    t =   118.49s         Capturing element debug description
+    t =   119.46s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   119.46s         Checking existence of `StaticText (First Match)`
+    t =   119.53s         Capturing element debug description
+    t =   120.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   120.38s         Checking existence of `StaticText (First Match)`
+    t =   120.48s         Capturing element debug description
+    t =   121.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   121.42s         Checking existence of `StaticText (First Match)`
+    t =   121.55s         Capturing element debug description
+    t =   122.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   122.39s         Checking existence of `StaticText (First Match)`
+    t =   122.48s         Capturing element debug description
+    t =   123.43s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   123.43s         Checking existence of `StaticText (First Match)`
+    t =   123.50s         Capturing element debug description
+    t =   124.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   124.42s         Checking existence of `StaticText (First Match)`
+    t =   124.48s         Capturing element debug description
+    t =   125.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   125.42s         Checking existence of `StaticText (First Match)`
+    t =   125.54s         Capturing element debug description
+    t =   126.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   126.37s         Checking existence of `StaticText (First Match)`
+    t =   126.48s         Capturing element debug description
+    t =   127.41s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   127.41s         Checking existence of `StaticText (First Match)`
+    t =   127.50s         Capturing element debug description
+    t =   128.46s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   128.46s         Checking existence of `StaticText (First Match)`
+    t =   128.53s         Capturing element debug description
+    t =   129.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   129.37s         Checking existence of `StaticText (First Match)`
+    t =   129.45s         Capturing element debug description
+    t =   130.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   130.42s         Checking existence of `StaticText (First Match)`
+    t =   130.51s         Capturing element debug description
+    t =   131.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   131.43s         Checking existence of `StaticText (First Match)`
+    t =   131.50s         Capturing element debug description
+    t =   132.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   132.40s         Checking existence of `StaticText (First Match)`
+    t =   132.45s         Capturing element debug description
+    t =   133.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   133.38s         Checking existence of `StaticText (First Match)`
+    t =   133.47s         Capturing element debug description
+    t =   134.41s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   134.41s         Checking existence of `StaticText (First Match)`
+    t =   134.49s         Capturing element debug description
+    t =   135.44s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   135.44s         Checking existence of `StaticText (First Match)`
+    t =   135.51s         Capturing element debug description
+    t =   136.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   136.42s         Checking existence of `StaticText (First Match)`
+    t =   136.48s         Capturing element debug description
+    t =   137.44s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   137.44s         Checking existence of `StaticText (First Match)`
+    t =   137.51s         Capturing element debug description
+    t =   138.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   138.37s         Checking existence of `StaticText (First Match)`
+    t =   138.43s         Capturing element debug description
+    t =   139.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   139.38s         Checking existence of `StaticText (First Match)`
+    t =   139.43s         Capturing element debug description
+    t =   140.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   140.38s         Checking existence of `StaticText (First Match)`
+    t =   140.52s         Capturing element debug description
+    t =   141.43s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   141.43s         Checking existence of `StaticText (First Match)`
+    t =   141.50s         Capturing element debug description
+    t =   142.46s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   142.46s         Checking existence of `StaticText (First Match)`
+    t =   142.51s         Capturing element debug description
+    t =   143.43s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   143.43s         Checking existence of `StaticText (First Match)`
+    t =   143.48s         Capturing element debug description
+    t =   144.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   144.40s         Checking existence of `StaticText (First Match)`
+    t =   144.56s         Capturing element debug description
+    t =   145.39s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   145.39s         Checking existence of `StaticText (First Match)`
+    t =   145.46s         Capturing element debug description
+    t =   146.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   146.38s         Checking existence of `StaticText (First Match)`
+    t =   146.47s         Capturing element debug description
+    t =   147.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   147.40s         Checking existence of `StaticText (First Match)`
+    t =   147.72s         Capturing element debug description
+    t =   148.43s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   148.43s         Checking existence of `StaticText (First Match)`
+    t =   148.52s         Capturing element debug description
+    t =   149.46s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   149.46s         Checking existence of `StaticText (First Match)`
+    t =   149.50s         Capturing element debug description
+    t =   150.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   150.42s         Checking existence of `StaticText (First Match)`
+    t =   150.51s         Capturing element debug description
+    t =   151.46s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   151.46s         Checking existence of `StaticText (First Match)`
+    t =   151.54s         Capturing element debug description
+    t =   152.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   152.38s         Checking existence of `StaticText (First Match)`
+    t =   152.44s         Capturing element debug description
+    t =   153.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   153.40s         Checking existence of `StaticText (First Match)`
+    t =   153.44s         Capturing element debug description
+    t =   154.40s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   154.40s         Checking existence of `StaticText (First Match)`
+    t =   154.47s         Capturing element debug description
+    t =   155.42s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   155.42s         Checking existence of `StaticText (First Match)`
+    t =   155.49s         Capturing element debug description
+    t =   156.38s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =   156.38s         Checking existence of `StaticText (First Match)`
+    t =   156.57s         Capturing element debug description
+    t =   156.58s     Checking existence of `StaticText (First Match)`
+    t =   156.70s Collecting debug information to assist test failure triage
+    t =   156.71s     Requesting snapshot of accessibility hierarchy for app with pid 17696
+/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:31: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent] : XCTAssertTrue failed - Expected native unreachable diagnostic
+    t =   157.04s Find the Target Application 'org.autobyteus.mobile'
+    t =   157.27s Added attachment named 'native-unreachable-diagnostic'
+    t =   157.27s Tear Down
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' failed (157.567 seconds).
+Test Suite 'AutoByteusMobileUITests' failed at 2026-10-05 07:27:30.606.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 223.411 (223.414) seconds
+Test Suite 'AutoByteusMobileUITests.xctest' failed at 2026-10-05 07:27:30.612.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 223.411 (223.421) seconds
+Test Suite 'All tests' failed at 2026-10-05 07:27:30.614.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 223.411 (223.424) seconds
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/_temp/ios-smoke/AutoByteusMobile.xcresult
+
+Testing started

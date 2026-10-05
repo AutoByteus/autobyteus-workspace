@@ -11,7 +11,6 @@ import { AgentRunEventDispatchQueue } from "../events/agent-run-event-dispatch-q
 import { dispatchProcessedAgentRunEvents } from "../events/dispatch-processed-agent-run-events.js";
 import { AgentTurnLifecycleState } from "../events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
 import { AgentSegmentLifecycleState } from "../events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
-import { getDefaultAgentRunEventPipeline } from "../events/default-agent-run-event-pipeline.js";
 import {
   AgentRunInputAdmissionState,
   type AgentRunInputDispatchClaim,
@@ -29,8 +28,8 @@ import type { AgentRunCommandObserver } from "./agent-run-command-observer.js";
 import { composeAgentRunInputObserver } from "./agent-run-command-observer-dispatch.js";
 import type { AgentOperationResult } from "./agent-operation-result.js";
 import { AgentRunInterruptState } from "./agent-run-interrupt-state.js";
-import { AgentRunRootShutdownFence } from "./agent-run-root-shutdown-fence.js";
-import { createPreparedAgentRunTermination, type PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
+import { AgentRunTermination } from "./agent-run-termination.js";
+import type { PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
 import {
   buildAgentStatusPayload, agentStatusHint,
   type AgentApiStatus,
@@ -64,15 +63,11 @@ export class AgentRun {
   private lastInputSignature = '';
   private readonly compactionRecovery: AgentRunCompactionRecovery;
   private uncertainInputDispatch: ClaimedInputDispatch | null = null;
-  private recoveryShutdownFenced = false;
   private activeInputDispatch: Promise<void> | null = null;
   private readonly interruptState: AgentRunInterruptState;
-  /** The current root-shutdown attempt: shared while pending, kept once accepted, replaced after a failure. */
-  private rootShutdownFence: AgentRunRootShutdownFence | null = null;
-  private tryingQuiescentTermination: Promise<PreparedAgentRunTermination | null> | null = null;
-  private preparingTermination: Promise<PreparedAgentRunTermination> | null = null;
-  private preparedTermination: PreparedAgentRunTermination | null = null;
-  private termination: Promise<AgentOperationResult> | null = null;
+  /** The termination lifecycle and root-shutdown fence attempts (internal owner). */
+  private readonly termination: AgentRunTermination;
+  /** Task-scoped exact admission: once force-released, no input reaches the provider again. */
   private readonly executionAdmissionFence = new AgentRunExecutionAdmissionFence();
 
   constructor(options: AgentRunOptions) {
@@ -94,8 +89,29 @@ export class AgentRun {
       lifecycleState: this.lifecycleState,
       onReservationReleased: () => {
         void this.drainInputAfterLifecycleChange();
-        this.scheduleRootShutdownFenceEvaluation();
+        this.termination.scheduleRootShutdownEvaluation();
       },
+    });
+    this.termination = new AgentRunTermination({
+      runId: this.runId,
+      backend: this.backend,
+      dispatchQueue: this.dispatchQueue,
+      lifecycleState: this.lifecycleState,
+      segmentLifecycleState: this.segmentLifecycleState,
+      inputAdmissionState: this.inputAdmissionState,
+      interruptState: this.interruptState,
+      inputDispatch: {
+        active: () => this.activeInputDispatch,
+        uncertainClaim: () => this.uncertainInputDispatch?.claim ?? null,
+        clearUncertain: () => { this.uncertainInputDispatch = null; },
+      },
+      interrupt: () => this.interrupt(),
+      reconcileRecovery: () => this.reconcileRecovery(),
+      publishInputState: () => this.publishInputState(),
+      drainInput: () => this.drainInputAfterLifecycleChange(),
+      dispatchCanonicalStatus: () => this.dispatchCanonicalStatus(),
+      detachFromBackendSource: () => this.unsubscribeFromBackendSource(),
+      warn: (message) => logger.warn(message),
     });
     this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
     this.unsubscribeFromBackendSource = this.backend.subscribeToSourceEventBatches(
@@ -117,7 +133,7 @@ export class AgentRun {
   async forceReleaseRuntime(): Promise<AgentOperationResult> {
     this.executionAdmissionFence.close();
     this.inputAdmissionState.fenceForRootShutdown();
-    return this.createTerminationPreparation().commit().finish();
+    return this.termination.forceTerminate();
   }
 
   get runId(): string { return this.context.runId; }
@@ -231,71 +247,19 @@ export class AgentRun {
   }
 
   prepareTermination(): Promise<PreparedAgentRunTermination> {
-    if (this.preparedTermination) return Promise.resolve(this.preparedTermination);
-    if (this.preparingTermination) return this.preparingTermination;
-    if (this.tryingQuiescentTermination) {
-      return this.tryingQuiescentTermination.then((prepared) => prepared ?? this.prepareTermination());
-    }
-    const preparation = this.prepareTerminationOnce();
-    this.preparingTermination = preparation;
-    void preparation.finally(() => {
-      if (this.preparingTermination === preparation) this.preparingTermination = null;
-    }).catch(() => undefined);
-    return preparation;
+    return this.termination.prepare();
   }
 
   tryPrepareTerminationIfQuiescent(): Promise<PreparedAgentRunTermination | null> {
-    if (this.preparedTermination) return Promise.resolve(this.preparedTermination);
-    if (this.preparingTermination) return Promise.resolve(null);
-    if (this.tryingQuiescentTermination) return this.tryingQuiescentTermination;
-    const attempt = this.dispatchQueue.enqueue(this.runId, () => {
-      if (this.preparedTermination) return this.preparedTermination;
-      this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
-      if (this.activeInputDispatch || this.interruptState.hasActiveReservation
-        || this.lifecycleState.activeTurn.kind !== "NONE" || this.lifecycleState.hasPendingCommand
-        || !this.inputAdmissionState.tryQuiesceIfAlreadyQuiescent()) return null;
-      return this.createTerminationPreparation();
-    });
-    this.tryingQuiescentTermination = attempt;
-    void attempt.finally(() => {
-      if (this.tryingQuiescentTermination === attempt) this.tryingQuiescentTermination = null;
-    }).catch(() => undefined);
-    return attempt;
+    return this.termination.tryPrepareIfQuiescent();
   }
 
-  async fenceInputAndInterruptForRootShutdown(): Promise<AgentOperationResult> {
-    const fenced = await this.dispatchQueue.enqueue(this.runId, () => {
-      this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
-      this.inputAdmissionState.fenceForRootShutdown();
-      this.recoveryShutdownFenced = !!this.lifecycleState.recoverableBlock;
-      this.publishInputState();
-      if (!this.rootShutdownFence?.isReusable) this.rootShutdownFence = this.createRootShutdownFence();
-      return {
-        attempt: this.rootShutdownFence,
-        gateWithoutTurn: this.recoveryShutdownFenced && this.lifecycleState.activeTurn.kind === "NONE",
-      };
-    });
-    // The existing fence owns active-turn interruption; only the no-turn gate needs a separate control.
-    if (fenced.gateWithoutTurn) await this.interrupt();
-    this.scheduleRootShutdownFenceEvaluation();
-    return fenced.attempt.result;
+  fenceInputAndInterruptForRootShutdown(): Promise<AgentOperationResult> {
+    return this.termination.fenceForRootShutdown();
   }
 
-  private createRootShutdownFence(): AgentRunRootShutdownFence {
-    return new AgentRunRootShutdownFence({
-      snapshot: () => ({
-        quiescent: this.isRootShutdownQuiescent(),
-        hasActiveTurn: this.lifecycleState.activeTurn.kind !== "NONE",
-      }),
-      interruptActiveTurn: () => this.interrupt(),
-      diagnostics: () => ({ runId: this.runId, activeTurn: this.lifecycleState.activeTurn, hasPendingCommand: this.lifecycleState.hasPendingCommand }),
-    }, { warn: (message) => logger.warn(message) });
-  }
-
-  async terminate(): Promise<AgentOperationResult> {
-    if (this.termination) return this.termination;
-    const prepared = await this.prepareTermination();
-    return prepared.commit().finish();
+  terminate(): Promise<AgentOperationResult> {
+    return this.termination.terminate();
   }
 
   private async publishSourceEvents(events: readonly AgentRunEvent[]): Promise<void> {
@@ -311,7 +275,7 @@ export class AgentRun {
         observeAgentRunInputEvents(canonicalEvents, this.inputAdmissionState, this.interruptState);
         this.reconcileUncertainDispatch();
         this.reconcileRecovery(); this.publishInputState();
-        this.scheduleRootShutdownFenceEvaluation();
+        this.termination.scheduleRootShutdownEvaluation();
       },
       onListenerError: (error) => {
         logger.warn(`[AgentRun] listener failed for run '${this.runId}': ${String(error)}`);
@@ -352,7 +316,7 @@ export class AgentRun {
     const settle = () => {
       if (this.activeInputDispatch === task) this.activeInputDispatch = null;
       void this.drainInputAfterLifecycleChange();
-      this.scheduleRootShutdownFenceEvaluation();
+      this.termination.scheduleRootShutdownEvaluation();
     };
     void task.then(settle, settle);
   }
@@ -399,7 +363,7 @@ export class AgentRun {
       }
       this.reconcileRecovery(); this.publishInputState();
       this.dispatchCanonicalStatus();
-      this.scheduleRootShutdownFenceEvaluation();
+      this.termination.scheduleRootShutdownEvaluation();
     });
   }
 
@@ -412,61 +376,6 @@ export class AgentRun {
     });
   }
 
-  private async waitForActiveInputDispatch(): Promise<void> {
-    while (this.activeInputDispatch) await this.activeInputDispatch;
-  }
-
-  private async prepareTerminationOnce(): Promise<PreparedAgentRunTermination> {
-    const blocked = await this.dispatchQueue.enqueue(this.runId, () => {
-      this.reconcileRecovery();
-      if (this.lifecycleState.recoverableBlock) { this.recoveryShutdownFenced = true; this.inputAdmissionState.fenceForRootShutdown(); }
-      else this.inputAdmissionState.quiesce();
-      this.publishInputState(); return this.lifecycleState.recoverableBlock !== null;
-    });
-    if (blocked) {
-      await this.interrupt();
-      await this.waitForActiveInputDispatch();
-      // Unknown input delivery remains pinned until resource shutdown; no synthetic active turn wait.
-      if (this.uncertainInputDispatch && this.isFencedRecoveryWithoutTurn()) return this.createTerminationPreparation();
-    }
-    await this.drainInputAfterLifecycleChange();
-    await this.inputAdmissionState.waitForQuiescence();
-    await this.waitForActiveInputDispatch();
-
-    return this.preparedTermination ?? this.createTerminationPreparation();
-  }
-
-  private createTerminationPreparation(): PreparedAgentRunTermination {
-    if (this.preparedTermination) return this.preparedTermination;
-    const prepared = createPreparedAgentRunTermination({
-      runId: this.runId,
-      cancelPrepared: () => {
-        this.inputAdmissionState.reopen();
-        this.recoveryShutdownFenced = false;
-        if (this.preparedTermination === prepared) this.preparedTermination = null;
-        queueMicrotask(() => { void this.drainInputAfterLifecycleChange(); });
-      },
-      finishCommitted: () => this.finishCommittedTermination(),
-    });
-    this.preparedTermination = prepared;
-    return prepared;
-  }
-
-  private isRootShutdownQuiescent(): boolean {
-    if (this.uncertainInputDispatch && this.isFencedRecoveryWithoutTurn()) return true;
-    return this.inputAdmissionState.isQuiescentNow && !this.activeInputDispatch
-      && !this.interruptState.hasActiveReservation && !this.lifecycleState.hasPendingCommand
-      && !this.interruptState.hasPendingProviderRequest
-      && this.lifecycleState.activeTurn.kind === "NONE";
-  }
-
-  private isFencedRecoveryWithoutTurn(): boolean {
-    const snapshot = this.backend.getLifecycleSnapshot();
-    return this.recoveryShutdownFenced && !this.activeInputDispatch && !this.interruptState.hasPendingProviderRequest
-      && !!snapshot.recoverableBlock && snapshot.recoverableBlock.state === "awaiting_user"
-      && snapshot.currentTurn.kind === "NONE";
-  }
-
   private reconcileUncertainDispatch(): void {
     const input = this.uncertainInputDispatch;
     const turnId = input && this.inputAdmissionState.observedClaimTurnId(input.claim);
@@ -474,39 +383,6 @@ export class AgentRun {
     this.uncertainInputDispatch = null;
     const result = this.inputAdmissionState.applyDispatchResult(input.claim, { forwarded: true, turnId });
     if (input.commandToken !== null && result.forwarded) this.lifecycleState.acceptCommand(input.commandToken, turnId);
-  }
-
-  private scheduleRootShutdownFenceEvaluation(): void {
-    queueMicrotask(() => this.rootShutdownFence?.evaluate());
-  }
-
-  private finishCommittedTermination(): Promise<AgentOperationResult> {
-    if (this.termination) return this.termination;
-    const termination = this.finishCommittedTerminationOnce();
-    this.termination = termination;
-    void termination.then((result) => {
-      if (!result.accepted && this.termination === termination) this.termination = null;
-    }, () => {
-      if (this.termination === termination) this.termination = null;
-    });
-    return termination;
-  }
-
-  private async finishCommittedTerminationOnce(): Promise<AgentOperationResult> {
-    const result = await this.backend.terminate();
-    if (!result.accepted) return result;
-    await this.dispatchQueue.enqueue(this.runId, async () => {
-      if (this.uncertainInputDispatch) this.inputAdmissionState.settleUndeterminedDispatchAfterTermination(this.uncertainInputDispatch.claim);
-      this.uncertainInputDispatch = null;
-      this.inputAdmissionState.settleAcceptedTermination();
-      this.interruptState.clear();
-      this.lifecycleState.terminate();
-      this.segmentLifecycleState.releaseRun();
-      await getDefaultAgentRunEventPipeline().releaseRun(this.runId);
-      this.dispatchCanonicalStatus();
-    });
-    this.unsubscribeFromBackendSource();
-    return result;
   }
 
   private reconcileRecovery(): void {

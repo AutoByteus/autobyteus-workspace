@@ -333,11 +333,11 @@ defineCase('A01', 'UXJ-005 standalone run: menu (VIS-011/002/014, a11y), inline 
   r.packageBeforeMention = existsSync(path.join(dataRoot, 'memory', 'agents', state.agentRunId, 'collaboration', 'collaboration_tree.json'))
   assert(!r.packageBeforeMention, 'Agent-root package written before any mention')
 
-  // VIS-011: outside-run shared Agents, then Teams; own agent, General Agent and Orgs not offered.
+  // VIS-011: outside-run shared Agents, then Teams; own agent, Daily Assistant and Orgs not offered.
   await openMenu(page)
   r.options = await menuOptions(page)
   assert(!r.options.includes(ids.research), 'host agent offered', r.options)
-  assert(!r.options.includes('autobyteus-daily-assistant') && !r.options.includes(ids.org), 'General Agent or Org offered', r.options)
+  assert(!r.options.includes('autobyteus-daily-assistant') && !r.options.includes(ids.org), 'Daily Assistant or Org offered', r.options)
   assert(r.options.includes(ids.reviewer) && r.options.includes(ids.productTeam) && r.options.indexOf(ids.productTeam) > r.options.indexOf(ids.reviewer), 'candidate order wrong', r.options)
   r.menuText = await page.locator(sel('run-mention-menu')).innerText()
   assert(/Bring into this run/.test(r.menuText) && /Agents/.test(r.menuText) && /Agent teams/.test(r.menuText), 'menu header/groups missing', r.menuText)

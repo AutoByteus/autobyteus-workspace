@@ -32,6 +32,7 @@ package's script from its own directory.
 | Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
 | Team Reload member freshness (real product) | Completed local source edits, cold/warm scoped/shared member inspection, repeated Reload, required-read error/retry, source preservation and owned cleanup | `pnpm -C autobyteus-web test:e2e:team-reload-member-freshness` |
 | Isolated desktop instances | The real desktop app, driven like a user | `pnpm --silent isolated-app start --build` (then drive with the browser-automation skill; `pnpm --silent isolated-app stop`) |
+| iOS wrapper (macOS + Xcode) | Release contract, core unit tests, and simulator UI smoke against a fake node (the same UI tests gate `release-ios.yml` before upload) | `python3 autobyteus-ios/scripts/ios-release-contract-check.py`; `autobyteus-ios/scripts/ios-simulator-smoke.sh <evidence-dir>`; slow-host reproduction with `fake-mobile-server.py --status-delay-seconds` as described in [autobyteus-ios/README.md](autobyteus-ios/README.md) |
 
 Notes:
 

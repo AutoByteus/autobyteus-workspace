@@ -1,0 +1,10 @@
+    t =     8.16s Tap "connection.httpAcknowledgement" Switch
+    t =    40.74s Tap "connection.httpAcknowledgement" Switch
+    t =    44.61s Tap "connection.connect" Button
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (53.206 seconds).
+    t =     8.67s Tap "connection.httpAcknowledgement" Switch
+    t =    41.28s Tap "connection.httpAcknowledgement" Switch
+    t =    45.17s Tap "connection.connect" Button
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' passed (47.130 seconds).
+** TEST SUCCEEDED **
+exit=0

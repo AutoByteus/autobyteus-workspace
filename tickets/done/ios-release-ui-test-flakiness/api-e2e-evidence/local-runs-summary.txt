@@ -1,0 +1,25 @@
+== L2-base-delay7
+/tmp/ios-base/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:66: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected WebView to e
+/tmp/ios-base/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:68: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected fake /mobile
+/tmp/ios-base/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:66: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected WebView to e
+/tmp/ios-base/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:68: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker] : XCTAssertTrue failed - Expected fake /mobile
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' failed (91.520 seconds).
+** TEST FAILED **
+exit=65 wall=133s
+== L1-fix-delay7
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (31.869 seconds).
+** TEST SUCCEEDED **
+exit=0 wall=55s
+== L3-fix-delay0-both
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (18.619 seconds).
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' passed (12.428 seconds).
+** TEST SUCCEEDED **
+exit=0 wall=35s
+== L4-fix-no-server
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:85: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWit
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:87: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWit
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:85: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWit
+/Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness/autobyteus-ios/AutoByteusMobileUITests/AutoByteusMobileUITests.swift:87: error: -[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWit
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' failed (255.047 seconds).
+** TEST FAILED **
+exit=65 wall=273s
