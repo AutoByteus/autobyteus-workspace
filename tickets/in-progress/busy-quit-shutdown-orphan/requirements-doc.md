@@ -1,14 +1,17 @@
 # Requirements Document — busy-quit-shutdown-orphan
 
 ## Document Status
-- Status: **Ready for Approval** (SR-001, 2026-10-05).
-- Current solution revision ID: `SR-001`.
+- Status: **Approved** (SR-002, 2026-10-05).
+- Current solution revision ID: `SR-002` (approval of SR-001).
 - Package: `busy-quit-shutdown-orphan`.
 - Request: `/api_e2e_engineer`, 2026-10-05, at the user's direction. The user asked to "first do enough experiments to
   find out exactly why it happens and how it should be fixed, before designing." Experiments E1–E9 are in
   `investigation-notes.md`.
 - Requirements owner: Solution Designer.
-- Approval state: **pending**. DEC-001–DEC-004 are open, each with a recommendation.
+- Approval state: **Approved**, 2026-10-05.
+  - After clarifying DEC-004 ("defer" means it is not done here and is recorded as a follow-up), the user said: "Okay, I'll agree with your suggestions. Basically, we do for number one and number two, right? … number one and number two are what we will be done in this ticket."
+  - So DEC-001 to DEC-004 are resolved as recommended: DEC-001 and DEC-002 are applied in this ticket; DEC-003 and DEC-004 are not done here and are recorded as follow-up candidates.
+  - REQ-001 to REQ-005 are the approved scope.
 - Behavior-defining supplements: none.
 - Workspace:
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan`.
@@ -147,10 +150,10 @@
 ## Open Decisions And Questions
 | ID | Question | Recommendation | Status |
 | --- | --- | --- | --- |
-| DEC-001 | On Terminate or shutdown, what happens to **queued messages that have not started yet**? | **Cancel them, as root-hosted children already do on shutdown** ("invalidates reservations and cancels admitted pre-forward input"). Do not run them first. | Open |
-| DEC-002 | Bounds | **Server shutdown ≤ 10 s; desktop waits ≤ 15 s before force-stopping the server.** Interrupts measured at 12 ms (Codex) and < 5 s (Claude). | Open |
-| DEC-003 | Codex composer Stop leaves the tool command running until the run ends (E2) | **Out of scope here**; record it as a follow-up candidate. | Open |
-| DEC-004 | Guard against a second server on the same data root (for example after a force-killed app) | **Defer.** REQ-001 to REQ-004 remove the normal-quit orphan; record it as a follow-up candidate. | Open |
+| DEC-001 | On Terminate or shutdown, what happens to **queued messages that have not started yet**? | Cancel them, as root-hosted children already do on shutdown. Do not run them first. | **Resolved: cancel** (SR-002) |
+| DEC-002 | Bounds | Server shutdown ≤ 10 s; desktop waits ≤ 15 s before force-stopping the server. | **Resolved as recommended** (SR-002) |
+| DEC-003 | Codex composer Stop leaves the tool command running until the run ends (E2) | Out of scope; follow-up candidate | **Resolved: not in this ticket** (SR-002) |
+| DEC-004 | Guard against a second server on the same data root (for example after a force-killed app) | Defer; follow-up candidate | **Resolved: not in this ticket** (SR-002) |
 
 ## Traceability
 | REQ | UC | BEH | AC | SCN |
@@ -179,4 +182,4 @@
 ### Content Ready For Approval
 - All items Yes. Open decisions DEC-001 to DEC-004 have recommendations. Content ready for user approval: **Yes**.
 ### Approved Basis Ready For Design
-- User approval received: **No** (pending).
+- User approval received: **Yes** (SR-002). Ready for design: **Yes**.

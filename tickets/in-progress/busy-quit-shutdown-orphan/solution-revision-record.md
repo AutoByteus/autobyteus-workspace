@@ -18,3 +18,11 @@
 - Open: DEC-001 (queued input on Terminate), DEC-002 (bounds 10 s / 15 s), DEC-003 (Codex Stop gap, out of scope),
   DEC-004 (data-root guard, deferred).
 - Approval: pending. Design: not started.
+
+## SR-002 — 2026-10-05 — Requirements approved
+- Trigger: after clarifying DEC-004, the user said "Okay, I'll agree with your suggestions. Basically, we do for number
+  one and number two, right? … number one and number two are what we will be done in this ticket."
+- Result: DEC-001 (cancel queued input) and DEC-002 (10 s / 15 s) are applied in this ticket. DEC-003 (Codex Stop gap)
+  and DEC-004 (data-root guard) are not done here and are recorded as follow-up candidates. REQ-001 to REQ-005 are the
+  approved scope.
+- Status: Approved. Next: architecture design.
