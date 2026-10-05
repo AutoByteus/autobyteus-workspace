@@ -10,6 +10,7 @@ Latest docs-sync-report.md, handoff-summary.md and release-deployment-report.md 
 | DR-003 | CRR-029 Pass return for IR-013 + API-REV-020 delta (supersedes DR-002 candidate) | DR-002 Blocked — user verification pending (superseded candidate) | **Blocked — Local Fix, latest-base source integration conflict** | docs-sync-report.md; handoff-summary.md; release-deployment-report.md |
 | DR-004 | CRR-031 return for IR-014 merge `e94d83538` (API-REV-021 Pass) | DR-003 Blocked — Local Fix (resolved by IR-014/CRR-030/API-REV-021) | **Blocked — explicit user verification pending (integrated, checked, docs synced)** | docs-sync-report.md; handoff-summary.md; release-deployment-report.md |
 | DR-005 | CRR-033 return for IR-015 `335f78c20` (API-REV-023; SR-027 partial REQ-BL-010) | DR-004 Blocked — user verification pending (candidate e94d83538 superseded) | **Blocked — explicit user verification pending (checked, docs synced, known open item recorded)** | docs-sync-report.md; handoff-summary.md; release-deployment-report.md |
+| DR-006 | User verification ("finalize and release a new beta version") | DR-005 Blocked — user verification pending | **Finalized and released v1.4.95-beta.1; ticket-worktree cleanup deferred (running API instance)** | handoff-summary.md; release-deployment-report.md; ARCHIVE-EXCLUSIONS.md |
 
 ## Revision Entries
 ### DR-001 — Initial latest-base integration blocked (2026-10-05)
@@ -104,3 +105,14 @@ None of the handoff rules matched: there was no Local Fix, no upstream classific
 
 #### DR-005 confirmed requester return / verification hold
 None of the handoff rules matched: the open item is user-accepted under SR-027, there is no Local Fix and no upstream classification, and Delivery is not complete. The result went back to the requesting run `code_reviewer_11e9e9ada2484d4baa25cfdee6d1a8fb`, which accepted it (`DELIVERED`). That only confirms receipt. It is not user verification or a terminal completion. Delivery waits for the user's explicit verification and does not poll.
+
+### DR-006 — User verification, finalization and beta release (2026-10-05)
+- **Trigger.** The user's explicit instruction "finalize and release a new version", then "i meant a new beta version". This verifies `335f78c20` and accepts the SR-027 known open item: REQ-BL-010 partially delivered, AC-017 not met, FAPI-013 open.
+- **Finalization.**
+  - The target was unchanged at `fc79fad14`.
+  - The ticket was archived to `tickets/done/` as a curated archive (5083 files). 875 raw snapshots and >200-char paths are listed in ARCHIVE-EXCLUSIONS.md. The full folder is backed up under `.task-safety-backups/.../full-ticket-archive/`.
+  - Commit `43d95677f`: 9 docs plus the archive, staged by explicit path. The hygiene guard passed.
+  - The ticket branch was pushed, and origin/personal fast-forwarded to `43d95677f`.
+- **Release.** `scripts/desktop-release.sh beta --no-push` ran in a clean temporary worktree, producing `19dee40b3` and tag `v1.4.95-beta.1`, which were pushed. The Desktop, Android, iOS and Server Docker workflows all succeeded. The GitHub pre-release has 17 assets.
+- **Cleanup.** The temporary release worktree and branch were removed. **The ticket worktree and local branch are deferred** because API test instance `iso-54775-990c` is running from the worktree's `electron-dist/` and waits for the user's word. Stash `76b8fd003` will be dropped with that cleanup.
+- **Terminal return.** **Not yet eligible**: safe cleanup is still pending.
