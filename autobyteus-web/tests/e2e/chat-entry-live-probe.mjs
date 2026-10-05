@@ -139,12 +139,26 @@ const runStatus = async (page) => (await page.locator(`${RUN_VIEW} [title^="Agen
 const waitForStatus = (page, pattern, timeout = 60000) => page.waitForFunction(({ src }) => new RegExp(src).test(document.querySelector('[data-testid="agent-workspace-surface"] [title^="Agent Status:"]')?.innerText ?? ''), { src: pattern.source }, { timeout })
 const openRunSettings = async (page) => { await page.locator(sel('workspace-header-edit-config')).click(); await page.locator(sel('run-config-back-to-events')).waitFor({ timeout: 30000 }) }
 const closeRunSettings = async (page) => { await page.locator(sel('run-config-back-to-events')).click(); await page.locator(RUN_VIEW).waitFor({ timeout: 30000 }) }
-/** Picks a model in the product run-settings form (SearchableGroupedSelect) by its visible label. */
+// run-settings-ui-unification (REQ-004/017): saved-run settings use the chat model menu with the run's runtime
+// locked; Save appears only after a change.
+const savedRunModelTrigger = (page) => page.locator(`${sel('existing-run-root-card')} ${sel('chat-model-trigger')}`).first()
+/** Picks a model in the saved-run (runtime-locked) model menu by its visible label. */
 const pickFormModel = async (page, label) => {
-  const trigger = page.locator('main button[aria-haspopup="listbox"]').first()
-  await trigger.click()
-  const option = page.locator('[role="option"]').filter({ has: page.locator('span.block.truncate', { hasText: new RegExp(`^${label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) }) }).first()
+  await savedRunModelTrigger(page).click()
+  await page.locator(`${sel('chat-model-menu')} ${MODEL_ROW}`).first().waitFor({ timeout: 60000 })
+  const option = page.locator(`${sel('chat-model-menu')} ${MODEL_ROW}`).filter({ has: page.locator(sel('chat-model-option-label'), { hasText: new RegExp(`^${label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) }) }).first()
   await option.click()
+}
+/** The saved-run view while the run is live: Running, fixed values locked, no model menu, no Save bar. */
+const savedRunLocked = async (page) => {
+  const view = page.locator(sel('existing-run-settings'))
+  await view.waitFor({ timeout: 30000 })
+  return {
+    status: (await view.locator(sel('run-subject-status')).innerText().catch(() => '')).trim(),
+    locked: await view.locator(`${sel('existing-run-root-card')} ${sel('run-setting-locked')}`).count(),
+    modelMenus: await savedRunModelTrigger(page).count(),
+    saveBar: await view.locator(sel('existing-run-save-bar')).count(),
+  }
 }
 const selectedRightTab = (page) => page.locator(`${sel('right-side-tab-list')} [aria-selected="true"]`).first().innerText().then((t) => t.trim()).catch(() => null)
 /** Waits for an assistant reply containing `marker` (the user message and header also contain the prompt). */
@@ -161,14 +175,31 @@ const newChat = async (page) => {
 }
 // Model option rows only (the row's children carry `chat-model-option-label|secondary|recommended`).
 const MODEL_ROW = 'button[role="menuitemradio"][data-test^="chat-model-option-"]'
+/**
+ * Opens one runtime's model list in the open model menu. The desktop menu opens runtime flyouts on hover and a click
+ * on an open runtime row can toggle it shut, so hover, verify, click only when needed; then enter the flyout sideways
+ * (a diagonal pointer path would open the next runtimes' flyouts, e.g. an installed Grok Build).
+ */
+const openRuntimeList = async (page, runtimeKind) => {
+  const list = page.locator(sel(`chat-model-list-${runtimeKind}`))
+  const row = page.locator(sel(`chat-runtime-${runtimeKind}`))
+  for (let attempt = 0; attempt < 6 && !(await list.isVisible().catch(() => false)); attempt += 1) {
+    await row.hover().catch(() => {}); await delay(400)
+    if (!(await list.isVisible().catch(() => false))) { await row.click().catch(() => {}); await delay(700) }
+  }
+  await list.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
+  const rowBox = await row.boundingBox({ timeout: 1000 }).catch(() => null)
+  const listBox = await list.boundingBox({ timeout: 1000 }).catch(() => null)
+  if (rowBox && listBox && listBox.x > rowBox.x) await page.mouse.move(listBox.x + 12, Math.min(Math.max(rowBox.y + rowBox.height / 2, listBox.y + 6), listBox.y + listBox.height - 6), { steps: 5 })
+  return list
+}
 const pickModel = async (page, runtimeKind, model) => {
   await page.locator(sel('chat-model-trigger')).click()
-  await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
-  await page.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
-  const models = await page.locator(MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
+  const list = await openRuntimeList(page, runtimeKind)
+  const models = await list.locator(MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
   const chosen = model && models.includes(model) ? model : models[0]
-  const label = await page.locator(`${sel(`chat-model-option-${chosen}`)} ${sel('chat-model-option-label')}`).innerText()
-  await page.locator(sel(`chat-model-option-${chosen}`)).click()
+  const label = await list.locator(`${sel(`chat-model-option-${chosen}`)} ${sel('chat-model-option-label')}`).innerText()
+  await list.locator(sel(`chat-model-option-${chosen}`)).click()
   return { chosen, models, label }
 }
 const openFolder = async (page, folder) => {
@@ -242,13 +273,15 @@ defineCase('C02', 'Landing: / → /chat, Chat first with pencil, New chat defaul
 
 defineCase('C03', 'Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation', async (page) => {
   await newChat(page)
+  // The model the later cases use is picked first, so they do not depend on the search-empty check below.
+  const picked = await pickModel(page, runtime, preferredModel)
+  state.model = picked.chosen; state.models = picked.models; state.modelLabel = picked.label
+  await page.keyboard.press('Escape').catch(() => {})
   await page.locator(sel('chat-model-trigger')).click()
   await page.locator(sel('chat-model-menu')).waitFor()
   await page.locator(sel('chat-model-search')).fill('zzzz-no-model')
   await page.locator(sel('chat-model-search-empty')).waitFor({ timeout: 120000 })
   await page.keyboard.press('Escape')
-  const picked = await pickModel(page, runtime, preferredModel)
-  state.model = picked.chosen; state.models = picked.models; state.modelLabel = picked.label
   const input = composerInput(page)
   await input.click(); await input.type('/')
   await page.locator(sel('chat-skill-menu')).waitFor()
@@ -318,12 +351,9 @@ defineCase('C05', 'Live run view (D-17): product header and box; ⚙ run setting
   assert(await page.locator(`${RUN_VIEW} ${sel('chat-model-trigger')}, ${RUN_VIEW} ${sel('chat-composer-footer')}`).count() === 0, 'Chat footer model controls shown after the first message')
   assert(await runInput(page).count() === 1 && await runSend(page).count() === 1, 'Product box (textarea + send) missing')
   await openRunSettings(page)
-  await page.getByText(/Stop this run before changing model settings\./).first().waitFor({ timeout: 30000 }).catch(() => {})
-  const note = await page.getByText(/Stop this run before changing model settings\./).count()
-  const saveDisabled = await page.locator(sel('save-existing-model-config')).isDisabled()
-  const modelDisabled = await page.locator('main button[aria-haspopup="listbox"]').first().isDisabled()
+  const live = await savedRunLocked(page)
   await page.screenshot({ path: path.join(outDir, 'C05-run-settings-live-locked.png') })
-  assert(note >= 1 && saveDisabled && modelDisabled, 'Run settings not locked while live', { note, saveDisabled, modelDisabled })
+  assert(/Running/.test(live.status) && live.locked >= 2 && live.modelMenus === 0 && live.saveBar === 0, 'Run settings not locked while live (UIS-003)', live)
   // D-18 (UF-03): a fresh chat with the default thinking state records an explicit llmConfig equal to
   // the model's schema defaults (independent oracle: the catalog configSchema), and the live ⚙ shows
   // those values disabled — never "Not recorded".
@@ -357,7 +387,7 @@ defineCase('C06', 'Terminate → Offline → ⚙ save → reload → ⚙ save �
   const alternatives = state.models.filter((m) => m !== state.model)
   assert(alternatives.length >= 2, 'Runtime needs at least three models for the D-08 journey', state.models)
   await openRunSettings(page)
-  await page.locator(sel('save-existing-model-config')).waitFor({ timeout: 30000 })
+  await savedRunModelTrigger(page).waitFor({ timeout: 30000 })
   await pickFormModel(page, labelOf(alternatives[0]))
   await page.locator(sel('save-existing-model-config')).click()
   await waitFor('first Offline save', async () => (await runConfig(runId)).metadataConfig.llmModelIdentifier === alternatives[0], 30000)
@@ -375,10 +405,9 @@ defineCase('C06', 'Terminate → Offline → ⚙ save → reload → ⚙ save �
   const cfg = await runConfig(runId)
   assert(cfg.isActive && cfg.metadataConfig.llmModelIdentifier === alternatives[1], 'Resume did not use the saved model', cfg)
   await openRunSettings(page)
-  await page.getByText(/Stop this run before changing model settings\./).first().waitFor({ timeout: 30000 }).catch(() => {})
-  const relocked = await page.getByText(/Stop this run before changing model settings\./).count()
+  const relocked = await waitFor('relocked after resume', async () => { const v = await savedRunLocked(page); return /Running/.test(v.status) && v.modelMenus === 0 ? v : null }, 30000).catch(() => null)
   await closeRunSettings(page)
-  assert(relocked >= 1, 'Run settings not locked again after resume')
+  assert(relocked, 'Run settings not locked again after resume')
   return { saved: [alternatives[0], alternatives[1]], resumed: cfg.metadataConfig }
 })
 
@@ -412,20 +441,25 @@ defineCase('C07', 'Failed first send → /chat?id=temp-* with the error → rese
   } finally { await page.unroute('**/graphql') }
 })
 
-defineCase('C08', 'Catalog Run (form unchanged) → /chat?id=temp-* → first send → permanent URL and streamed reply', async (page) => {
+// run-settings-ui-unification (REQ-005/006, REQ-018): catalog Run opens New chat for the agent; the first message
+// starts the run (the launch form is removed).
+const runFromCatalog = async (page, name) => {
   await page.goto(`${frontUrl}/agents`, { waitUntil: 'domcontentloaded' })
-  await page.getByText('Probe Legacy', { exact: true }).first().waitFor({ timeout: 120000 })
-  const card = page.locator('div,article,li').filter({ has: page.getByText('Probe Legacy', { exact: true }) }).filter({ has: page.getByRole('button', { name: /^Run/ }) }).last()
+  await page.getByText(name, { exact: true }).first().waitFor({ timeout: 120000 })
+  const card = page.locator('div,article,li').filter({ has: page.getByText(name, { exact: true }) }).filter({ has: page.getByRole('button', { name: /^Run/ }) }).last()
   await card.getByRole('button', { name: /^Run/ }).first().click()
-  await page.locator('main select').first().waitFor({ timeout: 60000 })
-  await page.locator('main select').first().selectOption(runtime)
-  await delay(1500)
-  await page.getByText('Select a model', { exact: true }).first().click()
-  await page.locator('body > div').getByText(new RegExp(`^${state.model.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i')).first().click()
-  await page.getByRole('button', { name: 'Run Agent' }).click()
-  await page.waitForURL(/\/chat\?id=temp-/, { timeout: 60000 })
-  await runInput(page).fill('Reply with exactly CATALOG-OK and nothing else.')
-  await runSend(page).click()
+  await page.locator(sel('chat-new')).waitFor({ timeout: 60000 })
+  await delay(800)
+  const heading = await page.locator(sel('run-target-name')).innerText()
+  assert(heading === name, 'Catalog Run did not open New chat for the agent', heading)
+  assert(await page.locator('main select').count() === 0, 'The old launch form is still shown')
+}
+
+defineCase('C08', 'Catalog Run → New chat for the agent → first send → permanent URL and streamed reply', async (page) => {
+  await runFromCatalog(page, 'Probe Legacy')
+  await pickModel(page, runtime, state.model)
+  await composerInput(page).fill('Reply with exactly CATALOG-OK and nothing else.')
+  await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
   await waitForReply(page, 'CATALOG-OK')
   state.catalogRunId = routeRunId(page)
@@ -650,9 +684,8 @@ const recommendedFirst = (rows) => rows.findIndex((r) => !r.recommended) === -1
   || rows.slice(rows.findIndex((r) => !r.recommended)).every((r) => !r.recommended)
 const openRuntimeRows = async (page, runtimeKind) => {
   if (!(await page.locator(sel('chat-model-menu')).isVisible().catch(() => false))) await page.locator(sel('chat-model-trigger')).click()
-  await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
+  await openRuntimeList(page, runtimeKind)
   const scope = sel(`chat-model-list-${runtimeKind}`)
-  await page.locator(`${scope} ${MODEL_ROW}`).first().waitFor({ timeout: 120000 })
   return readModelRows(page, scope)
 }
 const searchIds = async (page, query) => {
@@ -710,14 +743,14 @@ defineCase('C16', 'D-16 / AC-018: Chat model labels follow the launch-form polic
   await page.reload({ waitUntil: 'domcontentloaded' })
   await waitForStatus(page, /Offline/)
   await openRunSettings(page)
-  const settingsTrigger = page.locator('main button[aria-haspopup="listbox"]').first()
-  // The gear editor shows the shared policy's selected-label form `<Provider> / <label>`.
-  await waitFor('run-settings model label', async () => { const t = (await settingsTrigger.innerText()).trim(); return t === pick.label || t.endsWith(` / ${pick.label}`) }, 30000)
+  const settingsTrigger = savedRunModelTrigger(page)
+  // The saved-run model menu (runtime locked) shows the shared policy label.
+  await waitFor('run-settings model label', async () => { const t = (await settingsTrigger.innerText()).split('\n')[0].trim(); return t === pick.label || t.endsWith(` / ${pick.label}`) }, 30000)
   await settingsTrigger.click()
-  await page.locator('[role="option"]').first().waitFor({ timeout: 60000 })
-  const settingsRows = await page.locator('[role="option"]').evaluateAll((els) => els.map((li) => ({
-    label: li.querySelector('span.block.truncate')?.textContent.trim() ?? null,
-    recommended: Boolean(li.querySelector('[data-test="select-item-recommended"]')),
+  await page.locator(`${sel('chat-model-menu')} ${MODEL_ROW}`).first().waitFor({ timeout: 60000 })
+  const settingsRows = await page.locator(`${sel('chat-model-menu')} ${MODEL_ROW}`).evaluateAll((els) => els.map((li) => ({
+    label: li.querySelector('[data-test="chat-model-option-label"]')?.textContent.trim() ?? null,
+    recommended: Boolean(li.querySelector('[data-test="chat-model-option-recommended"]')),
   })))
   const expectedLabels = new Set(claudeCatalog.map((m) => expectedModelOption(m, 'claude_agent_sdk').label))
   assert(settingsRows.length > 0 && settingsRows.every((r) => expectedLabels.has(r.label)), 'Run-settings model labels do not follow the shared policy', settingsRows)
@@ -735,23 +768,13 @@ defineCase('C16', 'D-16 / AC-018: Chat model labels follow the launch-form polic
   result.freshTrigger = { firstSeenLabel, settledAfterMs: settled ? Date.now() - freshStarted : null }
   await page.screenshot({ path: path.join(outDir, 'C16-fresh-new-chat-trigger.png') })
   assert(settled, 'Fresh New chat trigger shows the identifier instead of the policy label for the last-used model', { trigger: await freshTriggerLabel(), expected: pick.label })
-  // V-L5: the launch form shows the same labels, badges and order for Claude Agent SDK.
-  await page.goto(`${frontUrl}/agents`, { waitUntil: 'domcontentloaded' })
-  await page.getByText('Probe Legacy', { exact: true }).first().waitFor({ timeout: 120000 })
-  const card = page.locator('div,article,li').filter({ has: page.getByText('Probe Legacy', { exact: true }) }).filter({ has: page.getByRole('button', { name: /^Run/ }) }).last()
-  await card.getByRole('button', { name: /^Run/ }).first().click()
-  await page.locator('main select').first().waitFor({ timeout: 60000 })
-  await page.locator('main select').first().selectOption('claude_agent_sdk')
-  await delay(1500)
-  await page.getByText('Select a model', { exact: true }).first().click()
-  await page.locator('[role="option"]').first().waitFor({ timeout: 60000 })
-  const formRows = await page.locator('[role="option"]').evaluateAll((els) => els.map((li) => ({
-    label: li.querySelector('span.block.truncate')?.textContent.trim() ?? null,
-    recommended: Boolean(li.querySelector('[data-test="select-item-recommended"]')),
-  })))
+  // V-L5 (run-settings-ui-unification): the launch form is removed (REQ-018); catalog Run opens New chat, whose
+  // Claude Agent SDK rows show the same labels, badges and order.
+  await runFromCatalog(page, 'Probe Legacy')
+  const formRows = await openRuntimeRows(page, 'claude_agent_sdk')
   const chatOrder = claudeRows.map((r) => `${r.label}${r.recommended ? ' [R]' : ''}`)
   const formOrder = formRows.map((r) => `${r.label}${r.recommended ? ' [R]' : ''}`)
-  assert(JSON.stringify(chatOrder) === JSON.stringify(formOrder), 'Chat and launch form differ for Claude Agent SDK', { chatOrder, formOrder })
+  assert(JSON.stringify(chatOrder) === JSON.stringify(formOrder), 'Chat and catalog-Run New chat differ for Claude Agent SDK', { chatOrder, formOrder })
   await page.keyboard.press('Escape')
   // 390×844: the Claude drill-in stays in the viewport, rows single-line, no horizontal overflow.
   const narrow = await context.newPage()
@@ -863,41 +886,21 @@ defineCase('C17', 'D-17 frame: chat run view geometry equals the Team view; stri
   return r
 })
 
-defineCase('C18', 'D-17 draft ⚙ (AR-011): catalog draft and failed first send edit the draft model locally (no server call) and the send uses it', async (page) => {
-  const catalog = await catalogFor(runtime)
-  const labelOf = (id) => expectedModelOption(catalog.find((m) => m.modelIdentifier === id) ?? { modelIdentifier: id }, runtime).label
+defineCase('C18', 'AR-003 (run-settings-ui-unification): catalog Run starts in New chat (the draft ⚙ is removed) and its first send uses the chosen model; a failed first send lands on /chat?id=temp-* without ⚙, and the composer resend uses the chosen model', async (page) => {
   const alternatives = state.models.filter((m) => m !== state.model)
-  const graphqlOps = []
-  const onRequest = (req) => { if (req.url().includes('/graphql') && req.method() === 'POST') graphqlOps.push((req.postData() ?? '').match(/(mutation|query)\s+(\w+)/)?.slice(1).join(' ') ?? 'anonymous') }
+  assert(alternatives.length >= 2, 'Runtime needs at least three models', state.models)
   const r = {}
-  // (a) catalog "Run agent" draft
-  await page.goto(`${frontUrl}/agents`, { waitUntil: 'domcontentloaded' })
-  await page.getByText('Probe Legacy', { exact: true }).first().waitFor({ timeout: 120000 })
-  const card = page.locator('div,article,li').filter({ has: page.getByText('Probe Legacy', { exact: true }) }).filter({ has: page.getByRole('button', { name: /^Run/ }) }).last()
-  await card.getByRole('button', { name: /^Run/ }).first().click()
-  await page.locator('main select').first().waitFor({ timeout: 60000 })
-  await page.locator('main select').first().selectOption(runtime)
-  await delay(1500)
-  await page.getByText('Select a model', { exact: true }).first().click()
-  await page.locator('body > div').getByText(new RegExp(`^${state.model.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i')).first().click()
-  await page.getByRole('button', { name: 'Run Agent' }).click()
-  await page.waitForURL(/\/chat\?id=temp-/, { timeout: 60000 })
-  page.on('request', onRequest)
-  await openRunSettings(page)
-  await page.locator(sel('draft-run-config-editor')).waitFor({ timeout: 15000 })
-  await pickFormModel(page, labelOf(alternatives[0]))
-  await closeRunSettings(page)
-  r.catalogOpsBeforeSend = [...graphqlOps]
-  page.off('request', onRequest)
-  await runInput(page).fill('Reply with exactly DRAFT-CATALOG-OK and nothing else.')
-  await runSend(page).click()
+  // (a) catalog Run → New chat → choose a model → first send uses it
+  await runFromCatalog(page, 'Probe Legacy')
+  await pickModel(page, runtime, alternatives[0])
+  await composerInput(page).fill('Reply with exactly DRAFT-CATALOG-OK and nothing else.')
+  await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
   const catalogRun = routeRunId(page)
   await waitForReply(page, 'DRAFT-CATALOG-OK')
   r.catalogModel = (await runConfig(catalogRun)).metadataConfig.llmModelIdentifier
-  assert(!r.catalogOpsBeforeSend.some((op) => /^mutation/.test(op) || /AgentRunResumeConfig|RunModelOptions/.test(op)), 'Draft run settings called the server before the send', r.catalogOpsBeforeSend)
-  assert(r.catalogModel === alternatives[0], 'Catalog draft send did not use the model chosen in draft ⚙', r)
-  // (b) failed New chat first send → temp chat → draft ⚙ → resend
+  assert(r.catalogModel === alternatives[0], 'Catalog-Run first send did not use the chosen model', r)
+  // (b) failed first send → temp chat: no ⚙ (AR-003) → composer resend
   let injected = 0
   await page.route('**/graphql', async (route) => {
     if (injected === 0 && /prepareAgentRun/i.test(route.request().postData() ?? '')) { injected += 1; return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: null, errors: [{ message: 'Injected prepare failure (probe)' }] }) }) }
@@ -905,17 +908,12 @@ defineCase('C18', 'D-17 draft ⚙ (AR-011): catalog draft and failed first send 
   })
   try {
     await newChat(page)
-    await pickModel(page, runtime, state.model)
+    await pickModel(page, runtime, alternatives[1])
     await composerInput(page).fill('Reply with exactly DRAFT-RESEND-OK and nothing else.')
     await page.locator(sel('chat-primary-action')).first().click()
     await page.waitForURL(/\/chat\?id=temp-/, { timeout: 60000 })
-    graphqlOps.length = 0; page.on('request', onRequest)
-    await openRunSettings(page)
-    await page.locator(sel('draft-run-config-editor')).waitFor({ timeout: 15000 })
-    await pickFormModel(page, labelOf(alternatives[1]))
-    await closeRunSettings(page)
-    r.resendOpsBeforeSend = [...graphqlOps]
-    page.off('request', onRequest)
+    await page.locator(RUN_VIEW).waitFor({ timeout: 60000 }); await delay(1500)
+    r.tempSettingsButton = await page.locator(sel('workspace-header-edit-config')).count()
     await runInput(page).fill('Reply with exactly DRAFT-RESEND-OK and nothing else.')
     await runSend(page).click()
     await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
@@ -923,8 +921,8 @@ defineCase('C18', 'D-17 draft ⚙ (AR-011): catalog draft and failed first send 
     await waitForReply(page, 'DRAFT-RESEND-OK')
     r.resendModel = (await runConfig(resendRun)).metadataConfig.llmModelIdentifier
   } finally { await page.unroute('**/graphql') }
-  assert(!r.resendOpsBeforeSend.some((op) => /^mutation/.test(op) || /AgentRunResumeConfig|RunModelOptions/.test(op)), 'Draft run settings called the server before the resend', r.resendOpsBeforeSend)
-  assert(r.resendModel === alternatives[1], 'Resend did not use the model chosen in draft ⚙', r)
+  assert(r.tempSettingsButton === 0, 'A temp-* chat shows ⚙ (AR-003: hidden)', r)
+  assert(r.resendModel === alternatives[1], 'Resend did not use the model chosen before the failed send', r)
   return r
 })
 

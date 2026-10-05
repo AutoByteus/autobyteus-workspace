@@ -249,9 +249,21 @@ const operationResponse = (name, variables) => {
 }
 let pageInstalled = false, devServer, devLogStream, browser, browserServer, context, page
 const persist = () => fs.writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`)
+const devReloadCount = async () => ((await fs.readFile(devLogPath, 'utf8').catch(() => '')).match(/optimized dependencies changed/g) ?? []).length
 const scenario = async (id, description, run) => {
   try {
-    evidence.scenarios[id] = { status: 'Pass', description, details: await run() }
+    const reloadsBefore = await devReloadCount()
+    try {
+      evidence.scenarios[id] = { status: 'Pass', description, details: await run() }
+    } catch (error) {
+      // A Nuxt dependency re-optimization reload during the attempt (TESTING.md caveat) voids it: keep the failed
+      // attempt in the evidence and repeat the case once after the reloads settle. Assertions are never relaxed.
+      if ((await devReloadCount()) === reloadsBefore) throw error
+      evidence.devReloadRetries = [...(evidence.devReloadRetries ?? []), { id, firstAttempt: error.message }]
+      await page?.screenshot({ path: path.join(outputDir, `${id}-dev-reload-attempt.png`), fullPage: true }).catch(() => {})
+      await waitFor('dev dependency optimization to settle', async () => { const n = await devReloadCount(); await delay(8000); return n === (await devReloadCount()) })
+      evidence.scenarios[id] = { status: 'Pass', description, details: await run(), retriedAfterDevReload: true }
+    }
   } catch (error) {
     const failure = { id, description, message: error.message, stack: error.stack,
       details: error.details, body: page ? await page.locator('body').innerText().catch(() => '') : '' }

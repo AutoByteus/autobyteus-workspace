@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008` (design revision after ARCH-REV-001; requirements basis is unchanged at SR-006)
+- Current solution revision ID: `SR-010` (design revision after CRR-004 DI-001..DI-006; earlier SR-009 after CRR-002, SR-008 after ARCH-REV-001; requirements basis unchanged at SR-006)
 - Approved requirements baseline: `requirements-doc.md` SR-006.
   - User approval on 2026-10-05: "I think it's like now the requirement is clear, right? You can go ahead now."
   - Plus the user-directed REQ-022 (Fast mode) and the delegated defaults (REQ-021, DEC-005, DEC-006).
@@ -212,7 +212,7 @@ Spines (DS-001..008) → ownership → removal → files. The tables below follo
 
 - DS-001: `Run button → useRunStart.runAgent|runTeam → chatDraftStore.startForDefinition → /chat (ChatNewSurface) → Send → chatLaunchService.launchAgentChat|launchTeamChat → agentRunStore | teamRunConfigStore.createDraft + agentTeamRunStore.sendMessageToFocusedMember → server → run view`
 - DS-002: `Org Run/"+"/switch → useRunStart.runOrg|copyOrgRun|switchTarget → agentOrgLaunchDraftStore.start → /workspace?…mode=configuration (pages/workspace.vue → OrgLaunchPage) → Run → agentOrgLaunchDraftStore.launch → agentOrgLaunchService.launch → agentOrgRunStore.launch → server → /workspace?…mode=active`
-- DS-003: `Run header "+" → useRunStart.copyAgentRun|copyTeamRun|copyOrgRun → (loadTeamRunLaunchSeed | agent context config | Org seed via store) → draft owner start(copied) → start surface`
+- DS-003: `Run header "+" → useRunStart.copyAgentFromConfig(displayed config)|copyTeamRun|copyOrgRun → (displayed AgentRunConfig | loadTeamRunLaunchSeed | Org seed via store) → draft owner start(copied) → start surface`
 - DS-004: `Edit Config → RunConfigPanel → ExistingRunConfigEditor (container) → ExistingRunSettings (view) → existingRunConfigStore.update*/save/discardChanges | useRunStopAction → run stores → existingRunConfigStore.reloadCanonical`
 - DS-006: `Composer textarea @ → useComposerMentionMenu(candidates) → context.requestedMentions → first send: agentRunStore.sendUserInputAndSubscribe | agentTeamRunStore.sendMessageToFocusedMember({mentions}) → server mention admission`
 
@@ -222,7 +222,7 @@ Spines (DS-001..008) → ownership → removal → files. The tables below follo
 | --- | --- | --- | --- | --- |
 | DS-001 | Run asks `useRunStart` for a fresh chat draft addressed to the definition, preselected per REQ-021. The user edits the four settings, other settings and member overrides in New chat. Send hands the draft to `chatLaunchService`. For a Team it builds a `TeamRunConfig` with the draft's `agentOverrides`, creates the Team launch draft and sends the first message with its mentions. | ChatDraft, TeamRunConfig | `chatDraftStore`, `chatLaunchService` | default-model resolution, workspace resolution, catalogs, mention list |
 | DS-002 | The Org page shows the Org launch draft. Start loads Org references (and the source run seed for "+"), then fills defaults or the seed. The member tree projection gives effective settings and readiness. Run asks `agentOrgLaunchService` to resolve workspaces, serialize overrides and launch, then navigates to the active run. | OrgLaunchDraft, member tree | `agentOrgLaunchDraftStore` | reference loading, seed building, workspace creation, placement serialization |
-| DS-003 | "+" copies a run's settings into the right draft owner. Agent: the context config. Team: `loadTeamRunLaunchSeed` → root + `agentOverrides`. Org: the store's seed path. If the copy fails, the definition defaults are used. | Copied settings | `useRunStart` | seed loaders |
+| DS-003 | "+" copies a run's settings into the right draft owner. Agent: the config of the agent on screen, passed by the view (host run or `@` collaborator child; CR-001). Team: `loadTeamRunLaunchSeed` → root + `agentOverrides`. Org: the store's seed path. If the copy fails, the definition defaults are used. | Copied settings | `useRunStart` | seed loaders |
 | DS-004 | The saved-run view renders `existingRunConfigStore` state. Edits go through existing update actions (cascade included). Cancel calls `discardChanges`. Stop calls the kind's terminate action, then `reloadCanonical` to refresh editability. | ExistingRunConfigDraft | `existingRunConfigStore` | stop action, model options, copy |
 | DS-006 | One mention menu composable serves both textareas. It takes candidates from the run's server candidates (live run) or the catalog (New chat), minus the current target. The chosen mention is recorded on the composer context. First sends forward the mentions present in the text. | requestedMentions | `useComposerMentionMenu`, run stores | candidate sources |
 
@@ -382,7 +382,8 @@ surface views → `chatLaunchService` | `agentOrgLaunchService` → `agentRunSto
 | Interface | Subject Owned | Responsibility | Accepted Identity Shape | Notes |
 | --- | --- | --- | --- | --- |
 | `useRunStart().runAgent(agentDefinitionId)` / `runTeam(teamDefinitionId)` / `runOrg(orgDefinitionId)` | start intent | Fresh draft + route | definition id per kind | Split by kind (no generic id) |
-| `useRunStart().copyAgentRun(runId)` / `copyTeamRun(teamRunId)` / `copyOrgRun(orgRunId, orgDefinitionId)` | copy intent | Prefill from a run | run id per kind | A failure falls back to defaults |
+| `useRunStart().copyAgentFromConfig(config: AgentRunConfig)` | Agent copy intent (CR-001) | New chat for **the agent on screen** (`config.agentDefinitionId`), prefilled with its workspace (`runWorkspaceChoiceFromRootPath`), runtime/model/`llmConfig` (thinking + other settings) and approval | The displayed `AgentRunConfig` snapshot. This works for a top-level Agent run and for an `@` collaborator child (`agent_run_task_agent` / `agent_run_task_team_member`), whose contexts live in `agentRunCollaborationStore`, not `agentContextsStore` | Synchronous, with no lookup by run id. A missing workspace path → temp workspace. The caller passes `AgentWorkspaceView.target.context.config` |
+| `useRunStart().copyTeamRun(teamRunId)` / `copyOrgRun(orgRunId, orgDefinitionId)` | copy intent | Prefill from a run | run id per kind | A failure falls back to defaults |
 | `useRunStart().switchTarget(choice: {kind:'agent'|'team'|'org', definitionId})` | switch intent | Carry rules | explicit kind + id | |
 | `useRunStart().newChatInWorkspace({agentDefinitionId, workspaceRootPath})` | tree "+" intent (AR-002) | New chat for that agent in that workspace; keeps today's settings rule (`startNewChat(preset)`: last chat model → Daily Assistant default → runtime default; approval on) | agent definition id + root path | Called by `WorkspaceAgentRunsTreePanel.startPresetChat`, which must not call `chatDraftStore`/router itself |
 | `chatDraftStore.startForDefinition(target, {carried?, copied?})` | ChatDraft | REQ-021/carry/copy | `ChatTarget` (agent \| team) | Replaces the ad hoc `startNewChat` + setters at call sites; `startNewChat()` stays for the Chat nav |
@@ -538,7 +539,7 @@ called only at these boundaries:
 | --- | --- | --- | --- |
 | `WorkspaceSelectionState` (root and `teamWorkspaceSelections`) | `AgentOrgRunLaunchSeed` from `buildEditableAgentOrgRunSeed` (Org "+") | `runWorkspaceChoiceFromSelection(selection)` | `agentOrgLaunchDraftStore.start` (seed path). The team workspace is kept only when it differs from the root (`sameRunWorkspaceChoice`) |
 | `TeamWorkspaceSelection` (`TeamRunConfig.rootConfig.workspace` from `loadTeamRunLaunchSeed`) | Team "+" copy | `runWorkspaceChoiceFromTeamWorkspace(workspace)` | `useRunStart.copyTeamRun` |
-| `AgentRunConfig.workspaceId` / `workspaceMetadata.workspaceRootPath` | Agent "+" copy | `runWorkspaceChoiceFromRootPath(rootPath)` | `useRunStart.copyAgentRun` |
+| `AgentRunConfig.workspaceId` / `workspaceMetadata.workspaceRootPath` | Agent "+" copy (host or collaborator) | `runWorkspaceChoiceFromRootPath(rootPath)` | `useRunStart.copyAgentFromConfig` |
 | `RunWorkspaceChoice` → `WorkspaceSelectionState` | `existingRunConfigStore.updateAgentOrgWorkspaceSelection(address, selection)` (saved placed-team workspace) | `toWorkspaceSelection(choice)`; display uses `runWorkspaceChoiceFromSelection` | `ExistingRunConfigEditor` container (both directions) |
 | `RunWorkspaceChoice` → `{workspaceId, workspaceMetadata}` / root path | Launch | `resolveRunWorkspaceChoice(choice)` (creates folder workspaces) | `chatLaunchService`, `agentOrgLaunchService`; `startSurfaceWorkspaceOf` for tools (read-only, no creation) |
 
@@ -706,8 +707,20 @@ step that replaces their last caller.
     state**. ARCH-REV-001 P-002 is Not Reachable; it needs a concurrent definition change. No new
     recovery machinery is added. The existing `launchTeamChat` failure branch and
     `failLocalSubmission` behavior stay as they are.
+- Agent "+" on an `@` collaborator view (CR-001):
+  - The run header "+" in `AgentWorkspaceView` copies **the agent on screen**. That is the
+    collaborator child when one is selected, as at base, where it opened New chat preset to the
+    child's agent and workspace. REQ-013 extends it to model, thinking, other settings and approval.
+  - For a team-member collaborator (`agent_run_task_team_member`), the agent on screen is that member
+    agent, not its team. Base behavior is preserved.
+- Dependency cleanup (CR-002): the "a chosen model starts with its defaults" rule
+  (`explicitChatModelConfig`) lives in `utils/runSettings/explicitModelConfig.ts`. The carry/copy
+  type is `RunStartSettings` in `types/runSettings/RunSettings.ts`, built on `RunSettingsValues`.
+  `agentOrgLaunchDraftStore` imports neither from `stores/chatDraftStore`.
+- Org topology diagnostics (CR-003) are logged once where readiness detects `tree.status ===
+  'blocked'`. `launch` has no unreachable blocked branch.
 - Tests (colocated, per `TESTING.md`):
-  - `useRunStart` (each intent → draft + route);
+  - `useRunStart` (each intent → draft + route; `copyAgentFromConfig` with a collaborator-child config);
   - `chatDraftStore` (REQ-021 order, retarget carry/reset, overrides);
   - `chatLaunchService.launchTeamChat` (overrides reach `TeamRunConfig`; catalogs per runtime;
     mentions passed);
@@ -726,3 +739,110 @@ step that replaces their last caller.
   - "+" copies;
   - saved-run stop/save;
   - visual comparison to VIS-001..042 at 804/880/390 px.
+
+
+## SR-010 Addendum — Decisions On CRR-004 (DI-001..DI-006)
+
+This section is authoritative where it refines earlier sections. The implemented head reviewed was
+`c37b81de5`.
+
+### DI-001 — Rendered-surface audit of Run / "+" / ⚙ (Adopt)
+
+The audit started from the rendered controls, not from known callers (`grep` of `new-agent`,
+`new-team`, `edit-config`, `@click … run`, `startNewChat`, `/chat` pushes at `c37b81de5`; evidence
+AF-018).
+
+| Rendered Surface | Control | Target Kinds Shown | Intent (`useRunStart`) / Owner | Copy Subject / Behavior | Status |
+| --- | --- | --- | --- | --- | --- |
+| Agents list card (`AgentList` → `AgentCard`) | Run | — | `runAgent(id)` | Definition defaults (REQ-021) | Covered |
+| Agent detail (`AgentDetail`) | Run | — | `runAgent(id)` | Same | Covered |
+| Agent Teams list / detail | Run | — | `runTeam(id)` | Same | Covered |
+| Agent Orgs list / detail (`AgentOrgExperience.openLaunch`) | Run | — | `runOrg(id)` | Same | Covered |
+| Agent run header (`AgentWorkspaceView` via `AgentWorkspaceSurface`/`WorkspaceHeaderActions`) | "+" | `standalone_agent` (live / stored history), `agent_run_task_agent`, `agent_run_task_team_member` | `copyAgentFromConfig(target.context.config)` | **The agent on screen** (SR-009) | Covered |
+| Same | ⚙ | Same; hidden for `temp-*` (AR-003) | `center.showConfig()` → `ExistingRunConfigEditor` | The selected saved run (`selection.subject`). For a collaborator view this is the host run's settings, unchanged from base. Collaborator settings are not independently editable (out of scope). | Covered (preserved) |
+| Team run header (`TeamWorkspaceView` via `TeamWorkspaceSurface`) | "+" | `standalone_team_member` and Team-hosted collaborator views | `copyTeamRun(...)` | **The Team run**, as at base (`createNewTeamRun` copies `activeTeamContext` for every member/collaborator view) | Covered (preserved) |
+| Same | ⚙ | Same | `center.showConfig()` | The Team run's saved settings | Covered |
+| Org run header (`AgentOrgWorkspaceView`, Agent and Team surfaces) | "+" | `agent_org_direct_agent`, `agent_org_team_member` (shown when live or member) | `copyOrgRun(orgRunId, orgDefinitionId)` | **The Org run** | Covered |
+| Same | ⚙ | Same | `openMemberConfiguration` → saved Org settings | The Org run | Covered |
+| Workspace tree agent "+" (`WorkspaceHistoryWorkspaceSection` → `onCreateRun` → `startPresetChat`) | "+" | — | `newChatInWorkspace({agentDefinitionId, workspaceRootPath})` | That agent in that workspace; today's settings rule (AR-002) | Covered |
+| Workspace tree rows (Team, Org, run rows) | (no "+"/⚙; select/terminate/archive/delete only) | — | — | — | Intentionally absent |
+| Left panel Chat nav + "new chat" pencil (`AppLeftPanel.startNewChat`, nav click) | New chat | — | **New intent `newChat()`** (gap found here: it still calls `chatDraftStore.startNewChat()` + router directly, the forbidden bypass) | Plain New chat order (Chat-nav rule) | **Change: route through `useRunStart.newChat()`** |
+| Heading switcher (New chat, Org page) | choose target | — | `switchTarget(choice, from)` | Carry rules (DS-005) | Covered |
+| `RemoteAgentCard.vue` "Run agent" | Run | — | — | Not rendered by any product component (no importer) | Intentionally absent (pre-existing; FU-004) |
+| Mobile run setup, Applications | Run/launch | — | — | Out of scope | Intentionally absent |
+
+Required change: add `useRunStart.newChat()` (calls `chatDraftStore.startNewChat()` and navigates to
+`/chat`). `AppLeftPanel` uses it for both the nav click and the pencil. Test: `useRunStart.newChat`
+→ a fresh draft + `/chat`.
+
+### DI-002 — Client mirror of server `@` eligibility (Defer the server query; Adopt contract checks)
+
+- **Server-owned candidate query for a not-yet-created run:** deferred as named follow-up **FU-001**.
+  It is a server API change (an escalation trigger) and needs user approval. The drift risk is
+  accepted for this ticket and mitigated by the two checks below.
+- **Contract checks (adopt):**
+  1. A live contract regression: the API/E2E probe `tests/e2e/cross-scope-agent-mentions-live-probe.mjs`
+     case N03 already compares the New chat `@` list with the server rule against a real server.
+     It stays a required case in the mentions slice (S4).
+  2. A unit contract pin: `utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts` reads
+     `autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts` from the repository and
+     asserts that its `*_AGENT_DEFINITION_ID` values equal the web mirror. It fails on drift.
+
+### DI-003 — First-message mention admission (Resolved; fallback recorded)
+
+- **Proven:**
+  - Server unit tests `standalone-agent-run-root.test.ts` (including "a host command readies the
+    host, binds it, admits mentions, then posts"), `team-root-collaborators.test.ts` and
+    `standalone-agent-run-lifecycle-service.test.ts`: 43/43 pass at `c37b81de5` (AF-019).
+  - Live API/E2E N02 (Agent) and N03 (Team): 3/3 pass on a real server and runtime. Evidence:
+    `evidence/api-e2e/cross-scope-mentions-N/`.
+- **Fallback if a future regression breaks it.** This is a **Requirement Gap** to the user, because
+  REQ-012 changes. The recommended answer: send the first message without structured mentions, keep
+  the `@Name` text, and show the existing "couldn't bring in {name}" notice, so the user can mention
+  again in the live run. No fallback code is built now (not reachable today).
+
+### DI-004 — One readiness rule for both start surfaces (Adopt)
+
+- A single pure rule `utils/runSettings/launchReadiness.ts` → `resolveScopesReadiness(tree)`, over the
+  `runMemberTree` effective scopes (root + every member).
+  - Blocking reasons in order: target unavailable → a scope's runtime disabled ("{Runtime} is
+    unavailable. Choose another runtime.") → a scope without a model ("Choose a model to start.").
+  - Org-only: topology `blocked` → "This Agent Org isn't available. Choose another Agent Org."
+- `resolveChatLaunchReadiness` (Team target) builds `runMemberTree.forTeam(definition, root,
+  draft.teamAgentOverrides)` and uses the rule. Agent targets use the same rule with one scope.
+- `agentOrgLaunchDraftStore.readiness` uses the same rule.
+- Copy and AC-002 are unchanged. A Team "+" copy with a member on a now-disabled runtime is now
+  blocked before launch.
+
+### DI-005 — Validation and rework slices (Adopt)
+
+Remaining validation and any rework are organized in slices. Each failure is attributed to one slice.
+
+| Slice | Scope | ACs | Required Evidence |
+| --- | --- | --- | --- |
+| S1 Agent/Team start | Run → New chat, REQ-021 defaults, members line/drawer, Team overrides at launch, tree "+", Chat nav | AC-001, 002, 004, 005, 006, 018 | Component specs + live Team launch with a member override |
+| S2 Org launch | Org page, readiness, seed "+", launch success/failure/unavailable, switcher to/from Org | AC-001, 002, 003, 013, 016 | Component specs + live Org launch (success and failure) |
+| S3 Saved runs | Running/stop, stopped edit/save/cancel, read-only, refresh, model unavailable, Org placed-team workspace | AC-009, 010, 011 | Component specs + live stop → edit → save → resume |
+| S4 Mentions | `@` menu (eligibility), first-message mentions, running chats | AC-007 | N01–N03 live (done) + the unit contract pin |
+| S5 Fast mode | Chip/row/member/saved-run, `service_tier` in launched/saved config | AC-019 | Component specs + live launched config shows `service_tier` |
+| S6 Tools + visuals | Start-surface tools; VIS comparison at 804/880/390 | AC-014, 017 | Screenshots vs VIS-001..042 |
+
+Removal/copy checks (AC-012, AC-015) run with every slice.
+
+### DI-006 — Structural pressure
+
+| Item | Decision | Reason |
+| --- | --- | --- |
+| (a) `ChatModelMenu` has two modes (396 lines) | **Accept** | One menu with a `runtimeLocked` mode that shares search, list and keyboard handling. Splitting would duplicate those or need a new shared base for one variant. It is under 500. Revisit if a third mode appears. |
+| (b) Two default-model resolvers in `chatDraftStore` | **Adopt** | The design gave the REQ-021 order to `utils/runSettings/startModelDefaults`. Move both orderings (`definitionStartOrder`, `chatNavStartOrder`) there as candidate lists. `chatDraftStore` keeps only staleness/generation and applies the result. |
+| (c) `AgentOrgExperience.vue` at 500 lines | **Defer (FU-002)** | Pre-existing size (base 497); this change adds a 1-line call. Split before the next feature touches it. |
+| (d) A Team draft uses Daily Assistant's `AgentContext` as its message carrier | **Accept (FU-003, low)** | Pre-existing from the earlier New chat ticket. It works and is covered by tests. Replacing it with a target-neutral carrier touches composer/upload ownership beyond this scope. |
+| (e) `utils/runSettings/*` imports `components/chat/chatModelOptions` | **Adopt** | Move the pure logic to `utils/runSettings/modelOptions.ts`. Components import from utils; nothing in utils imports components. |
+
+### Follow-ups (named, not in this ticket)
+
+- **FU-001:** a server-owned `@` candidate query for a not-yet-created run (needs user approval;
+  server API).
+- **FU-002:** split `AgentOrgExperience.vue`.
+- **FU-003:** a target-neutral New chat message carrier.
+- **FU-004:** remove the unrendered `RemoteAgentCard.vue`, or wire it intentionally.

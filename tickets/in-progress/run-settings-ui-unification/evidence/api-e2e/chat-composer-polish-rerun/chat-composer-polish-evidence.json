@@ -1,0 +1,292 @@
+{
+  "startedAt": "2026-10-05T20:50:53.553Z",
+  "cases": {
+    "T01": {
+      "title": "Claude SDK merged thinking menu at desktop width: Off state, pick High, Off, Medium, Off→Medium (A-1)",
+      "result": "Pass",
+      "ms": 8803,
+      "details": {
+        "model": "claude-fable-5",
+        "effortLevels": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "initial": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "medium"
+          }
+        },
+        "openFocus": "chat-thinking-option-primary-off",
+        "offMenu": {
+          "ids": [
+            "off",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "box": {
+            "x": 1040.5,
+            "y": 360,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 581.5,
+            "right": 1216.5
+          },
+          "position": "absolute"
+        },
+        "high": {
+          "trigger": "High",
+          "bulb": {
+            "muted": false,
+            "color": "rgb(93, 93, 93)"
+          },
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "offAgain": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "high"
+          }
+        },
+        "medium": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        },
+        "storedOffMedium": {
+          "thinking_enabled": false,
+          "reasoning_effort": "medium"
+        },
+        "repick": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        }
+      }
+    },
+    "T02": {
+      "title": "Launch a chat at High: the created run records thinking_enabled:true + reasoning_effort:high (AC-001)",
+      "result": "Fail",
+      "ms": 32690,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-option-claude-fable-5\"]')\n",
+      "details": null
+    },
+    "T03": {
+      "title": "Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)",
+      "result": "Fail",
+      "ms": 33181,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-option-claude-fable-5\"]')\n",
+      "details": null
+    },
+    "T04": {
+      "title": "A model without an on/off switch keeps the per-parameter thinking menu (AC-006)",
+      "result": "Pass",
+      "ms": 3021,
+      "details": {
+        "runtimeKind": "codex_app_server",
+        "model": "gpt-5.6-luna",
+        "keys": [
+          "reasoning_effort",
+          "service_tier"
+        ],
+        "before": {
+          "trigger": "Medium",
+          "draft": {
+            "reasoning_effort": "medium"
+          }
+        },
+        "items": [
+          "chat-thinking-option-reasoning_effort-low",
+          "chat-thinking-option-reasoning_effort-medium",
+          "chat-thinking-option-reasoning_effort-high",
+          "chat-thinking-option-reasoning_effort-xhigh",
+          "chat-thinking-option-reasoning_effort-max"
+        ],
+        "after": {
+          "trigger": "Low",
+          "draft": {
+            "reasoning_effort": "low"
+          },
+          "picked": "low"
+        }
+      }
+    },
+    "T05": {
+      "title": "Workspace search at desktop width with 14 workspaces: focus, filter, path, empty state, keys, IME guard, Escape, reset (AC-007, AC-008)",
+      "result": "Pass",
+      "ms": 1530,
+      "details": {
+        "initialSelection": "Temp workspace",
+        "open": {
+          "position": "absolute",
+          "box": {
+            "x": 506.5,
+            "y": 161.5,
+            "w": 384,
+            "h": 420,
+            "right": 890.5,
+            "bottom": 581.5
+          },
+          "scrolls": true,
+          "inputInListbox": false,
+          "placeholder": "Search workspaces",
+          "ariaLabel": "Search workspaces",
+          "options": 15
+        },
+        "mcps": [
+          "MCPS-tools",
+          "autobyteus_mcps"
+        ],
+        "byPath": [
+          "lambda-sdk"
+        ],
+        "empty": "No workspaces match “zzz”",
+        "notesOrder": [
+          "alpha-notes",
+          "notes"
+        ],
+        "keys": {
+          "k1": "chat-workspace-option-agent_ws_f8eff37babce30df777fb9173b3bd35e083aed110bf0a1e0e1a45f1b10d8b3c9",
+          "k2": "chat-workspace-option-agent_ws_262741df3eaa8b2bd7009d6d2089de492d3a421f6bc251af538d1faa173e5abf",
+          "k3": "chat-workspace-option-agent_ws_f8eff37babce30df777fb9173b3bd35e083aed110bf0a1e0e1a45f1b10d8b3c9",
+          "k4": "chat-workspace-search"
+        },
+        "picked": "notes",
+        "hint": null,
+        "reopenedQuery": "",
+        "afterEscape": "notes",
+        "enterPick": "gamma-api",
+        "folderForm": true
+      }
+    },
+    "T06": {
+      "title": "Layout at 1440×1000 and 1280×700: pt-[14vh] pb-10; no overlap/clipping; menus inside viewport (AC-009)",
+      "result": "Pass",
+      "ms": 7884,
+      "details": {
+        "1440x1000": {
+          "thinkingTriggerSettledMs": 1832,
+          "paddingTop": 140,
+          "paddingBottom": 40,
+          "composerTop": 521.5,
+          "blockCenterMinusAreaCenter": 32,
+          "noOverlap": true,
+          "inside": true,
+          "overflow": false,
+          "wsBox": {
+            "x": 506.5,
+            "y": 218.5,
+            "right": 890.5,
+            "bottom": 638.5
+          },
+          "thBox": {
+            "x": 1040.5,
+            "y": 417,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 638.5,
+            "right": 1216.5
+          }
+        },
+        "1280x700": {
+          "thinkingTriggerSettledMs": 805,
+          "paddingTop": 98,
+          "paddingBottom": 40,
+          "composerTop": 350.5,
+          "blockCenterMinusAreaCenter": 11,
+          "noOverlap": true,
+          "inside": true,
+          "overflow": false,
+          "wsBox": {
+            "x": 426.5,
+            "y": 47.5,
+            "right": 810.5,
+            "bottom": 467.5
+          },
+          "thBox": {
+            "x": 960.5,
+            "y": 246,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 467.5,
+            "right": 1136.5
+          }
+        }
+      }
+    },
+    "T07": {
+      "title": "Narrow bottom sheet (413×738): merged thinking list and workspace search still work",
+      "result": "Fail",
+      "ms": 32552,
+      "error": "locator.boundingBox: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-runtime-claude_agent_sdk\"]')\n",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 72170
+    },
+    {
+      "label": "frontend",
+      "pid": 72197
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 72197,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 72170,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-3aXjo7"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-3aXjo7",
+  "backendUrl": "http://127.0.0.1:56482",
+  "frontUrl": "http://127.0.0.1:56483",
+  "workspaces": {
+    "alpha-notes": "agent_ws_f8eff37babce30df777fb9173b3bd35e083aed110bf0a1e0e1a45f1b10d8b3c9",
+    "autobyteus_mcps": "agent_ws_d8f0169d02e948121cfe39694199713ae3afa0a7be80ff6974412ac27cc149f8",
+    "MCPS-tools": "agent_ws_d7aea5e2c0b946f38151d844d259dcb2d0a1ad953cb23c991e451c8288a55610",
+    "beta-site": "agent_ws_5c6d5f2ba5cf3738b3afab01d9a295ec1a1fcca530a74712947e1d3f253a0d5e",
+    "gamma-api": "agent_ws_4154b0257efccb5a25580ba02291bf42f458a36b9c738508ed3a05d93ceb63b3",
+    "delta-infra": "agent_ws_39a5ac3db681afbf19d3f6db74b67f2466ef0aa9ea77f43d110cac71af8c7788",
+    "epsilon-docs": "agent_ws_6170c3552ad88daec0f01a5b11e6cfc7dbb8b204529a7db749eda7ce43da4e0f",
+    "zeta-mobile": "agent_ws_2b930006c8329176715da8bf7ee5c529ce26dc3ad61b0727e48ece1d51602aed",
+    "eta-data": "agent_ws_b0b9159fd80e7fd8b35879edd6477d3592b6bec15b3d9484577bd31a54302504",
+    "theta-ml": "agent_ws_6cbf0331368869d4107a29776be8f0363da5c9ececa7ee3edf50623923083704",
+    "iota-web": "agent_ws_276e266161545790f3c1672e4edb5f7a56355b5e809a203fe5b589eadb099c0f",
+    "kappa-cli": "agent_ws_b7e337c20fd9b1d29f0361aa17640fcfd851e891b16b5d5461f7c454960818e2",
+    "lambda-sdk": "agent_ws_7dbc60ee57f49f9371fec595b76a5773e7722e81769f731d6aba76d48d5a9e66",
+    "notes": "agent_ws_262741df3eaa8b2bd7009d6d2089de492d3a421f6bc251af538d1faa173e5abf"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-10-05T20:53:01.477Z"
+}

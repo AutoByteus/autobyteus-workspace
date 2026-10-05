@@ -1,0 +1,431 @@
+{
+  "startedAt": "2026-10-05T20:49:00.611Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fixtures/fresh-run-auto-approval.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/pages/api-e2e-fresh-run-auto-approval.vue",
+  "routePath": "/api-e2e-fresh-run-auto-approval",
+  "graphqlOperations": [
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "autobyteus",
+        "identifiers": [
+          "approval-model"
+        ]
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "autobyteus",
+        "identifiers": [
+          "approval-model"
+        ]
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "PrepareAgentRun",
+      "variables": {
+        "input": {
+          "agentDefinitionId": "approval-agent",
+          "workspaceId": "temp_ws_default",
+          "workspaceRootPath": "/workspace/temp",
+          "llmModelIdentifier": "approval-model",
+          "autoExecuteTools": true,
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "reasoning_summary": "auto"
+          },
+          "runtimeKind": "autobyteus",
+          "initialSummary": "Validate approval boundary"
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    }
+  ],
+  "scenarios": {
+    "B08": {
+      "status": "Pass",
+      "description": "Dedicated mobile Agent/Team setup defaults and helper agree",
+      "details": [
+        {
+          "target": "agent",
+          "freshChecked": true,
+          "optOutChecked": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        },
+        {
+          "target": "team",
+          "freshChecked": true,
+          "optOutChecked": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        }
+      ]
+    },
+    "B01": {
+      "status": "Pass",
+      "description": "New chat Agent fresh true and first-send true",
+      "details": {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "temp_ws_default",
+        "workspaceRootPath": "/workspace/temp",
+        "llmModelIdentifier": "approval-model",
+        "autoExecuteTools": true,
+        "llmConfig": {
+          "reasoning_effort": "low",
+          "reasoning_summary": "auto"
+        },
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      }
+    },
+    "B02": {
+      "status": "Fail",
+      "failure": {
+        "id": "B02",
+        "description": "Narrow Agent opt-out survives model/workspace/permitted runtime edits",
+        "message": "Timed out waiting for New chat model ready; last=false; error=locator.innerText: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-trigger\"]').first()\n",
+        "stack": "Error: Timed out waiting for New chat model ready; last=false; error=locator.innerText: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-trigger\"]').first()\n\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:89:9)\n    at async open (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:276:3)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:385:5\n    at async scenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:254:70)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:384:3",
+        "body": "New ChatTeam chatMobile setup"
+      }
+    }
+  },
+  "browserEvents": [],
+  "failures": [
+    {
+      "id": "B02",
+      "description": "Narrow Agent opt-out survives model/workspace/permitted runtime edits",
+      "message": "Timed out waiting for New chat model ready; last=false; error=locator.innerText: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-trigger\"]').first()\n",
+      "stack": "Error: Timed out waiting for New chat model ready; last=false; error=locator.innerText: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-trigger\"]').first()\n\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:89:9)\n    at async open (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:276:3)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:385:5\n    at async scenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:254:70)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs:384:3",
+      "body": "New ChatTeam chatMobile setup"
+    }
+  ],
+  "cleanup": {
+    "browser": {
+      "status": "closed",
+      "pid": 71651
+    },
+    "devServer": {
+      "status": "terminated",
+      "pid": 71299,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "finalExitCode": 0,
+      "finalSignalCode": null,
+      "processGroupExited": true
+    },
+    "page": "removed"
+  },
+  "port": 56390,
+  "baseUrl": "http://127.0.0.1:56390",
+  "devServerPid": 71299,
+  "browserPid": 71651,
+  "browserVersion": "154.0.8037.97",
+  "mobileObservations": [
+    {
+      "target": "agent",
+      "freshChecked": true,
+      "optOutChecked": false,
+      "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+    },
+    {
+      "target": "team",
+      "freshChecked": true,
+      "optOutChecked": false,
+      "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+    }
+  ],
+  "inputs": {
+    "agents": [
+      {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "temp_ws_default",
+        "workspaceRootPath": "/workspace/temp",
+        "llmModelIdentifier": "approval-model",
+        "autoExecuteTools": true,
+        "llmConfig": {
+          "reasoning_effort": "low",
+          "reasoning_summary": "auto"
+        },
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      }
+    ],
+    "teams": []
+  },
+  "finishedAt": "2026-10-05T20:50:53.113Z"
+}

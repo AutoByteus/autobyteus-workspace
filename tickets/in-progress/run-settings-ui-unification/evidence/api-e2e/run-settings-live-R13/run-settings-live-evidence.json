@@ -1,0 +1,100 @@
+{
+  "startedAt": "2026-10-05T22:32:29.770Z",
+  "cases": {
+    "R13": {
+      "title": "S6 AC-017 / UIS-004 / REQ-022 (VIS-017, VIS-023, VIS-014): start-surface tools open docked; the Org card shows the \"Fast mode\" row for a Codex model; an unknown Org shows the unavailable state",
+      "result": "Pass",
+      "ms": 15008,
+      "details": {
+        "toolsClosed": false,
+        "toolsTabs": [
+          "Files",
+          "Terminal",
+          "Activity",
+          "Token",
+          "Artifacts",
+          "VNC Viewer"
+        ],
+        "toggleBack": true,
+        "fastRow": "Fast mode Fast",
+        "orgCard": {
+          "390": {
+            "overlaps": [],
+            "outside": [],
+            "rows": 6
+          },
+          "804": {
+            "overlaps": [],
+            "outside": [],
+            "rows": 6
+          },
+          "880": {
+            "overlaps": [],
+            "outside": [],
+            "rows": 6
+          }
+        },
+        "unavailable": "This Agent Org isn't available. Choose another Agent Org. Back to Agent Orgs",
+        "unavailableHeading": ""
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 2801
+    },
+    {
+      "label": "frontend",
+      "pid": 2832
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 2832,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 2801,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-fdjuvh"
+    }
+  ],
+  "observations": [
+    {
+      "text": "R13 observation: the unavailable Org page shows an empty heading switcher (no name, chevron only) for an unknown/deleted Org",
+      "details": null
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-fdjuvh",
+  "backendUrl": "http://127.0.0.1:55592",
+  "frontUrl": "http://127.0.0.1:55593",
+  "definitions": {
+    "planner": "planner",
+    "drafter": "drafter",
+    "checker": "checker",
+    "scout": "scout",
+    "fragile": "fragile-helper",
+    "docsTeam": "docs-team",
+    "org": "docs-org",
+    "fragileOrg": "fragile-org"
+  },
+  "fastCandidates": [
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "gpt-6-luna",
+    "gpt-6-sol",
+    "gpt-6.1-sol"
+  ],
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0,
+    "blocked": 0
+  },
+  "completedAt": "2026-10-05T22:33:21.816Z"
+}

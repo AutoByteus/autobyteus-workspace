@@ -3,17 +3,17 @@
 ## Review Round Meta
 
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/tickets/in-progress/run-settings-ui-unification/requirements-doc.md` (Approved, SR-006, unchanged)
-- Upstream Investigation Notes: `…/investigation-notes.md` (SF-001..010, AF-001..016)
-- Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001..SR-008)
-- Reviewed Design Spec: `…/design-spec.md` (Ready, revised in SR-008)
+- Upstream Investigation Notes: `…/investigation-notes.md` (SF-001..010, AF-001..020)
+- Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001..SR-010)
+- Reviewed Design Spec: `…/design-spec.md` (Ready, revised in SR-010; §"SR-010 Addendum" is authoritative where it refines earlier sections)
 - Supplemental Task Artifacts Reviewed: Product `ui-ux-spec.md` (`/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/run-settings-ui-unification/ui-ux-spec.md`, `origin/personal@6718986`); `product-design-request{,-r2,-r3}.md`; `evidence/user-screenshots/*`; `architecture-handoff.md` (including the "Re-review (SR-008)" section)
-- Relevant Solution Revision IDs: SR-006 (requirements), SR-007 (design), SR-008 (design revision)
+- Relevant Solution Revision IDs: SR-006 (requirements), SR-007 (design), SR-008, SR-009 and SR-010 (design revisions)
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: `Architecture Design Complete (revised)` from `/software_engineering_team/solution_designer` after ARCH-REV-001 (Fail)
-- Prior Review Round Reviewed: 1 (ARCH-REV-001, Fail: AR-001..AR-004)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Trigger: `Architecture Design Complete (revised)`, SR-010, from `/software_engineering_team/solution_designer`. It records decisions on Code Review CRR-004 DI-001..DI-006, raised at the user's direction.
+- Prior Review Round Reviewed: 3 (ARCH-REV-003, Pass, SR-009/CR-001). Earlier: ARCH-REV-001 Fail (AR-001..004), ARCH-REV-002 Pass.
+- Latest Authoritative Round: 4
 - Current-State Evidence Basis: the round 1 code reads remain valid, since the worktree is unchanged at `19dee40b3`. Round 2 re-verified:
   - `built-in-agent-registry.ts:5-7,25-35` (three built-in ids);
   - `agentDefinitionStore.sharedAgentDefinitions` (ownership-scope filter);
@@ -21,6 +21,25 @@
   - `AgentWorkspaceView.vue:9,79` (ungated ⚙);
   - `WorkspaceAgentRunsTreePanel.vue:313-316` (tree "+");
   - the SR-008 design sections against `collaborator-candidate-policy.ts`.
+
+- Round 3 evidence (worktree at `396591a37`):
+  - Base `AgentWorkspaceView.startNewChatForRun` (`git show origin/personal:…/AgentWorkspaceView.vue`) used `target.context.config`, the agent on screen.
+  - `agentRunCollaborationStore.childTargetFor` keeps child contexts outside `agentContextsStore`.
+  - `agentRunCollaborationChildContextFactory.createChildContext`: a child config carries `agentDefinitionId`, runtime, model, `llmConfig`, `autoExecuteTools` and workspace metadata from the child's `launchConfiguration`.
+  - The current `useRunStart.copyAgentRun` looks up only `agentContextsStore`, which confirms CR-001.
+  - `agentOrgLaunchDraftStore` no longer imports `chatDraftStore` (CR-002).
+- Round 3 delta reviewed:
+  - SR-009 design §Interface Boundary Mapping: `copyAgentFromConfig(config: AgentRunConfig)` replaces `copyAgentRun(runId)`.
+  - DS-003.
+  - §Workspace Representation Conversion Boundaries (Agent copy row).
+  - §Guidance: the copy subject, plus the CR-002/CR-003 resolution notes and the new test.
+
+- Round 4 evidence (worktree head `c37b81de5`):
+  - `AppLeftPanel.vue:166-178`: the Chat nav and pencil call `useChatDraftStore().startNewChat()` and then push the route, which confirms the DI-001 gap.
+  - `RemoteAgentCard.vue` has no template usage: no `<RemoteAgentCard>`, `<remote-agent-card>` or `AgentsRemoteAgentCard`; it appears only in the Nuxt auto-import registry.
+  - `useRunStart.ts:128` exports no `newChat` yet.
+  - AF-019/AF-020 evidence exists under `evidence/api-e2e/cross-scope-mentions-N/` (N02/N03 screenshots, logs, evidence JSON) and `web-suite.log`.
+  - There is a precedent for a web spec reading server source (`services/runHydration/__tests__/acceptedInputIdentity.spec.ts`), so the DI-002 contract pin fits the repository practice.
 
 ## Routing Classification Review
 
@@ -120,7 +139,7 @@ The investigation notes' supplement inventory is now consistent (R-2 resolved).
 
 | Interface | Subject Clear | Singular | Identity Explicit | Generic Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `useRunStart.run*` / `copy*Run` / `switchTarget({kind,id})` / `newChatInWorkspace({agentDefinitionId, workspaceRootPath})` | Pass | Pass | Pass | Low | Pass |
+| `useRunStart.run*` / `copyAgentFromConfig(config: AgentRunConfig)` / `copyTeamRun` / `copyOrgRun` / `switchTarget({kind,id})` / `newChatInWorkspace({agentDefinitionId, workspaceRootPath})` | Pass | Pass | Pass. The Agent copy takes the displayed config snapshot, because the agent on screen may live in either `agentContextsStore` or `agentRunCollaborationStore`. A run-id lookup would have to guess which store. | Low | Pass |
 | `chatDraftStore.startForDefinition` / `setTeamMemberOverride` | Pass | Pass | Pass | Low | Pass |
 | `agentOrgLaunchDraftStore.start` / setters / `readiness` / `launch` | Pass | Pass | Pass | Medium, mitigated by separate team and agent setters | Pass |
 | `agentOrgLaunchService.launch(snapshot)` | Pass | Pass | Pass | Low | Pass |
@@ -274,20 +293,29 @@ The investigation notes' supplement inventory is now consistent (R-2 resolved).
 
 ## Review Decision
 
-- `Pass`. The behavior basis is confirmed and every round 1 finding is resolved in the canonical design spec. No in-scope machinery depends on an unsupported premise. The design is ready for implementation.
+- `Pass` (ARCH-REV-004). The SR-010 decisions are sound and proportionate, traceable to approved requirements, and consistent with the existing ownership model. No in-scope machinery depends on an unsupported premise.
+
+## Round 4 Assessment (SR-010 / CRR-004 DI-001..DI-006)
+
+| Item | SR-010 Decision | Review Verdict | Basis |
+| --- | --- | --- | --- |
+| DI-001 rendered-surface audit | Adopt; new `useRunStart.newChat()` for the AppLeftPanel Chat nav and pencil | Pass | The audit starts from rendered controls and closes the last start-intent bypass, which the boundary rule forbids. It keeps the plain New chat order (REQ-021 "Plain New chat … unchanged"). The ⚙/"+" copy subjects per surface match base behavior and SR-009. The `RemoteAgentCard` exclusion is verified as unrendered; FU-004 is non-blocking. |
+| DI-002 client mirror of `@` eligibility | Defer the server query (FU-001); adopt live N03 regression + unit contract pin | Pass | A server query would be a server API change, which the requirements put out of scope (ASM-001) and which needs user approval, so deferral is correct. The two checks give proportionate drift detection for the mirror accepted in ARCH-REV-002. |
+| DI-003 first-message mention admission | Resolved: server unit 43/43, live N02/N03 pass | Pass | The AF-009 risk is retired by real evidence. The fallback is correctly classed as a Requirement Gap (it would change REQ-012) with no code built now. The trigger is not reachable today. |
+| DI-004 one readiness rule | Adopt `utils/runSettings/launchReadiness.ts` over the `runMemberTree` effective scopes, for both surfaces | Pass | It removes duplicated readiness policy between `chatLaunchService` and `agentOrgLaunchDraftStore`. It uses the existing AC-002 copy and ordering, and the Org topology-blocked reason maps to the UIS-004 unavailable state. Per-member runtime blocking applies AC-002 to member overrides that REQ-009 introduces in chat. It catches a failure before launch without new copy or policy, consistent with the preserved "Launch validation" boundary. |
+| DI-005 validation slices S1–S6 | Adopt | Pass | Each slice maps to ACs with the required evidence. AC-012/AC-015 run with every slice. |
+| DI-006 (a) `ChatModelMenu` two modes | Accept | Pass | One owner with a shared search/list/keyboard path, under 500 lines. A split would duplicate code or add a base for one variant. |
+| DI-006 (b) start orders → `startModelDefaults` | Adopt | Pass | This realizes the design's original allocation. The store keeps staleness and generation only. |
+| DI-006 (c) `AgentOrgExperience.vue` size | Defer (FU-002) | Pass | Pre-existing (base 497 lines); this change adds one line. |
+| DI-006 (d) Team draft message carrier | Accept (FU-003) | Pass | Pre-existing and tested. Replacing it reaches composer and upload ownership beyond scope. |
+| DI-006 (e) `chatModelOptions` → `utils/runSettings/modelOptions.ts` | Adopt | Pass | It fixes the dependency direction: utils no longer import components. |
 
 ## Findings
 
-None open. The resolution of AR-001..AR-004 is recorded in `architecture-review-revision-record.md` (ARCH-REV-002):
-
-- **AR-001 (resolved).** §Guidance and §Off-Spine Concerns define `draftMentionEligibility`, which mirrors `CollaboratorCandidatePolicy`:
-  - eligibility: shared, non-built-in agents and shared teams;
-  - exclusion: the target plus its recursive tree placements;
-  - the built-in ids match `built-in-agent-registry.ts:5-7`.
-  The spec adds an example, unit tests and an API/E2E case, and records P-002 as Not Reachable, so no machinery is added.
-- **AR-002 (resolved).** `useRunStart.newChatInWorkspace` keeps today's `startNewChat(preset)` settings rule. The tree panel is listed as its caller.
-- **AR-003 (resolved).** ⚙ is hidden for `temp-*` in the `AgentWorkspaceView` header. The error notice and composer retry are kept, with a test.
-- **AR-004 (resolved).** §Workspace Representation Conversion Boundaries names the converters and their only callers.
+None open.
+- AR-001..AR-004 are resolved (ARCH-REV-002).
+- CR-001 design coverage was verified in ARCH-REV-003.
+- DI-001..DI-006 are verified here.
 
 ## Classification
 
@@ -295,18 +323,28 @@ N/A (Pass).
 
 ## Recommended Recipient
 
-`/software_engineering_team/implementation_engineer`. `/software_engineering_team/solution_designer` receives an informational notice.
+- `/software_engineering_team/implementation_engineer` applies the SR-010 deltas:
+  - `newChat()`;
+  - `launchReadiness`;
+  - the two module moves;
+  - the contract pin.
+- Then a targeted code review, and API/E2E resumes on the new head.
+- `/software_engineering_team/solution_designer` receives an informational notice.
 
 ## Residual Risks
 
-- AF-009: first-message mention admission is proven by code reading only. The API/E2E proof stays mandatory, including the new Team case. A server rejection triggers the escalation (Design Impact).
-- The frontend built-in id constant mirrors the server registry by hand. A new server built-in would cause a rejected first-send mention until the constant is updated. The cost is low and visible in tests and review; keep the comment pointing to the server registry.
-- First-send rejection for non-eligibility reasons (P-002, Not Reachable in the normal flow) is not handled specially.
-- Org readiness relies on server validation instead of per-scope schema gating. Failures surface as "Couldn't start this Agent Org. Try again."
-- The test and localization blast radius is large. The mobile specs (AC-015) and the localization audit must stay green.
+- The web client mirror of server `@` eligibility remains until FU-001. Drift is detected by the N03 live regression and the built-in id contract pin.
+- Readiness rule consolidation (DI-004) moves Team-chat and Org readiness onto one rule. The S1/S2 slices must show that the AC-002 copy and order are unchanged, and that the topology-blocked case shows the unavailable state.
+- Named follow-ups FU-001..FU-004 are outside this ticket.
+- The web suite has 11 baseline failing files (AF-020). New failures must be attributed per slice.
+- The mobile specs (AC-015) and the localization audit run with every slice.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. P-001 (Reachable) is resolved by the eligibility alignment. P-002 is Not Reachable, so no machinery is required. P-003 (Reachable) is resolved by hiding ⚙.
-- Notes: ARCH-REV-002. Proceed to implementation with the cumulative package.
+- Material-Premise Gate: `Pass`.
+  - P-001 is resolved and is now also live-proven (N03).
+  - P-002 is Not Reachable.
+  - P-003 is resolved.
+  - The DI-003 fallback trigger is Not Reachable today, so no machinery is built.
+- Notes: ARCH-REV-004. Implementation applies the SR-010 deltas, then targeted code review, then API/E2E on the new head.

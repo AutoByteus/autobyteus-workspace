@@ -2,7 +2,7 @@
 
 - Result classification: `Architecture Design Complete`
 - Package identifier: `run-settings-ui-unification`
-- Current SR: `SR-008` (re-review after ARCH-REV-001)
+- Current SR: `SR-010` (re-review after CRR-004 DI-001..DI-006; earlier SR-009 after CRR-002, SR-008 after ARCH-REV-001)
 - From: `/software_engineering_team/solution_designer`
 - To: `/software_engineering_team/architecture_reviewer`. The handoff rule applies because
   `task_size = Large` and `architectural_risk = High`.
@@ -126,3 +126,39 @@ team workflow.
 - **R-2:** investigation-notes supplement inventory.
 - Requirements are unchanged (SR-006, Approved). Classification is unchanged (Large/High).
 - Route record (re-review): `get_handoff_rules` on 2026-10-05 → `/software_engineering_team/architecture_reviewer`.
+
+## Re-review (SR-009) — Changes Since CRR-002 (code review)
+
+- Trigger: CRR-002 CR-001 (Design Impact). On an `@` collaborator view of an Agent run, "+" is a no-op
+  because `copyAgentRun(runId)` looks up `agentContextsStore`, while child contexts live in
+  `agentRunCollaborationStore` (AF-017).
+- Design change:
+  - `copyAgentFromConfig(config: AgentRunConfig)` replaces `copyAgentRun(runId)`. It copies the agent
+    on screen: the host, the collaborator child, or a team-member collaborator's member agent. This
+    preserves the base behavior and adds the REQ-013 settings copy.
+  - Updated sections: §Interface Boundary Mapping, §Spine Narratives/Primary Spines DS-003,
+    §Workspace Representation Conversion Boundaries, §Guidance (incl. CR-002/CR-003 resolution
+    notes, and a new test).
+- Requirements are unchanged (SR-006). Classification is unchanged (Large/High).
+- After a Pass: the implementation engineer applies CR-001 (new interface) together with the Local
+  Fixes CR-002 and CR-003 from `code-review-report.md`. CR-002/CR-003 are already in progress in the
+  worktree.
+- Route record (SR-009): `get_handoff_rules` on 2026-10-05 → `/software_engineering_team/architecture_reviewer`
+  (the revised Large/High package rule).
+
+## Re-review (SR-010) — Decisions On CRR-004 (raised at the user's direction)
+
+- Read `design-spec.md` §"SR-010 Addendum" (authoritative refinement) and `investigation-notes.md`
+  AF-018..AF-020.
+- Material design deltas for review:
+  - the `useRunStart.newChat()` intent (DI-001);
+  - the shared readiness rule `utils/runSettings/launchReadiness.ts` (DI-004);
+  - two module moves: start orders → `startModelDefaults`, and `chatModelOptions` →
+    `utils/runSettings/modelOptions.ts` (DI-006 b/e);
+  - the contract pin for the built-in id mirror (DI-002).
+- Deferred with reasons: FU-001 (server `@` query; needs user approval), FU-002, FU-003, FU-004.
+- DI-003 is proven: server unit 43/43; live N02/N03 pass.
+- Requirements are unchanged (SR-006). Classification is unchanged (Large/High).
+- After a Pass: implementation applies the SR-010 deltas, then a targeted code review, then API/E2E
+  resumes on the new head (the web suite and N01–N03 first).
+- Route record (SR-010): `get_handoff_rules` on 2026-10-05 → `/software_engineering_team/architecture_reviewer`.

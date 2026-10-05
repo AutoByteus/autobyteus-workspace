@@ -73,7 +73,8 @@
     "test:e2e:isolated-app": "node tests/e2e/isolated-app-lifecycle-probe.mjs",
     "test:e2e:team-reload-member-freshness": "node tests/e2e/team-reload-member-freshness-probe.mjs",
     "test:e2e:composer-mention-discoverability": "node tests/e2e/composer-mention-discoverability-probe.mjs",
-    "test:e2e:fresh-run-auto-approval": "node tests/e2e/fresh-run-auto-approval-probe.mjs"
+    "test:e2e:fresh-run-auto-approval": "node tests/e2e/fresh-run-auto-approval-probe.mjs",
+    "test:e2e:run-settings-live": "node tests/e2e/run-settings-live-probe.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

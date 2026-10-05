@@ -231,3 +231,17 @@ Project design guideline applied: `DESIGN.md` (repo root) and `TESTING.md`. Ther
 | AF-014 | Built-in agent ids: `autobyteus-daily-assistant`, `autobyteus-project-task-manager`, `autobyteus-retrospective-skill-improver`. They are bootstrapped as normal shared definitions with no frontend marker. The frontend knows only `DEFAULT_CHAT_AGENT_DEFINITION_ID`, so today's New chat target list already diverges for two built-ins. | `autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts:5-7,25-35`; `autobyteus-web/utils/chat/chatDefaults.ts:4`; `useChatComposerOptions.ts:48-50` |
 | AF-015 | Workspace tree "+" path: `useWorkspaceHistorySelectionActions.onCreateRun` → `WorkspaceAgentRunsTreePanel.startPresetChat` → `chatDraftStore.startNewChat(preset)` + `router.push('/chat')` | `WorkspaceAgentRunsTreePanel.vue:313-316` |
 | AF-016 | Edit Config (⚙) for an agent run is emitted by the run header to `AgentWorkspaceView.openSelectedRunConfig` → `center.showConfig()`. Nothing gates it for `temp-*` contexts. | `AgentWorkspaceView.vue:9,79` |
+
+## Code Review Follow-up Evidence (CRR-002, 2026-10-05)
+
+| Fact ID | Fact | Evidence |
+| --- | --- | --- |
+| AF-017 | At base, the Agent run header "+" in `AgentWorkspaceView.startNewChatForRun` used `target.context.config`, the agent on screen. For an `@` collaborator child (`agent_run_task_agent` / `agent_run_task_team_member`) it opened New chat preset to the child's agent and workspace. Child contexts live in `agentRunCollaborationStore` (`childTargetFor`), not `agentContextsStore`. The implemented `copyAgentRun(runId)` looks up `agentContextsStore`, so it is a no-op for children. | `git show origin/personal:autobyteus-web/components/workspace/agent/AgentWorkspaceView.vue` (lines 69-77); `stores/agentRunCollaborationStore.ts:257-283`; `composables/runSettings/useRunStart.ts:47-58` (IR-001 `d45fe62bc`) |
+
+## CRR-004 Follow-up Evidence (2026-10-05, head `c37b81de5`)
+
+| Fact ID | Fact | Evidence |
+| --- | --- | --- |
+| AF-018 | Rendered-surface audit of Run/"+"/⚙: see design-spec SR-010 DI-001 table. New gap: `AppLeftPanel.startNewChat` and the Chat nav click call `chatDraftStore.startNewChat()` + router directly. `RemoteAgentCard.vue` has no importer. The Team header "+" copies the Team run for every member/collaborator view, as at base. | `AppLeftPanel.vue:61,169-177`; grep for `RemoteAgentCard`; `git show origin/personal:…/TeamWorkspaceView.vue` |
+| AF-019 | Server mention admission unit tests pass at `c37b81de5`: `standalone-agent-run-root.test.ts`, `team-root-collaborators.test.ts`, `standalone-agent-run-lifecycle-service.test.ts` (43/43). Run with `npx vitest run … --no-watch` in `autobyteus-server-ts`. | local run 2026-10-05 |
+| AF-020 | API/E2E live proof: N01–N03, 3/3 pass on a real server and the Claude Agent SDK runtime. N02 (Agent) and N03 (Team) admit first-message mentions. The N03 New chat `@` list matches the server policy (excludes the team, its members, the Org and the three built-ins). The web suite at `c37b81de5` has no new failures (11 baseline failing files). | `evidence/api-e2e/cross-scope-mentions-N/cross-scope-agent-mentions-evidence.json`; `evidence/api-e2e/web-suite.log`; `api-e2e-test-case-ledger.md` |

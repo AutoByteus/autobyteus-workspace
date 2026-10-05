@@ -60,7 +60,9 @@ const MARGIN = 16
 const FLYOUT = { listMax: 320, overhang: 5, margin: 12, chrome: 10 }
 const WIDE = [{ width: 1512, height: 952 }, { width: 1280, height: 720 }, { width: 1024, height: 520 }, { width: 1024, height: 440 }]
 const NARROW = { width: 390, height: 844 }
-const HEADING_TOP = { '1512x952': 379, '1280x720': 246 }
+// Heading position in the run-settings-ui-unification New chat layout (VIS-001: the skills/@ hint sits between the
+// heading and the composer; the old "Files are saved in …" line under the composer is removed). Same padding rule.
+const HEADING_TOP = { '1512x952': 355, '1280x720': 223 }
 const AGENT_COUNT = 9
 const SKILL_COUNT = 12
 const WORKSPACE_COUNT = 14
@@ -147,6 +149,7 @@ const geometry = (page, menuSelector, { scrollToEnd = false } = {}) => page.eval
   while (positioned.parentElement && !['absolute', 'fixed'].includes(getComputedStyle(positioned).position)) positioned = positioned.parentElement
   const position = getComputedStyle(positioned).position
   const anchor = position === 'fixed' ? null : positioned.offsetParent
+  const anchorInComposer = Boolean(anchor?.closest('[data-test="chat-composer"]'))
   const submenu = menu.querySelector('[data-test="chat-model-submenu"]')
   const own = (e) => !submenu || !submenu.contains(e)
   const scroller = [positioned, ...positioned.querySelectorAll('*')].filter(own).find((e) => ['auto', 'scroll'].includes(getComputedStyle(e).overflowY) && e.scrollHeight > e.clientHeight + 1) ?? null
@@ -156,12 +159,12 @@ const geometry = (page, menuSelector, { scrollToEnd = false } = {}) => page.eval
   const footer = menu.querySelector('footer')
   const hint = q('[data-test="chat-new-hint"]')
   return {
-    vw: innerWidth, vh: innerHeight, position, classes: positioned.className, inlineMaxHeight: positioned.style.maxHeight,
+    vw: innerWidth, vh: innerHeight, anchorInComposer, position, classes: positioned.className, inlineMaxHeight: positioned.style.maxHeight,
     menu: box(positioned), anchor: anchor ? { test: anchor.getAttribute('data-test'), borderTop: anchor.clientTop, ...box(anchor) } : null,
     scroller: scroller ? { isMenu: scroller === menu, scrollHeight: scroller.scrollHeight, clientHeight: scroller.clientHeight, scrollTop: scroller.scrollTop, ...box(scroller) } : null,
     rowCount: rows.length, lastRow: lastRow ? box(lastRow) : null, rowBoxes: rows.map(box),
     header: menu.firstElementChild ? box(menu.firstElementChild) : null, footer: footer ? box(footer) : null,
-    hint: hint ? box(hint) : null, backdrop: !!q('.fixed.inset-0.bg-black\\/20'),
+    hint: hint ? box(hint) : null, composer: q('[data-test="chat-composer"]') ? box(q('[data-test="chat-composer"]')) : null, backdrop: !!q('.fixed.inset-0.bg-black\\/20'),
   }
 }, { menuSelector, scrollToEnd })
 
@@ -173,7 +176,9 @@ const aboveFails = (g, preferred, { anchorTest, rows = true } = {}) => {
   const fails = []
   if (g.position !== 'absolute') fails.push(`menu is ${g.position}, not an anchored popover`)
   if (!g.anchor) return [...fails, 'no positioning box']
-  if (anchorTest && g.anchor.test !== anchorTest) fails.push(`positioned against ${g.anchor.test}, not ${anchorTest}`)
+  // The menu must sit on the composer: its positioning box is the card or a box inside it. Since
+  // run-settings-ui-unification, `@` and `/` anchor on the composer's input area and overlap the card header (VIS-030).
+  if (anchorTest && g.anchor.test !== anchorTest && !(anchorTest === 'chat-composer' && g.anchorInComposer)) fails.push(`positioned against ${g.anchor.test}, not ${anchorTest}`)
   // `bottom-full mb-1.5`: 6px above the positioning box's padding edge (inside its top border).
   const gap = g.anchor.top + g.anchor.borderTop - g.menu.bottom
   if (!near(gap, GAP, 0.6)) fails.push(`menu bottom is ${gap.toFixed(1)}px above its positioning box, not ${GAP}px (it opened ${gap < 0 ? 'below' : 'elsewhere'})`)
@@ -213,13 +218,31 @@ const sheetFails = (g) => {
 }
 const tagged = (where, fails) => fails.map((f) => `${where}: ${f}`)
 
+/**
+ * Opens one runtime's model list in the open model menu and returns it. The desktop menu opens runtime flyouts on
+ * hover, and clicking a runtime row whose flyout is already open can toggle it shut; so hover, verify, and click
+ * only when needed. Then enter the flyout sideways at the row's height: a diagonal pointer path would cross the
+ * next runtime rows (e.g. an installed Grok Build) and open their flyouts instead. On phones the menu drills in.
+ */
+const openRuntimeList = async (page, runtimeKind) => {
+  const list = page.locator(sel(`chat-model-list-${runtimeKind}`))
+  const row = page.locator(sel(`chat-runtime-${runtimeKind}`))
+  for (let attempt = 0; attempt < 6 && !(await list.isVisible().catch(() => false)); attempt += 1) {
+    await row.hover().catch(() => {}); await delay(400)
+    if (!(await list.isVisible().catch(() => false))) { await row.click().catch(() => {}); await delay(700) }
+  }
+  await list.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
+  const rowBox = await row.boundingBox({ timeout: 1000 }).catch(() => null)
+  const listBox = await list.boundingBox({ timeout: 1000 }).catch(() => null)
+  if (rowBox && listBox && listBox.x > rowBox.x) await page.mouse.move(listBox.x + 12, Math.min(Math.max(rowBox.y + rowBox.height / 2, listBox.y + 6), listBox.y + listBox.height - 6), { steps: 5 })
+  return list
+}
 const pickModel = async (page, runtimeKind, model) => {
   await page.locator(sel('chat-model-trigger')).click()
-  await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
-  await page.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
-  const models = await page.locator(MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
+  const list = await openRuntimeList(page, runtimeKind)
+  const models = await list.locator(MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
   const chosen = model && models.includes(model) ? model : models[0]
-  await page.locator(sel(`chat-model-option-${chosen}`)).click()
+  await list.locator(sel(`chat-model-option-${chosen}`)).click()
   await page.locator(sel('chat-model-menu')).waitFor({ state: 'detached' })
   return chosen
 }
@@ -403,9 +426,15 @@ defineCase('U03', 'Workspace, Model (flyout, search) and Thinking open above the
     const runtimes = await page.locator(`${sel('chat-model-menu')} [data-runtime]:not([aria-disabled="true"])`).evaluateAll((els) => els.map((e) => e.getAttribute('data-runtime')))
     if (!runtimes.length) f.push('model: no enabled runtime')
     for (const runtime of runtimes) {
-      await page.locator(sel(`chat-runtime-${runtime}`)).hover()
-      // This runtime's own flyout (the previous one stays for the hover-intent delay), catalog loaded.
+      // This runtime's own flyout (the previous one stays for the hover-intent delay), catalog loaded. Re-hover
+      // from the menu edge when the pointer path left another runtime's flyout open.
       const own = page.locator(`${sel('chat-model-menu')} div:has(> [data-runtime="${runtime}"]) > ${sel('chat-model-submenu')}`)
+      for (let attempt = 0; attempt < 4 && !(await own.isVisible().catch(() => false)); attempt += 1) {
+        const menuBox = await page.locator(sel('chat-model-menu')).boundingBox()
+        const rowBox = await page.locator(sel(`chat-runtime-${runtime}`)).boundingBox()
+        if (menuBox && rowBox) await page.mouse.move(menuBox.x + 4, rowBox.y + rowBox.height / 2, { steps: 3 })
+        await page.locator(sel(`chat-runtime-${runtime}`)).hover(); await delay(600)
+      }
       await own.waitFor()
       const loaded = await own.locator(sel(`chat-model-list-${runtime}`)).waitFor({ timeout: 90000 }).then(() => true).catch(() => false)
       await delay(200)

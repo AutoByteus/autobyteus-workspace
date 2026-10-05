@@ -1,0 +1,1061 @@
+{
+  "startedAt": "2026-10-05T22:18:02.023Z",
+  "cases": {
+    "R01": {
+      "title": "S1 AC-004/006/019: Team Run → New chat; drafter customized (a Codex Fast-mode model, Fast on, Ask first) → the created team run applies it to that member only",
+      "result": "Pass",
+      "ms": 18015,
+      "details": {
+        "heading": "Docs Team",
+        "lineDefault": "All 3 members use these settings\n·\nCustomize members",
+        "drawerFocus": "run-member-settings-close",
+        "thinkingBeforeFast": "Medium",
+        "fastPressed": "true",
+        "thinkingAfterFast": "Medium",
+        "summary": "Customized\n·\nGPT-5.6-Luna (default reasoning: medium) · Codex · Fast · Ask first",
+        "others": [
+          "false",
+          "false"
+        ],
+        "drawerCard": {
+          "390": {
+            "overlaps": [],
+            "outside": [],
+            "rows": 5
+          },
+          "804": {
+            "overlaps": [],
+            "outside": [],
+            "rows": 5
+          },
+          "880": {
+            "overlaps": [],
+            "outside": [],
+            "rows": 5
+          }
+        },
+        "lineCustomized": "1 of 3 customized · Edit · Reset",
+        "teamRunId": "docs_team_932edb1cb9f14411bb5912d3bb8418bb",
+        "members": {
+          "/planner": {
+            "runtime": "claude_agent_sdk",
+            "model": "haiku",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+          },
+          "/drafter": {
+            "runtime": "codex_app_server",
+            "model": "gpt-5.6-luna",
+            "llmConfig": {
+              "reasoning_effort": "medium",
+              "service_tier": "fast"
+            },
+            "auto": false,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+          },
+          "/checker": {
+            "runtime": "claude_agent_sdk",
+            "model": "haiku",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+          }
+        }
+      }
+    },
+    "R11": {
+      "title": "S1 DI-001: the Chat nav and the \"new chat\" pencil open a fresh plain New chat (Daily Assistant, empty composer)",
+      "result": "Pass",
+      "ms": 6481,
+      "details": {
+        "navHeading": "Daily Assistant",
+        "retargeted": "Docs Team",
+        "pencilHeading": "Daily Assistant",
+        "pencilText": "",
+        "pencilMembersLine": 0
+      }
+    },
+    "R09": {
+      "title": "S5 AC-019: Agent Run → New chat with Codex, Thinking Low and Fast; the two are independent; the run llmConfig is {reasoning_effort: low, service_tier: fast}; a first-send `@Scout` is admitted",
+      "result": "Pass",
+      "ms": 13379,
+      "details": {
+        "heading": "Planner",
+        "fastInitially": "false",
+        "thinking": "Low",
+        "thinkingAfterFastOn": "Low",
+        "thinkingAfterFastOff": "Low",
+        "fastFinal": "true",
+        "fastAfterThinkingChange": "true",
+        "runId": "planner_5445f50f9fd843e1b9cec03984837bb4",
+        "metadata": {
+          "agentDefinitionId": "planner",
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "service_tier": "fast"
+          },
+          "autoExecuteTools": true,
+          "runtimeKind": "codex_app_server"
+        },
+        "collaborator": [
+          {
+            "kind": "agent",
+            "address": "/scout",
+            "runId": "scout_527623fca7544d88bd8f6394845eba8f",
+            "launch": {
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "service_tier": "fast"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+            }
+          }
+        ]
+      }
+    },
+    "R12": {
+      "title": "S6 REQ-001/022 (VIS-020/021/027): New chat with a Codex model (long display name), Thinking and Fast on — the footer controls never overlap at 1512/880/804/390",
+      "result": "Pass",
+      "ms": 10088,
+      "details": {
+        "model": "gpt-5.6-luna",
+        "modelLabel": "GPT-5.6-Luna (default reasoning: medium) Codex",
+        "footer": {
+          "390": {
+            "overlaps": [],
+            "boxes": {
+              "chat-workspace-trigger": [
+                75,
+                235,
+                522
+              ],
+              "chat-approval-toggle": [
+                237,
+                358,
+                522
+              ],
+              "chat-model-trigger": [
+                75,
+                195,
+                554
+              ],
+              "chat-thinking-trigger": [
+                197,
+                295,
+                554
+              ],
+              "chat-model-option-service_tier": [
+                297,
+                327,
+                557
+              ],
+              "chat-primary-action": [
+                333,
+                365,
+                552
+              ]
+            }
+          },
+          "804": {
+            "overlaps": [],
+            "boxes": {
+              "chat-workspace-trigger": [
+                356,
+                516,
+                557
+              ],
+              "chat-approval-toggle": [
+                518,
+                639,
+                557
+              ],
+              "chat-model-trigger": [
+                356,
+                570,
+                589
+              ],
+              "chat-thinking-trigger": [
+                572,
+                670,
+                589
+              ],
+              "chat-model-option-service_tier": [
+                672,
+                733,
+                589
+              ],
+              "chat-primary-action": [
+                739,
+                771,
+                587
+              ]
+            }
+          },
+          "880": {
+            "overlaps": [],
+            "boxes": {
+              "chat-workspace-trigger": [
+                356,
+                516,
+                557
+              ],
+              "chat-approval-toggle": [
+                518,
+                639,
+                557
+              ],
+              "chat-model-trigger": [
+                356,
+                645,
+                589
+              ],
+              "chat-thinking-trigger": [
+                647,
+                746,
+                589
+              ],
+              "chat-model-option-service_tier": [
+                748,
+                808,
+                589
+              ],
+              "chat-primary-action": [
+                815,
+                847,
+                587
+              ]
+            }
+          },
+          "1512": {
+            "overlaps": [],
+            "boxes": {
+              "chat-workspace-trigger": [
+                543,
+                703,
+                557
+              ],
+              "chat-approval-toggle": [
+                705,
+                826,
+                557
+              ],
+              "chat-model-trigger": [
+                770,
+                1090,
+                589
+              ],
+              "chat-thinking-trigger": [
+                1092,
+                1190,
+                589
+              ],
+              "chat-model-option-service_tier": [
+                1192,
+                1253,
+                589
+              ],
+              "chat-primary-action": [
+                1261,
+                1293,
+                587
+              ]
+            }
+          }
+        }
+      }
+    },
+    "R04": {
+      "title": "S1 AC-008 / SR-009: Agent \"+\" from the host run and from its `@` collaborator view → New chat for the agent on screen, prefilled",
+      "result": "Pass",
+      "ms": 16872,
+      "details": {
+        "host": {
+          "heading": "Planner",
+          "model": "GPT-5.6-Luna (default reasoning: medium) Codex",
+          "thinking": "Low",
+          "fast": "true",
+          "approval": "Auto-approve",
+          "chipsShown": true
+        },
+        "footer": {
+          "390": {
+            "overlaps": [],
+            "boxes": {
+              "chat-workspace-trigger": [
+                75,
+                235,
+                522
+              ],
+              "chat-approval-toggle": [
+                237,
+                358,
+                522
+              ],
+              "chat-model-trigger": [
+                75,
+                219,
+                554
+              ],
+              "chat-thinking-trigger": [
+                221,
+                295,
+                554
+              ],
+              "chat-model-option-service_tier": [
+                297,
+                327,
+                557
+              ],
+              "chat-primary-action": [
+                333,
+                365,
+                552
+              ]
+            }
+          },
+          "804": {
+            "overlaps": [],
+            "boxes": {
+              "chat-workspace-trigger": [
+                356,
+                516,
+                557
+              ],
+              "chat-approval-toggle": [
+                518,
+                639,
+                557
+              ],
+              "chat-model-trigger": [
+                356,
+                594,
+                589
+              ],
+              "chat-thinking-trigger": [
+                596,
+                670,
+                589
+              ],
+              "chat-model-option-service_tier": [
+                672,
+                732,
+                589
+              ],
+              "chat-primary-action": [
+                739,
+                771,
+                587
+              ]
+            }
+          },
+          "880": {
+            "overlaps": [],
+            "boxes": {
+              "chat-workspace-trigger": [
+                356,
+                516,
+                557
+              ],
+              "chat-approval-toggle": [
+                518,
+                639,
+                557
+              ],
+              "chat-model-trigger": [
+                356,
+                669,
+                589
+              ],
+              "chat-thinking-trigger": [
+                671,
+                745,
+                589
+              ],
+              "chat-model-option-service_tier": [
+                747,
+                807,
+                589
+              ],
+              "chat-primary-action": [
+                815,
+                847,
+                587
+              ]
+            }
+          },
+          "1512": {
+            "overlaps": [],
+            "boxes": {
+              "chat-workspace-trigger": [
+                543,
+                703,
+                557
+              ],
+              "chat-approval-toggle": [
+                705,
+                826,
+                557
+              ],
+              "chat-model-trigger": [
+                794,
+                1114,
+                589
+              ],
+              "chat-thinking-trigger": [
+                1116,
+                1190,
+                589
+              ],
+              "chat-model-option-service_tier": [
+                1192,
+                1253,
+                589
+              ],
+              "chat-primary-action": [
+                1261,
+                1293,
+                587
+              ]
+            }
+          }
+        },
+        "copyRunId": "planner_aa0c8e6ba3fa403794c628a9400fbe71",
+        "copyRunConfig": {
+          "agentDefinitionId": "planner",
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "service_tier": "fast"
+          },
+          "autoExecuteTools": true,
+          "runtimeKind": "codex_app_server"
+        },
+        "childTitle": "scout",
+        "collaborator": {
+          "heading": "Scout",
+          "model": "gpt-5.6-luna\nCodex",
+          "fast": null
+        },
+        "scoutServerConfig": null,
+        "findings": []
+      }
+    },
+    "R05": {
+      "title": "S1 AC-008: Team \"+\" → New chat for the team, prefilled with the member override (Codex, Fast, Ask first)",
+      "result": "Pass",
+      "ms": 10890,
+      "details": {
+        "heading": "Docs Team",
+        "model": "claude-haiku-4-5-20251001\nClaude SDK",
+        "line": "1 of 3 customized · Edit · Reset",
+        "drafter": "Customized\n·\nGPT-5.6-Luna (default reasoning: medium) · Codex · Fast · Ask first",
+        "drafterFastChip": "true",
+        "drafterSummaryAfterOpen": "Customized\n·\nGPT-5.6-Luna (default reasoning: medium) · Codex · Fast · Ask first",
+        "findings": []
+      }
+    },
+    "R02": {
+      "title": "S2 AC-003: Org Run → Org launch page; Scout customized (Codex + Ask first) and the placed team on a folder → the active Org run config matches",
+      "result": "Pass",
+      "ms": 23362,
+      "details": {
+        "url": "http://127.0.0.1:51994/workspace?rootSubjectKind=agent_org&definitionId=docs-org&mode=configuration",
+        "approval": "Auto-approve",
+        "docsSummary": "Customized\n·\ndocs-team-folder · claude-haiku-4-5-20251001 · Claude SDK · Auto-approve",
+        "scoutSummary": "Customized\n·\nGPT-5.6-Luna (default reasoning: medium) · Codex · Ask first",
+        "orgCards": {
+          "card": {
+            "390": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 4
+            },
+            "804": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 4
+            },
+            "880": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 4
+            }
+          },
+          "scout": {
+            "390": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 5
+            },
+            "804": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 5
+            },
+            "880": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 5
+            }
+          }
+        },
+        "line": "2 of 4 customized · Edit · Reset",
+        "activeUrl": "http://127.0.0.1:51994/workspace?rootSubjectKind=agent_org&definitionId=docs-org&orgRunId=docs_org_cca7a25837c24b84aaa97103860df4e9&mode=active",
+        "orgRunId": "docs_org_cca7a25837c24b84aaa97103860df4e9",
+        "isActive": true,
+        "tree": {
+          "subjectKind": "agent_org",
+          "createdAt": "2026-10-05T22:20:10.386Z",
+          "archivedAt": null,
+          "applicationBinding": null,
+          "handoffs": [],
+          "rootOrg": {
+            "address": "/",
+            "orgDefinitionId": "docs-org",
+            "orgDefinitionName": "Docs Org",
+            "orgRunId": "docs_org_cca7a25837c24b84aaa97103860df4e9",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "claude_agent_sdk",
+              "llmModelIdentifier": "haiku",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+            },
+            "members": [
+              {
+                "address": "/scout",
+                "agentDefinitionId": "scout",
+                "role": null,
+                "description": null,
+                "agentRunId": "scout_f31bd89f13af48358b48fd260e9d8559",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-5.6-luna",
+                  "llmConfig": {
+                    "reasoning_effort": "medium"
+                  },
+                  "autoExecuteTools": false,
+                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+                }
+              },
+              {
+                "address": "/docs",
+                "teamDefinitionId": "docs-team",
+                "role": null,
+                "description": null,
+                "teamRunId": "docs_team_43e5484a49934870b3076381944b8b1d",
+                "coordinatorAddress": "/docs/planner",
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+                },
+                "members": [
+                  {
+                    "address": "/docs/planner",
+                    "agentDefinitionId": "planner",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "planner_ac10519b4f044c0a9e2c2ca89a708c15",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "claude_agent_sdk",
+                      "llmModelIdentifier": "haiku",
+                      "llmConfig": null,
+                      "autoExecuteTools": true,
+                      "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+                    }
+                  },
+                  {
+                    "address": "/docs/drafter",
+                    "agentDefinitionId": "drafter",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "drafter_d8e6decb4a8042a696830ffc393d4986",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "claude_agent_sdk",
+                      "llmModelIdentifier": "haiku",
+                      "llmConfig": null,
+                      "autoExecuteTools": true,
+                      "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+                    }
+                  },
+                  {
+                    "address": "/docs/checker",
+                    "agentDefinitionId": "checker",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "checker_fb6e6d5cef12480489a745ee15fe0edd",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "claude_agent_sdk",
+                      "llmModelIdentifier": "haiku",
+                      "llmConfig": null,
+                      "autoExecuteTools": true,
+                      "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+                    }
+                  }
+                ],
+                "taskExecutions": []
+              }
+            ],
+            "collaborators": [],
+            "taskExecutions": []
+          }
+        },
+        "rootLaunch": {
+          "runtime": "claude_agent_sdk",
+          "model": "haiku",
+          "llmConfig": null,
+          "auto": true,
+          "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+        },
+        "scoutLaunch": {
+          "runtime": "codex_app_server",
+          "model": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          },
+          "auto": false,
+          "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+        },
+        "docsLaunch": {
+          "runtime": "claude_agent_sdk",
+          "model": "haiku",
+          "llmConfig": null,
+          "auto": true,
+          "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+        },
+        "docsMembers": {
+          "/docs/planner": {
+            "runtime": "claude_agent_sdk",
+            "model": "haiku",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+          },
+          "/docs/drafter": {
+            "runtime": "claude_agent_sdk",
+            "model": "haiku",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+          },
+          "/docs/checker": {
+            "runtime": "claude_agent_sdk",
+            "model": "haiku",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+          }
+        }
+      }
+    },
+    "R03": {
+      "title": "S2 AC-003: the server rejects the Org launch (its member definition was deleted meanwhile) → \"Couldn't start this Agent Org. Try again.\", values kept, Run enabled, no run created",
+      "result": "Pass",
+      "ms": 6900,
+      "details": {
+        "before": {
+          "model": "claude-sonnet-5\nClaude SDK",
+          "approval": "Ask first"
+        },
+        "status": "Couldn't start this Agent Org. Try again.",
+        "after": {
+          "model": "claude-sonnet-5\nClaude SDK",
+          "approval": "Ask first",
+          "url": "http://127.0.0.1:51994/workspace?rootSubjectKind=agent_org&definitionId=fragile-org&mode=configuration",
+          "runDisabled": false
+        },
+        "historyUnchanged": true
+      }
+    },
+    "R06": {
+      "title": "S2 AC-008: Org \"+\" → the Org launch page prefilled from the run: Scout override and the placed-team workspace",
+      "result": "Pass",
+      "ms": 13003,
+      "details": {
+        "url": "http://127.0.0.1:51994/workspace?rootSubjectKind=agent_org&definitionId=docs-org&sourceOrgRunId=docs_org_cca7a25837c24b84aaa97103860df4e9&mode=configuration",
+        "model": "claude-haiku-4-5-20251001\nClaude SDK",
+        "line": "2 of 4 customized · Edit · Reset",
+        "scout": "Customized\n·\nGPT-5.6-Luna (default reasoning: medium) · Codex · Ask first",
+        "docs": "Customized\n·\ndocs-team-folder · claude-haiku-4-5-20251001 · Claude SDK · Auto-approve"
+      }
+    },
+    "R07": {
+      "title": "S3 AC-009..011/019: saved Team run: running locks incl. Fast → Terminate team → Stopped; locked-runtime model menu; change → Cancel restores; change → Save; readback; resume keeps the saved config",
+      "result": "Pass",
+      "ms": 40472,
+      "details": {
+        "status": "Running",
+        "stopLabel": "Terminate team",
+        "rootLocked": 3,
+        "drafterFastRunning": "Fast mode Fast",
+        "drafterFastLocked": 1,
+        "runningCards": {
+          "root": {
+            "804": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 4
+            },
+            "880": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 4
+            }
+          },
+          "drafter": {
+            "804": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 4
+            },
+            "880": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 4
+            }
+          }
+        },
+        "runningCards390": [
+          "Saved run (running) root card: controls leave the card at 390px (run-setting-approval:run-setting-locked [187–326 vs card 83–307; text \"Auto-approve\"])",
+          "Saved run (running) member card: controls leave the card at 390px (run-setting-thinking:run-setting-locked [223–323 vs card 119–311; text \"Medium\"], run-setting-approval:run-setting-locked [223–329 vs card 119–311; text \"Ask first\"])"
+        ],
+        "stoppedServer": false,
+        "lockedRuntime": "Claude Agent SDK",
+        "menuRuntimeRows": 0,
+        "menuModels": [
+          "haiku",
+          "opus",
+          "claude-fable-5-1[1m]",
+          "sonnet",
+          "claude-opus-5",
+          "claude-fable-5",
+          "claude-opus-4-8",
+          "claude-opus-4-7",
+          "claude-opus-4-6",
+          "claude-sonnet-4-6"
+        ],
+        "serverScopes": [
+          {
+            "kind": "CONFIGURED_TEAM",
+            "address": "/",
+            "current": "haiku",
+            "replacements": 9
+          },
+          {
+            "kind": "CONFIGURED_AGENT",
+            "address": "/planner",
+            "current": "haiku",
+            "replacements": 9
+          },
+          {
+            "kind": "CONFIGURED_AGENT",
+            "address": "/drafter",
+            "current": "gpt-5.6-luna",
+            "replacements": 6
+          },
+          {
+            "kind": "CONFIGURED_AGENT",
+            "address": "/checker",
+            "current": "haiku",
+            "replacements": 9
+          }
+        ],
+        "otherModel": "sonnet",
+        "saveBar": "Unsaved changes · they apply when this run resumes\n\nCancel\nSave",
+        "plannerFollows": "claude-sonnet-5 · Claude SDK · Auto-approve",
+        "otherLabel": "claude-sonnet-5\nClaude SDK",
+        "afterCancel": {
+          "model": "claude-haiku-4-5-20251001\nClaude SDK",
+          "saveBar": 0
+        },
+        "drafterFastStopped": "true",
+        "stoppedCards": {
+          "root": {
+            "804": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 4
+            },
+            "880": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 4
+            }
+          },
+          "drafter": {
+            "804": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 5
+            },
+            "880": {
+              "overlaps": [],
+              "outside": [],
+              "rows": 5
+            }
+          }
+        },
+        "stoppedCards390": [
+          "Saved run (stopped) root card: controls leave the card at 390px (run-setting-approval:run-setting-locked [187–326 vs card 83–307; text \"Auto-approve\"])",
+          "Saved run (stopped) member card: controls leave the card at 390px (run-setting-approval:run-setting-locked [223–329 vs card 119–311; text \"Ask first\"])"
+        ],
+        "saved": "Saved. Changes apply when this run resumes.",
+        "savedMembers": {
+          "/planner": {
+            "runtime": "claude_agent_sdk",
+            "model": "sonnet",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+          },
+          "/drafter": {
+            "runtime": "codex_app_server",
+            "model": "gpt-5.6-luna",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "service_tier": "fast"
+            },
+            "auto": false,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+          },
+          "/checker": {
+            "runtime": "claude_agent_sdk",
+            "model": "sonnet",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+          }
+        },
+        "resumedMembers": {
+          "/planner": {
+            "runtime": "claude_agent_sdk",
+            "model": "sonnet",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+          },
+          "/drafter": {
+            "runtime": "codex_app_server",
+            "model": "gpt-5.6-luna",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "service_tier": "fast"
+            },
+            "auto": false,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+          },
+          "/checker": {
+            "runtime": "claude_agent_sdk",
+            "model": "sonnet",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+          }
+        }
+      }
+    },
+    "R08": {
+      "title": "S3 AC-009/010: saved Org run: Stop Agent Org → Stopped → change the Org model → Save → readback (placed-team members follow)",
+      "result": "Pass",
+      "ms": 14924,
+      "details": {
+        "header": "Docs Org\nRunning",
+        "stopLabel": "Stop Agent Org",
+        "orgMenuModels": [
+          {
+            "id": "haiku",
+            "checked": "true"
+          },
+          {
+            "id": "opus",
+            "checked": "false"
+          },
+          {
+            "id": "claude-fable-5-1[1m]",
+            "checked": "false"
+          },
+          {
+            "id": "sonnet",
+            "checked": "false"
+          },
+          {
+            "id": "claude-opus-5",
+            "checked": "false"
+          },
+          {
+            "id": "claude-fable-5",
+            "checked": "false"
+          },
+          {
+            "id": "claude-opus-4-8",
+            "checked": "false"
+          },
+          {
+            "id": "claude-opus-4-7",
+            "checked": "false"
+          },
+          {
+            "id": "claude-opus-4-6",
+            "checked": "false"
+          },
+          {
+            "id": "claude-sonnet-4-6",
+            "checked": "false"
+          }
+        ],
+        "orgOther": "sonnet",
+        "saved": "Saved. Changes apply when this run resumes.",
+        "savedRoot": {
+          "runtime": "claude_agent_sdk",
+          "model": "sonnet",
+          "llmConfig": null,
+          "auto": true,
+          "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+        },
+        "savedScout": {
+          "runtime": "codex_app_server",
+          "model": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          },
+          "auto": false,
+          "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/server-data/temp_workspace"
+        },
+        "savedDocsMembers": {
+          "/docs/planner": {
+            "runtime": "claude_agent_sdk",
+            "model": "sonnet",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+          },
+          "/docs/drafter": {
+            "runtime": "claude_agent_sdk",
+            "model": "sonnet",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+          },
+          "/docs/checker": {
+            "runtime": "claude_agent_sdk",
+            "model": "sonnet",
+            "llmConfig": null,
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/docs-team-folder"
+          }
+        }
+      }
+    },
+    "R10": {
+      "title": "S1/S2 DI-004: with the Codex runtime unavailable, Team \"+\" and Org \"+\" copies that keep a Codex member block Send/Run with \"Codex is unavailable. Choose another runtime.\"",
+      "result": "Pass",
+      "ms": 24633,
+      "details": {
+        "codexAvailability": {
+          "enabled": false,
+          "reason": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp/missing-codex-app-server' is not available."
+        },
+        "team": {
+          "disabled": true,
+          "label": "Codex App Server is unavailable. Choose another runtime.",
+          "title": "Codex App Server is unavailable. Choose another runtime."
+        },
+        "org": {
+          "status": "Codex App Server is unavailable. Choose another runtime.",
+          "disabled": true,
+          "label": "Codex App Server is unavailable. Choose another runtime."
+        },
+        "findings": []
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 85300
+    },
+    {
+      "label": "frontend",
+      "pid": 85332
+    },
+    {
+      "label": "backend-no-codex",
+      "pid": 89029
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 85300,
+      "stop": "SIGTERM",
+      "reason": "R10 restart without Codex"
+    },
+    {
+      "pid": 89029,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 85332,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 85300,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp"
+    }
+  ],
+  "observations": [
+    {
+      "text": "R07 observation (outside the spec's responsive matrix): Saved run (running) root card: controls leave the card at 390px (run-setting-approval:run-setting-locked [187–326 vs card 83–307; text \"Auto-approve\"]); Saved run (running) member card: controls leave the card at 390px (run-setting-thinking:run-setting-locked [223–323 vs card 119–311; text \"Medium\"], run-setting-approval:run-setting-locked [223–329 vs card 119–311; text \"Ask first\"])",
+      "details": null
+    },
+    {
+      "text": "R07 observation (outside the spec's responsive matrix): Saved run (stopped) root card: controls leave the card at 390px (run-setting-approval:run-setting-locked [187–326 vs card 83–307; text \"Auto-approve\"]); Saved run (stopped) member card: controls leave the card at 390px (run-setting-approval:run-setting-locked [223–329 vs card 119–311; text \"Ask first\"])",
+      "details": null
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-yZoakp",
+  "backendUrl": "http://127.0.0.1:51993",
+  "frontUrl": "http://127.0.0.1:51994",
+  "definitions": {
+    "planner": "planner",
+    "drafter": "drafter",
+    "checker": "checker",
+    "scout": "scout",
+    "fragile": "fragile-helper",
+    "docsTeam": "docs-team",
+    "org": "docs-org",
+    "fragileOrg": "fragile-org"
+  },
+  "fastCandidates": [
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "gpt-6-luna",
+    "gpt-6-sol",
+    "gpt-6.1-sol"
+  ],
+  "browserErrors": [],
+  "summary": {
+    "pass": 12,
+    "fail": 0,
+    "blocked": 0
+  },
+  "completedAt": "2026-10-05T22:21:53.855Z"
+}

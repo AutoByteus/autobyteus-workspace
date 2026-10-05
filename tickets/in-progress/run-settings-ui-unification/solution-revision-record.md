@@ -12,6 +12,8 @@
 | SR-006 | 2026-10-05 | Product SR-005 correction integrated | Requirements Approved; design in progress | REQ-022 / AC-019 aligned with the confirmed chip/row design; VIS-001..042 |
 | SR-007 | 2026-10-05 | Architecture design complete | Requirements Approved; Design Ready | Large / High → architecture review |
 | SR-008 | 2026-10-05 | Design revision after ARCH-REV-001 | Requirements Approved; Design Ready (revised) | AR-001 @ eligibility mirror; AR-002 tree "+" intent; AR-003 hide ⚙ on temp; AR-004 conversion boundaries |
+| SR-009 | 2026-10-05 | Design revision after CRR-002 | Requirements Approved; Design Ready (revised) | CR-001: "+" copies the agent on screen via copyAgentFromConfig(config); CR-002/003 guidance |
+| SR-010 | 2026-10-05 | Design decisions on CRR-004 | Requirements Approved; Design Ready (revised) | DI-001 audit + newChat intent; DI-002 FU-001 + contract pins; DI-003 proven; DI-004 one readiness rule; DI-005 slices; DI-006 b,e adopt |
 
 ## Revision Entries
 
@@ -220,4 +222,64 @@
   - AR-001..AR-004 resolved; R-1 and R-2 adopted.
   - Report: `design-review-report.md`; record: `architecture-review-revision-record.md`.
   - The reviewer forwarded the cumulative package to `/software_engineering_team/implementation_engineer`.
+  - No Solution Designer handoff was repeated.
+
+### SR-009 — Design revision after CRR-002 (CR-001 Design Impact)
+
+- Trigger: Code Review CRR-002 (`code-review-report.md`, `code-review-revision-record.md`), commit
+  `d45fe62bc`.
+  - CR-001 (Medium, Design Impact): Agent "+" is a no-op on an `@` collaborator view.
+  - CR-002 and CR-003 are Low Local Fixes that implementation owns.
+- Prior status: design `Ready` (SR-008, ARCH-REV-002 Pass). Current status: design `Ready` (revised);
+  requirements `Approved` (SR-006, unchanged).
+- Resolution of CR-001:
+  - The copy subject is **the agent on screen**: the host run, or the selected collaborator child.
+    For a team-member collaborator it is the member agent. This matches the base behavior (AF-017)
+    and extends it with REQ-013's settings copy.
+  - Interface: `copyAgentRun(runId)` is replaced by `copyAgentFromConfig(config: AgentRunConfig)`. The
+    view passes the displayed context config, with no store lookup by run id.
+  - The DS-003 inventory and the conversion-boundary row are updated, and a test is added.
+- Design guidance also records the CR-002 and CR-003 resolutions (dependency cleanup; diagnostics
+  logged at detection), so implementation has one authority.
+- Requirement impact: none. REQ-013 ("+ on a running Agent run opens New chat for the same definition
+  prefilled with that run's settings") applies to the agent run on screen; base behavior already
+  chose the collaborator's agent. No user clarification is needed.
+- Classification: unchanged (Large / High).
+- Routing: handoff rules → architecture re-review of the revised package (`architecture-handoff.md`).
+  The implementation engineer is holding CR-001 per the code reviewer. CR-002 and CR-003 are already
+  in progress in the worktree (uncommitted).
+- Review outcome (informational, 2026-10-05): ARCH-REV-003 **Pass** on SR-006 requirements and SR-009 design.
+  - CR-001 coverage verified with no new findings; AR-001..AR-004 remain resolved.
+  - Report: `design-review-report.md`.
+  - The reviewer routed the package to `/software_engineering_team/implementation_engineer` to apply CR-001 with CR-002/CR-003.
+  - No Solution Designer handoff was repeated.
+
+### SR-010 — Design decisions on CRR-004 (DI-001..DI-006), raised by user direction
+
+- Trigger: Code Review CRR-004 (Design Impact, raised at the user's direction; the code at
+  `c37b81de5` passed CRR-003). The API/E2E engineer supplied hold-state evidence (AF-020).
+- Prior status: design `Ready` (SR-009, ARCH-REV-003 Pass). Current status: design `Ready`
+  (revised); requirements `Approved` (SR-006, unchanged).
+- Decisions (design-spec "SR-010 Addendum"):
+  - **DI-001 (adopt):** rendered-surface audit table. New `useRunStart.newChat()` for `AppLeftPanel`;
+    `RemoteAgentCard` is unrendered (FU-004).
+  - **DI-002:** the server-owned query is deferred as FU-001 (server change, needs user approval).
+    Adopted contract checks: live probe N03 as a required regression, and a unit pin of the built-in
+    id mirror to the server registry file.
+  - **DI-003 (resolved):** server unit tests 43/43 and live N02/N03 pass. The fallback if it ever
+    breaks is recorded as a Requirement Gap with the recommended answer.
+  - **DI-004 (adopt):** one readiness rule, `utils/runSettings/launchReadiness.ts`, over every
+    effective scope, for both start surfaces.
+  - **DI-005 (adopt):** validation/rework slices S1–S6 with AC mapping.
+  - **DI-006:** (a) accept; (b) adopt (start orders → `startModelDefaults`); (c) defer FU-002;
+    (d) accept, FU-003; (e) adopt (`modelOptions` → `utils/runSettings`).
+- Requirement impact: none. The DI-004 readiness change blocks earlier with the existing copy for a
+  state the server already rejects (AC-002 unchanged). The DI-001 Chat-nav routing keeps behavior.
+- Classification: unchanged (Large / High).
+- Routing: handoff rules → architecture re-review. API/E2E stays on hold until the chain reaches it
+  with a new head (it will rerun the web suite and N01–N03 first).
+- Review outcome (informational, 2026-10-05): ARCH-REV-004 **Pass** on SR-006 requirements and SR-010 design.
+  - The DI-001..DI-006 decisions were verified with no new findings.
+  - Report: `design-review-report.md`.
+  - The reviewer routed the package to `/software_engineering_team/implementation_engineer` to apply the SR-010 deltas.
   - No Solution Designer handoff was repeated.

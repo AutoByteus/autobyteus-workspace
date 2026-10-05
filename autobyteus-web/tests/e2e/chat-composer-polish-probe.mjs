@@ -113,11 +113,29 @@ const newChat = async (page) => {
   await page.locator(sel('chat-new')).waitFor({ timeout: 120000 })
   await delay(800)
 }
+/**
+ * Opens one runtime's model list in the open model menu and returns it. The desktop menu opens runtime flyouts on
+ * hover, and clicking a runtime row whose flyout is already open can toggle it shut; so hover, verify, and click
+ * only when needed. Then enter the flyout sideways at the row's height: a diagonal pointer path would cross the
+ * next runtime rows (e.g. an installed Grok Build) and open their flyouts instead. On phones the menu drills in.
+ */
+const openRuntimeList = async (page, runtimeKind) => {
+  const list = page.locator(sel(`chat-model-list-${runtimeKind}`))
+  const row = page.locator(sel(`chat-runtime-${runtimeKind}`))
+  for (let attempt = 0; attempt < 6 && !(await list.isVisible().catch(() => false)); attempt += 1) {
+    await row.hover().catch(() => {}); await delay(400)
+    if (!(await list.isVisible().catch(() => false))) { await row.click().catch(() => {}); await delay(700) }
+  }
+  await list.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
+  const rowBox = await row.boundingBox({ timeout: 1000 }).catch(() => null)
+  const listBox = await list.boundingBox({ timeout: 1000 }).catch(() => null)
+  if (rowBox && listBox && listBox.x > rowBox.x) await page.mouse.move(listBox.x + 12, Math.min(Math.max(rowBox.y + rowBox.height / 2, listBox.y + 6), listBox.y + listBox.height - 6), { steps: 5 })
+  return list
+}
 const pickModel = async (page, runtimeKind, model) => {
   await page.locator(sel('chat-model-trigger')).click()
-  await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
-  await page.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
-  await page.locator(sel(`chat-model-option-${model}`)).click()
+  const list = await openRuntimeList(page, runtimeKind)
+  await list.locator(sel(`chat-model-option-${model}`)).click()
   await page.locator(sel('chat-thinking-trigger')).waitFor({ timeout: 30000 })
 }
 /** The chat draft's llmConfig straight from the Pinia store (what a send would launch with). */

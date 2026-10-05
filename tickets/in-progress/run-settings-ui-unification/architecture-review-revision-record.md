@@ -8,6 +8,8 @@ The latest `design-review-report.md` is authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (2026-10-05) | SR-006, SR-007 | N/A | Fail | AR-001, AR-002, AR-003, AR-004 |
 | ARCH-REV-002 | Round 2 / revised design (SR-008) | SR-006, SR-008 | Fail | Pass | AR-001..AR-004 resolved |
+| ARCH-REV-003 | Round 3 / revised design after CRR-002 CR-001 (SR-009) | SR-006, SR-009 | Pass | Pass | None (CR-001 design coverage verified) |
+| ARCH-REV-004 | Round 4 / revised design after CRR-004 DI-001..DI-006 (SR-010) | SR-006, SR-010 | Pass | Pass | None (DI-001..DI-006 decisions verified) |
 
 ## Revision Entries
 
@@ -65,3 +67,65 @@ None.
   - AF-009 API/E2E proof is still required.
   - The frontend built-in id mirror needs manual upkeep.
   - Org schema gating is replaced by server authority.
+
+### ARCH-REV-003 — Re-review after SR-009: Agent "+" copy subject for collaborator views
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/tickets/in-progress/run-settings-ui-unification/design-review-report.md`
+- Review round and trigger: Round 3. `Architecture Design Complete (revised)` from `/software_engineering_team/solution_designer` (`architecture-handoff.md` §Re-review (SR-009)), answering Code Review CRR-002 CR-001 (Design Impact).
+- Triggering role, report path, and finding IDs: Code Reviewer, `code-review-report.md` (CRR-002); CR-001 (Design Impact). CR-002 and CR-003 are Local Fixes.
+- Relevant solution revision IDs: SR-006 (requirements, unchanged), SR-009.
+- Prior authoritative decision: `Pass` (ARCH-REV-002).
+- Current authoritative decision: `Pass`.
+- What changed in the review result:
+  - Verified that `copyAgentFromConfig(config: AgentRunConfig)` restores the base copy subject, the agent on screen (host, collaborator child, or a team-member collaborator's member agent), and adds the REQ-013 settings copy.
+  - Child configs carry the required fields (`createChildContext`).
+  - The boundary and dependency rules hold.
+  - The CR-002/CR-003 guidance matches the design rules.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001..AR-004 | Resolved (ARCH-REV-002) | Still resolved | SR-008, SR-009 | Unaffected by the SR-009 delta |
+| CR-001 (code review, Design Impact) | Open in CRR-002 | Design coverage verified; implementation pending | SR-009; design §Interface Boundary Mapping, DS-003, §Conversion Boundaries, §Guidance; AF-017 | Base `AgentWorkspaceView.startNewChatForRun` used `target.context.config`. Child contexts live in `agentRunCollaborationStore`, and their configs hold model, `llmConfig`, approval and workspace. A test is specified. |
+
+- New or remaining finding IDs: none.
+- Material classification changes: none (Large/High).
+- Recommended recipient: `/software_engineering_team/implementation_engineer`; informational notice to `/software_engineering_team/solution_designer`.
+- Remaining risks or uncertainty:
+  - The AF-009 API/E2E proof is still required.
+  - The built-in id mirror needs manual upkeep.
+  - A child with unresolved workspace metadata copies to the temp workspace, as at base.
+
+### ARCH-REV-004 — Re-review after SR-010: CRR-004 design-improvement decisions
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/tickets/in-progress/run-settings-ui-unification/design-review-report.md`
+- Review round and trigger: Round 4. `Architecture Design Complete (revised)` from `/software_engineering_team/solution_designer` (`architecture-handoff.md` §Re-review (SR-010)).
+- Triggering role, report path, and finding IDs: Code Reviewer, `code-review-report.md` (CRR-004); DI-001..DI-006, raised at the user's direction.
+- Relevant solution revision IDs: SR-006 (requirements, unchanged), SR-010.
+- Prior authoritative decision: `Pass` (ARCH-REV-003).
+- Current authoritative decision: `Pass`.
+- What changed in the review result: verified design-spec §"SR-010 Addendum" against the code at `c37b81de5` and the evidence (AF-018..AF-020).
+  - DI-001: the AppLeftPanel bypass is confirmed and closed by `useRunStart.newChat()`; `RemoteAgentCard` is unrendered.
+  - DI-002: deferring the server query is correct, since it is a server API change needing approval; the contract checks are adopted.
+  - DI-003: AF-009 is retired by server unit and live N02/N03 evidence.
+  - DI-004: one readiness rule, with no new policy or copy.
+  - DI-005: slices map to ACs.
+  - DI-006: accept/adopt/defer decisions are proportionate and justified.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001..AR-004 | Resolved | Still resolved | SR-008..SR-010 | AR-001 is now also live-proven (N03 `@` list matches the server policy, AF-020) |
+| CR-001 (code review) | Design coverage verified (ARCH-REV-003) | Implemented at `c37b81de5` (IR-002); design unchanged | SR-009, SR-010 DI-001 audit row | Audit row: Agent header "+" → `copyAgentFromConfig(target.context.config)` |
+| DI-001..DI-006 (code review CRR-004) | Raised | Design decisions verified | SR-010 Addendum; AF-018..AF-020 | See the report's Round 4 Assessment |
+
+- New or remaining finding IDs: none.
+- Material classification changes: none (Large/High).
+- Recommended recipient: `/software_engineering_team/implementation_engineer`; informational notice to `/software_engineering_team/solution_designer`.
+- Remaining risks or uncertainty:
+  - The client `@` mirror remains until FU-001, guarded by N03 and the contract pin.
+  - The readiness consolidation must be validated in S1/S2.
+  - There are 11 baseline web-suite failures.
+  - FU-002..FU-004 are deferred.

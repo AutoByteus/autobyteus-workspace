@@ -1,0 +1,245 @@
+{
+  "startedAt": "2026-10-05T20:31:08.267Z",
+  "cases": {
+    "T01": {
+      "title": "Claude SDK merged thinking menu at desktop width: Off state, pick High, Off, Medium, Off→Medium (A-1)",
+      "result": "Fail",
+      "ms": 39259,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-option-claude-fable-5\"]')\n",
+      "details": null
+    },
+    "T02": {
+      "title": "Launch a chat at High: the created run records thinking_enabled:true + reasoning_effort:high (AC-001)",
+      "result": "Pass",
+      "ms": 6005,
+      "details": {
+        "runId": "daily_assistant_9b123b4dd3364049957d0b8844a8c634",
+        "draft": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        },
+        "recorded": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        },
+        "runtimeReplied": true
+      }
+    },
+    "T03": {
+      "title": "Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)",
+      "result": "Fail",
+      "ms": 32056,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-option-claude-fable-5\"]')\n    - locator resolved to <button data-row=\"\" type=\"button\" aria-checked=\"true\" role=\"menuitemradio\" data-test=\"chat-model-option-claude-fable-5\" title=\"claude-fable-5 — Fable 5 · Most capable for your hardest and longest-running tasks\" aria-label=\"claude-fable-5 — Fable 5 · Most capable for your hardest and longest-running tasks\" class=\"flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none\">…</button>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n  - element was detached from the DOM, retrying\n",
+      "details": null
+    },
+    "T04": {
+      "title": "A model without an on/off switch keeps the per-parameter thinking menu (AC-006)",
+      "result": "Pass",
+      "ms": 3285,
+      "details": {
+        "runtimeKind": "codex_app_server",
+        "model": "gpt-5.6-luna",
+        "keys": [
+          "reasoning_effort",
+          "service_tier"
+        ],
+        "before": {
+          "trigger": "Medium",
+          "draft": {
+            "reasoning_effort": "medium"
+          }
+        },
+        "items": [
+          "chat-thinking-option-reasoning_effort-low",
+          "chat-thinking-option-reasoning_effort-medium",
+          "chat-thinking-option-reasoning_effort-high",
+          "chat-thinking-option-reasoning_effort-xhigh",
+          "chat-thinking-option-reasoning_effort-max"
+        ],
+        "after": {
+          "trigger": "Low",
+          "draft": {
+            "reasoning_effort": "low"
+          },
+          "picked": "low"
+        }
+      }
+    },
+    "T05": {
+      "title": "Workspace search at desktop width with 14 workspaces: focus, filter, path, empty state, keys, IME guard, Escape, reset (AC-007, AC-008)",
+      "result": "Pass",
+      "ms": 1548,
+      "details": {
+        "initialSelection": "Temp workspace",
+        "open": {
+          "position": "absolute",
+          "box": {
+            "x": 506.5,
+            "y": 161.5,
+            "w": 384,
+            "h": 420,
+            "right": 890.5,
+            "bottom": 581.5
+          },
+          "scrolls": true,
+          "inputInListbox": false,
+          "placeholder": "Search workspaces",
+          "ariaLabel": "Search workspaces",
+          "options": 15
+        },
+        "mcps": [
+          "MCPS-tools",
+          "autobyteus_mcps"
+        ],
+        "byPath": [
+          "lambda-sdk"
+        ],
+        "empty": "No workspaces match “zzz”",
+        "notesOrder": [
+          "alpha-notes",
+          "notes"
+        ],
+        "keys": {
+          "k1": "chat-workspace-option-agent_ws_5b4c5504081de4f4b952da3600359ba556362970b668922a7713961e79cac854",
+          "k2": "chat-workspace-option-agent_ws_f584fff59cb379b71e592040b89f3158b66ac33c22dbdfe9f01d42a9ba1e6a7b",
+          "k3": "chat-workspace-option-agent_ws_5b4c5504081de4f4b952da3600359ba556362970b668922a7713961e79cac854",
+          "k4": "chat-workspace-search"
+        },
+        "picked": "notes",
+        "hint": null,
+        "reopenedQuery": "",
+        "afterEscape": "notes",
+        "enterPick": "gamma-api",
+        "folderForm": true
+      }
+    },
+    "T06": {
+      "title": "Layout at 1440×1000 and 1280×700: pt-[14vh] pb-10; no overlap/clipping; menus inside viewport (AC-009)",
+      "result": "Pass",
+      "ms": 7097,
+      "details": {
+        "1440x1000": {
+          "thinkingTriggerSettledMs": 1820,
+          "paddingTop": 140,
+          "paddingBottom": 40,
+          "composerTop": 521.5,
+          "blockCenterMinusAreaCenter": 32,
+          "noOverlap": true,
+          "inside": true,
+          "overflow": false,
+          "wsBox": {
+            "x": 506.5,
+            "y": 218.5,
+            "right": 890.5,
+            "bottom": 638.5
+          },
+          "thBox": {
+            "x": 1040.5,
+            "y": 417,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 638.5,
+            "right": 1216.5
+          }
+        },
+        "1280x700": {
+          "thinkingTriggerSettledMs": 2351,
+          "paddingTop": 98,
+          "paddingBottom": 40,
+          "composerTop": 350.5,
+          "blockCenterMinusAreaCenter": 11,
+          "noOverlap": true,
+          "inside": true,
+          "overflow": false,
+          "wsBox": {
+            "x": 426.5,
+            "y": 47.5,
+            "right": 810.5,
+            "bottom": 467.5
+          },
+          "thBox": {
+            "x": 960.5,
+            "y": 246,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 467.5,
+            "right": 1136.5
+          }
+        }
+      }
+    },
+    "T07": {
+      "title": "Narrow bottom sheet (413×738): merged thinking list and workspace search still work",
+      "result": "Pass",
+      "ms": 2680,
+      "details": {
+        "thinking": {
+          "position": "fixed",
+          "ids": [
+            "off",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "box": {
+            "x": 8,
+            "y": 508.5,
+            "w": 397,
+            "h": 221.5,
+            "bottom": 730,
+            "right": 405
+          }
+        },
+        "names": [
+          "kappa-cli"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 46955
+    },
+    {
+      "label": "frontend",
+      "pid": 46982
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 46982,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 46955,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-cxBaDT"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-cxBaDT",
+  "backendUrl": "http://127.0.0.1:53443",
+  "frontUrl": "http://127.0.0.1:53444",
+  "workspaces": {
+    "alpha-notes": "agent_ws_5b4c5504081de4f4b952da3600359ba556362970b668922a7713961e79cac854",
+    "autobyteus_mcps": "agent_ws_d685fd3fe6d623c1f71d25bd398bf34a5aa095eb006f8696e5f552d99cfe00e3",
+    "MCPS-tools": "agent_ws_f1039c5bc07d8a96c1acbd2283412320d7c3653909b4a91087cdbf12142c68f5",
+    "beta-site": "agent_ws_debf8a10fc08fc1c39defbf4428f1695eed6143dda1c397959e889908942b357",
+    "gamma-api": "agent_ws_08b63499304abf6ebbb4ddf27aaa5a2edf6b1ca3ea3ff0a5cd9c357970cc3511",
+    "delta-infra": "agent_ws_451a11a4fd7d71b553309061d246db56e7c48cea902b6318cfa708c1eaec486c",
+    "epsilon-docs": "agent_ws_0f64f9a645754293ca90b2b606b8477efb9d4f7f2c4f406006287287614af3b0",
+    "zeta-mobile": "agent_ws_9e3499ba61919b58b203b832127e177970a844411bb0add4679f2de6ffa6ed3a",
+    "eta-data": "agent_ws_d946ea43a6e3629b2411fd79ad6441c339d5ed8165fa35da310ade45bdb32362",
+    "theta-ml": "agent_ws_52907ea425a00242192bb35a000b8ff66a8045fdfa063d72f838d319bc78d913",
+    "iota-web": "agent_ws_63422479596ab4c5d98757267f73eee2ade10487c6ebe5063da8909b7a97276c",
+    "kappa-cli": "agent_ws_fcb89bdc25ca07d1ae74430b8d76e49450117890a242ec9d651af4353499e7c9",
+    "lambda-sdk": "agent_ws_ef2e53a9c3e60b727b3c9f7024bbf9d7e8525bb9951897298f0099c21c42daa3",
+    "notes": "agent_ws_f584fff59cb379b71e592040b89f3158b66ac33c22dbdfe9f01d42a9ba1e6a7b"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-10-05T20:32:48.320Z"
+}
