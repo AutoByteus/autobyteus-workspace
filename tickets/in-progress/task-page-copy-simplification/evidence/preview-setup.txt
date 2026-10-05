@@ -1,0 +1,86 @@
+Implementation-only renderer preview, not API/E2E. Actual ProjectTaskEditor/draft editor/composer and shared voice controls, actual catalogs and Tailwind. Page/draft/router/store controlled; voice unavailable; no backend or microphone.
+CSS command: pnpm -C autobyteus-web exec tailwindcss -i assets/css/main.css -o .task-copy-preview/preview.css
+
+--- mocks.ts ---
+import {ref, computed, reactive} from 'vue'
+import en from '../localization/messages/en/projects'
+import zh from '../localization/messages/zh-CN/projects'
+import settings from '../localization/messages/en/settings'
+const params = new URLSearchParams(location.search)
+const saved = params.get('mode') === 'edit' ? {taskId:'t1',description:'Review the simplified task form\nRetain task editing and context files.',contextFiles:[], status:'IN_PROGRESS'} : undefined
+const voice = reactive({isAvailable:false, transcriptTarget:null, latestResult:null, isStarting:false,isRecording:false,isTranscribing:false,initialize:()=>{},cancelOperationForTarget:()=>{}})
+export const useVoiceInputStore=()=>voice
+export const useLocalization=()=>({t:(key:string)=>(params.get('locale')==='zh-CN'?zh:en)[key] || settings[key] || key})
+export const useProjectTaskPage=()=>({project:ref({name:'Task copy preview'}),task:ref(saved),loading:ref(false),error:ref(''),heading:ref(null),load:()=>{}})
+export const useRouter=()=>({push:(to:any)=>alert('Preview navigation: '+to.path)})
+export const useProjectTaskStore=()=>({setSearch:()=>{}})
+export const useProjectTaskDraft=()=>({
+ text:ref(saved?.description??''),files:ref([]), client:{},draftId:ref(),pending:ref(false),saving:ref(false),error:ref(''),blocked:ref(false),
+ target:{key:'preview',isCurrent:()=>true,appendTranscript:()=>{}},current:()=>true,addFiles:()=>{},removeFile:()=>{},
+ save:async()=>saved??{taskId:'new'},
+})
+
+
+--- index.html ---
+<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/preview.css"></head><body style="margin:0;background:#f8fafc"><div id="app"></div><script type="module" src="/main.ts"></script></body></html>
+
+
+--- vite.config.mjs ---
+import vue from '@vitejs/plugin-vue'
+import path from 'node:path'
+const web = process.cwd()
+export default {
+ root: path.join(web, '.task-copy-preview'),
+ plugins: [vue()],
+ resolve: {alias: [
+ {find: 'vue', replacement: path.join(web,'../node_modules/.pnpm/vue@3.5.28_typescript@5.9.3/node_modules/vue/dist/vue.runtime.esm-bundler.js')},
+ ...['composables/projects/useProjectTaskDraft','composables/projects/useProjectTaskPage','composables/useLocalization','stores/projectTaskStore','stores/voiceInputStore'].map(x=>({find:'~/'+x, replacement:path.join(web,'.task-copy-preview/mocks.ts')})),
+ {find: 'vue-router', replacement: path.join(web,'.task-copy-preview/mocks.ts')},
+ {find:'~', replacement:web},
+ ]},
+ css: {postcss: {plugins: []}},
+ server: {host:'127.0.0.1', port:4197, strictPort:true},
+}
+
+
+--- main.ts ---
+import {createApp, h} from 'vue'
+import ProjectTaskEditor from '../components/projects/ProjectTaskEditor.vue'
+const params=new URLSearchParams(location.search)
+const app=createApp({render:()=>h(ProjectTaskEditor,{projectId:'p1',taskId:params.get('mode')==='edit'?'t1':undefined})})
+app.component('NuxtLink',{props:['to'],setup:(props,{slots})=>()=>h('a',{href:props.to},slots.default?.())})
+app.mount('#app')
+
+
+--- inspect.cjs ---
+const {chromium}=require('../node_modules/playwright-core');
+const fs=require('node:fs');
+(async()=>{
+ const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
+ const page=await browser.newPage();
+ const out='../tickets/in-progress/task-page-copy-simplification/evidence';
+ const notes=[];
+ page.on('pageerror',e=>notes.push({error:e.message}));
+ for(const mode of ['new','edit']){
+  for(const [name,width,height] of [['wide',1280,900],['narrow',390,844]]){
+   await page.setViewportSize({width,height});
+   await page.goto('http://127.0.0.1:4197?mode='+mode);
+   await page.locator('textarea').waitFor();
+   await page.screenshot({path:out+'/'+mode+'-'+name+'.png',fullPage:true,timeout:15000});
+   notes.push({mode,viewport:name,text:await page.locator('body').innerText(),layout:await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,width:innerWidth,label:document.querySelector('label').getBoundingClientRect().y,textarea:document.querySelector('textarea').getBoundingClientRect().y,heading:document.activeElement?.tagName}))});
+   await page.locator('textarea').fill('   ');
+   await page.locator('[data-testid=task-page-save]').click();
+   notes.push({mode,viewport:name,blank:await page.evaluate(()=>({focused:document.activeElement?.id,error:document.querySelector('#task-page-error')?.textContent,describedBy:document.querySelector('textarea').getAttribute('aria-describedby')}))});
+   await page.screenshot({path:out+'/'+mode+'-'+name+'-blank.png',fullPage:true,timeout:15000});
+   await page.locator('textarea').fill('Corrected description');
+   notes.push({mode,viewport:name,corrected:await page.evaluate(()=>({text:document.querySelector('textarea').value,error:!!document.querySelector('#task-page-error'),describedBy:document.querySelector('textarea').getAttribute('aria-describedby')}))});
+  }
+ }
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('http://127.0.0.1:4197?locale=zh-CN');
+ await page.locator('textarea').waitFor();
+ notes.push({locale:'zh-CN',text:await page.locator('body').innerText(),placeholder:await page.locator('textarea').getAttribute('placeholder')});
+ await page.screenshot({path:out+'/new-zh-narrow.png',fullPage:true,timeout:15000});
+ fs.writeFileSync(out+'/render-inspection.json',JSON.stringify(notes,null,2));
+ await browser.close();
+})();
