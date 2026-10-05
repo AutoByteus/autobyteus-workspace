@@ -26,3 +26,19 @@
   and DEC-004 (data-root guard) are not done here and are recorded as follow-up candidates. REQ-001 to REQ-005 are the
   approved scope.
 - Status: Approved. Next: architecture design.
+
+## SR-003 — 2026-10-05 — Architecture design complete
+- Evidence added: E-A1 to E-A7 (graceful drain is intended for the Team, Org and copy flows; fence reuse; runtime
+  spawn ownership; desktop spawn and stop; server shutdown; non-desktop group signalling).
+- Design (`design-spec.md`):
+  - D1: the stop-now entry points (`terminateAgentRun`, `stopAllAgentRuns`) fence and interrupt first, using the
+    existing root-shutdown fence (which cancels queued input, matching DEC-001). `prepareTermination` is unchanged.
+  - D2: `server-process-shutdown.ts`, a 10 s bound. A forced exit signals the process group (SIGTERM → 1.5 s →
+    SIGKILL) only when the desktop made the server the group leader.
+  - D3: the desktop spawns the server detached (group leader, with an env flag); `stopServer` waits 15 s, then
+    escalates on the group; `will-quit` is deferred until the server stop completes; Windows gets the same 15 s
+    (tree kill already).
+- Persisted data: Not Affected. Classification: `Large` / `High`.
+- Follow-up candidates recorded: `/Users/normy/autobyteus_org/solution-designer-reports/busy-quit-followup-candidates.md`
+  (FU-1 = DEC-003, FU-2 = DEC-004).
+- Requirements: unchanged (SR-002).

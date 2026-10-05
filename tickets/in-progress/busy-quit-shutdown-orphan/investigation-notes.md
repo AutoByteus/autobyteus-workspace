@@ -92,6 +92,55 @@
   - whether the orphan's late writes can actually corrupt data, as opposed to merely conflicting.
   - Relaunch after a busy quit continued every conversation in the predecessor's T-08c.
 
+## Architecture investigation (SR-003, 2026-10-05)
+- **E-A1, project guideline.** `DESIGN.md` applies: the smallest coherent owner; "preserve guarantees, not machinery";
+  no speculative machinery. The predecessor design (`agent-run-termination-extraction`, SR-006 § 11 fence) is the
+  interrupt mechanism to reuse.
+- **E-A2, where graceful drain is intended.**
+  - `prepareTermination` / `tryPrepareTerminationIfQuiescent` (drain without interrupting, cancellable) are used on
+    purpose throughout the Team, Org and task-copy flows. Callers: `configured-agent-execution-handle.ts:201-214`,
+    `flat-team-execution-manager.ts:258-348`, the task agent/team registries, `root-*-execution-*`, and
+    `agent-run-manager.ts:195-236`.
+  - Those flows cancel preparations (`managed-agent-run-termination.ts:25`, registries `local.cancel()`). Changing
+    `prepareTermination` globally would break them.
+  - Only two entry points mean "stop now": `AgentRunManager.terminateAgentRun` (`agent-run-manager.ts:275-289`; user
+    Terminate via `StandaloneAgentRunLifecycleService.terminateHost:104-113`; history delete/archive and root stop
+    through `stopRoot` → host) and `AgentRunManager.stopAllAgentRuns` (`:291-316`; server shutdown).
+- **E-A3, fence reuse.** `AgentRun.fenceInputAndInterruptForRootShutdown()` (`AgentRunTermination.fenceForRootShutdown`):
+  - root-fences input, which silently invalidates reservations and cancels admitted pre-forward input (DEC-001; test
+    `agent-run.test.ts` "root shutdown silently invalidates reservations and cancels admitted pre-forward input once");
+  - interrupts the active turn and settles accepted once quiescent;
+  - bounds a rejected interrupt at 5 s (F-2); a failed attempt can be retried (F-3).
+  - Afterwards `prepareTermination` is immediate (already quiescent). A cancelled preparation does not reopen
+    root-fenced admission (test "does not reopen root-fenced admission…"), which is the right outcome for Terminate.
+- **E-A4, runtime process spawning.**
+  - Codex: `CodexAppServerClient.start` (`spawn`, default process group); the manager has `close()` but it is never
+    called on shutdown.
+  - Claude: the CLI is spawned **inside the Claude Agent SDK** (`claude-session-process.ts` → `openSession`); the
+    server holds no `ChildProcess`. `ClaudeSessionManager` has only `closeRunSession(runId)`.
+  - ACP (`acp-agent-process.ts`: stdin close → SIGTERM → SIGKILL), AGY (`agy-stream-process.ts`: signals its process
+    groups), Grok: per-process close only.
+  - A central child-process registry is therefore not feasible for SDK-spawned processes.
+  - Runtime CLIs inherit the server's process group. Their tool commands sit in their own groups and are cleaned by
+    the CLI on SIGTERM (Codex E3; Claude E9 follow-up).
+- **E-A5, desktop spawn and stop.**
+  - `macOSServerManager.ts:39-59` and `linuxServerManager.ts` spawn `process.execPath app.js` with
+    `{cwd, env, stdio:['ignore','pipe','pipe']}`, not detached, so the server shares Electron's process group.
+  - `BaseServerManager.stopServer` (`:184-245`): SIGTERM, then SIGKILL after `gracefulShutdownTimeoutMs = 5000`.
+  - `WindowsServerManager` overrides stop with `taskkill /pid /t` (tree), then forced; same 5 s.
+  - `ElectronApplication.installLifecycleHandlers` (`:331-345`): `before-quit` arms an 8 s `app.quit()` timer;
+    `will-quit` → `void this.stop()` with no `preventDefault`.
+  - Tests exist: `server/__tests__/BaseServerManager.spec.ts`; no quit-lifecycle test.
+- **E-A6, server side.**
+  - `server-runtime.ts:29-46`: `shutdown` awaits `app.close()` without a bound; the handlers are `once` (a second
+    SIGTERM gets Node's default action).
+  - `app.close()` → the `onClose` hook → `currentApplicationRuntime.lifecycle.stop()` → `closeProcessResources`
+    (`build-studio-server.ts:282-287`, `78-110`) → `GeneralProcessRunSupervisor.close` (`:405-430`): Org, Team,
+    standalone roots, then standalone runs, in sequence.
+- **E-A7, non-desktop deployments.** Docker stop sends SIGTERM, then SIGKILL to the whole container after its grace
+  period. Terminal Ctrl-C sends SIGINT to the whole foreground process group. Both already reach the runtime CLIs.
+  The orphaning in this ticket is specific to the server being a child of the Electron app.
+
 ## Supplement Inventory
 | Supplement | Purpose | Status |
 | --- | --- | --- |
