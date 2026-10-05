@@ -11,6 +11,7 @@ authoritative. This record holds only the initial baseline and later implementat
 | IR-002 | Code Reviewer CRR-001/CRR-002 + Architecture Reviewer ARCH-REV-003 (SR-009) | CR-001, CR-002, CR-003 | `Design Impact` (CR-001, resolved by SR-009) / `Local Fix` (CR-002, CR-003) | SR-009, ARCH-REV-003, CRR-002 | Fixed; local checks pass with no new failures; back to code review for a delta review |
 | IR-003 | Code Reviewer CRR-004 + Architecture Reviewer ARCH-REV-004 (SR-010) | DI-001, DI-002, DI-004, DI-006(b), DI-006(e) | `Design Impact` (decided upstream by SR-010) | SR-010, ARCH-REV-004, CRR-004 | Implemented; local checks by slice S1–S6 pass with no new failures; back to code review, then API/E2E |
 | IR-004 | Code Reviewer CRR-006 (failure-origin review of API-REV-001) | CR-004 | `Local Fix` | CRR-006, API-REV-001 | Fixed; specs prove availability and catalogs load on copied/carried starts; back to code review, then API/E2E rerun |
+| IR-005 | Code Reviewer CRR-008 (failure-origin review of API-REV-002, F-3) | CR-005 | `Local Fix` | CRR-008, API-REV-002 | Fixed; New chat footer and card rows measured clean at 804/880/390/1512; back to code review, then API/E2E rerun |
 
 ## Revision Entries
 
@@ -206,3 +207,32 @@ authoritative. This record holds only the initial baseline and later implementat
   - New chat loads in the background. In the brief window before availability arrives, Send is enabled and the launch re-checks readiness with what is known.
   - The R04/R05 rendering after a fresh load from a live Agent/Team run is to be confirmed by the API/E2E rerun.
   - F-2 (the A01 collaborator placeholder) is outside this ticket, per CRR-006.
+
+### IR-005 — The model trigger stays bounded by its wrapper at every width (CR-005)
+
+- Triggering role, report path, and round:
+  - Code Reviewer, `code-review-report.md` §API/E2E Failure-Origin Review (CRR-008).
+  - It was triggered by API/E2E round 2 (API-REV-002) F-3: R12/R04 footer overlap at 804 and 880 px.
+- Triggering finding IDs: CR-005 (Medium).
+- Classification: `Local Fix`. No design or requirement change; Large/High unchanged.
+- Prior authoritative result: IR-004, head `83ab477e4`.
+- Current authoritative result: IR-004 plus this delta (the IR-005 commit).
+- Related code-review revision IDs: CRR-008. Related API/E2E revision IDs: API-REV-002.
+- Why recorded: a rendered defect introduced by the IR-001 fix for the 390 px footer overflow.
+  - At ≥ sm, `sm:max-w-[20rem]` replaced the trigger's `max-w-full`.
+  - The flex row shrank the `min-w-0` wrapper below 20rem, and the trigger overflowed onto Thinking and Fast.
+- Approved behavior or requirement IDs affected: BEH-005, BEH-009 (AC-014, AC-019; VIS-020/021/042).
+- Implementation delta:
+  - `components/chat/ChatModelMenu.vue`: the wrapper is `relative min-w-0 max-w-[20rem]`, and the trigger is `max-w-full` at every breakpoint.
+  - `components/chat/ChatNewSurface.vue`: Thinking and the other-setting chips are `flex-shrink-0`.
+- Changed files or areas (`autobyteus-web/`): `components/chat/ChatModelMenu.vue`, `components/chat/ChatNewSurface.vue`.
+  - Evidence: `evidence/implementation/26..29-cr005-*.png`.
+- Local validation and result:
+  - Rendered on the dev stack with the real Codex catalog: long name with Thinking and Fast at 804/880/390/1512, plus Thinking-only and model-only at 804/880. No overlaps, nothing outside the composer, and the label truncates.
+  - Card uses (member-drawer row at 880, Org card at 804) stay inside their rows.
+  - Full suite: 11 baseline failures only, 3,629 tests pass.
+  - Audit exits 0; mobile specs unchanged.
+- Next recipient or routing: Code Reviewer (targeted delta), then the API/E2E rerun (R12/R04 first, the web suite, N01–N03).
+- Remaining limitations or risks:
+  - The saved-run card shares the measured card rule but was not rendered with a long model name (the dev data's saved run uses a short one).
+  - C05 (Codex client cleanup on the server) is outside this ticket, per CRR-008.

@@ -1,10 +1,12 @@
 <template>
-  <div ref="rootRef" class="relative min-w-0">
+  <div ref="rootRef" class="relative min-w-0 max-w-[20rem]">
+    <!-- CR-005: this wrapper carries the 20rem cap and shrinks in a flex row (min-w-0); the trigger is
+         bounded by it at every width, so a long model name truncates instead of overlapping its neighbours. -->
     <button
       ref="triggerRef"
       type="button"
       data-test="chat-model-trigger"
-      class="inline-flex max-w-full items-center sm:max-w-[20rem] gap-1.5 rounded-md px-2 py-1 text-[0.8125rem] leading-5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+      class="inline-flex max-w-full items-center gap-1.5 rounded-md px-2 py-1 text-[0.8125rem] leading-5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
       :class="['hover:bg-gray-100', popover.open.value ? 'bg-gray-100' : '']"
       :aria-expanded="popover.open.value ? 'true' : 'false'"
       aria-haspopup="menu"

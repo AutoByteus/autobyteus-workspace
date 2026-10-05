@@ -9,8 +9,8 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unifi
 - Upstream review applicability and handoff-rule result:
   - Architecture review was selected and passed (ARCH-REV-002; ARCH-REV-003 for SR-009; ARCH-REV-004
     for SR-010) on the `Large`/`High` route.
-  - The handoff rules route the result to the Code Reviewer (targeted delta review of IR-004, the CR-004
-    Local Fix); API/E2E then reruns on the new head.
+  - The handoff rules route the result to the Code Reviewer (targeted delta review of IR-005, the CR-005
+    Local Fix); API/E2E then reruns on the new head (R12/R04 first, the web suite, N01–N03).
 - Requirements doc: `requirements-doc.md` (SR-006, Approved).
 - Investigation notes: `investigation-notes.md`.
 - Solution revision record: `solution-revision-record.md`.
@@ -25,17 +25,19 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unifi
   - CRR-004: DI-001..DI-006, decided by SR-010 / ARCH-REV-004 → IR-003.
   - CRR-006 (failure-origin review of API/E2E round 1, API-REV-001): CR-004 Local Fix → IR-004.
     Evidence: `evidence/api-e2e/run-settings-live/` (R04, R05, R10), `api-e2e-execution-coverage-report.md`.
+  - CRR-008 (failure-origin review of API/E2E round 2, API-REV-002, F-3): CR-005 Local Fix → IR-005.
+    Evidence: `evidence/api-e2e/run-settings-live/R12-footer-804.png`, `R12-footer-880.png`.
 - API/E2E coverage investigation: `api-e2e-coverage-investigation.md`.
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-004` (baseline `IR-001`; then `IR-002`, `IR-003`)
+- Current implementation revision ID: `IR-005` (baseline `IR-001`; then `IR-002`..`IR-004`)
 - Related solution revision IDs: `SR-006`, `SR-008`, `SR-009`, `SR-010`
 - Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001`..`CRR-006`. API/E2E: `API-REV-001` (round 1 failed on CR-004; reruns on the IR-004 head). Delivery: `N/A`
-- Triggering finding IDs: `CR-004` (see `IR-004`); earlier `DI-001`, `DI-002`, `DI-004`, `DI-006(b)`, `DI-006(e)` (`IR-003`) and `CR-001`..`CR-003` (`IR-002`)
+- Related code-review revision IDs: `CRR-001`..`CRR-008`. API/E2E: `API-REV-001` (failed on CR-004), `API-REV-002` (failed only on F-3 = CR-005); reruns on the IR-005 head. Delivery: `N/A`
+- Triggering finding IDs: `CR-005` (see `IR-005`); earlier `CR-004` (`IR-004`); earlier `DI-001`, `DI-002`, `DI-004`, `DI-006(b)`, `DI-006(e)` (`IR-003`) and `CR-001`..`CR-003` (`IR-002`)
 
 Agent and Team runs start only from New chat. The heading switcher picks the target, and settings
 sit in the composer chips. A Team also gets a members line that opens the Member settings drawer.
@@ -263,6 +265,21 @@ All paths are under `autobyteus-web/`.
   - Rendered check on the worktree dev stack: Org "+" after a fresh page load resolves the copied model, Thinking and the member override ("1 of 11 customized"), with Run enabled (`evidence/implementation/25-cr004-org-plus-fresh-load-804.png`). The dev data has no Agent or Team runs, so the R04/R05 rendering after a fresh load is left to the API/E2E rerun.
   - vue-tsc output unchanged (552 lines); localization audit and both guards exit 0; mobile specs unchanged (only the baseline `MobileUxRefinement` fails).
   - The DI-002 contract pin now resolves the server registry relative to the spec file (CRR-005 note).
+- **IR-005 checks (CR-005, footer overlap):**
+  - Fix:
+    - `ChatModelMenu` wrapper is `relative min-w-0 max-w-[20rem]`, and the trigger is `max-w-full` at every width, so the label truncates whenever the flex row shrinks the wrapper.
+    - Previously `sm:max-w-[20rem]` replaced `max-w-full` at ≥ sm, and the trigger overflowed its shrunken wrapper.
+    - New chat's Thinking control and other-setting chips are `flex-shrink-0`.
+  - Rendered on the worktree dev stack with the real Codex catalog. The New chat footer was measured (left/right of model, Thinking, Fast and Send), checking pairwise overlaps and containment in the composer:
+    - Long name "GPT-5.6-Luna (default reasoning: medium)" with Thinking and Fast on, at 804/880/390/1512: no overlaps, nothing outside, label truncated. At 804 the model trigger is 356–570, Thinking 572–670, Fast 672–733, Send 739–771.
+    - Thinking-only (claude-sonnet-4-6) at 804/880: clean.
+    - Model-only (DeepSeek V4 Flash, no Thinking or Fast) at 804/880: clean.
+    - Card uses: a Team member-drawer row at 880 and the Org card at 804, both with the long Codex model. The trigger stays inside its row (truncates at the row edge) and clear of the Org Run button.
+    - The saved-run card uses the same `RunSettingsCard` row rule. It was not re-rendered with a long name, because the dev data's saved run uses a short model.
+    - Screenshots: `evidence/implementation/26-cr005-footer-long-{804,880,390,1512}.png`, `27-cr005-member-drawer-long-880.png`, `28-cr005-org-card-long-804.png`, `29-cr005-footer-model-only-{804,880}.png`.
+  - Full suite: 11 baseline failing files, no new failures, 3,629 tests pass (`/tmp/rsui-tests-8.log`).
+    - A first run caught a mistake of mine: an HTML comment above `ChatModelMenu`'s root made the template two-rooted in dev/test and broke `ChatModelMenu.spec` placement. The comment now sits inside the root, and the spec passes.
+  - Localization audit exits 0; mobile specs unchanged (only the baseline `MobileUxRefinement` fails).
 - **IR-003 checks by slice (SR-010 DI-005):**
   - S1 Agent/Team start: `useRunStart` (`newChat`), `AppLeftPanel_v2` (nav and pencil go through
     `newChat`, `beginSelectionIntent` kept), `chatLaunchService` (Team readiness over members, AC-002

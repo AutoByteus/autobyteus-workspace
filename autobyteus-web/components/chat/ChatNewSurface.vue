@@ -53,7 +53,9 @@
               :model-label="controls.modelLabel.value"
               @select="controls.selectModel"
             />
+            <!-- CR-005: Thinking and the other-setting chips keep their size; only the model name truncates. -->
             <ChatThinkingControl
+              class="flex-shrink-0"
               :schema="controls.thinkingSchema.value"
               :llm-config="controls.llmConfig.value"
               @update="controls.selectModelConfig"
@@ -62,6 +64,7 @@
             <ChatModelOptionControl
               v-for="option in modelOptions"
               :key="option.key"
+              class="flex-shrink-0"
               :option="option"
               compact-on-phone
               @update="controls.selectModelConfig(applyModelOption(controls.llmConfig.value, option.key, $event))"
