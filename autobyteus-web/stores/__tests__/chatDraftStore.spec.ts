@@ -9,6 +9,8 @@ const mocks = vi.hoisted(() => ({
   modelsByRuntime: {} as Record<string, string[]>,
   workspacesByRoot: {} as Record<string, { workspaceId: string }>,
   schemas: {} as Record<string, unknown>,
+  fetchAvailability: vi.fn(async () => []),
+  fetchModels: vi.fn(async (_runtimeKind: string) => undefined),
 }))
 
 vi.mock('~/stores/agentDefinitionStore', () => ({
@@ -32,13 +34,13 @@ vi.mock('~/stores/workspace', () => ({
 }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({
   useRuntimeAvailabilityStore: () => ({
-    fetchRuntimeAvailabilities: vi.fn(async () => []),
+    fetchRuntimeAvailabilities: mocks.fetchAvailability,
     isRuntimeEnabled: (runtimeKind: string) => mocks.enabledRuntimes.has(runtimeKind),
   }),
 }))
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: () => ({
-    fetchProvidersWithModels: vi.fn(async () => undefined),
+    fetchProvidersWithModels: mocks.fetchModels,
     models: (runtimeKind: string) => mocks.modelsByRuntime[runtimeKind] ?? [],
     modelConfigSchemaByIdentifier: (runtimeKind: string, id: string) => mocks.schemas[`${runtimeKind}/${id}`] ?? null,
   }),
@@ -203,6 +205,40 @@ describe('chatDraftStore', () => {
       expect(draft.context.config.llmConfig).toEqual({ reasoning_effort: 'high', service_tier: 'fast' })
       expect(draft.autoExecuteTools).toBe(false)
       expect(draft.teamAgentOverrides['/writer']).toMatchObject({ llmModelIdentifier: 'gpt-5.5' })
+    })
+
+    it('CR-004: a copied Team start loads availability and the root’s and members’ catalogs, keeping its values', async () => {
+      mocks.fetchAvailability.mockClear()
+      mocks.fetchModels.mockClear()
+      const draft = useChatDraftStore().startForDefinition({ kind: 'team', teamDefinitionId: 'team-1' }, {
+        copied: {
+          workspace: null, runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5-codex',
+          llmConfig: { reasoning_effort: 'low', service_tier: 'fast' }, autoExecuteTools: true,
+          teamAgentOverrides: {
+            '/writer': { runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5', llmConfig: null },
+            '/lead': { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus', llmConfig: null },
+          },
+        },
+      })
+      await flushPromises()
+
+      expect(mocks.fetchAvailability).toHaveBeenCalled()
+      expect(mocks.fetchModels.mock.calls.map(([runtimeKind]) => runtimeKind).sort()).toEqual(['autobyteus', 'codex_app_server'])
+      // A disabled runtime's catalog is not fetched; its values are kept for the readiness rule to report.
+      expect(draft.teamAgentOverrides['/lead']).toMatchObject({ runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus' })
+      expect(draft.context.config).toMatchObject({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5-codex' })
+      expect(draft.context.config.llmConfig).toEqual({ reasoning_effort: 'low', service_tier: 'fast' })
+    })
+
+    it('CR-004: a carried (switcher) Agent start loads its runtime’s catalog too', async () => {
+      mocks.fetchAvailability.mockClear()
+      mocks.fetchModels.mockClear()
+      useChatDraftStore().startForDefinition({ kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' }, {
+        carried: { workspace: null, runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5-codex', llmConfig: null, autoExecuteTools: true },
+      })
+      await flushPromises()
+      expect(mocks.fetchAvailability).toHaveBeenCalled()
+      expect(mocks.fetchModels).toHaveBeenCalledWith('codex_app_server')
     })
 
     it('retargeting keeps text and settings but resets member overrides', () => {

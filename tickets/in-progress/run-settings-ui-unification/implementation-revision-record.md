@@ -10,6 +10,7 @@ authoritative. This record holds only the initial baseline and later implementat
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-002 Pass | N/A | `Initial Baseline` | SR-006, SR-008, ARCH-REV-002 | Implementation complete; local checks pass with no new failures; sent to code review |
 | IR-002 | Code Reviewer CRR-001/CRR-002 + Architecture Reviewer ARCH-REV-003 (SR-009) | CR-001, CR-002, CR-003 | `Design Impact` (CR-001, resolved by SR-009) / `Local Fix` (CR-002, CR-003) | SR-009, ARCH-REV-003, CRR-002 | Fixed; local checks pass with no new failures; back to code review for a delta review |
 | IR-003 | Code Reviewer CRR-004 + Architecture Reviewer ARCH-REV-004 (SR-010) | DI-001, DI-002, DI-004, DI-006(b), DI-006(e) | `Design Impact` (decided upstream by SR-010) | SR-010, ARCH-REV-004, CRR-004 | Implemented; local checks by slice S1–S6 pass with no new failures; back to code review, then API/E2E |
+| IR-004 | Code Reviewer CRR-006 (failure-origin review of API-REV-001) | CR-004 | `Local Fix` | CRR-006, API-REV-001 | Fixed; specs prove availability and catalogs load on copied/carried starts; back to code review, then API/E2E rerun |
 
 ## Revision Entries
 
@@ -162,3 +163,46 @@ authoritative. This record holds only the initial baseline and later implementat
   - FU-001..FU-004 are deferred.
   - The built-in id mirror is still by hand, but drift now fails a unit test, and live N03 is required in S4.
   - The `tests/e2e/cross-scope-agent-mentions-live-probe.mjs` working-tree change (N02/N03) belongs to API/E2E and is not part of this commit.
+
+### IR-004 — Copied and carried starts load their runtimes' availability and catalogs (CR-004)
+
+- Triggering role, report path, and round:
+  - Code Reviewer, `code-review-report.md` §API/E2E Failure-Origin Review, CRR-006.
+  - It was triggered by API/E2E round 1 (API-REV-001) failures R04, R05 and R10 at `81f9ff178`.
+- Triggering finding IDs: CR-004 (Medium). Also the CRR-005 non-blocking note on the contract pin's path.
+- Classification: `Local Fix`. No design or requirement change; Large/High unchanged.
+- Prior authoritative result: IR-003, head `81f9ff178`.
+- Current authoritative result: IR-003 plus this delta (the IR-004 commit).
+- Related code-review revision IDs: CRR-006 (and CRR-005 for the note).
+- Related API/E2E revision IDs: API-REV-001. Solution, architecture and delivery: N/A.
+- Why recorded: an implementation defect found by API/E2E.
+  - A copied or carried start returned before the only start-time availability/catalog load.
+  - So model labels, Thinking/Fast chips and the readiness rule had no data after a fresh load.
+- Approved behavior or requirement IDs affected: BEH-002, BEH-003, BEH-007 (REQ-013, REQ-019, AC-002, AC-008, AC-019).
+- Implementation delta:
+  - `utils/runSettings/startModelDefaults.ts`: new `loadStartRuntimes(runtimeKinds, catalog)`.
+    - It loads availability first, then the catalog of each distinct enabled runtime.
+    - It never changes values; a disabled runtime is left to the readiness rule.
+  - `stores/chatDraftStore.ts`: `startForDefinition` with copied or carried settings now runs `loadCarriedStart` in the background.
+    - It loads the root's and each Team member override's runtimes, plus the target's definitions.
+    - It refreshes the agent identity under the same generation guard as the default path.
+    - `definitionDefaultLaunchConfig` now reuses a small `ensureTargetDefinitions`.
+  - `stores/agentOrgLaunchDraftStore.ts`: `prepare` awaits `loadCarriedRuntimes` (root, team overrides and agent overrides) for copied and carried settings before the page becomes ready.
+    - The default path still runs `applyDefaultModel`.
+  - `utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts`: the server registry path is now relative to the spec file (CRR-005 note).
+- Changed files or areas (`autobyteus-web/`):
+  - production: `utils/runSettings/startModelDefaults.ts`, `stores/chatDraftStore.ts`, `stores/agentOrgLaunchDraftStore.ts`
+  - specs:
+    - new `services/chat/__tests__/chatCopiedStartReadiness.spec.ts`
+    - updated `stores/__tests__/chatDraftStore.spec.ts`, `stores/__tests__/agentOrgLaunchDraftStore.spec.ts`, `utils/runSettings/__tests__/startModelDefaults.spec.ts`, the contract pin
+  - evidence: `evidence/implementation/25-cr004-org-plus-fresh-load-804.png`
+- Local validation and result:
+  - The new cases pass and fail with the fix removed (6 store/integration cases checked).
+  - Full suite: 11 baseline failing files, no new failures, 3,629 tests pass.
+  - vue-tsc output unchanged; audit and guards exit 0; mobile specs unchanged.
+  - Rendered: an Org "+" after a fresh load resolves the copied model, Thinking and the member override.
+- Next recipient or routing: Code Reviewer (targeted delta), then the API/E2E rerun (full `run-settings-live`, web suite, N01–N03, the repaired probes).
+- Remaining limitations or risks:
+  - New chat loads in the background. In the brief window before availability arrives, Send is enabled and the launch re-checks readiness with what is known.
+  - The R04/R05 rendering after a fresh load from a live Agent/Team run is to be confirmed by the API/E2E rerun.
+  - F-2 (the A01 collaborator placeholder) is outside this ticket, per CRR-006.

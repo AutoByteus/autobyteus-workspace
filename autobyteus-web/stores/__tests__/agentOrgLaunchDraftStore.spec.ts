@@ -10,6 +10,9 @@ const mocks = vi.hoisted(() => ({
   launch: vi.fn(),
   models: { autobyteus: ['first'], codex_app_server: ['gpt-codex'] } as Record<string, string[]>,
   enabled: new Set(['autobyteus', 'codex_app_server']),
+  hasFetched: true,
+  fetchAvailability: vi.fn(async () => []),
+  fetchModels: vi.fn(async (_runtimeKind: string) => undefined),
 }))
 vi.mock('~/stores/agentOrgDefinitionStore', () => ({
   useAgentOrgDefinitionStore: () => ({ fetchAll: vi.fn(async () => undefined), byId: (id: string) => mocks.orgs.find((org) => org.id === id) ?? null }),
@@ -22,13 +25,17 @@ vi.mock('~/services/runConfigEditing/agentOrgRunLaunchSeed', () => ({ buildEdita
 vi.mock('~/services/agentOrgExecution/agentOrgLaunchService', () => ({ agentOrgLaunchService: { launch: mocks.launch } }))
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: () => ({
-    fetchProvidersWithModels: vi.fn(async () => undefined),
+    fetchProvidersWithModels: mocks.fetchModels,
     models: (runtimeKind: string) => mocks.models[runtimeKind] ?? [],
     modelConfigSchemaByIdentifier: () => null,
   }),
 }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({
-  useRuntimeAvailabilityStore: () => ({ hasFetched: true, fetchRuntimeAvailabilities: vi.fn(async () => []), isRuntimeEnabled: (kind: string) => mocks.enabled.has(kind) }),
+  useRuntimeAvailabilityStore: () => ({
+    get hasFetched() { return mocks.hasFetched },
+    fetchRuntimeAvailabilities: mocks.fetchAvailability,
+    isRuntimeEnabled: (kind: string) => !mocks.hasFetched || mocks.enabled.has(kind),
+  }),
 }))
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => ({
@@ -60,6 +67,10 @@ describe('agentOrgLaunchDraftStore (UIS-004)', () => {
     mocks.orgs = [structuredClone(org)]
     mocks.references = structuredClone(references)
     mocks.enabled = new Set(['autobyteus', 'codex_app_server'])
+    mocks.hasFetched = true
+    mocks.fetchAvailability.mockReset()
+    mocks.fetchAvailability.mockImplementation(async () => [])
+    mocks.fetchModels.mockClear()
   })
 
   it('opens with the Org’s default launch config, the temp workspace and Auto-approve (REQ-021)', async () => {
@@ -97,6 +108,39 @@ describe('agentOrgLaunchDraftStore (UIS-004)', () => {
       teamWorkspaces: {},
       agentOverrides: { '/analyst': { llmModelIdentifier: 'other', llmConfig: null } },
     })
+  })
+
+  it('CR-004: a "+" copy keeps its settings, loads availability and its runtimes’ catalogs; a member on a disabled runtime blocks Run', async () => {
+    mocks.hasFetched = false
+    mocks.enabled = new Set(['autobyteus'])
+    mocks.fetchAvailability.mockImplementation(async () => { mocks.hasFetched = true; return [] })
+    mocks.inspection.mockResolvedValue({ execution_tree: {} })
+    mocks.seed.mockReturnValue({
+      definitionId: 'org-1', runtimeKind: 'autobyteus', llmModelIdentifier: 'first', llmConfig: { service_tier: 'fast' }, autoExecuteTools: true,
+      workspaceSelection: { mode: 'existing', existingWorkspaceId: 'temp', newWorkspacePath: '' },
+      teamOverrides: {}, teamWorkspaceSelections: {},
+      agentOverrides: { '/analyst': { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex', llmConfig: null } },
+    })
+    const store = useAgentOrgLaunchDraftStore()
+    store.start({ orgDefinitionId: 'org-1', sourceOrgRunId: 'org-run-9' })
+    await flushPromises()
+
+    expect(store.draft).toMatchObject({ phase: 'ready', root: { runtimeKind: 'autobyteus', llmModelIdentifier: 'first', llmConfig: { service_tier: 'fast' } } })
+    expect(store.draft!.agentOverrides['/analyst']).toMatchObject({ runtimeKind: 'codex_app_server' })
+    expect(mocks.fetchAvailability).toHaveBeenCalled()
+    expect(mocks.fetchModels).toHaveBeenCalledWith('autobyteus')
+    expect(mocks.fetchModels).not.toHaveBeenCalledWith('codex_app_server')
+    expect(store.readiness).toMatchObject({ ready: false, reason: expect.stringMatching(/Codex/) })
+  })
+
+  it('CR-004: carried (switcher) settings load their runtime’s catalog without replacing the model', async () => {
+    const store = useAgentOrgLaunchDraftStore()
+    store.start({ orgDefinitionId: 'org-1', carried: { workspace: null, runtimeKind: 'autobyteus', llmModelIdentifier: 'first', llmConfig: null, autoExecuteTools: true } })
+    await flushPromises()
+    expect(store.draft).toMatchObject({ phase: 'ready', root: { runtimeKind: 'autobyteus', llmModelIdentifier: 'first' } })
+    expect(mocks.fetchAvailability).toHaveBeenCalled()
+    expect(mocks.fetchModels).toHaveBeenCalledWith('autobyteus')
+    expect(store.readiness).toEqual({ ready: true })
   })
 
   it('a failed copy keeps the Org’s defaults', async () => {

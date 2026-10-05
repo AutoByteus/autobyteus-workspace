@@ -18,7 +18,7 @@ import { DEFAULT_CHAT_AGENT_DEFINITION_ID, TEMP_WORKSPACE_ID } from '~/utils/cha
 import { explicitChatModelConfig } from '~/utils/runSettings/explicitModelConfig'
 import { runWorkspaceChoiceFromRootPath } from '~/services/workspace/runWorkspaceChoice'
 import { startModelCatalog } from '~/services/runSettings/startModelCatalog'
-import { chatNavStartOrder, definitionStartOrder, resolveStartModel } from '~/utils/runSettings/startModelDefaults'
+import { chatNavStartOrder, definitionStartOrder, loadStartRuntimes, resolveStartModel } from '~/utils/runSettings/startModelDefaults'
 import { editMemberOverride, resetMemberOverride, type MemberOverrideDeps } from '~/utils/runSettings/memberOverrides'
 import { draftMentionCandidates } from '~/utils/collaborators/draftMentionEligibility'
 import { normalizeModelConfig } from '~/utils/teamRunConfigUtils'
@@ -168,7 +168,10 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
       next.teamAgentOverrides = Object.fromEntries(Object.entries(options.copied.teamAgentOverrides)
         .map(([address, override]) => [address, { ...override }]))
     }
-    if (settings && applyCarriedModel(next, settings)) return next
+    if (settings && applyCarriedModel(next, settings)) {
+      void loadCarriedStart(next, modelChoiceGeneration)
+      return next
+    }
     // Show the likely model at once; the checked choice (availability, catalog) follows.
     const provisional = loadedDefinitionDefaults(target) ?? readChatLastModel()
     if (provisional?.runtimeKind && provisional.llmModelIdentifier) {
@@ -201,14 +204,38 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     }
   }
 
-  const definitionDefaultLaunchConfig = async (target: ChatTarget) => {
+  /** The target's definitions (identity, a Team's members), loaded once. */
+  const ensureTargetDefinitions = async (target: ChatTarget): Promise<void> => {
     if (target.kind === 'agent') {
       if (!agentDefinitions().agentDefinitions.length) await agentDefinitions().fetchAllAgentDefinitions().catch(() => undefined)
-      return normalizeDefaultLaunchConfig(agentDefinitions().getAgentDefinitionById(target.agentDefinitionId)?.defaultLaunchConfig)
+      return
     }
     const teams = useAgentTeamDefinitionStore()
     if (!teams.agentTeamDefinitions.length) await teams.fetchAllAgentTeamDefinitions().catch(() => undefined)
-    return normalizeDefaultLaunchConfig(teams.agentTeamDefinitions.find((team) => team.id === target.teamDefinitionId)?.defaultLaunchConfig)
+  }
+
+  const definitionDefaultLaunchConfig = async (target: ChatTarget) => {
+    await ensureTargetDefinitions(target)
+    return target.kind === 'agent'
+      ? normalizeDefaultLaunchConfig(agentDefinitions().getAgentDefinitionById(target.agentDefinitionId)?.defaultLaunchConfig)
+      : normalizeDefaultLaunchConfig(useAgentTeamDefinitionStore().agentTeamDefinitions
+        .find((team) => team.id === target.teamDefinitionId)?.defaultLaunchConfig)
+  }
+
+  /**
+   * CR-004: a copied ("+") or carried (switcher) start keeps its settings, and loads what they need:
+   * runtime availability and the catalogs of the root's and every member's runtime (model labels,
+   * Thinking and other-setting chips, and the readiness check), plus the target's definitions.
+   */
+  const loadCarriedStart = async (target: ChatDraft, generation: number): Promise<void> => {
+    try {
+      const runtimeKinds = [target.context.config.runtimeKind,
+        ...Object.values(target.teamAgentOverrides).map((override) => override.runtimeKind)]
+      await Promise.all([loadStartRuntimes(runtimeKinds, startModelCatalog()), ensureTargetDefinitions(target.target)])
+      if (isCurrent(target, generation)) refreshAgentIdentity(target)
+    } catch (error) {
+      console.warn('Failed to load the copied New chat settings:', error)
+    }
   }
 
   /**

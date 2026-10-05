@@ -9,8 +9,8 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unifi
 - Upstream review applicability and handoff-rule result:
   - Architecture review was selected and passed (ARCH-REV-002; ARCH-REV-003 for SR-009; ARCH-REV-004
     for SR-010) on the `Large`/`High` route.
-  - The handoff rules route the result to the Code Reviewer (targeted delta review of IR-003); API/E2E
-    then resumes on the new head.
+  - The handoff rules route the result to the Code Reviewer (targeted delta review of IR-004, the CR-004
+    Local Fix); API/E2E then reruns on the new head.
 - Requirements doc: `requirements-doc.md` (SR-006, Approved).
 - Investigation notes: `investigation-notes.md`.
 - Solution revision record: `solution-revision-record.md`.
@@ -23,17 +23,19 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unifi
 - Triggering rework report: `code-review-report.md` and `code-review-revision-record.md`:
   - CRR-001 → CRR-002: CR-001 (Design Impact, resolved by SR-009 / ARCH-REV-003), CR-002 and CR-003 (Local Fix) → IR-002.
   - CRR-004: DI-001..DI-006, decided by SR-010 / ARCH-REV-004 → IR-003.
+  - CRR-006 (failure-origin review of API/E2E round 1, API-REV-001): CR-004 Local Fix → IR-004.
+    Evidence: `evidence/api-e2e/run-settings-live/` (R04, R05, R10), `api-e2e-execution-coverage-report.md`.
 - API/E2E coverage investigation: `api-e2e-coverage-investigation.md`.
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (baseline `IR-001`; `IR-002` before it)
+- Current implementation revision ID: `IR-004` (baseline `IR-001`; then `IR-002`, `IR-003`)
 - Related solution revision IDs: `SR-006`, `SR-008`, `SR-009`, `SR-010`
 - Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001`..`CRR-004`. API/E2E: in progress (resumes on the IR-003 head). Delivery: `N/A`
-- Triggering finding IDs: `DI-001`, `DI-002`, `DI-004`, `DI-006(b)`, `DI-006(e)` (see `IR-003`); earlier `CR-001`..`CR-003` (`IR-002`)
+- Related code-review revision IDs: `CRR-001`..`CRR-006`. API/E2E: `API-REV-001` (round 1 failed on CR-004; reruns on the IR-004 head). Delivery: `N/A`
+- Triggering finding IDs: `CR-004` (see `IR-004`); earlier `DI-001`, `DI-002`, `DI-004`, `DI-006(b)`, `DI-006(e)` (`IR-003`) and `CR-001`..`CR-003` (`IR-002`)
 
 Agent and Team runs start only from New chat. The heading switcher picks the target, and settings
 sit in the composer chips. A Team also gets a members line that opens the Member settings drawer.
@@ -161,6 +163,12 @@ All paths are under `autobyteus-web/`.
 - **First-message mention admission** was shown by server unit tests (43/43) and live N02/N03
   (DI-003, resolved). If a future regression breaks it, the recorded fallback is a Requirement Gap
   (no code now).
+- **Copied/carried starts (CR-004, IR-004):** a "+" copy or a switcher carry keeps its values and
+  now loads runtime availability and the catalogs of every enabled runtime it uses (root plus member
+  and team overrides). New chat loads them in the background (Send can be pressed in the short
+  window before availability arrives; the launch re-checks readiness). The Org page loads them before
+  Run is offered, as its default path already did. A disabled runtime's catalog is not fetched; that
+  member's model label stays the raw id until the runtime is enabled again, and readiness reports it.
 - **Readiness change (DI-004):** a Team draft or a "+" copy with a member on a now-disabled runtime is
   now blocked before launch (previously only the root scope was checked). The copy and AC-002 order
   are unchanged.
@@ -243,6 +251,18 @@ All paths are under `autobyteus-web/`.
     AF-020); no new failures to attribute to any slice. 547 files pass, 3,619 tests pass. The
     OrgLaunchPage spec (3 tests) was added after that run and passes.
   - Logs: `/tmp/rsui-tests-5.log`; baseline `/tmp/rsui-baseline-failing-files.txt`.
+  - IR-004: 11 failing files (36 tests), all baseline; no new failures. 549 files pass, 3,629 tests
+    pass. Log `/tmp/rsui-tests-6.log`.
+- **IR-004 checks (CR-004):**
+  - New specs:
+    - `chatDraftStore`: a copied Team start loads availability plus the root's and members' catalogs, keeps its values, and skips a disabled runtime's catalog; a carried Agent start loads its catalog.
+    - `chatCopiedStartReadiness`: real draft store plus real `resolveChatLaunchReadiness` with availability initially unfetched. A Team "+" copy with a Codex member becomes not-ready ("Codex…") once availability resolves (R10); an Agent copy is ready (R04 path).
+    - `agentOrgLaunchDraftStore`: an Org "+" copy and a switcher carry load availability and catalogs without replacing values; a member on a disabled runtime blocks Run (R10).
+    - `startModelDefaults`: `loadStartRuntimes` loads availability first, then each enabled runtime once.
+  - All 6 new store/integration cases fail with the fix removed and pass with it.
+  - Rendered check on the worktree dev stack: Org "+" after a fresh page load resolves the copied model, Thinking and the member override ("1 of 11 customized"), with Run enabled (`evidence/implementation/25-cr004-org-plus-fresh-load-804.png`). The dev data has no Agent or Team runs, so the R04/R05 rendering after a fresh load is left to the API/E2E rerun.
+  - vue-tsc output unchanged (552 lines); localization audit and both guards exit 0; mobile specs unchanged (only the baseline `MobileUxRefinement` fails).
+  - The DI-002 contract pin now resolves the server registry relative to the spec file (CRR-005 note).
 - **IR-003 checks by slice (SR-010 DI-005):**
   - S1 Agent/Team start: `useRunStart` (`newChat`), `AppLeftPanel_v2` (nav and pencil go through
     `newChat`, `beginSelectionIntent` kept), `chatLaunchService` (Team readiness over members, AC-002

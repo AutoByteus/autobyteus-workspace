@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { chatNavStartOrder, definitionStartOrder, resolveStartModel, type StartModelCatalog } from '../startModelDefaults'
+import { describe, expect, it, vi } from 'vitest'
+import { chatNavStartOrder, definitionStartOrder, loadStartRuntimes, resolveStartModel, type StartModelCatalog } from '../startModelDefaults'
 
 const catalog = (models: Record<string, string[]>, disabled: string[] = []): StartModelCatalog => ({
   ensureAvailability: async () => undefined,
@@ -53,5 +53,20 @@ describe('start orders (DI-006b)', () => {
     expect(await resolveStartModel(order, catalog(models), 'autobyteus'))
       .toEqual({ runtimeKind: 'autobyteus', llmModelIdentifier: 'second', llmConfig: null })
     expect(chatNavStartOrder({ lastChatModel: null, assistantDefaults: null })).toEqual([null, null])
+  })
+})
+
+describe('loadStartRuntimes (CR-004)', () => {
+  it('loads availability first, then each enabled runtime’s catalog once; disabled and empty runtimes are skipped', async () => {
+    const order: string[] = []
+    const catalog: StartModelCatalog = {
+      ensureAvailability: vi.fn(async () => { order.push('availability') }),
+      isRuntimeEnabled: (runtimeKind) => runtimeKind !== 'codex_app_server',
+      ensureCatalog: vi.fn(async (runtimeKind: string) => { order.push(runtimeKind) }),
+      models: () => [],
+    }
+    await loadStartRuntimes(['autobyteus', 'claude_agent_sdk', 'autobyteus', 'codex_app_server', null, ' ', undefined], catalog)
+    expect(order[0]).toBe('availability')
+    expect(order.slice(1).sort()).toEqual(['autobyteus', 'claude_agent_sdk'])
   })
 })

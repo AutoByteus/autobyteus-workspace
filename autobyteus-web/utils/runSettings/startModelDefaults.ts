@@ -72,3 +72,19 @@ export const resolveStartModel = async (
   const first = catalog.models(defaultRuntimeKind)[0]
   return first ? { runtimeKind: defaultRuntimeKind, llmModelIdentifier: first, llmConfig: null } : null
 }
+
+/**
+ * A copied ("+") or carried (switcher) start keeps its settings as they are (REQ-013); it only loads
+ * what they need to be shown and checked (CR-004): runtime availability, then the model catalog of
+ * every enabled runtime the start uses (the root and each member's or team's own runtime). A
+ * disabled runtime's catalog is not fetched; the shared readiness rule reports it.
+ */
+export const loadStartRuntimes = async (
+  runtimeKinds: readonly (string | null | undefined)[],
+  catalog: StartModelCatalog,
+): Promise<void> => {
+  await catalog.ensureAvailability()
+  const used = [...new Set(runtimeKinds.map((runtimeKind) => runtimeKind?.trim() ?? '').filter(Boolean))]
+  await Promise.all(used.filter((runtimeKind) => catalog.isRuntimeEnabled(runtimeKind))
+    .map((runtimeKind) => catalog.ensureCatalog(runtimeKind)))
+}

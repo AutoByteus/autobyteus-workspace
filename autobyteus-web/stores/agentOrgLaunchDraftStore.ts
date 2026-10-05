@@ -34,7 +34,7 @@ import { readChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { TEMP_WORKSPACE_ID } from '~/utils/chat/chatDefaults'
 import { editMemberOverride, normalizeMemberOverride, resetMemberOverride, type MemberOverrideDeps } from '~/utils/runSettings/memberOverrides'
 import { buildOrgMemberTree, findRunMember, type OrgMemberTree, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
-import { definitionStartOrder, resolveStartModel } from '~/utils/runSettings/startModelDefaults'
+import { definitionStartOrder, loadStartRuntimes, resolveStartModel } from '~/utils/runSettings/startModelDefaults'
 import { normalizeModelConfig } from '~/utils/teamRunConfigUtils'
 
 const t = (key: string, params?: Record<string, string | number>): string => localizationRuntime.translate(key, params)
@@ -158,11 +158,9 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
         target.unavailable = true
         return
       }
-      if (copied) {
-        Object.assign(target, copied)
-        return
-      }
-      if (!modelCarried) await applyDefaultModel(target, selected)
+      if (copied) Object.assign(target, copied)
+      if (copied || modelCarried) await loadCarriedRuntimes(target)
+      else await applyDefaultModel(target, selected)
     } catch (error) {
       console.warn('Failed to prepare the Org launch page:', error)
       if (isCurrent(target) && !target.references) target.unavailable = true
@@ -208,6 +206,16 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
       return null
     }
   }
+
+  /**
+   * CR-004: copied ("+") or carried (switcher) settings stay as they are; their runtimes' availability
+   * and catalogs (the Org card's and every team or member override's) load before Run is offered.
+   */
+  const loadCarriedRuntimes = (target: OrgLaunchDraft): Promise<void> => loadStartRuntimes([
+    target.root.runtimeKind,
+    ...Object.values(target.teamOverrides).map((override) => override.runtimeKind),
+    ...Object.values(target.agentOverrides).map((override) => override.runtimeKind),
+  ], startModelCatalog())
 
   /** REQ-021: the Org's default launch config → last chat model → the default runtime's first model. */
   const applyDefaultModel = async (target: OrgLaunchDraft, org: AgentOrgDefinition) => {

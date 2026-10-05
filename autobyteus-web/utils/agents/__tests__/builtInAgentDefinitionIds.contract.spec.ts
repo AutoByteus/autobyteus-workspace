@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { BUILT_IN_AGENT_DEFINITION_IDS } from '../builtInAgentDefinitionIds'
 
@@ -7,7 +8,9 @@ import { BUILT_IN_AGENT_DEFINITION_IDS } from '../builtInAgentDefinitionIds'
  * DI-002 contract pin: the web keeps a hand mirror of the server's built-in agent ids (built-ins
  * are never offered as `@` collaborators). This fails as soon as the server registry drifts.
  */
-const REGISTRY_PATH = resolve(process.cwd(), '../autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts')
+// Relative to this spec (autobyteus-web/utils/agents/__tests__), not to the working directory.
+const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)),
+  '../../../../autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts')
 
 const readRegistry = () => {
   const source = readFileSync(REGISTRY_PATH, 'utf-8')
