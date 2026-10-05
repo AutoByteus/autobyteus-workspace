@@ -9,6 +9,7 @@ final class AutoByteusMobileUITests: XCTestCase {
     private let connectionTimeoutSeconds: TimeInterval = 60
     private let uiReadyTimeout: TimeInterval = 30
     private let pageLoadTimeout: TimeInterval = 60
+    private let maxToggleAttempts = 3
 
     func testFakeNodeOpensAndRestoresWithFakeMobileMarker() throws {
         let nodeURL = try requiredFakeNodeURL()
@@ -75,10 +76,30 @@ final class AutoByteusMobileUITests: XCTestCase {
         XCTAssertTrue(waitUntil(input, matches: "hasKeyboardFocus == true", timeout: uiReadyTimeout),
                       "Connection input should have keyboard focus before typing")
         input.typeText(nodeURL)
+        XCTAssertTrue(waitUntil(input, matches: NSPredicate(format: "value CONTAINS %@", nodeURL), timeout: uiReadyTimeout),
+                      "Connection input should contain the typed node URL before Connect")
         if nodeURL.lowercased().hasPrefix("http://") {
-            tapWhenHittable(app.switches["connection.httpAcknowledgement"], name: "HTTP acknowledgement switch")
+            let acknowledgement = app.switches["connection.httpAcknowledgement"]
+            turnOn(acknowledgement, name: "HTTP acknowledgement switch")
+            XCTAssertTrue(isOn(acknowledgement), "HTTP acknowledgement switch should be on before Connect")
         }
         tapWhenHittable(app.buttons["connection.connect"], name: "Connect button")
+    }
+
+    /// On a loaded simulator a delivered tap can have no effect, so the switch state is confirmed
+    /// after each tap. The state is checked before every tap so an on switch is never toggled off.
+    private func turnOn(_ toggle: XCUIElement, name: String) {
+        for _ in 0..<maxToggleAttempts {
+            XCTAssertTrue(waitUntil(toggle, matches: "exists == true AND hittable == true", timeout: uiReadyTimeout),
+                          "\(name) should be visible and hittable")
+            if isOn(toggle) { return }
+            toggle.tap()
+            if waitUntil(toggle, matches: "value == '1'", timeout: uiReadyTimeout) { return }
+        }
+    }
+
+    private func isOn(_ toggle: XCUIElement) -> Bool {
+        toggle.value as? String == "1"
     }
 
     private func assertFakeMobileLoaded(in app: XCUIApplication, attachmentName: String) {
@@ -96,7 +117,11 @@ final class AutoByteusMobileUITests: XCTestCase {
 
     /// Waits until the element satisfies the predicate; returns as soon as it does.
     private func waitUntil(_ element: XCUIElement, matches predicateFormat: String, timeout: TimeInterval) -> Bool {
-        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: predicateFormat), object: element)
+        waitUntil(element, matches: NSPredicate(format: predicateFormat), timeout: timeout)
+    }
+
+    private func waitUntil(_ element: XCUIElement, matches predicate: NSPredicate, timeout: TimeInterval) -> Bool {
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: element)
         return XCTWaiter().wait(for: [expectation], timeout: timeout) == .completed
     }
 
