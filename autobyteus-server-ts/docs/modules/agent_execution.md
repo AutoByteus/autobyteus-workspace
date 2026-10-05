@@ -282,8 +282,7 @@ mid-turn, Electron exits after about 30 s, but the embedded server, its runtime
 process (observed with the Codex app server) and the agent's commands keep
 running as orphans until the turn ends. That can be unbounded for a long or
 hung tool, and a relaunch can start a second server on the same data. This is
-the existing behavior, not a design guarantee; it is tracked for a separate
-fix.
+the existing behavior, not a design guarantee.
 
 ## Stopped Model Configuration And Restore Serialization
 

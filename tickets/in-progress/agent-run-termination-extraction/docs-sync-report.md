@@ -27,7 +27,7 @@
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
 | `autobyteus-server-ts/docs/modules/agent_execution.md` | Formatting | Reflowed the merged Root Shutdown Fence sentence | Line wrap |
-| `autobyteus-server-ts/docs/modules/agent_execution.md` | Known limit | "Server shutdown with a busy run": shutdown waits for in-flight turns; desktop-quit orphans | Pre-existing behavior found by API/E2E T-08/T-09, identical on base |
+| `autobyteus-server-ts/docs/modules/agent_execution.md` | Known limit | "Server shutdown with a busy run": shutdown waits for in-flight turns; desktop-quit orphans | Pre-existing behavior found by API/E2E T-08/T-09, identical on base. Wording corrected after CRR-003 CG-05: the note no longer claims a fix is tracked, because no follow-up ticket exists yet |
 
 ## Durable Design / Runtime Knowledge Promoted
 
