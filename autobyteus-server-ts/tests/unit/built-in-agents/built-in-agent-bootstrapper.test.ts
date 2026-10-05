@@ -301,16 +301,16 @@ describe("BuiltInAgentBootstrapper", () => {
     expect(await fs.readFile(path.join(compactorAgentDir(), 'agent.md'),'utf8')).toBe('historical source');
   });
 
-  describe("General Agent (platform-owned)", () => {
+  describe("Daily Assistant (platform-owned)", () => {
     const builtInDailyAssistantDir = (): string => agentDir(DAILY_ASSISTANT_AGENT_DEFINITION_ID);
 
-    it("creates the General Agent at the stable default ID with the exact approved template and config", async () => {
+    it("creates the Daily Assistant at the stable default ID with the exact approved template and config", async () => {
       const services = createServices();
 
       const result = await bootstrapBuiltInAgents(services);
 
       expect(resultFor(result, DAILY_ASSISTANT_AGENT_DEFINITION_ID)).toMatchObject({
-        displayName: "General Agent",
+        displayName: "Daily Assistant",
         agentDir: builtInDailyAssistantDir(),
         syncedAgentMd: true,
         syncedAgentConfig: true,
@@ -321,7 +321,7 @@ describe("BuiltInAgentBootstrapper", () => {
       expect(DAILY_ASSISTANT_AGENT_DEFINITION_ID).toBe("autobyteus-daily-assistant");
       const template = await readTemplate("daily-assistant", "agent.md");
       expect(createHash("sha256").update(template).digest("hex")).toBe(
-        "d410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a",
+        "49ed6e909ef92a470fb8b3fce84f471334cd125ff50adf2f5e6aff60389d07b7",
       );
       await expect(fs.readFile(path.join(builtInDailyAssistantDir(), "agent.md"), "utf-8"))
         .resolves.toBe(template);
@@ -361,7 +361,7 @@ describe("BuiltInAgentBootstrapper", () => {
     it("refreshes an existing same-ID old identity without rewriting history or saved references", async () => {
       await fs.mkdir(builtInDailyAssistantDir(), { recursive: true });
       await fs.writeFile(path.join(builtInDailyAssistantDir(), "agent.md"), serializeAgentMd({
-        name: "Daily Assistant",
+        name: "General Agent",
         description: "Previous built-in identity",
         role: "General Agent",
       }, "OLD BUILT-IN INSTRUCTIONS"));
@@ -372,7 +372,7 @@ describe("BuiltInAgentBootstrapper", () => {
       const history = JSON.stringify([{
         runId: "existing-run",
         agentDefinitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID,
-        agentName: "Daily Assistant",
+        agentName: "General Agent",
         workspaceRootPath: tempDataDir,
         summary: "Previous conversation",
         createdAt: "2026-10-02T10:00:00.000Z",
@@ -388,7 +388,7 @@ describe("BuiltInAgentBootstrapper", () => {
       await expect(fs.readFile(path.join(builtInDailyAssistantDir(), "agent.md"), "utf-8"))
         .resolves.toBe(await readTemplate("daily-assistant", "agent.md"));
       const definition = await services.agentDefinitionService.getFreshAgentDefinitionById(DAILY_ASSISTANT_AGENT_DEFINITION_ID);
-      expect(definition).toMatchObject({ id: DAILY_ASSISTANT_AGENT_DEFINITION_ID, name: "General Agent" });
+      expect(definition).toMatchObject({ id: DAILY_ASSISTANT_AGENT_DEFINITION_ID, name: "Daily Assistant" });
       expect(definition?.toolNames).toContain("list_available_agents");
       expect((await fs.readdir(path.join(tempDataDir, "agents"))).sort()).toEqual([
         DAILY_ASSISTANT_AGENT_DEFINITION_ID,

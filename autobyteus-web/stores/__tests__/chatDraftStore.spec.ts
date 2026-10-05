@@ -47,7 +47,7 @@ describe('chatDraftStore', () => {
     setActivePinia(createPinia())
     window.localStorage.clear()
     mocks.definitions = [
-      { id: 'autobyteus-daily-assistant', name: 'General Agent', defaultLaunchConfig: null },
+      { id: 'autobyteus-daily-assistant', name: 'Daily Assistant', defaultLaunchConfig: null },
       { id: 'codex', name: 'Codex', avatarUrl: '/codex.png' },
     ]
     mocks.enabledRuntimes = new Set(['autobyteus', 'codex_app_server'])
@@ -56,7 +56,7 @@ describe('chatDraftStore', () => {
     mocks.schemas = {}
   })
 
-  it('starts an unregistered General Agent draft in the temp workspace with Auto-approve', async () => {
+  it('starts an unregistered Daily Assistant draft in the temp workspace with Auto-approve', async () => {
     const store = useChatDraftStore()
     const draft = store.startNewChat()
     await flushPromises()
@@ -78,7 +78,7 @@ describe('chatDraftStore', () => {
     expect(draft.context.config.llmModelIdentifier).toBe('gpt-5.5-codex')
   })
 
-  it('falls back to the General Agent default launch config, then to the runtime default', async () => {
+  it('falls back to the Daily Assistant default launch config, then to the runtime default', async () => {
     writeChatLastModel({ runtimeKind: 'grok_build', llmModelIdentifier: 'grok-9' })
     mocks.definitions[0]!.defaultLaunchConfig = { runtimeKind: 'autobyteus', llmModelIdentifier: 'claude-sonnet-5', llmConfig: null }
     const withDefault = useChatDraftStore().startNewChat()

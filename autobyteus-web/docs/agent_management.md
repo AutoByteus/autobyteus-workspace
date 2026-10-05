@@ -161,8 +161,8 @@ definitions between nodes.
 
 `AgentList.vue` joins the loaded agent catalog with `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` entries whose `resourceKind` is `AGENT`.
 
-- Featured placement is user/operator-selected through Settings; fresh server startup does not auto-feature General Agent or any other agent.
-- General Agent (`autobyteus-daily-assistant`) is a platform-owned server built-in: its files in the shared agents folder are replaced from the shipped template on every server startup, so edits saved to it in the agent editor revert at the next restart. It is the default Chat agent and can be added to Featured agents through Settings if desired.
+- Featured placement is user/operator-selected through Settings; fresh server startup does not auto-feature Daily Assistant or any other agent.
+- Daily Assistant (`autobyteus-daily-assistant`) is a platform-owned server built-in: its files in the shared agents folder are replaced from the shipped template on every server startup, so edits saved to it in the agent editor revert at the next restart. It is the default Chat agent and can be added to Featured agents through Settings if desired.
 - An agent card's Run action still opens the unchanged `RunConfigPanel` launch form on `/workspace`; once the run is created its selection opens the run in Chat (`/chat?id=<runId>`).
 - Featured agents render with the same `AgentCard` component and the same view-details and run actions as the origin-grouped browse sections.
 - When the featured section is visible, the same agent is removed from later origin sections to avoid duplicate cards.

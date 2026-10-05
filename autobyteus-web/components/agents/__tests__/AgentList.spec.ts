@@ -214,7 +214,7 @@ describe('AgentList', () => {
         },
         {
           id: 'general-agent',
-          name: 'General Agent',
+          name: 'Daily Assistant',
           description: 'General work.',
           ownershipScope: 'SHARED',
         },

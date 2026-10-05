@@ -18,9 +18,9 @@ import { configureE2eStudioApplicationApiServices } from "../helpers/studio-appl
 
 const ID = DAILY_ASSISTANT_AGENT_DEFINITION_ID;
 const TEMPLATE = new URL("../../../src/built-in-agents/templates/daily-assistant/", import.meta.url);
-const APPROVED_SHA256 = "d410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a";
+const APPROVED_SHA256 = "49ed6e909ef92a470fb8b3fce84f471334cd125ff50adf2f5e6aff60389d07b7";
 
-describe("General Agent bootstrap → GraphQL identity (AC-001–006)", () => {
+describe("Daily Assistant bootstrap → GraphQL identity (AC-001–006)", () => {
   let root: string;
   let definitions: AgentDefinitionService;
   let schema: GraphQLSchema;
@@ -75,7 +75,7 @@ describe("General Agent bootstrap → GraphQL identity (AC-001–006)", () => {
       toolNames: config.toolNames, skillNames: [], skillScope: "ALL_INSTALLED",
     });
     expect(payload.agentDefinition.toolNames.filter(name => name === "list_available_agents")).toHaveLength(1);
-    expect(payload.agentDefinitions.filter(agent => agent.id === ID)).toEqual([{ id: ID, name: "General Agent" }]);
+    expect(payload.agentDefinitions.filter(agent => agent.id === ID)).toEqual([{ id: ID, name: "Daily Assistant" }]);
     expect(await fs.readFile(path.join(root, "agents", ID, "agent.md"), "utf8")).toBe(template);
     expect(JSON.parse(await fs.readFile(path.join(root, "agents", ID, "agent-config.json"), "utf8"))).toEqual(config);
   };
@@ -89,19 +89,19 @@ describe("General Agent bootstrap → GraphQL identity (AC-001–006)", () => {
     const agentDir = path.join(root, "agents", ID);
     await fs.mkdir(agentDir, { recursive: true });
     await fs.writeFile(path.join(agentDir, "agent.md"), serializeAgentMd({
-      name: "Daily Assistant", description: "Previous platform content", role: "General Agent",
+      name: "General Agent", description: "Previous platform content", role: "General Agent",
     }, "Previous built-in prompt"));
     await fs.writeFile(path.join(agentDir, "agent-config.json"), JSON.stringify({ toolNames: ["read_file"] }));
     const memoryDir = path.join(root, "memory");
     await fs.mkdir(memoryDir);
-    const row = { runId: "existing-run", agentDefinitionId: ID, agentName: "Daily Assistant",
+    const row = { runId: "existing-run", agentDefinitionId: ID, agentName: "General Agent",
       workspaceRootPath: root, summary: "Previous conversation", createdAt: "2026-10-02T10:00:00.000Z",
       archivedAt: null, terminatedAt: "2026-10-02T11:00:00.000Z" };
     const history = JSON.stringify([row]);
     const historyPath = path.join(memoryDir, "run_history_index.json");
     await fs.writeFile(historyPath, history);
     // Warm the ordinary definition reader before startup refresh to exercise invalidation too.
-    expect((await queryIdentity()).agentDefinition.name).toBe("Daily Assistant");
+    expect((await queryIdentity()).agentDefinition.name).toBe("General Agent");
     await bootstrap();
     await assertApprovedIdentity();
     expect(await new AgentRunHistoryIndexStore(memoryDir).getRow(row.runId)).toEqual(row);

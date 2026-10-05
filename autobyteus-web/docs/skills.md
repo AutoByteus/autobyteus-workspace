@@ -60,7 +60,7 @@ managed metadata is not silently replaced with an empty registry.
 
 The server keeps exactly one copy of every skill name (its skills folder, then
 agent packages, then added local/GitHub sources, then runtime default folders such as
-`~/.codex/skills`). The Skills page, `/` tags, agents and the General Agent
+`~/.codex/skills`). The Skills page, `/` tags, agents and the Daily Assistant
 all use that copy, and opening, editing or deleting a skill acts on it.
 
 - **Duplicates are rejected at import.** Adding a skill folder

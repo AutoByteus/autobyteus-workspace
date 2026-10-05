@@ -62,7 +62,7 @@ vi.mock('~/stores/agentRunStore', () => ({
 }))
 vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => ({
-    agentDefinitions: [{ id: 'autobyteus-daily-assistant', name: 'General Agent' }],
+    agentDefinitions: [{ id: 'autobyteus-daily-assistant', name: 'Daily Assistant' }],
     getAgentDefinitionById: (id: string) => (id === 'autobyteus-daily-assistant' ? { id } : undefined),
   }),
 }))
@@ -103,7 +103,7 @@ import { readChatLastModel } from '~/utils/chat/chatLastModelPreference'
 const buildDraft = (overrides: Partial<ChatDraft> = {}): ChatDraft => {
   const context = new AgentContext({
     agentDefinitionId: 'autobyteus-daily-assistant',
-    agentDefinitionName: 'General Agent',
+    agentDefinitionName: 'Daily Assistant',
     llmModelIdentifier: 'gpt-5.5-codex',
     runtimeKind: 'codex_app_server',
     workspaceId: null,

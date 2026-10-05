@@ -387,7 +387,7 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   entry, so the definition stays offerable.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId)` lists the `@` options of an active or stored root from the same
-  policy: shared Agents (minus built-ins such as the General Agent), then
+  policy: shared Agents (minus built-ins such as the Daily Assistant), then
   shared Agent Teams, in catalog order, minus what is in the run.
 
 The shared policy, admission, runnability validator, identity allocator, entry

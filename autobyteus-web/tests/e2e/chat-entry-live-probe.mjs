@@ -195,19 +195,19 @@ const state = { model: null, modelLabel: null, models: [], taggedRunId: null, te
 const cases = []
 const defineCase = (id, title, fn) => cases.push({ id, title, fn })
 
-defineCase('C01', 'Fresh data root seeds General Agent (ALL_INSTALLED); pre-existing config reads as CONFIGURED', async () => {
+defineCase('C01', 'Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED', async () => {
   const { agentDefinitions } = await gql('{ agentDefinitions { id name description role instructions toolNames skillScope skillNames } }')
   const da = agentDefinitions.find((a) => a.id === 'autobyteus-daily-assistant')
   const legacy = agentDefinitions.find((a) => a.id === 'probe-legacy')
-  assert(da?.name === 'General Agent' && da.skillScope === 'ALL_INSTALLED', 'General Agent not seeded as ALL_INSTALLED', da)
+  assert(da?.name === 'Daily Assistant' && da.skillScope === 'ALL_INSTALLED', 'Daily Assistant not seeded as ALL_INSTALLED', da)
   assert(legacy?.skillScope === 'CONFIGURED' && legacy.skillNames.join() === 'probe-alpha', 'Legacy config not read as CONFIGURED', legacy)
   const files = await listDir(path.join(dataRoot, 'agents', 'autobyteus-daily-assistant'))
-  assert(files.includes('agent.md') && files.includes('agent-config.json'), 'General Agent files missing', files)
+  assert(files.includes('agent.md') && files.includes('agent-config.json'), 'Daily Assistant files missing', files)
   const installed = await fs.readFile(path.join(dataRoot, 'agents', 'autobyteus-daily-assistant', 'agent.md'))
   const template = await fs.readFile(path.join(serverDir, 'dist/built-in-agents/templates/daily-assistant/agent.md'))
-  assert(installed.equals(template), 'Installed General Agent prompt differs from shipped template')
+  assert(installed.equals(template), 'Installed Daily Assistant prompt differs from shipped template')
   const promptHash = createHash('sha256').update(installed).digest('hex')
-  assert(promptHash === 'd410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a', 'General Agent prompt differs from approved v1', promptHash)
+  assert(promptHash === '49ed6e909ef92a470fb8b3fce84f471334cd125ff50adf2f5e6aff60389d07b7', 'Daily Assistant prompt differs from approved Daily Assistant template', promptHash)
   assert(da.toolNames.filter((name) => name === 'list_available_agents').length === 1, 'Discovery not selected exactly once', da.toolNames)
   assert(da.instructions === template.toString('utf8').replace(/^---\n[\s\S]*?\n---\n\n?/, ''), 'API authored body differs from approved prompt')
   assert(agentDefinitions.filter((a) => a.id === da.id).length === 1, 'Duplicate default identity')
@@ -424,7 +424,7 @@ defineCase('C08', 'Catalog Run (form unchanged) → /chat?id=temp-* → first se
   return { runId: state.catalogRunId }
 })
 
-defineCase('C09', '@agent scoped /, × back to General Agent, tree + preset', async (page) => {
+defineCase('C09', '@agent scoped /, × back to Daily Assistant, tree + preset', async (page) => {
   await newChat(page)
   const input = composerInput(page)
   await input.click(); await input.type('@probe-bundle')
@@ -434,7 +434,7 @@ defineCase('C09', '@agent scoped /, × back to General Agent, tree + preset', as
   assert(scoped.join() === 'probe-bundled', '/ not scoped to the addressed agent', scoped)
   await page.keyboard.press('Escape'); await input.fill('')
   await page.locator(`${sel('chat-agent-chip')} button`).first().click()
-  assert(await page.locator(sel('chat-agent-chip')).count() === 0, '× did not return to General Agent')
+  assert(await page.locator(sel('chat-agent-chip')).count() === 0, '× did not return to Daily Assistant')
   await page.goto(`${frontUrl}/chat?id=${state.taggedRunId}`, { waitUntil: 'domcontentloaded' })
   await page.locator(RUN_VIEW).waitFor({ timeout: 120000 })
   const agentRow = page.locator('[data-test="workspace-agent-row"][data-agent-definition-id="autobyteus-daily-assistant"]').first()
@@ -545,7 +545,7 @@ const startChat = async (page, { folder, target, text }) => {
 }
 const terminate = (runId) => gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id: runId })
 
-defineCase('C14', 'D-15 Rule 1 (V-D): a user-owned workspace skill wins for the General Agent; a configured agent still fails fast', async (page) => {
+defineCase('C14', 'D-15 Rule 1 (V-D): a user-owned workspace skill wins for the Daily Assistant; a configured agent still fails fast', async (page) => {
   assert(USER_SKILL_DIR, `No workspace skill path for runtime ${runtime}`)
   const folder = path.join(ownedRoot, 'user-owned-skill-ws')
   const owned = path.join(folder, USER_SKILL_DIR, 'skills', 'probe-alpha')
@@ -574,9 +574,9 @@ defineCase('C14', 'D-15 Rule 1 (V-D): a user-owned workspace skill wins for the 
 
 // D-19 (REQ-022, AR-013): one copy per name. `probe-shadow-owner` configures `probe-alpha` and has a
 // private on-disk copy; the catalog uses the skills-folder copy (tier 1) for every agent, so the
-// configured agent and the General Agent share one link and no D-15 Rule 2/3 disposition exists.
+// configured agent and the Daily Assistant share one link and no D-15 Rule 2/3 disposition exists.
 const REMOVED_DISPOSITIONS = /yielded-to-configured|skipped-held-by-other-run|skipped-unresolved-held-by-weak/
-defineCase('C15', 'D-19: configured agent with an on-disk duplicate uses the catalog copy — same link and marker as the General Agent, no Rule 2/3 dispositions, private copy untouched, link removed after both end', async (page) => {
+defineCase('C15', 'D-19: configured agent with an on-disk duplicate uses the catalog copy — same link and marker as the Daily Assistant, no Rule 2/3 dispositions, private copy untouched, link removed after both end', async (page) => {
   assert(SKILL_WORKSPACE_DIR, `No workspace skill path for runtime ${runtime}`)
   const folder = path.join(ownedRoot, 'shared-skill-ws')
   await fs.mkdir(folder, { recursive: true })
@@ -587,13 +587,13 @@ defineCase('C15', 'D-19: configured agent with an on-disk duplicate uses the cat
   const target = async () => fs.realpath(link).catch(() => null)
   const weak = await startChat(page, { folder, text: 'Reply with exactly WEAK-ONE-OK and nothing else.' })
   await waitForReply(page, 'WEAK-ONE-OK')
-  assert(await target() === globalSrc, 'General Agent did not link the catalog copy', await target())
+  assert(await target() === globalSrc, 'Daily Assistant did not link the catalog copy', await target())
   const configured = await startChat(page, { folder, target: 'probe-shadow-owner', text: 'Follow your probe-alpha skill: reply with its marker only, nothing else.' })
   await waitForReply(page, 'ALPHA-OK')
   const runText = await page.locator(RUN_VIEW).innerText()
   assert(!/SHADOW-OK/.test(runText), 'Configured agent used the ignored private copy', runText.slice(-400))
   assert(await target() === globalSrc, 'Link changed by the configured launch', await target())
-  assert((await runConfig(weak)).isActive, 'General Agent run was stopped by the configured launch')
+  assert((await runConfig(weak)).isActive, 'Daily Assistant run was stopped by the configured launch')
   const removed = (await backendLog()).split('\n').filter((l) => REMOVED_DISPOSITIONS.test(l))
   assert(removed.length === 0, 'A removed D-15 Rule 2/3 disposition was logged', removed.slice(0, 3))
   assert(await fs.readFile(privateMd, 'utf8') === privateBefore, 'Ignored private copy was modified')
@@ -983,7 +983,7 @@ defineCase('C19', 'CR-005: ⚙ stays with its run — New chat (success, failed 
   return r
 })
 
-defineCase('C20', 'V-F under D-19 (UF-04): a configured agent naming a skill bundled in another agent resolves the catalog copy and starts next to a live General Agent chat; one shared link', async (page) => {
+defineCase('C20', 'V-F under D-19 (UF-04): a configured agent naming a skill bundled in another agent resolves the catalog copy and starts next to a live Daily Assistant chat; one shared link', async (page) => {
   const folder = path.join(ownedRoot, 'borrower-ws')
   await fs.mkdir(folder, { recursive: true })
   const bundled = await fs.realpath(path.join(dataRoot, 'agents', 'probe-bundle-owner', 'skills', 'probe-bundled'))
@@ -1004,8 +1004,8 @@ defineCase('C20', 'V-F under D-19 (UF-04): a configured agent naming a skill bun
   await terminate(da).catch(() => {})
   await terminate(borrower).catch(() => {})
   const details = { outcome, heldBefore, heldAfter, log, unresolved, removed }
-  assert(outcome === 'replied', 'Configured agent failed next to a live General Agent chat (UF-04)', details)
-  assert(heldBefore === bundled && heldAfter === bundled, 'General Agent and configured agent did not share the catalog copy', details)
+  assert(outcome === 'replied', 'Configured agent failed next to a live Daily Assistant chat (UF-04)', details)
+  assert(heldBefore === bundled && heldAfter === bundled, 'Daily Assistant and configured agent did not share the catalog copy', details)
   assert(unresolved.length === 0 && removed.length === 0, 'Unresolved warning or removed D-15 disposition logged', details)
   return { da, borrower, ...details }
 })
@@ -1226,7 +1226,7 @@ defineCase('C23', 'DEC-017a: Agent Org agents use their own skills — org skill
   await page.locator(sel('chat-skill-menu')).waitFor()
   const slash = await page.locator('[data-test^="chat-skill-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-skill-option-', '')))
   await page.keyboard.press('Escape'); await composerInput(page).fill('')
-  assert(Object.keys(expected).every((n) => slash.includes(n)), 'General Agent / list lacks the org skills', slash)
+  assert(Object.keys(expected).every((n) => slash.includes(n)), 'Daily Assistant / list lacks the org skills', slash)
   const folder = path.join(ownedRoot, 'org-skill-ws')
   await fs.mkdir(folder, { recursive: true })
   const writerRun = await launchStandalone(ORG_WRITER_ID, folder)
@@ -1251,7 +1251,7 @@ defineCase('C23', 'DEC-017a: Agent Org agents use their own skills — org skill
   return { writerRun, memberRun, slash: slash.filter((n) => n.startsWith('org-')), links }
 })
 
-defineCase('C13', 'General Agent platform-owned restart lifecycle: edited prompt overwritten; deleted config restored', async () => {
+defineCase('C13', 'Daily Assistant platform-owned restart lifecycle: edited prompt overwritten; deleted config restored', async () => {
   const agentDir = path.join(dataRoot, 'agents', 'autobyteus-daily-assistant')
   const templateDir = path.join(serverDir, 'dist/built-in-agents/templates/daily-assistant')
   const promptTemplate = await fs.readFile(path.join(templateDir, 'agent.md'), 'utf8')
