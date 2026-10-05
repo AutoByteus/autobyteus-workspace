@@ -3,7 +3,7 @@
 ## Classification And Route
 
 - `task_size=Medium`, `architectural_risk=High`; reviewed route.
-- Gates: ARCH-REV-001 Pass; CRR-001 Pass (9.5/10, no findings); API-REV-001 Pass (94%); CRR-002 Not Applicable.
+- Gates: ARCH-REV-001 Pass; CRR-001 Pass (9.5/10, no findings); API-REV-001 Pass (94%); CRR-002 Not Applicable; CRR-003 user-requested re-audit Pass (9.5/10; CG-05 docs wording corrected).
 
 ## What Changed
 
@@ -33,7 +33,7 @@
 - With an agent mid-turn, server shutdown (`closeProcessResources` → `stopAll`) waits for the turn instead of interrupting it.
 - On desktop quit, Electron exits after about 30 s. The embedded server, the codex app-server and the agent's commands keep running as orphans until the turn ends: about 10 minutes observed, unbounded for a hung tool. A relaunch can start a second server on the same data.
 - Identical on base. Evidence: `api-e2e-evidence/t08/isolated-app-busy-quit.log`, `api-e2e-evidence/t09-{base,branch}-busy.log`.
-- Recommended: a new ticket through `/solution_designer`.
+- Recommended: a new ticket through `/solution_designer`. Raised at verification; the user made no decision, so it is passed to Solution Designer in the terminal package.
 
 ## Residual Risks
 

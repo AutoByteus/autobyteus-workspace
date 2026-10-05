@@ -5,14 +5,14 @@
 - Ticket: `agent-run-termination-extraction`
 - Classification (carried, not reclassified): `task_size=Medium`, `architectural_risk=High`, reviewed route.
 - Upstream gates: ARCH-REV-001 Pass; CRR-001 Pass (9.5/10); API-REV-001 Pass (94%); CRR-002 Not Applicable.
-- Delivery round: DR-001.
+- Delivery round: DR-002 (finalization). DR-001 produced the verified handoff.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/tickets/in-progress/agent-run-termination-extraction/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/tickets/done/agent-run-termination-extraction/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/tickets/in-progress/agent-run-termination-extraction/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/tickets/done/agent-run-termination-extraction/delivery-revision-record.md`
+- Current delivery revision ID: `DR-002`
 
 ## Initial Delivery Integration Refresh
 
@@ -41,36 +41,37 @@
 
 - Busy server shutdown: `stopAll` waits for in-flight turns, and desktop quit leaves the server, codex app-server and tool processes orphaned until the turn ends. Identical on base (T-08/T-09).
 - Recorded in `handoff-summary.md` and as a known limit in `agent_execution.md`.
-- To raise at user verification. Recommended: a new ticket through `/solution_designer`.
+- Raised at user verification. The user did not request a follow-up ticket in this delivery, so none was created. It is passed to `/solution_designer` in the terminal package as a recommended follow-up.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (requested)
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: user message "finalize the ticket, and no need to release thanks" (2026-10-05). The user also commissioned the independent re-audit CRR-003 (Pass 9.5/10; CG-05 docs wording corrected in `d6d7693a8`).
+- Renewed verification required after later re-integration: `No` (target unchanged at `10fb69504`)
+- Renewed verification received: `Not needed`
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/tickets/in-progress/agent-run-termination-extraction/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/tickets/done/agent-run-termination-extraction/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-server-ts/docs/modules/agent_execution.md`
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No` (after verification)
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `tickets/done/agent-run-termination-extraction/`
 
 ## Repository Finalization
 
-- Ticket branch: `codex/agent-run-termination-extraction` (local)
-- Finalization target: `origin/personal`
-- Repository finalization status: Not started (awaiting user verification)
+- Bootstrap context source: code_reviewer delivery package (target `personal`)
+- Ticket branch: `codex/agent-run-termination-extraction`
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification: `No`. Re-fetched at `10fb69504`, an ancestor of the ticket head.
+- Ticket branch commit, push, merge and target push: see the Finalization Results section
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision. This is an internal refactor with no user-facing change, so no release notes are drafted.
+- Applicable: `No`. The user declined a release ("no need to release").
+- Release/publication/deployment result: `Not required`
+- Release notes handoff result: `Not required`
 
-## Final Status
-
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Unresolved blocker: None; awaiting user verification
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
