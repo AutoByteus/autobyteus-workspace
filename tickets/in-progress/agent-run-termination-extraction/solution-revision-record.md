@@ -34,3 +34,10 @@
   `/Users/normy/autobyteus_org/solution-designer-reports/root-delivery-core-followup-candidate.md`. The E-B evidence
   is kept in `investigation-notes.md`.
 - Open: DEC-003 (≤ 400 lines; the meaning of "unchanged"). Approval: pending confirmation. Design: not started.
+
+## SR-003 — 2026-10-05 — Requirements approved
+- Trigger: the user said "you decide. you have the design princples to follow. lets go. approve", in reply to the
+  SR-002 baseline and the DEC-003 confirmation request.
+- Status: Approved. The basis is the SR-002 requirements with DEC-003 as recommended (≤ 400 lines; "unchanged" means no
+  assertion removed or relaxed).
+- Next: architecture design.

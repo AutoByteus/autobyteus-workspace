@@ -1,15 +1,15 @@
 # Requirements Document — agent-run-termination-extraction
 
 ## Document Status
-- Status: **Ready for Approval** (SR-002, 2026-10-05).
-- Current solution revision ID: `SR-002`. SR-001 was the two-part baseline (Part A and Part B) and was never approved.
+- Status: **Approved** (SR-003, 2026-10-05).
+- Current solution revision ID: `SR-003` (approval of the SR-002 baseline). SR-001 was the two-part baseline (Part A and Part B) and was never approved.
 - Package: `agent-run-termination-extraction`. It was bootstrapped as `agent-run-termination-and-root-delivery-core`
   and renamed in SR-002 before any handoff.
 - Request: `/code_reviewer`, 2026-10-04, directed by the user (one combined ticket). Narrowed by the user on 2026-10-05:
   "lets do Part A in this ticket. after the ticket is done. we first validate for the bheavor for Part B. to chekc
   whether the its valuable or not right? … lets do the part a in the ticket."
 - Requirements owner: Solution Designer.
-- Approval state: **pending** confirmation of this Part A baseline (DEC-003).
+- Approval state: **Approved**, 2026-10-05. The user said "you decide. you have the design princples to follow. lets go. approve" in reply to the SR-002 baseline and the DEC-003 confirmation request. DEC-003 is resolved as recommended.
 - Behavior-defining supplements: none. Predecessor SR-006 § 11 is the contract to preserve (read-only).
 - Workspace:
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction`.
@@ -133,7 +133,7 @@ AC-005 to AC-008 and AC-010 are retired (moved to the Part B follow-up).
 | --- | --- | --- | --- |
 | DEC-001 | (SR-001) Org self-delegation code | Moved to the Part B follow-up | Retired |
 | DEC-002 | (SR-001) Per-root delivery differences | Moved to the Part B follow-up | Retired |
-| DEC-003 | Size target and "unchanged" meaning | **Recommended:** `agent-run.ts` ≤ 400 effective lines; "suites pass unchanged" means no assertion is removed or relaxed, while import paths and construction of moved units may change | Open, awaiting confirmation |
+| DEC-003 | Size target and "unchanged" meaning | `agent-run.ts` ≤ 400 effective lines; "suites pass unchanged" means no assertion is removed or relaxed, while import paths and construction of moved units may change | Resolved as recommended (user approval, SR-003) |
 | DEC-004 | (SR-001) Phasing | Moot: a single phase | Retired |
 
 ## Traceability
@@ -161,6 +161,6 @@ AC-005 to AC-008 and AC-010 are retired (moved to the Part B follow-up).
 ### Content Ready For Approval
 - Current behavior evidence-backed: Yes. Desired and preserved explicit: Yes. Scope and non-goals clear: Yes.
 - REQ/AC testable and traceable: Yes. Scenarios covered: Yes. Supplements: N/A. UI/UX: N/A.
-- Open decisions visible: Yes (DEC-003). Content ready for user approval: **Yes**.
+- Open decisions visible: Yes (none open). Content ready for user approval: **Yes**.
 ### Approved Basis Ready For Design
-- User approval received: **No** (pending confirmation of this baseline). Ready for design: No.
+- User approval received: **Yes** (SR-003). Exact basis: this document as of SR-002, with DEC-003 as recommended. Ready for design: **Yes**.
