@@ -58,3 +58,4 @@
 - The worktree has dependencies installed, shared packages built and Prisma generated.
 
 ## Route
+- Medium/High → `/architecture_reviewer` (rule: "architectural_risk=High"). Delivered 2026-10-05 (target run `architecture_reviewer_2e6d87408aa4462c992aae977449ef6a`).
