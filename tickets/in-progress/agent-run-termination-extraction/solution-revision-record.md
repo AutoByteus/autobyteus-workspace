@@ -41,3 +41,21 @@
 - Status: Approved. The basis is the SR-002 requirements with DEC-003 as recommended (≤ 400 lines; "unchanged" means no
   assertion removed or relaxed).
 - Next: architecture design.
+
+## SR-004 — 2026-10-05 — Architecture design complete
+- Trigger: requirements approved (SR-003).
+- Evidence added: E-A6–E-A11 (project guideline, collaborator precedent, exact moving set, needs port, importers,
+  docs).
+- Design (`design-spec.md`):
+  - New internal owner `AgentRunTermination` (`src/agent-execution/domain/agent-run-termination.ts`). It holds the
+    termination lifecycle, fence attempt selection and scheduling, the quiescence predicates and
+    `recoveryShutdownFenced`. It receives AgentRun state through an options port (E-A7 pattern) and never sees
+    `AgentRun` itself.
+  - `AgentRun` keeps 4 public methods as plain delegations (same async-ness, same promise identity), plus 4 evaluation
+    triggers.
+  - The fence and prepared-termination files are unchanged; all importers are unchanged; one additive coalescing test;
+    docs name the owner.
+  - Estimated `agent-run.ts` ≈ 365 lines, new file ≈ 190.
+- Persisted data: Not Affected.
+- Classification: `task_size=Medium`, `architectural_risk=High` (concurrency and blast radius on every Stop).
+- Requirements: unchanged (basis SR-002/SR-003). Routing: per the handoff rules.

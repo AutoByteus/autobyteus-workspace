@@ -131,6 +131,53 @@
   - host activation inside the standalone root gate;
   - CG-05.
 
+## Architecture investigation (SR-004, 2026-10-05)
+- **E-A6, project design guideline.** `DESIGN.md` (root) applies:
+  - "smallest coherent owner and interface";
+  - no empty forwarding layers, no callers bypassing a public owner;
+  - do not collapse real lifecycle boundaries;
+  - no speculative machinery.
+  There is no closer `DESIGN*.md` under `autobyteus-server-ts`. Project-specific documents: none of the listed
+  policies apply (no persisted data, startup, processors or streaming protocol are touched). No conflicts.
+- **E-A7, precedent for AgentRun-internal collaborators.**
+  - `AgentRunInterruptState` (`domain/agent-run-interrupt-state.ts`, 115 effective lines) takes
+    `{runId, backend, dispatchQueue, lifecycleState, onReservationReleased()}`.
+  - `AgentRunCompactionRecovery` (`input/agent-run-compaction-recovery.ts`) takes
+    `{runInstanceId, backend, highWaterMark(), serialize(), changed()}`.
+  - Both are owned and constructed only by `AgentRun`, which stays the public boundary.
+- **E-A8, exact moving set** (`agent-run.ts` @ `03d5db06b`, 157 effective lines):
+  - fields `recoveryShutdownFenced` (66), `rootShutdownFence`, `tryingQuiescentTermination`, `preparingTermination`,
+    `preparedTermination`, `termination` (69–74);
+  - methods 219–285 (except `interrupt`, 213–217): `prepareTermination`, `tryPrepareTerminationIfQuiescent`,
+    `fenceInputAndInterruptForRootShutdown`, `createRootShutdownFence`, `terminate`;
+  - methods 398–493: `waitForActiveInputDispatch` (used only by termination, 411/417), `prepareTerminationOnce`,
+    `createTerminationPreparation`, `isRootShutdownQuiescent`, `isFencedRecoveryWithoutTurn`,
+    `reconcileUncertainDispatch` (**stays**: input concern, called at 298 and 361), `scheduleRootShutdownFenceEvaluation`,
+    `finishCommittedTermination`, `finishCommittedTerminationOnce`.
+  - `recoveryShutdownFenced` is read and written only by termination and fence code (256, 405, 428, 448).
+  - Without them, `agent-run.ts` is 341 effective lines before wiring.
+- **E-A9, what the moving code needs from AgentRun.**
+  - State collaborators: `dispatchQueue`, `lifecycleState`, `inputAdmissionState`, `interruptState`,
+    `segmentLifecycleState`, `backend.getLifecycleSnapshot/terminate`.
+  - AgentRun-private operations: `interrupt()` (public; the recoverable-block branch must be kept), `reconcileRecovery`,
+    `publishInputState`, `drainInputAfterLifecycleChange`, `dispatchCanonicalStatus`, `unsubscribeFromBackendSource`.
+  - Input dispatch state: read `activeInputDispatch`; read and clear `uncertainInputDispatch` (its `claim`).
+  - Internal AgentRun triggers of fence evaluation: `onReservationReleased` (95), `onCanonicalEventsDispatched` (300),
+    dispatch settle (339), dispatch result (385).
+- **E-A10, importers and private access.**
+  - No test reads AgentRun's private termination or fence fields (grep over `autobyteus-server-ts/tests`,
+    `test-support`).
+  - Importers of `agent-run-root-shutdown-fence.ts`: `agent-run.ts` and its unit test.
+  - Importers of `prepared-agent-run-termination.ts`: `agent-run.ts`, `agent-run-manager.ts`,
+    `managed-agent-run-termination.ts`, `configured-agent-execution-handle.ts`.
+  - Importers of `domain/agent-run.js`: 26 `src`, 18 tests, 1 web test, 1 `test-support/live-e2e`. Their exports are
+    unchanged.
+- **E-A11, docs.** `docs/modules/agent_execution.md`:
+  - "Published-Run Termination And Resource Finalization" (227–244) names `AgentRun.prepareTermination()` and the
+    cancel/finish semantics;
+  - "Root Shutdown Fence" (246–262) names `AgentRun.fenceInputAndInterruptForRootShutdown()` and the attempt rules.
+  - Both stay true at the `AgentRun` boundary. The internal owner should be named.
+
 ## Supplement Inventory
 | Supplement | Purpose | Status |
 | --- | --- | --- |
