@@ -1,7 +1,7 @@
 # Requirements Document — busy-quit-shutdown-orphan
 
 ## Document Status
-- Status: **Approved** (SR-002, 2026-10-05).
+- Status: **Ready for Approval** (delta DEC-005, SR-004, 2026-10-05). The SR-002 approval still covers REQ-001 to REQ-005 for user Terminate, server shutdown and desktop quit.
 - Current solution revision ID: `SR-002` (approval of SR-001).
 - Package: `busy-quit-shutdown-orphan`.
 - Request: `/api_e2e_engineer`, 2026-10-05, at the user's direction. The user asked to "first do enough experiments to
@@ -104,6 +104,7 @@
 | AC-005 | REQ-004 | Desktop app idle quit | Quits as quickly as today | Slower | Isolated app |
 | AC-006 | REQ-005 | Relaunch after AC-004 | Every conversation is present and continues (agent, Team, Org) | Missing or broken | Isolated app |
 | AC-007 | all | Existing suites | No new failures against the base (by test name and message) | — | Unit/integration |
+| AC-008 (proposed, DEC-005) | REQ-001 | An application terminates a run busy in a long command | Returns within 10 s; turn interrupted; queued input cancelled | Waits for the turn | Unit (fence-first at the shared entry point) plus a live probe if feasible |
 
 ## Relevant Scenarios And Journeys
 | ID | Kind | Actor | Goal | Trigger | Steps | Outcome | Validity | Evidence |
@@ -154,6 +155,7 @@
 | DEC-002 | Bounds | Server shutdown ≤ 10 s; desktop waits ≤ 15 s before force-stopping the server. | **Resolved as recommended** (SR-002) |
 | DEC-003 | Codex composer Stop leaves the tool command running until the run ends (E2) | Out of scope; follow-up candidate | **Resolved: not in this ticket** (SR-002) |
 | DEC-004 | Guard against a second server on the same data root (for example after a force-killed app) | Defer; follow-up candidate | **Resolved: not in this ticket** (SR-002) |
+| DEC-005 | (SR-004, from ARCH-REV-001 AR-001) When an **application** (SDK `terminateAgentRun`, or orchestration ending a run binding) terminates a busy run, should it also interrupt the turn and cancel unstarted queued input, like user Terminate? Today it waits for the turn to finish (the same code path, E-A8) | **Recommended: yes.** "Terminate" means stop now everywhere. Otherwise the application path keeps the unbounded wait this ticket removes. | **Open: awaiting user approval** |
 
 ## Traceability
 | REQ | UC | BEH | AC | SCN |
@@ -182,4 +184,4 @@
 ### Content Ready For Approval
 - All items Yes. Open decisions DEC-001 to DEC-004 have recommendations. Content ready for user approval: **Yes**.
 ### Approved Basis Ready For Design
-- User approval received: **Yes** (SR-002). Ready for design: **Yes**.
+- User approval received: **Yes** for SR-002; **pending** for DEC-005 (SR-004).

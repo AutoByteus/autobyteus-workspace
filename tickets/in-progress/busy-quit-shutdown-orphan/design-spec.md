@@ -1,189 +1,226 @@
 # Design Spec — busy-quit-shutdown-orphan
 
 ## Solution And Approval Basis
-- Current solution revision ID: `SR-003` (architecture design).
-- Approved requirements: `requirements-doc.md`, Approved in SR-002 (2026-10-05). DEC-001 is "cancel queued input",
-  DEC-002 is "10 s / 15 s", and DEC-003 and DEC-004 are not in this ticket.
-- Behavior-defining supplements: none.
-- Design status: `Ready`.
-- Investigation notes: `investigation-notes.md` (E1–E9, RC-1 to RC-5, E-A1 to E-A7).
+- Current solution revision ID: `SR-004`. It revises SR-003 for ARCH-REV-001 (Fail: AR-001 to AR-003).
+- Approved requirements: `requirements-doc.md`, Approved in SR-002. DEC-001 is "cancel queued input", DEC-002 is
+  "10 s / 15 s", and DEC-003 and DEC-004 are not in this ticket.
+- **Pending requirement delta: DEC-005** (application-initiated terminate also interrupts; AR-001). Proposed and
+  awaiting user approval. The D1 shape does not change either way; only the disposition of the application callers
+  depends on it.
+- Design status: `Ready` (pending DEC-005 approval).
+- Investigation notes: `investigation-notes.md` (E1–E9, RC-1 to RC-5, E-A1 to E-A12).
 - Workspace:
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan`.
   - Branch `codex/busy-quit-shutdown-orphan`.
   - Base `origin/personal` @ `02d6ddf05`. Target `personal`.
 
+## SR-004 Changes Against SR-003 (ARCH-REV-001)
+- **AR-001:** the application callers are mapped (DS-001b, DS-002). The application-scope `stopAllAgentRuns` is part
+  of SCN-002. Application-initiated `terminateAgentRun` is DEC-005.
+- **AR-002:** the quit deferral is keyed to **one memoized stop promise**. The example is corrected, the 8 s timer
+  wording is fixed, a re-entry test is added, and the updater is verified (N-2).
+- **AR-003:** the process-group/env-flag forced path is **replaced by a process-tree sweep**. It reuses and
+  generalizes AGY's existing process-table selector. The sweep:
+  - runs at the end of every server shutdown, graceful or forced, so native background processes, native foreground
+    shells, AGY daemons and runtime CLIs are covered;
+  - covers the non-leader case;
+  - lets the desktop use the same algorithm when the server itself is wedged.
+
+  The env flag, detached spawn and leader-only group kill are dropped (N-1 becomes moot).
+- **ASM-002 dispositions:**
+  - (a) Native foreground commands are aborted by the interrupt (E-A9).
+  - (b) Native background processes are stopped at server shutdown by the sweep. Their lifetime on a run **Terminate**
+    is unchanged: they outlive Terminate as today, which is not in the approved scope. Recorded as follow-up FU-3.
+  - (c) Detached groups on the forced path are covered by the sweep (E-A11).
+  - (d) Non-leader forced exit is covered by the sweep (it never signals the server's own group).
+  - Residual: Windows server-side sweep. `ps` is POSIX; on Windows the desktop's existing `taskkill /t` tree kill
+    remains the net.
+
 ## Current-State Read
 - **Stopping a run now (RC-1).**
-  - User Terminate and server shutdown reach `AgentRunManager.terminateAgentRun` and `stopAllAgentRuns`. Both use
-    `prepareAgentRunTermination`, a graceful drain that never interrupts and waits for the active turn to finish
-    (E1, E5, E8).
-  - Root-hosted children are fenced and interrupted first by their roots, so they stop promptly (predecessor LE-O1).
-  - The graceful drain is correct and intended for the Team, Org and task-copy flows that may cancel (E-A2). It is
-    wrong only for the two "stop now" entry points.
+  - User Terminate, application terminate and server shutdown reach `AgentRunManager.terminateAgentRun` and
+    `stopAllAgentRuns`. Both use `prepareAgentRunTermination`, a graceful drain that never interrupts and waits for the
+    turn to finish (E1, E5, E8, E-A8).
+  - Root-hosted children are fenced and interrupted first by their roots.
+  - The graceful drain is intended for the Team, Org and copy flows that may cancel (E-A2).
 - **Server shutdown (RC-2):** `server-runtime.ts` awaits `app.close()` without a bound (E-A6).
-- **Desktop (RC-3):**
-  - The server is an ordinary child in Electron's process group.
-  - `will-quit` does not wait, so Electron exits right after SIGTERM, and the 5 s SIGKILL escalation never runs (E6,
-    E-A5).
-- **Runtimes (RC-4):** runtime CLIs inherit the server's process group, and each CLI cleans its own tool commands on
-  SIGTERM. Codex also cleans up on EOF; Claude does not (E3, E9, E-A4). The server cannot enumerate SDK-spawned
-  processes.
+- **Desktop (RC-3):** `will-quit` does not wait, so main exits right after SIGTERM, and the escalation never runs (E6,
+  E-A5). `stop()` is re-entrant-unsafe for deferral (E-A12).
+- **Process ownership (RC-4):** spawned processes are all descendants of the server.
+  - Runtime CLIs share its group.
+  - Native shells, CLI tool commands and AGY daemons lead their own groups.
+  - Native background processes have no stop caller (E-A9 to E-A11).
 
 ## Task Size And Architectural Risk (Mandatory)
-- **Task size: `Large`.** Three subsystems:
-  - server run termination (`agent-execution/services`);
-  - server process shutdown (`server-runtime`);
-  - desktop server lifecycle (`autobyteus-web/electron`: server managers and the application quit flow).
-
-  Each needs live and desktop validation on two runtimes.
-- **Architectural risk: `High`.**
-  - It changes the stop semantics of every standalone run (interrupt instead of drain) on every runtime.
-  - It adds a forced-termination path with process-group signalling.
-  - It changes Electron's quit lifecycle (deferred quit).
-  - All of these are concurrency- and process-ownership-sensitive.
+- **Task size: `Large`.** Server run termination; server process shutdown with a process-tree sweep (one shared
+  utility moved out of AGY); the desktop server stop and quit lifecycle. Live and desktop validation on two runtimes.
+- **Architectural risk: `High`.** Changed stop semantics for every standalone run on every runtime; process-tree
+  signalling at shutdown; Electron quit sequencing. All are concurrency- and process-ownership-sensitive.
 - **Escalation triggers:**
-  - interrupt-first changes a result that callers of `terminateAgentRun`/`stopAllAgentRuns` depend on;
-  - a runtime's CLI does not clean its commands on SIGTERM;
-  - deferring `will-quit` blocks an idle quit or another quit path (updates, `window-all-closed`);
-  - detached spawn breaks server output piping or startup.
+  - interrupt-first breaks a caller's expectation;
+  - the sweep signals something the server did not spawn;
+  - a runtime's processes survive the sweep;
+  - deferral blocks an idle quit or the updater.
 
 ## Architecture Investigation Evidence
-- Project design guideline: `DESIGN.md` (root). Applied: reuse the existing interrupt mechanism (the fence); smallest
-  owners; no registry or framework; preserve guarantees. No conflicts.
+- Project design guideline: `DESIGN.md`. Applied: reuse the fence and AGY's process-table selector; no registry; the
+  smallest owners. No conflicts.
 
 | Source | Observation | Decision |
 | --- | --- | --- |
-| E1, E5, E8; `agent-run-termination.ts:133-151` | No interrupt on prepare; waits for the turn | D1: fence first at the stop-now entry points |
-| E-A2 | Graceful drain is used with cancellation by Team, Org and copies | D1 is limited to `terminateAgentRun` and `stopAllAgentRuns`; `prepareTermination` is unchanged |
-| E-A3 | The fence interrupts, cancels queued input, bounds rejected interrupts at 5 s and can be retried | D1 reuses it as is (DEC-001 matches) |
-| E2, E5 | After an interrupt, shutdown closes in 0.028 s (Codex) and 0.39 s (Claude) | D1 is enough for the normal path; D2 is the safety net |
-| E-A4, E3, E9 | Runtime CLIs inherit the group, clean commands on SIGTERM, and are not enumerable | D2/D3: process-group SIGTERM, not a registry |
-| E6, E-A5 | `will-quit` is not deferred; the server is not a group leader | D3: defer quit, detached spawn, group escalation |
-| E-A7 | Docker and terminal already signal the whole group | D2 signals its group only when Electron made it the leader |
+| E1, E5, E8; `agent-run-termination.ts:133-151` | No interrupt on prepare | D1: fence first at the stop-now entry points |
+| E-A2 | Drain and cancel flows depend on `prepareTermination` | D1 limited to the two entry points |
+| E-A3 | The fence interrupts, cancels queued input, and bounds rejected interrupts | D1 reuses it |
+| E-A8 | Application callers enter the same entry points | DS-001b; DEC-005 |
+| E-A9 | Native foreground is aborted by interrupt; background `stopAll` is uncalled | The sweep at shutdown; FU-3 for Terminate |
+| E-A10, E-A11 | The AGY process-table selector exists; every spawned process is a descendant | D2 sweep, reusing it (moved to `utils`) |
+| E6, E-A5, E-A12 | `will-quit` is not deferred; `stop()` re-entry returns early | D3 memoized stop and deferral |
 
 ## Intended Change
-- **D1 — Stop-now interrupts (REQ-001).**
-  - `AgentRunManager.terminateAgentRun(runId)` first awaits `run.fenceInputAndInterruptForRootShutdown()`.
-    - If it is not accepted: return `false` (Terminate rejected; the user can retry, F-3) without preparing.
-    - If it is accepted: continue to `prepareAgentRunTermination` → `commit().finish()`, unchanged.
-  - `AgentRunManager.stopAllAgentRuns()` fences **all** active runs concurrently (`Promise.allSettled`) before the
-    existing sequential prepare/finish loop.
-    - A run whose fence was not accepted or threw is recorded in `errors` and skipped in the loop. The run stays
-      root-fenced; the D2 bound ends the process.
-    - Prepared-but-unpublished runs (the first loop) are unchanged.
-  - `prepareTermination`, `tryPrepareTerminationIfQuiescent` and every Team, Org and copy caller are **unchanged**.
-- **D2 — Bounded server shutdown (REQ-002, REQ-003).**
-  - `server-runtime.ts` races `app.close()` against `SERVER_SHUTDOWN_TIMEOUT_MS = 10_000`.
-  - On a clean close: `process.exit(0)`, as today.
-  - On a close error: `process.exit(1)`, as today.
-  - On expiry, the forced exit:
-    1. log `Server shutdown exceeded 10s; forcing exit` with the still-pending stage, if known;
-    2. **if `AUTOBYTEUS_SERVER_PROCESS_GROUP_LEADER=1`** (set only by the desktop app, D3): ignore further SIGTERM,
-       send `SIGTERM` to its own process group (`process.kill(-process.pid, "SIGTERM")`), wait
-       `RUNTIME_PROCESS_GROUP_GRACE_MS = 1500` so the runtime CLIs can clean their tool commands, then send
-       `SIGKILL` to the group;
-    3. otherwise exit only itself. Docker and terminals already signal the whole group (E-A7).
-    4. `process.exit(1)`.
-  - Owner: a new `src/server-process-shutdown.ts` beside `server-runtime.ts`, holding the race, the forced exit and
-    the group signal. `registerShutdownHandlers` calls it.
+- **D1 — Stop-now interrupts (REQ-001).** Unchanged from SR-003.
+  - `AgentRunManager.terminateAgentRun` awaits `run.fenceInputAndInterruptForRootShutdown()` first.
+    - If it is not accepted, return `false` (Terminate rejected; retryable, F-3).
+    - Otherwise prepare → `commit().finish()`, unchanged.
+  - `stopAllAgentRuns` fences all active runs concurrently (`Promise.allSettled`) before the existing loop. A run whose
+    fence failed is recorded in `errors` and skipped. Prepared-but-unpublished runs are unchanged.
+  - `prepareTermination` and the Team, Org, copy and Mixed-Team callers are unchanged.
+  - Callers that now get interrupt-first:
+    - user Terminate (DS-001);
+    - history delete/archive and root stop through `stopRoot` → host (DS-001);
+    - the process-level and application-scope `stopAllAgentRuns` during server close (DS-002);
+    - application-initiated terminate (DS-001b, **DEC-005**).
+- **D2 — Bounded server shutdown with a process-tree sweep (REQ-002, REQ-003).** New
+  `src/server-process-shutdown.ts`, called from `registerShutdownHandlers` (`once` handlers kept).
+  1. Race `app.close()` against `SERVER_SHUTDOWN_TIMEOUT_MS = 10_000`. On expiry, log
+     `Server shutdown exceeded 10s; forcing exit` and stop waiting.
+  2. **Always**, on clean close, close error or expiry, run `terminateServerProcessTree()`:
+     1. snapshot the process table once (`ps -A -o pid=,ppid=,pgid=`; POSIX only, Windows → no-op);
+     2. select **targets**:
+        - (a) the pids of the server's live descendants that are in the server's own group (runtime CLIs);
+        - (b) the process groups led by a live descendant of the server, excluding the server's own group and
+          pgid ≤ 1 (native shells and background processes, CLI tool commands, AGY daemons);
+     3. if there are no targets, return immediately (an idle shutdown stays at ~0.3–0.4 s);
+     4. otherwise send SIGTERM to the (a) pids and (b) groups, poll up to `PROCESS_TREE_GRACE_MS = 1500` until the
+        recorded targets are gone, then SIGKILL the survivors among the **recorded** targets;
+     5. skip ESRCH/EPERM per target.
+  3. `process.exit(0)` after a clean close, otherwise `process.exit(1)`.
+  - Owner: the process-table parsing and selection move from
+    `agent-execution/backends/antigravity/stream/agy-background-process-groups.ts` to
+    `src/utils/process-tree.ts`. Functions: `parseProcessTable`, `readProcessTable`,
+    `selectDescendantProcessGroups(rows, rootPid, excludedPgids)`, `selectDescendantPidsInGroup(rows, rootPid, pgid)`,
+    `signalProcessGroups`, `signalPids`.
+  - AGY keeps its behavior through `selectDescendantProcessGroups(rows, agyPid, [agyPgid, serverPgid])`.
+  - `agy-background-process-groups.ts` is removed (its test moves with the utility).
 - **D3 — The desktop quit waits and escalates (REQ-004).**
-  - macOS and Linux managers spawn the server with `detached: true` (own process group; stdio pipes unchanged) and set
-    `AUTOBYTEUS_SERVER_PROCESS_GROUP_LEADER=1` in its env.
   - `BaseServerManager.stopServer`:
-    1. SIGTERM the server;
-    2. wait for `close` up to `serverShutdownTimeoutMs = 15_000` (replacing `gracefulShutdownTimeoutMs = 5000`);
-    3. on expiry: `SIGTERM` the server's process group (`process.kill(-pid, …)`), wait 1.5 s, then `SIGKILL` the group;
-    4. resolve on `close`, or after the group SIGKILL.
-  - `WindowsServerManager`: the same 15 s for its existing `taskkill /t` → `/f` sequence (it already kills the tree).
-  - `ElectronApplication`:
-    - `will-quit`: if the server stop has not completed, `event.preventDefault()`, run `stop()` once, then call
-      `app.quit()` when it settles. A re-entrant `will-quit` while stopping is prevented again; once stopped it passes
-      through.
-    - The existing `before-quit` 8 s timer (`app.quit()`) stays harmless: it re-enters `will-quit`, which is still
-      prevented while stopping.
+    1. SIGTERM the server **once**;
+    2. wait for `close` up to `serverShutdownTimeoutMs = 15_000` (replaces `gracefulShutdownTimeoutMs = 5000`);
+    3. on expiry (the server is wedged and its own D2 did not run), sweep the server's process tree with the same
+       algorithm as D2 (targets for root = server pid, plus the server pid itself): SIGTERM, 1.5 s, SIGKILL;
+    4. resolve on `close`, or after the sweep.
+  - macOS and Linux spawn options are **unchanged** (no detached spawn, no env flag).
+  - `WindowsServerManager`: the same 15 s for its existing `taskkill /t` → `/f` tree kill.
+  - The desktop helper `electron/server/serverProcessTree.ts` (process-table parse and select) is a small copy of the
+    server utility. Electron main cannot import server code; the duplication is documented and kept test-equivalent.
+  - **`ElectronApplication` (AR-002):**
+    - `stop()` returns one memoized promise: `this.stopping ??= this.stopOnce()`. `hasShutdownRun` is replaced by
+      `stopping`.
+    - `will-quit`: if `!this.stopped`, call `event.preventDefault()`, then
+      `this.stop().finally(() => { this.stopped = true; app.quit(); })`. Every re-entry (second Cmd+Q, OS SIGTERM,
+      the 8 s `before-quit` timer, the updater) awaits the **same** promise and is prevented again until it settles.
+    - When `stopped` is true, `will-quit` passes through.
+    - The `before-quit` 8 s timer only re-enters `will-quit`, which is prevented while the single stop is in flight.
+      It cannot shorten the stop.
 - **Docs:**
-  - `autobyteus-server-ts/docs/modules/agent_execution.md` ("Published-Run Termination": stop-now entry points fence
-    first);
-  - the server shutdown bound (in the server runtime docs, or wherever startup/shutdown is documented);
-  - the `autobyteus-web` Electron docs (quit waits up to 15 s; the server runs in its own process group).
+  - `autobyteus-server-ts/docs/modules/agent_execution.md` (stop-now entry points fence first; the application
+    callers);
+  - server shutdown (the 10 s bound and process-tree sweep);
+  - AGY docs if they name the moved helper;
+  - the `autobyteus-web` Electron docs (quit waits for the server up to 15 s, then a tree sweep).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
-| BEH | REQ / AC | Trigger | Existing | Target path | Spine |
-| --- | --- | --- | --- | --- | --- |
-| BEH-001 | REQ-001; AC-001 | User Terminate | E8 | `terminateAgentRun` → fence (interrupt, cancel queued) → prepare → finish | DS-001 |
-| BEH-002 | REQ-001, REQ-002; AC-002, AC-003 | SIGTERM/quit | E1, E5 | `shutdown` → bounded `app.close` → `stopAll…` → fence all → finish; at 10 s, forced exit | DS-002 |
-| BEH-003 | REQ-003; AC-002, AC-003 | Shutdown | E3, E9 | Graceful: per-run runtime close (existing). Forced: group SIGTERM → CLIs clean their commands → group SIGKILL | DS-002, DS-003 |
-| BEH-004 | REQ-004; AC-004, AC-005 | Cmd+Q / SIGTERM to the app | E6 | `will-quit` deferred → `stopServer` 15 s → group escalation → `app.quit` | DS-003 |
-| BEH-005 | REQ-005; AC-006 | Relaunch | T-08c | Unchanged (persistence untouched) | — |
+| BEH | REQ / AC | Trigger | Target path | Spine |
+| --- | --- | --- | --- | --- |
+| BEH-001 | REQ-001; AC-001 | User Terminate, history delete/archive | `terminateAgentRun` → fence → prepare → finish | DS-001 |
+| BEH-001 (app) | REQ-001 via **DEC-005**; AC-008 (proposed) | An application's `terminateAgentRun` (SDK scope; orchestration `terminateRunBinding`) | `AgentRunService.terminateAgentRun` → `AgentRunManager.terminateAgentRun` → fence → … | DS-001b |
+| BEH-002 | REQ-001, REQ-002; AC-002, AC-003 | SIGTERM/quit | `server-process-shutdown` → bounded `app.close` → process and application-scope `stopAll…` (fence all) → sweep → exit | DS-002 |
+| BEH-003 | REQ-003; AC-002, AC-003 | Shutdown | Graceful per-run close, then **always** the process-tree sweep | DS-002 |
+| BEH-004 | REQ-004; AC-004, AC-005 | Cmd+Q / SIGTERM to the app | Deferred `will-quit` (one stop promise) → `stopServer` ≤ 15 s → (wedged) tree sweep | DS-003 |
+| BEH-005 | REQ-005; AC-006 | Relaunch | Unchanged | — |
 
 ## Relevant Supplemental Task Artifacts
 | Path | Relationship |
 | --- | --- |
-| `evidence/` (E1–E9, the Electron probe, the temporary probe and diagnostics) | Root-cause basis; the probe shape is reusable for AC-001/002 |
+| `evidence/` | Root-cause basis; probe shape reusable for AC-001/002 |
+| `design-review-report.md`, `architecture-review-revision-record.md` (ARCH-REV-001) | Findings answered here |
 
 ## Task Design Health Assessment (Mandatory)
 - Change posture: `Bug Fix`.
 - Current design issue found: `Yes`.
-- Root cause classification: `Missing Invariant`. The "stop now" owners do not enforce "interrupt before terminate",
-  which the root owners already do. The process owners (server runtime, desktop manager) do not enforce "bounded
-  exit, no survivors".
-- Refactor needed now: `No` (targeted invariants in existing owners). No new subsystem; one small new file for the
-  server shutdown policy.
-- Evidence: E1–E9, E-A2 to E-A7.
+- Root cause classification: `Missing Invariant`.
+  - "Stop now" does not interrupt.
+  - The process owners do not enforce a bounded exit with no survivors.
+  - Native background processes have no stopper at shutdown.
+- Refactor needed now: `Yes, small`. The AGY process-table selector moves to `utils` because two owners now need it.
 - Design response: D1 to D3.
 - Deferrals and residual risk:
-  - DEC-003 (Codex Stop gap) and DEC-004 (data-root guard) are follow-up candidates.
-  - The non-desktop forced exit relies on the host signalling the group (E-A7).
-  - Runtimes not live-tested (AutoByteus native tool commands, AGY, ACP, Grok) rely on the group SIGTERM plus their
-    own cleanup.
+  - FU-1 (DEC-003), FU-2 (DEC-004) and FU-3 (native background processes outliving a run **Terminate**; unchanged,
+    not in scope);
+  - the Windows server-side sweep (the desktop tree kill covers the desktop);
+  - user Terminate stays unbounded if a runtime accepts an interrupt but never ends its turn (N-3). AC-001 is the gate.
 
 ## Terminology
 - **Stop-now entry point:** `terminateAgentRun`, `stopAllAgentRuns`.
-- **Fence:** `AgentRun.fenceInputAndInterruptForRootShutdown`.
-- **Group escalation:** SIGTERM to the process group, a grace period, then SIGKILL to the group.
+- **Fence:** `fenceInputAndInterruptForRootShutdown`.
+- **Process-tree sweep:** signal recorded descendant targets of a root pid (the root group's descendant pids, plus
+  descendant-led groups): SIGTERM, grace, then SIGKILL.
 
 ## Design Reading Order
 Standard.
 
 ## Legacy Removal Policy (Mandatory)
-- `gracefulShutdownTimeoutMs = 5000` is replaced by `serverShutdownTimeoutMs = 15_000`, with no dual constant.
-- The non-deferred `will-quit` → `void stop()` is replaced.
-- The unbounded `await app.close()` in `server-runtime.ts` is replaced by D2.
-- No compatibility paths.
+- Removed:
+  - the unbounded `await app.close()`;
+  - `gracefulShutdownTimeoutMs = 5000` and the single-PID SIGKILL;
+  - the non-deferred `void this.stop()`;
+  - `hasShutdownRun`;
+  - `agy-background-process-groups.ts` (moved to `utils/process-tree.ts`; no re-export shim).
 
 ## Persisted Data / State Transition Decision
-- `Not Affected`. No stored shape changes. The forced exit may lose an unfinished interrupted turn's partial work,
-  which is an accepted loss (requirements: Data Continuity).
+- `Not Affected`.
 
 ## Data-Flow Spine Inventory
 | Spine | Scope | BEH | Start | End | Owner |
 | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary | BEH-001 | Web Terminate (GraphQL `terminateAgentRun`, or `stopRoot` → host) | Run inactive, runtime closed | `AgentRunManager` |
-| DS-002 | Primary | BEH-002, BEH-003 | SIGTERM/SIGINT to the server | Process exit ≤ 10 s, no runtime survivors | `server-process-shutdown` → `GeneralProcessRunSupervisor` → managers |
-| DS-003 | Primary | BEH-003, BEH-004 | User quit / SIGTERM to Electron main | Electron exits after the server group is gone (≤ ~17 s) | `ElectronApplication` → `BaseServerManager` |
+| DS-001 | Primary | BEH-001 | Web Terminate / history delete | Run inactive | `AgentRunManager` |
+| DS-001b | Primary | BEH-001 (app) | Application SDK `terminateAgentRun` / orchestration `terminateRunBinding` | Run inactive | `AgentRunManager` (via `AgentRunService`) |
+| DS-002 | Primary | BEH-002, BEH-003 | SIGTERM/SIGINT to the server | Exit ≤ 10 s plus grace; no descendants | `server-process-shutdown` |
+| DS-003 | Primary | BEH-004 | User quit / SIGTERM to Electron | Electron exits after the server is gone | `ElectronApplication`, `BaseServerManager` |
 
 ## Primary Execution Spine(s)
-- DS-001: `Web Terminate → GraphQL/AgentRunService → StandaloneAgentRunRootManager.stopRoot → root.stop → StandaloneAgentRunLifecycleService.terminateHost → AgentRunManager.terminateAgentRun → AgentRun.fenceInputAndInterruptForRootShutdown → (runtime interrupt → turn ends) → prepareAgentRunTermination → commit().finish() → backend.terminate (runtime CLI closed)`
-- DS-002: `SIGTERM → serverProcessShutdown (10 s race) → app.close → closeProcessResources → supervisor.closeInternal → org/team/standalone roots (fence children) → AgentRunManager.stopAllAgentRuns (fence all → finish each) → exit 0 | at 10 s: group SIGTERM → 1.5 s → group SIGKILL → exit 1`
-- DS-003: `Cmd+Q → before-quit → will-quit (preventDefault) → ElectronApplication.stop → BaseServerManager.stopServer (SIGTERM; ≤ 15 s) → [server exits via DS-002] | at 15 s: group SIGTERM → 1.5 s → group SIGKILL → app.quit → will-quit passes → exit`
+- DS-001: `Web Terminate → GraphQL → StandaloneAgentRunRootManager.stopRoot → root.stop → terminateHost → AgentRunManager.terminateAgentRun → fence (interrupt; cancel queued) → prepare → commit().finish() → backend.terminate`
+- DS-001b: `Application engine capability / SDK scope → AgentRunService.terminateAgentRun → AgentRunManager.terminateAgentRun → (as DS-001)`
+- DS-002: `SIGTERM → serverProcessShutdown (10 s race) → app.close → application lifecycle stop (application-scope stopAllAgentRuns: fence all → finish) → closeProcessResources → supervisor (roots fence children; stopAllAgentRuns: fence all → finish) → terminateServerProcessTree (snapshot → targets → SIGTERM → ≤ 1.5 s → SIGKILL survivors) → exit`
+- DS-003: `Cmd+Q → before-quit → will-quit (preventDefault) → stop() [memoized] → stopServer (SIGTERM once; ≤ 15 s) → [server exits via DS-002] | 15 s: tree sweep of the server → settle → stopped = true → app.quit → will-quit passes`
 
 ## Spine Narratives (Mandatory)
 | Spine | Narrative | Owner |
 | --- | --- | --- |
-| DS-001 | Terminate now interrupts the busy turn and cancels unstarted queued input via the existing fence, then finishes as before. A failed fence makes Terminate report not-accepted, so the user can retry. | `AgentRunManager` |
-| DS-002 | Shutdown runs as today, except that standalone runs are fenced first, so busy turns end in milliseconds. A 10 s bound guarantees exit. When the server leads its own process group, its runtime CLIs get SIGTERM to clean their commands before the group is killed. | `server-process-shutdown` |
-| DS-003 | Quit waits for the server's own bounded shutdown (normally under 1 s). If the server outlives 15 s, the desktop kills its group. Electron only finishes quitting afterwards. | `ElectronApplication`, `BaseServerManager` |
+| DS-001 / DS-001b | Terminate interrupts the busy turn and cancels unstarted queued input via the fence, then finishes as before. A failed fence reports not-accepted, so the caller can retry. | `AgentRunManager` |
+| DS-002 | Shutdown fences every standalone and application run first, so busy turns end in milliseconds. A 10 s bound guarantees progress. A final process-tree sweep removes anything still spawned by the server: runtime CLIs, tool commands, native background shells, AGY daemons. | `server-process-shutdown` |
+| DS-003 | Quit holds Electron until the single server-stop promise settles, normally in under a second. A wedged server is tree-swept at 15 s. | `ElectronApplication`, `BaseServerManager` |
 
 ## Spine Actors / Main-Line Nodes
-`AgentRunManager`, `AgentRun` (fence), `server-process-shutdown`, `GeneralProcessRunSupervisor`, `BaseServerManager`
-(plus the platform managers), `ElectronApplication`.
+`AgentRunManager`, `AgentRun` (fence), `server-process-shutdown`, `utils/process-tree`, `GeneralProcessRunSupervisor`,
+the application lifecycle, `BaseServerManager`, `ElectronApplication`.
 
 ## Ownership Map
-- `AgentRunManager` owns the stop-now policy for published standalone runs: fence first.
-- `server-process-shutdown` owns the server process's bounded exit and forced group termination.
-- `BaseServerManager` and the platform managers own the embedded server's process lifecycle: spawn as group leader,
-  bounded stop, group escalation.
-- `ElectronApplication` owns the app quit sequencing (deferral until the server is stopped).
+- `AgentRunManager` owns the stop-now policy (fence first).
+- `server-process-shutdown` owns the server's bounded exit and its final tree sweep.
+- `utils/process-tree` owns process-table reading and target selection (shared by AGY and server shutdown). It holds
+  no policy.
+- `BaseServerManager` owns the embedded server's bounded stop and its desktop-side sweep.
+- `ElectronApplication` owns the quit sequencing through one memoized stop.
 
 ## Thin Entry Facades / Public Wrappers
 N/A.
@@ -191,156 +228,158 @@ N/A.
 ## Removal / Decommission Plan (Mandatory)
 | Item | Replaced by | Scope |
 | --- | --- | --- |
-| Unbounded `await app.close()` in `server-runtime.ts` | `server-process-shutdown.ts` | In this change |
-| `gracefulShutdownTimeoutMs = 5000` and its SIGKILL of the single PID | `serverShutdownTimeoutMs = 15_000` plus group escalation | In this change |
-| Non-deferred `will-quit` → `void this.stop()` | Deferred quit | In this change |
+| Unbounded `await app.close()` | `server-process-shutdown.ts` | In this change |
+| `agy-background-process-groups.ts` | `utils/process-tree.ts` (AGY re-pointed) | In this change |
+| `gracefulShutdownTimeoutMs` 5 s and the single-PID SIGKILL | 15 s plus tree sweep | In this change |
+| `hasShutdownRun` and the non-deferred `will-quit` | Memoized `stopping` plus deferred `will-quit` | In this change |
 
 ## Return Or Event Spine(s)
-- Run status publication on termination is unchanged (the interrupted turn is shown as interrupted; non-goal).
+- Run status publication on termination is unchanged.
 
 ## Bounded Local / Internal Spines
-- `stopServer` state: `running → SIGTERM sent → (close) stopped | (15 s) group SIGTERM → (1.5 s) group SIGKILL → stopped`.
-- Server forced exit: `pending close → (10 s) → [leader: ignore SIGTERM → group SIGTERM → 1.5 s → group SIGKILL] → exit(1)`.
+- Sweep: `snapshot → select targets → none? return : SIGTERM targets → poll ≤ 1.5 s → SIGKILL recorded survivors`.
+- `stopServer`: `SIGTERM → (close) done | (15 s) sweep → done`.
+- Quit: `idle → stopping (one promise; will-quit prevented) → stopped → quit`.
 
 ## Off-Spine Concerns Around The Spine
 | Concern | Serves | Responsibility |
 | --- | --- | --- |
-| Shutdown logging | `server-process-shutdown`, `BaseServerManager` | Record a forced path with the elapsed time (operability) |
+| Shutdown logging | Server shutdown, `BaseServerManager` | Log the forced path, and the sweep target counts when non-zero |
 
 ## Ownership Boundaries
-- Callers of termination keep using `AgentRunManager`; they do not call the fence themselves.
-- Only the desktop decides group leadership, and it tells the server through one env flag. The server never signals
-  a group it does not lead.
+- Callers keep using `AgentRunManager`; nobody fences separately.
+- The sweep only ever targets descendants of its root pid and never the root's own group. Groups count only when led
+  by a recorded descendant.
 
 ## Boundary Encapsulation Map
 | Boundary | Encapsulates | Forbidden bypass |
 | --- | --- | --- |
-| `AgentRunManager.terminateAgentRun` / `stopAllAgentRuns` | Fence + prepare + finish ordering | Callers fencing separately |
-| `serverProcessShutdown` | The bound, forced exit, group signal | Other modules calling `process.exit` for shutdown |
-| `BaseServerManager.stopServer` | Signals and escalation | `ElectronApplication` signalling the server directly |
+| `AgentRunManager` stop-now methods | Fence, prepare, finish ordering | Callers fencing separately |
+| `serverProcessShutdown` | The bound, sweep, exit | Other modules calling `process.exit` for shutdown |
+| `utils/process-tree` | Process-table parsing and selection | Ad hoc `ps` parsing elsewhere |
+| `BaseServerManager.stopServer` | Signals, timeout, sweep | `ElectronApplication` signalling the server |
 
 ## Dependency Rules
-- `server-runtime.ts` → `server-process-shutdown.ts`. `server-process-shutdown.ts` depends only on Node `process`
-  and the logger.
-- `AgentRunManager` uses `AgentRun`'s public fence method (no internal access).
-- Electron: `ElectronApplication` → `BaseServerManager.stopServer` (unchanged API).
+- `server-runtime.ts` → `server-process-shutdown.ts` → `utils/process-tree.ts`.
+- `agy-stream-process.ts` → `utils/process-tree.ts`.
+- `utils/process-tree.ts` depends only on Node (`child_process`, `process`). It does not import agent-execution.
+- The Electron copy lives in `electron/server/` and is used only by `BaseServerManager`.
 
 ## Interface Boundary Mapping
-| Interface | Responsibility | Notes |
-| --- | --- | --- |
-| `AgentRunManager.terminateAgentRun(runId): Promise<boolean>` | Stop now: fence, prepare, finish | Signature unchanged; `false` also when the fence is not accepted |
-| `AgentRunManager.stopAllAgentRuns(): Promise<void>` | Shutdown: fence all, then finish each | Unchanged signature |
-| `registerServerProcessShutdown(app, { timeoutMs, groupGraceMs, ownsProcessGroup, exit, killGroup })` | Bounded exit | Injectable for tests |
-| `BaseServerManager.stopServer(): Promise<void>` | Bounded stop with group escalation | Unchanged signature |
+| Interface | Responsibility |
+| --- | --- |
+| `AgentRunManager.terminateAgentRun(runId): Promise<boolean>` | Stop now (`false` also when the fence is not accepted) |
+| `AgentRunManager.stopAllAgentRuns(): Promise<void>` | Fence all, then finish |
+| `registerServerProcessShutdown(app, deps)` | Bound plus sweep plus exit; timers, `process.kill`, the process table and exit are injectable |
+| `selectDescendantProcessGroups(rows, rootPid, excludedPgids)` / `selectDescendantPidsInGroup(rows, rootPid, pgid)` | Pure selection |
+| `BaseServerManager.stopServer(): Promise<void>` | Bounded stop plus sweep |
+| `ElectronApplication.stop(): Promise<void>` | Memoized single stop |
 
 ## Interface Boundary Check
-All boundaries are singular, with explicit identity. Low ambiguity risk.
+All boundaries are singular, with explicit identity. Low risk.
 
 ## Main Domain Subject Naming Check
-| Name | OK? |
-| --- | --- |
-| `server-process-shutdown.ts`, `SERVER_SHUTDOWN_TIMEOUT_MS`, `RUNTIME_PROCESS_GROUP_GRACE_MS` | Yes |
-| `AUTOBYTEUS_SERVER_PROCESS_GROUP_LEADER` | Yes |
-| `serverShutdownTimeoutMs` (desktop) | Yes |
+`server-process-shutdown.ts`, `utils/process-tree.ts`, `terminateServerProcessTree`, `SERVER_SHUTDOWN_TIMEOUT_MS`,
+`PROCESS_TREE_GRACE_MS`, `serverShutdownTimeoutMs`, `serverProcessTree.ts`: all OK.
 
 ## Existing Capability / Subsystem Reuse Check
 | Need | Existing | Decision |
 | --- | --- | --- |
-| Interrupt and cancel queued input on stop | Root-shutdown fence (`AgentRun`) | Reuse |
-| Runtime process cleanup | Each CLI's own SIGTERM cleanup (E3, E9) | Reuse via process group |
-| Per-runtime close-all registry | None (the Claude CLI is spawned inside the SDK) | Not created (E-A4) |
-| Desktop escalation | `stopServer` SIGTERM→SIGKILL | Extend (group, 15 s) |
+| Interrupt and cancel queued input | Fence | Reuse |
+| Process-table descendant selection | AGY `agy-background-process-groups.ts` | **Extend and move** to `utils/process-tree.ts` |
+| Per-runtime registry | — | Not created |
+| Desktop escalation | `stopServer` | Extend |
 
 ## Subsystem / Capability-Area Allocation
 | Area | Concern | Decision |
 | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/services` | Stop-now fence | Extend `agent-run-manager.ts` |
-| `autobyteus-server-ts/src` (process entry) | Bounded process shutdown | Create `server-process-shutdown.ts` |
-| `autobyteus-web/electron/server` | Spawn as group leader, bounded stop | Extend |
-| `autobyteus-web/electron/application` | Deferred quit | Extend |
+| `agent-execution/services` | Stop-now fence | Extend |
+| `src/` process entry | Bounded shutdown plus sweep | Create `server-process-shutdown.ts` |
+| `src/utils` | Process tree | Create (moved from AGY) |
+| `autobyteus-web/electron/server` | Bounded stop plus sweep | Extend; small copy of the selection |
+| `autobyteus-web/electron/application` | Memoized stop, deferred quit | Extend |
 
-## Draft File Responsibility Mapping / Final File Responsibility Mapping
+## Final File Responsibility Mapping
 | File | Change | Responsibility |
 | --- | --- | --- |
 | `autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts` | Modify | D1 |
-| `autobyteus-server-ts/src/server-process-shutdown.ts` | Add | D2 policy (≈ 60–80 lines) |
+| `autobyteus-server-ts/src/server-process-shutdown.ts` | Add | D2 |
 | `autobyteus-server-ts/src/server-runtime.ts` | Modify | Use D2 |
-| `autobyteus-web/electron/server/baseServerManager.ts` | Modify | D3 stop: 15 s and group escalation |
-| `autobyteus-web/electron/server/macOSServerManager.ts`, `linuxServerManager.ts` | Modify | `detached: true`; env flag |
-| `autobyteus-web/electron/server/windowsServerManager.ts` | Modify | 15 s bound (tree kill unchanged) |
-| `autobyteus-web/electron/application/electronApplication.ts` | Modify | Deferred `will-quit` |
-| Tests (see Guidance) | Add/Modify | — |
-| Docs (see Intended Change) | Modify | — |
-
-## Reusable Owned Structures Check
-N/A.
-
-## Shared Structure / Data Model Tightness Check
-N/A.
+| `autobyteus-server-ts/src/utils/process-tree.ts` | Add (moved) | Process table and selection |
+| `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-process-groups.ts` | Remove | Moved |
+| `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts` | Modify | Import the utility |
+| `autobyteus-web/electron/server/baseServerManager.ts` | Modify | 15 s plus sweep |
+| `autobyteus-web/electron/server/serverProcessTree.ts` | Add | Desktop copy of the selection |
+| `autobyteus-web/electron/server/windowsServerManager.ts` | Modify | 15 s |
+| `autobyteus-web/electron/application/electronApplication.ts` | Modify | Memoized stop, deferred `will-quit` |
+| Tests and docs | Add/Modify | See Guidance |
 
 ## Applied Patterns
-- A bounded state machine in `stopServer`.
-- A timeout race in the server shutdown.
+- A bounded state machine.
+- A timeout race.
+- Snapshot-then-signal process-tree teardown.
 
 ## Target Subsystem / Folder / File Mapping
-As in the file table. No new folders.
+As above. `src/utils` already exists.
 
 ## Folder Boundary Check
-No change.
+No new folders. `utils/process-tree.ts` is concern-agnostic (shared by two owners).
 
 ## Concrete Examples / Shape Guidance
 | Topic | Good | Avoided |
 | --- | --- | --- |
-| Stop-now | `const fenced = await run.fenceInputAndInterruptForRootShutdown(); if (!fenced.accepted) return false; const prepared = await this.prepareAgentRunTermination(run); return (await prepared.commit().finish()).accepted;` | Changing `AgentRunTermination.prepare` to interrupt (breaks the Team, Org and copy drain-and-cancel flows) |
-| Shutdown fence | `await Promise.allSettled(activeRuns.map(r => r.fenceInputAndInterruptForRootShutdown()))`, then the existing loop | Fencing inside the sequential loop (N × 5 s worst case) |
-| Group signal | Only when `AUTOBYTEUS_SERVER_PROCESS_GROUP_LEADER=1` | `process.kill(-process.pid)` unconditionally (could signal a parent shell's group) |
-| Deferred quit | `app.on('will-quit', e => { if (!this.serverStopped) { e.preventDefault(); void this.stop().finally(() => { this.serverStopped = true; app.quit(); }); } })` | `void this.stop()` with no `preventDefault` |
-| Grace before kill | Group SIGTERM, then 1.5 s, then group SIGKILL | An immediate group SIGKILL (Codex leaves orphaned commands on its own SIGKILL, E3) |
+| Stop-now | `const fenced = await run.fenceInputAndInterruptForRootShutdown(); if (!fenced.accepted) return false; …prepare → finish` | Changing `AgentRunTermination.prepare` |
+| Shutdown fence | `await Promise.allSettled(active.map(r => r.fenceInputAndInterruptForRootShutdown()))`, then the existing loop | Fencing inside the sequential loop |
+| Sweep targets | Record pids (root's group) and descendant-led pgids **before** signalling; SIGKILL only recorded survivors | Re-listing after SIGTERM (re-parented processes escape); signalling the root's own group |
+| Quit deferral | `stop() { return this.stopping ??= this.stopOnce(); }`; `will-quit: if (!this.stopped) { e.preventDefault(); this.stop().finally(() => { this.stopped = true; app.quit(); }); }` | `if (hasShutdownRun) return` with `.finally(app.quit)` (early quit on re-entry) |
+| Grace | SIGTERM, then ≤ 1.5 s, then SIGKILL | An immediate SIGKILL (Codex orphans its commands on its own SIGKILL, E3) |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 | Candidate | Decision |
 | --- | --- |
-| Keep the old 5 s single-PID SIGKILL alongside | Rejected |
-| An env flag to restore drain-on-terminate | Rejected |
-
-## Derived Layering
-N/A.
+| Keep `agy-background-process-groups.ts` re-exporting the utility | Rejected |
+| An env flag or switch to restore drain-on-terminate | Rejected |
+| Keep the 5 s single-PID SIGKILL | Rejected |
 
 ## Change / Refactor Sequence
-1. D1 plus unit tests (agent-run-manager: busy run → fence then finish; fence not accepted → `false`; stopAll fences
-   concurrently).
-2. D2 plus unit tests (fake `app.close` that never resolves → forced exit at 10 s; group-kill only with the flag;
-   ordering SIGTERM → grace → SIGKILL).
-3. D3 plus unit tests (`BaseServerManager.spec`: escalation at 15 s to the group; resolve on close; the spawn options
-   include `detached`; quit deferral with a fake `app`).
-4. Docs.
-5. Validation: live probe-style AC-001/002 on Codex and Claude, the AC-003 deterministic test, and the isolated
-   desktop AC-004/005/006 (API/E2E).
+1. Move the process-tree utility; re-point AGY; move its test and keep it green.
+2. D1 plus tests (fence before prepare; fence-not-accepted → `false`; concurrent stopAll fence; application-scope
+   manager covered by the same code).
+3. D2 plus tests:
+   - hung `app.close` → 10 s → sweep → exit(1);
+   - clean close → sweep with no targets → fast exit(0);
+   - target selection, including re-parenting and never the root group;
+   - ESRCH/EPERM skips.
+4. D3 plus tests:
+   - `BaseServerManager.spec`: 15 s → sweep; close resolves early;
+   - quit re-entry test: second `will-quit`, the 8 s timer, an updater-style `app.quit()` while stopping → no
+     early exit; one stop.
+5. Docs.
+6. Validation:
+   - live AC-001/002 on Codex and Claude plus a native AutoByteus run with a background process;
+   - AC-003 deterministic;
+   - isolated desktop AC-004/005/006;
+   - the updater install path under deferral (N-2).
 
 ## Key Tradeoffs
-- **Process-group signalling versus a per-runtime close-all registry.** The group reaches SDK-spawned CLIs that the
-  server cannot enumerate, and uses each CLI's proven SIGTERM cleanup. A registry would touch every runtime and still
-  miss the Claude SDK's child.
-- **The fence at two entry points versus changing `prepareTermination`.** This keeps the intended graceful drain for
-  Team, Org and copy flows.
-- **Detached spawn.** It makes the server a group leader so the desktop can kill the whole tree. On an app crash the
-  server already survives today (non-detached children are not killed on POSIX), so nothing regresses. DEC-004 covers
-  that case later.
+- **Process-tree sweep versus a per-runtime registry or env-flag group kill.** One mechanism covers SDK-spawned CLIs,
+  detached native shells, AGY daemons and the non-leader case. It reuses an existing tested selector. It only targets
+  descendants recorded at snapshot time.
+- **The sweep at every shutdown, not only the forced one.** Native background processes have no other stopper at
+  shutdown. With no targets the sweep costs one `ps` call.
+- **Desktop copy of the selection logic** (about 40 lines) versus a shared package. Electron main cannot import server
+  code; the duplication is tested on both sides.
 
 ## Risks
-- The fence's accepted-interrupt wait is unbounded if a runtime never ends its turn. D2 (10 s) and D3 (15 s) bound it.
-- A detached spawn must keep the stdout/stderr piping and the startup readiness detection; verify that.
-- A deferred quit must not hang auto-update installs or other `app.quit()` callers. They all pass through
-  `will-quit`, so verify with the update flow.
-- Native AutoByteus shell tool commands may run in their own process groups. Graceful terminate handles them; the
-  forced path may not, so live validation must check this (ASM-002).
+- `ps` missing in minimal Linux images: the sweep logs and skips. The container stop still kills the tree (E-A7).
+- PID reuse within 1.5 s is negligible; only recorded targets are signalled.
+- Updater `quitAndInstall` under deferral (N-2): verify on macOS and Windows.
+- Native background processes still outlive a run **Terminate** (FU-3, unchanged behavior).
 
 ## Guidance For Implementation
-- D1: add tests that assert ordering (fence before prepare) and the concurrency of stopAll fencing. Do not edit
-  `AgentRunTermination`.
-- D2: make the timers, `process.kill` and exit injectable. Keep the `once` signal handlers. The forced path must log
-  before exiting.
-- D3: `process.kill(-pid, sig)` throws when the group is gone; treat ESRCH as stopped. On Windows keep `taskkill /t`.
-- Validation evidence must include process-tree snapshots (PID/PPID/PGID) like E1–E9, showing no runtime CLI or tool
-  command left.
-- Record any runtime whose CLI survives the group SIGTERM as a Design Impact.
+- D1: do not edit `AgentRunTermination`.
+- D2: make everything injectable (timers, process table, kill, exit). Keep the `once` handlers. The desktop sends
+  SIGTERM only once (D3), so N-4 holds.
+- D3: re-entry tests are mandatory (AR-002). `stopServer` signals SIGTERM once.
+- Validation must include process-tree snapshots (PID/PPID/PGID) for Codex, Claude and native, showing zero survivors.
+- Record any surviving process class as a Design Impact.

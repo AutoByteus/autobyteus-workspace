@@ -42,3 +42,22 @@
 - Follow-up candidates recorded: `/Users/normy/autobyteus_org/solution-designer-reports/busy-quit-followup-candidates.md`
   (FU-1 = DEC-003, FU-2 = DEC-004).
 - Requirements: unchanged (SR-002).
+
+## SR-004 — 2026-10-05 — Design revision for ARCH-REV-001 (Fail, Design Impact) and requirement delta DEC-005
+- Trigger: ARCH-REV-001 Fail. AR-001 (Low: application callers unmapped); AR-002 (Medium, blocking: quit deferral not
+  keyed to one stop promise); AR-003 (Medium, blocking: REQ-003 coverage outside the server's group). Report:
+  `design-review-report.md`.
+- Evidence added: E-A8 to E-A12 (application callers; native foreground abort and uncalled background `stopAll`; AGY's
+  process-table selector; process-tree reachability; Electron re-entry).
+- Design changes:
+  - AR-001: application callers mapped (DS-001b; the application-scope `stopAll` in DS-002).
+  - AR-002: memoized single stop promise; corrected example and timer wording; re-entry tests; updater verification.
+  - AR-003: replaces the env-flag/process-group forced path with an always-run **process-tree sweep**, reusing AGY's
+    selector moved to `utils/process-tree.ts`. It covers native foreground and background processes, AGY daemons and
+    the non-leader case. The desktop sweeps a wedged server the same way. Detached spawn and the env flag are dropped.
+  - Residuals: Windows server-side sweep; native background processes outliving **Terminate** (FU-3, unchanged
+    behavior).
+- Requirement delta: **DEC-005** (application-initiated terminate also interrupts; proposed AC-008). The requirements
+  status is Ready for Approval for this delta; REQ-001 to REQ-005 remain approved (SR-002).
+- Classification: Large / High (unchanged). Routing: held for the user's DEC-005 decision, then
+  `/architecture_reviewer`.

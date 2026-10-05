@@ -141,6 +141,53 @@
   period. Terminal Ctrl-C sends SIGINT to the whole foreground process group. Both already reach the runtime CLIs.
   The orphaning in this ticket is specific to the server being a child of the Electron app.
 
+## ARCH-REV-001 follow-up investigation (SR-004, 2026-10-05)
+- **E-A8, application callers of the stop-now owners (AR-001).**
+  - `application-orchestration/services/application-orchestration-host-service.ts:340` (`terminateRunBinding`,
+    reached from the application engine capability handler) → `agentExecution.terminateAgentRun`.
+  - `application-platform/execution/application-execution-scope.ts:47` (SDK `terminateAgentRun`) →
+    `kernel.agentRunService.terminateAgentRun`.
+  - Both reach `AgentRunManager.terminateAgentRun`, so D1 changes their behavior too: an application terminating a
+    busy run would interrupt its turn instead of waiting.
+  - `application-platform/execution/application-execution-shutdown-coordinator.ts:30` → the application-scope
+    `stopAllAgentRuns` during server close (`application-platform-lifecycle.ts:178`, `build-studio-server.ts:284`). This
+    is part of SCN-002 and already in scope.
+- **E-A9, native AutoByteus commands (AR-003 a, b).**
+  - Foreground: `autobyteus-ts/src/tools/terminal/command-execution/shell-command-executor.ts:36-41` spawns
+    `detached: true` (its own group). It stops that group on `options.signal` abort (`abortHandler` →
+    `stopActiveProcess`) or on timeout.
+  - The native turn's `AbortSignal` (`agent/interruption/turn-execution-scope.ts`) is passed to tools
+    (`agent/loop/tool-phase.ts:159,222`) and to `run_bash` (`tools/terminal/tools/run-bash.ts:23-26`).
+  - **(a) answered:** a native interrupt aborts the running foreground command, so D1 covers native foreground
+    commands.
+  - Background: `BackgroundProcessManager` (`background-process-manager.ts:78`, spawn `detached: true` at `:233-236`)
+    is created **per agent context** (`background-process-context.ts`: stored as `_backgroundProcessManager` on the
+    agent context).
+  - Its `stopAll()` (`:220`) has **no caller**. Background processes outlive run Terminate and server shutdown on every
+    path today.
+- **E-A10, AGY (AR-003).**
+  - `agy-background-process-groups.ts` already reads the POSIX process table (`ps -A -o pid=,ppid=,pgid=`). It selects
+    process groups **led by a live descendant** of a root pid, excluding the root's and the server's groups, and
+    signals them independently, skipping ESRCH/EPERM.
+  - AGY's owner uses it while AGY is alive, because AGY daemons survive a SIGTERM to AGY alone.
+  - Windows is not covered (`[]`). This is an existing, tested precedent for process-tree sweeps
+    (`agy-background-process-groups.test.ts`).
+- **E-A11, process-tree reachability.**
+  - Every process the server spawns is a descendant of the server pid until its parent dies: runtime CLIs (codex,
+    claude, acp, agy, grok), native foreground and background shells, and those CLIs' tool commands and daemons.
+  - Runtime CLIs share the server's process group. Native shells, Codex and Claude tool commands, and AGY daemons lead
+    their own groups (E1 tree; E9; E-A9; E-A10).
+  - A sweep that records (a) descendant pids in the server's own group and (b) groups led by descendants, **before**
+    signalling, survives re-parenting during teardown: groups are signalled as groups, and leaders recorded up front.
+  - It never signals the server's own group, so it is safe whether or not the server leads its group (dev, Docker,
+    terminal or desktop).
+  - With the sweep, the env flag, detached spawn and the leader-only group kill of SR-003 become unnecessary.
+- **E-A12, Electron re-entry (AR-002).**
+  - `ElectronApplication.stop()` returns immediately on re-entry (`hasShutdownRun`, `electronApplication.ts:392`), so
+    a `.finally(app.quit)` keyed to a second call would quit early.
+  - The stop must be one memoized promise.
+  - Updater: `appUpdater.ts:252` `autoUpdater.quitAndInstall(false, true)` (to verify under deferral, N-2).
+
 ## Supplement Inventory
 | Supplement | Purpose | Status |
 | --- | --- | --- |
