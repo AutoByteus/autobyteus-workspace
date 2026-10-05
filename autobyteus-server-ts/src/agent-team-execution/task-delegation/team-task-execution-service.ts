@@ -1,5 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { TaskExecutionReleaseOutcome } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { TaskLifetimeReleaseReport } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { RootTaskExecutionLifecycle, type TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type {
@@ -17,7 +17,7 @@ export class TeamTaskExecutionService {
   private readonly lifecycle: RootTaskExecutionLifecycle<TeamDelegationPlacement>;
 
   constructor(options: TeamTaskExecutionServiceOptions) {
-    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, lifetimePort: options.lifetimePort });
+    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskLifetimes: options.taskLifetimes });
   }
 
   assertInputAllowed(id: string): void { this.lifecycle.assertInputAllowed(id); }
@@ -27,8 +27,7 @@ export class TeamTaskExecutionService {
     return this.lifecycle.ensureLifetimeHelper(context, address, placement);
   }
   helperPlacement(id: string, address: string) { return this.lifecycle.helperPlacement(id, address); }
-  recordMessageAccepted(id: string): Promise<void> { return this.lifecycle.recordMessageAccepted(id); }
-  releaseTaskLifetime(id: string, refs: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionReleaseOutcome[]> {
+  releaseTaskLifetime(id: string, refs: readonly TaskExecutionReference[]): Promise<TaskLifetimeReleaseReport> {
     return this.lifecycle.releaseTaskLifetime(id, refs);
   }
 
@@ -49,8 +48,8 @@ export class TeamTaskExecutionService {
     return this.lifecycle.delegate(context, input, placement);
   }
 
-  withLiveLease(id: string, operation: () => Promise<AgentOperationResult>, recordMessage = true): Promise<AgentOperationResult> {
-    return this.lifecycle.withLiveLease(id, operation, recordMessage);
+  withLiveLease(id: string, operation: () => Promise<AgentOperationResult>, options: Readonly<{ recordAcceptance?: boolean }> = {}): Promise<AgentOperationResult> {
+    return this.lifecycle.withLiveLease(id, operation, options);
   }
 
   acquireLiveLease(agentRunId: string): Promise<TaskExecutionLiveLease> {

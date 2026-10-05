@@ -15,6 +15,7 @@ import { TeamTaskExecutionAdapter } from '../../../src/agent-team-execution/task
 import { AgentOrgTaskExecutionAdapter } from '../../../src/agent-org-execution/services/agent-org-task-execution-adapter.js';
 import { StandaloneRootTaskExecutionAdapter } from '../../../src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.js';
 import { RootTaskLifetimeScope } from '../../../src/agent-collaboration/execution/task/root-task-lifetime-scope.js';
+import { TaskLifetimeGate } from '../../../src/agent-collaboration/execution/task/task-lifetime-gate.js';
 const now = '2026-10-03T00:00:00.000Z';
 const launch = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: 'test', llmConfig: null, autoExecuteTools: true, workspaceRootPath: null };
 const stamp = { lifetimeId: 'A', purpose: 'assignment' };
@@ -109,15 +110,16 @@ it('awaits independent private and published proof without letting one failed ta
   const physical = vi.fn(async (ref: { agentRunId: string }) => { if (ref.agentRunId === 'owned-A') await pending; return { accepted: true }; });
   const adapter = { registeredActivations: () => controls, ownedExecutions: () => controls.map(c => c.plan.link.execution),
     linkForExecution: (ref: unknown) => ref, cancelOwnedExecution: vi.fn(), releaseOwnedExecution: physical };
-  const scope = new RootTaskLifetimeScope(adapter as never, { assertClosed: async () => undefined } as never);
+  const port = { readLifetimeClosure: async () => 'closed' as const };
+  const scope = new RootTaskLifetimeScope(adapter as never, { port, gate: new TaskLifetimeGate(port) } as never);
   let finished = false;
   const result = scope.release('A', controls.map(c => c.plan.link.execution)).then(r => { finished = true; return r; });
   for (let n = 0; n < 12; n++) await Promise.resolve();
   expect(finished).toBe(false); expect(physical).toHaveBeenCalledTimes(2);
   expect(controls.every(c => c.operation.cancel.mock.calls.length === 1)).toBe(true);
   resolve();
-  expect(await result).toEqual([expect.objectContaining({ execution: { agentRunId: 'owned-A' }, cleanup: 'failed' }),
-    { execution: { agentRunId: 'helper-A' }, cleanup: 'released' }]);
+  expect(await result).toEqual({ unrequested: [], requested: [expect.objectContaining({ execution: { agentRunId: 'owned-A' }, cleanup: 'failed' }),
+    { execution: { agentRunId: 'helper-A' }, cleanup: 'released' }] });
 });
 
 it('retains verified quiet Team cleanup authority across directory eviction, then replaces it only on a new publication', async () => {
@@ -139,4 +141,45 @@ it('retains verified quiet Team cleanup authority across directory eviction, the
   directory.reserveTaskSubtree([replacement as never]).commit();
   expect(directory.getManaged('quiet-team')).toBe(replacement);
   expect(replacement.inheritReleasedTaskExecutionProof).toHaveBeenCalledTimes(2);
+});
+
+it('fences owned input synchronously in every root through the one shared gate, with no per-root state (SR-021)', async () => {
+  let closure: 'open' | 'closed' = 'open';
+  const port = { readLifetimeClosure: vi.fn(async () => closure) };
+  const gate = new TaskLifetimeGate(port);
+  const rootAdapter = (owned: string) => ({ lifetimeForAgent: (id: string) => id === owned ? stamp : undefined });
+  const first = new RootTaskLifetimeScope(rootAdapter('owned-in-first') as never, { port, gate } as never);
+  const second = new RootTaskLifetimeScope(rootAdapter('helper-in-second') as never, { port, gate } as never);
+  expect(() => second.assertInputAllowed('helper-in-second')).toThrow(expect.objectContaining({ code: 'TASK_LIFETIME_UNAVAILABLE' }));
+  await first.acquire(stamp.lifetimeId);
+  expect(() => first.assertInputAllowed('owned-in-first')).not.toThrow();
+  expect(() => second.assertInputAllowed('helper-in-second')).not.toThrow();
+  closure = 'closed'; gate.onLifetimesClosed([stamp.lifetimeId]);
+  for (const [scope, agent] of [[first, 'owned-in-first'], [second, 'helper-in-second']] as const) {
+    expect(() => scope.assertInputAllowed(agent)).toThrow(expect.objectContaining({ code: 'TASK_LIFETIME_CLOSED' }));
+    expect(() => scope.assertInputAllowed('unowned')).not.toThrow();
+  }
+  expect(Object.keys(first)).not.toEqual(expect.arrayContaining(['closed', 'fences']));
+  const unbound = new RootTaskLifetimeScope(rootAdapter('owned-in-first') as never);
+  expect(() => unbound.assertInputAllowed('owned-in-first')).toThrow(expect.objectContaining({ code: 'TASK_LIFETIME_UNAVAILABLE' }));
+  expect(() => unbound.assertInputAllowed('unowned')).not.toThrow();
+});
+
+it('reports stamped executions outside the request as unrequested and keeps unreserved attempts unreported (SR-021 F07)', async () => {
+  const attempt = { plan: { taskLifetime: stamp, link: { execution: { agentRunId: 'unreserved-attempt' } } },
+    operation: { cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })) } };
+  const stamped = [{ agentRunId: 'linked' }, { agentRunId: 'stamped-only' }];
+  const adapter = { registeredActivations: () => [attempt], ownedExecutions: () => stamped,
+    linkForExecution: (ref: { agentRunId: string }) => (ref.agentRunId === 'unreserved-attempt' ? null : ref),
+    cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: true })) };
+  const port = { readLifetimeClosure: async () => 'closed' as const };
+  const scope = new RootTaskLifetimeScope(adapter as never, { port, gate: new TaskLifetimeGate(port) } as never);
+  expect(await scope.release('A', [{ agentRunId: 'linked' }])).toEqual({
+    requested: [{ execution: { agentRunId: 'linked' }, cleanup: 'released' }],
+    unrequested: [{ execution: { agentRunId: 'stamped-only' }, cleanup: 'released' }],
+  });
+  expect(attempt.operation.cancel).toHaveBeenCalledOnce(); expect(attempt.operation.release).toHaveBeenCalledOnce();
+  const open = { readLifetimeClosure: async () => 'open' as const };
+  await expect(new RootTaskLifetimeScope(adapter as never, { port: open, gate: new TaskLifetimeGate(open) } as never).release('A', []))
+    .rejects.toMatchObject({ code: 'TASK_LIFETIME_INVALID' });
 });

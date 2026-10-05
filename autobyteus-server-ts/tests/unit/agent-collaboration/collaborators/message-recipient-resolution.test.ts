@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   messagePlacement,
-  resolveInRunRecipient,
   resolveMessageRecipient,
   type MessageRecipientIndexPort,
   type SenderTeamInstance,
@@ -39,16 +38,19 @@ const port = (overrides: Partial<MessageRecipientIndexPort> = {}): MessageRecipi
 };
 
 describe("MessageRecipientResolution (DS-002)", () => {
-  it("resolves inside the sender's own instance first, so parallel copies never cross (REQ-007)", () => {
-    expect(resolveInRunRecipient(port(), "copy-1-lead", a("/team/writer")))
-      .toMatchObject({ kind: "placement", placement: { receiver: { agentRunId: "copy-1-writer" } } });
-    expect(resolveInRunRecipient(port(), "copy-1-lead", a("/team")))
-      .toMatchObject({ kind: "placement", placement: { kind: "agent_team", receiver: { agentRunId: "copy-1-lead" } } });
+  const resolve = (sender: string, address: string) => resolveMessageRecipient({
+    port: () => port(), senderAgentRunId: sender, address: a(address), catalog: { bringIn: vi.fn() }, notFoundMessage: () => "nf",
+  });
+
+  it("resolves inside the sender's own instance first, so parallel copies never cross (REQ-007)", async () => {
+    await expect(resolve("copy-1-lead", "/team/writer"))
+      .resolves.toMatchObject({ resolved: true, placement: { receiver: { agentRunId: "copy-1-writer" } } });
+    await expect(resolve("copy-1-lead", "/team"))
+      .resolves.toMatchObject({ resolved: true, placement: { kind: "agent_team", receiver: { agentRunId: "copy-1-lead" } } });
   });
 
   it("never falls through inside the instance prefix (AR-003)", async () => {
     // copy-2 has no writer: the run-wide `/team/writer` must not be reached.
-    expect(resolveInRunRecipient(port(), "copy-2-lead", a("/team/writer"))).toMatchObject({ kind: "instance_miss" });
     const catalog = { bringIn: vi.fn() };
     await expect(resolveMessageRecipient({
       port: () => port(), senderAgentRunId: "copy-2-lead", address: a("/team/writer"), catalog, notFoundMessage: () => "nf",
@@ -56,11 +58,11 @@ describe("MessageRecipientResolution (DS-002)", () => {
     expect(catalog.bringIn).not.toHaveBeenCalled();
   });
 
-  it("resolves addresses outside every instance run-wide", () => {
-    expect(resolveInRunRecipient(port(), "copy-1-lead", a("/pm")))
-      .toMatchObject({ kind: "placement", placement: { receiver: { agentRunId: "wide-pm" } } });
-    expect(resolveInRunRecipient(port(), "pm", a("/team/writer")))
-      .toMatchObject({ kind: "placement", placement: { receiver: { agentRunId: "wide-team-writer" } } });
+  it("resolves addresses outside every instance run-wide", async () => {
+    await expect(resolve("copy-1-lead", "/pm"))
+      .resolves.toMatchObject({ resolved: true, placement: { receiver: { agentRunId: "wide-pm" } } });
+    await expect(resolve("pm", "/team/writer"))
+      .resolves.toMatchObject({ resolved: true, placement: { receiver: { agentRunId: "wide-team-writer" } } });
   });
 
   it("brings in a catalog definition, then resolves the address to the new instance (REQ-004)", async () => {

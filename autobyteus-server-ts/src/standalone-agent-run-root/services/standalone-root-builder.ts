@@ -1,5 +1,4 @@
-import { getProjectTaskService } from "../../projects/services/project-task-service.js";
-import type { TaskExecutionLifetimePort } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { TaskLifetimeRuntime } from "../../agent-collaboration/execution/task/task-lifetime-gate.js";
 import { resolveMemberCollaborationScope, type MemberHostTeam } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
@@ -40,7 +39,7 @@ import { StandaloneRootPersistenceCoordinator } from "./standalone-root-persiste
 export type StandaloneRootBuilderDependencies = Readonly<{
   flatTeamExecutionFactory: FlatTeamExecutionFactory;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  lifetimePort?: TaskExecutionLifetimePort;
+  taskLifetimes?: TaskLifetimeRuntime;
   teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
   packageStore: StandaloneRootPackageStore;
   agentRunManager?: AgentRunManager;
@@ -132,7 +131,7 @@ export class StandaloneRootBuilder {
       persistence,
       publisher: new RootEventPublisher<StandaloneRootEvent>(),
       taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
-      lifetimePort: this.dependencies.lifetimePort ?? getProjectTaskService(),
+      taskLifetimes: this.dependencies.taskLifetimes,
       memoryLocator: this.dependencies.memoryLocator,
       activityInspector: this.dependencies.activityInspector,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,

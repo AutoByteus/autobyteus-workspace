@@ -8,6 +8,7 @@ import { ProjectTaskService } from '../../../src/projects/services/project-task-
 import { ProjectTaskContextStore } from '../../../src/projects/context/project-task-context-store.js';
 import { ProjectTaskContextLayout } from '../../../src/projects/context/project-task-context-layout.js';
 import { RootTaskExecutionLifecycle } from '../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js';
+import { TaskLifetimeGate } from '../../../src/agent-collaboration/execution/task/task-lifetime-gate.js';
 import { createRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import type { RootTaskExecutionAdapter, TaskExecutionActivationPlan, TaskExecutionActivationOperation } from '../../../src/agent-collaboration/execution/task/root-task-execution-adapter.js';
 const dirs: string[] = [];
@@ -53,12 +54,18 @@ async function fixture(kind: RootKind) {
     restoreChain: async () => undefined, tryShutDownIfQuiet: async () => false,
   };
   let lifecycle!: RootTaskExecutionLifecycle<string>;
-  const tasks = new ProjectTaskService({ store, contextStore, requestRuntimeRelease: async (tag, id, refs) => {
-    expect(tag).toEqual(root); return lifecycle.releaseTaskLifetime(id, refs);
-  } });
-  lifecycle = new RootTaskExecutionLifecycle(adapter, { lifetimePort: tasks });
+  let gate!: TaskLifetimeGate;
+  const gateAtRelease: string[] = [];
+  const tasks = new ProjectTaskService({ store, contextStore, closureListener: { onLifetimesClosed: ids => gate.onLifetimesClosed(ids) },
+    requestRuntimeRelease: (tag, id, refs) => {
+      expect(tag).toEqual(root);
+      try { gate.assertOpen(id); gateAtRelease.push('open'); } catch (error) { gateAtRelease.push((error as { code: string }).code); }
+      return lifecycle.releaseTaskLifetime(id, refs);
+    } });
+  gate = new TaskLifetimeGate(tasks);
+  lifecycle = new RootTaskExecutionLifecycle(adapter, { taskLifetimes: { port: tasks, gate } });
   const task = await tasks.createTask({ projectId, description: 'saved authoritative packet' });
-  return { store, tasks, adapter, lifecycle, operation, projectId, task,
+  return { store, tasks, gate, gateAtRelease, adapter, lifecycle, operation, projectId, task,
     waitPlan: () => { waitPlan = true; }, waitPrepare: () => { waitPrepare = true; }, waitSeed: () => { waitSeed = true; },
     planned, preparation, seed, dispatch: () => lifecycle.delegate({ identity }, { recipient_address: '/worker', task_id: task.taskId }, 'placement') };
 }
@@ -73,7 +80,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('neutral lifetime d
     expect(h.adapter.beginActivation).not.toHaveBeenCalled(); expect(h.operation.prepare).not.toHaveBeenCalled();
     expect((await h.store.readState()).taskLifetimes[0]!.executions).toEqual([]);
   });
-  it('DONE after reservation cancels before drain, retains late preparation, and never commits/seeds', async () => {
+  it('DONE after reservation cancels before release, retains late preparation, and never commits/seeds', async () => {
     const h = await fixture(kind); h.waitPrepare(); const dispatch = h.dispatch();
     await vi.waitFor(() => expect(h.operation.prepare).toHaveBeenCalledOnce());
     expect((await h.store.readState()).taskLifetimes[0]!.executions[0]).toMatchObject({ dispatch: 'reserved', execution: { teamRunId: 'copy-team' }, ingressAgentRunId: 'copy-coordinator' });
@@ -84,6 +91,16 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('neutral lifetime d
     await h.tasks.updateTask({ projectId: h.projectId, taskId: h.task.taskId, status: 'DONE' }); await h.tasks.drainRuntimeReleases();
     expect((await h.store.readState()).taskLifetimes[0]).toMatchObject({ completedAt: expect.any(String), executions: [expect.objectContaining({ dispatch: 'failed', cleanup: 'released' })] });
     expect(h.operation.prepare).toHaveBeenCalledOnce();
+  });
+  it('DONE commit latches the shared gate synchronously, before the release request runs', async () => {
+    const h = await fixture(kind); h.waitSeed(); const dispatch = h.dispatch();
+    await vi.waitFor(async () => expect((await h.store.readState()).taskLifetimes[0]!.executions[0]!.dispatch).toBe('admitted'));
+    const lifetimeId = (await h.store.readState()).taskLifetimes[0]!.lifetimeId;
+    expect(() => h.gate.assertOpen(lifetimeId)).not.toThrow();
+    await h.tasks.updateTask({ projectId: h.projectId, taskId: h.task.taskId, status: 'DONE' });
+    expect(() => h.gate.assertOpen(lifetimeId)).toThrow(expect.objectContaining({ code: 'TASK_LIFETIME_CLOSED' }));
+    expect(h.gateAtRelease).toEqual(['TASK_LIFETIME_CLOSED']);
+    await h.tasks.drainRuntimeReleases(); h.seed.resolve(); await dispatch;
   });
   it('DONE after durable admission fences deferred awaited seed acceptance; no reported delivery', async () => {
     const h = await fixture(kind); h.waitSeed(); const dispatch = h.dispatch();

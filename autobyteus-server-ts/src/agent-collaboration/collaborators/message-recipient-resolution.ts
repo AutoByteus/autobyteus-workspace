@@ -35,34 +35,8 @@ export interface MessageRecipientIndexPort {
   getMessagePlacement(address: AgentTeamAddress): CollaborationMessagePlacement | null;
 }
 
-export type InRunRecipientResolution =
-  | Readonly<{ kind: "placement"; placement: CollaborationMessagePlacement }>
-  | Readonly<{ kind: "instance_miss"; instance: SenderTeamInstance }>
-  | Readonly<{ kind: "run_miss" }>;
-
 const isWithin = (address: AgentTeamAddress, instance: SenderTeamInstance): boolean =>
   address === instance.address || address.startsWith(`${instance.address}/`);
-
-/**
- * Steps 1–2 of DS-002. (1) The sender's own team instances, deepest first: an address inside
- * an instance resolves only within that instance (AR-003, no fall-through), so parallel copies
- * never cross. (2) Run-wide. Pure.
- */
-export const resolveInRunRecipient = (
-  port: MessageRecipientIndexPort,
-  senderAgentRunId: string,
-  address: AgentTeamAddress,
-): InRunRecipientResolution => {
-  for (const instance of port.teamInstancesOf(senderAgentRunId)) {
-    if (!isWithin(address, instance)) continue;
-    const placement = port.memberOfInstance(instance.teamRunId, address);
-    return placement
-      ? Object.freeze({ kind: "placement", placement })
-      : Object.freeze({ kind: "instance_miss", instance });
-  }
-  const placement = port.getMessagePlacement(address);
-  return placement ? Object.freeze({ kind: "placement", placement }) : Object.freeze({ kind: "run_miss" });
-};
 
 /** Step 3: the root's catalog bring-in, under the gate the caller already holds. */
 export type CatalogBringInPort = Readonly<{
@@ -79,8 +53,12 @@ export type MessageRecipientResult =
   | Readonly<{ resolved: false; code: "COLLABORATOR_ADD_FAILED"; message: string }>;
 
 /**
- * `send_message_to(address)` resolution (DS-002), called inside the root gate: steps 1–2, then
- * (3) a listed catalog definition that is not in the run is brought in with the same
+ * The one `send_message_to(address)` resolution (DS-002), called inside the root gate.
+ * (1) The sender's own team instances, deepest first: an address inside an instance resolves
+ * only within that instance (AR-003, no fall-through), so parallel copies never cross.
+ * (2) For a Task-owned sender, its lifetime's helper at the address. (3) Run-wide, except
+ * another Task's owned execution. (4) A Task-owned sender brings in a lifetime helper;
+ * otherwise a listed catalog definition that is not in the run is brought in with the same
  * admission as `@` and the address resolves again to the new instance. A failed add returns
  * `COLLABORATOR_ADD_FAILED` (nothing was added); any other miss is the normal not found.
  * Bring-ins are serialized per root, so of two concurrent first messages the second finds the

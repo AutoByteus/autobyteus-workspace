@@ -19,6 +19,8 @@ import { getTeamRunService } from "../../../src/agent-team-execution/services/te
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
+import { TaskLifetimeGate } from "../../../src/agent-collaboration/execution/task/task-lifetime-gate.js";
+import type { TaskExecutionLifetimePort } from "../../../src/agent-collaboration/execution/task/task-execution-lifetime.js";
 
 const createAuthority = (): ScopedAgentToolMcpSessionAuthority => ({
   scopeIdentity: "general-process",
@@ -53,6 +55,10 @@ const createSupervisorInput = () => {
     agentProviderFactoryBuilder: createProviderBuilder(),
     agentToolMcpSessionAuthority: createAuthority(),
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
+    taskLifetimes: (() => {
+      const port = { readLifetimeClosure: vi.fn(async () => "open" as const) } as unknown as TaskExecutionLifetimePort;
+      return Object.freeze({ port, gate: new TaskLifetimeGate(port) });
+    })(),
   };
 };
 
@@ -69,6 +75,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     const supervisor = new GeneralProcessRunSupervisor(input);
     expect(initializeAgent).toHaveBeenCalledOnce();
     expect(initializeTeam).toHaveBeenCalledOnce();
+    expect(initializeTeam).toHaveBeenCalledWith(expect.objectContaining({ taskLifetimes: input.taskLifetimes }));
     expect(initializeOrg).toHaveBeenCalledOnce();
     expect(getAgentRunService()).toBe(supervisor.agentRunService);
     expect(getTeamRunService()).toBe(supervisor.teamRunService);

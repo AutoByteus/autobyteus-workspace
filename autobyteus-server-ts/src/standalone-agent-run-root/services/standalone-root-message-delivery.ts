@@ -200,15 +200,16 @@ export class StandaloneRootMessageDelivery {
       : this.options.teams.require(agent.host.hostRunId).executeDirectAgentCommand(agentRunId, command);
     if (command.kind !== "post_message") {
       return this.isLiveChild(agentRunId)
-        ? this.options.taskExecutions.withLiveLease(agentRunId, execute, false)
+        ? this.options.taskExecutions.withLiveLease(agentRunId, execute)
         : Promise.resolve({ accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in Agent root '${this.options.hostRunId}'.` });
     }
     // Operator input wakes a shut-down child exactly like send_message_to.
-    return this.withLiveLease(agentRunId, execute);
+    return this.withReceiverLease(agentRunId, execute);
   }
 
-  withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
-    return this.options.taskExecutions.withLiveLease(agentRunId, operation);
+  /** Target lease that records the receiver's first accepted message or operator post. */
+  withReceiverLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    return this.options.taskExecutions.withLiveLease(agentRunId, operation, { recordAcceptance: true });
   }
 
   isLiveChild(agentRunId: string): boolean {
@@ -230,7 +231,7 @@ export class StandaloneRootMessageDelivery {
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
     });
-    if (receiver.executionKind !== "host") return this.withLiveLease(receiver.agentRunId, deliver);
+    if (receiver.executionKind !== "host") return this.withReceiverLease(receiver.agentRunId, deliver);
     try {
       await this.options.host.ensureReady();
     } catch (error) {

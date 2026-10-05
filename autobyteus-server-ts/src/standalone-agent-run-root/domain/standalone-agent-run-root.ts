@@ -1,5 +1,6 @@
 import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
-import type { TaskExecutionLifetimePort, TaskExecutionReleaseOutcome } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { TaskLifetimeReleaseReport } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { TaskLifetimeRuntime } from "../../agent-collaboration/execution/task/task-lifetime-gate.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { collectStandaloneRootInputSnapshots } from "../services/standalone-root-input-snapshot.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
@@ -95,7 +96,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     persistence: StandaloneRootPersistenceCoordinator;
     publisher: RootEventPublisher<StandaloneRootEvent>;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-    lifetimePort?: TaskExecutionLifetimePort;
+    taskLifetimes?: TaskLifetimeRuntime;
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
@@ -147,7 +148,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    }), { ...options.taskExecutionIdleShutdown, lifetimePort: options.lifetimePort });
+    }), { ...options.taskExecutionIdleShutdown, taskLifetimes: options.taskLifetimes });
     const recipients: StandaloneRootRecipientResolver = new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
       taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
         resolvePlacement: address => recipients.resolveDelegationPlacement(sender, address),
@@ -186,7 +187,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.assertAdmitting();
     this.taskExecutions.assertInputAllowed(agentRunId);
   }
-  releaseTaskLifetime(id: string, executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionReleaseOutcome[]> {
+  releaseTaskLifetime(id: string, executions: readonly TaskExecutionReference[]): Promise<TaskLifetimeReleaseReport> {
     return this.taskExecutions.releaseTaskLifetime(id, executions);
   }
 

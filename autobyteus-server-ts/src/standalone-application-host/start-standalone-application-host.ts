@@ -61,6 +61,9 @@ import { getLlmProviderService } from "../llm-management/llm-providers/services/
 import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
+import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import type { TaskLifetimeRuntime } from "../agent-collaboration/execution/task/task-lifetime-gate.js";
+import { composeProjectTaskLifetimes, releaseProjectTaskLifetimes } from "../compositions/project-task-lifetime-composition.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -226,6 +229,7 @@ export const startStandaloneApplicationHost = async (
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor:
     GeneralProcessRunSupervisor | null = null;
+  let taskLifetimes: TaskLifetimeRuntime | null = null;
   let hostDefinitionServices: HostDefinitionServices | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
@@ -263,6 +267,7 @@ export const startStandaloneApplicationHost = async (
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
+    taskLifetimes = composeProjectTaskLifetimes({ activeRootDirectory: getActiveCollaborationRootDirectory() });
     generalProcessRunSupervisor =
       createGeneralProcessRunSupervisor({
         memoryDir: processResources.appConfig.getMemoryDir(),
@@ -275,6 +280,7 @@ export const startStandaloneApplicationHost = async (
         agentProviderFactoryBuilder,
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
+        taskLifetimes,
       });
     generalProcessAuthority = null;
     const applicationRuntime = buildApplicationPlatformRuntime({
@@ -316,6 +322,7 @@ export const startStandaloneApplicationHost = async (
           try {
             await generalProcessRunSupervisor!.close();
           } finally {
+            releaseProjectTaskLifetimes(taskLifetimes!);
             try {
               await agentToolsMcpHost!.close();
             } finally {
@@ -350,6 +357,7 @@ export const startStandaloneApplicationHost = async (
         try {
           await generalProcessRunSupervisor?.close();
         } finally {
+          if (taskLifetimes) releaseProjectTaskLifetimes(taskLifetimes);
           try {
             generalProcessAuthority?.close();
           } finally {

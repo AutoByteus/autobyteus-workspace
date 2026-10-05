@@ -3,7 +3,7 @@ import type { RootTaskExecutionCommandQueue } from "./root-task-execution-comman
 import type { TaskExecutionLifetimePort, TaskLifetimeAdmission } from "./task-execution-lifetime.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDispatchIndeterminateError, type TaskDelegationContext, type DelegateTaskResult } from "./task-delegation-command.js";
 
-/** One staged dispatch, attached to the root lifecycle's queue and business admission. */
+/** One staged dispatch, attached to the root lifecycle's queue and confirmed-open lifetime admission. */
 export async function dispatchTaskCopy<T>(input: {
   adapter: RootTaskExecutionAdapter<T>; queue: RootTaskExecutionCommandQueue;
   context: TaskDelegationContext; placement: T; admission?: TaskLifetimeAdmission;
@@ -59,13 +59,13 @@ export async function dispatchTaskCopy<T>(input: {
     if (reserved && plan && input.taskLifetime) {
       try {
         if (!accepted) await input.lifetimePort!.recordDispatch(input.taskLifetime.lifetimeId, plan.link, "failed", { code: "TASK_DISPATCH_FAILED", message: errorMessage(error) });
-        await input.lifetimePort!.recordCleanup(input.taskLifetime.lifetimeId, plan.link.root, [{ execution: plan.link.execution,
-          cleanup, ...(cleanup === "released" ? {} : { error: { code: "TASK_RELEASE_UNCONFIRMED", message: "Exact cleanup remains pending or failed; retry DONE." } }) }]);
+        await input.lifetimePort!.recordCleanup(input.taskLifetime.lifetimeId, plan.link.root, { unrequested: [], requested: [{ execution: plan.link.execution,
+          cleanup, ...(cleanup === "released" ? {} : { error: { code: "TASK_RELEASE_UNCONFIRMED", message: "Exact cleanup remains pending or failed; retry DONE." } }) }] });
       } catch (recordError) { throw new TaskDispatchIndeterminateError(plan.link.execution, new AggregateError([error, recordError])); }
     }
     if (error instanceof RootTaskPersistenceFinalizationIndeterminateError) throw error;
     if (plan && (accepted || (committed && cleanup !== "released"))) throw new TaskDispatchIndeterminateError(plan.link.execution, error);
     return { target_agent_run_id: null, message: errorMessage(error) };
-  } finally { input.admission?.release(); }
+  }
 }
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);

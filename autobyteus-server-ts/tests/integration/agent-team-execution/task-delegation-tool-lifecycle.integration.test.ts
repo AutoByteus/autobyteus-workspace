@@ -52,6 +52,7 @@ import type { RunModelSelectionValidator } from "../../../src/llm-management/ser
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
+import { TaskLifetimeGate } from "../../../src/agent-collaboration/execution/task/task-lifetime-gate.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectTaskContextLayout } from "../../../src/projects/context/project-task-context-layout.js";
 import { buildDeliveryEndpointForParticipant } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
@@ -288,12 +289,15 @@ const createHarness = async (linked = false) => {
   let root: RootTeamRun | null = null;
   const projectStore = new ProjectStore({ getAppDataDir: () => memoryDir });
   const contextStore = new ProjectTaskContextStore(new ProjectTaskContextLayout(path.join(memoryDir, "projects")));
+  let gate!: TaskLifetimeGate;
   const tasks = new ProjectTaskService({ store: projectStore, contextStore,
+    closureListener: { onLifetimesClosed: ids => gate.onLifetimesClosed(ids) },
     requestRuntimeRelease: (identity, lifetimeId, references) => {
       expect(identity).toEqual(createTeamRootExecutionIdentity(rootTeamRunId));
       return root!.releaseTaskLifetime(lifetimeId, references);
     },
   });
+  gate = new TaskLifetimeGate(tasks);
   const helper = new AgentDefinition({ id: "scope-helper", name: "Scope Helper", description: "Test helper", instructions: "Read work" });
   const helperTeam = new AgentTeamDefinition({ id: "scope-helpers", name: "Scope Helpers", description: "Test helper Team",
     instructions: "Read work", nodes: [new TeamMember({ memberName: "lead", ref: helper.id!, refScope: "shared" })], coordinatorMemberName: "lead", handoffs: [] });
@@ -314,7 +318,7 @@ const createHarness = async (linked = false) => {
       allocateForAgentDefinition: async (agentDefinitionId) => `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
     }),
     rootRun: new TeamRun(backend.context, backend),
-    ...(linked ? { lifetimePort: tasks } : {}),
+    ...(linked ? { taskLifetimes: { port: tasks, gate } } : {}),
     // Collaborators are covered by the Team-root collaborator unit test over the real flat manager.
     collaboratorHost: {
       prepareCollaboratorAgent: () => { throw new Error("No collaborators in this scenario."); },
@@ -395,8 +399,21 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     try {
       const workerA = await dispatch(a.taskId), secondA = await dispatch(a.taskId), workerB = await dispatch(b.taskId);
       expect(new Set([workerA, secondA, workerB].map(c => c.identity.agentRunId)).size).toBe(3);
+      // SR-022a: only the receiver records acceptance, once; the sender lease never touches its own link,
+      // even one left `admitted` by an indeterminate seed record (healed only by a received message, RV-MP-018).
+      const linkOf = (state: Awaited<ReturnType<typeof h.projectStore.readState>>, agentRunId: string) =>
+        state.taskLifetimes.flatMap(l => l.executions).find(e => e.ingressAgentRunId === agentRunId)!;
+      await h.projectStore.updateState(state => { linkOf(state, workerA.identity.agentRunId).dispatch = "admitted"; return state; });
+      const dispatchRecords = vi.spyOn(h.tasks, "recordDispatch"), writes = vi.spyOn(h.projectStore, "updateState");
+      const deliveredFor = () => dispatchRecords.mock.calls.filter(([, , state]) => state === "delivered").map(([, link]) => link.ingressAgentRunId);
       await expect(message(workerA, address)).resolves.toMatchObject({ accepted: true });
+      const helperFirst = deliveredFor();
+      expect(helperFirst).toHaveLength(1); expect(helperFirst[0]).not.toBe(workerA.identity.agentRunId);
+      expect(writes).toHaveBeenCalledTimes(3); // helper reservation, admission and its first accepted message
+      expect(linkOf(await h.projectStore.readState(), workerA.identity.agentRunId).dispatch).toBe("admitted");
       await expect(message(workerB, address)).resolves.toMatchObject({ accepted: true });
+      expect(deliveredFor()).toHaveLength(2);
+      expect(deliveredFor()).not.toEqual(expect.arrayContaining([workerA.identity.agentRunId, workerB.identity.agentRunId]));
       const lifetimes = (await h.projectStore.readState()).taskLifetimes;
       const lifeA = lifetimes.find(l => l.taskId === a.taskId)!, lifeB = lifetimes.find(l => l.taskId === b.taskId)!;
       const helperA = lifeA.executions.find(e => e.purpose === "helper")!;
@@ -405,9 +422,12 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       expect(helperA.execution).not.toEqual(helperB.execution);
       expect(helperA.ingressAgentRunId).not.toBe(helperB.ingressAgentRunId);
       expect(lifeA.executions.filter(e => e.purpose === "assignment")).toHaveLength(2);
+      expect([helperA, helperB].every(link => link.dispatch === "delivered")).toBe(true);
       const beforeReuse = h.root.getExecutionTreeSnapshot();
+      writes.mockClear(); dispatchRecords.mockClear();
       await expect(message(secondA, address)).resolves.toMatchObject({ accepted: true });
       await expect(message(workerB, address)).resolves.toMatchObject({ accepted: true });
+      expect(writes).not.toHaveBeenCalled(); expect(dispatchRecords).not.toHaveBeenCalled();
       expect(h.root.getExecutionTreeSnapshot()).toEqual(beforeReuse);
       const reservations = (backend: TestTeamBackend): string[] => [
         ...backend.reservations, ...[...backend.children.values()].flatMap(reservations),
@@ -417,6 +437,8 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       await expect(message(workerA, "/reviewer")).resolves.toMatchObject({ accepted: true });
       await expect(message(workerB, "/reviewer")).resolves.toMatchObject({ accepted: true });
       expect(h.backend.reservations.filter(id => id === "run-reviewer")).toHaveLength(2);
+      expect(writes).not.toHaveBeenCalled();
+      writes.mockRestore(); dispatchRecords.mockRestore();
       expect(h.root.getExecutionTreeSnapshot()).toEqual(beforeReuse);
       expect((await h.projectStore.readState()).taskLifetimes).toEqual(lifetimes);
       const stop = vi.spyOn(h.backend, "releaseDirectTaskExecution");

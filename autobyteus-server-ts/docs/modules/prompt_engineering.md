@@ -245,8 +245,7 @@ copy. Every call spawns another copy, so copies can work in parallel.
 Follow up on a copy only through `send_message_to` with its
 `target_agent_run_id`, in both directions. A copy that stays quiet is shut
 down after a while; a message to its run ID restores it with its
-conversation, unless its Task lifetime has been permanently closed by DONE.
-Task-owned workers reuse lifetime-local helpers before borrowing existing unowned runs; helpers inherit ownership.
+conversation, so follow-ups remain possible unless its Task is DONE.
 
 ### Rule-Based Handoffs
 

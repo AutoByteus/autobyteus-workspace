@@ -64,6 +64,7 @@ import {
 } from "../services/standalone-run-ports.js";
 import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
+import type { TaskLifetimeRuntime } from "../../agent-collaboration/execution/task/task-lifetime-gate.js";
 import {
   bindProcessCollaboratorAdmission,
   createCollaboratorAdmission,
@@ -82,6 +83,8 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
   agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
+  /** Neutral Task-lifetime binding from the host composition, forwarded to every root builder. */
+  taskLifetimes: TaskLifetimeRuntime;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -106,6 +109,7 @@ const requireGeneralProcessRunSupervisorInput = (
     || !input.modelSelectionValidator
     || typeof input.modelSelectionValidator.validate !== "function"
     || typeof input.modelSelectionValidator.listOptions !== "function"
+    || !input.taskLifetimes
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }
@@ -235,6 +239,7 @@ export class GeneralProcessRunSupervisor {
       agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
         memoryDir,
         taskExecutionIdentity,
+        taskLifetimes: input.taskLifetimes,
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
@@ -246,6 +251,7 @@ export class GeneralProcessRunSupervisor {
         scopeBuilder: new AgentOrgExecutionScopeBuilder({
           flatTeamExecutionFactory,
           taskExecutionIdentity,
+          taskLifetimes: input.taskLifetimes,
           orgDefinitions: input.agentOrgDefinitionService,
           teamDefinitions: input.agentTeamDefinitionService,
           agentRunManager: generalAgentRunManager,
@@ -285,6 +291,7 @@ export class GeneralProcessRunSupervisor {
         rootDependencies: {
           flatTeamExecutionFactory,
           taskExecutionIdentity,
+          taskLifetimes: input.taskLifetimes,
           teamDefinitions: input.agentTeamDefinitionService,
           agentRunManager: generalAgentRunManager,
           memoryLocator,

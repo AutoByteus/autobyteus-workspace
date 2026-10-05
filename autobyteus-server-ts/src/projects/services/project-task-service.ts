@@ -1,8 +1,8 @@
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { TaskLifetimeOperationGate } from "../../agent-collaboration/execution/task/task-lifetime-operation-gate.js";
-import type { TaskExecutionLifetimePort, TaskExecutionLinkIdentity, TaskExecutionReleaseOutcome } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { TaskExecutionDispatch, TaskExecutionLifetimePort, TaskExecutionLinkIdentity, TaskExecutionReleaseOutcome, TaskLifetimeClosure, TaskLifetimeClosureListener, TaskLifetimeReleaseReport } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { assertLifetimeOpen, uniqueTask, requireLifetime, reserveExecutionLink, requireExecutionLink, closeTaskLifetimes, boundedTaskError } from "../domain/project-task-execution-state.js";
+import type { ProjectTaskExecutionLink, ProjectTaskLifetime } from "../domain/project-task-execution.js";
 import { ProjectTaskRuntimeRelease, type TaskRootReleaseRequest } from "../runtime/project-task-runtime-release.js";
 import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
@@ -16,6 +16,8 @@ type Dependencies = {
   store?: Pick<ProjectStore, "listRecords" | "updateRecords" | "readState" | "updateState">;
   contextStore?: ProjectTaskContextStore;
   now?: () => Date;
+  /** Bound once by the process composition; absent means no runtime is notified or released. */
+  closureListener?: TaskLifetimeClosureListener;
   requestRuntimeRelease?: TaskRootReleaseRequest;
   createId?: () => string;
 };
@@ -41,14 +43,23 @@ const findTask = (tasks: ProjectTask[], taskId: string): ProjectTask => {
 const cleanup = async (operation: () => Promise<unknown>): Promise<void> => {
   try { await operation(); } catch (e) { console.warn("Task context cleanup failed.", e); }
 };
+const sameRootLink = (lifetime: ProjectTaskLifetime, root: RootExecutionIdentity, outcome: TaskExecutionReleaseOutcome): ProjectTaskExecutionLink | undefined =>
+  lifetime.executions.find(e => e.root.rootSubjectKind === root.rootSubjectKind && e.root.rootRunId === root.rootRunId
+    && taskExecutionReferenceKey(e.execution) === taskExecutionReferenceKey(outcome.execution));
+const applyCleanup = (link: ProjectTaskExecutionLink, outcome: TaskExecutionReleaseOutcome): void => {
+  if (link.cleanup !== "released") link.cleanup = outcome.cleanup;
+  if (outcome.error) link.error = boundedTaskError(outcome.error);
+};
 
-/** Task invariant/metadata authority. Bytes/manifest mechanics remain in the owned context store. */
+/**
+ * Task invariant/metadata authority, including durable lifetime closure and membership (execution links).
+ * It owns no runtime latch: closure is announced through the injected listener. Bytes stay in the context store.
+ */
 export class ProjectTaskService implements TaskExecutionLifetimePort {
-  private readonly admissions = new TaskLifetimeOperationGate();
   private readonly releaseEffect: ProjectTaskRuntimeRelease;
   constructor(private readonly deps: Dependencies = {}) {
     this.releaseEffect = new ProjectTaskRuntimeRelease({ request: deps.requestRuntimeRelease,
-      record: (id, root, results) => this.recordCleanup(id, root, results) });
+      record: (id, root, report) => this.recordCleanup(id, root, report) });
   }
   private get store() { return this.deps.store ?? getProjectStore(); }
   private get context() { return this.deps.contextStore ?? getProjectTaskContextStore(); }
@@ -111,7 +122,8 @@ export class ProjectTaskService implements TaskExecutionLifetimePort {
       if (status === "DONE") closeTaskLifetimes(state, command.projectId, command.taskId, this.nowIso());
       return state;
     }, state => {
-      for (const l of state.taskLifetimes) if (l.completedAt !== null) this.admissions.close(l.lifetimeId);
+      if (status === "DONE") this.deps.closureListener?.onLifetimesClosed(state.taskLifetimes
+        .filter(l => l.projectId === command.projectId && l.taskId === command.taskId && l.completedAt !== null).map(l => l.lifetimeId));
     });
     if (status === "DONE") for (const l of committedState.taskLifetimes.filter(l => l.projectId === command.projectId && l.taskId === command.taskId && l.completedAt !== null)) this.releaseEffect.initiate(l);
     await this.consume(command.projectId, prepared);
@@ -180,33 +192,25 @@ export class ProjectTaskService implements TaskExecutionLifetimePort {
     });
     return { lifetimeId, description, referenceFiles };
   }
-  async assertOpen(id: string): Promise<void> {
-    const lifetime = requireLifetime(await this.store.readState(), id);
-    if (lifetime.completedAt !== null) this.admissions.close(id);
-    assertLifetimeOpen(lifetime); this.admissions.assertOpen(id);
-  }
-  async assertClosed(id: string): Promise<void> {
-    const lifetime = requireLifetime(await this.store.readState(), id);
-    if (lifetime.completedAt === null) throw new ProjectError("TASK_LIFETIME_INVALID", "Scoped completion requires a closed lifetime.");
-    this.admissions.close(id);
+  async readLifetimeClosure(id: string): Promise<TaskLifetimeClosure> {
+    return requireLifetime(await this.store.readState(), id).completedAt === null ? "open" : "closed";
   }
   async assertExecutionLinked(id: string, identity: TaskExecutionLinkIdentity): Promise<void> {
     const link = requireExecutionLink(await this.store.readState(), id, identity);
     if (link.dispatch !== "admitted" && link.dispatch !== "delivered") throw new ProjectError("TASK_LIFETIME_INVALID", "Execution is not durably admitted.");
   }
-  async acquireAdmission(id: string) {
-    await this.assertOpen(id); return this.admissions.acquire(id);
-  }
   async reserveExecution(id: string, identity: TaskExecutionLinkIdentity, explicitTaskId?: string): Promise<void> {
     await this.store.updateState(state => {
-      const l = requireLifetime(state, id); assertLifetimeOpen(l);
-      this.admissions.assertOpen(id);
+      const l = requireLifetime(state, id); assertLifetimeOpen(l); // Durable closure check under the Projects lock.
       if (explicitTaskId) {
         const { project, task } = uniqueTask(state, explicitTaskId);
         if (task.status === "DONE" || l.taskId !== task.taskId || l.projectId !== project.projectId) throw new ProjectError("TASK_LIFETIME_CLOSED", "Task changed before reservation.");
       }
       reserveExecutionLink(state, id, identity, this.nowIso()); return state;
     });
+  }
+  async readExecutionDispatch(id: string, identity: TaskExecutionLinkIdentity): Promise<TaskExecutionDispatch> {
+    return requireExecutionLink(await this.store.readState(), id, identity).dispatch;
   }
   async recordDispatch(id: string, identity: TaskExecutionLinkIdentity, dispatch: 'admitted' | 'delivered' | 'failed', error?: { code: string; message: string }): Promise<void> {
     await this.store.updateState(state => {
@@ -216,19 +220,33 @@ export class ProjectTaskService implements TaskExecutionLifetimePort {
       return state; // Never reset completion or cleanup after a late accepted result.
     });
   }
-  async recordCleanup(id: string, root: RootExecutionIdentity, results: readonly TaskExecutionReleaseOutcome[]): Promise<void> {
+  /**
+   * Durable links are the membership authority. Requested outcomes must match a link; unrequested
+   * (stamped-only) outcomes reconcile onto an existing unreleased link, and an unlinked stamp is
+   * reported as a bounded diagnostic without inventing a link.
+   */
+  async recordCleanup(id: string, root: RootExecutionIdentity, report: TaskLifetimeReleaseReport): Promise<void> {
+    let unlinked: TaskExecutionReleaseOutcome[] = [];
     await this.store.updateState(state => {
+      unlinked = [];
       const l = requireLifetime(state, id);
-      for (const result of results) {
-        const link = l.executions.find(e => e.root.rootSubjectKind === root.rootSubjectKind && e.root.rootRunId === root.rootRunId
-          && taskExecutionReferenceKey(e.execution) === taskExecutionReferenceKey(result.execution));
+      for (const result of report.requested) {
+        const link = sameRootLink(l, root, result);
         if (!link) throw new ProjectError("TASK_LIFETIME_INVALID", "Cleanup result has no exact reservation.");
         if (l.completedAt === null && link.dispatch !== "failed") throw new ProjectError("TASK_LIFETIME_INVALID", "Open-lifetime cleanup requires failed dispatch proof.");
-        if (link.cleanup !== 'released') link.cleanup = result.cleanup;
-        if (result.error) link.error = boundedTaskError(result.error);
+        applyCleanup(link, result);
+      }
+      for (const result of report.unrequested) {
+        const link = sameRootLink(l, root, result);
+        if (!link) unlinked.push(result);
+        else if (link.cleanup !== "released") applyCleanup(link, result);
       }
       return state;
     });
+    for (const result of unlinked) {
+      console.warn("TASK_LIFETIME_UNLINKED_EXECUTION", { lifetimeId: id, root: { rootSubjectKind: root.rootSubjectKind, rootRunId: root.rootRunId },
+        execution: result.execution, cleanup: result.cleanup, ...(result.error ? { error: boundedTaskError(result.error) } : {}) });
+    }
   }
   async drainRuntimeReleases(): Promise<void> { await this.releaseEffect.drain(); }
   private async assertOwner(projectId: string, taskId?: string): Promise<ProjectTask | undefined> {
@@ -269,5 +287,14 @@ export class ProjectTaskService implements TaskExecutionLifetimePort {
   }
 }
 let singleton: ProjectTaskService | null = null;
+/** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
 export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
+/** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "closureListener" | "requestRuntimeRelease">): ProjectTaskService => {
+  if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
+  return singleton = new ProjectTaskService(deps);
+};
+export const releaseProjectTaskServiceProcessInstance = (instance: TaskExecutionLifetimePort): void => {
+  if (singleton === instance) singleton = null;
+};
 export const resetProjectTaskServiceForTests = (): void => { singleton = null; };

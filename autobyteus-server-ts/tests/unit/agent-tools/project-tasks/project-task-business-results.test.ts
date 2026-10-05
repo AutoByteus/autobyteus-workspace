@@ -33,7 +33,7 @@ beforeEach(async () => {
   store = new ProjectStore({ getAppDataDir: () => dir });
   context = new ProjectTaskContextStore(new ProjectTaskContextLayout(path.join(dir, "projects")));
   projectId = (await new ProjectService({ store, contextStore: context }).createProject({ name: "Business fixture" })).projectId;
-  release = vi.fn<TaskRootReleaseRequest>(async (_root, _id, refs) => refs.map(execution => ({ execution, cleanup: "released" })));
+  release = vi.fn<TaskRootReleaseRequest>(async (_root, _id, refs) => ({ requested: refs.map(execution => ({ execution, cleanup: "released" as const })), unrequested: [] }));
   tasks = new ProjectTaskService({ store, contextStore: context, requestRuntimeRelease: release });
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
 });
@@ -52,7 +52,7 @@ describe("shared native/MCP business Task result boundary", () => {
     await tasks.recordDispatch(old.lifetimeId, links[0], "delivered");
     await tasks.recordDispatch(old.lifetimeId, links[1], "failed", { code: "DISPATCH_FAILED", message: "Internal dispatch detail" });
     await tasks.recordDispatch(old.lifetimeId, links[2], "admitted");
-    release.mockImplementationOnce(async (_root, _id, refs) => refs.map(execution => ({ execution, cleanup: "failed", error: { code: "PRIVATE_PROVIDER_DETAIL", message: "provider/process cleanup detail" } })));
+    release.mockImplementationOnce(async (_root, _id, refs) => ({ requested: refs.map(execution => ({ execution, cleanup: "failed" as const, error: { code: "PRIVATE_PROVIDER_DETAIL", message: "provider/process cleanup detail" } })), unrequested: [] }));
     await tasks.updateTask({ projectId, taskId: task.taskId, status: "DONE" }); await tasks.drainRuntimeReleases();
     await tasks.updateTask({ projectId, taskId: task.taskId, status: "TODO" });
     const current = await tasks.resolveDelegationWork(task.taskId), fresh = link("agent_team", "fresh-team", true);
@@ -85,14 +85,14 @@ describe("shared native/MCP business Task result boundary", () => {
     await tasks.reserveExecution(work.lifetimeId, identity, taskId); await tasks.recordDispatch(work.lifetimeId, identity, "delivered");
     const b = await tasks.createTask({ projectId, description: "B protected" }), workB = await tasks.resolveDelegationWork(b.taskId);
     const bLink = link(kind, "B"); await tasks.reserveExecution(workB.lifetimeId, bLink, b.taskId);
-    let finish!: (value: Awaited<ReturnType<TaskRootReleaseRequest>>) => void;
+    let finish!: (value: NonNullable<Awaited<ReturnType<TaskRootReleaseRequest>>>) => void;
     release.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
     const done = { task: { projectId, taskId, status: "DONE" } }, args = { project_id: projectId, task_id: taskId, status: "DONE" };
     expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, args))).toEqual(done);
     expect((await store.readState()).taskLifetimes.find(l => l.lifetimeId === work.lifetimeId)).toMatchObject({ completedAt: expect.any(String), executions: [expect.objectContaining({ cleanup: "pending" })] });
     expect((await mcp("create_or_update_task", args)).structuredContent).toEqual(done);
     expect(release).toHaveBeenCalledTimes(1);
-    finish([{ execution: identity.execution, cleanup: "failed", error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } }]);
+    finish({ requested: [{ execution: identity.execution, cleanup: "failed", error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } }], unrequested: [] });
     await tasks.drainRuntimeReleases();
     const failed = await store.readState();
     expect(failed.taskLifetimes.find(l => l.lifetimeId === work.lifetimeId)?.executions[0]).toMatchObject({ cleanup: "failed", error: { code: "EXACT_CLOSE_FAILED" } });
