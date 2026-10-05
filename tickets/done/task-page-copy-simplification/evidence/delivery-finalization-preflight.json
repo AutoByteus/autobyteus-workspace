@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-05T20:06:30.065144+00:00",
+  "verification": "the task is done. lets finalize and no need to release a new version",
+  "verificationSource": "User message in Delivery conversation, 2026-10-05",
+  "latestOriginPersonal": "88851166fe8a37944381f0299bd479f20ed0f877",
+  "candidateHead": "5873f08b67adbdf13c2880f87131f24c8c5e054d",
+  "targetAdvanced": false,
+  "reintegration": "Already up to date",
+  "rerun": "Not needed; unchanged validated runtime/test source and unchanged remote base",
+  "renewedVerification": "Not needed; no user-facing change",
+  "previewCleanup": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-49396-2c6f",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-HaqjZZ",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "instanceAbsent": true,
+  "ownedGeneratedSdkOutputsRemoved": true,
+  "release": "Not required \u2014 explicit user instruction",
+  "localPersonal": "Shared dirty checkout behind remote, intentionally untouched; clean detached target checkout will merge/push origin/personal"
+}

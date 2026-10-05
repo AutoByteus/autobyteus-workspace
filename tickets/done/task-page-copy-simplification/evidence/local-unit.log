@@ -1,0 +1,97 @@
+
+> autobyteus@1.4.95-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/projects composables/projects localization/messages/__tests__/projectsCatalog.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web
+
+stderr | components/projects/__tests__/ProjectsList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskBoard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/projects/__tests__/useProjectNotice.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/TaskDescriptionComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectVoiceStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskDraftEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/projects/__tests__/useProjectNotice.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskBoard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectVoiceStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskDraftEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/TaskDescriptionComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectsList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/projects/__tests__/useProjectNotice.spec.ts (2 tests) 24ms
+ ✓ composables/projects/__tests__/useProjectTaskDraft.spec.ts (5 tests) 19ms
+ ✓ components/projects/__tests__/ProjectVoiceStatus.spec.ts (7 tests) 102ms
+ ✓ components/projects/__tests__/TaskDescriptionComposer.spec.ts (2 tests) 100ms
+ ✓ components/projects/__tests__/ProjectTaskDraftEditor.spec.ts (8 tests) 97ms
+ ✓ components/projects/__tests__/ProjectEditor.spec.ts (9 tests) 236ms
+ ✓ components/projects/__tests__/ProjectsList.spec.ts (6 tests) 158ms
+ ✓ components/projects/__tests__/ProjectTaskBoard.spec.ts (8 tests) 330ms
+ ✓ components/projects/__tests__/ProjectDetail.spec.ts (13 tests) 317ms
+stderr | localization/messages/__tests__/projectsCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/projectsCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts (6 tests) 5ms
+
+ Test Files  10 passed (10)
+      Tests  66 passed (66)
+   Start at  21:28:45
+   Duration  20.05s (transform 9.60s, setup 121.10s, collect 8.07s, tests 1.39s, environment 5.52s, prepare 3.37s)

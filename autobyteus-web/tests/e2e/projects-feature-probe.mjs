@@ -169,6 +169,76 @@ const refresh = () => page.getByTestId('project-tasks-refresh');
 const search = () => page.getByTestId('project-tasks-search-input');
 const screenshot = name => page.screenshot({ path: path.join(outputDir, `${name}.png`), fullPage: true });
 const expectNoOverlay = async () => assert(await page.locator('[role="dialog"]').count() === 0, 'Primary authoring must be an ordinary page');
+// AC-001/002/005: actual ordinary routes, both catalogs and responsive CSS.
+// Locale storage is test-owned preference setup, not an injected component/runtime double.
+const taskCopy = {
+  en: { new: 'New task', edit: 'Edit task', placeholder: 'Describe the task…', label: 'Description (required)',
+    context: 'Context Files', hint: 'Drag, paste or upload', attach: 'Attach files', shortcut: 'Ctrl+Enter or ⌘+Enter to save', cancel: 'Cancel', create: 'Create task', save: 'Save changes',
+    removed: ['Describe the work to be done.', 'Update the description and context files without changing', "The first line is the task's summary on the board.", 'Files are saved with this task on the selected node.'] },
+  'zh-CN': { new: '新建任务', edit: '编辑任务', placeholder: '描述任务…', label: '描述 （必填）',
+    context: '上下文文件', hint: '拖动、粘贴或上传', attach: '添加文件', shortcut: 'Ctrl+Enter 或 ⌘+Enter 保存', cancel: '取消', create: '创建任务', save: '保存更改',
+    removed: ['描述要完成的工作。', '更新描述和上下文文件，不改变任务标识或状态。', '第一行用作看板上的任务摘要', '文件随任务保存在所选节点。'] },
+};
+const assertTaskErrorAssociation = async invalid => {
+  const association = await page.locator('#task-page-description').evaluate(e => ({
+    invalid: e.getAttribute('aria-invalid'), describedBy: e.getAttribute('aria-describedby'),
+    references: (e.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean).map(id => ({ id, exists: !!document.getElementById(id), role: document.getElementById(id)?.getAttribute('role') })),
+    focused: document.activeElement === e,
+  }));
+  assert(association.invalid === String(invalid), 'Textarea invalid state matches error');
+  assert(invalid ? association.describedBy === 'task-page-error' && association.focused && association.references[0]?.role === 'alert' : association.describedBy === null, 'Only present actionable error is described; blank submission focuses input');
+  assert(association.references.every(r => r.exists), 'No dangling textarea description reference');
+  return association;
+};
+const inspectTaskPresentation = async (mode, obs) => {
+  const target = pathname();
+  obs.presentation = [];
+  for (const locale of ['en', 'zh-CN']) {
+    await page.evaluate(value => localStorage.setItem('autobyteus.localization.preference-mode', value), locale);
+    await goto(target);
+    const copy = taskCopy[locale];
+    await waitFor(`${mode} ${locale} ready`, async () => await page.getByTestId('task-page-heading').innerText() === copy[mode]);
+    for (const viewport of [{ width: 1512, height: 862 }, { width: 390, height: 844 }]) {
+      await page.setViewportSize(viewport);
+      const surface = page.getByTestId('project-task-page');
+      const text = await surface.innerText();
+      assert(copy.removed.every(value => !text.includes(value)), 'Redundant task explanations and policy removed');
+      assert(!text.includes('projects.ui.') && !text.includes('projects.components.'), 'No raw translation keys');
+      assert(await surface.locator('h2, #task-page-help, #task-details-heading, [aria-labelledby="task-details-heading"]').count() === 0, 'No inner heading/help or stale heading reference');
+      assert(await surface.locator('header p').count() === 1, 'Only project context remains above title');
+      assert(await page.getByTestId('task-project-context').innerText() === 'API E2E project', 'Project context preserved');
+      const field = page.getByRole('textbox', { name: copy.label, exact: true });
+      assert(await field.getAttribute('id') === 'task-page-description', 'Label names actual textarea');
+      assert(await field.getAttribute('placeholder') === copy.placeholder && await field.getAttribute('rows') === '8', 'Concise placeholder, usable editor unchanged');
+      assert(text.includes(copy.context) && text.includes(copy.shortcut), 'Context count and shortcut retained');
+      if (mode === 'new') assert(text.includes(copy.hint), 'Empty-context attachment hint retained');
+      assert(await page.getByTestId('task-attach-files').getAttribute('aria-label') === copy.attach, 'Attachment control named');
+      assert(await page.getByTestId('task-page-cancel').innerText() === copy.cancel, 'Cancel retained');
+      assert(await page.getByTestId('task-page-save').innerText() === (mode === 'new' ? copy.create : copy.save), 'Save action retained');
+      const layout = await surface.evaluate(root => {
+        const card = root.querySelector('form > div');
+        const label = card.querySelector('label');
+        const composer = root.querySelector('[data-testid="task-description-composer"]');
+        const rect = e => { const b = e.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, height: b.height }; };
+        const c = rect(card), l = rect(label), editor = rect(composer), cs = getComputedStyle(card);
+        return { card: c, label: l, composer: editor, padding: parseFloat(cs.paddingTop), border: parseFloat(cs.borderTopWidth), firstChildIsLabel: card.firstElementChild === label,
+          labelOffset: l.top - c.top, composerGap: editor.top - l.bottom,
+          overflow: root.scrollWidth > root.clientWidth || document.documentElement.scrollWidth > innerWidth,
+          actionsFit: [...root.querySelectorAll('[data-testid="task-page-save"], [data-testid="task-page-cancel"]')].every(e => {const b = e.getBoundingClientRect(); return b.width > 0 && b.left >= 0 && b.right <= innerWidth;}) };
+      });
+      assert(layout.firstChildIsLabel && Math.abs(layout.labelOffset - layout.padding - layout.border) <= 1, 'Label immediately follows card padding: no replacement heading spacer');
+      assert(layout.composerGap >= 0 && layout.composerGap <= 16, 'No heading-only gap before composer');
+      assert(!layout.overflow && layout.actionsFit, 'Form/actions fit wide and narrow layout');
+      const association = await assertTaskErrorAssociation(false);
+      await screenshot(`task-${mode}-${locale}-${viewport.width}`);
+      obs.presentation.push({ locale, viewport, layout, association });
+    }
+  }
+  // Restore the normal probe locale and viewport before the preservation journey.
+  await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+  await page.setViewportSize({ width: 1512, height: 862 });
+  await goto(target); await page.locator('#task-page-description').waitFor();
+};
 const writeEvidence = () => fs.writeFile(path.join(outputDir, 'result.json'), `${JSON.stringify(evidence, null, 2)}\n`);
 const runCase = async (id, title, fn) => {
   const record = evidence.cases[id] = { title, result: 'Not Tested', startedAt: new Date().toISOString(), observations: {} };
@@ -200,7 +270,7 @@ try {
   browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage', ...(voiceInput ? ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] : [])] });
   evidence.browserVersion = browser.version();
   const context = await browser.newContext({ viewport: { width: 1512, height: 862 }, locale: 'en-US', timezoneId: 'Europe/Berlin' });
-  await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+  await context.addInitScript(() => { if (!localStorage.getItem('autobyteus.localization.preference-mode')) localStorage.setItem('autobyteus.localization.preference-mode', 'en'); });
   page = await context.newPage(); page.on('pageerror', e => evidence.browserErrors.push(e.message));
   await goto('/'); await page.locator('nav[aria-label="Primary navigation"]').waitFor(); homePath = pathname();
   let project, task, ws;
@@ -266,16 +336,40 @@ try {
   });
   await runCase('PT-E2E-005', 'Task ordinary composer validation, search-preserving Cancel, typed/file save clears search', async obs => {
     await board(project.projectId); await search().fill('old search'); await page.getByTestId('project-tasks-new-button').click(); await page.getByTestId('task-page-heading').waitFor(); await expectNoOverlay();
+    await inspectTaskPresentation('new', obs);
+    // Locale inspection reloads; start the transient-search Cancel journey afterward.
+    await page.getByTestId('task-page-cancel').click(); await page.getByTestId('project-task-board').waitFor();
+    await search().fill('old search'); await page.getByTestId('project-tasks-new-button').click(); await page.locator('#task-page-description').waitFor();
     await page.getByTestId('task-page-save').click(); await page.getByTestId('task-page-description-error').waitFor();
-    assert(await page.locator('#task-page-description').evaluate(e => document.activeElement === e), 'Description validation focus');
+    obs.blankAssociation = await assertTaskErrorAssociation(true); await screenshot('task-new-required');
+    await page.locator('#task-page-description').fill('Corrected draft');
+    await waitFor('required error clears after typing', async () => await page.getByTestId('task-page-description-error').count() === 0);
+    await assertTaskErrorAssociation(false);
     await page.getByTestId('task-page-cancel').click(); await page.getByTestId('project-task-board').waitFor(); assert(await search().inputValue() === 'old search', 'Cancel retains search');
     await page.getByTestId('project-tasks-new-button').click(); await page.locator('#task-page-description').fill('  Browser task\nFull second line  ');
+    const uploadPattern = '**/rest/projects/*/task-context-drafts/*/context-files';
+    const uploadFailure = async route => {
+      if (route.request().method() === 'POST') await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ detail: 'Controlled context upload failure. Try attaching again.' }) });
+      else await route.continue();
+    };
+    await page.route(uploadPattern, uploadFailure);
+    try {
+      await page.locator('input[type=file]').setInputFiles({ name: 'failed.txt', mimeType: 'text/plain', buffer: Buffer.from('retry fixture') });
+      await page.getByTestId('task-page-save-error').waitFor();
+      await waitFor('attachment retry available', async () => !(await page.getByTestId('task-attach-files').isDisabled()));
+      assert(await page.getByTestId('task-page-save-error').innerText() === 'Controlled context upload failure. Try attaching again.', 'File failure remains actionable');
+      assert(await page.locator('#task-page-description').inputValue() === '  Browser task\nFull second line  ', 'File failure retains typed draft');
+      assert((await api.tasks(nodeA, project.projectId)).length === 0, 'Failed upload does not save task');
+      obs.uploadFailure = { textRetained: true, savedTasks: 0, retryAvailable: true }; await screenshot('task-new-upload-error');
+    } finally { await page.unroute(uploadPattern, uploadFailure); }
     const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aS1sAAAAASUVORK5CYII=', 'base64');
     await page.locator('input[type=file]').setInputFiles([{ name: 'note.txt', mimeType: 'text/plain', buffer: Buffer.from('HTTP browser context') }, { name: 'image.png', mimeType: 'image/png', buffer: png }]);
     await page.getByTestId('task-context-file-list').waitFor(); await waitFor('two files', async () => await page.getByTestId('task-context-file-name').count() === 2);
-    await page.getByTestId('task-page-save').click(); await page.getByTestId('project-task-columns').waitFor(); assert(await search().inputValue() === '', 'Create clears prior search');
+    assert(await page.getByTestId('task-page-save-error').count() === 0, 'Upload retry clears file failure');
+    await page.locator('#task-page-description').press('Control+Enter'); await page.getByTestId('project-task-columns').waitFor(); assert(await search().inputValue() === '', 'Create clears prior search');
     task = (await api.tasks(nodeA, project.projectId)).find(t => t.description.startsWith('Browser task')); assert(task.contextFiles.length === 2 && task.status === 'TODO', 'Saved TODO with real context');
-    await row(task.taskId).waitFor(); obs.task = task;
+    assert(task.description === 'Browser task\nFull second line', 'Stored multiline text trimmed only');
+    await row(task.taskId).waitFor(); assert(await row(task.taskId).getByTestId('project-task-row-text').innerText() === 'Browser task', 'First non-empty line board summary unchanged'); obs.task = task;
   });
   await runCase('PT-E2E-006', 'Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape', async obs => {
     await row(task.taskId).click(); await page.getByTestId('task-page-heading').waitFor(); await expectNoOverlay();
@@ -285,10 +379,24 @@ try {
     assert(await page.getByTestId('task-page-edit').innerText() === 'Edit task', 'Adjacent edit action');
     const downloaded = page.waitForEvent('download'); await page.getByTestId('task-context-file-name').filter({ hasText: 'note.txt' }).click();
     const file = await downloaded; assert(await fs.readFile(await file.path(), 'utf8') === 'HTTP browser context', 'Downloaded real saved bytes');
-    await page.getByTestId('task-page-edit').click(); await page.locator('#task-page-description').fill('discard edit'); await page.getByTestId('task-page-cancel').click(); await page.getByTestId('task-page-heading').waitFor();
+    await page.getByTestId('task-page-edit').click(); await page.locator('#task-page-description').waitFor();
+    await inspectTaskPresentation('edit', obs);
+    await page.locator('#task-page-description').fill('   '); await page.getByTestId('task-page-save').click(); await page.getByTestId('task-page-description-error').waitFor();
+    obs.blankAssociation = await assertTaskErrorAssociation(true); await screenshot('task-edit-required');
+    await page.locator('#task-page-description').fill('discard edit');
+    await waitFor('edit required error clears', async () => await page.getByTestId('task-page-description-error').count() === 0); await assertTaskErrorAssociation(false); await page.getByTestId('task-page-cancel').click(); await page.getByTestId('task-page-heading').waitFor();
     assert((await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId).description === task.description, 'Cancel unchanged');
-    await page.getByTestId('task-page-edit').click(); await page.locator('#task-page-description').fill('Browser task revised\nFull second line'); await page.locator('#task-page-description').press('Meta+Enter'); await waitFor('edit detail route', () => pathname() === `/projects/${project.projectId}/tasks/${task.taskId}`);
-    const edited = (await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId); assert(edited.createdAt === task.createdAt && edited.status === 'TODO' && edited.contextFiles.length === 2, 'Edit identity/status/context preserved');
+    await page.getByTestId('task-page-edit').click(); await page.locator('#task-page-description').fill('Browser task revised\nFull second line');
+    const saveFailure = async route => { if (route.request().postDataJSON().query?.includes('updateProjectTask(')) await route.fulfill({ status: 503, body: 'task save temporarily unavailable' }); else await route.continue(); };
+    await page.route('**/graphql', saveFailure);
+    try { await page.getByTestId('task-page-save').click(); await page.getByTestId('task-page-save-error').waitFor(); }
+    finally { await page.unroute('**/graphql', saveFailure); }
+    assert(await page.locator('#task-page-description').inputValue() === 'Browser task revised\nFull second line', 'Failed save retains editable text');
+    assert(await page.getByTestId('task-context-file-name').count() === 2, 'Failed save retains files');
+    assert((await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId).description === task.description, 'Failed write leaves saved content unchanged');
+    await screenshot('task-edit-save-error');
+    await page.locator('#task-page-description').press('Meta+Enter'); await waitFor('edit detail route', () => pathname() === `/projects/${project.projectId}/tasks/${task.taskId}`);
+    const edited = (await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId); assert(edited.description === 'Browser task revised\nFull second line', 'Same failed draft retries successfully'); assert(edited.createdAt === task.createdAt && edited.status === 'TODO' && edited.contextFiles.length === 2, 'Edit identity/status/context preserved');
     await page.getByTestId('task-page-delete').click(); await page.getByTestId('task-page-delete-cancel').waitFor(); assert(await page.getByTestId('task-page-delete-cancel').evaluate(e => document.activeElement === e), 'Cancel first focus');
     await page.keyboard.press('Escape'); await waitFor('Delete focus restored', async () => page.getByTestId('task-page-delete').evaluate(e => document.activeElement === e)); obs.edited = edited;
     await page.getByTestId('task-back-to-board').click();
@@ -406,7 +514,7 @@ try {
     await api.deleteProject(nodeA, id);
   });
   await runCase('PT-E2E-016', 'zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys', async obs => {
-    await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'zh-CN'));
+    await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'zh-CN'));
     const id = (await api.createProject(nodeA, 'Localization')).projectId; const t = await api.createTask(nodeA, id, 'Localized fixture task');
     await board(id); const check = async () => { const text = await page.locator('[data-testid=project-detail], [data-testid=project-editor-page], [data-testid=project-task-page]').innerText(); assert(!/projects\.[a-z][\w.]+/i.test(text), 'No raw keys'); return text; };
     assert((await check()).includes('待办'), 'Chinese board status');
@@ -414,7 +522,7 @@ try {
     await page.getByTestId('task-page-edit').click(); await page.getByTestId('task-page-save').waitFor(); await check();
     await goto(`/projects/${id}/edit`); await page.getByTestId('project-form-submit').waitFor(); await check();
     obs.rawKeys = 0; await api.deleteProject(nodeA, id);
-    await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   });
   if (voiceInput) {
     await runProjectVoiceCases({ page, context, goto, api, node: nodeA, runCase, waitFor, screenshot });
