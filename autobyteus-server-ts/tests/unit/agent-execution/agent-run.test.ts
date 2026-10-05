@@ -1071,3 +1071,32 @@ describe("AgentRun root shutdown attempts (SR-006, F-1–F-4)", () => {
     await expect(retry).resolves.toEqual({ accepted: true });
   });
 });
+
+describe("AgentRun termination delegation keeps coalescing (agent-run-termination-extraction)", () => {
+  it("shares one preparation promise, one try-if-quiescent promise and one backend termination", async () => {
+    const terminate = createDeferred<AgentOperationResult>();
+    const harness = createHarness({ terminate: vi.fn().mockReturnValue(terminate.promise) });
+
+    // Concurrent tries while one is in flight share its promise (identity, not just its value).
+    const try1 = harness.run.tryPrepareTerminationIfQuiescent();
+    const try2 = harness.run.tryPrepareTerminationIfQuiescent();
+    expect(try2).toBe(try1);
+    const prepared = await try1;
+    if (!prepared) throw new Error("Expected an idle run to prepare.");
+    prepared.cancel();
+
+    // Concurrent preparations share one promise.
+    const prepare1 = harness.run.prepareTermination();
+    const prepare2 = harness.run.prepareTermination();
+    expect(prepare2).toBe(prepare1);
+    await expect(prepare1).resolves.toBe(await prepare2);
+
+    // A second terminate while the first is in flight reuses the same backend termination.
+    const first = harness.run.terminate();
+    const second = harness.run.terminate();
+    await vi.waitFor(() => expect(harness.backend.terminate).toHaveBeenCalledOnce());
+    terminate.resolve({ accepted: true });
+    await expect(Promise.all([first, second])).resolves.toEqual([{ accepted: true }, { accepted: true }]);
+    expect(harness.backend.terminate).toHaveBeenCalledOnce();
+  });
+});
