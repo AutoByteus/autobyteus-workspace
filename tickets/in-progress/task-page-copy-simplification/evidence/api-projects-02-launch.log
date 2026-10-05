@@ -1,0 +1,49 @@
+
+> autobyteus@1.4.95-beta.1 test:e2e:projects /Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/autobyteus-web
+> node tests/e2e/projects-feature-probe.mjs --voice-input --skip-server-build --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/tickets/in-progress/task-page-copy-simplification/evidence/api-projects-02 --ledger-file=/Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/tickets/in-progress/task-page-copy-simplification/api-e2e-test-case-ledger.md
+
+[PT-E2E-001] Fresh node default off, guarded routes and separate-node API isolation
+[PT-E2E-001] Pass
+[PT-E2E-002] Ordinary New Project validation/focus/Cancel and zero-link save to Tasks
+[PT-E2E-002] Pass
+[PT-E2E-003] Aggregate Existing/New direct rows; mode drafts, normalization/no mkdir, saved links and origin tab
+[PT-E2E-003] Pass
+[PT-E2E-004] Aggregate save failure retains Project; separate successful registration remains, no mkdir
+[PT-E2E-004] Pass
+[PT-E2E-005] Task ordinary composer validation, search-preserving Cancel, typed/file save clears search
+[PT-E2E-005] Pass
+[PT-E2E-006] Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape
+[PT-E2E-006] Pass
+[PT-E2E-007] External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status
+[PT-E2E-007] Pass
+[PT-E2E-008] Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct
+[PT-E2E-008] Pass
+[PT-E2E-009] Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping
+[PT-E2E-009] Pass
+[PT-E2E-010] Real backend process restart preserves Tasks, context HTTP bytes, links and feature setting
+[PT-E2E-010] Pass
+[PT-E2E-011] All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project
+[PT-E2E-011] Pass
+[PT-E2E-012] Ordinary route read/Refresh ordering: late old Project response cannot populate another Project
+[PT-E2E-012] Pass
+[PT-E2E-013] 120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation
+[PT-E2E-013] Pass
+[PT-E2E-014] Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery
+[PT-E2E-014] Pass
+[PT-E2E-015] Normal Settings toggle invalidates nav/route without reload, retains Tasks and other settings
+[PT-E2E-015] Pass
+[PT-E2E-016] zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys
+[PT-E2E-016] Pass
+[B-001] Project create: native dictation into latest typed draft; review and explicit real save
+[B-001] Pass
+[B-002] Project edit at 390px: native append/manual save, blank optional update and current reader
+[B-002] Pass
+[B-003] Task create/edit: native dictation, no success node, attachments retained and explicit save
+[B-003] Pass
+[B-004] Project no-speech/error feedback retained then successful retry clears without saving
+[B-004] Pass
+[B-005] Recording Cancel releases native tracks without insertion or persistence
+[B-005] Pass
+[B-006] Cancel navigation during pending transcription rejects late text in next editor
+[B-006] Pass
+{"result":"Pass","error":null,"cases":{"PT-E2E-001":"Pass","PT-E2E-002":"Pass","PT-E2E-003":"Pass","PT-E2E-004":"Pass","PT-E2E-005":"Pass","PT-E2E-006":"Pass","PT-E2E-007":"Pass","PT-E2E-008":"Pass","PT-E2E-009":"Pass","PT-E2E-010":"Pass","PT-E2E-011":"Pass","PT-E2E-012":"Pass","PT-E2E-013":"Pass","PT-E2E-014":"Pass","PT-E2E-015":"Pass","PT-E2E-016":"Pass","B-001":"Pass","B-002":"Pass","B-003":"Pass","B-004":"Pass","B-005":"Pass","B-006":"Pass"},"cleanup":{"browser":"closed","frontend":"terminated:25491","nodeA":"terminated:27050","nodeB":"terminated:25477","tempRootRemoved":true}}
