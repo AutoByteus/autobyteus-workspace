@@ -23,5 +23,5 @@ No prior authoritative completed API/E2E round (N/A). Within-round unsuccessful 
 
 - Canonical artifacts updated: coverage investigation, execution coverage report, test-case ledger and this revision record in `/Users/normy/autobyteus_org/autobyteus-worktrees/task-page-copy-simplification/tickets/in-progress/task-page-copy-simplification`.
 - Post-repository confidence 81.43%, broader Required; final 95%, seven applicable categories 95%, every critical AC direct proof, no unresolved finding. No recommended repair owner.
-- Test review **Not Required — direct low-risk route**; successful-output route Delivery, exact recipient determined by handoff tool.
+- Test review **Not Required — direct low-risk route**; successful-output route Delivery; get_handoff_rules selected exact **/delivery_engineer** for Small/Low direct Pass (no other condition matches).
 - Residual scope: web-equivalent renderer/native browser capture with fixture IPC, not physical mic/OS permissions/provider quality/native Electron IPC/packaged shell/mobile/performance certification. Delivery owns docs/user verification/finalization/release applicability.
