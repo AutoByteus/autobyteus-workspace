@@ -1,7 +1,8 @@
 import { useRouter } from 'vue-router'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentOrgLaunchDraftStore } from '~/stores/agentOrgLaunchDraftStore'
-import { chatStartSettingsOf, useChatDraftStore, type ChatStartSettings, type ChatTarget } from '~/stores/chatDraftStore'
+import { chatStartSettingsOf, useChatDraftStore, type ChatTarget } from '~/stores/chatDraftStore'
+import type { RunStartSettings } from '~/types/runSettings/RunSettings'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { loadTeamRunLaunchSeed } from '~/services/runConfigEditing/teamRunLaunchSeed'
 import {
@@ -24,11 +25,11 @@ export function useRunStart() {
   const chatDraftStore = useChatDraftStore()
   const orgLaunchDraftStore = useAgentOrgLaunchDraftStore()
 
-  const openChat = async (target: ChatTarget, options: { carried?: ChatStartSettings | null; copied?: ChatStartSettings | null } = {}) => {
+  const openChat = async (target: ChatTarget, options: { carried?: RunStartSettings | null; copied?: RunStartSettings | null } = {}) => {
     chatDraftStore.startForDefinition(target, options)
     await router.push('/chat')
   }
-  const openOrg = async (orgDefinitionId: string, options: { sourceOrgRunId?: string | null; carried?: ChatStartSettings | null } = {}) => {
+  const openOrg = async (orgDefinitionId: string, options: { sourceOrgRunId?: string | null; carried?: RunStartSettings | null } = {}) => {
     orgLaunchDraftStore.start({ orgDefinitionId, sourceOrgRunId: options.sourceOrgRunId ?? null, carried: options.carried ?? null })
     await router.push(buildAgentOrgLaunchRoute(orgDefinitionId, options.sourceOrgRunId ?? null))
   }
@@ -46,7 +47,7 @@ export function useRunStart() {
   const copyAgentRun = async (runId: string) => {
     const config = useAgentContextsStore().getRun(runId)?.config
     if (!config) return
-    const copied: ChatStartSettings = {
+    const copied: RunStartSettings = {
       workspace: runWorkspaceChoiceFromRootPath(config.workspaceMetadata?.workspaceRootPath),
       runtimeKind: config.runtimeKind,
       llmModelIdentifier: config.llmModelIdentifier,
@@ -67,7 +68,7 @@ export function useRunStart() {
     /** False once the user has moved on while the run was read: a late copy then opens nothing. */
     isCurrent?: () => boolean
   }>) => {
-    let copied: ChatStartSettings | null = null
+    let copied: RunStartSettings | null = null
     try {
       const seed = await loadTeamRunLaunchSeed({
         teamRunId: input.teamRunId,

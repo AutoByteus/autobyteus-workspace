@@ -1,3 +1,5 @@
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
+import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { RunWorkspaceChoice } from './RunWorkspaceChoice'
 
 /**
@@ -20,6 +22,15 @@ export interface RunSettingsValues {
   llmConfig: Record<string, unknown> | null
   autoExecuteTools: boolean
 }
+
+/**
+ * Settings a start keeps from where the user came from (the heading switcher, or "+" on a run).
+ * Shared by both draft owners (New chat and the Org launch page) and the start intent.
+ */
+export type RunStartSettings = Readonly<RunSettingsValues & {
+  /** "+" on a Team run only: its members' own settings. */
+  teamAgentOverrides?: Readonly<Record<AgentTeamAddress, AgentConfigOverride>>
+}>
 
 export type RunSettingFlags = Partial<Record<RunSettingField, boolean>>
 

@@ -37,6 +37,7 @@ vi.mock('~/stores/workspace', () => ({
   }),
 }))
 
+import enRunSettings from '~/localization/messages/en/runSettings'
 import { useAgentOrgLaunchDraftStore } from '../agentOrgLaunchDraftStore'
 
 const org = {
@@ -130,6 +131,22 @@ describe('agentOrgLaunchDraftStore (UIS-004)', () => {
     await flushPromises()
     expect(store.draft?.unavailable).toBe(true)
     expect(store.readiness).toMatchObject({ ready: false })
+  })
+
+  it('a broken topology blocks Run as unavailable and logs its diagnostic once (CR-003)', async () => {
+    mocks.references.teams['team-def'].coordinatorMemberName = 'nobody'
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const store = useAgentOrgLaunchDraftStore()
+    store.start({ orgDefinitionId: 'org-1' })
+    await flushPromises()
+    expect(store.readiness).toEqual({ ready: false, reason: enRunSettings['runSettings.orgLaunch.unavailable'] })
+    const blocked = warn.mock.calls.filter(([message]) => message === 'AgentOrg launch blocked:')
+    expect(blocked).toHaveLength(1)
+    expect(String(blocked[0]![1])).toContain("no exact coordinator member 'nobody'")
+    await store.launch(vi.fn())
+    expect(mocks.launch).not.toHaveBeenCalled()
+    expect(warn.mock.calls.filter(([message]) => message === 'AgentOrg launch blocked:')).toHaveLength(1)
+    warn.mockRestore()
   })
 
   it('blocks Run with the spec reason: no model anywhere, or a runtime that is unavailable', async () => {

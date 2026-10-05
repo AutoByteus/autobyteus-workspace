@@ -7,7 +7,7 @@ import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { Conversation } from '~/types/conversation'
 import type { RunWorkspaceChoice } from '~/types/runSettings/RunWorkspaceChoice'
-import type { RunMemberSettingChange, RunMemberSettingReset, RunSettingsValues } from '~/types/runSettings/RunSettings'
+import type { RunMemberSettingChange, RunMemberSettingReset, RunSettingsValues, RunStartSettings } from '~/types/runSettings/RunSettings'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
@@ -15,8 +15,7 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { normalizeDefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import { readChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID, TEMP_WORKSPACE_ID } from '~/utils/chat/chatDefaults'
-import { applyModelConfigSchemaDefaults, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
-import { getDefaultThinkingConfig, getThinkingParamKeys } from '~/utils/llmThinkingConfigAdapter'
+import { explicitModelConfig } from '~/utils/runSettings/explicitModelConfig'
 import { runWorkspaceChoiceFromRootPath } from '~/services/workspace/runWorkspaceChoice'
 import { startModelCatalog } from '~/services/runSettings/startModelCatalog'
 import { resolveStartModel } from '~/utils/runSettings/startModelDefaults'
@@ -44,36 +43,6 @@ export interface ChatDraft {
 export interface ChatModelSelection {
   runtimeKind: string
   llmModelIdentifier: string
-}
-
-/** Settings a start keeps from where the user came from: the heading switcher, or "+" on a run. */
-export type ChatStartSettings = Readonly<{
-  workspace: RunWorkspaceChoice | null
-  runtimeKind: string
-  llmModelIdentifier: string
-  llmConfig: Record<string, unknown> | null
-  autoExecuteTools: boolean
-  /** "+" on a Team run only: its members' own settings. */
-  teamAgentOverrides?: Readonly<Record<AgentTeamAddress, AgentConfigOverride>>
-}>
-
-/**
- * The model config a New chat records for a model (D-18, IC-3): the non-thinking schema defaults
- * plus the model's default thinking parameters, written explicitly, over any preset config (a
- * definition's default launch config keeps its own values). A model without a config schema
- * records the preset.
- */
-export const explicitChatModelConfig = (
-  schema: UiModelConfigSchema | null,
-  preset: Record<string, unknown> | null = null,
-): Record<string, unknown> | null => {
-  if (!schema || Object.keys(schema).length === 0) return preset
-  const next: Record<string, unknown> = { ...(applyModelConfigSchemaDefaults(schema, preset) ?? {}) }
-  // A preset that already chose thinking keeps its choice; otherwise record the default thinking.
-  if (!getThinkingParamKeys(schema).some((key) => next[key] !== undefined)) {
-    Object.assign(next, getDefaultThinkingConfig(schema))
-  }
-  return Object.keys(next).length > 0 ? next : preset
 }
 
 let chatDraftSequence = 0
@@ -122,7 +91,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
   const schemaFor = (runtimeKind: string, llmModelIdentifier: string) =>
     catalogs().modelConfigSchemaByIdentifier(runtimeKind, llmModelIdentifier)
   const memberOverrideDeps: MemberOverrideDeps = {
-    defaultConfigFor: (choice) => explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), null),
+    defaultConfigFor: (choice) => explicitModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), null),
     schemaFor,
   }
 
@@ -155,7 +124,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     return draft.value!
   }
 
-  const applyCarriedModel = (target: ChatDraft, settings: ChatStartSettings) => {
+  const applyCarriedModel = (target: ChatDraft, settings: RunStartSettings) => {
     if (!settings.llmModelIdentifier) return false
     target.context.config.runtimeKind = settings.runtimeKind
     target.context.config.llmModelIdentifier = settings.llmModelIdentifier
@@ -191,7 +160,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
    */
   const startForDefinition = (
     target: ChatTarget,
-    options: { carried?: ChatStartSettings | null; copied?: ChatStartSettings | null } = {},
+    options: { carried?: RunStartSettings | null; copied?: RunStartSettings | null } = {},
   ): ChatDraft => {
     const settings = options.copied ?? options.carried ?? null
     const next = install(target, settings?.workspace ?? tempWorkspace(), settings?.autoExecuteTools ?? true)
@@ -279,7 +248,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     target.context.config.llmModelIdentifier = selection.llmModelIdentifier
     // Choosing a model applies that model's defaults (thinking and other settings reset), recorded
     // explicitly so the run's settings show them.
-    target.context.config.llmConfig = explicitChatModelConfig(schemaFor(selection.runtimeKind, selection.llmModelIdentifier), llmConfig)
+    target.context.config.llmConfig = explicitModelConfig(schemaFor(selection.runtimeKind, selection.llmModelIdentifier), llmConfig)
   }
 
   /** An explicit model choice from the model menu. */
@@ -398,7 +367,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
 })
 
 /** The draft's settings as a start carries them (the heading switcher, "+"). */
-export const chatStartSettingsOf = (draft: ChatDraft): ChatStartSettings => ({
+export const chatStartSettingsOf = (draft: ChatDraft): RunStartSettings => ({
   workspace: draft.workspace,
   runtimeKind: draft.context.config.runtimeKind,
   llmModelIdentifier: draft.context.config.llmModelIdentifier,

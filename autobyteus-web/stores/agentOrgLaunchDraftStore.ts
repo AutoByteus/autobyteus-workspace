@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentOrgDefinitionStore, type AgentOrgDefinition } from '~/stores/agentOrgDefinitionStore'
@@ -7,7 +7,7 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useWorkspaceStore } from '~/stores/workspace'
-import { explicitChatModelConfig, type ChatStartSettings } from '~/stores/chatDraftStore'
+import { explicitModelConfig } from '~/utils/runSettings/explicitModelConfig'
 import { DEFAULT_AGENT_RUNTIME_KIND, runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
@@ -17,6 +17,7 @@ import type {
   RunMemberSettingReset,
   RunModelChoice,
   RunSettingsValues,
+  RunStartSettings,
 } from '~/types/runSettings/RunSettings'
 import { normalizeDefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import { loadAgentOrgDefinitionReferences, type AgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences'
@@ -72,7 +73,7 @@ export type OrgLaunchStart = Readonly<{
   orgDefinitionId: string
   sourceOrgRunId?: string | null
   /** Settings carried from the heading switcher. */
-  carried?: ChatStartSettings | null
+  carried?: RunStartSettings | null
 }>
 
 let draftSequence = 0
@@ -83,7 +84,7 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
   const orgs = () => useAgentOrgDefinitionStore()
   const schemaFor = (runtimeKind: string, llmModelIdentifier: string) =>
     useLLMProviderConfigStore().modelConfigSchemaByIdentifier(runtimeKind, llmModelIdentifier)
-  const defaultConfigFor = (choice: RunModelChoice) => explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), null)
+  const defaultConfigFor = (choice: RunModelChoice) => explicitModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), null)
   const memberOverrideDeps: MemberOverrideDeps = { defaultConfigFor, schemaFor }
   const tempWorkspace = (): RunWorkspaceChoice =>
     ({ kind: 'existing', workspaceId: useWorkspaceStore().tempWorkspaceId ?? TEMP_WORKSPACE_ID })
@@ -216,7 +217,7 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
       ...target.root,
       runtimeKind: choice.runtimeKind,
       llmModelIdentifier: choice.llmModelIdentifier,
-      llmConfig: explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), choice.llmConfig),
+      llmConfig: explicitModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), choice.llmConfig),
       autoExecuteTools: autoExecuteForNewRuntimeSelection(choice.runtimeKind, target.root.autoExecuteTools),
     }
   }
@@ -327,6 +328,11 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
     current.agentOverrides = {}
   }
 
+  // A broken topology blocks Run (see `readiness`); its details go to the console once, when found.
+  watch(() => (memberTree.value?.status === 'blocked' ? memberTree.value.diagnostic.message : null), (message) => {
+    if (message) console.warn('AgentOrg launch blocked:', message)
+  })
+
   /** Why Run is disabled (REQ-006/AC-002): no model anywhere, an unavailable runtime, an unavailable Org. */
   const readiness = computed<OrgLaunchReadiness>(() => {
     const current = draft.value
@@ -335,7 +341,7 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
     if (current.unavailable || !org.value) return { ready: false, reason: unavailable }
     const tree = memberTree.value
     if (!tree) return { ready: false, reason: '' }
-    // A broken topology is not something the user can fix here; the details go to the console.
+    // A broken topology is not something the user can fix here (its details are logged above).
     if (tree.status === 'blocked') return { ready: false, reason: unavailable }
     const availability = useRuntimeAvailabilityStore()
     const scopes: RunSettingsValues[] = [current.root]
@@ -351,10 +357,6 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
   const launch = async (navigate: (route: RouteLocationRaw) => Promise<unknown>): Promise<void> => {
     const current = draft.value
     if (!current || current.phase !== 'ready' || !readiness.value.ready) return
-    if (memberTree.value?.status === 'blocked') {
-      console.warn('AgentOrg launch blocked:', memberTree.value.diagnostic.message)
-      return
-    }
     current.phase = 'launching'
     current.error = null
     try {
@@ -379,7 +381,7 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
   }
 
   /** The draft's settings as the heading switcher carries them. */
-  const startSettings = computed<ChatStartSettings | null>(() => (draft.value ? {
+  const startSettings = computed<RunStartSettings | null>(() => (draft.value ? {
     workspace: draft.value.root.workspace,
     runtimeKind: draft.value.root.runtimeKind,
     llmModelIdentifier: draft.value.root.llmModelIdentifier,
