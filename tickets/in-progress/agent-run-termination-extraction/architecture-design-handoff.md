@@ -59,3 +59,4 @@
 
 ## Route
 - Medium/High → `/architecture_reviewer` (rule: "architectural_risk=High"). Delivered 2026-10-05 (target run `architecture_reviewer_2e6d87408aa4462c992aae977449ef6a`).
+- ARCH-REV-001 Pass on SR-004 recorded 2026-10-05; implementation handoff delivered by the reviewer to /implementation_engineer.

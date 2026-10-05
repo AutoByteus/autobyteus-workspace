@@ -363,3 +363,9 @@ N/A.
 - Check with grep that `agent-run-termination` is imported only by `agent-run.ts`, including `test-support/`
   (E-X2).
 - Report effective line counts of both files in the implementation handoff.
+- ARCH-REV-001 notes:
+  - N-1: the coalescing test asserts promise identity (`toBe`), not just equal resolved values; equality would not
+    catch an added `async` wrapper.
+  - N-2: `warn` and the other AgentRun callbacks are passed as lazy closures.
+  - N-3: the wait loop re-reads `inputDispatch.active()` on every iteration, as
+    `while (this.activeInputDispatch) await this.activeInputDispatch` does today.

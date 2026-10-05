@@ -59,3 +59,8 @@
 - Persisted data: Not Affected.
 - Classification: `task_size=Medium`, `architectural_risk=High` (concurrency and blast radius on every Stop).
 - Requirements: unchanged (basis SR-002/SR-003). Routing: per the handoff rules.
+- 2026-10-05 note (no new SR round): ARCH-REV-001 gave **Pass** on SR-004 (requirements SR-003); report
+  `design-review-report.md`, record `architecture-review-revision-record.md`. Port, shape rules and Medium/High
+  confirmed. Non-blocking N-1 to N-3 (promise-identity test, lazy closures, re-read `active()` in the wait loop) are
+  added to design-spec "Guidance For Implementation". The reviewer delivered the implementation handoff to
+  `/implementation_engineer`; not repeated here.
