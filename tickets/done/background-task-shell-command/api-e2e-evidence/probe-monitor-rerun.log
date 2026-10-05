@@ -1,0 +1,26 @@
+[   0.7] INIT {"cli":"2.1.283","tools":[…]}
+[   3.2] TEXT "I'll fetch the Monitor tool schema and then use it to monitor that shell command."
+[   3.5] TOOL_USE {"id":"toolu_01EdsJtgfxqyURXquzZGwgf8","name":"ToolSearch","input":{"query":"select:Monitor","max_results":1},"parent_tool_use_id":null}
+[   3.5] TOOL_RESULT "[{\"type\":\"tool_reference\",\"tool_name\":\"Monitor\"}]"
+[   5.9] TOOL_USE {"id":"toolu_01CpLr6k5sBE38y7cFDJaVDt","name":"Monitor","input":{"command":"for i in 1 2 3; do echo tick $i; sleep 2; done","description":"streaming monitor test","timeout_ms":15000},"parent_tool_use_id":null}
+[   7.3] TASK {"type":"system","subtype":"background_tasks_changed","tasks":[{"task_id":"bj9uz7v2y","task_type":"local_bash","description":"streaming monitor test"}]}
+[   7.3] TASK {"type":"system","subtype":"task_started","task_id":"bj9uz7v2y","tool_use_id":"toolu_01CpLr6k5sBE38y7cFDJaVDt","description":"streaming monitor test","is_backgrounded":true,"task_type":"local_bash"}
+[   7.3] TOOL_RESULT "\"Monitor started (task bj9uz7v2y, expires in 15s unless the source ends first; you get one notice at expiry — re-arm if you still need the watch). You will be notified on each event. Keep working — do not poll or sleep. Events may arrive while you are waiting for the user — an event is not their reply.\""
+[   9.9] TEXT "Monitor started successfully. The streaming command `for i in 1 2 3; do echo tick $i; sleep 2; done` is now running in the background. I'll receive notifications for each line of output it produces. T"
+[   9.9] RESULT {"subtype":"success","origin":null}
+[   9.9] INIT {"cli":"2.1.283","tools":[…]}
+[  11.8] TEXT "Monitor event received: **tick 1** ✓"
+[  11.9] RESULT {"subtype":"success","origin":{"kind":"task-notification"}}
+[  11.9] INIT {"cli":"2.1.283","tools":[…]}
+[  13.0] TEXT "Monitor event received: **tick 2** ✓"
+[  13.0] RESULT {"subtype":"success","origin":{"kind":"task-notification"}}
+[  13.0] INIT {"cli":"2.1.283","tools":[…]}
+[  13.4] TASK {"type":"system","subtype":"background_tasks_changed","tasks":[]}
+[  13.4] TASK {"type":"system","subtype":"task_updated","task_id":"bj9uz7v2y","patch":{"status":"completed","end_time":1791172166805}}
+[  13.4] TASK {"type":"system","subtype":"task_notification","task_id":"bj9uz7v2y","tool_use_id":"toolu_01CpLr6k5sBE38y7cFDJaVDt","status":"completed","output_file":"/private/tmp/claude-501/-private-tmp-bgcmd-monitor-wd/c144fc23-3ee7-4a81-abcd-3a1c01d6d14b/tasks/bj9uz7v2y.output","summary":"Monitor \"streaming monitor test\" stream ended"}
+[  14.5] TEXT "Monitor event received: **tick 3** ✓\n\nThe streaming monitor successfully captured all three events from the test command. The command completed its loop and the monitor is now finished."
+[  14.6] RESULT {"subtype":"success","origin":{"kind":"task-notification"}}
+[  14.6] INIT {"cli":"2.1.283","tools":[…]}
+[  17.0] TEXT "Monitor completed successfully! ✓\n\nThe streaming monitor captured all events from the test command:\n- **tick 1**\n- **tick 2** \n- **tick 3**\n\nThe monitor task (bj9uz7v2y) has ended cleanly after the sh"
+[  17.0] RESULT {"subtype":"success","origin":{"kind":"task-notification"}}
+[  30.3] END {}

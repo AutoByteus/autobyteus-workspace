@@ -265,6 +265,27 @@ describe("ClaudeBackgroundTaskRegistry shell commands (DS-004, REQ-002, REQ-007)
     expect(emitted).toEqual([running("bg1", "desc bg1", "shell", "pnpm test")]);
   });
 
+  it("lists an auto-backgrounded foreground Bash with its command from the first snapshot (live CLI 2.1.283 frame order, UNK-001)", () => {
+    const { emitted, feed } = createRegistry();
+    const command = "python3 -c \"import time; time.sleep(25); print('AUTO_BG_DONE')\"";
+
+    // CLAUDE_AUTO_BACKGROUND_TASKS=1: task_started (foreground) → background_tasks_changed → task_updated → tool_result.
+    feed(
+      toolUse("toolu_a", "Bash", { command, description: "Run Python sleep" }),
+      taskStarted("byn7y7hqp", false, { description: "Run Python sleep", tool_use_id: "toolu_a" }),
+      bgChanged([["byn7y7hqp", "Run Python sleep"]]),
+      taskUpdated("byn7y7hqp", { is_backgrounded: true }),
+      toolResult("toolu_a"),
+      bgChanged([]),
+      taskUpdated("byn7y7hqp", { status: "completed" }),
+      taskNotification("byn7y7hqp"),
+    );
+
+    expect(emitted[0]).toEqual(running("byn7y7hqp", "Run Python sleep", "shell", command));
+    expect(emitted.every((task) => task.command === command)).toBe(true);
+    expect(emitted.at(-1)).toMatchObject({ status: "completed", command });
+  });
+
   it("keeps the command exactly as the tool call gave it, including surrounding whitespace and newlines", () => {
     const { emitted, feed } = createRegistry();
     const heredoc = "cat <<'EOF' > out.txt\nhello\nEOF\n";

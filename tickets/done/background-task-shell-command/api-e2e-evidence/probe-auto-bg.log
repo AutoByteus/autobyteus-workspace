@@ -1,0 +1,8 @@
+[   0.7] INIT {"cli":"2.1.283","tools":[…]}
+[   3.7] TOOL_USE {"id":"toolu_01FhRb5cojVGff9HCz7nRgF6","name":"Bash","input":{"command":"sleep 15; echo AUTO_BG_DONE","description":"Run sleep and echo command with 4 second timeout","timeout":4000,"run_in_background":false},"parent_tool_use_id":null}
+[   8.1] TASK {"type":"system","subtype":"task_started","task_id":"biz588q3k","tool_use_id":"toolu_01FhRb5cojVGff9HCz7nRgF6","description":"Run sleep and echo command with 4 second timeout","is_backgrounded":false,"task_type":"local_bash"}
+[   9.1] TASK {"type":"system","subtype":"task_notification","task_id":"biz588q3k","tool_use_id":"toolu_01FhRb5cojVGff9HCz7nRgF6","status":"failed","output_file":"","summary":"Run sleep and echo command with 4 second timeout"}
+[   9.1] TOOL_RESULT "\"Exit code 143\\nCommand timed out after 4s\""
+[  12.7] TEXT "The tool returned an error: **Exit code 143, Command timed out after 4s**\n\nThe command `sleep 15; echo AUTO_BG_DONE` was executed in the foreground with a 4-second timeout. Since the sleep phase requi"
+[  12.7] RESULT {"subtype":"success","origin":null}
+[  40.3] END {}

@@ -636,11 +636,21 @@ that block. The tracker passes every assistant/user frame to
 recorded even while a Stop is pending). The registry keeps the `input.command`
 of each tool call in flight by tool_use id, moves it to the task on
 `task_started` (whether or not the task is backgrounded yet), forgets it on the
-call's `tool_result`, and clears everything in `clear()`. The CLI lists a task in
-`background_tasks_changed` before its `task_started`, so the first snapshot of a
-background Bash usually has `command: null` and an updated snapshot with the
-command follows at once. A task without a correlated tool call (subagents,
-workflows, or a CLI that drops `tool_use_id`) keeps `command: null`.
+call's `tool_result`, and clears everything in `clear()`. Frame order depends on
+how the task became a background task. For an explicit `run_in_background`
+Bash the CLI lists the task in `background_tasks_changed` before its
+`task_started`, so the first snapshot usually has `command: null` and an updated
+snapshot with the command follows at once. When the CLI moves a running
+foreground Bash to the background (auto-background, e.g.
+`CLAUDE_AUTO_BACKGROUND_TASKS=1`), the order is `task_started` (foreground, with
+`tool_use_id`) → `background_tasks_changed` → `task_updated`
+(`is_backgrounded`), so the command is present from the first snapshot (CLI
+2.1.283). Once known, the command stays on every later snapshot of the task,
+including the completed, failed and stopped ones. A task without a correlated
+tool call (subagents, workflows, or a CLI that drops `tool_use_id`) keeps
+`command: null`. The registry does not filter by tool name, so any tool_use
+with `input.command` is covered: today only `Bash` reaches it, because
+AutoByteus does not enable `Monitor` for Claude sessions.
 
 `BACKGROUND_TASK_UPDATED` (`agent-execution/domain/agent-background-task.ts`)
 is the runtime-neutral background-task event: `{task_id, kind, description,

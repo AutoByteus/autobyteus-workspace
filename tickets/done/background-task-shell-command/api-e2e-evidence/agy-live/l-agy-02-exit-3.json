@@ -1,0 +1,27 @@
+{
+  "case": "L-AGY-02",
+  "runId": "agy_background_updates_live_660cc268_ee00_45d8_8_b57ef52dd8cd46f3a7abc1961307cae6",
+  "model": "gemini-3.8-flash-high",
+  "turnEndAtMs": 5742,
+  "running": {
+    "at": 5742,
+    "task_id": "3b03bce7-ba90-4751-b1d8-a9763fd63011/task-2",
+    "kind": "shell",
+    "description": "sleep 10; echo FAILING >&2; exit 3",
+    "command": "sleep 10; echo FAILING >&2; exit 3",
+    "status": "running",
+    "summary": null,
+    "started_at": "2026-10-05T03:48:17.394Z"
+  },
+  "failed": {
+    "at": 13722,
+    "task_id": "3b03bce7-ba90-4751-b1d8-a9763fd63011/task-2",
+    "kind": "shell",
+    "description": "sleep 10; echo FAILING >&2; exit 3",
+    "command": "sleep 10; echo FAILING >&2; exit 3",
+    "status": "failed",
+    "summary": "The command exited with code 3.\nOutput:\nFAILING",
+    "started_at": "2026-10-05T03:48:17.394Z"
+  },
+  "result": "Pass"
+}

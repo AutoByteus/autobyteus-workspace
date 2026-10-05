@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.94-beta.5 test:e2e:background-tasks-panel /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/autobyteus-web
+> node tests/e2e/background-tasks-panel-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/tickets/in-progress/background-task-shell-command/api-e2e-evidence/browser-probe
+
+Background tasks browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/tickets/in-progress/background-task-shell-command/api-e2e-evidence/browser-probe/evidence.json
