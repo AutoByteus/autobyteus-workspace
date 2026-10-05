@@ -3,6 +3,7 @@ import {
 } from "../services/server-settings-service.js";
 
 export const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = "autobyteus-retrospective-skill-improver";
+export const PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID = "autobyteus-project-task-manager";
 export const DAILY_ASSISTANT_AGENT_DEFINITION_ID = "autobyteus-daily-assistant";
 
 export type BuiltInAgentSettingDefault = {
@@ -21,6 +22,7 @@ export type BuiltInAgentDefinition = {
 };
 
 export const BUILT_IN_AGENT_DEFINITIONS = [
+  { id: PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID, templateDirName: "project-task-manager", displayName: "Project Task Manager" },
   {
     id: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     templateDirName: "retrospective-skill-improver",

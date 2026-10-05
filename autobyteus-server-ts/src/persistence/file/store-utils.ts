@@ -213,6 +213,7 @@ export const updateJsonFile = async <T>(
   filePath: string,
   fallback: T,
   updater: (value: T) => Promise<T> | T,
+  onCommitted?: (value: T) => void,
 ): Promise<T> =>
   withFilePathLock(filePath, async () => {
     await ensureParentDir(filePath);
@@ -221,6 +222,7 @@ export const updateJsonFile = async <T>(
     const tempPath = getTempPath(filePath);
     await fs.writeFile(tempPath, encodeJson(nextValue), "utf-8");
     await fs.rename(tempPath, filePath);
+    onCommitted?.(nextValue);
     return nextValue;
   });
 

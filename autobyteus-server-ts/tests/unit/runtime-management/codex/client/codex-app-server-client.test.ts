@@ -1,5 +1,5 @@
 import { EventEmitter } from "node:events";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   CodexAppServerClient,
   describeCodexAppServerSpawnFailure,
@@ -20,6 +20,25 @@ const mockChildProcess = () => {
 
 describe("CodexAppServerClient spawn diagnostics", () => {
   beforeEach(() => spawnMock.mockReset());
+  afterEach(() => vi.useRealTimers());
+
+  it("retains a failed exact child close and retries that same process without relaunch", async () => {
+    const child = mockChildProcess(); spawnMock.mockReturnValue(child);
+    const client = new CodexAppServerClient({ command: 'test-owned-codex', args: ['app-server'], cwd: '/test-owned' });
+    await client.start(); vi.useFakeTimers();
+    vi.mocked(child.kill as any).mockImplementation((signal: string) => {
+      if (signal === 'SIGKILL') throw new Error('test escalation denied');
+      return false;
+    });
+    const first = client.close(); expect(client.close()).toBe(first);
+    const failed = expect(first).rejects.toThrow('exact process escalation failed');
+    await vi.advanceTimersByTimeAsync(2_000); await failed;
+    expect(spawnMock).toHaveBeenCalledTimes(1);
+    vi.mocked(child.kill as any).mockImplementation(() => { queueMicrotask(() => child.emit('close', 0, null)); return true; });
+    await client.close(); const stopped = vi.mocked(child.kill as any).mock.calls.length;
+    await client.close(); expect(child.kill).toHaveBeenCalledTimes(stopped);
+    expect(spawnMock).toHaveBeenCalledTimes(1);
+  });
 
   it("preserves the pre-ticket external Codex environment and real home selection", async () => {
     const originalHome = process.env.HOME;

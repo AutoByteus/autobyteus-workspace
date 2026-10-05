@@ -139,6 +139,19 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
     expect(f.handle.terminate).toHaveBeenCalledTimes(2);
   });
 
+  it("retains the same frozen finish authority after an unaccepted stop, without unregistering", async () => {
+    const f = build({ handleTerminate: vi.fn<() => Promise<Result>>()
+      .mockResolvedValueOnce({ accepted: false, code: "EXACT_PROCESS_EXIT_PENDING" })
+      .mockResolvedValue({ accepted: true }) });
+    await expect(f.run.terminate()).resolves.toMatchObject({ accepted: false });
+    expect(f.onTerminated).not.toHaveBeenCalled();
+    await expect(f.run.terminate()).resolves.toEqual({ accepted: true });
+    expect(f.handle.terminate).toHaveBeenCalledTimes(2);
+    expect(f.onTerminated).toHaveBeenCalledOnce();
+    await expect(f.run.terminate()).resolves.toEqual({ accepted: true });
+    expect(f.handle.terminate).toHaveBeenCalledTimes(2);
+  });
+
   it("re-fences after an unaccepted fence", async () => {
     const f = build({
       handleTerminate: async () => ({ accepted: true }),

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useRunHistoryStore } from '../runHistoryStore';
 import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport';
+import linkedOrgHistory from '~/test-support/fixtures/linked-org-history-public.json';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
@@ -687,6 +688,105 @@ describe('runHistoryStore', () => {
     expect(store.getTeamNodes('/ws/a').map((team) => team.teamRunId)).toEqual(['team-1']);
     expect(store.getTeamNodes('/ws/a')).toHaveLength(1);
     expect(store.historyFamilyErrors).toEqual({ workspace: null, agentOrg: null });
+  });
+
+  it('loads all retained linked Org trees from the real public facade fixture without losing family or worker identity', async () => {
+    // Public-only fixture provenance records real stored/active-seam producer controls.
+    // Never import server/core into the web, or accept private lifetime fields here.
+    queryMock.mockImplementation(async ({ query }: { query: string }) => {
+      if (query === 'ListWorkspaceRunHistory') return { data: { listWorkspaceRunHistory: [] }, errors: [] };
+      if (query === 'ListCollaborationRootHistory') return {
+        data: { listCollaborationRootHistory: [
+          { root_subject_kind: 'agent_team', root_run_id: 'standalone-team-not-an-org' },
+          ...linkedOrgHistory,
+        ] }, errors: [],
+      };
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+    const store = useRunHistoryStore();
+    await store.fetchTree();
+    const assertFamily = () => {
+      expect(store.historyFamilyErrors).toEqual({ workspace: null, agentOrg: null });
+      expect(store.agentOrgHistory).toHaveLength(3);
+      expect(store.agentOrgHistory.map(row => [row.rootRunId, row.isActive, row.executionTree])).toEqual(
+        linkedOrgHistory.map(row => [row.root_run_id, row.is_active, row.org]),
+      );
+      const visible = store.getTreeNodes().flatMap(node => node.agentOrgDefinitions).flatMap(group => group.runs);
+      expect(visible.map(row => row.rootRunId).sort()).toEqual(linkedOrgHistory.map(row => row.root_run_id).sort());
+      for (const row of visible) expect(row.executionTree).toEqual(
+        linkedOrgHistory.find(original => original.root_run_id === row.rootRunId)!.org,
+      );
+      expect(JSON.stringify(store.agentOrgHistory)).not.toContain('taskLifetime');
+    };
+    assertFamily();
+    await store.refreshAgentOrgHistory();
+    assertFamily();
+    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
+      query: 'ListCollaborationRootHistory', fetchPolicy: 'network-only', context: { queryDeduplication: false },
+    }));
+    expect(agentOrgContextsStoreMock.reconcileRetainedHistory).toHaveBeenCalledWith(linkedOrgHistory.map(row => row.root_run_id));
+  });
+
+  it.each(['private-stamp', 'wrong-root'] as const)('scoped public Org refresh keeps the complete forest and rejects %s without replacing other rows', async invalid => {
+    queryMock.mockImplementation(async ({ query }: { query: string }) => {
+      if (query === 'ListWorkspaceRunHistory') return { data: { listWorkspaceRunHistory: [] }, errors: [] };
+      return { data: { listCollaborationRootHistory: linkedOrgHistory }, errors: [] };
+    });
+    const store = useRunHistoryStore();
+    await store.fetchTree();
+    const id = linkedOrgHistory[0]!.root_run_id;
+    const others = store.agentOrgHistory.filter(row => row.rootRunId !== id);
+    queryMock.mockReset();
+    const updated = { ...linkedOrgHistory[0]!, summary: 'Scoped current summary' };
+    queryMock.mockResolvedValueOnce({ data: { getAgentOrgRootHistory: updated }, errors: [] });
+    await store.refreshAgentOrgHistoryItem(id);
+    expect(queryMock).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+      query: 'GetAgentOrgRootHistory', variables: { orgRunId: id }, fetchPolicy: 'network-only',
+      context: { queryDeduplication: false },
+    }));
+    expect(store.agentOrgHistory).toHaveLength(3);
+    const selected = store.agentOrgHistory.find(row => row.rootRunId === id)!;
+    expect(selected.summary).toBe('Scoped current summary');
+    expect(selected.executionTree).toEqual(updated.org);
+    for (const row of others) expect(store.agentOrgHistory.find(next => next.rootRunId === row.rootRunId)).toBe(row);
+    const retained = store.agentOrgHistory;
+    const bad = structuredClone(updated);
+    if (invalid === 'private-stamp') Object.assign(bad.org.rootOrg.taskExecutions[0]!, {
+      taskLifetime: { lifetimeId: 'negative-scoped-control', purpose: 'assignment' },
+    });
+    else bad.org.rootOrg.orgRunId = 'not-selected-root';
+    queryMock.mockResolvedValueOnce({ data: { getAgentOrgRootHistory: bad }, errors: [] });
+    await store.refreshAgentOrgHistoryItem(id);
+    expect(store.agentOrgHistory).toBe(retained);
+    expect(store.agentOrgHistoryItemErrors[id]).toContain(invalid === 'private-stamp' ? 'taskLifetime' : 'does not match');
+    expect(store.historyFamilyErrors.agentOrg).toBeNull();
+    queryMock.mockResolvedValueOnce({ data: { getAgentOrgRootHistory: updated }, errors: [] });
+    await store.refreshAgentOrgHistoryItem(id);
+    expect(store.agentOrgHistoryItemErrors[id]).toBeUndefined();
+  });
+
+  it('still rejects a private-stamped Org history reply and keeps the last valid complete family', async () => {
+    let leakPrivateStamp = false;
+    queryMock.mockImplementation(async ({ query }: { query: string }) => {
+      if (query === 'ListWorkspaceRunHistory') return { data: { listWorkspaceRunHistory: [] }, errors: [] };
+      const rows = structuredClone(linkedOrgHistory);
+      if (leakPrivateStamp) Object.assign(rows[0]!.org.rootOrg.taskExecutions[0]!, {
+        taskLifetime: { lifetimeId: 'negative-private-control', purpose: 'assignment' },
+      });
+      return { data: { listCollaborationRootHistory: rows }, errors: [] };
+    });
+    const store = useRunHistoryStore();
+    await store.fetchTree();
+    const retained = store.agentOrgHistory;
+    expect(retained).toHaveLength(3);
+    leakPrivateStamp = true;
+    await store.fetchTree();
+    expect(store.agentOrgHistory).toBe(retained);
+    expect(store.historyFamilyErrors.agentOrg).toContain('taskLifetime');
+    expect(store.historyFamilyErrors.workspace).toBeNull();
+    await store.refreshAgentOrgHistory();
+    expect(store.agentOrgHistory).toBe(retained);
+    expect(store.historyFamilyErrors.agentOrg).toContain('taskLifetime');
   });
 
   it('retains each successful history-family slice when the other query fails', async () => {

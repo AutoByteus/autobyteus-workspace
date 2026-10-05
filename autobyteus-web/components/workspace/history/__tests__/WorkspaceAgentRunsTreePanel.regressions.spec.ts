@@ -220,6 +220,7 @@ const {
       removeWorkspace: vi.fn().mockResolvedValue({ workspaceRootPath: '/ws/a', message: 'removed' }),
     },
     selectionStoreMock: {
+      beginSelectionIntent: vi.fn(),
       selectedType: null as 'agent' | 'team' | null,
       selectedRunId: null as string | null,
       selectRun: vi.fn(),
@@ -318,6 +319,12 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
     runHistoryState.workspaceHistoryErrorById = {};
     runHistoryState.workspaceGroups = [];
     runHistoryState.teamNodesByWorkspace = {};
+    let currentIntent: symbol | null = null;
+    selectionStoreMock.beginSelectionIntent.mockImplementation(() => {
+      const token = Symbol('test-selection');
+      currentIntent = token;
+      return { isCurrent: () => currentIntent === token };
+    });
     selectionStoreMock.selectedType = null;
     selectionStoreMock.selectedRunId = null;
     selectionStoreMock.selectRun.mockImplementation((runId: string, type: 'agent' | 'team') => {
@@ -328,12 +335,13 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
       if ('teamRunId' in row) {
         selectionStoreMock.selectedType = 'team';
         selectionStoreMock.selectedRunId = row.teamRunId;
-        return;
+        return { disposition: 'committed' };
       }
 
       selectionStoreMock.selectedType = 'agent';
       selectionStoreMock.selectedRunId = row.runId;
       runHistoryState.selectedRunId = row.runId;
+      return { disposition: 'committed' };
     });
   });
 
@@ -430,7 +438,10 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
         teamRunId: 'team-1',
         memberAddress: '/super_agent',
       }),
+      { selectionIntent: selectionStoreMock.beginSelectionIntent.mock.results[0].value },
     );
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledTimes(1);
+    expect(selectionStoreMock.beginSelectionIntent).toHaveBeenCalledTimes(1);
   });
 
   it('keeps a previously selected team expanded when another team row is opened', async () => {

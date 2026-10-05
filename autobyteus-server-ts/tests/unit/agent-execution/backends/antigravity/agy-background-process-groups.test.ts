@@ -72,7 +72,7 @@ describe("AGY background process-group signalling", () => {
       return true;
     }) as typeof process.kill);
 
-    expect(() => signalProcessGroups([300, 400, 500], "SIGTERM")).not.toThrow();
+    expect(() => signalProcessGroups([300, 400, 500], "SIGTERM")).toThrow("Exact AGY process-group signal failed");
     expect(signalled).toEqual([-300, -400, -500]);
   });
 });

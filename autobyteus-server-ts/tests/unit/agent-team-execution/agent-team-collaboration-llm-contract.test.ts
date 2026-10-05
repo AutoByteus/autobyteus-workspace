@@ -53,11 +53,11 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       sendTool: "c2911fdc939324ebfa2cc7d66c32e479a4b4b996004e8628b2900ce78c365909",
       sendRecipient: "b9c340525eb1af6c31faaa12c1cb8ccb18d7110cec8577bef85df196dfd0b801",
       sendExactRun: "c847864e1dfe9745cab69b255ad3960185cf6c93ff78b647f809ec9fa85971cb",
-      delegateTool: "6119c6b09eba5dd0ba706de167daca3e0507b9d96d0fb703bc1b8611384ec7e6",
+      delegateTool: "efbc799f9b1c66326278e2d73e74aa10a508403ff90cd7a7c19814166b3bdb4e",
       delegateRecipient: "c53d279b572b829451a03b34195be0dc913ca61f397412e769aecd128a04de0a",
-      delegateDescription: "b5e9223456da4f02bd95fa69a1b0298b255f62839f3a8ea657adece6ad4a88dc",
-      delegateReferences: "7d4b59ec1a78e52a8c09657dbb5e296cf424bb0b5f9148c06fc59b3b10997c69",
-      collaborationPrompt: "36bbec94d4433debdb4c2416b7195cda7704c035cb4a53b56ee0c36b32d8970e",
+      delegateDescription: "31d5193d5849bf4df65d443af5061384cf1e32e41839793d1d711bfe493b9da4",
+      delegateReferences: "8f6e0bd3e58880db150c3516c898ac4fb00ab30dce9fa0161739c0a09c5763ae",
+      collaborationPrompt: "3e434f0c69f3b91efe18cec4ad07658b8b94c118299b2ef7695cbc2eb9086caf",
     });
   });
 
@@ -72,7 +72,7 @@ describe("approved AgentTeam collaboration LLM contract", () => {
     expect(prompt).toContain("Follow up on a copy only through `send_message_to` with its\n`target_agent_run_id`");
     expect(prompt).toContain("a message to its run ID restores it with its\nconversation");
     expect(prompt).toContain("including a\n  shut-down delegated agent");
-    expect(prompt).not.toMatch(/submit_task_result|review_task_result|Task Lifecycle|task_id|not_started|live-only/);
+    expect(prompt).not.toMatch(/submit_task_result|review_task_result|Task Lifecycle|not_started|live-only/);
     expect(prompt).not.toMatch(/REQ-|DEC-|TODO|TBD/);
     expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("shut-down delegated agent");
     expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).not.toContain("live-only");

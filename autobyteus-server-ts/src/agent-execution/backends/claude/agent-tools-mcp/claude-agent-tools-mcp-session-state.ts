@@ -4,18 +4,20 @@ import type {
   AgentToolMcpSessionOwnerIdentity,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import type {
-  AgentToolMcpRunSessionActivator,
+  AgentToolMcpRunSessionAuthority,
   AgentToolMcpRunSessionActivationResult,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 
 export class ClaudeAgentToolsMcpSessionState {
+  private closed = false;
   private activation: AgentToolMcpRunSessionActivationResult | null = null;
 
-  constructor(private readonly runSessions: AgentToolMcpRunSessionActivator) {}
+  constructor(private readonly runSessions: AgentToolMcpRunSessionAuthority) {}
 
   ensureDescriptor(runContext: ClaudeRunContext): AgentToolMcpDescriptor | null {
+    if (this.closed) throw new Error("Claude run MCP admission is closed.");
     const existing = this.activation;
     if (existing) {
       return existing.kind === "active" ? existing.descriptor : null;
@@ -43,6 +45,11 @@ export class ClaudeAgentToolsMcpSessionState {
     });
     this.activation = result;
     return result.kind === "active" ? result.descriptor : null;
+  }
+  release(runId: string): void {
+    this.closed = true;
+    this.runSessions.deactivateForRun(runId);
+    this.activation = null;
   }
 }
 

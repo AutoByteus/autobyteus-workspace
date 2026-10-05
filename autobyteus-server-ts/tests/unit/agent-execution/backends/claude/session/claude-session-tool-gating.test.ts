@@ -47,7 +47,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
   applicationExecutionContext?: ApplicationExecutionContext | null;
 } = {}) => {
   const sdkClient = createFakeClaudeSdkClient({ providerSessionId: PROVIDER_SESSION_ID });
-  const openStreamingSession = sdkClient.openStreamingSession;
+  const openStreamingSession = sdkClient.acquireStreamingSession;
   const memberExecutionContext = input.memberExecutionContext ?? null;
   const supportedAgentToolsMcpNames = new Set([
     "get_handoff_rules",

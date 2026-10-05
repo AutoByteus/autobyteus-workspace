@@ -7,7 +7,7 @@ import type { ApplicationPublishedArtifactRelayService } from "../../application
 import type { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
 
 export type AgentRunResourceReleaseResult = Readonly<{
-  state: "released" | "already_released";
+  state: "released" | "already_released" | "failed";
   runId: string;
   deactivatedSessionCount: number;
   detached: Readonly<{
@@ -23,6 +23,7 @@ type ResourceRecord = {
   fileChanges: (() => void) | null;
   artifactRelay: (() => void) | null;
   memoryRecorder: (() => void) | null;
+  mcpReleased: boolean;
 };
 
 const toError = (value: unknown): Error =>
@@ -39,6 +40,7 @@ export class AgentRunResourceAttachmentError extends AggregateError {
 }
 
 export class AgentRunResourceManager {
+  private readonly released = new WeakSet<AgentRun>();
   private readonly resourcesByRunId = new Map<string, ResourceRecord>();
 
   constructor(private readonly dependencies: {
@@ -57,6 +59,7 @@ export class AgentRunResourceManager {
       fileChanges: null,
       artifactRelay: null,
       memoryRecorder: null,
+      mcpReleased: false,
     };
     this.resourcesByRunId.set(run.runId, record);
     try {
@@ -75,10 +78,11 @@ export class AgentRunResourceManager {
 
   release(runId: string, expectedRun: AgentRun): AgentRunResourceReleaseResult {
     const record = this.resourcesByRunId.get(runId);
+    if (this.released.has(expectedRun)) return this.alreadyReleased(runId);
     if (!record || record.run !== expectedRun) {
-      return this.alreadyReleased(runId);
+      return Object.freeze({ ...this.alreadyReleased(runId), state: "failed" as const,
+        errors: [new Error(`No exact attachment release authority for '${runId}'.`)] });
     }
-    this.resourcesByRunId.delete(runId);
     const errors: Error[] = [];
     let deactivatedSessionCount = 0;
     const detached = {
@@ -87,39 +91,32 @@ export class AgentRunResourceManager {
       memoryRecorder: false,
     };
 
-    try {
-      deactivatedSessionCount = this.dependencies.runSessions.deactivateForRun(runId);
-    } catch (error) {
-      errors.push(toError(error));
+    if (!record.mcpReleased) {
+      try {
+        deactivatedSessionCount = this.dependencies.runSessions.deactivateForRun(runId);
+        record.mcpReleased = true;
+      } catch (error) { errors.push(toError(error)); }
     }
-    this.detach(record.fileChanges, "fileChanges", detached, errors);
-    this.detach(record.artifactRelay, "artifactRelay", detached, errors);
-    this.detach(record.memoryRecorder, "memoryRecorder", detached, errors);
+    for (const key of ["fileChanges", "artifactRelay", "memoryRecorder"] as const) {
+      if (!record[key]) continue;
+      try {
+        record[key]!();
+        record[key] = null;
+        detached[key] = true;
+      } catch (error) { errors.push(toError(error)); }
+    }
+    if (!errors.length) {
+      this.resourcesByRunId.delete(runId);
+      this.released.add(expectedRun);
+    }
 
     return Object.freeze({
-      state: "released" as const,
+      state: errors.length ? "failed" as const : "released" as const,
       runId,
       deactivatedSessionCount,
       detached: Object.freeze(detached),
       errors: Object.freeze(errors),
     });
-  }
-
-  private detach(
-    disposer: (() => void) | null,
-    key: keyof AgentRunResourceReleaseResult["detached"],
-    detached: { fileChanges: boolean; artifactRelay: boolean; memoryRecorder: boolean },
-    errors: Error[],
-  ): void {
-    if (!disposer) {
-      return;
-    }
-    try {
-      disposer();
-      detached[key] = true;
-    } catch (error) {
-      errors.push(toError(error));
-    }
   }
 
   private alreadyReleased(runId: string): AgentRunResourceReleaseResult {

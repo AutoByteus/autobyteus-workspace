@@ -38,6 +38,11 @@ export const SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION =
   "Exact AgentRun.runId to receive a work request, result, or blocker: any AgentRun in the same root, including a shut-down delegated agent (restored with its conversation before delivery), or a currently active AgentRun elsewhere. Unknown run IDs are rejected; a run ID never brings anything in. Provide either target_agent_run_id or recipient_address, never both.";
 
 export const DELEGATE_TASK_LLM_DESCRIPTION = lines(
+  "Use exactly one work source: task_id alone uses the saved Task description and files;",
+  "without task_id, description is required and reference_files is optional.",
+  "Never supply project_id or description/reference_files keys with task_id.",
+  "Task-owned follow-on copies inherit the lifetime. DONE permanently fences and releases",
+  "all owned copies/helpers, not the Manager, borrowed runs, other Tasks or durable files.",
   "Spawn one new copy of an Agent or AgentTeam and give it this work as its",
   "first message. recipient_address identifies what to copy: a mounted Agent or",
   "AgentTeam, a collaborator, or an available agent or team that is not yet in",
@@ -52,11 +57,13 @@ export const DELEGATE_TASK_LLM_DESCRIPTION = lines(
 export const DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION =
   "Exact canonical absolute non-root address beginning with '/' of the Agent or AgentTeam to copy: a mounted one, a collaborator, or an available agent or team. Every call spawns a new copy; an AgentTeam copy's coordinator receives the work.";
 
+export const DELEGATE_TASK_ID_DESCRIPTION = "Unique saved Task ID on the current node. Supply only recipient_address and task_id; the system reads saved text/files. Blank, unknown, ambiguous or DONE Tasks fail. Each call creates a fresh linked copy.";
+
 export const DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION =
-  "Complete ready-to-run work description: objective, context, scope, constraints, done conditions, expected output, and reference guidance. delegate_task itself delivers this as the new instance's first message; do not resend it with send_message_to.";
+  "Required only when task_id is absent; forbidden when task_id is present. Complete ready-to-run work description: objective, context, scope, constraints, done conditions, expected output, and reference guidance. delegate_task itself delivers this as the new instance's first message; do not resend it with send_message_to.";
 
 export const DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION =
-  "Optional absolute local file paths the new instance should inspect. Use full filesystem paths; relative paths and URLs are rejected.";
+  "Optional only without task_id; forbidden with task_id even as an empty array. Absolute local file paths the new instance should inspect. Use full filesystem paths; relative paths and URLs are rejected.";
 
 export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "## AgentTeam Collaboration",
@@ -99,6 +106,7 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "a collaborator, or an available agent or team); it is not an alias for the new",
   "copy. Every call spawns another copy, so copies can work in parallel.",
   "",
+  "- Supply task_id alone for saved Task text/files, or description and optional reference_files without task_id.",
   "- The work description and reference files become the copy's first message,",
   "  together with your address and AgentRun ID.",
   "- On success, `target_agent_run_id` is the new copy (for an AgentTeam, its",
@@ -109,7 +117,8 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "Follow up on a copy only through `send_message_to` with its",
   "`target_agent_run_id`, in both directions. A copy that stays quiet is shut",
   "down after a while; a message to its run ID restores it with its",
-  "conversation, so follow-ups remain possible at any time.",
+  "conversation, unless its Task lifetime has been permanently closed by DONE.",
+  "Task-owned workers reuse lifetime-local helpers before borrowing existing unowned runs; helpers inherit ownership.",
   "",
   "### Rule-Based Handoffs",
   "",

@@ -9,7 +9,7 @@ import type { AgentRunInputReservationResult } from "../../../src/agent-executio
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../src/agent-team-execution/local/flat-team-execution-context.js";
 import type { PreparedLocalExecutionTermination } from "../../../src/agent-collaboration/execution/domain/prepared-local-execution-termination.js";
-import type { PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
@@ -29,7 +29,8 @@ import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentTeamNode, TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
-import { createTeamAgentStatusDetails } from "../../../src/agent-team-execution/domain/team-agent-status.js";
+import { createTeamAgentStatusDetails, deriveTeamAgentStatusHint } from "../../../src/agent-team-execution/domain/team-agent-status.js";
+import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
@@ -44,6 +45,16 @@ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-r
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
+import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
+import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
+import { ProjectStore } from "../../../src/projects/stores/project-store.js";
+import { ProjectService } from "../../../src/projects/services/project-service.js";
+import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
+import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
+import { ProjectTaskContextLayout } from "../../../src/projects/context/project-task-context-layout.js";
+import { buildDeliveryEndpointForParticipant } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import {
   testAgentNode,
   testTeamRunConfig,
@@ -64,7 +75,7 @@ class PreparedTask implements PreparedTaskExecution {
   readonly binding;
   readonly preparedTeamRuns;
   readonly stagedPlatformBindings = Object.freeze([]);
-  readonly releaseWork = vi.fn();
+  readonly releaseWork = vi.fn(async (assertOpen: () => void) => { assertOpen(); return { accepted: true as const }; });
   readonly abort = vi.fn(async () => undefined);
   private state: "open" | "sealed" | "committed" = "open";
 
@@ -111,6 +122,7 @@ class TestTeamBackend implements TeamRunBackend {
     readonly config: TeamRunConfig,
   ) {
     this.runtimeContext = new FlatTeamExecutionContext({
+      configuredMemberActivationMode: "fresh",
       memberContexts: teamNode.children.filter((node) => node.kind === "agent").map((node) =>
         new FlatAgentExecutionContext({
           address: node.address,
@@ -133,6 +145,7 @@ class TestTeamBackend implements TeamRunBackend {
   getRuntimeContext(): FlatTeamExecutionContext { return this.runtimeContext; }
   isActive(): boolean { return this.active; }
   isTerminated(): boolean { return !this.active; }
+  getInputStateSnapshots() { return []; }
   getLeafAgentStatusSnapshots() { return []; }
   hasOpenExecutionWork(): boolean { return false; }
   async reserveDirectAgentInput(agentRunId: string): Promise<AgentRunInputReservationResult> {
@@ -146,14 +159,28 @@ class TestTeamBackend implements TeamRunBackend {
     this.commands.push({ agentRunId, command });
     return { accepted: true };
   }
-  async prepareTaskAgent(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
+  beginTaskAgent(input: PrepareTaskAgentInput): TaskExecutionPreparationOperation {
+    return createTaskExecutionPreparation({
+      prepare: async assertAccepting => { assertAccepting(); return this.prepareAgent(input); },
+      cancel: () => undefined,
+      releaseResources: () => this.releaseDirectTaskExecution({ agentRunId: input.agentRunId }),
+    });
+  }
+  private async prepareAgent(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
     this.preparedAgents.push(input);
     return new PreparedTask({
       binding: Object.freeze({ kind: "agent", address: input.address, agentRunId: input.agentRunId }),
       onCommit: () => this.liveTaskAgents.add(input.agentRunId),
     });
   }
-  async prepareTaskTeam(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution> {
+  beginTaskTeam(input: PrepareTaskTeamInput): TaskExecutionPreparationOperation {
+    return createTaskExecutionPreparation({
+      prepare: async assertAccepting => { assertAccepting(); return this.prepareTeam(input); },
+      cancel: () => undefined,
+      releaseResources: () => this.releaseDirectTaskExecution({ teamRunId: input.teamRunId }),
+    });
+  }
+  private async prepareTeam(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution> {
     this.preparedTeams.push(input);
     const taskBackend = new TestTeamBackend(
       createChildPhysicalScope(this.physicalScope, input.teamNode.teamRunId),
@@ -176,13 +203,21 @@ class TestTeamBackend implements TeamRunBackend {
       onCommit: () => undefined,
     });
   }
-  restoreTaskAgent(input: RestoreTaskAgentInput): void {
+  async restoreTaskAgent(input: RestoreTaskAgentInput): Promise<void> {
     this.restoredAgents.push(input);
     this.liveTaskAgents.add(input.agentRunId);
   }
   async restoreTaskTeam(_input: RestoreTaskTeamInput): Promise<TeamRun> {
     throw new Error("Task Team restore is outside this integration scenario.");
   }
+  cancelDirectTaskExecution(_reference: TaskExecutionReference): void {}
+  async releaseDirectTaskExecution(reference: TaskExecutionReference): Promise<AgentOperationResult> {
+    if ("agentRunId" in reference) this.liveTaskAgents.delete(reference.agentRunId);
+    else { await this.children.get(reference.teamRunId)?.terminate(); this.children.delete(reference.teamRunId); }
+    return { accepted: true };
+  }
+  cancelRuntimeActivation(): void {}
+  releaseOwnedRuntime(): Promise<AgentOperationResult> { return this.terminate(); }
   hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean {
     return "agentRunId" in reference ? this.liveTaskAgents.has(reference.agentRunId) : this.children.has(reference.teamRunId);
   }
@@ -231,7 +266,7 @@ const manualTimers = () => {
   return { timers, pendingCount: () => pending.size, fireAll: () => { const due = [...pending.values()]; pending.clear(); due.forEach((fire) => fire()); } };
 };
 
-const createHarness = async () => {
+const createHarness = async (linked = false) => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "task-delegation-current-integration-"));
   tempDirs.push(memoryDir);
   const currentConfig = config();
@@ -251,6 +286,22 @@ const createHarness = async () => {
   const inspect = vi.fn(() => ({ kind: "present" as const }));
   let allocatedTaskAgentOrdinal = 0;
   let root: RootTeamRun | null = null;
+  const projectStore = new ProjectStore({ getAppDataDir: () => memoryDir });
+  const contextStore = new ProjectTaskContextStore(new ProjectTaskContextLayout(path.join(memoryDir, "projects")));
+  const tasks = new ProjectTaskService({ store: projectStore, contextStore,
+    requestRuntimeRelease: (identity, lifetimeId, references) => {
+      expect(identity).toEqual(createTeamRootExecutionIdentity(rootTeamRunId));
+      return root!.releaseTaskLifetime(lifetimeId, references);
+    },
+  });
+  const helper = new AgentDefinition({ id: "scope-helper", name: "Scope Helper", description: "Test helper", instructions: "Read work" });
+  const helperTeam = new AgentTeamDefinition({ id: "scope-helpers", name: "Scope Helpers", description: "Test helper Team",
+    instructions: "Read work", nodes: [new TeamMember({ memberName: "lead", ref: helper.id!, refScope: "shared" })], coordinatorMemberName: "lead", handoffs: [] });
+  const helperAdmission = createCollaboratorAdmission({
+    listAgentDefinitions: async () => [helper], listTeamDefinitions: async () => [helperTeam],
+    getAgentDefinition: async id => id === helper.id ? helper : null,
+    getTeamDefinition: async id => id === helperTeam.id ? helperTeam : null,
+  }, { validate: vi.fn(), validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "test", llmConfig: null } })) } as RunModelSelectionValidator);
   const persistence = new TeamRunPersistenceCoordinator({
     rootTeamRunId,
     teamMemoryDir: rootDir,
@@ -263,6 +314,7 @@ const createHarness = async () => {
       allocateForAgentDefinition: async (agentDefinitionId) => `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
     }),
     rootRun: new TeamRun(backend.context, backend),
+    ...(linked ? { lifetimePort: tasks, collaboratorAdmission: helperAdmission } : {}),
     // Collaborators are covered by the Team-root collaborator unit test over the real flat manager.
     collaboratorHost: {
       prepareCollaboratorAgent: () => { throw new Error("No collaborators in this scenario."); },
@@ -283,14 +335,15 @@ const createHarness = async () => {
   });
   const emitStatus = (memberAddress: string, agentRunId: string, status: "idle" | "running") => publisher.publish({
     eventSourceType: TeamRunEventSourceType.AGENT,
-    execution: createTeamAgentExecutionBinding({ root: createTeamRootExecutionIdentity(rootTeamRunId), memberAddress, agentRunId }),
-    payload: { eventType: "AGENT_STATUS", statusHint: status, details: createTeamAgentStatusDetails({ status }) },
+    execution: createTeamAgentExecutionBinding({ root: createTeamRootExecutionIdentity(rootTeamRunId), memberAddress: assertAgentTeamAddress(memberAddress), agentRunId }),
+    payload: { eventType: "AGENT_STATUS", statusHint: deriveTeamAgentStatusHint(status), details: createTeamAgentStatusDetails({ status }) },
   } as TeamRunEvent);
   const lifecycle = (root as unknown as { taskExecutions: { drain(): Promise<void> } }).taskExecutions;
   const drain = async () => {
     for (let i = 0; i < 3; i += 1) { await new Promise<void>((resolve) => setImmediate(resolve)); await lifecycle.drain(); }
   };
-  return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, clock, inspect, emitStatus, drain, publisher, treeStore };
+  return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, clock, inspect, emitStatus, drain, publisher, treeStore,
+    tasks, projectStore, projects: new ProjectService({ store: projectStore, contextStore }) };
 };
 
 afterEach(async () => {
@@ -318,6 +371,79 @@ const delegate = async (
 };
 
 describe("current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message)", () => {
+  // Real root address/lifetime admission and disk commits; provider resources are the local backend double.
+  it.each(["/scope_helper", "/scope_helpers"])("keeps two Task address bring-ins independent at %s, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013)", async address => {
+    const h = await createHarness(true);
+    const manager = context(h.commands, "/coordinator", "run-coordinator");
+    const projectId = (await h.projects.createProject({ name: "Task-owned helper admission" })).projectId;
+    const a = await h.tasks.createTask({ projectId, description: "Task A saved instructions" });
+    const b = await h.tasks.createTask({ projectId, description: "Task B saved instructions" });
+    const dispatch = async (taskId: string) => {
+      const result = await delegate(h.service, manager, { recipient_address: "/worker", task_id: taskId }) as { target_agent_run_id: string };
+      expect(result.target_agent_run_id).toEqual(expect.any(String));
+      return context(h.commands, "/worker", result.target_agent_run_id);
+    };
+    const message = (sender: ReturnType<typeof context>, recipientAddress: string) => h.root.deliverInterAgentMessage({
+      rootTeamRunId, sender: buildDeliveryEndpointForParticipant({ kind: "agent", identity: sender.identity, displayName: "worker" }),
+      recipientAddress, content: "Read these instructions; do not change business status.",
+    });
+    try {
+      const workerA = await dispatch(a.taskId), secondA = await dispatch(a.taskId), workerB = await dispatch(b.taskId);
+      expect(new Set([workerA, secondA, workerB].map(c => c.identity.agentRunId)).size).toBe(3);
+      await expect(message(workerA, address)).resolves.toMatchObject({ accepted: true });
+      await expect(message(workerB, address)).resolves.toMatchObject({ accepted: true });
+      const lifetimes = (await h.projectStore.readState()).taskLifetimes;
+      const lifeA = lifetimes.find(l => l.taskId === a.taskId)!, lifeB = lifetimes.find(l => l.taskId === b.taskId)!;
+      const helperA = lifeA.executions.find(e => e.purpose === "helper")!;
+      const helperB = lifeB.executions.find(e => e.purpose === "helper")!;
+      expect(helperA).toBeDefined(); expect(helperB).toBeDefined();
+      expect(helperA.execution).not.toEqual(helperB.execution);
+      expect(helperA.ingressAgentRunId).not.toBe(helperB.ingressAgentRunId);
+      expect(lifeA.executions.filter(e => e.purpose === "assignment")).toHaveLength(2);
+      const beforeReuse = h.root.getExecutionTreeSnapshot();
+      await expect(message(secondA, address)).resolves.toMatchObject({ accepted: true });
+      await expect(message(workerB, address)).resolves.toMatchObject({ accepted: true });
+      expect(h.root.getExecutionTreeSnapshot()).toEqual(beforeReuse);
+      const reservations = (backend: TestTeamBackend): string[] => [
+        ...backend.reservations, ...[...backend.children.values()].flatMap(reservations),
+      ];
+      expect(reservations(h.backend).filter(id => id === helperA.ingressAgentRunId)).toHaveLength(2);
+      expect(reservations(h.backend).filter(id => id === helperB.ingressAgentRunId)).toHaveLength(2);
+      await expect(message(workerA, "/reviewer")).resolves.toMatchObject({ accepted: true });
+      await expect(message(workerB, "/reviewer")).resolves.toMatchObject({ accepted: true });
+      expect(h.backend.reservations.filter(id => id === "run-reviewer")).toHaveLength(2);
+      expect(h.root.getExecutionTreeSnapshot()).toEqual(beforeReuse);
+      expect((await h.projectStore.readState()).taskLifetimes).toEqual(lifetimes);
+      const stop = vi.spyOn(h.backend, "releaseDirectTaskExecution");
+      await h.tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await h.tasks.drainRuntimeReleases();
+      const state = await h.projectStore.readState();
+      expect(state.taskLifetimes.find(l => l.lifetimeId === lifeA.lifetimeId)).toMatchObject({ completedAt: expect.any(String),
+        executions: lifeA.executions.map(() => expect.objectContaining({ cleanup: "released" })) });
+      expect(state.taskLifetimes.find(l => l.lifetimeId === lifeB.lifetimeId)).toEqual(lifeB);
+      const stopped = stop.mock.calls.map(([ref]) => JSON.stringify(ref));
+      expect(new Set(stopped)).toEqual(new Set(lifeA.executions.map(e => JSON.stringify(e.execution))));
+      expect(h.backend.liveTaskAgents.has(workerB.identity.agentRunId)).toBe(true);
+      expect(h.backend.isActive()).toBe(true);
+      const stops = stop.mock.calls.length, prepared = h.backend.preparedAgents.length + h.backend.preparedTeams.length;
+      await h.tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await h.tasks.drainRuntimeReleases();
+      expect(stop).toHaveBeenCalledTimes(stops);
+      await expect(message(workerA, address)).resolves.toMatchObject({ accepted: false });
+      await expect(message(workerB, address)).resolves.toMatchObject({ accepted: true });
+      expect(h.backend.preparedAgents.length + h.backend.preparedTeams.length).toBe(prepared);
+      // Explicit Delete is not DONE: preserve open B runtime, both assignment forests and durable lifetimes.
+      const treeBytes = await fs.readFile(getTeamRunExecutionTreePath(h.rootDir));
+      const lifetimeBytes = (await h.projectStore.readState()).taskLifetimes;
+      await h.tasks.deleteTask({ projectId, taskId: b.taskId });
+      expect(stop).toHaveBeenCalledTimes(stops);
+      expect(await fs.readFile(getTeamRunExecutionTreePath(h.rootDir))).toEqual(treeBytes);
+      expect((await h.projectStore.readState()).taskLifetimes).toEqual(lifetimeBytes);
+      await expect(h.tasks.updateTask({ projectId, taskId: b.taskId, status: "DONE" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
+      await expect(message(workerB, address)).resolves.toMatchObject({ accepted: true });
+      expect((await h.tasks.listTasks(projectId)).map(t => t.taskId)).toEqual([a.taskId]);
+      expect(h.backend.preparedAgents.length + h.backend.preparedTeams.length).toBe(prepared);
+    } finally { await h.tasks.drainRuntimeReleases(); await h.root.terminate(); }
+  });
+
   it("spawns a fresh task Agent through the only public tool and persists the delegator in one tree write", async () => {
     const harness = await createHarness();
     const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
@@ -475,6 +601,8 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     await delegate(harness.service, coordinator, {
       recipient_address: "/worker", description: "Read the absolute reference", reference_files: [referencePath],
     });
-    expect(harness.backend.preparedAgents[0]!.message.content).toContain(referencePath);
+    const message = harness.backend.preparedAgents[0]!.message;
+    expect(message).toBeDefined();
+    expect(message!.content).toContain(referencePath);
   });
 });

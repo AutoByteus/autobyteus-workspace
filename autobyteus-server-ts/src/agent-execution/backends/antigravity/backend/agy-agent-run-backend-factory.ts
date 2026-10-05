@@ -1,5 +1,7 @@
 import fs from "node:fs/promises";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
+import { createBackendPreparation } from "../../agent-run-backend-preparation.js";
+import type { AgentRunBackendPreparationRequest } from "../../agent-run-backend-factory.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
@@ -26,7 +28,18 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     private readonly mcpSessions: AgentToolMcpRunSessionActivator,
   ) {}
 
-  async createBackend(config: AgentRunConfig, runId: string): Promise<AgyAgentRunBackend> {
+  beginPreparation(request: AgentRunBackendPreparationRequest) {
+    let process: AgyStreamProcess | null = null;
+    const ownProcess = (value: AgyStreamProcess) => { process = value; };
+    return createBackendPreparation({
+      prepare: (assertAccepting) => request.kind === "new"
+        ? this.createBackend(request.config, request.runId, assertAccepting, ownProcess)
+        : this.restoreBackend(request.context, assertAccepting, ownProcess),
+      releaseResources: async () => { await process?.stop(); },
+    });
+  }
+
+  private async createBackend(config: AgentRunConfig, runId: string, assertAccepting: () => void, ownProcess: (process: AgyStreamProcess) => void): Promise<AgyAgentRunBackend> {
     await this.assertAvailable(config);
     const memoryDir = this.requireMemoryDir(config);
     const workspacePath = await this.workspaces.resolveWorkingDirectory(config.workspaceId);
@@ -34,15 +47,17 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     const bindings = this.skills.resolveConfiguredSkillBindingsForAgent(definition);
     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext });
+    assertAccepting();
     const descriptor = this.activateMcp(runId, config, workspacePath, definition);
     const capsule = await createAgyRunCapsule({ runId, memoryDir, workspacePath, identity,
       agentDefinitionId: config.agentDefinitionId, configuredSkillBindings: bindings,
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skills.resolveSkillScope(definition)),
       mcpDescriptor: descriptor });
-    return this.launch(config, runId, capsule, null);
+    assertAccepting();
+    return this.launch(config, runId, capsule, null, assertAccepting, ownProcess);
   }
 
-  async restoreBackend(context: AgentRunContext<RuntimeAgentRunContext>): Promise<AgyAgentRunBackend> {
+  private async restoreBackend(context: AgentRunContext<RuntimeAgentRunContext>, assertAccepting: () => void, ownProcess: (process: AgyStreamProcess) => void): Promise<AgyAgentRunBackend> {
     const config = context.config;
     await this.assertAvailable(config);
     const conversationId = context.runtimeContext instanceof AgyAgentRunContext
@@ -57,15 +72,18 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     // Restore retains the immutable main-agent text, even when the definition has been edited.
+    assertAccepting();
     const descriptor = this.activateMcp(context.runId, config, saved.workspacePath, definition);
     const capsule = await restoreAgyRunCapsule({ runId: context.runId, memoryDir,
       selectedWorkspacePath: currentWorkspace, mcpDescriptor: descriptor });
-    return this.launch(config, context.runId, capsule, conversationId);
+    assertAccepting();
+    return this.launch(config, context.runId, capsule, conversationId, assertAccepting, ownProcess);
   }
 
-  private async launch(config: AgentRunConfig, runId: string, capsule: AgyRunCapsule, expectedId: string | null): Promise<AgyAgentRunBackend> {
+  private async launch(config: AgentRunConfig, runId: string, capsule: AgyRunCapsule, expectedId: string | null, assertAccepting: () => void, ownProcess: (process: AgyStreamProcess) => void): Promise<AgyAgentRunBackend> {
     const process = new AgyStreamProcess();
-    try {
+    ownProcess(process);
+    assertAccepting();
       const init = await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
         workspacePath: capsule.manifest.workspacePath, model: config.llmModelIdentifier,
         conversationId: expectedId });
@@ -76,9 +94,9 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
       if (cwd !== await fs.realpath(capsule.path)) throw new Error("AGY_PROJECT_MISMATCH: CLI did not use the run capsule.");
       // AGY always runs with auto-approve (skip-permissions), whatever the stored or submitted setting.
       if (init.init.permission_mode !== "always-proceed") throw new Error("AGY_PERMISSION_MODE_MISMATCH");
+      assertAccepting();
       return new AgyAgentRunBackend(new AgentRunContext({ runId, config,
         runtimeContext: new AgyAgentRunContext(init.conversation_id) }), process);
-    } catch (error) { process.stop(); throw error; }
   }
 
   private activateMcp(runId: string, config: AgentRunConfig, workspacePath: string, definition: NonNullable<Awaited<ReturnType<AgentDefinitionService["getAgentDefinitionById"]>>>): AgentToolMcpDescriptor | null {

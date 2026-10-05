@@ -1,3 +1,4 @@
+import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { FlatTeamExecutionManager } from "../../../src/agent-team-execution/local/flat-team-execution-manager.js";
@@ -23,6 +24,7 @@ const createFakeAgentRun = (runId: string, statusOf: (runId: string) => string =
   const listeners = new Set<(event: unknown) => void>();
   return {
     runId,
+    bindExecutionAdmissionFence: vi.fn(),
     isActive: () => true,
     getPlatformAgentRunId: () => null,
     getStatusSnapshot: () => ({ status: statusOf(runId) }),
@@ -97,7 +99,7 @@ const createMixedManager = () => {
   });
   const manager = new FlatTeamExecutionManager(context, {
     subTeamRunFactory: { createOrRestore: vi.fn() } as never,
-    agentRunManager: { prepareNewAgentRun } as never,
+    agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
     memoryLocator: {
       getLocation: (_scope: unknown, agentRunId: string) => ({
         memoryDir: `/tmp/team-manager-member-interrupt/${agentRunId}`,
@@ -105,6 +107,7 @@ const createMixedManager = () => {
     } as never,
     activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
     callbacks: {
+      assertExecutionInputAllowed: vi.fn(),
       buildMemberExecutionContext: vi.fn(async ({ identity }) => testMemberExecutionContext({
         rootTeamRunId: teamRunId,
         memberAddress: identity.memberAddress,
@@ -149,15 +152,15 @@ describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
     const { manager, runs, reviewerNode } = createMixedManager();
     const taskAgentRunId = "task-code-reviewer-run-1";
     const initial = new AgentInputUserMessage("start delegated review");
-    const prepared = await manager.prepareTaskAgent({
+    const prepared = await manager.beginTaskAgent({
       taskId: "task-1",
       address: reviewerNode.address,
       agentRunId: taskAgentRunId,
       sourceNode: reviewerNode,
       message: initial,
-    });
+    }).prepare();
     prepared.sealForCommit();
-    prepared.commitAfterDurability().releaseWork();
+    prepared.commitAfterDurability().releaseWork(() => undefined);
     await vi.waitFor(() => expect(runs.get(taskAgentRunId)?.postUserMessage).toHaveBeenCalledWith(initial));
 
     await expect(manager.executeDirectAgentCommand(taskAgentRunId, { kind: "interrupt" }))
@@ -173,14 +176,14 @@ describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
       kind: "post_message", message: new AgentInputUserMessage("configured work"),
     });
     const taskAgentRunId = "task-code-reviewer-run-errored";
-    const prepared = await manager.prepareTaskAgent({
+    const prepared = await manager.beginTaskAgent({
       address: reviewerNode.address,
       agentRunId: taskAgentRunId,
       sourceNode: reviewerNode,
       message: new AgentInputUserMessage("start delegated review"),
-    });
+    }).prepare();
     prepared.sealForCommit();
-    prepared.commitAfterDurability().releaseWork();
+    prepared.commitAfterDurability().releaseWork(() => undefined);
     await vi.waitFor(() => expect(runs.get(taskAgentRunId)?.postUserMessage).toHaveBeenCalledOnce());
 
     const setStatus = (agentRunId: string, status: string) => {

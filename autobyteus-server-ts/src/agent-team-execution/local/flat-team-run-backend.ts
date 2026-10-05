@@ -33,14 +33,18 @@ export class FlatTeamRunBackend implements TeamRunBackend {
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand) {
     return this.manager.executeDirectAgentCommand(agentRunId, command);
   }
-  prepareTaskAgent(input: PrepareTaskAgentInput) { return this.manager.prepareTaskAgent(input); }
-  prepareTaskTeam(input: PrepareTaskTeamInput) { return this.manager.prepareTaskTeam(input); }
+  beginTaskAgent(input: PrepareTaskAgentInput) { return this.manager.beginTaskAgent(input); }
+  beginTaskTeam(input: PrepareTaskTeamInput) { return this.manager.beginTaskTeam(input); }
   restoreTaskAgent(input: RestoreTaskAgentInput) { return this.manager.restoreTaskAgent(input); }
   restoreTaskTeam(input: RestoreTaskTeamInput) { return this.manager.restoreTaskTeam(input); }
+  cancelDirectTaskExecution(reference: TaskExecutionReference) { this.manager.cancelDirectTaskExecution(reference); }
+  releaseDirectTaskExecution(reference: TaskExecutionReference) { return this.manager.releaseDirectTaskExecution(reference); }
   hasLiveDirectTaskExecution(reference: TaskExecutionReference) { return this.manager.hasLiveDirectTaskExecution(reference); }
   tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference) {
     return this.manager.tryShutDownDirectTaskExecutionIfQuiet(reference);
   }
+  cancelRuntimeActivation() { this.manager.cancelRuntimeActivation(); }
+  releaseOwnedRuntime() { return this.manager.releaseOwnedRuntime(); }
   prepareTermination() { return this.manager.prepareTermination(); }
   tryPrepareTerminationIfQuiescent() { return this.manager.tryPrepareTerminationIfQuiescent(); }
   freezeForRootTermination() { return this.manager.freezeForRootTermination(); }

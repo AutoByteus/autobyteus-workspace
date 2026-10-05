@@ -7,7 +7,7 @@ export type PrepareTaskAgentInput = Readonly<{
   address: AgentTeamAddress;
   agentRunId: string;
   sourceNode: TeamRunAgentNode;
-  message: AgentInputUserMessage;
+  message?: AgentInputUserMessage;
 }>;
 
 /** Exact persisted identity of one shut-down task Agent to restore in `restore` mode. */

@@ -1,3 +1,4 @@
+import { acceptTaskSeed } from "../task/task-execution-seed-admission.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
@@ -10,7 +11,7 @@ import type { RootedAgentMemoryLocator } from "../services/rooted-agent-memory-l
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
 import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
-import type { PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
 import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
 import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../domain/collaboration-agent-execution-event.js";
@@ -30,6 +31,7 @@ export type PreparedRootConfiguredAgent = Readonly<{
  * root-hosted task Agents. The resource lifecycle policy stays in the shared task lifecycle.
  */
 export class RootAgentExecutionRegistry {
+  private readonly taskPreparations = new Map<string, TaskExecutionPreparationOperation>();
   private readonly active = new Map<string, ConfiguredAgentExecutionHandle>();
   private readonly prepared = new Map<string, ConfiguredAgentExecutionHandle>();
   private readonly taskAgentRunIds = new Set<string>();
@@ -107,22 +109,37 @@ export class RootAgentExecutionRegistry {
     }
   }
 
-  async prepareTask(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
-    if (!this.materializationOpen) throw new Error("Root task Agent materialization is closed.");
+  beginTaskPreparation(input: PrepareTaskAgentInput): TaskExecutionPreparationOperation {
+    if (!this.materializationOpen || this.taskPreparations.has(input.agentRunId)) throw new Error("Root task Agent preparation is unavailable.");
+    let handle: ConfiguredAgentExecutionHandle | null = null;
+    const operation = createTaskExecutionPreparation({
+      cancel: () => { handle?.cancelActivation(); },
+      releaseResources: async () => {
+        const result = handle ? await handle.releaseRuntime() : { accepted: true };
+        if (result.accepted && handle) {
+          this.prepared.delete(input.agentRunId);
+          this.taskPreparations.delete(input.agentRunId);
+        }
+        return result;
+      },
+      prepare: async (assertAccepting) => {
     const eventGate = new TaskAgentDurabilityEventGate(this.options.callbacks.publishAgentEvent);
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
       ...this.options.callbacks,
       publishAgentEvent: eventGate.publish,
     });
-    const handle = await this.createHandle(
+    handle = await this.createHandle(
       Object.freeze({ ...input.sourceNode, agentRunId: input.agentRunId, platformAgentRunId: null }),
       "fresh",
       callbacks,
     ).catch((error) => { eventGate.abort(); throw error; });
+    assertAccepting();
     this.reserve(input.agentRunId, handle);
+    const exactHandle = handle;
     let activation: PreparedConfiguredAgentActivation;
     try { activation = await handle.prepareConfiguredActivation(); }
-    catch (error) { eventGate.abort(); this.prepared.delete(input.agentRunId); handle.dispose(); throw error; }
+    catch (error) { eventGate.abort(); throw error; }
+    assertAccepting();
     let state: "preparing" | "sealed" | "committed" | "aborted" = "preparing";
     return Object.freeze({
       binding: Object.freeze({ kind: "agent", address: input.address, agentRunId: input.agentRunId }),
@@ -133,28 +150,47 @@ export class RootAgentExecutionRegistry {
         state = "sealed";
       },
       commitAfterDurability: () => {
-        if (state !== "sealed" || this.prepared.get(input.agentRunId) !== handle) throw new Error(`Task AgentRun '${input.agentRunId}' is not sealed.`);
+        if (state !== "sealed" || this.prepared.get(input.agentRunId) !== exactHandle) throw new Error(`Task AgentRun '${input.agentRunId}' is not sealed.`);
+        assertAccepting();
+        this.active.set(input.agentRunId, exactHandle);
         activation.commitAfterDurability();
         this.prepared.delete(input.agentRunId);
-        this.active.set(input.agentRunId, handle);
+        this.active.set(input.agentRunId, exactHandle);
         this.taskAgentRunIds.add(input.agentRunId);
         state = "committed";
         let released = false;
-        return Object.freeze({ releaseWork: () => {
-          if (released) return;
+        if (!eventGate.releaseToLive()) throw new Error("Task publication event gate closed.");
+        return Object.freeze({ releaseWork: (assertOpen: () => void) => {
+          if (released) throw new Error("Task seed already released.");
           released = true;
-          if (!eventGate.releaseToLive()) return;
-          queueMicrotask(() => { void handle.postMessage(input.message); });
+          if (!input.message) throw new Error("Helper awaits an ordinary message.");
+          return acceptTaskSeed(assertOpen, () => exactHandle.postMessage(input.message!));
         } });
       },
       abort: async () => {
-        if (state === "committed" || state === "aborted") return;
-        state = "aborted";
-        this.prepared.delete(input.agentRunId);
+        if (state === "aborted") return;
         eventGate.abort();
-        try { await activation.abort(); } finally { handle.dispose(); }
+        const result = await operation.release();
+        if (!result.accepted) throw new Error("Task Agent release remains pending.");
+        state = "aborted";
       },
     });
+      },
+    });
+    this.taskPreparations.set(input.agentRunId, operation);
+    return operation;
+  }
+
+  cancelTask(agentRunId: string): void {
+    this.taskPreparations.get(agentRunId)?.cancel();
+    (this.active.get(agentRunId) ?? this.prepared.get(agentRunId))?.cancelActivation();
+  }
+  async releaseTask(agentRunId: string): Promise<AgentOperationResult> {
+    this.cancelTask(agentRunId);
+    const operation = this.taskPreparations.get(agentRunId);
+    if (operation) return operation.release();
+    const handle = this.active.get(agentRunId) ?? this.prepared.get(agentRunId);
+    return handle ? handle.releaseRuntime() : { accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" };
   }
 
   reserveInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
@@ -250,6 +286,7 @@ export class RootAgentExecutionRegistry {
       execution,
       activationMode: mode,
       memberExecutionContext,
+      assertInputAllowed: () => callbacks.assertExecutionInputAllowed(identity),
       applicationExecutionContext: callbacks.applicationExecutionContext?.(identity) ?? null,
       callbacks: {
         publishAgentEvent: callbacks.publishAgentEvent,

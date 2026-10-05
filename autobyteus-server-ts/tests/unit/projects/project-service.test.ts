@@ -34,7 +34,7 @@ const createHarness = async () => {
     now: () => new Date(Date.UTC(2026, 8, 26, 0, 0, tick++)),
     createId: () => `project_${++idCounter}`,
   });
-  const readFile = async () => JSON.parse(await fs.readFile(store.getFilePath(), "utf-8"));
+  const readFile = async () => JSON.parse(await fs.readFile(store.getFilePath(), "utf-8")).filter((row: object) => Object.hasOwn(row, "projectId"));
   return { appDataDir, store, registry, workspaceLookup, service, readFile };
 };
 
@@ -328,7 +328,7 @@ describe("ProjectService", () => {
     expect((await harness.service.listProjects()).map((project) => project.name)).toEqual(["existing"]);
   });
 
-  it("reads a released v1.4.86 row without a tasks field as a Project with no Tasks (AC-010)", async () => {
+  it("projects absent optional Task metadata as empty within the current array", async () => {
     const released = {
       projectId: "project_released",
       name: "AutoByteus",
@@ -450,7 +450,7 @@ describe("ProjectService", () => {
     expect(await harness.readFile()).toEqual(before);
   });
 
-  it("projects known fields only without a migration and never persists derived locators/counts", async () => {
+  it("projects known fields only within the current array and never persists derived locators/counts", async () => {
     const p = await harness.service.createProject({name: "Known"});
     const rows = await harness.readFile();
     rows[0].prototypeField = "extra"; rows[0].taskCount = 999;

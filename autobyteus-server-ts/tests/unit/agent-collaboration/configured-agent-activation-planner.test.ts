@@ -1,3 +1,4 @@
+import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -26,7 +27,7 @@ const candidate = (platformAgentRunId: string) => ({
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId,
   commitPublication: vi.fn(),
-  abort: vi.fn(),
+  abort: vi.fn().mockResolvedValue({ kind: "aborted" }),
 });
 
 const build = (input: {
@@ -39,7 +40,7 @@ const build = (input: {
   const prepareRestoreAgentRunFromPlatformState = vi.fn().mockResolvedValue(restoredCandidate);
   const planner = new ConfiguredAgentActivationPlanner({
     identity,
-    manager: { prepareNewAgentRun, prepareRestoreAgentRunFromPlatformState } as never,
+    manager: testActivationManager({ newPreparation: prepareNewAgentRun, platformPreparation: prepareRestoreAgentRunFromPlatformState }) as never,
     activityInspector: {
       inspect: () => input.activity === "indeterminate"
         ? { kind: "indeterminate" as const, error: new Error("unreadable trace") }
@@ -60,7 +61,7 @@ describe("ConfiguredAgentActivationPlanner external restore", () => {
   it("starts a fresh provider conversation for a never-messaged member with a prospective thread id", async () => {
     const fixture = build({ activity: "none" });
 
-    const prepared = await fixture.planner.prepare(config, fixture.binding, "restore");
+    const prepared = await fixture.planner.begin(config, fixture.binding, "restore").prepare();
 
     expect(fixture.prepareNewAgentRun).toHaveBeenCalledWith({ runId: "agent-run", config });
     expect(fixture.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
@@ -77,7 +78,7 @@ describe("ConfiguredAgentActivationPlanner external restore", () => {
   it("restores the exact provider conversation when durable user or assistant activity exists", async () => {
     const fixture = build({ activity: "present" });
 
-    const prepared = await fixture.planner.prepare(config, fixture.binding, "restore");
+    const prepared = await fixture.planner.begin(config, fixture.binding, "restore").prepare();
 
     expect(fixture.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith({
       runId: "agent-run",
@@ -95,9 +96,7 @@ describe("ConfiguredAgentActivationPlanner external restore", () => {
   it("fails closed when real conversation activity has no provider binding", async () => {
     const fixture = build({ activity: "present", platformAgentRunId: null });
 
-    await expect(fixture.planner.prepare(config, fixture.binding, "restore")).rejects.toMatchObject({
-      code: "COLLABORATION_AGENT_CONTINUATION_BINDING_MISSING",
-    });
+    expect(() => fixture.planner.begin(config, fixture.binding, "restore")).toThrowError(expect.objectContaining({ code: "COLLABORATION_AGENT_CONTINUATION_BINDING_MISSING" }));
     expect(fixture.prepareNewAgentRun).not.toHaveBeenCalled();
     expect(fixture.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
   });
@@ -105,9 +104,7 @@ describe("ConfiguredAgentActivationPlanner external restore", () => {
   it("fails closed when durable conversation activity cannot be classified", async () => {
     const fixture = build({ activity: "indeterminate" });
 
-    await expect(fixture.planner.prepare(config, fixture.binding, "restore")).rejects.toMatchObject({
-      code: "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE",
-    });
+    expect(() => fixture.planner.begin(config, fixture.binding, "restore")).toThrowError(expect.objectContaining({ code: "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE" }));
     expect(fixture.prepareNewAgentRun).not.toHaveBeenCalled();
     expect(fixture.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
   });
@@ -117,10 +114,8 @@ describe("ConfiguredAgentActivationPlanner per-attempt mode", () => {
   it("plans the same member fresh or restore depending on the attempt's mode", async () => {
     const fixture = build({ activity: "present" });
 
-    await expect(fixture.planner.prepare(config, fixture.binding, "fresh")).rejects.toMatchObject({
-      code: "COLLABORATION_AGENT_CONTINUATION_BINDING_MISSING",
-    });
-    await fixture.planner.prepare(config, fixture.binding, "restore");
+    expect(() => fixture.planner.begin(config, fixture.binding, "fresh")).toThrowError(expect.objectContaining({ code: "COLLABORATION_AGENT_CONTINUATION_BINDING_MISSING" }));
+    await fixture.planner.begin(config, fixture.binding, "restore").prepare();
 
     expect(fixture.prepareNewAgentRun).not.toHaveBeenCalled();
     expect(fixture.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledOnce();
@@ -129,7 +124,7 @@ describe("ConfiguredAgentActivationPlanner per-attempt mode", () => {
   it("starts new in fresh mode when there is no prior activity", async () => {
     const fixture = build({ activity: "none", platformAgentRunId: null });
 
-    const prepared = await fixture.planner.prepare(config, fixture.binding, "fresh");
+    const prepared = await fixture.planner.begin(config, fixture.binding, "fresh").prepare();
 
     expect(fixture.prepareNewAgentRun).toHaveBeenCalledWith({ runId: "agent-run", config });
     expect(prepared.bindingChange).toMatchObject({ kind: "adopt_or_retain" });

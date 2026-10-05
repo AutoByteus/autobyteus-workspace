@@ -1,3 +1,4 @@
+import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { markTaskDelegationSystemTaskNotificationMetadata } from "../../../src/agent-collaboration/execution/events/task-system-input-presentation.js";
@@ -48,6 +49,8 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
   const activity = { kind: "none" as "none" | "present" };
   const fakeRun = {
     runId: identity.agentRunId,
+    bindExecutionAdmissionFence: vi.fn(),
+    getInputStateSnapshot: vi.fn(() => ({ kind: "idle" })),
     isActive: vi.fn(() => true),
     getStatusSnapshot: () => ({ status: "idle" }),
     subscribeToEvents: vi.fn(() => () => undefined),
@@ -79,6 +82,7 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     cancel: vi.fn(), commit: () => ({ finish: localFinish }),
   }));
   const tryPrepareAgentRunTerminationIfQuiescent = vi.fn(async () => null);
+  const releaseExactRun = vi.fn(async () => { await localFinish(); return { accepted: true }; });
   const publishAgentEvent = vi.fn();
   const commitPlatformBindingChange = vi.fn();
   const handle = new ConfiguredAgentExecutionHandle({
@@ -96,10 +100,11 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     activationMode: mode,
     memberExecutionContext,
     callbacks: { publishAgentEvent, commitPlatformBindingChange },
-    agentRunManager: {
-      prepareNewAgentRun, prepareRestoreAgentRunFromPlatformState, prepareRestoreAgentRun,
+    agentRunManager: testActivationManager({
+      newPreparation: prepareNewAgentRun, platformPreparation: prepareRestoreAgentRunFromPlatformState, restorePreparation: prepareRestoreAgentRun,
       getActiveRun, prepareAgentRunTermination, tryPrepareAgentRunTerminationIfQuiescent,
-    } as never,
+      releaseExactRun,
+    }) as never,
     memoryLocator: {
       getLocation: (physicalScope: typeof scope, agentRunId: string) => ({
         scope: physicalScope,
@@ -112,7 +117,7 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
   return {
     activity, commitPlatformBindingChange, prepareRestoreAgentRunFromPlatformState, prepareRestoreAgentRun, handle, root,
     identity, scope, memberExecutionContext, prepareNewAgentRun, fakeRun, abort, publishAgentEvent, getActiveRun,
-    prepareAgentRunTermination, tryPrepareAgentRunTerminationIfQuiescent, localFinish,
+    prepareAgentRunTermination, tryPrepareAgentRunTerminationIfQuiescent, localFinish, releaseExactRun,
     /** The runtime died: AgentRunManager discovers it inactive and stops publishing it. */
     crash: () => { fakeRun.isActive.mockReturnValue(false); },
   };
@@ -210,7 +215,8 @@ describe("on-demand binding readiness", () => {
     await expect(f.handle.getOrCreateAgentRun()).rejects.toMatchObject({ indeterminate: true });
     expect(f.commitPlatformBindingChange).toHaveBeenCalledTimes(1);
     expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
-    expect(f.abort).toHaveBeenCalledTimes(1);
+    expect(f.abort).not.toHaveBeenCalled();
+    expect(f.releaseExactRun).toHaveBeenCalledWith(f.fakeRun);
   });
 
   it("retains cleanup quarantine as nonretryable even on a definite root rejection", async () => {
@@ -241,8 +247,7 @@ describe("dead member (stale run) termination", () => {
     f.crash();
     const prepared = await f.handle.prepareTermination();
     await expect(prepared.commit().finish()).resolves.toEqual({ accepted: true });
-    expect(f.getActiveRun).toHaveBeenCalledWith("agent-run");
-    expect(f.prepareAgentRunTermination).not.toHaveBeenCalled();
+    expect(f.prepareAgentRunTermination).toHaveBeenCalledWith(f.fakeRun);
     expect(f.handle.getStatusSnapshot().details.status).toBe("offline");
     await expect(f.handle.terminate()).resolves.toEqual({ accepted: true });
   });
@@ -251,10 +256,11 @@ describe("dead member (stale run) termination", () => {
     const f = build("agent_team", RuntimeKind.ANTIGRAVITY_CLI);
     await activate(f);
     f.crash();
+    f.tryPrepareAgentRunTerminationIfQuiescent.mockResolvedValue(await f.prepareAgentRunTermination() as never);
     const prepared = await f.handle.tryPrepareTerminationIfQuiescent();
     expect(prepared).not.toBeNull();
     await expect(prepared!.commit().finish()).resolves.toEqual({ accepted: true });
-    expect(f.tryPrepareAgentRunTerminationIfQuiescent).not.toHaveBeenCalled();
+    expect(f.tryPrepareAgentRunTerminationIfQuiescent).toHaveBeenCalledWith(f.fakeRun);
   });
 
   it("accepts the root-shutdown fence for a stale run and never re-activates it afterwards", async () => {
@@ -263,7 +269,7 @@ describe("dead member (stale run) termination", () => {
     f.crash();
     await expect(f.handle.fenceForRootShutdown()).resolves.toEqual({ accepted: true });
     expect(f.fakeRun.fenceInputAndInterruptForRootShutdown).not.toHaveBeenCalled();
-    await expect(f.handle.getOrCreateAgentRun()).rejects.toThrow("fenced for root shutdown");
+    await expect(f.handle.getOrCreateAgentRun()).rejects.toThrow("closed for input");
     expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
     expect(f.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
   });
@@ -281,12 +287,11 @@ describe("dead member (stale run) termination", () => {
       const f = build("agent_org", RuntimeKind.ANTIGRAVITY_CLI);
       await activate(f);
       f.crash();
-      f.getActiveRun.mockImplementationOnce(() => { throw new Error("resource release failed"); });
-      await expect(f.handle.prepareTermination()).rejects.toThrow("resource release failed");
-      expect(warn.mock.calls[0]?.[0]).toContain("COLLABORATION_STALE_RUN_DISCOVERY_FAILED");
+      f.localFinish.mockRejectedValueOnce(new Error("resource release failed"));
       const prepared = await f.handle.prepareTermination();
+      await expect(prepared.commit().finish()).rejects.toThrow("resource release failed");
       await expect(prepared.commit().finish()).resolves.toEqual({ accepted: true });
-      expect(f.prepareAgentRunTermination).not.toHaveBeenCalled();
+      expect(f.prepareAgentRunTermination).toHaveBeenCalledWith(f.fakeRun);
     } finally { warn.mockRestore(); }
   });
 });

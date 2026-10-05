@@ -53,8 +53,9 @@ export class CodexThreadHistoryReader {
       return null;
     }
 
+    const lease = this.clientManager.beginAcquire(cwd);
     try {
-      const client = await this.clientManager.acquireClient(cwd);
+      const client = await lease.acquire();
       for (let attempt = 1; attempt <= THREAD_READ_MAX_ATTEMPTS; attempt += 1) {
         try {
           const response = await client.request<unknown>("thread/read", {
@@ -91,7 +92,7 @@ export class CodexThreadHistoryReader {
       );
       return null;
     } finally {
-      await this.clientManager.releaseClient(cwd);
+      await lease.release();
     }
   }
 

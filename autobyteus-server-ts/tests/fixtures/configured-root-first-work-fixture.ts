@@ -1,3 +1,4 @@
+import { testActivationManager } from "./agent-run-preparation-fixtures.js";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -54,6 +55,8 @@ export const configuredRootFixture = async (placement: Placement, options: {
     const emitIdle = () => listener?.({ eventType: "AGENT_STATUS", runId, payload: { status: "idle" }, statusHint: "IDLE" });
     const run = {
       runId,
+      bindExecutionAdmissionFence: vi.fn(),
+      getInputStateSnapshot: vi.fn(),
       isActive: () => true,
       getStatusSnapshot: () => ({ status: "idle" }),
       subscribeToEvents: (callback: (event: unknown) => void) => { listener = callback; return () => { listener = null; }; },
@@ -69,11 +72,11 @@ export const configuredRootFixture = async (placement: Placement, options: {
       abort,
     });
   };
-  const manager = {
-    prepareNewAgentRun: vi.fn(prepare),
-    prepareRestoreAgentRunFromPlatformState: vi.fn(prepare),
-    prepareRestoreAgentRun: vi.fn((context) => prepare({ runId: context.runId, config: context.config })),
-  };
+  const manager = testActivationManager({
+    newPreparation: vi.fn(prepare),
+    platformPreparation: vi.fn(prepare),
+    restorePreparation: vi.fn((context) => prepare({ runId: context.runId, config: context.config })),
+  });
   const dependencies = {
     agentRunManager: manager as never,
     memoryLocator: { getLocation: (_scope: unknown, runId: string) => ({ memoryDir: join(memoryDir, runId) }) } as never,
@@ -81,7 +84,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
       ? { kind: "indeterminate", error: new Error("unreadable") } : { kind: activity.kind } } as never,
   };
   const factory = new FlatTeamExecutionFactory(dependencies);
-  const materialize = vi.spyOn(factory, "materialize");
+  const materialize = vi.spyOn(factory, "beginMaterialization");
   const definitions = { getDefinitionById: vi.fn(async () => null) };
   const taskExecutionIdentity = { agentRuns: { allocateForAgentDefinition: vi.fn() }, taskTeams: { create: vi.fn() } };
   const prefix = placement === "mounted_team" ? "/Team" : "";

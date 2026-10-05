@@ -98,7 +98,7 @@ describe("agent-initiated collaborators in a Team root", () => {
       await expect(f.message(lead, "/product_team/designer", "UI please")).resolves.toMatchObject({ accepted: true });
       expect(f.handles.get(memberOf(copy, "/product_team/designer"))!.handle.reserveInput).toHaveBeenCalledOnce();
     }
-    expect(f.handles.has(memberOf(copies[2]!, "/product_team/designer"))).toBe(false);
+    expect(f.handles.get(memberOf(copies[2]!, "/product_team/designer"))!.handle.reserveInput).not.toHaveBeenCalled();
     // AR-003: an address inside the copy without a member is not found, never run-wide or catalog.
     await expect(f.message(f.identity("/product_team/lead", memberOf(copies[0]!, "/product_team/lead")), "/product_team/nobody", "x"))
       .rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });

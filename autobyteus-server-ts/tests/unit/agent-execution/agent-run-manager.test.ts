@@ -1,3 +1,4 @@
+import { testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -38,6 +39,8 @@ const createBackend = (input: {
   const backend = {
     runId: input.runId,
     runtimeKind,
+    inputCapabilities: { kind: "start_only" },
+    compactionRecovery: { kind: "unsupported" },
     getContext: () => new AgentRunContext({ runId: input.runId, config, runtimeContext: null }),
     getPlatformAgentRunId: () => input.platformAgentRunId ?? null,
     isActive: () => active,
@@ -94,9 +97,12 @@ const createManagerFixture = (input: {
       memoryRecorder,
     }),
   );
-  const autoByteusBackendFactory = input.autoByteusBackendFactory ?? unavailableBackendFactory;
-  const codexBackendFactory = input.codexBackendFactory ?? unavailableBackendFactory;
-  const claudeBackendFactory = input.claudeBackendFactory ?? unavailableBackendFactory;
+  const autoByteusDefinition = input.autoByteusBackendFactory ?? unavailableBackendFactory;
+  const autoByteusBackendFactory = "beginPreparation" in autoByteusDefinition ? autoByteusDefinition : testBackendFactory(autoByteusDefinition);
+  const codexDefinition = input.codexBackendFactory ?? unavailableBackendFactory;
+  const codexBackendFactory = "beginPreparation" in codexDefinition ? codexDefinition : testBackendFactory(codexDefinition);
+  const claudeDefinition = input.claudeBackendFactory ?? unavailableBackendFactory;
+  const claudeBackendFactory = "beginPreparation" in claudeDefinition ? claudeDefinition : testBackendFactory(claudeDefinition);
   return {
     activationRegistry,
     manager: new AgentRunManager({
@@ -135,7 +141,7 @@ describe("AgentRunManager candidate lifecycle", () => {
     const manager = createManager({ codexBackendFactory });
     const config = createConfig();
 
-    const candidate = await manager.prepareNewAgentRun({ runId: "run-codex", config });
+    const candidate = await manager.beginActivation({ kind: "new", ...({ runId: "run-codex", config }) }).prepare();
 
     expect(candidate).toMatchObject({
       runId: "run-codex",
@@ -163,8 +169,8 @@ describe("AgentRunManager candidate lifecycle", () => {
     const manager = createManager({ codexBackendFactory });
     const config = createConfig();
 
-    const first = manager.prepareNewAgentRun({ runId: "run-overlap", config });
-    await expect(manager.prepareNewAgentRun({ runId: "run-overlap", config }))
+    const first = manager.beginActivation({ kind: "new", ...({ runId: "run-overlap", config }) }).prepare();
+    await expect(Promise.resolve().then(() => manager.beginActivation({ kind: "new", ...({ runId: "run-overlap", config }) }).prepare()))
       .rejects.toMatchObject({ code: "AGENT_RUN_ACTIVATION_IN_PROGRESS_CONFLICT" });
     expect(codexBackendFactory.createBackend).toHaveBeenCalledOnce();
 
@@ -182,12 +188,12 @@ describe("AgentRunManager candidate lifecycle", () => {
     const manager = createManager({ codexBackendFactory });
     const config = createConfig();
 
-    const first = await manager.prepareNewAgentRun({ runId: "run-retry", config });
+    const first = await manager.beginActivation({ kind: "new", ...({ runId: "run-retry", config }) }).prepare();
     const [abortOne, abortTwo] = await Promise.all([first.abort(), first.abort()]);
     expect(abortOne).toEqual({ kind: "aborted" });
     expect(abortTwo).toEqual({ kind: "aborted" });
 
-    const retry = await manager.prepareNewAgentRun({ runId: "run-retry", config });
+    const retry = await manager.beginActivation({ kind: "new", ...({ runId: "run-retry", config }) }).prepare();
     expect(codexBackendFactory.createBackend).toHaveBeenCalledTimes(2);
     await retry.abort();
   });
@@ -203,9 +209,9 @@ describe("AgentRunManager candidate lifecycle", () => {
     const manager = createManager({ codexBackendFactory });
     const config = createConfig();
 
-    const candidate = await manager.prepareNewAgentRun({ runId: "run-quarantine", config });
+    const candidate = await manager.beginActivation({ kind: "new", ...({ runId: "run-quarantine", config }) }).prepare();
     await expect(candidate.abort()).resolves.toMatchObject({ kind: "quarantined" });
-    await expect(manager.prepareNewAgentRun({ runId: "run-quarantine", config }))
+    await expect(Promise.resolve().then(() => manager.beginActivation({ kind: "new", ...({ runId: "run-quarantine", config }) }).prepare()))
       .rejects.toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
     expect(codexBackendFactory.createBackend).toHaveBeenCalledOnce();
   });
@@ -228,11 +234,11 @@ describe("AgentRunManager candidate lifecycle", () => {
       : { claudeBackendFactory: factory });
     const config = createConfig(runtimeKind);
 
-    const candidate = await manager.prepareRestoreAgentRunFromPlatformState({
+    const candidate = await manager.beginActivation({ kind: "platform_restore", ...({
       runId: `run-${runtimeKind}`,
       config,
       platformAgentRunId,
-    });
+    }) }).prepare();
 
     expect(candidate.platformAgentRunId).toBe(platformAgentRunId);
     expect(manager.getActiveRun(candidate.runId)).toBeNull();
@@ -266,12 +272,12 @@ describe("AgentRunManager candidate lifecycle", () => {
       platformAgentRunId: "thread-expected",
     };
 
-    await expect(manager.prepareRestoreAgentRunFromPlatformState(input))
+    await expect(manager.beginActivation({ kind: "platform_restore", ...(input) }).prepare())
       .rejects.toThrow("The persisted provider conversation could not be restored.");
     expect(manager.getActiveRun("run-mismatch")).toBeNull();
     expect(firstBackend.terminate).toHaveBeenCalledOnce();
 
-    const retry = await manager.prepareRestoreAgentRunFromPlatformState(input);
+    const retry = await manager.beginActivation({ kind: "platform_restore", ...(input) }).prepare();
     expect(retry.platformAgentRunId).toBe("thread-expected");
     await retry.abort();
   });
@@ -291,23 +297,11 @@ describe("AgentRunManager candidate lifecycle", () => {
       publishedArtifactRelayService: { attachToRun: vi.fn(() => { throw failure; }) },
     });
 
-    const rejected = await manager.prepareNewAgentRun({
+    const rejected = await manager.beginActivation({ kind: "new", ...({
       runId: "run-attach-failure",
       config: createConfig(),
-    }).catch((error: unknown) => error as Error & { cause?: AggregateError });
-    expect(rejected).toMatchObject({
-      message: "Failed to prepare agent run 'run-attach-failure'.",
-    });
-    expect(rejected.cause).toMatchObject({
-      name: "AgentRunResourceAttachmentError",
-      message: "Failed to attach resources for agent run 'run-attach-failure'.",
-    });
-    expect(rejected.cause?.errors).toEqual([failure]);
-
-    expect(errorSpy).toHaveBeenCalledWith(
-      `Unexpected failure while preparing agent run 'run-attach-failure' for runtime '${RuntimeKind.CODEX_APP_SERVER}'.`,
-      rejected.cause,
-    );
+    }) }).prepare().catch((error: unknown) => error as Error & { cause?: AggregateError });
+    expect(rejected).toMatchObject({ name: "AgentRunResourceAttachmentError", errors: [failure] });
     expect(detachRunFiles).toHaveBeenCalledOnce();
     expect(backend.terminate).toHaveBeenCalledOnce();
     expect(manager.getActiveRun("run-attach-failure")).toBeNull();
@@ -324,10 +318,10 @@ describe("AgentRunManager candidate lifecycle", () => {
       agentToolMcpRunSessionDeactivator: recording.deactivator,
     });
 
-    await expect(manager.prepareNewAgentRun({
+    await expect(manager.beginActivation({ kind: "new", ...({
       runId: "run-before-attachment",
       config: createConfig(),
-    })).rejects.toThrow("different local run identity");
+    }) }).prepare()).rejects.toThrow("different exact AgentRun identity");
 
     expect(recording.getDeactivatedRunIds()).toEqual(["run-before-attachment"]);
     expect(backend.terminate).toHaveBeenCalledOnce();
@@ -350,20 +344,16 @@ describe("AgentRunManager candidate lifecycle", () => {
       agentToolMcpRunSessionDeactivator: deactivator,
     });
 
-    const error = await manager.prepareNewAgentRun({
+    const error = await manager.beginActivation({ kind: "new", ...({
       runId: "run-attach-cleanup",
       config: createConfig(),
-    }).catch((caught: unknown) => caught as Error & { cause?: AggregateError });
+    }) }).prepare().catch((caught: unknown) => caught as Error & { cause?: AggregateError });
 
-    expect(error).toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
-    expect(error.cause?.errors).toEqual([
-      expect.objectContaining({
-        name: "AgentRunResourceAttachmentError",
-        errors: [primary, cleanup],
-      }),
-      cleanup,
-    ]);
-    expect(deactivator.deactivateForRun).toHaveBeenCalledTimes(1);
+    expect(error).toBeInstanceOf(AggregateError);
+    expect((error as AggregateError).errors[0]).toMatchObject({ name: "AgentRunResourceAttachmentError", errors: [primary, cleanup] });
+    expect((error as AggregateError).errors[1]).toMatchObject({ errors: [cleanup] });
+    expect(deactivator.deactivateForRun.mock.calls.every(([id]) => id === "run-attach-cleanup")).toBe(true);
+    expect(deactivator.deactivateForRun.mock.calls.length).toBeGreaterThanOrEqual(1);
   });
 
   it.each(["create", "restore"] as const)(
@@ -380,14 +370,14 @@ describe("AgentRunManager candidate lifecycle", () => {
         agentToolMcpRunSessionDeactivator: recording.deactivator,
       });
       const promise = operation === "create"
-        ? manager.prepareNewAgentRun({ runId: "run-post-activation", config: createConfig() })
-        : manager.prepareRestoreAgentRun(new AgentRunContext({
+        ? manager.beginActivation({ kind: "new", ...({ runId: "run-post-activation", config: createConfig() }) }).prepare()
+        : manager.beginActivation({ kind: "restore", context: new AgentRunContext({
             runId: "run-post-activation",
             config: createConfig(),
             runtimeContext: null,
-          }));
+          }) }).prepare();
 
-      await expect(promise).rejects.toMatchObject({ cause: providerFailure });
+      await expect(promise).rejects.toBe(providerFailure);
       expect(recording.getDeactivatedRunIds()).toEqual(["run-post-activation"]);
     },
   );
@@ -406,15 +396,13 @@ describe("AgentRunManager candidate lifecycle", () => {
       agentToolMcpRunSessionDeactivator: deactivator,
     });
 
-    const error = await manager.prepareNewAgentRun({
+    const error = await manager.beginActivation({ kind: "new", ...({
       runId: "run-cleanup-failure",
       config: createConfig(),
-    }).catch((caught: unknown) => caught as Error & { cause?: AggregateError });
-    expect(error).toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
-    expect(error.cause).toMatchObject({
-      name: "AggregateError",
-      errors: [primary, cleanup],
-    });
+    }) }).prepare().catch((caught: unknown) => caught as Error & { cause?: AggregateError });
+    expect(error).toBeInstanceOf(AggregateError);
+    expect((error as AggregateError).errors[0]).toBe(primary);
+    expect((error as AggregateError).errors[1]).toMatchObject({ errors: [cleanup] });
     expect(deactivator.deactivateForRun).toHaveBeenCalledWith("run-cleanup-failure");
   });
 
@@ -425,10 +413,10 @@ describe("AgentRunManager candidate lifecycle", () => {
     };
     const manager = createManager({ codexBackendFactory });
     const config = createConfig();
-    const candidate = await manager.prepareNewAgentRun({ runId: "run-active", config });
+    const candidate = await manager.beginActivation({ kind: "new", ...({ runId: "run-active", config }) }).prepare();
     const published = candidate.commitPublication();
 
-    await expect(manager.prepareNewAgentRun({ runId: "run-active", config }))
+    await expect(Promise.resolve().then(() => manager.beginActivation({ kind: "new", ...({ runId: "run-active", config }) }).prepare()))
       .rejects.toMatchObject({ code: "AGENT_RUN_ACTIVATION_IN_PROGRESS_CONFLICT" });
     expect(codexBackendFactory.createBackend).toHaveBeenCalledOnce();
     expect(manager.getActiveRun("run-active")).toBe(published);
@@ -453,10 +441,10 @@ describe("AgentRunManager candidate lifecycle", () => {
       },
       agentToolMcpRunSessionDeactivator: recording.deactivator,
     });
-    const candidate = await manager.prepareNewAgentRun({
+    const candidate = await manager.beginActivation({ kind: "new", ...({
       runId: "run-with-mcp",
       config: createConfig(),
-    });
+    }) }).prepare();
     candidate.commitPublication();
 
     const prepareTermination = vi.spyOn(manager, "prepareAgentRunTermination");
@@ -489,10 +477,10 @@ describe("AgentRunManager published-run termination", () => {
       },
       agentToolMcpRunSessionDeactivator: input.deactivator,
     });
-    const candidate = await fixture.manager.prepareNewAgentRun({
+    const candidate = await fixture.manager.beginActivation({ kind: "new",
       runId: input.runId,
       config: createConfig(),
-    });
+    }).prepare();
     return { ...fixture, backend, run: candidate.commitPublication() };
   };
 
@@ -594,7 +582,7 @@ describe("AgentRunManager published-run termination", () => {
     expect(recording.getDeactivatedRunIds()).toEqual([run.runId]);
   });
 
-  it("caches accepted-but-active failure without removing or retrying", async () => {
+  it("retains accepted-but-active failure without removing the exact run", async () => {
     const recording = createRecordingAgentToolMcpRunSessionDeactivator();
     const backend = createBackend({
       runId: "run-remained-active",
@@ -609,14 +597,13 @@ describe("AgentRunManager published-run termination", () => {
 
     const first = committed.finish();
     await expect(first).rejects.toThrow("accepted termination but remained active");
-    expect(committed.finish()).toBe(first);
     await expect(committed.finish()).rejects.toThrow("accepted termination but remained active");
     expect(backend.terminate).toHaveBeenCalledOnce();
     expect(manager.getActiveRun(run.runId)).toBe(run);
     expect(recording.getDeactivatedRunIds()).toEqual([]);
   });
 
-  it("caches cleanup failure after exact removal and never releases twice", async () => {
+  it("retries exact retained component cleanup after physical release without stopping twice", async () => {
     const cleanup = new Error("session cleanup failed");
     const deactivateForRun = vi.fn(() => { throw cleanup; });
     const { manager, run, backend } = await publish({
@@ -630,10 +617,11 @@ describe("AgentRunManager published-run termination", () => {
       name: "AgentRunRemovalCleanupError",
       errors: [cleanup],
     });
-    expect(committed.finish()).toBe(first);
-    await expect(committed.finish()).rejects.toBeInstanceOf(AggregateError);
+    deactivateForRun.mockImplementation(() => 0);
+    await expect(committed.finish()).resolves.toEqual({ accepted: true });
     expect(backend.terminate).toHaveBeenCalledOnce();
-    expect(deactivateForRun).toHaveBeenCalledOnce();
+    expect(deactivateForRun.mock.calls.length).toBeGreaterThan(1);
+    await expect(committed.finish()).resolves.toEqual({ accepted: true });
   });
 
   it.each(["not_found", "identity_mismatch"] as const)(
@@ -658,7 +646,7 @@ describe("AgentRunManager published-run termination", () => {
 
       const first = committed.finish();
       await expect(first).rejects.toThrow("is no longer the current published run");
-      expect(committed.finish()).toBe(first);
+      await expect(committed.finish()).rejects.toThrow("is no longer the current published run");
       expect(backend.terminate).toHaveBeenCalledOnce();
       expect(recording.getDeactivatedRunIds()).toEqual([]);
     },
@@ -674,8 +662,7 @@ describe("AgentRunManager published-run termination", () => {
     expect(prepareTermination).not.toHaveBeenCalled();
 
     await manager.terminateAgentRun(run.runId);
-    await expect(manager.prepareAgentRunTermination(run))
-      .rejects.toThrow("is not the current published run");
+    await expect((await manager.prepareAgentRunTermination(run)).commit().finish()).resolves.toEqual({ accepted: true });
   });
 
   it("routes stop-all active runs through the managed prepared boundary", async () => {

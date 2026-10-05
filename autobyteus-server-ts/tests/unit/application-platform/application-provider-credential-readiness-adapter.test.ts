@@ -6,6 +6,7 @@ import {
   ApplicationProviderCredentialReadinessAdapter,
   type ApplicationCredentialAuthority,
 } from "../../../src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.js";
+import { testCodexLeaseManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const model = (runtime: string, providerId = "provider-a") => ({
@@ -30,7 +31,7 @@ const buildAdapter = (input?: { apiKeyConfigured?: boolean }) => {
   return {
     adapter: new ApplicationProviderCredentialReadinessAdapter({
       llmProviderService: { getProviderCredentialSetting },
-      codexClientManager: { acquireClient, releaseClient } as never,
+      codexClientManager: testCodexLeaseManager({ acquireClient, releaseClient }) as never,
       commandRunner,
     }),
     acquireClient,

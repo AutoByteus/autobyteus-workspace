@@ -1,9 +1,10 @@
+import { acceptTaskSeed } from "../../../agent-collaboration/execution/task/task-execution-seed-admission.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
 import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../domain/task-agent-execution.js";
-import type { PreparedTaskExecution } from "../../domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../domain/prepared-task-execution.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import { FlatAgentExecutionContext, type FlatTeamExecutionContext } from "../flat-team-execution-context.js";
 import { FlatTeamAgentExecutionHandle } from "../flat-team-agent-execution-handle.js";
@@ -19,6 +20,7 @@ import { TaskExecutionTeardownIndeterminateError } from "../../../agent-collabor
 type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
 /** Direct task-Agent mechanics for one TeamRun; the resource lifecycle policy remains root-owned. */
 export class TaskAgentExecutionRegistry {
+  private readonly operations = new Map<string, TaskExecutionPreparationOperation>();
   private readonly active = new Map<string, FlatTeamAgentExecutionHandle>();
   private readonly reserved = new Set<string>();
   private readonly preparedHandles = new Map<string, FlatTeamAgentExecutionHandle>();
@@ -98,7 +100,7 @@ export class TaskAgentExecutionRegistry {
     await handle.getOrCreateAgentRun();
   }
 
-  async prepare(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
+  beginPreparation(input: PrepareTaskAgentInput): TaskExecutionPreparationOperation {
     if (!this.materializationOpen) throw new Error("Task Agent materialization is closed for TeamRun termination.");
     const runId = input.agentRunId.trim();
     if (!runId || input.address !== input.sourceNode.address) {
@@ -131,17 +133,24 @@ export class TaskAgentExecutionRegistry {
     this.preparedHandles.set(runId, handle);
     this.eventGates.set(runId, eventGate);
     let state: PreparedState = "preparing";
+    const operation = createTaskExecutionPreparation({
+      cancel: () => handle.cancelActivation(),
+      releaseResources: async () => {
+        // A committed handle still owes its real terminal event on successful teardown.
+        if (state !== "committed") eventGate.abort();
+        const result = await handle.releaseRuntime();
+        if (result.accepted) {
+          this.reserved.delete(runId); this.preparedHandles.delete(runId); this.eventGates.delete(runId);
+          // Retain the compact exact terminal control after successful release.
+        }
+        return result;
+      },
+      prepare: async (assertAccepting) => {
     let activation!: Awaited<ReturnType<FlatTeamAgentExecutionHandle["prepareConfiguredActivation"]>>;
     try {
       activation = await handle.prepareConfiguredActivation();
-    } catch (error) {
-      eventGate.abort();
-      this.reserved.delete(runId);
-      this.preparedHandles.delete(runId);
-      this.eventGates.delete(runId);
-      handle.dispose();
-      throw error;
-    }
+    } catch (error) { eventGate.abort(); throw error; }
+    assertAccepting();
     return {
       binding: Object.freeze({ kind: "agent", address: input.address, agentRunId: runId }),
       preparedTeamRuns: Object.freeze([]),
@@ -152,31 +161,48 @@ export class TaskAgentExecutionRegistry {
       },
       commitAfterDurability: () => {
         if (state !== "sealed" || !this.reserved.delete(runId)) throw new Error(`Task AgentRun '${runId}' is not sealed.`);
+        assertAccepting();
+        this.active.set(runId, handle);
         activation.commitAfterDurability();
         this.preparedHandles.delete(runId);
         this.active.set(runId, handle);
         state = "committed";
         let released = false;
+        if (!eventGate.releaseToLive()) throw new Error("Task publication event gate closed.");
         return Object.freeze({
-          releaseWork: () => {
-            if (released) return;
+          releaseWork: (assertOpen) => {
+            assertAccepting();
+            if (released) throw new Error("Task seed already released.");
             released = true;
-            if (!eventGate.releaseToLive()) return;
             this.eventGates.delete(runId);
-            queueMicrotask(() => { void handle.postMessage(input.message); });
+            if (!input.message) throw new Error("Helper awaits an ordinary message, not a delegated seed.");
+            return acceptTaskSeed(assertOpen, () => handle.postMessage(input.message!));
           },
         });
       },
       abort: async () => {
-        if (state === "committed" || state === "aborted") return;
+        if (state === "aborted") return;
+        const result = await operation.release();
+        if (!result.accepted) throw new Error("Task Agent release remains pending.");
         state = "aborted";
-        eventGate.abort();
-        this.reserved.delete(runId);
-        this.preparedHandles.delete(runId);
-        this.eventGates.delete(runId);
-        try { await activation.abort(); } finally { handle.dispose(); }
       },
     };
+      },
+    });
+    this.operations.set(runId, operation);
+    return operation;
+  }
+
+  cancel(agentRunId: string): void {
+    this.operations.get(agentRunId)?.cancel();
+    (this.active.get(agentRunId) ?? this.preparedHandles.get(agentRunId))?.cancelActivation();
+  }
+  release(agentRunId: string): Promise<AgentOperationResult> {
+    this.cancel(agentRunId);
+    const operation = this.operations.get(agentRunId);
+    if (operation) return operation.release();
+    const handle = this.active.get(agentRunId) ?? this.preparedHandles.get(agentRunId);
+    return handle ? handle.releaseRuntime() : Promise.resolve({ accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" });
   }
 
   reserveInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
@@ -227,6 +253,7 @@ export class TaskAgentExecutionRegistry {
   }
 
   dispose(): void {
+    this.operations.forEach(operation => operation.cancel());
     this.eventGates.forEach((gate) => gate.abort());
     this.active.forEach((handle) => handle.dispose());
     this.preparedHandles.forEach((handle) => handle.dispose());

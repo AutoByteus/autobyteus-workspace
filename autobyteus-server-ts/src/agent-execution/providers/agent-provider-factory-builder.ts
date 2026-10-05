@@ -2,7 +2,7 @@ import type { CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direc
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import type { AgentToolMcpRunSessionActivator } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type { AgentToolMcpRunSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
   AutoByteusAgentRunBackendFactory,
   type AutoByteusAgentFactoryLike,
@@ -62,7 +62,7 @@ export type AgentProviderFactorySet = Readonly<{
 export interface AgentProviderFactoryBuilder {
   createForExecution(input: Readonly<{
     agentDefinitionService: AgentDefinitionService;
-    agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
+    agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
     applicationAgentTools: ApplicationAgentToolCapability | null;
   }>): AgentProviderFactorySet;
 }
@@ -151,7 +151,7 @@ export const createAgentProviderFactoryBuilder = (
   return Object.freeze({
     createForExecution: (input: Readonly<{
       agentDefinitionService: AgentDefinitionService;
-      agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
+      agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
       applicationAgentTools: ApplicationAgentToolCapability | null;
     }>): AgentProviderFactorySet => {
       requireRecord(input, "execution input");

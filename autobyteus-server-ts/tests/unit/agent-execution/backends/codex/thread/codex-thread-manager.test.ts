@@ -1,3 +1,4 @@
+import { testCodexLeaseManager } from "../../../../../fixtures/agent-run-preparation-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
@@ -79,9 +80,9 @@ describe("CodexThreadManager", () => {
       }),
     } as unknown as CodexAppServerClient;
     const clientManager = {
-      acquireClient: vi.fn(async () => client), releaseClient: vi.fn(async () => undefined),
+      beginAcquire: vi.fn(() => ({ acquire: vi.fn(async () => client), release: vi.fn(async () => undefined) })),
     } as unknown as CodexAppServerClientManager;
-    const cleanup = { cleanupThreadResources: vi.fn(async () => undefined) } as unknown as CodexThreadCleanup;
+    const cleanup = { cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined) } as unknown as CodexThreadCleanup;
     const router = { registerThread: vi.fn(() => () => {}) } as unknown as CodexClientThreadRouter;
     const captureService = {
       capture: vi.fn((input) => {
@@ -99,7 +100,7 @@ describe("CodexThreadManager", () => {
 
     const thread = await manager.createThread(createRunContext("run-system", "/tmp/workspace", {
       baseInstructions: " exact Codex instructions ", memoryDir: "/tmp/memory/run-system",
-    }));
+    }), () => undefined);
 
     expect(order).toEqual([
       "handoff: exact Codex instructions ",
@@ -132,12 +133,12 @@ describe("CodexThreadManager", () => {
       onClose: vi.fn(() => () => {}),
     } as unknown as CodexAppServerClient;
 
-    const clientManager = {
+    const clientManager = testCodexLeaseManager({
       acquireClient: vi.fn(async () => client),
       releaseClient: vi.fn(async () => undefined),
-    } as unknown as CodexAppServerClientManager;
+    }) as unknown as CodexAppServerClientManager;
     const threadCleanup = {
-      cleanupThreadResources: vi.fn(async () => undefined),
+      cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined),
     } as unknown as CodexThreadCleanup;
     const clientThreadRouter = {
       registerThread: vi.fn(() => {
@@ -154,9 +155,7 @@ describe("CodexThreadManager", () => {
       clientThreadRouter,
     );
 
-    const thread = await manager.createThread(
-      createRunContext("run-1", "/tmp/workspace", { serviceTier: "fast" }),
-    );
+    const thread = await manager.createThread(createRunContext("run-1", "/tmp/workspace", { serviceTier: "fast" }), () => undefined);
 
     expect(clientManager.acquireClient).toHaveBeenCalledWith(
       "/tmp/workspace",
@@ -182,12 +181,12 @@ describe("CodexThreadManager", () => {
       onServerRequest: vi.fn(() => () => {}),
       onClose: vi.fn(() => () => {}),
     } as unknown as CodexAppServerClient;
-    const clientManager = {
+    const clientManager = testCodexLeaseManager({
       acquireClient: vi.fn(async () => sharedClient),
       releaseClient: vi.fn(async () => undefined),
-    } as unknown as CodexAppServerClientManager;
+    }) as unknown as CodexAppServerClientManager;
     const threadCleanup = {
-      cleanupThreadResources: vi.fn(async () => undefined),
+      cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined),
     } as unknown as CodexThreadCleanup;
     const clientThreadRouter = {
       registerThread: vi.fn(() => () => {}),
@@ -198,8 +197,8 @@ describe("CodexThreadManager", () => {
       clientThreadRouter,
     );
 
-    const firstThread = await manager.createThread(createRunContext("run-one", "/tmp/workspace"));
-    const secondThread = await manager.createThread(createRunContext("run-two", "/tmp/workspace"));
+    const firstThread = await manager.createThread(createRunContext("run-one", "/tmp/workspace"), () => undefined);
+    const secondThread = await manager.createThread(createRunContext("run-two", "/tmp/workspace"), () => undefined);
 
     expect(firstThread.client).toBe(sharedClient);
     expect(secondThread.client).toBe(sharedClient);
@@ -225,12 +224,12 @@ describe("CodexThreadManager", () => {
       onServerRequest: vi.fn(() => () => {}),
       onClose: vi.fn(() => () => {}),
     } as unknown as CodexAppServerClient;
-    const clientManager = {
+    const clientManager = testCodexLeaseManager({
       acquireClient: vi.fn(async () => sharedClient),
       releaseClient: vi.fn(async () => undefined),
-    } as unknown as CodexAppServerClientManager;
+    }) as unknown as CodexAppServerClientManager;
     const threadCleanup = {
-      cleanupThreadResources: vi.fn(async () => undefined),
+      cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined),
     } as unknown as CodexThreadCleanup;
     const clientThreadRouter = {
       registerThread: vi.fn(() => () => {}),
@@ -241,12 +240,8 @@ describe("CodexThreadManager", () => {
       clientThreadRouter,
     );
 
-    const firstThread = await manager.createThread(
-      createRunContext("team-run-one", "/tmp/workspace", { teamRunId: "team-1" }),
-    );
-    const secondThread = await manager.createThread(
-      createRunContext("team-run-two", "/tmp/workspace", { teamRunId: "team-1" }),
-    );
+    const firstThread = await manager.createThread(createRunContext("team-run-one", "/tmp/workspace", { teamRunId: "team-1" }), () => undefined);
+    const secondThread = await manager.createThread(createRunContext("team-run-two", "/tmp/workspace", { teamRunId: "team-1" }), () => undefined);
 
     expect(firstThread.client).toBe(sharedClient);
     expect(secondThread.client).toBe(sharedClient);
@@ -267,12 +262,12 @@ describe("CodexThreadManager", () => {
       onServerRequest: vi.fn(() => () => {}),
       onClose: vi.fn(() => () => {}),
     } as unknown as CodexAppServerClient;
-    const clientManager = {
+    const clientManager = testCodexLeaseManager({
       acquireClient: vi.fn(async () => client),
       releaseClient: vi.fn(async () => undefined),
-    } as unknown as CodexAppServerClientManager;
+    }) as unknown as CodexAppServerClientManager;
     const threadCleanup = {
-      cleanupThreadResources: vi.fn(async () => undefined),
+      cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined),
     } as unknown as CodexThreadCleanup;
     const clientThreadRouter = {
       registerThread: vi.fn(() => () => {}),
@@ -288,13 +283,11 @@ describe("CodexThreadManager", () => {
       sandbox: "danger-full-access" as const,
     };
 
-    await manager.createThread(createRunContext("run-auto-start", "/tmp/workspace", autoConfig));
-    await manager.restoreThread(
-      createRunContext("run-auto-resume", "/tmp/workspace", {
+    await manager.createThread(createRunContext("run-auto-start", "/tmp/workspace", autoConfig), () => undefined);
+    await manager.restoreThread(createRunContext("run-auto-resume", "/tmp/workspace", {
         ...autoConfig,
         threadId: "thread-existing-auto",
-      }),
-    );
+      }), () => undefined);
 
     expect(request).toHaveBeenCalledWith(
       "thread/start",
@@ -325,12 +318,12 @@ describe("CodexThreadManager", () => {
       onServerRequest: vi.fn(() => () => {}),
       onClose: vi.fn(() => () => {}),
     } as unknown as CodexAppServerClient;
-    const clientManager = {
+    const clientManager = testCodexLeaseManager({
       acquireClient: vi.fn(async () => client),
       releaseClient: vi.fn(async () => undefined),
-    } as unknown as CodexAppServerClientManager;
+    }) as unknown as CodexAppServerClientManager;
     const threadCleanup = {
-      cleanupThreadResources: vi.fn(async () => undefined),
+      cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined),
     } as unknown as CodexThreadCleanup;
     const clientThreadRouter = {
       registerThread: vi.fn(() => () => {}),
@@ -341,12 +334,10 @@ describe("CodexThreadManager", () => {
       clientThreadRouter,
     );
 
-    await manager.restoreThread(
-      createRunContext("run-restore", "/tmp/workspace", {
+    await manager.restoreThread(createRunContext("run-restore", "/tmp/workspace", {
         serviceTier: "fast",
         threadId: "thread-existing",
-      }),
-    );
+      }), () => undefined);
 
     expect(request).toHaveBeenCalledWith(
       "thread/resume",
@@ -369,12 +360,12 @@ describe("CodexThreadManager", () => {
       onServerRequest: vi.fn(() => () => {}),
       onClose: vi.fn(() => () => {}),
     } as unknown as CodexAppServerClient;
-    const clientManager = {
+    const clientManager = testCodexLeaseManager({
       acquireClient: vi.fn(async () => client),
       releaseClient: vi.fn(async () => undefined),
-    } as unknown as CodexAppServerClientManager;
+    }) as unknown as CodexAppServerClientManager;
     const threadCleanup = {
-      cleanupThreadResources: vi.fn(async () => undefined),
+      cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined),
     } as unknown as CodexThreadCleanup;
     const clientThreadRouter = {
       registerThread: vi.fn(() => () => {}),
@@ -397,15 +388,11 @@ describe("CodexThreadManager", () => {
       },
     };
 
-    await manager.createThread(
-      createRunContext("run-start-config", "/tmp/workspace", { appServerConfig }),
-    );
-    await manager.restoreThread(
-      createRunContext("run-resume-config", "/tmp/workspace", {
+    await manager.createThread(createRunContext("run-start-config", "/tmp/workspace", { appServerConfig }), () => undefined);
+    await manager.restoreThread(createRunContext("run-resume-config", "/tmp/workspace", {
         threadId: "thread-existing-config",
         appServerConfig,
-      }),
-    );
+      }), () => undefined);
 
     expect(request).toHaveBeenCalledWith(
       "thread/start",
@@ -435,19 +422,19 @@ describe("CodexThreadManager", () => {
     } as unknown as CodexAppServerClient;
     const releaseClient = vi.fn(async () => undefined);
     const manager = new CodexThreadManager(
-      {
+      testCodexLeaseManager({
         acquireClient: vi.fn(async () => client),
         releaseClient,
-      } as unknown as CodexAppServerClientManager,
-      { cleanupThreadResources: vi.fn(async () => undefined) } as unknown as CodexThreadCleanup,
+      }) as unknown as CodexAppServerClientManager,
+      { cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined) } as unknown as CodexThreadCleanup,
       { registerThread: vi.fn(() => () => {}) } as unknown as CodexClientThreadRouter,
     );
 
-    await expect(manager.restoreThread(
-      createRunContext("run-known-resume", "/tmp/workspace", {
-        threadId: "thread-known",
-      }),
-    )).rejects.toThrow("known thread unavailable");
+    const context = createRunContext("run-known-resume", "/tmp/workspace", { threadId: "thread-known" });
+    await expect(manager.restoreThread(context, () => undefined)).rejects.toThrow("known thread unavailable");
+    expect(releaseClient).not.toHaveBeenCalled(); // exact preparation authority is retained
+    await manager.releasePreparation(context);
+    await manager.releasePreparation(context); // successful physical cleanup is idempotent
 
     expect(request).toHaveBeenCalledTimes(1);
     expect(request).toHaveBeenCalledWith(

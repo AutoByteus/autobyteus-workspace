@@ -239,7 +239,7 @@ describe('AgentFactory', () => {
     expect(factory.listActiveAgentIds()).not.toContain(agent.agentId);
   });
 
-  it('retains a non-routable stopping entry when graceful stop fails', async () => {
+  it('retains a failed non-routable exact owner for cleanup-only retry', async () => {
     const factory = new AgentFactory();
     const config = makeConfig();
     const runtimeStub = Object.create(AgentRuntime.prototype) as AgentRuntime;
@@ -257,5 +257,12 @@ describe('AgentFactory', () => {
     expect(factory.listActiveAgentIds()).not.toContain('failing-stop-agent');
     expect(() => factory.restoreAgent('failing-stop-agent', config, '/tmp/memory/agents/failing-stop-agent'))
       .toThrow(/already active or stopping/);
+    runtimeStub.stop = vi.fn(async () => undefined) as any;
+    await expect(factory.removeAgent('failing-stop-agent')).resolves.toBe(true);
+    expect(runtimeStub.stop).toHaveBeenCalledOnce();
+    expect((factory as any).createRuntimeWithId).toHaveBeenCalledOnce();
+    expect(factory.getAgent('failing-stop-agent')).toBeUndefined();
+    await expect(factory.removeAgent('failing-stop-agent')).resolves.toBe(false);
+    expect(runtimeStub.stop).toHaveBeenCalledOnce();
   });
 });

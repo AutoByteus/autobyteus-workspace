@@ -1,8 +1,12 @@
 import type { AgentRunConfig } from "../domain/agent-run-config.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../domain/agent-run-context.js";
-import type { AgentRunBackend } from "./agent-run-backend.js";
+import type { AgentRunBackendPreparation } from "./agent-run-backend-preparation.js";
+
+export type AgentRunBackendPreparationRequest =
+  | Readonly<{ kind: "new"; runId: string; config: AgentRunConfig }>
+  | Readonly<{ kind: "restore"; context: AgentRunContext<RuntimeAgentRunContext> }>;
 
 export interface AgentRunBackendFactory {
-  createBackend(config: AgentRunConfig, agentRunId: string): Promise<AgentRunBackend>;
-  restoreBackend(context: AgentRunContext<RuntimeAgentRunContext>): Promise<AgentRunBackend>;
+  /** Returns before acquiring any provider resource. */
+  beginPreparation(request: AgentRunBackendPreparationRequest): AgentRunBackendPreparation;
 }

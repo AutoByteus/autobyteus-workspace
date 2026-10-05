@@ -13,7 +13,7 @@ const mockProjectService = vi.hoisted(() => ({
 const mockProjectTaskService = vi.hoisted(() => ({
   listTasks: vi.fn(),
   createTask: vi.fn(),
-  updateTaskDescription: vi.fn(),
+  updateTask: vi.fn(),
   deleteTask: vi.fn(),
 }));
 
@@ -60,7 +60,7 @@ describe("Project Tasks GraphQL schema", () => {
     expect(mutationFields).toEqual(expect.arrayContaining(["createProjectTask", "updateProjectTask", "deleteProjectTask"]));
     expect(mutationFields.filter((name) => /projecttask/i.test(name) && /status/i.test(name))).toEqual([]);
     const updateInput = schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> };
-    expect(Object.keys(updateInput.getFields()).sort()).toEqual(["description", "projectId", "taskId"]);
+    expect(Object.keys(updateInput.getFields()).sort()).toEqual(["contextChanges", "description", "projectId", "taskId"]);
   });
 
   it("names Task types distinctly from delegated tasks (REQ-012)", () => {
@@ -85,7 +85,7 @@ describe("Project Tasks GraphQL schema", () => {
 
   it("forwards create, update and delete inputs", async () => {
     mockProjectTaskService.createTask.mockResolvedValue(taskView);
-    mockProjectTaskService.updateTaskDescription.mockResolvedValue({ ...taskView, description: "edited" });
+    mockProjectTaskService.updateTask.mockResolvedValue({ ...taskView, description: "edited" });
     mockProjectTaskService.deleteTask.mockResolvedValue(true);
 
     const result = await graphql({
@@ -104,7 +104,7 @@ describe("Project Tasks GraphQL schema", () => {
       deleted: true,
     });
     expect(mockProjectTaskService.createTask).toHaveBeenCalledWith(expect.objectContaining({ projectId: "project_1", description: "d" }));
-    expect(mockProjectTaskService.updateTaskDescription).toHaveBeenCalledWith(
+    expect(mockProjectTaskService.updateTask).toHaveBeenCalledWith(
       expect.objectContaining({ projectId: "project_1", taskId: "project_task_1", description: "edited" }),
     );
     expect(mockProjectTaskService.deleteTask).toHaveBeenCalledWith(
@@ -117,7 +117,7 @@ describe("Project Tasks GraphQL schema", () => {
     ["TASK_NOT_FOUND"],
     ["PROJECT_NOT_FOUND"],
   ] as const)("maps %s into GraphQL error extensions", async (code) => {
-    mockProjectTaskService.updateTaskDescription.mockRejectedValue(new ProjectError(code, "failed"));
+    mockProjectTaskService.updateTask.mockRejectedValue(new ProjectError(code, "failed"));
 
     const result = await graphql({
       schema,

@@ -1,3 +1,5 @@
+import { getProjectTaskService } from "../../projects/services/project-task-service.js";
+import type { TaskExecutionLifetimePort } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
 import { resolveMemberCollaborationScope, type MemberHostTeam } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
@@ -37,6 +39,7 @@ import { AgentRunCollaborationPersistenceCoordinator } from "./agent-run-collabo
 export type AgentRunCollaborationRootBuilderDependencies = Readonly<{
   flatTeamExecutionFactory: FlatTeamExecutionFactory;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
+  lifetimePort?: TaskExecutionLifetimePort;
   teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
   packageStore: AgentRunCollaborationPackageStore;
   agentRunManager?: AgentRunManager;
@@ -69,6 +72,7 @@ export class AgentRunCollaborationRootBuilder {
       return run;
     };
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
+      assertExecutionInputAllowed: (identity) => requireRun().assertExecutionInputAllowed(identity.agentRunId),
       buildMemberExecutionContext: async ({ identity, physicalScope, hostTeam }) => this.buildChildContext({
         identity, physicalScope, hostTeam, requireRun,
       }),
@@ -127,6 +131,7 @@ export class AgentRunCollaborationRootBuilder {
       persistence,
       publisher: new RootEventPublisher<AgentRunCollaborationRootEvent>(),
       taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
+      lifetimePort: this.dependencies.lifetimePort ?? getProjectTaskService(),
       memoryLocator: this.dependencies.memoryLocator,
       activityInspector: this.dependencies.activityInspector,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,

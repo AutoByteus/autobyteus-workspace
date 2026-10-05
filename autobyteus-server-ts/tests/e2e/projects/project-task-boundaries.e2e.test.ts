@@ -95,7 +95,7 @@ describe("Project Task production HTTP boundaries", () => {
     if (root) await fs.rm(root, { recursive: true, force: true });
   }, 30000);
 
-  it("API-MCP: selected default host executes equivalent raw native contracts while UI remains off", async () => {
+  it("API-MCP: selected default host executes equivalent compact mutations and detailed native reads while UI remains off", async () => {
     expect((await gql<{ projectsCapability: { enabled: boolean } }>("{projectsCapability{enabled}}" )).projectsCapability.enabled).toBe(false);
     expect((await call("list_projects", {})).structuredContent).toEqual({ projects: [] });
     const projectId = await createProject("HTTP parity");
@@ -103,9 +103,18 @@ describe("Project Task production HTTP boundaries", () => {
     expect(catalog.structuredContent).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
     expect((await rpc(mcpUrl, "initialize")).body.result.serverInfo.name).toBe("autobyteus_agent_tools");
     expect((await rpc(mcpUrl, "tools/list")).body.result.tools.map((t: { name: string }) => t.name)).toEqual(names);
-    const created = (await call("create_or_update_task", { project_id: projectId, description: "  hello HTTP  " })).structuredContent.task as Task;
-    expect(created).toMatchObject({ description: "hello HTTP", status: "TODO", contextFiles: [] });
-    for (const status of ["IN_PROGRESS", "DONE", "TODO"]) await call("create_or_update_task", { project_id: projectId, task_id: created.taskId, status });
+    const created = (await call("create_or_update_task", { project_id: projectId, description: "  hello HTTP  " })).structuredContent.task;
+    expect(created).toEqual({ projectId, taskId: expect.any(String), status: "TODO" });
+    expect(created.taskId.trim()).not.toBe("");
+    expect(await list(projectId)).toEqual([expect.objectContaining({
+      projectId, taskId: created.taskId, description: "hello HTTP", status: "TODO", contextFiles: [],
+    })]);
+    for (const status of ["IN_PROGRESS", "DONE", "TODO"]) {
+      const input = { project_id: projectId, task_id: created.taskId, status };
+      const patched = (await call("create_or_update_task", input)).structuredContent;
+      expect(patched).toEqual({ task: { projectId, taskId: created.taskId, status } });
+      expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, input))).toEqual(patched);
+    }
     const nativeList = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
     expect((await call("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(nativeList);
     expect((await call("list_project_tasks", { project_id: projectId, status: "DONE" })).structuredContent.tasks).toEqual([]);

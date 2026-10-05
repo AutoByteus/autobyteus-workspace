@@ -54,10 +54,10 @@ const createSession = (input: {
 } = {}) => {
   const providerSessionId = input.sessionId ?? RESERVED_SESSION_ID;
   const sdkClient = createFakeClaudeSdkClient({ providerSessionId });
-  const defaultOpen = sdkClient.openStreamingSession.getMockImplementation()!;
+  const defaultOpen = sdkClient.acquireStreamingSession.getMockImplementation()!;
   if (input.openStreamingSession) {
     const custom = input.openStreamingSession;
-    sdkClient.openStreamingSession.mockImplementation((options: ClaudeSdkStreamingSessionOptions) =>
+    sdkClient.acquireStreamingSession.mockImplementation((options: ClaudeSdkStreamingSessionOptions) =>
       custom(options, defaultOpen as never));
   }
   const sessionMessageCache = new ClaudeSessionMessageCache();
@@ -162,7 +162,7 @@ describe("ClaudeSession streaming lifecycle", () => {
     const { session, sdkClient, start, events } = createSession({
       llmConfig: { thinking_enabled: true, reasoning_effort: "high" },
     });
-    expect(sdkClient.openStreamingSession).not.toHaveBeenCalled();
+    expect(sdkClient.acquireStreamingSession).not.toHaveBeenCalled();
     expect(session.sessionId).toBe(RESERVED_SESSION_ID);
 
     for (const text of ["one", "two", "three"]) {
@@ -171,8 +171,8 @@ describe("ClaudeSession streaming lifecycle", () => {
       await flushClaudeSession();
     }
 
-    expect(sdkClient.openStreamingSession).toHaveBeenCalledTimes(1);
-    expect(sdkClient.openStreamingSession).toHaveBeenCalledWith(expect.objectContaining({
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledTimes(1);
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledWith(expect.objectContaining({
       sessionBinding: { kind: "create", sessionId: RESERVED_SESSION_ID },
       systemPrompt: "## Agent Identity\n\n- Name: Test agent",
       model: "haiku",
@@ -181,7 +181,7 @@ describe("ClaudeSession streaming lifecycle", () => {
       effort: "high",
       canUseTool: expect.any(Function),
     }));
-    expect(sdkClient.openStreamingSession.mock.calls[0]?.[0]).not.toHaveProperty("prompt");
+    expect(sdkClient.acquireStreamingSession.mock.calls[0]?.[0]).not.toHaveProperty("prompt");
     expect(sdkClient.current.sent.map((message) => message.message.content)).toEqual([
       [{ type: "text", text: "one" }],
       [{ type: "text", text: "two" }],
@@ -197,7 +197,7 @@ describe("ClaudeSession streaming lifecycle", () => {
 
     const result = await start("continue");
 
-    expect(sdkClient.openStreamingSession).toHaveBeenCalledWith(expect.objectContaining({
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledWith(expect.objectContaining({
       sessionBinding: { kind: "resume", sessionId: RESTORED_SESSION_ID },
     }));
     expect(acceptedTurnId(result)).toMatch(/^run-1:turn:[0-9a-f-]{36}$/);
@@ -246,13 +246,13 @@ describe("ClaudeSession streaming lifecycle", () => {
     const result = await start("hello");
 
     expect(result.accepted).toBe(true);
-    expect(sdkClient.current.close).toHaveBeenCalledTimes(1);
+    expect(sdkClient.current.requestClose).toHaveBeenCalledTimes(1);
     expect(sdkClient.current.sent).toEqual([]);
     expect(methods()).not.toContain(ClaudeSessionEventName.SYSTEM_INSTRUCTIONS_SUPPLIED);
     const error = events.find((event) => event.method === ClaudeSessionEventName.ERROR);
     expect(error?.params).toMatchObject({ turn_id: acceptedTurnId(result), error_scope: "turn", error_effect: "terminal" });
     expect(String(error?.params?.message)).toContain("persist failed");
-    expect(session.processState).toBe("NOT_OPEN");
+    expect(session.processState).toBe("EXITED");
   });
 
   it("rejects empty input before opening a canonical turn", async () => {
@@ -262,7 +262,7 @@ describe("ClaudeSession streaming lifecycle", () => {
 
     expect(result).toEqual({ accepted: false, code: "CLAUDE_INPUT_EMPTY", message: "Claude runtime message content is required." });
     expect(methods()).toEqual([]);
-    expect(sdkClient.openStreamingSession).not.toHaveBeenCalled();
+    expect(sdkClient.acquireStreamingSession).not.toHaveBeenCalled();
   });
 
   it("applies idle status before emitting normal turn completion and caches both sides", async () => {
@@ -517,8 +517,8 @@ describe("ClaudeSession interrupt", () => {
     await start("AFTER");
     fake.completeTurn("AFTER.", [fake.sent[2]!.uuid]);
     await flushClaudeSession();
-    expect(sdkClient.openStreamingSession).toHaveBeenCalledTimes(1);
-    expect(fake.close).not.toHaveBeenCalled();
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledTimes(1);
+    expect(fake.requestClose).not.toHaveBeenCalled();
     expect(methods().filter((method) => method === ClaudeSessionEventName.TURN_COMPLETED)).toHaveLength(1);
   });
 
@@ -805,8 +805,8 @@ describe("ClaudeSession process lifetime", () => {
     expect(session.processState).toBe("EXITED");
 
     await start("what codeword?");
-    expect(sdkClient.openStreamingSession).toHaveBeenCalledTimes(2);
-    expect(sdkClient.openStreamingSession.mock.calls[1]?.[0]).toMatchObject({
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledTimes(2);
+    expect(sdkClient.acquireStreamingSession.mock.calls[1]?.[0]).toMatchObject({
       sessionBinding: { kind: "resume", sessionId: RESERVED_SESSION_ID },
     });
     sdkClient.current.completeTurn("PAPAYA", [sdkClient.current.sent[0]!.uuid]);
@@ -823,7 +823,7 @@ describe("ClaudeSession process lifetime", () => {
 
     const errorEvent = events.find((event) => event.method === ClaudeSessionEventName.ERROR);
     expect(String(errorEvent?.params?.message)).toContain("CLAUDE_PROVIDER_SESSION_ID_CONFLICT");
-    expect(fake.close).toHaveBeenCalled();
+    expect(fake.requestClose).toHaveBeenCalled();
     expect(session.processState).toBe("EXITED");
   });
 
@@ -837,7 +837,7 @@ describe("ClaudeSession process lifetime", () => {
     expect(events.filter((event) => event.method === ClaudeSessionEventName.TURN_INTERRUPTED)).toEqual([
       { method: ClaudeSessionEventName.TURN_INTERRUPTED, params: { turnId, sessionId: RESERVED_SESSION_ID } },
     ]);
-    expect(sdkClient.current.close).toHaveBeenCalledTimes(1);
+    expect(sdkClient.current.requestClose).toHaveBeenCalledTimes(1);
     expect(session.processState).toBe("CLOSED");
     expect(await session.submitInput(new AgentInputUserMessage("after close"), { kind: "start_turn" })).toMatchObject({
       accepted: false,
@@ -873,7 +873,7 @@ describe("ClaudeSession process lifetime", () => {
     await session.closeProcess("closed");
 
     expect(methods().slice(before)).toEqual([]);
-    expect(sdkClient.current.close).toHaveBeenCalledTimes(1);
+    expect(sdkClient.current.requestClose).toHaveBeenCalledTimes(1);
   });
 
   it("delegates terminate to the session manager dependency", async () => {

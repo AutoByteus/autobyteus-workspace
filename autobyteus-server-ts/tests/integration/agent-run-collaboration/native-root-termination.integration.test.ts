@@ -7,6 +7,7 @@ describe('whole-host termination result is later than actual child-root inactivi
   for (const kind of ['agent', 'agent_team'] as const) {
     it.each(['success', 'child-finish-failure', 'later-host-failure'] as const)(`${kind}: %s`, async mode => {
       const f = await createNativeRootFixture(kind, false);
+      let finishFault: ReturnType<typeof vi.spyOn> | undefined;
       try {
         const connection = await f.connect();
         f.request();
@@ -14,7 +15,7 @@ describe('whole-host termination result is later than actual child-root inactivi
         await f.send(connection.session, 'A');
         await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user');
         if (mode === 'child-finish-failure') {
-          vi.spyOn(f.runManager, 'prepareAgentRunTermination').mockImplementation(async run => {
+          finishFault = vi.spyOn(f.runManager, 'prepareAgentRunTermination').mockImplementation(async run => {
             const prepared = await run.prepareTermination();
             return {
               ...prepared,
@@ -46,6 +47,16 @@ describe('whole-host termination result is later than actual child-root inactivi
           await expect(service.terminateAgentRun(HOST)).rejects.toThrow('controlled child finish uncertainty');
           expect(hostStop).not.toHaveBeenCalled();
           expect(history).not.toHaveBeenCalled();
+          // Native stop alone is not an enclosing cleanup certificate.
+          expect(connection.frames.some(frame => frame.type === 'ROOT_LIFECYCLE' && frame.payload.is_active === false)).toBe(false);
+          expect(f.manager.getActive(HOST)).toBeNull();
+          expect(f.manager.hasRoot(HOST)).toBe(true);
+          expect(f.native.isRunning).toBe(false);
+          finishFault!.mockRestore(); // remove only the explicitly injected test fault
+          expect((await service.terminateAgentRun(HOST)).success).toBe(true);
+          expect(hostStop).toHaveBeenCalledOnce();
+          expect(history).toHaveBeenCalledOnce();
+          expect(f.manager.hasRoot(HOST)).toBe(false);
         } else {
           expect((await service.terminateAgentRun(HOST)).success).toBe(mode === 'success');
           expect(hostStop).toHaveBeenCalledOnce();
@@ -54,7 +65,7 @@ describe('whole-host termination result is later than actual child-root inactivi
         expect(connection.frames.some(frame => frame.type === 'ROOT_LIFECYCLE' && frame.payload.is_active === false)).toBe(true);
         expect(f.native.isRunning).toBe(false);
         expect(f.parent.requests).toHaveLength(3); // held A never reached parent
-      } finally { await f.close(); }
+      } finally { finishFault?.mockRestore(); await f.close(); }
     }, 20000);
   }
 });

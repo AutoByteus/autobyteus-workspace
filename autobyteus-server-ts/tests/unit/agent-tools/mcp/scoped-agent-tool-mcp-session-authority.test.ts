@@ -103,6 +103,28 @@ describe("ScopedAgentToolMcpSessionAuthority", () => {
     expect(restored.descriptor.serverUrl).toBe(first.descriptor.serverUrl);
   });
 
+  it("retains the exact failed per-run session for retry while protecting another run", () => {
+    const { factory, registry } = createFixture();
+    const authority = factory.begin({ scopeIdentity: "application:test" }).complete({
+      executionCapabilities: { publishedArtifactPublisher: publisher, applicationAgentTools: null },
+      assertExecutionCapabilitiesReady: () => undefined,
+    });
+    const a = authority.runSessions.activateForRun(activationInput("owned-A"));
+    const b = authority.runSessions.activateForRun(activationInput("protected-B"));
+    if (a.kind !== "active" || b.kind !== "active") throw new Error("Expected active sessions.");
+    const actual = registry.deactivateSession.bind(registry);
+    const deactivate = vi.spyOn(registry, 'deactivateSession').mockImplementationOnce(() => { throw new Error('exact session close failed'); });
+    expect(() => authority.runSessions.deactivateForRun("owned-A")).toThrow('deactivation failed');
+    expect(registry.resolveSession(a.sessionId).ok).toBe(true);
+    expect(registry.resolveSession(b.sessionId).ok).toBe(true);
+    deactivate.mockImplementation(actual);
+    expect(authority.runSessions.deactivateForRun("owned-A")).toBe(1);
+    expect(deactivate.mock.calls).toEqual([[a.sessionId], [a.sessionId]]);
+    expect(authority.runSessions.deactivateForRun("owned-A")).toBe(0);
+    expect(registry.resolveSession(b.sessionId).ok).toBe(true);
+    deactivate.mockRestore(); authority.close();
+  });
+
   it("does not ledger or register a run with zero exposed tools", () => {
     const { factory, registry } = createFixture();
     const authority = factory.begin({ scopeIdentity: "application:test" }).complete({

@@ -36,6 +36,8 @@ export class RootCommunicationEngine {
     if (input.senderIdentity.agentRunId === input.receiverIdentity.agentRunId) {
       return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "An AgentRun cannot send an ordinary collaboration message to itself." };
     }
+    const assertAllowed = () => this.adapter.assertDeliveryAllowed(input.senderIdentity, input.receiverIdentity);
+    assertAllowed();
     const content = input.content.trim();
     if (!content) return { accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." };
     const createdAt = new Date().toISOString();
@@ -53,10 +55,16 @@ export class RootCommunicationEngine {
     if (!reservationResult.reserved) {
       return { accepted: false, code: reservationResult.code, message: reservationResult.message };
     }
+    const exact = reservationResult.reservation;
+    const guarded = Object.freeze({ agentRunId: exact.agentRunId,
+      cancel: () => exact.cancel(),
+      commit: () => { assertAllowed(); const committed = exact.commit(); return Object.freeze({ release: () => { assertAllowed(); committed.release(); } }); },
+    });
+    try { assertAllowed(); } catch (error) { exact.cancel(); throw error; }
     const result = await this.adapter.commitAppend({
       message,
       inputMessage,
-      reservation: reservationResult.reservation,
+      reservation: guarded,
       getCurrentMessages: () => this.current,
       commitMessages: (messages) => { this.current = validateCollaborationCommunicationMessageArrayV1(messages); },
     });

@@ -12,6 +12,7 @@ import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/loca
 import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
 import { AgentCollaborationStreamHandler } from '../../../src/services/agent-streaming/agent-collaboration-stream-handler.js';
 import { CollaborationStreamServerMessageSchema } from '@autobyteus/collaboration-stream-contracts';
+import { testActivationManager } from '../../fixtures/agent-run-preparation-fixtures.js';
 import type { AgentRun } from '../../../src/agent-execution/domain/agent-run.js';
 import { createRecoveryFixture } from '../../unit/agent-execution/recovery-native-fixture.js';
 
@@ -65,11 +66,20 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
         commitPublication: () => { active.set(runId, native.run); return native.run; },
         abort: async () => ({ kind: 'aborted' }) };
     });
-    const runManager = {
-      prepareNewAgentRun: prepare,
+    const runManager = testActivationManager({
+      newPreparation: prepare,
       getActiveRun: (id: string) => active.get(id) ?? null,
       prepareAgentRunTermination: (run: AgentRun) => run.prepareTermination(),
-    };
+      releaseExactRun: async (run: AgentRun) => {
+        expect(active.get(run.runId)).toBe(run);
+        const result = await run.forceReleaseRuntime();
+        if (result.accepted) {
+          expect(run.isActive()).toBe(false);
+          active.delete(run.runId);
+        }
+        return result;
+      },
+    });
     const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
     const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
     const restoreHost = vi.fn(async () => hostRun);

@@ -1,3 +1,4 @@
+import type { TaskExecutionLifetimeStamp } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import {
   createAgentOrgRootExecutionIdentity,
@@ -207,6 +208,23 @@ export class AgentOrgExecutionIndex implements MessageRecipientIndexPort {
    * Task executions containing the agent: its own execution when it is a task
    * Agent, then each enclosing task Team outward. Empty outside any task execution.
    */
+  taskLifetimeFor(agentRunId: string): TaskExecutionLifetimeStamp | undefined {
+    const stamps = this.listTaskExecutionChainForAgent(agentRunId).flatMap((entry) => entry.source.taskLifetime ? [entry.source.taskLifetime] : []);
+    if (stamps.some((stamp) => stamp.lifetimeId !== stamps[0]?.lifetimeId)) throw new Error("TASK_LIFETIME_CONFLICT: owned containment crosses lifetimes.");
+    return stamps[0];
+  }
+  listOwnedTaskExecutions(lifetimeId: string) {
+    // Validate transitive exclusivity before an owned Team stop can include its children.
+    for (const agent of this.agentsByRunId.values()) {
+      if (this.listTaskExecutionChainForAgent(agent.agentRunId).some(entry => entry.source.taskLifetime?.lifetimeId === lifetimeId)) this.taskLifetimeFor(agent.agentRunId);
+    }
+    return [...this.tasksByRunId.values()].filter((entry) => entry.source.taskLifetime?.lifetimeId === lifetimeId);
+  }
+  findLifetimeHelper(lifetimeId: string, address: string) {
+    return [...this.tasksByRunId.values()].find((entry) => entry.address === address
+      && entry.source.taskLifetime?.lifetimeId === lifetimeId && entry.source.taskLifetime.purpose === "helper") ?? null;
+  }
+
   listTaskExecutionChainForAgent(agentRunId: string): readonly AgentOrgIndexedTaskExecution[] {
     const agent = this.getAgent(agentRunId);
     if (!agent) return Object.freeze([]);

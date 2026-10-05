@@ -1,3 +1,4 @@
+import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
@@ -122,6 +123,7 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
       createdConfigs.push(runConfig);
       const run = {
         runId,
+    bindExecutionAdmissionFence: vi.fn(),
         config: runConfig,
         isActive: () => true,
         getPlatformAgentRunId: () => null,
@@ -159,12 +161,13 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
     const publish = vi.fn((_identity, _event) => undefined);
     const registry = new TaskAgentExecutionRegistry({
       teamContext,
-      agentRunManager: { prepareNewAgentRun } as never,
+      agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
       memoryLocator: {
         getLocation: getRootedLocation,
       } as never,
       activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
       callbacks: {
+      assertExecutionInputAllowed: vi.fn(),
         buildMemberExecutionContext: vi.fn(async ({ identity }) => testMemberExecutionContext({
           rootTeamRunId: identity.root.rootRunId,
           memberAddress: identity.memberAddress,
@@ -176,13 +179,13 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
     });
     const message = new AgentInputUserMessage("start task", SenderType.USER);
 
-    const prepared = await registry.prepare({
+    const prepared = await registry.beginPreparation({
       taskId: "task_0001",
       address: workerNode.address,
       agentRunId: taskAgentRunId,
       sourceNode: workerNode,
       message,
-    });
+    }).prepare();
 
     expect(prepared.binding).toEqual({
       kind: "agent",
@@ -200,14 +203,8 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
     const committed = prepared.commitAfterDurability();
     expect(registry.get(taskAgentRunId)).not.toBeNull();
     expect(eventListeners).toHaveLength(1);
-    eventListeners[0]?.({
-      eventType: AgentRunEventType.TURN_STARTED,
-      runId: taskAgentRunId,
-      payload: { turn_id: "turn-1" },
-      statusHint: "ACTIVE",
-    } satisfies AgentRunEvent);
-    expect(publish).not.toHaveBeenCalled();
 
+    const canonical = () => publish.mock.calls.filter(([, event]) => event.kind === "agent_run");
     publish.mockImplementationOnce(() => {
       eventListeners[0]?.({
         eventType: AgentRunEventType.TURN_COMPLETED,
@@ -216,19 +213,25 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
         statusHint: "IDLE",
       } satisfies AgentRunEvent);
     });
-    committed.releaseWork();
-    expect(postedMessages).toEqual([]);
-    expect(publish).toHaveBeenCalledTimes(2);
-    expect(publish.mock.calls[0]?.[0]).toEqual(expect.objectContaining({
+    eventListeners[0]?.({
+      eventType: AgentRunEventType.TURN_STARTED,
+      runId: taskAgentRunId,
+      payload: { turn_id: "turn-1" },
+      statusHint: "ACTIVE",
+    } satisfies AgentRunEvent);
+    await committed.releaseWork(() => undefined);
+    expect(postedMessages).toEqual([message]);
+    expect(canonical()).toHaveLength(2);
+    expect(canonical()[0]?.[0]).toEqual(expect.objectContaining({
       root: expect.objectContaining({ rootRunId: config.rootTeam.teamRunId }),
       memberAddress: workerNode.address,
       agentRunId: taskAgentRunId,
     }));
-    expect(publish.mock.calls[0]?.[1]).toEqual(expect.objectContaining({
+    expect(canonical()[0]?.[1]).toEqual(expect.objectContaining({
       kind: "agent_run",
       event: expect.objectContaining({ eventType: AgentRunEventType.TURN_STARTED }),
     }));
-    expect(publish.mock.calls[1]?.[1]).toEqual(expect.objectContaining({
+    expect(canonical()[1]?.[1]).toEqual(expect.objectContaining({
       kind: "agent_run",
       event: expect.objectContaining({ eventType: AgentRunEventType.TURN_COMPLETED }),
     }));
@@ -239,13 +242,13 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
       payload: { turn_id: "turn-2", reason: "live" },
       statusHint: "IDLE",
     } satisfies AgentRunEvent);
-    expect(publish).toHaveBeenCalledTimes(3);
-    expect(publish.mock.calls[2]?.[1]).toEqual(expect.objectContaining({
+    expect(canonical()).toHaveLength(3);
+    expect(canonical()[2]?.[1]).toEqual(expect.objectContaining({
       kind: "agent_run",
       event: expect.objectContaining({ eventType: AgentRunEventType.TURN_INTERRUPTED }),
     }));
-    committed.releaseWork();
-    expect(publish).toHaveBeenCalledTimes(3);
+    expect(() => committed.releaseWork(() => undefined)).toThrow();
+    expect(canonical()).toHaveLength(3);
 
     await vi.waitFor(() => expect(postedMessages).toEqual([message]));
     expect(prepareNewAgentRun).toHaveBeenCalledWith(
@@ -262,13 +265,13 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
 
     const disposedTaskAgentRunId = "worker_00000000000000000000000000000002";
     const disposedMessage = new AgentInputUserMessage("must not start", SenderType.USER);
-    const disposedPrepared = await registry.prepare({
+    const disposedPrepared = await registry.beginPreparation({
       taskId: "task_0002",
       address: workerNode.address,
       agentRunId: disposedTaskAgentRunId,
       sourceNode: workerNode,
       message: disposedMessage,
-    });
+    }).prepare();
     disposedPrepared.sealForCommit();
     const disposedCommitted = disposedPrepared.commitAfterDurability();
     expect(eventListeners).toHaveLength(2);
@@ -279,12 +282,12 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
       payload: { turn_id: "turn-disposed" },
       statusHint: "ACTIVE",
     } satisfies AgentRunEvent);
-    expect(publish).toHaveBeenCalledTimes(publishedBeforeDisposedRelease);
+    expect(publish).toHaveBeenCalledTimes(publishedBeforeDisposedRelease + 1);
 
     registry.dispose();
-    disposedCommitted.releaseWork();
+    expect(() => disposedCommitted.releaseWork(() => undefined)).toThrow();
     await Promise.resolve();
     expect(postedMessages).toEqual([message]);
-    expect(publish).toHaveBeenCalledTimes(publishedBeforeDisposedRelease);
+    expect(publish).toHaveBeenCalledTimes(publishedBeforeDisposedRelease + 1);
   });
 });

@@ -38,6 +38,8 @@ import type {
   CollaborationAgentStatusSnapshot,
 } from "../domain/collaboration-agent-execution-event.js";
 import type { PreparedLocalExecutionTermination } from "../domain/prepared-local-execution-termination.js";
+import type { AgentRunActivationOperation } from "../../../agent-execution/services/agent-run-activation-operation.js";
+import type { ConfiguredAgentActivationOperation } from "./configured-agent-activation-planner.js";
 import { ConfiguredAgentActivationPlanner } from "./configured-agent-activation-planner.js";
 import { ConfiguredAgentStatusOverlay } from "./configured-agent-status-overlay.js";
 
@@ -52,6 +54,8 @@ export type PreparedConfiguredAgentActivation = Readonly<{
 export class ConfiguredAgentExecutionHandle {
   readonly identity: CollaborationMemberExecutionIdentity;
   readonly physicalScope: RootExecutionPhysicalScope;
+  private activationOperation: AgentRunActivationOperation | null = null;
+  private configurationPreparing = false;
   private agentRun: AgentRun | null = null;
   private readinessAttempt: Promise<AgentRun> | null = null;
   private rootShutdownFenced = false;
@@ -74,6 +78,7 @@ export class ConfiguredAgentExecutionHandle {
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+    assertInputAllowed?: () => void;
   }) {
     this.identity = cloneCollaborationMemberExecutionIdentity(options.identity);
     this.physicalScope = createRootExecutionPhysicalScope(options.physicalScope);
@@ -113,13 +118,16 @@ export class ConfiguredAgentExecutionHandle {
   getOrCreateAgentRun(): Promise<AgentRun> { return this.ensureReady(); }
 
   async reserveInput(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
-    return (await this.ensureReady()).reserveUserMessage(message, options);
+    const run = await this.ensureReady();
+    this.assertInputAllowed();
+    return run.reserveUserMessage(message, options);
   }
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
     this.publishCommandStatus("initializing");
     try {
       const run = await this.ensureReady();
+      this.assertInputAllowed();
       const result = await run.postUserMessage(message);
       if (result.accepted) {
         this.options.callbacks.publishAgentEvent(this.identity, { kind: "member_input", message });
@@ -139,14 +147,16 @@ export class ConfiguredAgentExecutionHandle {
   }
 
   async approveToolInvocation(invocationId: string, approved: boolean, reason: string | null = null): Promise<AgentOperationResult> {
-    return (await this.ensureReady()).approveToolInvocation(invocationId, approved, reason);
+    const run = await this.ensureReady();
+    this.assertInputAllowed();
+    return run.approveToolInvocation(invocationId, approved, reason);
   }
   async interrupt(): Promise<AgentOperationResult> {
     return this.agentRun ? this.agentRun.interrupt() : { accepted: true };
   }
   async fenceForRootShutdown(): Promise<AgentOperationResult> {
     // Fence before the stale check so root shutdown can never re-activate a dead member.
-    this.rootShutdownFenced = true;
+    this.cancelActivation();
     if (this.readinessAttempt) await this.readinessAttempt.catch(() => null);
     const run = this.agentRun;
     return run && !this.isStale(run)
@@ -161,9 +171,7 @@ export class ConfiguredAgentExecutionHandle {
     if (this.agentRun || this.readinessAttempt) {
       throw new Error(`AgentRun '${this.identity.agentRunId}' already entered live readiness.`);
     }
-    const prepared = await this.planner.prepare(
-      await this.buildAgentRunConfig(), this.platformAgentRunId, this.activationMode,
-    );
+    const prepared = await this.prepareActivation();
     let state: "prepared" | "published" | "aborted" = "prepared";
     return Object.freeze({
       stagedPlatformBindings: Object.freeze(
@@ -182,29 +190,57 @@ export class ConfiguredAgentExecutionHandle {
         if (binding) this.platformAgentRunId = binding.platformAgentRunId;
         const run = prepared.candidate.commitPublication();
         this.activationMode = "restore";
-        this.bindEvents(run);
         this.agentRun = run;
+        this.activationOperation = null;
         state = "published";
+        this.bindEvents(run);
       },
       abort: async () => {
-        if (state !== "prepared") return;
-        const cleanup = await prepared.candidate.abort();
+        if (state === "aborted") return;
+        const cleanup = await this.releaseRuntime();
+        if (!cleanup.accepted) throw new Error(cleanup.message ?? "Configured Agent cleanup remains pending.");
         state = "aborted";
-        if (cleanup.kind === "quarantined") throw this.cleanupError(prepared.candidate.runId, cleanup.error);
       },
     });
   }
 
+  cancelActivation(): void {
+    this.rootShutdownFenced = true;
+    this.activationOperation?.cancel();
+  }
+
+  private runtimeReleased = false;
+  async releaseRuntime(closeInput = true): Promise<AgentOperationResult> {
+    if (this.runtimeReleased) return { accepted: true };
+    if (closeInput) this.cancelActivation();
+    else this.activationOperation?.cancel();
+    if (this.agentRun) {
+      const result = await this.manager.releaseExactRun(this.agentRun);
+      if (result.accepted) { this.runtimeReleased = closeInput; this.activationOperation = null; this.agentRun = null; this.dispose(); }
+      return result;
+    }
+    if (this.activationOperation) {
+      const result = await this.activationOperation.releasePrivate();
+      if (result.kind === "released") { this.runtimeReleased = closeInput; this.activationOperation = null; this.agentRun = null; this.dispose(); return { accepted: true }; }
+      if (result.kind === "quarantined") throw result.error;
+      return { accepted: false, code: "RUNTIME_RELEASE_PENDING", message: `Exact Agent release remains ${result.kind}.` };
+    }
+    return this.configurationPreparing
+      ? { accepted: false, code: "RUNTIME_RELEASE_PENDING", message: "Configured activation continuation has not settled." }
+      : { accepted: true };
+  }
+
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
     if (this.readinessAttempt) await this.readinessAttempt.catch(() => null);
-    if (!this.agentRun || this.isStale(this.agentRun)) return completedLocalTermination(() => this.dispose());
-    return this.wrapPreparedTermination(await this.manager.prepareAgentRunTermination(this.agentRun));
+    if (this.agentRun) return this.wrapPreparedTermination(await this.manager.prepareAgentRunTermination(this.agentRun));
+    // Private rejection still has retained authority; never mistake a missing published run for release.
+    return Object.freeze({ cancel: () => undefined, commit: () => Object.freeze({ finish: () => this.releaseRuntime() }) });
   }
 
   async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
     if (this.readinessAttempt) return null;
     const run = this.agentRun;
-    if (!run || this.isStale(run)) return completedLocalTermination(() => this.dispose());
+    if (!run) return this.activationOperation ? null : completedLocalTermination(() => this.dispose());
     const prepared = await this.manager.tryPrepareAgentRunTerminationIfQuiescent(run);
     if (!prepared) return null;
     return this.wrapPreparedTermination(prepared);
@@ -217,11 +253,12 @@ export class ConfiguredAgentExecutionHandle {
   dispose(): void {
     this.unsubscribe?.();
     this.unsubscribe = null;
-    this.agentRun = null;
+    // Listener disposal is not a physical cleanup certificate. Keep exact published authority.
     this.overlay.clear();
   }
 
   private ensureReady(): Promise<AgentRun> {
+    try { this.assertInputAllowed(); } catch (error) { return Promise.reject(error); }
     if (this.rootShutdownFenced) {
       return Promise.reject(new Error(`AgentRun '${this.identity.agentRunId}' is fenced for root shutdown.`));
     }
@@ -240,10 +277,15 @@ export class ConfiguredAgentExecutionHandle {
   private async initializeReady(markRetrySafe: () => void): Promise<AgentRun> {
     this.unsubscribe?.();
     this.unsubscribe = null;
-    let prepared: Awaited<ReturnType<ConfiguredAgentActivationPlanner["prepare"]>> | null = null;
+    if (this.agentRun) {
+      const cleanup = await this.manager.releaseExactRun(this.agentRun);
+      if (!cleanup.accepted) throw new Error(cleanup.message ?? "Prior exact Agent runtime cleanup failed.");
+      this.agentRun = null; this.dispose();
+    }
+    let prepared: Awaited<ReturnType<ConfiguredAgentActivationOperation["prepare"]>> | null = null;
     let durabilityCommitted = false;
     try {
-      prepared = await this.planner.prepare(await this.buildAgentRunConfig(), this.platformAgentRunId, this.activationMode);
+      prepared = await this.prepareActivation();
       const binding = prepared.bindingChange?.kind === "replace_without_conversation"
         ? prepared.bindingChange.replacement.binding
         : prepared.bindingChange?.binding;
@@ -257,8 +299,9 @@ export class ConfiguredAgentExecutionHandle {
       }
       const run = prepared.candidate.commitPublication();
       this.activationMode = "restore";
-      this.bindEvents(run);
       this.agentRun = run;
+      this.activationOperation = null;
+      this.bindEvents(run);
       return run;
     } catch (error) {
       let cleanupConfirmed = prepared === null;
@@ -269,12 +312,11 @@ export class ConfiguredAgentExecutionHandle {
             { cause: error, indeterminate: true },
           )
         : error;
-      if (prepared) {
-        const cleanup = await prepared.candidate.abort();
-        cleanupConfirmed = cleanup.kind === "aborted";
-        if (cleanup.kind === "quarantined") failure = this.cleanupError(prepared.candidate.runId, cleanup.error);
+      if (this.activationOperation || this.agentRun) {
+        try { cleanupConfirmed = (await this.releaseRuntime(false)).accepted; }
+        catch (error) { cleanupConfirmed = false; failure = this.cleanupError(this.identity.agentRunId, error instanceof Error ? error : new Error(String(error))); }
       }
-      if (cleanupConfirmed && this.planner.isRetrySafe(failure)) markRetrySafe();
+      if (cleanupConfirmed && this.planner.isRetrySafe(failure) && !durabilityCommitted) markRetrySafe();
       this.options.callbacks.publishAgentEvent(this.identity, {
         kind: "readiness_failure",
         code: this.readinessFailureCode(failure),
@@ -282,6 +324,23 @@ export class ConfiguredAgentExecutionHandle {
       });
       throw failure;
     }
+  }
+
+  private async prepareActivation() {
+    this.configurationPreparing = true;
+    try {
+      const config = await this.buildAgentRunConfig();
+      this.assertInputAllowed();
+      const begun = this.planner.begin(config, this.platformAgentRunId, this.activationMode);
+      this.activationOperation = begun.operation;
+      return await begun.prepare();
+    } finally { this.configurationPreparing = false; }
+  }
+
+  private readonly inputFence = () => this.assertInputAllowed();
+  private assertInputAllowed(): void {
+    if (this.rootShutdownFenced) throw new Error(`AgentRun '${this.identity.agentRunId}' is closed for input.`);
+    this.options.assertInputAllowed?.();
   }
 
   private async buildAgentRunConfig(): Promise<AgentRunConfig> {
@@ -315,6 +374,7 @@ export class ConfiguredAgentExecutionHandle {
 
   private bindEvents(run: AgentRun): void {
     this.unsubscribe?.();
+    run.bindExecutionAdmissionFence(this.inputFence);
     this.unsubscribe = run.subscribeToEvents((event: unknown) => {
       if (!isAgentRunEvent(event)) return;
       if (event.runId !== this.identity.agentRunId) {
@@ -363,7 +423,7 @@ export class ConfiguredAgentExecutionHandle {
         const local = prepared.commit();
         committed = Object.freeze({ finish: async () => {
           const result = await local.finish();
-          if (result.accepted) this.dispose();
+          if (result.accepted) { this.agentRun = null; this.dispose(); }
           return result;
         } });
         return committed;

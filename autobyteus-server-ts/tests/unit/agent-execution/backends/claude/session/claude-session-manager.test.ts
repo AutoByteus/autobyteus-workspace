@@ -12,7 +12,7 @@ import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../../he
 
 const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
-const createManager = (sdkClient: unknown, activator = { activateForRun: vi.fn() }) =>
+const createManager = (sdkClient: unknown, activator = { activateForRun: vi.fn(), deactivateForRun: vi.fn(() => 0) }) =>
   new ClaudeSessionManager(
     activator as never,
     {} as never,
@@ -43,19 +43,14 @@ const createRunContext = (input: { runId: string; sessionId?: string }) =>
 
 describe("ClaudeSessionManager", () => {
   it("propagates the exact run-session activator into every created and restored session", async () => {
-    const activator = { activateForRun: vi.fn() };
+    const activator = { activateForRun: vi.fn(), deactivateForRun: vi.fn(() => 0) };
     const manager = createManager({
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
     }, activator);
 
-    const created = await manager.createRunSession(
-      createRunContext({ runId: "run-create-activator" }) as never,
-    );
-    const restored = await manager.restoreRunSession(
-      createRunContext({ runId: "run-restore-activator" }) as never,
-      RESTORED_SESSION_ID,
-    );
+    const created = await manager.createRunSession(createRunContext({ runId: "run-create-activator" }) as never, () => undefined);
+    const restored = await manager.restoreRunSession(createRunContext({ runId: "run-restore-activator" }) as never, RESTORED_SESSION_ID, () => undefined);
 
     for (const session of [created, restored]) {
       expect((session as unknown as {
@@ -71,7 +66,7 @@ describe("ClaudeSessionManager", () => {
     });
     const runContext = createRunContext({ runId: "run-create" });
 
-    const session = await manager.createRunSession(runContext as never);
+    const session = await manager.createRunSession(runContext as never, () => undefined);
 
     expect(manager.hasRunSession("run-create")).toBe(true);
     expect(session.sessionId).toMatch(
@@ -90,7 +85,7 @@ describe("ClaudeSessionManager", () => {
     });
     const runContext = createRunContext({ runId: "run-restore" });
 
-    const session = await manager.restoreRunSession(runContext as never, RESTORED_SESSION_ID);
+    const session = await manager.restoreRunSession(runContext as never, RESTORED_SESSION_ID, () => undefined);
 
     expect(manager.hasRunSession("run-restore")).toBe(true);
     expect(session.sessionId).toBe(RESTORED_SESSION_ID);
@@ -175,9 +170,7 @@ describe("ClaudeSessionManager", () => {
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
     });
-    const session = await manager.createRunSession(
-      createRunContext({ runId: "run-terminate" }) as never,
-    );
+    const session = await manager.createRunSession(createRunContext({ runId: "run-terminate" }) as never, () => undefined);
     const events: string[] = [];
     session.subscribeRuntimeEvents((event) => {
       events.push(event.method);
@@ -192,9 +185,7 @@ describe("ClaudeSessionManager", () => {
   it("settles an active turn as interrupted, then closes the run's Claude process before SESSION_TERMINATED (AC-008)", async () => {
     const sdkClient = createFakeClaudeSdkClient({});
     const manager = createManager(sdkClient);
-    const session = await manager.createRunSession(
-      createRunContext({ runId: "run-active-terminate" }) as never,
-    );
+    const session = await manager.createRunSession(createRunContext({ runId: "run-active-terminate" }) as never, () => undefined);
     const events: Array<{ method: string; activeTurnId: string | null }> = [];
     session.subscribeRuntimeEvents((event) => {
       events.push({ method: event.method, activeTurnId: session.activeTurnId });
@@ -220,7 +211,7 @@ describe("ClaudeSessionManager", () => {
     expect(interruptedIndex).toBeGreaterThanOrEqual(0);
     expect(terminatedIndex).toBeGreaterThan(interruptedIndex);
     expect(events[interruptedIndex]?.activeTurnId).toBeNull();
-    expect(sdkClient.current.close).toHaveBeenCalledTimes(1);
+    expect(sdkClient.current.requestClose).toHaveBeenCalledTimes(1);
     expect(sdkClient.current.interruptAndCancelQueued).not.toHaveBeenCalled();
     expect(manager.hasRunSession("run-active-terminate")).toBe(false);
   });
@@ -228,13 +219,13 @@ describe("ClaudeSessionManager", () => {
   it("closes the previous run process when a run session is replaced", async () => {
     const sdkClient = createFakeClaudeSdkClient({});
     const manager = createManager(sdkClient);
-    const session = await manager.createRunSession(createRunContext({ runId: "run-replaced" }) as never);
+    const session = await manager.createRunSession(createRunContext({ runId: "run-replaced" }) as never, () => undefined);
     await session.submitInput(new AgentInputUserMessage("hello"), { kind: "start_turn" });
     await flushClaudeSession();
     const first = sdkClient.current;
 
-    await manager.createRunSession(createRunContext({ runId: "run-replaced" }) as never);
+    await manager.createRunSession(createRunContext({ runId: "run-replaced" }) as never, () => undefined);
 
-    expect(first.close).toHaveBeenCalledTimes(1);
+    expect(first.requestClose).toHaveBeenCalledTimes(1);
   });
 });

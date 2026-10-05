@@ -36,14 +36,14 @@ describe("FlatTeamExecutionFactory", () => {
     },
   ])("materializes one Agent-only $kind without a public root aggregate", async ({ root, ancestors, teamNode }) => {
     const physicalScope = createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: ancestors });
-    const prepared = await new FlatTeamExecutionFactory().materialize({
+    const prepared = await new FlatTeamExecutionFactory().beginMaterialization({
       physicalScope,
       teamNode,
       handoffs: [],
       activationMode: "fresh",
       callbacks,
       prepareConfiguredAgents: false,
-    });
+    }).prepare();
 
     expect(prepared.teamRun.teamRunId).toBe(teamNode.teamRunId);
     expect(prepared.teamRun.context.physicalScope).toEqual(physicalScope);
@@ -71,26 +71,26 @@ describe("FlatTeamExecutionFactory", () => {
         }),
       ],
     });
-    await expect(new FlatTeamExecutionFactory().materialize({
+    await expect(() => new FlatTeamExecutionFactory().beginMaterialization({
       physicalScope: createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [] }),
       teamNode,
       handoffs: [],
       activationMode: "fresh",
       callbacks,
       prepareConfiguredAgents: false,
-    })).rejects.toThrow("cannot contain a configured Team");
+    })).toThrow("cannot contain a configured Team");
     expect(callbacks.buildMemberExecutionContext).not.toHaveBeenCalled();
   });
 
   it("rejects an Org-mounted Team scope that omits its physical TeamRun ancestry", async () => {
     const root = createAgentOrgRootExecutionIdentity("org-root-run");
-    await expect(new FlatTeamExecutionFactory().materialize({
+    await expect(() => new FlatTeamExecutionFactory().beginMaterialization({
       physicalScope: createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [] }),
       teamNode: node("/ReviewTeam", "mounted-team-run"),
       handoffs: [],
       activationMode: "fresh",
       callbacks,
       prepareConfiguredAgents: false,
-    })).rejects.toThrow("contains TeamRun 'none', not 'mounted-team-run'");
+    })).toThrow("contains TeamRun 'none', not 'mounted-team-run'");
   });
 });

@@ -1,5 +1,6 @@
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../agent-execution/domain/agent-run-context.js";
+import type { AgentRunActivationOperation } from "../../../agent-execution/services/agent-run-activation-operation.js";
 import type { AgentRunActivationCandidate } from "../../../agent-execution/services/agent-run-activation-candidate.js";
 import { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import { AgentRunActivationError, isAgentRunActivationQuarantineError } from "../../../agent-execution/errors.js";
@@ -28,16 +29,17 @@ export class ConfiguredAgentActivationPlanner {
   }) {}
 
   /** `mode` belongs to this attempt: a handle re-activating after its run died plans as `restore`. */
-  async prepare(
+  begin(
     config: AgentRunConfig,
     currentPlatformAgentRunId: string | null,
     mode: ConfiguredAgentActivationMode,
-  ): Promise<Readonly<{
-    candidate: AgentRunActivationCandidate;
-    bindingChange: CollaborationAgentPlatformBindingChange | null;
-  }>> {
+  ): ConfiguredAgentActivationOperation {
     const plan = this.resolvePlan(config, currentPlatformAgentRunId, mode);
-    const candidate = await this.prepareCandidate(plan, config);
+    const operation = this.beginCandidate(plan, config);
+    return Object.freeze({
+      operation,
+      prepare: async () => {
+    const candidate = await operation.prepare();
     const binding = this.createExternalBinding(candidate);
     const bindingChange = plan.kind === "replace_external_without_conversation"
       ? Object.freeze({
@@ -51,6 +53,8 @@ export class ConfiguredAgentActivationPlanner {
         ? Object.freeze({ kind: "adopt_or_retain" as const, binding })
         : null;
     return Object.freeze({ candidate, bindingChange });
+      },
+    });
   }
 
   isRetrySafe(error: unknown): boolean {
@@ -100,29 +104,16 @@ export class ConfiguredAgentActivationPlanner {
     );
   }
 
-  private prepareCandidate(plan: ActivationPlan, config: AgentRunConfig): Promise<AgentRunActivationCandidate> {
+  private beginCandidate(plan: ActivationPlan, config: AgentRunConfig): AgentRunActivationOperation {
     if (plan.kind === "new" || plan.kind === "replace_external_without_conversation") {
-      return this.manager.prepareNewAgentRun({ runId: this.input.identity.agentRunId, config });
+      return this.manager.beginActivation({ kind: "new", runId: this.input.identity.agentRunId, config });
     }
-    if (plan.kind === "restore_external") {
-      return this.manager.prepareRestoreAgentRunFromPlatformState({
-        runId: this.input.identity.agentRunId,
-        config,
-        platformAgentRunId: plan.platformAgentRunId,
-      });
-    }
-    return this.manager.prepareRestoreAgentRun(new AgentRunContext({
-      runId: this.input.identity.agentRunId,
-      config,
-      runtimeContext: null,
-    })).catch((error: unknown) => {
-      if (isAgentRunActivationQuarantineError(error)) throw error;
-      throw new CollaborationAgentActivationError(
-        "COLLABORATION_AGENT_NATIVE_RESTORE_FAILED",
-        "The prior native conversation context could not be restored.",
-        { cause: error },
-      );
+    if (plan.kind === "restore_external") return this.manager.beginActivation({
+      kind: "platform_restore", runId: this.input.identity.agentRunId, config, platformAgentRunId: plan.platformAgentRunId,
     });
+    return this.manager.beginActivation({ kind: "restore", context: new AgentRunContext({
+      runId: this.input.identity.agentRunId, config, runtimeContext: null,
+    }) });
   }
 
   private assertNoPriorConversationActivity(config: AgentRunConfig): void {
@@ -181,3 +172,11 @@ type ActivationPlan =
   | Readonly<{ kind: "replace_external_without_conversation"; expectedPreviousPlatformAgentRunId: string }>
   | Readonly<{ kind: "restore_native" }>
   | Readonly<{ kind: "restore_external"; platformAgentRunId: string }>;
+
+export type ConfiguredAgentActivationOperation = Readonly<{
+  operation: AgentRunActivationOperation;
+  prepare(): Promise<Readonly<{
+    candidate: AgentRunActivationCandidate;
+    bindingChange: CollaborationAgentPlatformBindingChange | null;
+  }>>;
+}>;

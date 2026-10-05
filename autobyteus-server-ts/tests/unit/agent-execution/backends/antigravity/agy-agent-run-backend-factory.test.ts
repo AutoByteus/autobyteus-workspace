@@ -22,6 +22,15 @@ vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-stre
   },
 }));
 
+const prepareAndReleaseOnFailure = async (control: ReturnType<AgyAgentRunBackendFactory['beginPreparation']>) => {
+  try { return await control.prepare(); }
+  catch (error) {
+    const cleanup = await control.release();
+    if (cleanup.kind === 'failed') throw new AggregateError([error, cleanup.error], 'Preparation/cleanup failed');
+    throw error;
+  }
+};
+
 describe("AGY backend capability admission and preserved bindings", () => {
   let base: string;
   let workspace: string;
@@ -79,19 +88,19 @@ describe("AGY backend capability admission and preserved bindings", () => {
       );
       const preloaded = new AgentRunConfig({ ...config } as never);
       if (outcome === "rejects") {
-        const failure = await scoped.createBackend(preloaded, "run").catch((error: unknown) => error);
+        const failure = await prepareAndReleaseOnFailure(scoped.beginPreparation({ kind: "new", config: preloaded, runId: "run" })).catch((error: unknown) => error);
         expect(failure).toBeInstanceOf(AgentCreationError);
         expect((failure as Error).message).toBe("Antigravity could not use skill 'example-skill': the selected workspace already has a skill with this name.");
         return;
       }
-      const backend = await scoped.createBackend(preloaded, "run");
+      const backend = await prepareAndReleaseOnFailure(scoped.beginPreparation({ kind: "new", config: preloaded, runId: "run" }));
       const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
       expect(manifest.skills).toEqual([]);
       await backend.terminate();
     });
 
   it("uses the catalog for new and restore while retaining capsule bytes and exact conversation", async () => {
-    const initial = await factory.createBackend(config, "run");
+    const initial = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
     const context = initial.getContext();
     await initial.terminate();
     const manifestPath = path.join(config.memoryDir!, "agy-project", "manifest.json");
@@ -101,7 +110,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
     const markdown = await fs.readFile(agentPath, "utf8");
     expect(markdown).toContain("tools: [view_file, write_to_file, replace_file_content, grep_search, list_dir, find_by_name, run_command, generate_image]");
     instructions = "Changed identity";
-    const restored = await factory.restoreBackend(context);
+    const restored = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "restore", context: context }));
     expect(listAntigravityModels).toHaveBeenCalledTimes(2);
     expect(restored.getPlatformAgentRunId()).toBe("provider-conversation");
     expect(start).toHaveBeenLastCalledWith(expect.objectContaining({ conversationId: "provider-conversation" }));
@@ -112,9 +121,9 @@ describe("AGY backend capability admission and preserved bindings", () => {
 
   it("always launches and restores with auto-approve, even when the run config stores it off", async () => {
     const off = new AgentRunConfig({ ...config, autoExecuteTools: false } as never);
-    const initial = await factory.createBackend(off, "run");
+    const initial = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: off, runId: "run" }));
     await initial.terminate();
-    const restored = await factory.restoreBackend(initial.getContext());
+    const restored = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "restore", context: initial.getContext() }));
     await restored.terminate();
     expect(start).toHaveBeenCalledTimes(2);
     for (const [input] of start.mock.calls) expect(input).not.toHaveProperty("autoExecuteTools");
@@ -123,13 +132,13 @@ describe("AGY backend capability admission and preserved bindings", () => {
   it("requires the always-proceed permission mode when the run config stores auto-approve off", async () => {
     initOverride = { permission_mode: "default" };
     const off = new AgentRunConfig({ ...config, autoExecuteTools: false } as never);
-    await expect(factory.createBackend(off, "run")).rejects.toThrow("AGY_PERMISSION_MODE_MISMATCH");
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: off, runId: "run" }))).rejects.toThrow("AGY_PERMISSION_MODE_MISMATCH");
     expect(stop).toHaveBeenCalled();
   });
 
   it("rejects a missing selected model before creating a capsule or launching", async () => {
     vi.mocked(listAntigravityModels).mockResolvedValue([]);
-    await expect(factory.createBackend(config, "run")).rejects.toThrow("AGY_MODEL_UNAVAILABLE");
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow("AGY_MODEL_UNAVAILABLE");
     expect(start).not.toHaveBeenCalled();
     await expect(fs.stat(config.memoryDir!)).rejects.toMatchObject({ code: "ENOENT" });
   });
@@ -140,34 +149,34 @@ describe("AGY backend capability admission and preserved bindings", () => {
     [{ permission_mode: "default" }, "AGY_PERMISSION_MODE_MISMATCH"],
   ])("retains launch validation for %j", async (override, error) => {
     initOverride = override;
-    await expect(factory.createBackend(config, "run")).rejects.toThrow(error);
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow(error);
     expect(stop).toHaveBeenCalled();
   });
 
   it("retains capsule project validation", async () => {
     initOverride = { cwd: workspace };
-    await expect(factory.createBackend(config, "run")).rejects.toThrow("AGY_PROJECT_MISMATCH");
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow("AGY_PROJECT_MISMATCH");
     expect(stop).toHaveBeenCalled();
   });
 
   it("propagates actual discovery failure without starting a process", async () => {
     vi.mocked(listAntigravityModels).mockRejectedValue(new Error("AGY_CLI_UNSUPPORTED"));
-    await expect(factory.createBackend(config, "run")).rejects.toThrow("AGY_CLI_UNSUPPORTED");
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow("AGY_CLI_UNSUPPORTED");
     expect(start).not.toHaveBeenCalled();
   });
 
   it("rejects a mismatched restored conversation", async () => {
-    const initial = await factory.createBackend(config, "run");
+    const initial = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
     await initial.terminate();
     conversationId = "different-conversation";
-    await expect(factory.restoreBackend(initial.getContext())).rejects.toThrow("AGY_CONVERSATION_ID_CONFLICT");
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "restore", context: initial.getContext() }))).rejects.toThrow("AGY_CONVERSATION_ID_CONFLICT");
   });
 
   it("still checks model availability on restore", async () => {
-    const initial = await factory.createBackend(config, "run");
+    const initial = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
     await initial.terminate();
     vi.mocked(listAntigravityModels).mockResolvedValue([]);
-    await expect(factory.restoreBackend(initial.getContext())).rejects.toThrow("AGY_MODEL_UNAVAILABLE");
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "restore", context: initial.getContext() }))).rejects.toThrow("AGY_MODEL_UNAVAILABLE");
     expect(start).toHaveBeenCalledTimes(1);
   });
 });

@@ -5,11 +5,23 @@ import { CodexThreadEventName } from "../../../../../../src/agent-execution/back
 import { TeamAgentEventAdapter } from "../../../../../../src/agent-team-execution/services/team-agent-event-adapter.js";
 import { createCodexThreadEventHarness } from "../../../../../fixtures/codex-thread-event-harness.js";
 
-const strictTeamAdapter = new TeamAgentEventAdapter(() => null);
+import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { createTeamAgentExecutionBinding } from "../../../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
+
+const createStrictTeamAdapter = (agentRunId: string): TeamAgentEventAdapter => {
+  const execution = createTeamAgentExecutionBinding({
+    root: createTeamRootExecutionIdentity("tool-log-root-team"),
+    memberAddress: "/worker",
+    agentRunId,
+  });
+  return new TeamAgentEventAdapter(
+    (runId) => runId === execution.agentRunId ? execution : null,
+  );
+};
 
 const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): void => {
   for (const event of events) {
-    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publish" });
+    expect(createStrictTeamAdapter(event.runId).adapt(event)).toMatchObject({ kind: "publish" });
   }
 };
 
@@ -63,6 +75,25 @@ const emitRawToolOutput = (
 });
 
 describe("Codex TOOL_LOG correlation", () => {
+  it("rejects valid correlated TOOL_LOG when the run has no Team identity", () => {
+    const harness = createCodexThreadEventHarness("run-unregistered-tool-log");
+    emitMcpStarted(harness);
+    const output = emitRawToolOutput(harness, {
+      turnId: "turn-1",
+      item: {
+        type: "functionCallOutput",
+        call_id: "call-1",
+        output: "exact unregistered tool output",
+      },
+    });
+    expect(output).toHaveLength(1);
+    expect(output[0].eventType).toBe(AgentRunEventType.TOOL_LOG);
+    expect(new TeamAgentEventAdapter(() => null).adapt(output[0])).toMatchObject({
+      kind: "rejected",
+      code: "TEAM_AGENT_EVENT_ADMISSION_FAILED",
+    });
+  });
+
   it("retains exact tool identity across a retry diagnostic", () => {
     const harness = createCodexThreadEventHarness("run-retry-tool-log");
     const started = emitMcpStarted(
@@ -146,7 +177,7 @@ describe("Codex TOOL_LOG correlation", () => {
         log_entry: "{\"task_id\":\"task-1\",\"status\":\"active\"}",
       },
     });
-    expect(strictTeamAdapter.adapt(rawOutput[0]!)).toEqual(expect.objectContaining({
+    expect(createStrictTeamAdapter(rawOutput[0]!.runId).adapt(rawOutput[0]!)).toEqual(expect.objectContaining({
       kind: "publish",
       event: expect.objectContaining({
         eventType: "TOOL_LOG",

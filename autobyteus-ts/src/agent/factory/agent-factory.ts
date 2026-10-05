@@ -35,7 +35,7 @@ type ActiveAgentEntry = {
 type StoppingAgentEntry = {
   state: 'stopping';
   agent: Agent;
-  stopPromise: Promise<boolean>;
+  stopPromise: Promise<boolean> | null;
 };
 
 type AgentLifecycleEntry = ActiveAgentEntry | StoppingAgentEntry;
@@ -208,7 +208,7 @@ export class AgentFactory extends Singleton {
       console.warn(`Agent with ID '${agentId}' not found for removal.`);
       return false;
     }
-    if (entry.state === 'stopping') {
+    if (entry.state === 'stopping' && entry.stopPromise) {
       console.info(`Agent '${agentId}' is already stopping. Awaiting existing shutdown.`);
       return entry.stopPromise;
     }
@@ -217,7 +217,12 @@ export class AgentFactory extends Singleton {
     console.info(`Removing agent '${agentId}'. Attempting graceful shutdown.`);
     let stoppingEntry!: StoppingAgentEntry;
     const stopPromise = (async () => {
-      await agent.stop(shutdownTimeout);
+      try { await agent.stop(shutdownTimeout); }
+      catch (error) {
+        // Keep the exact failed owner non-routable, but allow a cleanup-only retry.
+        if (this.agents.get(agentId) === stoppingEntry) stoppingEntry.stopPromise = null;
+        throw error;
+      }
       const currentEntry = this.agents.get(agentId);
       if (currentEntry === stoppingEntry) {
         this.agents.delete(agentId);

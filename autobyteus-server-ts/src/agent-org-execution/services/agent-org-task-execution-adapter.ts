@@ -1,8 +1,12 @@
-import type {
-  PreparedTaskExecutionActivation,
-  RootTaskExecutionAdapter,
-  TaskExecutionActivationCommitResult,
-  TaskExecutionActivationPreparation,
+import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { TaskExecutionLifetimeStamp } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { CommittedTaskExecution, TaskExecutionPreparationOperation } from "../../agent-team-execution/domain/prepared-task-execution.js";
+import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { beginRootTaskActivation, type RegisteredTaskActivation, type TaskExecutionActivationPlan, type TaskExecutionActivationOperation,
+  type PreparedTaskExecutionActivation,
+  type RootTaskExecutionAdapter,
+  type TaskExecutionActivationCommitResult,
+  type TaskExecutionActivationPreparation,
 } from "../../agent-collaboration/execution/task/root-task-execution-adapter.js";
 import type { DelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
 import { resolveTaskCopyHost } from "../../agent-collaboration/execution/task/task-copy-host.js";
@@ -70,6 +74,9 @@ export type AgentOrgTaskExecutionAdapterOptions = Readonly<{
 
 /** Org-private host / tree / registry / persistence adapter for RootTaskExecutionLifecycle. */
 export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<ResolvedAgentOrgRecipient> {
+  private readonly plans = new WeakMap<TaskExecutionActivationPlan<ResolvedAgentOrgRecipient>, { host: TaskExecutionHostIdentity; beginLocal(): TaskExecutionPreparationOperation }>();
+  private readonly registrations = new Map<string, RegisteredTaskActivation<ResolvedAgentOrgRecipient>>();
+  get root(): RootExecutionIdentity { return this.options.root; }
   private readonly readiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
   private readonly memoryLocator: RootedAgentMemoryLocator;
   private readonly sources: AgentOrgTaskSourceResolver;
@@ -84,57 +91,102 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   authorize(identity: CollaborationMemberExecutionIdentity): void { this.options.authorize(identity); }
   assertCurrentSchemaReady(): void { this.readiness.assertCurrentSchemaReady(); }
 
-  async prepareActivation(input: TaskExecutionActivationPreparation<ResolvedAgentOrgRecipient>): Promise<PreparedTaskExecutionActivation> {
-    // REQ-012: the copy is placed by its address (shared owner), not under the delegator's host.
+  async planActivation(input: TaskExecutionActivationPreparation<ResolvedAgentOrgRecipient>): Promise<TaskExecutionActivationPlan<ResolvedAgentOrgRecipient>> {
     const copyHost = resolveTaskCopyHost(this.options.getIndex(), input.identity.agentRunId, input.placement.address);
     const host = createTaskExecutionHostIdentity(copyHost.hostKind === "team"
-      ? { root: this.options.root, hostKind: "team", hostRunId: copyHost.hostRunId, hostAddress: copyHost.hostAddress }
-      : { root: this.options.root, hostKind: "root", hostRunId: this.options.root.rootRunId, hostAddress: "/" });
-    let prepared: PreparedTaskExecution;
+      ? { root: this.root, hostKind: "team", hostRunId: copyHost.hostRunId, hostAddress: copyHost.hostAddress }
+      : { root: this.root, hostKind: "root", hostRunId: this.root.rootRunId, hostAddress: "/" });
+    let beginLocal: () => TaskExecutionPreparationOperation;
+    let execution: TaskExecutionReference;
+    let ingressAgentRunId: string;
+    let ownedAgentRunIds: readonly string[];
     if (input.placement.kind === "agent") {
       const source = this.sources.require(input.placement.address, "agent", input.placement.source).node;
       const agentRunId = await this.options.taskExecutionIdentity.agentRuns.allocateForAgentDefinition(source.agentDefinitionId);
       const command = { address: input.placement.address, agentRunId, sourceNode: source, message: input.workPacket };
-      prepared = host.hostKind === "root"
-        ? await this.options.rootAgents.prepareTask(command)
-        : await this.options.teams.require(host.hostRunId).prepareTaskAgent(command);
+      execution = { agentRunId }; ingressAgentRunId = agentRunId; ownedAgentRunIds = [agentRunId];
+      beginLocal = () => host.hostKind === "root" ? this.options.rootAgents.beginTaskPreparation(command)
+        : this.options.teams.require(host.hostRunId).beginTaskAgent(command);
     } else {
       const source = this.sources.require(input.placement.address, "agent_team", input.placement.source);
       const materialized = await this.options.taskExecutionIdentity.taskTeams.create({ source: source.node });
-      const command = {
-        address: input.placement.address,
-        teamRunId: materialized.teamNode.teamRunId,
-        handoffs: source.handoffs,
-        teamNode: materialized.teamNode,
-        message: input.workPacket,
-      };
-      prepared = host.hostKind === "root"
-        ? await this.options.teams.prepareRootTaskTeam({
-            task: command,
-            physicalScope: createRootExecutionPhysicalScope({
-              root: this.options.root,
-              ancestorTeamRunIds: [materialized.teamNode.teamRunId],
-            }),
-            callbacks: this.options.callbacks,
-          })
-        : await this.options.teams.require(host.hostRunId).prepareTaskTeam(command);
+      const command = { address: input.placement.address, teamRunId: materialized.teamNode.teamRunId,
+        handoffs: source.handoffs, teamNode: materialized.teamNode, message: input.workPacket };
+      const coordinator = command.teamNode.children.find((node) => node.kind === "agent" && node.address === command.teamNode.coordinatorAddress);
+      if (!coordinator || coordinator.kind !== "agent") throw new Error("Planned Team has no exact coordinator ingress.");
+      execution = { teamRunId: command.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = command.teamNode.children.flatMap(node => node.kind === "agent" ? [node.agentRunId] : []);
+      beginLocal = () => host.hostKind === "root" ? this.options.teams.beginRootTaskTeam({
+        task: command, physicalScope: createRootExecutionPhysicalScope({ root: this.root, ancestorTeamRunIds: [command.teamRunId] }),
+        callbacks: this.options.callbacks,
+      }) : this.options.teams.require(host.hostRunId).beginTaskTeam(command);
     }
-    const reservation = prepared.binding.kind === "team"
-      ? this.options.teams.reserveTaskSubtree(prepared.preparedTeamRuns)
-      : null;
-    prepared.sealForCommit();
-    return Object.freeze({
-      targetAgentRunId: prepared.binding.kind === "agent" ? prepared.binding.agentRunId : prepared.binding.coordinatorAgentRunId,
-      commit: () => this.commitActivation({
-        host,
-        prepared,
-        reservation,
-        delegatorAgentRunId: input.identity.agentRunId,
-        startedAt: input.startedAt,
-        source: input.placement.source ?? null,
-      }),
-      abort: async () => { reservation?.cancel(); await prepared.abort(); },
+    const plan = Object.freeze({ ...input, ownedAgentRunIds, link: Object.freeze({ root: this.root, execution, ingressAgentRunId,
+      purpose: input.taskLifetime?.purpose ?? "delegation" }) });
+    this.plans.set(plan, { host, beginLocal });
+    return plan;
+  }
+
+  beginActivation(plan: TaskExecutionActivationPlan<ResolvedAgentOrgRecipient>): TaskExecutionActivationOperation {
+    const facts = this.plans.get(plan);
+    if (!facts) throw new Error("Activation plan does not belong to this root.");
+    let reservation: ReturnType<RootTeamExecutionDirectory["reserveTaskSubtree"]> | null = null;
+    const operation = beginRootTaskActivation({
+      prepare: async (assertAccepting, ownLocal) => {
+        assertAccepting();
+        const local = facts.beginLocal();
+        ownLocal({ prepare: () => local.prepare(), cancel: () => { reservation?.cancel(); local.cancel(); },
+          release: () => { reservation?.cancel(); return local.release(); } });
+        const prepared = await local.prepare(); assertAccepting();
+        reservation = prepared.binding.kind === "team" ? this.options.teams.reserveTaskSubtree(prepared.preparedTeamRuns) : null;
+        prepared.sealForCommit();
+        let work: CommittedTaskExecution | null = null;
+        return Object.freeze({
+          targetAgentRunId: plan.link.ingressAgentRunId,
+          commit: () => {
+            assertAccepting();
+            return this.commitActivation({ host: facts.host, prepared, reservation,
+              delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt, source: plan.placement.source ?? null,
+              taskLifetime: plan.taskLifetime, retainWork: (value) => { work = value; } });
+          },
+          acceptSeed: (assertOpen) => {
+            assertAccepting(); if (!work) throw new Error("Task seed has no durable activation.");
+            return work.releaseWork(() => { assertAccepting(); assertOpen(); });
+          },
+        });
+      },
     });
+    this.registrations.set(taskExecutionReferenceKey(plan.link.execution), { plan: { link: plan.link, ownedAgentRunIds: plan.ownedAgentRunIds, taskLifetime: plan.taskLifetime }, operation });
+    return operation;
+  }
+
+  registeredActivations(lifetimeId: string) { return [...this.registrations.values()].filter(entry => entry.plan.taskLifetime?.lifetimeId === lifetimeId); }
+  ownedExecutions(lifetimeId: string) { return this.options.getIndex().listOwnedTaskExecutions(lifetimeId).map(referenceOf); }
+  lifetimeForAgent(agentRunId: string) {
+    return this.options.getIndex().taskLifetimeFor(agentRunId)
+      ?? [...this.registrations.values()].find(entry => entry.plan.ownedAgentRunIds.includes(agentRunId))?.plan.taskLifetime;
+  }
+  findLifetimeHelper(lifetimeId: string, address: string) {
+    const entry = this.options.getIndex().findLifetimeHelper(lifetimeId, address);
+    return entry ? this.linkForExecution(referenceOf(entry)) : null;
+  }
+  linkForExecution(reference: TaskExecutionReference) {
+    const entry = this.options.getIndex().getTaskExecution(reference);
+    return entry?.source.taskLifetime ? { root: this.root, execution: reference, ingressAgentRunId: this.ingressAgentRunId(entry), purpose: entry.source.taskLifetime.purpose } : null;
+  }
+  cancelOwnedExecution(reference: TaskExecutionReference): void {
+    const entry = this.options.getIndex().getTaskExecution(reference); if (!entry) return;
+    if (entry.host.hostKind === "team") this.options.teams.getManaged(entry.host.hostRunId)?.cancelDirectTaskExecution(reference);
+    else if (entry.kind === "agent") this.options.rootAgents.cancelTask(entry.agentRunId);
+    else this.options.teams.cancelTask(entry.teamRunId);
+  }
+  releaseOwnedExecution(reference: TaskExecutionReference): Promise<AgentOperationResult> {
+    const entry = this.options.getIndex().getTaskExecution(reference);
+    if (!entry) return Promise.resolve({ accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" });
+    if (entry.host.hostKind === "team") {
+      const host = this.options.teams.getManaged(entry.host.hostRunId);
+      return host ? host.releaseDirectTaskExecution(reference) : Promise.resolve({ accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" });
+    }
+    return entry.kind === "agent" ? this.options.rootAgents.releaseTask(entry.agentRunId) : this.options.teams.releaseTask(entry.teamRunId);
   }
 
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[] {
@@ -172,9 +224,10 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     }
   }
 
-  async restoreChain(agentRunId: string): Promise<void> {
+  async restoreChain(agentRunId: string, assertOpen: () => void): Promise<void> {
     const chain = this.options.getIndex().listTaskExecutionChainForAgent(agentRunId);
     for (const indexed of [...chain].reverse()) {
+      assertOpen();
       if (this.isLive(referenceOf(indexed))) continue;
       if (indexed.kind === "agent") {
         const source = this.sources.require(indexed.address, "agent", indexed.source.source).node;
@@ -193,22 +246,25 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
             sourceNode,
           });
         }
+        assertOpen();
         continue;
       }
       const source = this.sources.require(indexed.address, "agent_team", indexed.source.source);
       const teamNode = restoreTaskTeamNode({ source: source.node, execution: indexed.source });
       const handoffs = source.handoffs;
       if (indexed.host.hostKind === "root") {
-        await this.options.teams.restoreRootTaskTeam({
+        await this.options.teams.restoreRootTaskTeam({ assertOpen,
           teamNode,
           handoffs,
           physicalScope: createRootExecutionPhysicalScope({ root: this.options.root, ancestorTeamRunIds: [indexed.teamRunId] }),
           callbacks: this.options.callbacks,
         });
       } else {
-        const run = await this.options.teams.require(indexed.host.hostRunId).restoreTaskTeam({ handoffs, teamNode });
+        const run = await this.options.teams.require(indexed.host.hostRunId).restoreTaskTeam({ assertOpen, handoffs, teamNode });
+        assertOpen();
         this.options.teams.registerRestoredTaskTeam(run);
       }
+      assertOpen();
     }
   }
 
@@ -267,6 +323,8 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     delegatorAgentRunId: string;
     startedAt: string;
     source: TaskExecutionSource | null;
+    taskLifetime?: TaskExecutionLifetimeStamp;
+    retainWork(work: CommittedTaskExecution): void;
   }): Promise<TaskExecutionActivationCommitResult> {
     const execution = input.prepared.binding.kind === "agent"
       ? projectTaskAgentExecution({
@@ -275,12 +333,14 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
           delegatorAgentRunId: input.delegatorAgentRunId,
           startedAt: input.startedAt,
           source: input.source?.kind === "agent" ? input.source : null,
+          taskLifetime: input.taskLifetime,
         })
       : projectTaskTeamExecution({
           node: requirePreparedTeamNode(input.prepared),
           delegatorAgentRunId: input.delegatorAgentRunId,
           startedAt: input.startedAt,
           source: input.source?.kind === "agent_team" ? input.source : null,
+          taskLifetime: input.taskLifetime,
         });
     let nextTreeAtCommit: AgentOrgRunExecutionTreeSnapshot | null = null;
     return this.options.persistence.commitTaskActivation({
@@ -295,13 +355,13 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
       abortBeforeDurability: async () => { input.reservation?.cancel(); await input.prepared.abort(); },
       commitAfterDurability: () => {
         if (!nextTreeAtCommit) throw new Error("AgentOrg task activation tree was not prepared.");
-        const committed = input.prepared.commitAfterDurability();
-        input.reservation?.commit();
         this.options.replaceTree(nextTreeAtCommit);
+        input.reservation?.commit();
         this.options.publishTaskExecutionStarted(input.host, input.prepared.binding.kind === "agent"
           ? Object.freeze({ agentRunId: input.prepared.binding.agentRunId })
           : Object.freeze({ teamRunId: input.prepared.binding.teamRunId }));
-        committed.releaseWork();
+        const committed = input.prepared.commitAfterDurability();
+        input.retainWork(committed);
       },
     });
   }

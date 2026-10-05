@@ -1,3 +1,5 @@
+import { getProjectTaskService } from "../../projects/services/project-task-service.js";
+import type { TaskExecutionLifetimePort } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
@@ -28,6 +30,7 @@ export type TeamRootMaterializationInput = Readonly<{
   factory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
+  lifetimePort?: TaskExecutionLifetimePort;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationV1Store;
   /** The process admission coordinator unless given. */
@@ -63,6 +66,7 @@ export const materializeTeamRoot = async (
     delegateTask: (caller, command) => requireActiveRoot().delegateTask({ identity: caller }, command),
   });
   const callbacks = createTeamFlatExecutionCallbacks({
+    assertExecutionInputAllowed: (identity) => requireActiveRoot().assertExecutionInputAllowed(identity.agentRunId),
     teamContext: new TeamRunContext({
       physicalScope,
       teamRunId: input.config.rootTeam.teamRunId,
@@ -85,7 +89,7 @@ export const materializeTeamRoot = async (
       ? root.commitAgentPlatformBindingChange(change)
       : Promise.reject(new Error("RootTeamRun construction is incomplete.")),
   });
-  const prepared = await input.factory.materialize({
+  const prepared = await input.factory.beginMaterialization({
     physicalScope,
     teamNode: input.config.rootTeam,
     handoffs: input.config.handoffs,
@@ -93,7 +97,7 @@ export const materializeTeamRoot = async (
     activationMode: input.mode,
     callbacks,
     prepareConfiguredAgents: false,
-  });
+  }).prepare();
   const tree = input.tree;
   try {
     if (input.persistInitialPackage) {
@@ -116,6 +120,7 @@ export const materializeTeamRoot = async (
       persistence,
       publisher,
       taskExecutionIdentity: input.taskExecutionIdentity,
+      lifetimePort: input.lifetimePort ?? getProjectTaskService(),
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: () => { if (root) input.onTerminated(root); },
     });

@@ -9,8 +9,9 @@ export type FrozenRootTerminationScope = Readonly<{
 }>;
 
 export const createFrozenRootTerminationScope = (input: Readonly<{
-  agentHandles: readonly ConfiguredAgentExecutionHandle[];
+  agentHandles: readonly Pick<ConfiguredAgentExecutionHandle, "fenceForRootShutdown" | "terminate">[];
   teamScopes: readonly FrozenTeamRunTerminationScope[];
+  onReleased?(): void;
 }>): FrozenRootTerminationScope => {
   let fencing: Promise<AgentOperationResult> | null = null;
   let finishing: Promise<AgentOperationResult> | null = null;
@@ -40,6 +41,7 @@ export const createFrozenRootTerminationScope = (input: Readonly<{
           const result = await handle.terminate();
           if (!result.accepted) return result;
         }
+        input.onReleased?.();
         return { accepted: true };
       })();
       finishing = attempt;

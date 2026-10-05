@@ -1,3 +1,4 @@
+import { testCodexLeaseManager } from "../../../../../fixtures/agent-run-preparation-fixtures.js";
 import { WORK_REQUEST_EXECUTION_LLM_INSTRUCTION } from "../../../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
@@ -171,10 +172,10 @@ const createBootstrapper = (input: {
   const client = {
     request: vi.fn(input.requestImplementation),
   };
-  const clientManager = {
+  const clientManager = testCodexLeaseManager({
     acquireClient: vi.fn(async () => client),
     releaseClient: vi.fn(async () => undefined),
-  } as unknown as CodexAppServerClientManager;
+  }) as unknown as CodexAppServerClientManager;
   const agentToolMcpRunSessions = {
     activateForRun: vi.fn((issueInput) => {
       const descriptor = input.agentToolsDescriptor ?? createAgentToolMcpDescriptor(
@@ -265,8 +266,8 @@ describe("CodexThreadBootstrapper", () => {
       const { bootstrapper } = createBootstrapper({
         skills: [], requestImplementation: async () => ({ data: [] }),
       });
-      const created = await bootstrapper.bootstrapForCreate(createRunContext({ memberExecutionContext }));
-      const restored = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ memberExecutionContext }));
+      const created = await bootstrapper.bootstrapForCreate(createRunContext({ memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+      const restored = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
       for (const context of [created, restored]) {
         const prompt = context.runtimeContext.codexThreadConfig.baseInstructions!;
         expect(prompt.split(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toHaveLength(scope === "no-context" ? 1 : 2);
@@ -307,7 +308,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
     const runContext = await bootstrapper.bootstrapForCreate(
-      createRunContext({ autoExecuteTools: true }),
+      createRunContext({ autoExecuteTools: true }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
     );
 
     expect(runContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
@@ -321,9 +322,7 @@ describe("CodexThreadBootstrapper", () => {
       skills: [],
       requestImplementation: async () => ({ data: [] }),
     });
-    const runContext = await bootstrapper.bootstrapForRestore(
-      createRestoreRunContext({ autoExecuteTools: true }),
-    );
+    const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: true }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(runContext.runtimeContext.threadId).toBe("thread-existing");
     expect(runContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
@@ -341,11 +340,9 @@ describe("CodexThreadBootstrapper", () => {
     const memberExecutionContext = createMemberExecutionContext();
 
     const createdRunContext = await bootstrapper.bootstrapForCreate(
-      createRunContext({ autoExecuteTools: true, memberExecutionContext }),
+      createRunContext({ autoExecuteTools: true, memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
     );
-    const restoredRunContext = await bootstrapper.bootstrapForRestore(
-      createRestoreRunContext({ autoExecuteTools: true, memberExecutionContext }),
-    );
+    const restoredRunContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: true, memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
     expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
@@ -386,7 +383,7 @@ describe("CodexThreadBootstrapper", () => {
     const memberExecutionContext = createMemberExecutionContext();
 
     const createdRunContext = await bootstrapper.bootstrapForCreate(
-      createRunContext({ autoExecuteTools: false, memberExecutionContext }),
+      createRunContext({ autoExecuteTools: false, memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
     );
 
     expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("untrusted");
@@ -415,7 +412,7 @@ describe("CodexThreadBootstrapper", () => {
       }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(
       workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills,
@@ -447,7 +444,7 @@ describe("CodexThreadBootstrapper", () => {
       }),
     });
 
-    await bootstrapper.bootstrapForCreate(createRunContext());
+    await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
       expect.objectContaining({ requests: [{ kind: "expose-resolved", skill }] }));
@@ -474,9 +471,9 @@ describe("CodexThreadBootstrapper", () => {
       }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
-    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith({
+    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(expect.objectContaining({
       runId: "run-1",
       workingDirectory: WORKING_DIRECTORY,
       requests: [
@@ -485,7 +482,7 @@ describe("CodexThreadBootstrapper", () => {
         { kind: "expose-resolved", skill: missing },
       ],
       workspaceCollisionPolicy: "fail",
-    });
+    }));
     expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
   });
 
@@ -497,7 +494,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [{ cwd: WORKING_DIRECTORY, skills: [], errors: [] }] }),
     });
 
-    await bootstrapper.bootstrapForCreate(createRunContext());
+    await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
       expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace", requests: [{ kind: "expose-resolved", skill: installed }] }));
@@ -515,7 +512,7 @@ describe("CodexThreadBootstrapper", () => {
           reasoning_effort: "high",
           service_tier: " FAST ",
         },
-      }),
+      }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
     );
 
     expect(runContext.runtimeContext.codexThreadConfig.reasoningEffort).toBe("high");
@@ -530,7 +527,7 @@ describe("CodexThreadBootstrapper", () => {
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
       llmModelIdentifier: "gpt-5.6-luna",
-    }));
+    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.model).toBe("gpt-5.6-luna");
   });
@@ -552,7 +549,7 @@ describe("CodexThreadBootstrapper", () => {
           llmConfig: {
             reasoning_effort: submittedEffort,
           },
-        }),
+        }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
       );
 
       expect(runContext.runtimeContext.codexThreadConfig.reasoningEffort).toBe(
@@ -574,7 +571,7 @@ describe("CodexThreadBootstrapper", () => {
       });
 
       const runContext = await bootstrapper.bootstrapForCreate(
-        createRunContext({ llmConfig }),
+        createRunContext({ llmConfig }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
       );
 
       expect(
@@ -596,7 +593,7 @@ describe("CodexThreadBootstrapper", () => {
       },
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(
       workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills,
@@ -625,7 +622,7 @@ describe("CodexThreadBootstrapper", () => {
     });
 
     const noBrowserToolRunContext = await noBrowserToolBootstrapper.bootstrapForCreate(
-      createRunContext(),
+      createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
     );
 
     expect(noBrowserToolRunContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
@@ -640,7 +637,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const noBridgeRunContext = await noBridgeBootstrapper.bootstrapForCreate(createRunContext());
+    const noBridgeRunContext = await noBridgeBootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(noBridgeRunContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
   });
@@ -652,7 +649,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
@@ -691,7 +688,7 @@ describe("CodexThreadBootstrapper", () => {
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
       applicationExecutionContext,
-    }));
+    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -719,7 +716,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext());
+    const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(runContext.runtimeContext.threadId).toBe("thread-existing");
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledTimes(1);
@@ -744,7 +741,7 @@ describe("CodexThreadBootstrapper", () => {
       },
     });
 
-    await expect(bootstrapper.bootstrapForCreate(createRunContext())).rejects.toThrow(
+    await expect(bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined })).rejects.toThrow(
       "workspace materialization failed after issue",
     );
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledTimes(1);
@@ -761,7 +758,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toBeNull();
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledTimes(1);
@@ -777,7 +774,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
       mcp_servers: {
@@ -796,7 +793,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
@@ -815,7 +812,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
@@ -834,7 +831,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
   });
@@ -846,7 +843,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({

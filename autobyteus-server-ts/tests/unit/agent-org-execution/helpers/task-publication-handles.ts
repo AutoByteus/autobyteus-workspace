@@ -35,6 +35,8 @@ export const observeConfiguredHandles = (activationFailure?: Error) => {
     const commit = vi.fn(() => ({ finish }));
     const prepare = () => ({ cancel, commit });
     const handle = {
+      cancelActivation: vi.fn(),
+      releaseRuntime: finish,
       identity: input.identity,
       physicalScope: input.physicalScope,
       isActive: () => runActive,

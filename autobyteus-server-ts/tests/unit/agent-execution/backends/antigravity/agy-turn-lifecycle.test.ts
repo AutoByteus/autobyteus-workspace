@@ -26,7 +26,7 @@ class FakeProcess {
     if (this.failSend) throw new Error("private stdin failure");
     this.sent.push(content);
   }
-  stop() { /* no provider process in this fixture */ }
+  async stop() { /* no provider process in this fixture */ }
   emit(message: AgyStreamMessage) { this.listeners.forEach((listener) => listener(message)); }
   close() { this.closeListeners.forEach((listener) => listener(new Error("private stderr marker"))); }
 }

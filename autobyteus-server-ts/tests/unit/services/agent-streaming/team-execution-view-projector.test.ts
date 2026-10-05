@@ -40,7 +40,7 @@ describe("Team execution view strict projection", () => {
       details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
     });
     const projected = projectTeamExecutionViewSnapshot("team-run-root", {
-      tree, messages, statuses: [status],
+      tree, messages, statuses: [status], inputStates: [],
     }, 17);
 
     expect(projected).toMatchObject({
@@ -75,6 +75,26 @@ describe("Team execution view strict projection", () => {
     });
   });
 
+  it("keeps the separate snake-case Team protocol identical for private stamped nested children", () => {
+    const stamped = JSON.parse(JSON.stringify(tree));
+    const parent = stamped.rootTeam.taskExecutions[0];
+    parent.taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "assignment" };
+    const nested = parent.members.find((member: { teamRunId?: string }) => member.teamRunId === "task-team-run-automation-001");
+    nested.taskExecutions[0].taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "delegation" };
+    const current = validateTeamRunExecutionTreePayload(stamped, "team-run-root"), before = JSON.stringify(current);
+    expect(projectTeamExecutionViewSnapshot("team-run-root", { tree: current, messages, statuses: [], inputStates: [] }, 17))
+      .toEqual(projectTeamExecutionViewSnapshot("team-run-root", { tree, messages, statuses: [], inputStates: [] }, 17));
+    const event = { changeSequence: 19, event: {
+      eventSourceType: TeamRunEventSourceType.TASK_EXECUTION,
+      taskExecution: { agentRunId: "nested-task-agent-run-001" },
+      payload: { eventType: "TASK_EXECUTION_STARTED", details: { parentTeamRunId: "task-team-run-automation-001" } },
+    } };
+    expect(projectSequencedTeamRunEvent({ getExecutionTreeSnapshot: () => current } as never, event as never))
+      .toEqual(projectSequencedTeamRunEvent(root as never, event as never));
+    expect(JSON.stringify(current)).toBe(before);
+    expect(before).toContain("taskLifetime");
+  });
+
   it("keeps snapshot placement identity out of the exact live status payload", () => {
     const status = createTeamAgentStatusSnapshot({
       execution: createTeamAgentExecutionBinding({
@@ -93,6 +113,7 @@ describe("Team execution view strict projection", () => {
       tool_name: null,
       error_message: null,
       error_details: null,
+      recoverableBlock: null,
     });
     expect(projectLiveTeamAgentStatusMessage(status, 18)).toEqual({
       type: "AGENT_STATUS",
@@ -104,6 +125,7 @@ describe("Team execution view strict projection", () => {
         tool_name: null,
         error_message: null,
         error_details: null,
+        recoverableBlock: null,
       },
     });
   });

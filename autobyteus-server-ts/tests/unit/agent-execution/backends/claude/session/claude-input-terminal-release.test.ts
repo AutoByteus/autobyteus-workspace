@@ -1,0 +1,199 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
+import { AgentRun } from '../../../../../../src/agent-execution/domain/agent-run.js';
+import { AgentRunConfig } from '../../../../../../src/agent-execution/domain/agent-run-config.js';
+import { AgentRunContext } from '../../../../../../src/agent-execution/domain/agent-run-context.js';
+import { AgentRunEventType } from '../../../../../../src/agent-execution/domain/agent-run-event.js';
+import { getDefaultAgentRunEventPipeline } from '../../../../../../src/agent-execution/events/default-agent-run-event-pipeline.js';
+import type { AgentRunInputLifecycle } from '../../../../../../src/agent-execution/input/agent-run-input-contract.js';
+import { ClaudeAgentRunContext } from '../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js';
+import { ClaudeAgentRunBackend } from '../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-backend.js';
+import { ClaudeSessionManager } from '../../../../../../src/agent-execution/backends/claude/session/claude-session-manager.js';
+import { buildClaudeSessionConfig } from '../../../../../../src/agent-execution/backends/claude/session/claude-session-config.js';
+import { buildRuntimeAgentToolExposure } from '../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js';
+import { RuntimeKind } from '../../../../../../src/runtime-management/runtime-kind-enum.js';
+import { createFakeClaudeSdkClient, flushClaudeSession } from '../../../../../helpers/fake-claude-streaming-sdk.js';
+
+const deferred = () => {
+  let resolve!: () => void;
+  const promise = new Promise<void>(r => { resolve = r; });
+  return { promise, resolve };
+};
+
+// Actual manager-bound Session.terminate -> exact cleanup -> tracker/converter -> AgentRun.
+// Only SDK acquisition/physical receipts and workspace/MCP resources are controlled.
+async function harness() {
+  const sdk = createFakeClaudeSdkClient({});
+  const gate = deferred();
+  gate.resolve();
+  let physicalGate = gate.promise;
+  let physicalFailure = false;
+  const releases = vi.fn(async () => { await physicalGate; return physicalFailure; });
+  const begin = sdk.beginStreamingSession.bind(sdk);
+  sdk.beginStreamingSession = input => {
+    const opening = begin(input);
+    return { ...opening, release: async () => await releases()
+      ? { kind: 'pending', code: 'TEST_PHYSICAL_PENDING', message: 'Controlled physical proof unavailable.' }
+      : opening.release() };
+  };
+  const skills = { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) };
+  const mcp = { activateForRun: vi.fn(() => ({ kind: 'disabled' })), deactivateForRun: vi.fn(() => 0) };
+  const manager = new ClaudeSessionManager(mcp as never, {} as never, sdk as never, skills as never);
+  const create = async (runId: string) => {
+    const context = new AgentRunContext({ runId,
+      config: new AgentRunConfig({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, agentDefinitionId: 'test-reader',
+        llmModelIdentifier: 'haiku', autoExecuteTools: false }),
+      runtimeContext: new ClaudeAgentRunContext({ carpenterSystemPrompt: 'Test-only reader',
+        sessionConfig: buildClaudeSessionConfig({ model: 'haiku', workingDirectory: '/tmp', permissionMode: 'default' }),
+        runtimeToolExposure: buildRuntimeAgentToolExposure([]) }),
+    });
+    const session = await manager.createRunSession(context, () => undefined);
+    const backend = new ClaudeAgentRunBackend(context, session);
+    const run = new AgentRun({ context, backend, providerInputNormalizer: { normalizeForProvider: dispatch => dispatch } });
+    return { run, backend, session };
+  };
+  const owned = await create('test-owned-reader');
+  const protectedMember = await create('test-borrowed-member');
+  const facts: AgentRunInputLifecycle[] = [];
+  const events: string[] = [];
+  owned.run.subscribeToEvents(event => events.push(event.eventType));
+  await owned.run.postUserMessage(new AgentInputUserMessage('Test saved Task packet'), { lifecycleObserver: f => facts.push(f) });
+  await vi.waitFor(() => expect(owned.run.getInputStateSnapshot().entries[0]?.state).toBe('forwarded'));
+  return { ...owned, manager, sdk, skills, mcp, protectedMember, facts, events, releases,
+    failPhysical: (fail: boolean) => { physicalFailure = fail; },
+    holdPhysical: (promise: Promise<void>) => { physicalGate = promise; },
+    close: async () => { physicalFailure = false; physicalGate = Promise.resolve();
+      for (const fake of sdk.sessions) fake.session.end();
+      await manager.closeRunSession(owned.run.runId); await manager.closeRunSession(protectedMember.run.runId);
+    },
+  };
+}
+
+afterEach(() => vi.restoreAllMocks());
+
+describe('CRF-008 exact Claude canonical input handoff', () => {
+  it('delivers the real interrupted turn before detachment and settles forwarded input on accepted termination', async () => {
+    const h = await harness();
+    try {
+      const generation = h.run.getInputStateSnapshot().run_instance_id;
+      const turnId = h.session.runContext.runtimeContext.activeTurnId!;
+      await expect(h.run.forceReleaseRuntime()).resolves.toEqual({ accepted: true });
+      expect(h.run.getInputStateSnapshot().entries).toEqual([]);
+      expect(h.run.getInputStateSnapshot().run_instance_id).toBe(generation);
+      expect(h.facts.filter(f => f.kind === 'interrupted')).toEqual([{ kind: 'interrupted', turnId }]);
+      expect(h.events.filter(e => e === AgentRunEventType.TURN_INTERRUPTED)).toHaveLength(1);
+      expect(h.events).not.toContain(AgentRunEventType.TURN_COMPLETED);
+      expect(h.manager.hasRunSession(h.run.runId)).toBe(false);
+      await h.run.forceReleaseRuntime();
+      expect(h.releases).toHaveBeenCalledOnce();
+      expect(h.sdk.current.sent).toHaveLength(1);
+      expect(h.manager.requireRunSession(h.protectedMember.run.runId)).toBe(h.protectedMember.session);
+      await expect(h.session.submitInput(new AgentInputUserMessage('closed direct ingress'), { kind: 'start_turn' })).resolves.toMatchObject({ accepted: false });
+      await expect(h.run.postUserMessage(new AgentInputUserMessage('closed run ingress'))).rejects.toThrow();
+    } finally { await h.close(); }
+  });
+
+  it('retries only failed physical proof on the same fenced generation, without replay or duplicate terminal', async () => {
+    const h = await harness();
+    try {
+      const generation = h.run.getInputStateSnapshot().run_instance_id;
+      h.failPhysical(true);
+      await expect(h.run.forceReleaseRuntime()).resolves.toMatchObject({ accepted: false, code: 'RUNTIME_COMMAND_FAILED' });
+      expect(h.manager.requireRunSession(h.run.runId)).toBe(h.session);
+      expect(h.facts.filter(f => f.kind === 'interrupted')).toHaveLength(1);
+      expect(h.run.getInputStateSnapshot().entries).toEqual([]); // canonical outcome is not physical release proof
+      expect(h.skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledOnce();
+      expect(h.mcp.deactivateForRun).toHaveBeenCalledExactlyOnceWith(h.run.runId);
+      await expect(h.session.submitInput(new AgentInputUserMessage('late retry ingress'), { kind: 'start_turn' })).resolves.toMatchObject({ accepted: false });
+      h.failPhysical(false);
+      await expect(h.run.forceReleaseRuntime()).resolves.toEqual({ accepted: true });
+      expect(h.releases).toHaveBeenCalledTimes(2);
+      expect(h.skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledOnce();
+      expect(h.mcp.deactivateForRun).toHaveBeenCalledOnce();
+      expect(h.events.filter(e => e === AgentRunEventType.TURN_INTERRUPTED)).toHaveLength(1);
+      expect(h.run.getInputStateSnapshot().run_instance_id).toBe(generation);
+      expect(h.sdk.current.sent).toHaveLength(1);
+      expect(h.manager.requireRunSession(h.protectedMember.run.runId)).toBe(h.protectedMember.session);
+    } finally { await h.close(); }
+  });
+
+  it('flushes pending approval denial and releases independent resources without waiting for slow physical exit', async () => {
+    const h = await harness();
+    const held = deferred();
+    try {
+      const decision = h.sdk.sessions[0]!.options.canUseTool!('Bash', { command: 'pwd' }, { toolUseID: 'test-pending' });
+      let denial: unknown = null;
+      void Promise.resolve(decision).then(result => { denial = result; });
+      await flushClaudeSession();
+      h.holdPhysical(held.promise);
+      let receipt: unknown = null;
+      const releasing = h.run.forceReleaseRuntime().then(result => { receipt = result; return result; });
+      void releasing.catch(() => undefined);
+      await vi.waitFor(() => expect(h.releases).toHaveBeenCalledOnce());
+      expect(denial).toMatchObject({ behavior: 'deny' });
+      expect(h.skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledOnce();
+      expect(h.mcp.deactivateForRun).toHaveBeenCalledExactlyOnceWith(h.run.runId);
+      expect(h.facts.filter(f => f.kind === 'interrupted')).toHaveLength(1);
+      expect(receipt).toBeNull();
+      expect(h.manager.requireRunSession(h.run.runId)).toBe(h.session);
+      held.resolve();
+      await expect(releasing).resolves.toEqual({ accepted: true });
+    } finally { held.resolve(); await h.close(); }
+  });
+
+  it('joins the finite canonical pipeline before certifying accepted input settlement', async () => {
+    const h = await harness();
+    const held = deferred();
+    const entered = deferred();
+    try {
+      const pipeline = getDefaultAgentRunEventPipeline();
+      const process = pipeline.process.bind(pipeline);
+      vi.spyOn(pipeline, 'process').mockImplementation(async input => {
+        if (input.runContext.runId === h.run.runId && input.events.some(e => e.eventType === AgentRunEventType.TURN_INTERRUPTED)) {
+          entered.resolve(); await held.promise;
+        }
+        return process(input);
+      });
+      let receipt: unknown = null;
+      const releasing = h.run.forceReleaseRuntime().then(result => { receipt = result; return result; });
+      void releasing.catch(() => undefined);
+      await entered.promise;
+      await vi.waitFor(() => expect(h.manager.hasRunSession(h.run.runId)).toBe(false));
+      expect(receipt).toBeNull(); // provider proof is not canonical queue completion
+      expect(h.run.getInputStateSnapshot().entries[0]?.state).toBe('forwarded');
+      held.resolve();
+      await expect(releasing).resolves.toEqual({ accepted: true });
+      expect(h.run.getInputStateSnapshot().entries).toEqual([]);
+      expect(h.facts.filter(f => f.kind === 'interrupted')).toHaveLength(1);
+    } finally { held.resolve(); await h.close(); }
+  });
+
+  it('still rejects unresolved forwarded input when its terminal consumer is deliberately absent', async () => {
+    const h = await harness();
+    try {
+      h.session.clearRuntimeListeners(); // test-only missing-consumer fault, not product repair
+      await expect(h.run.forceReleaseRuntime()).rejects.toThrow('submitted input remains unresolved');
+      await expect(h.run.forceReleaseRuntime()).rejects.toThrow('submitted input remains unresolved');
+      expect(h.run.getInputStateSnapshot().entries[0]?.state).toBe('forwarded');
+      expect(h.facts.filter(f => f.kind === 'interrupted')).toEqual([]);
+      expect(h.releases).toHaveBeenCalledOnce();
+      expect(h.sdk.current.sent).toHaveLength(1);
+      await expect(h.run.postUserMessage(new AgentInputUserMessage('no replay'))).rejects.toThrow();
+    } finally { await h.close(); }
+  });
+
+  it('retries only failed skills after successful handoff and physical proof', async () => {
+    const h = await harness();
+    try {
+      h.skills.cleanupMaterializedWorkspaceSkills.mockRejectedValueOnce(new Error('Controlled skill release failure'));
+      await expect(h.run.forceReleaseRuntime()).resolves.toMatchObject({ accepted: false });
+      expect(h.manager.requireRunSession(h.run.runId)).toBe(h.session);
+      await expect(h.run.forceReleaseRuntime()).resolves.toEqual({ accepted: true });
+      expect(h.releases).toHaveBeenCalledOnce();
+      expect(h.skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledTimes(2);
+      expect(h.mcp.deactivateForRun).toHaveBeenCalledOnce();
+      expect(h.facts.filter(f => f.kind === 'interrupted')).toHaveLength(1);
+      expect(h.manager.requireRunSession(h.protectedMember.run.runId)).toBe(h.protectedMember.session);
+    } finally { await h.close(); }
+  });
+});

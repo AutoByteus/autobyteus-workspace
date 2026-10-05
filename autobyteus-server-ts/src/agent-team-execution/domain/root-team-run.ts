@@ -1,3 +1,6 @@
+import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
+import type { TaskExecutionLifetimePort, TaskExecutionReleaseOutcome } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
@@ -39,7 +42,6 @@ import {
   type DelegateTaskResult,
   type TaskDelegationContext,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import type { TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -93,6 +95,7 @@ export class RootTeamRun {
     persistence: TeamRunPersistenceCoordinator;
     publisher: TeamRunEventPublisher<TeamRunEvent>;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
+    lifetimePort?: TaskExecutionLifetimePort;
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
@@ -133,10 +136,12 @@ export class RootTeamRun {
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
       idleShutdown: options.taskExecutionIdleShutdown,
+      lifetimePort: options.lifetimePort,
     });
     this.communication = new TeamCommunicationService({
       rootTeamRunId: this.teamRunId,
       initial: options.messages,
+      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
       requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
       commit: (plan) => options.persistence.commitReservedMessageAppend(plan),
@@ -156,13 +161,17 @@ export class RootTeamRun {
       publish: (event) => options.publisher.publish(event),
     });
     this.delivery = new TeamRunMessageDelivery({
+      taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
+        resolvePlacement: address => this.delivery.resolveDelegationPlacement(sender, address),
+        getAgent: id => this.index.requireAgent(id),
+      }),
       rootTeamRunId: this.teamRunId,
       getIndex: () => this.index,
       collaborators: this.collaborators,
       communication: this.communication,
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
       isLiveAgent: (agentRunId) => this.isLiveAgent(agentRunId),
-      withLiveLease: (agentRunId, operation) => this.withLiveLease(agentRunId, operation),
+      withLiveLease: (agentRunId, operation) => this.taskExecutions.withLiveLease(agentRunId, operation),
     });
     this.platformBindings = new TeamAgentPlatformBindingCommitter({
       persistence: options.persistence,
@@ -175,6 +184,14 @@ export class RootTeamRun {
       this.taskExecutions.onRootEvent(event);
     });
     this.assertRootCorrelation();
+  }
+
+  assertExecutionInputAllowed(agentRunId: string): void {
+    this.assertAdmitting();
+    this.taskExecutions.assertInputAllowed(agentRunId);
+  }
+  releaseTaskLifetime(id: string, executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionReleaseOutcome[]> {
+    return this.taskExecutions.releaseTaskLifetime(id, executions);
   }
 
   get teamRunId(): string { return this.tree.rootTeam.teamRunId; }
@@ -303,11 +320,11 @@ export class RootTeamRun {
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
-    return this.materializationGate.run(() => this.delivery.deliverToAddress(intent));
+    return this.materializationGate.run(() => this.taskExecutions.withLiveLease(intent.sender.participant.identity.agentRunId, () => this.delivery.deliverToAddress(intent)));
   }
 
   deliverExactAgentMessage(input: ExactTeamAgentMessageInput): Promise<AgentOperationResult> {
-    return this.materializationGate.run(() => this.delivery.deliverToRunId(input));
+    return this.materializationGate.run(() => this.taskExecutions.withLiveLease(input.sender.identity.agentRunId, () => this.delivery.deliverToRunId(input)));
   }
 
   async executeAgentCommand(
@@ -323,34 +340,21 @@ export class RootTeamRun {
         if (!this.isLiveAgent(agentRunId)) {
           return { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
         }
-        const run = await this.requireContainingTeamRun(agentRunId);
-        return run.executeDirectAgentCommand(agentRunId, command);
+        return this.taskExecutions.withLiveLease(agentRunId, async () => {
+          const run = await this.requireContainingTeamRun(agentRunId);
+          this.taskExecutions.assertInputAllowed(agentRunId);
+          return run.executeDirectAgentCommand(agentRunId, command);
+        }, false);
       }
       // Operator input wakes a shut-down child exactly like send_message_to.
-      return this.withLiveLease(agentRunId, async () => {
+      return this.taskExecutions.withLiveLease(agentRunId, async () => {
         const run = await this.requireContainingTeamRun(agentRunId);
         return run.executeDirectAgentCommand(agentRunId, command);
       });
     });
   }
 
-  private async withLiveLease(
-    agentRunId: string,
-    operation: () => Promise<AgentOperationResult>,
-  ): Promise<AgentOperationResult> {
-    let lease: TaskExecutionLiveLease;
-    try {
-      lease = await this.taskExecutions.acquireLiveLease(agentRunId);
-    } catch (error) {
-      if (error instanceof TaskDelegationError) return { accepted: false, code: error.code, message: error.message };
-      throw error;
-    }
-    try {
-      return await operation();
-    } finally {
-      lease.release();
-    }
-  }
+
 
   subscribeToEvents(listener: RootEventListener<TeamRunEvent>): () => void {
     return this.options.publisher.subscribe(listener);

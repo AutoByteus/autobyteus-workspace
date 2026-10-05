@@ -120,7 +120,7 @@ describe("InterAgentMessageRouter Claude input admission", () => {
     expect(deliveredText).toContain("sender id: student-two-task-run");
     expect(session.activeTurnId).toBe(started.turnId);
     expect(fake.interruptAndCancelQueued).not.toHaveBeenCalled();
-    expect(sdkClient.openStreamingSession).toHaveBeenCalledTimes(1);
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledTimes(1);
 
     fake.assistantText("done with both");
     fake.result(fake.sent.map((message) => message.uuid));

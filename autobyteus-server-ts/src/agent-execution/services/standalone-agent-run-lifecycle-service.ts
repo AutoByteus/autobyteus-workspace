@@ -260,7 +260,7 @@ export class StandaloneAgentRunLifecycleService {
   private async activatePrepared(metadata: AgentRunMetadata): Promise<StandaloneAgentRunActivationResult> {
     this.tokenUsageReadiness.assertCurrentSchemaReady();
     const config = await this.buildConfig(metadata);
-    const candidate = await this.agentRunManager.prepareNewAgentRun({ runId: metadata.runId, config });
+    const candidate = await this.agentRunManager.beginActivation({ kind: "new", runId: metadata.runId, config }).prepare();
     await this.validateCandidateOrAbort(candidate, metadata.runtimeKind, metadata.runId);
     const startedAt = new Date().toISOString();
     return this.persistAndPublish({
@@ -288,17 +288,17 @@ export class StandaloneAgentRunLifecycleService {
           "The persisted provider conversation identity is missing or invalid.",
         );
       }
-      candidate = await this.agentRunManager.prepareRestoreAgentRunFromPlatformState({
+      candidate = await this.agentRunManager.beginActivation({ kind: "platform_restore",
         runId: metadata.runId,
         config,
         platformAgentRunId,
-      });
+      }).prepare();
     } else {
-      candidate = await this.agentRunManager.prepareRestoreAgentRun(new AgentRunContext({
+      candidate = await this.agentRunManager.beginActivation({ kind: "restore", context: new AgentRunContext({
         runId: metadata.runId,
         config,
         runtimeContext: null,
-      }));
+      }) }).prepare();
     }
     await this.validateCandidateOrAbort(candidate, metadata.runtimeKind, metadata.runId);
     return this.persistAndPublish({

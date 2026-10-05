@@ -32,17 +32,17 @@ describe("Project data tools — actual native preparation/execute and selected 
     await fs.rm(root, {recursive: true, force: true});
     appConfigProvider.resetForTests(); resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
   });
-  it("shares complete reads, TODO create and known-ID description/status patches", async () => {
+  it("shares business reads and compact TODO create/known-ID status acknowledgements", async () => {
     const catalog = JSON.parse(await new ListProjectsTool().execute(null));
     expect((await mcp("list_projects", {})).structuredContent).toEqual(catalog);
     expect(catalog.projects).toEqual([{projectId, name: "Tools fixture", description: ""}]);
     const created = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, {project_id: projectId, description: " hello "}));
-    expect(created.task).toMatchObject({projectId, description: "hello", status: "TODO", contextFiles: []});
+    expect(created.task).toEqual({projectId, taskId: expect.any(String), status: "TODO"});
     const patched = await mcp("create_or_update_task", {project_id: projectId, task_id: created.task.taskId, status: "DONE"});
     expect(patched.structuredContent).toMatchObject({task: {...created.task, status: "DONE"}});
     const listed = JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId, status: "DONE"}));
     expect((await mcp("list_project_tasks", {project_id: projectId, status: "DONE"})).structuredContent).toEqual(listed);
-    expect(listed.tasks).toEqual([patched.structuredContent!.task]);
+    expect(listed.tasks).toEqual([{...patched.structuredContent!.task, description: "hello", contextFiles: [], assignments: []}]);
     expect((await mcp("list_project_tasks", {project_id: projectId, status: "TODO"})).structuredContent).toEqual({projectId, tasks: []});
   });
   it.each([

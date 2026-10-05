@@ -1,3 +1,4 @@
+import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
 import fs from "node:fs";
 import path from "node:path";
 import {
@@ -214,19 +215,22 @@ export class CodexThreadBootstrapper {
 
   async bootstrapForCreate(
     runContext: AgentRunContext<null>,
+    guard: ProviderPreparationGuard,
   ): Promise<CodexRunContext> {
-    return this.bootstrapInternal(runContext, null);
+    return this.bootstrapInternal(runContext, null, guard);
   }
 
   async bootstrapForRestore(
     runContext: AgentRunContext<CodexAgentRunContext>,
+    guard: ProviderPreparationGuard,
   ): Promise<CodexRunContext> {
-    return this.bootstrapInternal(runContext, runContext.runtimeContext);
+    return this.bootstrapInternal(runContext, runContext.runtimeContext, guard);
   }
 
   private async bootstrapInternal(
     runContext: AgentRunContext<CodexAgentRunContext | null>,
     existingRuntimeContext: CodexAgentRunContext | null,
+    guard: ProviderPreparationGuard,
   ): Promise<CodexRunContext> {
     const workingDirectory = await this.workspaceResolver.resolveWorkingDirectory(
       runContext.config.workspaceId,
@@ -248,6 +252,7 @@ export class CodexThreadBootstrapper {
       memberExecutionContext: runContext.config.memberExecutionContext,
     });
     const dynamicToolRegistrations: CodexDynamicToolRegistration[] | null = null;
+    guard.assertAccepting();
     const codexThreadConfig = this.buildThreadConfig({
       agentRunConfig: runContext.config,
       workingDirectory,
@@ -264,6 +269,7 @@ export class CodexThreadBootstrapper {
       runId: runContext.runId,
       workingDirectory,
       configuredSkillBindings,
+      guard,
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
     });
 
@@ -347,10 +353,12 @@ export class CodexThreadBootstrapper {
     workingDirectory: string;
     configuredSkillBindings: ConfiguredAgentSkillBinding[];
     workspaceCollisionPolicy: WorkspaceCollisionPolicy;
+    guard: ProviderPreparationGuard;
   }): Promise<MaterializedWorkspaceSkill[]> {
     const requests = await this.planWorkspaceSkillRequests(input);
     return this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
       runId: input.runId,
+      onAcquired: input.guard.ownSkill, assertAccepting: input.guard.assertAccepting,
       workingDirectory: input.workingDirectory,
       requests,
       workspaceCollisionPolicy: input.workspaceCollisionPolicy,
@@ -360,14 +368,19 @@ export class CodexThreadBootstrapper {
   private async planWorkspaceSkillRequests(input: {
     workingDirectory: string;
     configuredSkillBindings: ConfiguredAgentSkillBinding[];
+    guard: ProviderPreparationGuard;
   }): Promise<WorkspaceSkillReconciliationRequest[]> {
     if (input.configuredSkillBindings.length === 0) {
       return [];
     }
 
+    input.guard.assertAccepting();
+    const lease = this.clientManager.beginAcquire(input.workingDirectory);
+    input.guard.ownCodexClient?.(lease);
     let client: DiscoverableSkillLookupClient | null = null;
     try {
-      client = await this.clientManager.acquireClient(input.workingDirectory);
+      client = await lease.acquire();
+      input.guard.assertAccepting();
       const response = await client.request<unknown>("skills/list", {
         cwds: [input.workingDirectory],
         forceReload: true,
@@ -403,13 +416,7 @@ export class CodexThreadBootstrapper {
           : { kind: "reconcile-unresolved", name: binding.name }
       );
     } finally {
-      if (client) {
-        await this.clientManager.releaseClient(input.workingDirectory).catch((error) => {
-          logger.warn(
-            `Failed to release Codex skill preflight client for '${input.workingDirectory}': ${String(error)}`,
-          );
-        });
-      }
+      await lease.release();
     }
   }
 }

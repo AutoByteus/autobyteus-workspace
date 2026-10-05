@@ -1,0 +1,20 @@
+[
+  {
+    "projectId": "cf622a33-4f56-4208-9baa-851813ba9570",
+    "name": "Released array witness",
+    "description": "Test-owned released-writer fixture",
+    "createdAt": "2026-10-02T00:00:00.000Z",
+    "updatedAt": "2026-10-02T00:00:00.000Z",
+    "workspaces": [],
+    "tasks": [
+      {
+        "taskId": "f6d550e5-22d0-4aca-a4d3-8413a735546b",
+        "description": "Saved task from HEAD writer",
+        "status": "TODO",
+        "createdAt": "2026-10-02T00:00:00.000Z",
+        "updatedAt": "2026-10-02T00:00:00.000Z",
+        "contextFiles": []
+      }
+    ]
+  }
+]

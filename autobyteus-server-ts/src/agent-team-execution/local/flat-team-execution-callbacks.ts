@@ -11,6 +11,7 @@ import type {
 
 /** Root-owned callback ports supplied to a local Team plane. */
 export type FlatTeamExecutionCallbacks = Readonly<{
+  assertExecutionInputAllowed(identity: CollaborationMemberExecutionIdentity): void;
   buildMemberExecutionContext(input: Readonly<{
     identity: CollaborationMemberExecutionIdentity;
     physicalScope: RootExecutionPhysicalScope;

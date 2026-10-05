@@ -1,3 +1,5 @@
+import { getProjectTaskService } from "../../projects/services/project-task-service.js";
+import type { TaskExecutionLifetimePort } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
@@ -35,6 +37,7 @@ export class AgentOrgExecutionScopeBuilder {
   constructor(private readonly dependencies: Readonly<{
     flatTeamExecutionFactory: FlatTeamExecutionFactory;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
+  lifetimePort?: TaskExecutionLifetimePort;
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
     teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
     agentRunManager?: AgentRunManager;
@@ -97,6 +100,7 @@ export class AgentOrgExecutionScopeBuilder {
       });
     };
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
+      assertExecutionInputAllowed: (identity) => this.requireActive(run).assertExecutionInputAllowed(identity.agentRunId),
       buildMemberExecutionContext: ({ identity, hostTeam }) => buildMemberContext(identity, input.activationMode, hostTeam),
       publishAgentEvent: (identity, event) => {
         if (!run?.isActive()) {
@@ -184,6 +188,7 @@ export class AgentOrgExecutionScopeBuilder {
         persistence: input.persistence,
         publisher,
         taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
+      lifetimePort: this.dependencies.lifetimePort ?? getProjectTaskService(),
         memoryLocator: this.dependencies.memoryLocator,
         activityInspector: this.dependencies.activityInspector,
         prepareCollaboratorHandles: (entries) => prepareCollaborators(entries, "fresh"),

@@ -12,12 +12,12 @@ const build: typeof configuredRootFixture = async (...args) => {
 
 for (const placement of placements) describe(`${placement} configured first work`, () => {
   it.each([
-    { runtimeKind: RuntimeKind.AUTOBYTEUS, activity: "none", binding: null, method: "prepareNewAgentRun" },
-    { runtimeKind: RuntimeKind.AUTOBYTEUS, activity: "present", binding: null, method: "prepareRestoreAgentRun" },
-    { runtimeKind: RuntimeKind.CODEX_APP_SERVER, activity: "present", binding: "old-thread", method: "prepareRestoreAgentRunFromPlatformState" },
-    { runtimeKind: RuntimeKind.CODEX_APP_SERVER, activity: "none", binding: null, method: "prepareNewAgentRun" },
-    { runtimeKind: RuntimeKind.CODEX_APP_SERVER, activity: "none", binding: "old-thread", method: "prepareNewAgentRun" },
-    { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, activity: "present", binding: "old-thread", method: "prepareRestoreAgentRunFromPlatformState" },
+    { runtimeKind: RuntimeKind.AUTOBYTEUS, activity: "none", binding: null, method: "newPreparation" },
+    { runtimeKind: RuntimeKind.AUTOBYTEUS, activity: "present", binding: null, method: "restorePreparation" },
+    { runtimeKind: RuntimeKind.CODEX_APP_SERVER, activity: "present", binding: "old-thread", method: "platformPreparation" },
+    { runtimeKind: RuntimeKind.CODEX_APP_SERVER, activity: "none", binding: null, method: "newPreparation" },
+    { runtimeKind: RuntimeKind.CODEX_APP_SERVER, activity: "none", binding: "old-thread", method: "newPreparation" },
+    { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, activity: "present", binding: "old-thread", method: "platformPreparation" },
   ] as const)("scope stays Offline; $runtimeKind / $activity / $binding readies only receivers", async (row) => {
     const f = await build(placement, row);
     expect(f.statuses().map((s) => s.details.status)).toEqual(["offline", "offline", "offline"]);
@@ -29,7 +29,7 @@ for (const placement of placements) describe(`${placement} configured first work
     expect(f.statuses().map((s) => s.details.status)).toEqual(["offline", "idle", "offline"]);
     expect(f.configs.get(f.ids[1])!.memberExecutionContext!.identity.agentRunId).toBe(f.ids[1]);
     if (row.activity === "present" && row.binding) {
-      expect(f.manager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith(expect.objectContaining({ platformAgentRunId: row.binding }));
+      expect(f.manager.platformPreparation).toHaveBeenCalledWith(expect.objectContaining({ platformAgentRunId: row.binding }));
     }
     expect(await f.reload()).toEqual(f.members());
     expect(await f.send(f.ids[0])).toMatchObject({ accepted: true });
@@ -57,10 +57,10 @@ for (const placement of placements) describe(`${placement} configured first work
 
   it("preserves fresh zero-work laziness and targeted first input", async () => {
     const f = await build(placement, { mode: "fresh", binding: null });
-    expect(f.manager.prepareNewAgentRun).not.toHaveBeenCalled();
+    expect(f.manager.newPreparation).not.toHaveBeenCalled();
     expect(f.statuses().every((s) => s.details.status === "offline")).toBe(true);
     expect(await f.send()).toMatchObject({ accepted: true });
-    expect(f.manager.prepareNewAgentRun).toHaveBeenCalledTimes(1);
+    expect(f.manager.newPreparation).toHaveBeenCalledTimes(1);
   });
 
   it("coalesces same-member first work, holding publication, cache and input until root durability", async () => {
@@ -69,7 +69,7 @@ for (const placement of placements) describe(`${placement} configured first work
     const cacheUpdate = vi.spyOn(FlatAgentExecutionContext.prototype, "replaceCommittedPlatformAgentRunId");
     const first = f.send(); const second = f.send();
     await vi.waitFor(() => expect(f.write).toHaveBeenCalledTimes(1));
-    expect(f.manager.prepareNewAgentRun).toHaveBeenCalledTimes(1);
+    expect(f.manager.newPreparation).toHaveBeenCalledTimes(1);
     expect(f.publish).not.toHaveBeenCalled(); expect(f.acceptInput).not.toHaveBeenCalled();
     expect(cacheUpdate).not.toHaveBeenCalled();
     expect(f.members()[1]!.platformAgentRunId).toBe("old-thread");
@@ -85,7 +85,7 @@ for (const placement of placements) describe(`${placement} configured first work
     const f = await build(placement);
     const hold = deferred(); f.control.hold = hold.promise;
     const first = f.send(); const second = f.send(f.ids[0]);
-    await vi.waitFor(() => expect(f.manager.prepareNewAgentRun).toHaveBeenCalledTimes(2));
+    await vi.waitFor(() => expect(f.manager.newPreparation).toHaveBeenCalledTimes(2));
     await vi.waitFor(() => expect(f.write).toHaveBeenCalledTimes(1));
     hold.resolve();
     expect(await first).toMatchObject({ accepted: true }); expect(await second).toMatchObject({ accepted: true });
@@ -101,7 +101,7 @@ for (const placement of placements) describe(`${placement} configured first work
     expect(f.members()[1]!.platformAgentRunId).toBe("old-thread");
     f.control.failure = null;
     expect(await f.send()).toMatchObject({ accepted: true });
-    expect(f.manager.prepareNewAgentRun).toHaveBeenCalledTimes(2);
+    expect(f.manager.newPreparation).toHaveBeenCalledTimes(2);
     expect(f.members()[1]!.platformAgentRunId).toBe("new-thread-2");
   });
 
@@ -110,7 +110,7 @@ for (const placement of placements) describe(`${placement} configured first work
     f.control.failure = { outcome: "renamed_finalization_indeterminate", file: "tree", stage: "directory_sync", cause: new Error("uncertain") } as never;
     expect(await f.send()).toMatchObject({ accepted: false });
     await f.send().catch(() => null);
-    expect(f.manager.prepareNewAgentRun).toHaveBeenCalledTimes(1);
+    expect(f.manager.newPreparation).toHaveBeenCalledTimes(1);
     expect(f.publish).not.toHaveBeenCalled(); expect(f.acceptInput).not.toHaveBeenCalled();
   });
 
@@ -142,7 +142,7 @@ for (const placement of placements) describe(`${placement} configured first work
     vi.spyOn(FlatAgentExecutionContext.prototype, "replaceCommittedPlatformAgentRunId").mockImplementation(() => { throw new Error("cache failed"); });
     expect(await f.send()).toMatchObject({ accepted: false, code: "COLLABORATION_AGENT_BINDING_CACHE_COMMIT_FAILED" });
     expect(await f.send()).toMatchObject({ accepted: false, code: "COLLABORATION_AGENT_BINDING_CACHE_COMMIT_FAILED" });
-    expect(f.manager.prepareNewAgentRun).toHaveBeenCalledTimes(1);
+    expect(f.manager.newPreparation).toHaveBeenCalledTimes(1);
     expect(f.members()[1]!.platformAgentRunId).toBe("new-thread-1");
     expect(await f.reload()).toEqual(f.members());
     expect(f.publish).not.toHaveBeenCalled(); expect(f.acceptInput).not.toHaveBeenCalled();

@@ -23,6 +23,8 @@ const schemaMigrations = [
   "20260730090000_add_token_usage_provider_name",
   "20260801090000_token_usage_member_display_name",
   "20260819090000_add_token_usage_run_records",
+  // Historical source rows are converted only after current target expansion.
+  "20260923130000_add_claude_sdk_usage_state",
 ] as const;
 
 type JsonSourceValue = null | number | string | boolean | readonly unknown[] | Readonly<Record<string, unknown>>;
@@ -36,6 +38,9 @@ const createDatabase = async (databasePath: string): Promise<void> => {
         "utf8",
       ));
     }
+    expect(database.prepare('PRAGMA table_info("token_usage_run_records")').all()).toEqual(
+      expect.arrayContaining([expect.objectContaining({ name: "claude_sdk_usage_state_json" })]),
+    );
   } finally {
     database.close();
   }

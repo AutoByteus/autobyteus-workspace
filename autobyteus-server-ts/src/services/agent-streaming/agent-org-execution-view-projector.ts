@@ -1,3 +1,4 @@
+import { projectAgentOrgExecutionTree, projectCollaborationTaskExecution, projectCollaborationCollaborator } from "./collaboration-execution-tree-dto-projection.js";
 import {
   RootExecutionEventDtoSchema,
   RootExecutionViewDtoSchema,
@@ -13,7 +14,7 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
 const requireStartedExecution = (run: AgentOrgRun, reference: TaskExecutionReference) => {
   const execution = new AgentOrgExecutionIndex(run.getExecutionTreeSnapshot()).getTaskExecution(reference);
   if (!execution) throw new Error("Started AgentOrg task execution is not in the current execution tree.");
-  return execution.source;
+  return projectCollaborationTaskExecution(execution.source);
 };
 
 export const projectAgentOrgExecutionView = (
@@ -37,7 +38,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
   root_org: {
     base_change_sequence: baseChangeSequence,
     is_active: isActive,
-    execution_tree: snapshot.tree,
+    execution_tree: projectAgentOrgExecutionTree(snapshot.tree),
     communication_messages: snapshot.messages,
     agent_input_states: snapshot.inputStates,
     agent_statuses: snapshot.statuses.map((status) => ({
@@ -82,7 +83,7 @@ export const projectAgentOrgExecutionEvent = (
       event = { kind: "communication" as const, message: source.message };
       break;
     case "collaborator_added":
-      event = { kind: "collaborator_added" as const, collaborator: source.collaborator };
+      event = { kind: "collaborator_added" as const, collaborator: projectCollaborationCollaborator(source.collaborator) };
       break;
   }
   return RootExecutionEventDtoSchema.parse({

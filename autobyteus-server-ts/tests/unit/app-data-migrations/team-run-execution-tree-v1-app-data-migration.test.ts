@@ -74,6 +74,11 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
   it("keeps unresolved predecessor bytes retryable while leaving exact V1 roots for the V2 boundary", async () => {
     const { memoryDir, appDataDir } = await createEnvironment();
     const validRoot = await copyCurrentScenario(memoryDir, "case-001-persistent-only");
+    const retainedFiles = [
+      "team_run_execution_tree.json", "task_delegation_records.json", "team_communication_messages.json",
+    ];
+    const retainedBytes = await Promise.all(retainedFiles.map((name) =>
+      fs.readFile(path.join(memoryDir, "agent_teams", validRoot, name))));
     const invalidRoot = "root-unresolved";
     const invalidDirectory = path.join(memoryDir, "agent_teams", invalidRoot);
     await fs.mkdir(invalidDirectory, { recursive: true });
@@ -97,10 +102,14 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
     const catalog = new TeamRunPackageCatalog(memoryDir);
     await catalog.rebuild();
     expect(catalog.listAdmittedRootIds()).toEqual([]);
-    expect(catalog.getDiagnostics().get(validRoot)).toContain("schemaVersion");
+    const historicalDiagnostic = catalog.getDiagnostics().get(validRoot);
+    expect(historicalDiagnostic).toContain("ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED");
+    expect(historicalDiagnostic).toContain("missing required field(s): address, defaultLaunchConfiguration");
     expect(catalog.getDiagnostics().get(invalidRoot)).toContain(
-      "Current package is missing required authorities",
+      "ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.",
     );
+    expect(await Promise.all(retainedFiles.map((name) =>
+      fs.readFile(path.join(memoryDir, "agent_teams", validRoot, name))))).toEqual(retainedBytes);
   });
 
   it("does not promote partial target residue without its protected predecessor backup", async () => {

@@ -1,3 +1,4 @@
+import { parseTaskLifetimeStamp } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import {
@@ -196,6 +197,7 @@ export const parseTaskExecution = (value: unknown, label: string): TaskExecution
       address: canonicalNonRootAddress(execution.address, `${label}.address`),
       agentRunId: requiredString(execution.agentRunId, `${label}.agentRunId`),
       platformAgentRunId: nullableString(execution.platformAgentRunId, `${label}.platformAgentRunId`),
+      ...(execution.taskLifetime === undefined ? {} : { taskLifetime: parseTaskLifetimeStamp(execution.taskLifetime) }),
       ...parseDelegator(execution, label),
       startedAt: isoTimestamp(execution.startedAt, `${label}.startedAt`),
       ...parseTaskAgentExecutionSource(execution, label),
@@ -212,6 +214,7 @@ export const parseTaskExecution = (value: unknown, label: string): TaskExecution
     ...parseDelegator(execution, label),
     startedAt: isoTimestamp(execution.startedAt, `${label}.startedAt`),
     ...parseTaskTeamExecutionSource(execution, address, label),
+    ...(execution.taskLifetime === undefined ? {} : { taskLifetime: parseTaskLifetimeStamp(execution.taskLifetime) }),
   };
 };
 

@@ -75,6 +75,8 @@ export class AgentRunRemovalCleanupError extends AggregateError {
 export class AgentRunActivationRegistry {
   private readonly activeRuns = new Map<string, AgentRun>();
   private readonly pending = new Map<string, PendingActivation>();
+  private readonly retired = new Map<string, AgentRun>();
+  private readonly released = new WeakSet<AgentRun>();
   private claimsBlocked = false;
 
   constructor(private readonly resourceManager: AgentRunResourceManager) {}
@@ -92,6 +94,8 @@ export class AgentRunActivationRegistry {
         `Agent run '${runId}' is already active.`,
       );
     }
+    if (this.retired.has(runId)) throw new AgentRunActivationError(
+      "AGENT_RUN_ACTIVATION_CLEANUP_FAILED", `Agent run '${runId}' still owns retired cleanup.`);
     const existing = this.pending.get(runId);
     if (existing) {
       throw new AgentRunActivationError(
@@ -119,8 +123,8 @@ export class AgentRunActivationRegistry {
     if (record.state !== "constructing" || run.runId !== claim.runId) {
       throw this.quarantine(claim, new Error("AgentRun preparation claim mismatch."));
     }
-    this.resourceManager.attach(run);
     record.run = run;
+    this.resourceManager.attach(run);
     record.state = "prepared";
   }
 
@@ -199,7 +203,11 @@ export class AgentRunActivationRegistry {
     expectedRun: AgentRun;
     reason: AgentRunRemovalReason;
   }): AgentRunRemovalResult {
-    const currentRun = this.activeRuns.get(input.runId) ?? null;
+    const currentRun = this.activeRuns.get(input.runId) ?? this.retired.get(input.runId) ?? null;
+    if (!currentRun && this.released.has(input.expectedRun)) return Object.freeze({
+      kind: "removed" as const, run: input.expectedRun, reason: input.reason,
+      resources: this.resourceManager.release(input.runId, input.expectedRun),
+    });
     if (!currentRun) {
       return Object.freeze({ kind: "not_found" as const, runId: input.runId, reason: input.reason });
     }
@@ -213,12 +221,27 @@ export class AgentRunActivationRegistry {
       });
     }
     this.activeRuns.delete(input.runId);
+    this.retired.set(input.runId, currentRun);
+    const resources = this.resourceManager.release(input.runId, currentRun);
+    if (!resources.errors.length && input.reason === "explicit_termination") {
+      this.retired.delete(input.runId);
+      this.released.add(currentRun);
+    }
     return Object.freeze({
       kind: "removed" as const,
       run: currentRun,
       reason: input.reason,
-      resources: this.resourceManager.release(input.runId, currentRun),
+      resources,
     });
+  }
+
+  releaseRuntimeAttachments(run: AgentRun): AgentRunResourceReleaseResult {
+    if (!this.ownsPublishedOrRetired(run)) throw new Error("Exact published attachment authority is unavailable.");
+    return this.resourceManager.release(run.runId, run);
+  }
+
+  ownsPublishedOrRetired(run: AgentRun): boolean {
+    return this.activeRuns.get(run.runId) === run || this.retired.get(run.runId) === run || this.released.has(run);
   }
 
   blockNewClaims(): void {
@@ -226,7 +249,7 @@ export class AgentRunActivationRegistry {
   }
 
   snapshotForStop(): AgentRunStopSnapshot {
-    const activeRuns: AgentRun[] = [];
+    const activeRuns: AgentRun[] = [...this.retired.values()];
     const pruningErrors: AgentRunRemovalCleanupError[] = [];
     for (const [runId, run] of Array.from(this.activeRuns.entries())) {
       if (run.isActive()) {

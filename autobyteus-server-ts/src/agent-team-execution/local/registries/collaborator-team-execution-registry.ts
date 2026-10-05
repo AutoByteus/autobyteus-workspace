@@ -46,9 +46,10 @@ export class CollaboratorTeamExecutionRegistry {
     let run: TeamRun;
     try {
       const source = { handoffs: input.handoffs, parentContext: this.options.teamContext, teamNode: input.teamNode };
-      run = input.mode === "fresh"
-        ? await this.options.subTeamRunFactory.prepareFreshTaskTeam(source)
-        : await this.options.subTeamRunFactory.prepareRestoredTaskTeam(source);
+      const prepared = await this.options.subTeamRunFactory.beginTaskTeam({ ...source,
+        activationMode: input.mode, prepareConfiguredAgents: false }).prepare();
+      prepared.commitAfterDurability();
+      run = prepared.teamRun;
     } catch (error) {
       this.reserved.delete(teamRunId);
       throw error;

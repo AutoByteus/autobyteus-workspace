@@ -15,6 +15,7 @@ type MemberExecutionContextBuildInput = Parameters<MemberExecutionContextBuilder
 /** Standalone-Team subject adapter for root-neutral local Agent callbacks. */
 export const createTeamFlatExecutionCallbacks = (input: {
   teamContext: TeamRunContext<unknown>;
+  assertExecutionInputAllowed: FlatTeamExecutionCallbacks["assertExecutionInputAllowed"];
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskCommands: MemberTaskCommandCapability;
   publish(event: TeamRunEvent): void;
@@ -23,6 +24,7 @@ export const createTeamFlatExecutionCallbacks = (input: {
   listAvailableAgents?: MemberExecutionContextBuildInput["listAvailableAgents"];
   commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;
 }): FlatTeamExecutionCallbacks => Object.freeze({
+  assertExecutionInputAllowed: input.assertExecutionInputAllowed,
   buildMemberExecutionContext: ({ identity, sourceNode, hostTeam }) => input.memberExecutionContextBuilder.build({
     teamContext: input.teamContext,
     agentNode: sourceNode,

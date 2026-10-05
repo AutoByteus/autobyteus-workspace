@@ -1,11 +1,13 @@
+import { acceptTaskSeed } from "../task/task-execution-seed-admission.js";
+import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { RootExecutionPhysicalScope } from "../domain/root-execution-identity.js";
 import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
 import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
-import { FlatTeamExecutionFactory, type PreparedFlatTeamExecution } from "../../../agent-team-execution/local/flat-team-execution-factory.js";
+import { FlatTeamExecutionFactory, type FlatTeamPreparationOperation, type PreparedFlatTeamExecution } from "../../../agent-team-execution/local/flat-team-execution-factory.js";
 import type { TeamRun } from "../../../agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentTeamNode } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { PrepareTaskTeamInput } from "../../../agent-team-execution/domain/task-team-execution.js";
-import type { PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
 import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
 import type { ConfiguredMemberActivationMode } from "../../../agent-team-execution/local/flat-team-execution-context.js";
@@ -21,6 +23,9 @@ export type RootTeamRegistrationReservation = Readonly<{
  * root-hosted task Teams. It never registers a standalone Team root.
  */
 export class RootTeamExecutionDirectory {
+  private readonly taskPreparations = new Map<string, TaskExecutionPreparationOperation>();
+  private readonly restorations = new Map<string, FlatTeamPreparationOperation>();
+  private readonly releasedTeams = new Map<string, TeamRun>();
   private readonly active = new Map<string, TeamRun>();
   private readonly reserved = new Set<string>();
   private readonly taskTeamRunIds = new Set<string>();
@@ -32,11 +37,14 @@ export class RootTeamExecutionDirectory {
   list(): readonly TeamRun[] { return Object.freeze([...this.active.values()]); }
   freezeForRootTermination(): readonly FrozenTeamRunTerminationScope[] {
     this.materializationOpen = false;
+    this.restorations.forEach(op => op.cancel());
     if (this.reserved.size) {
       throw new Error("Root Team publication was still reserved at root-scope freeze.");
     }
     return Object.freeze([...this.active.values()].map((run) => run.freezeForRootTermination()));
   }
+  /** Retained exact cleanup authority; never used to wake or admit input. */
+  getManaged(teamRunId: string): TeamRun | null { return this.active.get(teamRunId) ?? this.releasedTeams.get(teamRunId) ?? null; }
   get(teamRunId: string): TeamRun | null {
     const run = this.active.get(teamRunId);
     return run?.isActive() ? run : null;
@@ -55,6 +63,7 @@ export class RootTeamExecutionDirectory {
   unregisterTerminated(): void {
     for (const [teamRunId, run] of this.active) {
       if (!run.isTerminated()) continue;
+      this.releasedTeams.set(teamRunId, run);
       this.active.delete(teamRunId);
       this.taskTeamRunIds.delete(teamRunId);
     }
@@ -84,7 +93,7 @@ export class RootTeamExecutionDirectory {
     this.reserveIds([input.teamNode.teamRunId]);
     let prepared: PreparedFlatTeamExecution;
     try {
-      prepared = await this.factory.materialize({ ...input, prepareConfiguredAgents: false });
+      prepared = await this.factory.beginMaterialization({ ...input, prepareConfiguredAgents: false }).prepare();
     } catch (error) {
       this.releaseIds([input.teamNode.teamRunId]);
       throw error;
@@ -125,17 +134,18 @@ export class RootTeamExecutionDirectory {
     });
   }
 
-  async prepareRootTaskTeam(input: Readonly<{
+  beginRootTaskTeam(input: Readonly<{
     task: PrepareTaskTeamInput;
     physicalScope: RootExecutionPhysicalScope;
     callbacks: FlatTeamExecutionCallbacks;
-  }>): Promise<PreparedTaskExecution> {
+  }>): TaskExecutionPreparationOperation {
     const eventGate = new TaskAgentDurabilityEventGate(input.callbacks.publishAgentEvent);
+    let state: "preparing" | "sealed" | "committed" | "aborted" = "preparing";
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
       ...input.callbacks,
       publishAgentEvent: eventGate.publish,
     });
-    const prepared = await this.factory.materialize({
+    const factoryControl = this.factory.beginMaterialization({
       physicalScope: input.physicalScope,
       teamNode: input.task.teamNode,
       handoffs: input.task.handoffs,
@@ -143,14 +153,25 @@ export class RootTeamExecutionDirectory {
       activationMode: "fresh",
       callbacks,
       prepareConfiguredAgents: true,
-    }).catch((error) => { eventGate.abort(); throw error; });
+    });
+    const operation = createTaskExecutionPreparation({
+      cancel: () => factoryControl.cancel(),
+      releaseResources: async () => {
+        // Discard private events only; live teardown must forward genuine member terminal events.
+        if (state !== "committed") eventGate.abort();
+        const result = await factoryControl.release();
+        // Keep the compact terminal control: a missing active lookup is not release proof.
+        return result;
+      },
+      prepare: async (assertAccepting) => {
+    const prepared = await factoryControl.prepare();
+    assertAccepting();
     const coordinator = input.task.teamNode.children.find((child) => child.kind === "agent" && child.address === input.task.teamNode.coordinatorAddress);
     if (!coordinator || coordinator.kind !== "agent") {
       eventGate.abort();
       await prepared.abort();
       throw new Error(`Task TeamRun '${input.task.teamRunId}' has no exact coordinator.`);
     }
-    let state: "preparing" | "sealed" | "committed" | "aborted" = "preparing";
     return Object.freeze({
       binding: Object.freeze({
         kind: "team",
@@ -166,51 +187,75 @@ export class RootTeamExecutionDirectory {
       },
       commitAfterDurability: () => {
         if (state !== "sealed") throw new Error(`Task TeamRun '${input.task.teamRunId}' is not sealed.`);
+        assertAccepting();
         prepared.commitAfterDurability();
         state = "committed";
         let released = false;
-        return Object.freeze({ releaseWork: () => {
-          if (released) return;
+        if (!eventGate.releaseToLive()) throw new Error("Task publication event gate closed.");
+        return Object.freeze({ releaseWork: (assertOpen: () => void) => {
+          if (released) throw new Error("Task seed already released.");
           released = true;
-          if (!eventGate.releaseToLive()) return;
-          queueMicrotask(() => { void prepared.teamRun.postMessage(input.task.message, coordinator.agentRunId); });
+          if (!input.task.message) throw new Error("Helper awaits an ordinary message.");
+          return acceptTaskSeed(assertOpen, () => prepared.teamRun.postMessage(input.task.message!, coordinator.agentRunId));
         } });
       },
       abort: async () => {
-        if (state === "committed" || state === "aborted") return;
+        if (state === "aborted") return;
+        const result = await operation.release();
+        if (!result.accepted) throw new Error("Task Team release remains pending.");
         state = "aborted";
-        eventGate.abort();
-        await prepared.abort();
       },
     });
+      },
+    });
+    this.taskPreparations.set(input.task.teamRunId, operation);
+    return operation;
+  }
+
+  cancelTask(teamRunId: string): void { this.restorations.get(teamRunId)?.cancel(); this.taskPreparations.get(teamRunId)?.cancel(); this.active.get(teamRunId)?.cancelRuntimeActivation(); }
+  async releaseTask(teamRunId: string): Promise<AgentOperationResult> {
+    this.cancelTask(teamRunId);
+    const controls = [this.taskPreparations.get(teamRunId), this.restorations.get(teamRunId)].filter(Boolean);
+    const run = this.getManaged(teamRunId);
+    const attempts = [...controls.map(control => control!.release()), ...(run ? [run.releaseOwnedRuntime()] : [])];
+    if (!attempts.length) return { accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" };
+    const results = await Promise.allSettled(attempts);
+    const errors = results.flatMap(result => result.status === "rejected" ? [result.reason] : []);
+    if (errors.length) throw new AggregateError(errors, "Exact root Task Team cleanup failed.");
+    if (results.some(result => result.status === "fulfilled" && !result.value.accepted)) return { accepted: false, code: "RUNTIME_RELEASE_PENDING" };
+    this.restorations.delete(teamRunId); this.releaseIds([teamRunId]);
+    return { accepted: true };
   }
 
   /** Re-creates one shut-down root-hosted task Team in `restore` mode; members activate lazily on input. */
   async restoreRootTaskTeam(input: Readonly<{
+    assertOpen(): void;
     teamNode: TeamRunAgentTeamNode;
     handoffs: PrepareTaskTeamInput["handoffs"];
     physicalScope: RootExecutionPhysicalScope;
     callbacks: FlatTeamExecutionCallbacks;
   }>): Promise<TeamRun> {
     this.reserveIds([input.teamNode.teamRunId]);
-    let prepared: PreparedFlatTeamExecution;
+    const id = input.teamNode.teamRunId;
+    const operation = this.factory.beginMaterialization({
+      physicalScope: input.physicalScope, teamNode: input.teamNode, handoffs: input.handoffs,
+      applicationBinding: null, activationMode: "restore", callbacks: input.callbacks, prepareConfiguredAgents: false,
+    });
+    this.restorations.set(id, operation);
     try {
-      prepared = await this.factory.materialize({
-        physicalScope: input.physicalScope,
-        teamNode: input.teamNode,
-        handoffs: input.handoffs,
-        applicationBinding: null,
-        activationMode: "restore",
-        callbacks: input.callbacks,
-        prepareConfiguredAgents: false,
-      });
+      const prepared = await operation.prepare();
+      input.assertOpen();
+      if (!this.materializationOpen) throw new Error("Root Task Team restore cancelled by root termination.");
+      prepared.commitAfterDurability();
+      this.commitRuns([prepared.teamRun], true);
+      return prepared.teamRun;
     } catch (error) {
-      this.releaseIds([input.teamNode.teamRunId]);
+      operation.cancel();
+      try {
+        if ((await operation.release()).accepted) { this.restorations.delete(id); this.releaseIds([id]); }
+      } catch (cleanup) { throw new AggregateError([error, cleanup], "Root Task Team restore and exact cleanup failed."); }
       throw error;
     }
-    prepared.commitAfterDurability();
-    this.commitRuns([prepared.teamRun], true);
-    return prepared.teamRun;
   }
 
   /** Shuts one root-hosted task Team down as a whole only when it is quiet. */
@@ -225,14 +270,15 @@ export class RootTeamExecutionDirectory {
         local.cancel();
         return false;
       }
-      this.active.delete(teamRunId);
-      this.taskTeamRunIds.delete(teamRunId);
       const result = await local.commit().finish().catch((cause: unknown) => {
         throw new TaskExecutionTeardownIndeterminateError(teamRunId, `Task TeamRun '${teamRunId}' shutdown did not finish.`, { cause });
       });
       if (!result.accepted) {
         throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' shutdown was rejected.`);
       }
+      this.releasedTeams.set(teamRunId, run);
+      this.active.delete(teamRunId);
+      this.taskTeamRunIds.delete(teamRunId);
       return true;
     } finally {
       this.shuttingDown.delete(teamRunId);
@@ -249,6 +295,9 @@ export class RootTeamExecutionDirectory {
   private commitRuns(runs: readonly TeamRun[], taskTeams = false): void {
     for (const run of runs) {
       if (!this.reserved.delete(run.teamRunId)) throw new Error(`Root-hosted TeamRun '${run.teamRunId}' is not reserved.`);
+      const previous = this.releasedTeams.get(run.teamRunId);
+      if (previous) run.inheritReleasedTaskExecutionProof(previous);
+      this.releasedTeams.delete(run.teamRunId);
       this.active.set(run.teamRunId, run);
       if (taskTeams) this.taskTeamRunIds.add(run.teamRunId);
     }

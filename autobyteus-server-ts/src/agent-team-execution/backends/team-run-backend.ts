@@ -7,7 +7,7 @@ import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../domain/tas
 import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../domain/task-team-execution.js";
 import type { TeamRun } from "../domain/team-run.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
+import type { TaskExecutionPreparationOperation } from "../domain/prepared-task-execution.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
@@ -26,12 +26,16 @@ export interface TeamRunBackend {
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options?: AgentRunInputOptions): Promise<AgentRunInputReservationResult>;
   deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult>;
-  prepareTaskAgent(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution>;
-  prepareTaskTeam(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution>;
+  beginTaskAgent(input: PrepareTaskAgentInput): TaskExecutionPreparationOperation;
+  beginTaskTeam(input: PrepareTaskTeamInput): TaskExecutionPreparationOperation;
   restoreTaskAgent(input: RestoreTaskAgentInput): Promise<void>;
   restoreTaskTeam(input: RestoreTaskTeamInput): Promise<TeamRun>;
+  cancelDirectTaskExecution(reference: TaskExecutionReference): void;
+  releaseDirectTaskExecution(reference: TaskExecutionReference): Promise<AgentOperationResult>;
   hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean;
   tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean>;
+  cancelRuntimeActivation(): void;
+  releaseOwnedRuntime(): Promise<AgentOperationResult>;
   prepareTermination(): Promise<PreparedLocalExecutionTermination>;
   tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null>;
   freezeForRootTermination(): FrozenTeamRunTerminationScope;

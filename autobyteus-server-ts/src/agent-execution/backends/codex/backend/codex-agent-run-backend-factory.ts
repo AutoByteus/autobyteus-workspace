@@ -1,3 +1,8 @@
+import { createBackendPreparation } from "../../agent-run-backend-preparation.js";
+import type { AgentRunBackendPreparationRequest } from "../../agent-run-backend-factory.js";
+import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
+import type { CodexAppServerClientLease } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
+import type { CodexRunContext } from "./codex-agent-run-context.js";
 import { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
 import type { CodexThreadManager } from "../thread/codex-thread-manager.js";
@@ -21,50 +26,35 @@ export class CodexAgentRunBackendFactory implements AgentRunBackendFactory {
     this.threadCleanup = threadCleanup;
   }
 
-  async createBackend(
-    input: AgentRunConfig,
-    agentRunId: string,
-  ): Promise<CodexAgentRunBackend> {
-    const runId = agentRunId.trim();
-    if (!runId) {
-      throw new Error("Codex backend creation requires agentRunId.");
-    }
-    const runContext = await this.threadBootstrapper.bootstrapForCreate(
-      new AgentRunContext({
-        runId,
-        config: input,
-        runtimeContext: null,
-      }),
-    );
-    let thread;
-    try {
-      thread = await this.threadManager.createThread(runContext);
-    } catch (error) {
-      await this.threadCleanup
-        .cleanupPreparedWorkspaceSkills(runContext.runtimeContext.materializedConfiguredSkills)
-        .catch(() => {});
-      throw error;
-    }
-    const backend = new CodexAgentRunBackend(runContext, thread, this.threadManager);
-    return backend;
-  }
-
-  async restoreBackend(
-    context: AgentRunContext<RuntimeAgentRunContext>,
-  ): Promise<CodexAgentRunBackend> {
-    const runContext = await this.threadBootstrapper.bootstrapForRestore(
-      context as AgentRunContext<any>,
-    );
-    let thread;
-    try {
-      thread = await this.threadManager.restoreThread(runContext);
-    } catch (error) {
-      await this.threadCleanup
-        .cleanupPreparedWorkspaceSkills(runContext.runtimeContext.materializedConfiguredSkills)
-        .catch(() => {});
-      throw error;
-    }
-    const backend = new CodexAgentRunBackend(runContext, thread, this.threadManager);
-    return backend;
+  beginPreparation(request: AgentRunBackendPreparationRequest) {
+    const skills: MaterializedWorkspaceSkill[] = [];
+    const clients: CodexAppServerClientLease[] = [];
+    let runContext: CodexRunContext | null = null;
+    return createBackendPreparation({
+      prepare: async (assertAccepting) => {
+        const guard = { assertAccepting, ownSkill: (skill: MaterializedWorkspaceSkill) => { skills.push(skill); },
+          ownCodexClient: (lease: CodexAppServerClientLease) => { clients.push(lease); } };
+        runContext = request.kind === "new"
+          ? await this.threadBootstrapper.bootstrapForCreate(new AgentRunContext({ runId: request.runId, config: request.config, runtimeContext: null }), guard)
+          : await this.threadBootstrapper.bootstrapForRestore(request.context as AgentRunContext<any>, guard);
+        assertAccepting();
+        const thread = request.kind === "new"
+          ? await this.threadManager.createThread(runContext, assertAccepting)
+          : await this.threadManager.restoreThread(runContext, assertAccepting);
+        assertAccepting();
+        return new CodexAgentRunBackend(runContext, thread, this.threadManager);
+      },
+      releaseResources: async () => {
+        const errors: unknown[] = [];
+        if (runContext) {
+          try { await this.threadManager.releasePreparation(runContext); } catch (error) { errors.push(error); }
+        }
+        try { await this.threadCleanup.cleanupPreparedWorkspaceSkills(skills); } catch (error) { errors.push(error); }
+        for (const lease of clients) {
+          try { await lease.release(); } catch (error) { errors.push(error); }
+        }
+        if (errors.length) throw new AggregateError(errors, "Codex exact preparation release failed.");
+      },
+    });
   }
 }

@@ -17,9 +17,10 @@ export class CodexModelCatalog {
 
   async listModels(cwd?: string): Promise<ModelInfo[]> {
     const workingDirectory = cwd ?? process.cwd();
-    const client = await this.clientManager.acquireClient(workingDirectory);
+    const lease = this.clientManager.beginAcquire(workingDirectory);
     const models: ModelInfo[] = [];
     try {
+      const client = await lease.acquire();
       let cursor: string | null = null;
       do {
         const response = await client.request<unknown>("model/list", {
@@ -40,7 +41,7 @@ export class CodexModelCatalog {
       } while (cursor);
       return models;
     } finally {
-      await this.clientManager.releaseClient(workingDirectory);
+      await lease.release();
     }
   }
 }

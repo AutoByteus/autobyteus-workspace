@@ -6,7 +6,7 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 import { TaskDelegationError } from "./task-delegation-command.js";
 
-export const requireTaskString = (value: string, field: string): string => {
+export const requireTaskString = (value: unknown, field: string): string => {
   const normalized = typeof value === "string" ? value.trim() : "";
   if (!normalized) throw new TaskDelegationError("VALIDATION_ERROR", `${field} is required.`);
   return normalized;

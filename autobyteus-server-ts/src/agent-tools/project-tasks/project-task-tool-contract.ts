@@ -7,8 +7,8 @@ export const isProjectTaskToolName = (name: string): name is ProjectTaskToolName
 const statuses = ["TODO", "IN_PROGRESS", "DONE"];
 export const PROJECT_TASK_TOOL_DESCRIPTIONS: Record<ProjectTaskToolName, string> = {
   list_projects: "List every Project on the current node with its stable projectId, name and description. Does not select or change a Project.",
-  list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS or DONE status. Returns full descriptions and saved Task context references.",
-  create_or_update_task: "Create or explicitly patch one Project Task. Omit task_id to create a required-description TODO Task (omit status). Supply a known task_id to patch description and/or TODO/IN_PROGRESS/DONE status. Unknown IDs fail; omitted fields and context are preserved. Does not launch, stop or assess executions.",
+  list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS or DONE status. Returns descriptions, saved context-file references and exact assignment identities with dispatch outcomes; accepted work is not necessarily finished.",
+  create_or_update_task: "Create or explicitly patch one Project Task. Omit task_id to create a required-description TODO Task (omit status). Supply a known task_id to patch description and/or TODO/IN_PROGRESS/DONE status. Unknown IDs fail; omitted fields and saved context are preserved. Returns the recorded Task identity and status, not a work-completion assessment. Does not delegate work.",
 };
 export function buildProjectTaskToolSchema(name: ProjectTaskToolName): ParameterSchema {
   const p = (name: string, description: string, required = false, enumValues?: string[]) => new ParameterDefinition({

@@ -53,7 +53,7 @@ const runScopedMcpMessage = async (kind: "team" | "org") => {
     { resolveWorkingDirectory: async () => workspace } as never,
     authority.runSessions,
   );
-  const backend = await factory.createBackend(config, runId);
+  const backend = await factory.beginPreparation({ kind: "new", config: config, runId: runId }).prepare();
   const events: { eventType: AgentRunEventType; payload: Record<string, unknown> }[] = [];
   backend.subscribeToSourceEventBatches((batch) => { events.push(...batch); });
   try {

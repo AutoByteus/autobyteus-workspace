@@ -8,6 +8,14 @@ import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team
 import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
 import { StudioRunModelConfigService } from '../../../src/run-history/services/studio-run-model-config-service.js';
 import { AgentTeamRunResolver } from '../../../src/api/graphql/types/agent-team-run.js';
+// This harness controls the tree writer/readback, so it must also supply the
+// current package-admission prerequisite. It does not prove disk admission.
+vi.mock('../../../src/run-history/services/team-run-package-catalog.js', () => ({
+  TeamRunPackageCatalog: class {
+    async awaitReady() {}
+    isAdmitted(teamRunId: string) { return teamRunId === 'root'; }
+  },
+}));
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
 
@@ -40,6 +48,13 @@ const harness = (physicalOutcome = 'committed', readback = 'ok', runtimeKind = '
   return { manager, read, write, capacity, saved: () => saved };
 };
 describe('configured Team model selection Save', () => {
+  it('rejects a non-admitted root before model selection or writing', async () => {
+    const h = harness();
+    const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'not-admitted', patches: [] });
+    expect(result).toMatchObject({ outcome: 'NOT_FOUND', success: false });
+    expect(h.write).not.toHaveBeenCalled();
+    expect(h.capacity.resolveMany).not.toHaveBeenCalled();
+  });
   it('validates every native original baseline before writing and does not omit incompatible children', async () => {
     const h = harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
     const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [

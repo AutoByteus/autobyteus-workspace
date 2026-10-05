@@ -32,7 +32,7 @@ const retainedView = (active: boolean) => {
   view.agent_statuses = active
     ? view.agent_statuses.map(status => status.agent_run_id.startsWith('agent-task-') ? { ...status, status: 'offline' as const } : status)
       .concat(second.members.map(member => ({ member_address: member.address, agent_run_id: (member as { agentRunId: string }).agentRunId,
-        status: 'offline' as const, trigger: null, tool_name: null, error_message: null, error_details: null })))
+        status: 'offline' as const, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })))
     : []
   return view
 }

@@ -1,4 +1,8 @@
 import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
+import { randomUUID } from "node:crypto";
+import { beginClaudeSdkSessionOpening, type ClaudeSdkSessionOpening } from "./claude-sdk-session-opening.js";
 import type { SecretValue } from "autobyteus-ts";
 import type { ModelInfoWithSelectionPresentation } from "../../../llm-management/domain/model-selection-presentation.js";
 import {
@@ -28,8 +32,6 @@ import {
 import type { ClaudeSdkSessionBinding } from "./claude-sdk-session-binding.js";
 import {
   ClaudeSdkInputChannel,
-  createClaudeSdkStreamingSession,
-  type ClaudeSdkStreamingSession,
 } from "./claude-sdk-streaming-session.js";
 
 type ClaudeSdkFunctionName =
@@ -74,12 +76,14 @@ export type ClaudeSdkStreamingSessionOptions = {
   canUseTool?: ClaudeSdkCanUseTool;
   stderr?: ClaudeSdkStderrCallback;
   thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
+  debugFile?: string;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
 };
 
 export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
   interrupt: () => Promise<unknown>;
   close: () => void;
+  initializationResult: () => Promise<unknown>;
   supportedModels?: () => Promise<unknown>;
   setMcpServers?: (servers: Record<string, unknown>) => Promise<unknown>;
 };
@@ -157,21 +161,6 @@ const runInClaudeSdkSessionSpawnCriticalSection = async <T>(
   } finally {
     release();
   }
-};
-
-const asClaudeSdkQuery = (value: unknown): ClaudeSdkQueryLike | null => {
-  const payload = asObject(value);
-  if (!payload) {
-    return null;
-  }
-  const asyncIterableCandidate = value as { [Symbol.asyncIterator]?: unknown };
-  if (typeof asyncIterableCandidate[Symbol.asyncIterator] !== "function") {
-    return null;
-  }
-  if (typeof payload.close !== "function" || typeof payload.interrupt !== "function") {
-    return null;
-  }
-  return payload as unknown as ClaudeSdkQueryLike;
 };
 
 const closeQueryControl = async (controlLike: Record<string, unknown> | null): Promise<void> => {
@@ -253,34 +242,49 @@ export class ClaudeSdkClient {
     }
   }
 
-  /**
-   * Opens one streaming-input query (`prompt: AsyncIterable`), which keeps one Claude CLI
-   * process alive until `close()` or an unexpected exit.
-   */
-  async openStreamingSession(options: ClaudeSdkStreamingSessionOptions): Promise<ClaudeSdkStreamingSession> {
-    const sdk = await this.loadModuleSafe();
-    const queryFn = this.resolveFunction(sdk, "query");
-    if (!queryFn) {
-      throw new Error("Claude SDK query API is unavailable.");
-    }
-
-    const spawnEnvironment = await this.resolveSpawnEnvironment(options.env);
-    if (asString(spawnEnvironment.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS)) {
-      // OBS-2: AutoByteus sets no CLI policy env, but an operator's own value passes through.
-      logger.warn(
-        "Claude CLI background tasks are disabled by the inherited CLAUDE_CODE_DISABLE_BACKGROUND_TASKS " +
-          "environment variable; unset it to let agents run background commands.",
-      );
-    }
-    const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
-    const input = new ClaudeSdkInputChannel();
-    const query = await this.createSdkQuery(options.workingDirectory, () =>
-      queryFn({
-        prompt: input,
-        options: queryOptions,
-      }),
-    );
-    return createClaudeSdkStreamingSession(query, input);
+  beginStreamingSession(input: { resolveOptions(): ClaudeSdkStreamingSessionOptions | Promise<ClaudeSdkStreamingSessionOptions> }): ClaudeSdkSessionOpening {
+    let suppliedOptions: ClaudeSdkStreamingSessionOptions | null = null;
+    return beginClaudeSdkSessionOpening({
+      stderr: text => suppliedOptions?.stderr?.(text),
+      createQuery: async control => {
+        const options = await input.resolveOptions();
+        suppliedOptions = options;
+        control.assertAccepting();
+        const sdk = await this.loadModuleSafe();
+        control.assertAccepting();
+        const queryFn = this.resolveFunction(sdk, "query");
+        if (!queryFn) throw new Error("Claude SDK query API is unavailable.");
+        const spawnEnvironment = await this.resolveSpawnEnvironment(options.env);
+        control.assertAccepting();
+        if (asString(spawnEnvironment.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS)) logger.warn("Claude CLI background tasks disabled by inherited CLAUDE_CODE_DISABLE_BACKGROUND_TASKS operator environment.");
+        const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
+        if (!options.debugFile && /^(1|true)$/i.test(spawnEnvironment.DEBUG_CLAUDE_AGENT_SDK ?? "")) {
+          const root = spawnEnvironment.CLAUDE_CONFIG_DIR || path.join(spawnEnvironment.HOME || os.homedir(), ".claude");
+          const directory = path.join(root, "debug");
+          await fs.promises.mkdir(directory, { recursive: true });
+          control.assertAccepting();
+          queryOptions.debugFile = path.join(directory, `autobyteus-cli-${randomUUID()}.log`);
+          logger.info("Claude CLI debug log:", queryOptions.debugFile);
+        }
+        const originalPermission = options.canUseTool;
+        if (originalPermission) queryOptions.canUseTool = async (...args: Parameters<ClaudeSdkCanUseTool>) => {
+          control.assertAccepting();
+          const response = await originalPermission(...args);
+          control.assertAccepting();
+          return response;
+        };
+        queryOptions.spawnClaudeCodeProcess = control.spawn;
+        queryOptions.stderr = control.stderr;
+        await runInClaudeSdkSessionSpawnCriticalSection(async () => {
+          control.assertAccepting();
+          return withGuardedProcessCwd(options.workingDirectory, async () => {
+            control.assertAccepting();
+            const raw = queryFn({ prompt: control.channel, options: queryOptions });
+            control.registerQuery(raw); // before shape checks/any additional await
+          });
+        });
+      },
+    });
   }
 
   async createToolDefinition(options: {
@@ -395,6 +399,7 @@ export class ClaudeSdkClient {
     }
     return {
       model: options.model,
+      ...(options.debugFile ? { debugFile: options.debugFile } : {}),
       ...(options.systemPrompt ? { systemPrompt: options.systemPrompt } : {}),
       pathToClaudeCodeExecutable,
       permissionMode: options.permissionMode ?? "default",
@@ -432,20 +437,6 @@ export class ClaudeSdkClient {
     } catch {
       throw new Error(CLAUDE_API_KEY_UNAVAILABLE);
     }
-  }
-
-  private async createSdkQuery(
-    workingDirectory: string | null,
-    operation: () => unknown,
-  ): Promise<ClaudeSdkQueryLike> {
-    const rawQuery = await runInClaudeSdkSessionSpawnCriticalSection(async () =>
-      withGuardedProcessCwd(workingDirectory, async () => Promise.resolve(operation())),
-    );
-    const normalized = asClaudeSdkQuery(rawQuery);
-    if (!normalized) {
-      throw new Error("Claude SDK query object is invalid.");
-    }
-    return normalized;
   }
 
   private async callSdkFunction(

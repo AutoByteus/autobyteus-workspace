@@ -17,6 +17,7 @@ export class AgentRunCollaborationCommunicationAdapter implements RootCommunicat
     persistence: AgentRunCollaborationPersistenceCoordinator;
     isOpen(): boolean;
     isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+  assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
     reserveRecipientInput(agentRunId: string, message: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>): Promise<AgentRunInputReservationResult>;
     replaceMessages(messages: AgentRunCollaborationMessagesFileV1): void;
     publish(message: CollaborationCommunicationMessageV1): void;
@@ -30,6 +31,9 @@ export class AgentRunCollaborationCommunicationAdapter implements RootCommunicat
   }
 
   isOpen(): boolean { return this.options.isOpen(); }
+  assertDeliveryAllowed(...identities: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
+    this.options.assertDeliveryAllowed(...identities);
+  }
   isCurrentAgent(identity: Parameters<RootCommunicationAdapter["isCurrentAgent"]>[0]): boolean {
     return this.options.isCurrentAgent(identity);
   }

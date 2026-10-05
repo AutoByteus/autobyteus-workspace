@@ -2,11 +2,9 @@ import type { CollaborationMemberExecutionIdentity, RootSubjectKind } from "../d
 
 export type TaskDelegationContext = Readonly<{ identity: CollaborationMemberExecutionIdentity }>;
 
-export type DelegateTaskInput = Readonly<{
-  recipient_address: string;
-  description: string;
-  reference_files?: string[];
-}>;
+export type DelegateTaskInput =
+  | Readonly<{ recipient_address: string; task_id: string; description?: never; reference_files?: never }>
+  | Readonly<{ recipient_address: string; description: string; reference_files?: string[]; task_id?: never }>;
 
 /** A delegation is a spawn: success names the child ingress; failure means nothing was started. */
 export type DelegateTaskResult =
@@ -14,6 +12,9 @@ export type DelegateTaskResult =
   | Readonly<{ target_agent_run_id: null; message: string }>;
 
 export type TaskDelegationErrorCode =
+  | "TASK_LIFETIME_CLOSED"
+  | "TASK_LIFETIME_UNAVAILABLE"
+  | "TASK_LIFETIME_CONFLICT"
   | "VALIDATION_ERROR"
   | "INVALID_REFERENCE_FILE"
   | "ROOT_RUN_NOT_ACTIVE"
@@ -44,5 +45,14 @@ export class TaskExecutionTeardownIndeterminateError extends Error {
   constructor(readonly taskExecutionRunId: string, message: string, options?: { cause?: unknown }) {
     super(message, options);
     this.name = "TaskExecutionTeardownIndeterminateError";
+  }
+}
+
+/** Durable/publication/accepted-input uncertainty must not masquerade as a proven no-work failure. */
+export class TaskDispatchIndeterminateError extends Error {
+  readonly code = "TASK_DISPATCH_INDETERMINATE";
+  constructor(readonly execution: import("./task-execution-reference.js").TaskExecutionReference, cause: unknown) {
+    super("Task dispatch has durable or accepted-work uncertainty; inspect its exact link before retrying.", { cause });
+    this.name = "TaskDispatchIndeterminateError";
   }
 }

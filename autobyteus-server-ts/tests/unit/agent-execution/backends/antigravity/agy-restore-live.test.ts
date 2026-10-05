@@ -45,7 +45,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("restores the exact AGY conversation, im
   let active: AgyAgentRunBackend | undefined;
   const evidence: Record<string, unknown> = { base, workspace };
   try {
-    const initial = await factory.createBackend(config, "restore-run");
+    const initial = await factory.beginPreparation({ kind: "new", config: config, runId: "restore-run" }).prepare();
     active = initial;
     const capsulePath = path.join(base, "memory", "agy-project");
     const manifestBefore = await fs.readFile(path.join(capsulePath, "manifest.json"), "utf8");
@@ -64,7 +64,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("restores the exact AGY conversation, im
     expect(first).toContain("ORIGINAL-AGY-4481");
     definitionInstructions = "Your exact identity marker is REVISED-AGY-0000.";
     const context = new AgentRunContext({ runId: "restore-run", config, runtimeContext: new AgyAgentRunContext(providerId) });
-    const restored = await factory.restoreBackend(context);
+    const restored = await factory.beginPreparation({ kind: "restore", context: context }).prepare();
     active = restored;
     try {
       expect(restored.getPlatformAgentRunId()).toBe(providerId);
@@ -77,10 +77,10 @@ it.skipIf(process.env.AGY_LIVE !== "1")("restores the exact AGY conversation, im
     expect(await fs.readFile(markdownPath, "utf8")).toBe(markdownBefore);
     evidence.capsuleBytesUnchanged = true;
     selectedWorkspace = changedWorkspace;
-    await expect(factory.restoreBackend(context)).rejects.toThrow("AGY_WORKSPACE_CHANGED");
+    await expect(factory.beginPreparation({ kind: "restore", context: context }).prepare()).rejects.toThrow("AGY_WORKSPACE_CHANGED");
     selectedWorkspace = workspace;
-    await expect(factory.restoreBackend(new AgentRunContext({ runId: "restore-run", config,
-      runtimeContext: new AgyAgentRunContext("00000000-0000-4000-8000-000000000000") }))).rejects.toThrow(/AGY_CONVERSATION_ID_CONFLICT|AGY_STARTUP_TIMEOUT/);
+    await expect(factory.beginPreparation({ kind: "restore", context: new AgentRunContext({ runId: "restore-run", config,
+      runtimeContext: new AgyAgentRunContext("00000000-0000-4000-8000-000000000000") }) }).prepare()).rejects.toThrow(/AGY_CONVERSATION_ID_CONFLICT|AGY_STARTUP_TIMEOUT/);
     evidence.result = "Pass";
   } catch (error) {
     evidence.result = "Fail";

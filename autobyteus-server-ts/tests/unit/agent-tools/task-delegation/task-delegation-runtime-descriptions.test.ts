@@ -49,7 +49,7 @@ describe("task delegation runtime descriptions", () => {
     expect(delegateEntry.description).toContain("first message");
     expect(delegateEntry.description).toContain("target_agent_run_id is null");
     expect(delegateEntry.description).toContain("only by its run ID through send_message_to");
-    expect(delegateEntry.description).not.toMatch(/task_id|status|submit|review|task lifecycle/i);
+    expect(delegateEntry.description).not.toMatch(/submit_task_result|review_task_result|task lifecycle/i);
     expect(delegateEntry.description).not.toContain("./");
     expect(delegateEntry.description).not.toContain("direct child");
     expect(delegateEntry.description).not.toContain(["mark", "task", "completed"].join("_"));
@@ -59,6 +59,7 @@ describe("task delegation runtime descriptions", () => {
     const delegateSchema = buildDelegateTaskParameterSchema();
     expect(delegateSchema.parameters.map((parameter) => parameter.name)).toEqual([
       "recipient_address",
+      "task_id",
       "description",
       "reference_files",
     ]);
@@ -77,7 +78,7 @@ describe("task delegation runtime descriptions", () => {
     expect(delegateDescription).toContain("delegate_task itself delivers this as the new instance's first message");
     expect(delegateDescription).toContain("do not resend it with send_message_to");
     const delegateReferenceDescription = findParameter(delegateSchema, "reference_files")?.description ?? "";
-    expect(delegateReferenceDescription).toContain("absolute local file paths");
+    expect(delegateReferenceDescription.toLowerCase()).toContain("absolute local file paths");
     expect(delegateReferenceDescription).toBe(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION);
     expect(delegateReferenceDescription).toContain("relative paths and URLs are rejected");
     expect(JSON.stringify(delegateSchema)).not.toContain("Do not pass");
@@ -110,7 +111,7 @@ describe("task delegation runtime descriptions", () => {
     expect(mcpDefinition?.inputSchema).toMatchObject({
       type: "object",
       additionalProperties: false,
-      required: ["recipient_address", "description"],
+      required: ["recipient_address"],
       properties: {
         recipient_address: {
           type: "string",

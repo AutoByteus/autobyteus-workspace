@@ -18,6 +18,7 @@ export type TeamCommunicationAdapterOptions = Readonly<{
   rootTeamRunId: string;
   initial: TeamCommunicationMessagesSnapshot;
   isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+  assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
   requireContainingTeamRun(agentRunId: string): Promise<TeamRun>;
   commit(plan: PreparedTeamMessageAppend): Promise<TeamMessageCommitResult>;
   publish(event: TeamRunEvent): void;
@@ -37,6 +38,9 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
     this.initialMessages = options.initial.messages;
   }
   isOpen(): boolean { return this.isAccepting(); }
+  assertDeliveryAllowed(...identities: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
+    this.options.assertDeliveryAllowed(...identities);
+  }
   isCurrentAgent(identity: Parameters<RootCommunicationAdapter["isCurrentAgent"]>[0]): boolean {
     return this.options.isCurrentAgent(identity);
   }

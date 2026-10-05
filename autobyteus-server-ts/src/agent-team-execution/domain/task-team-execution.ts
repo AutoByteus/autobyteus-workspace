@@ -9,11 +9,12 @@ export type PrepareTaskTeamInput = Readonly<{
   teamRunId: string;
   handoffs: readonly CollaborationHandoff[];
   teamNode: TeamRunAgentTeamNode;
-  message: AgentInputUserMessage;
+  message?: AgentInputUserMessage;
 }>;
 
 /** Deterministic restore node (persisted IDs) for one shut-down task Team. */
 export type RestoreTaskTeamInput = Readonly<{
+  assertOpen(): void;
   handoffs: readonly CollaborationHandoff[];
   teamNode: TeamRunAgentTeamNode;
 }>;

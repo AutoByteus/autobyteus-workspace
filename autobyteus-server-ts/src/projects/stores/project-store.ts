@@ -1,117 +1,49 @@
-import path from "node:path";
-import { appConfigProvider } from "../../config/app-config-provider.js";
-import { readJsonArrayFile, updateJsonArrayFile } from "../../persistence/file/store-utils.js";
-import type { Project, ProjectTask, ProjectTaskStatus, ProjectWorkspaceLink } from "../domain/models.js";
-
-import { isSafeContextFilename, type ProjectTaskContextFile } from "../domain/project-task-context.js";
-
-type AppConfigLike = {
-  getAppDataDir(): string;
-};
-
-const isNonEmptyString = (value: unknown): value is string =>
-  typeof value === "string" && value.length > 0;
-
-const isValidLink = (link: unknown): link is ProjectWorkspaceLink => {
-  const candidate = link as Partial<ProjectWorkspaceLink> | null;
-  return Boolean(candidate)
-    && isNonEmptyString(candidate?.workspaceId)
-    && isNonEmptyString(candidate?.workspaceRootPath)
-    && typeof candidate?.description === "string"
-    && isNonEmptyString(candidate?.addedAt);
-};
-
-const PROJECT_TASK_STATUSES: ReadonlySet<ProjectTaskStatus> = new Set(["TODO", "IN_PROGRESS", "DONE"]);
-
-const isValidTask = (task: unknown): task is ProjectTask => {
-  const candidate = task as Partial<ProjectTask> | null;
-  return Boolean(candidate)
-    && isNonEmptyString(candidate?.taskId)
-    && isNonEmptyString(candidate?.description)
-    && PROJECT_TASK_STATUSES.has(candidate?.status as ProjectTaskStatus)
-    && isNonEmptyString(candidate?.createdAt)
-    && isNonEmptyString(candidate?.updatedAt);
-};
-
-type StoredProjectRow = Omit<Project, "tasks"> & { tasks?: unknown };
-
-const isValidProject = (record: unknown): record is StoredProjectRow => {
-  const candidate = record as Partial<StoredProjectRow> | null;
-  return Boolean(candidate)
-    && isNonEmptyString(candidate?.projectId)
-    && isNonEmptyString(candidate?.name)
-    && typeof candidate?.description === "string"
-    && isNonEmptyString(candidate?.createdAt)
-    && isNonEmptyString(candidate?.updatedAt)
-    && Array.isArray(candidate?.workspaces);
-};
-
-/**
- * Projects each valid row onto the current model. A row without a `tasks` array
- * (for example one written before Tasks existed) has no Tasks.
- */
-const normalizeContextFiles = (files: unknown): ProjectTaskContextFile[] =>
-  Array.isArray(files) ? files.filter((f) => f && isSafeContextFilename(f.storedFilename)
-    && typeof f.displayName === "string" && typeof f.mimeType === "string"
-    && Number.isSafeInteger(f.sizeBytes) && f.sizeBytes >= 0).map((f) => ({
-      storedFilename: f.storedFilename, displayName: f.displayName, mimeType: f.mimeType, sizeBytes: f.sizeBytes,
-    })) : [];
-const normalizeRecords = (rows: unknown[]): Project[] =>
-  rows.filter(isValidProject).map((p) => ({
-    projectId: p.projectId, name: p.name, description: p.description, createdAt: p.createdAt, updatedAt: p.updatedAt,
-    workspaces: p.workspaces.filter(isValidLink).map((l) => ({
-      workspaceId: l.workspaceId, workspaceRootPath: l.workspaceRootPath, description: l.description, addedAt: l.addedAt,
-    })),
-    tasks: Array.isArray(p.tasks) ? p.tasks.filter(isValidTask).map((t) => ({
-      taskId: t.taskId, description: t.description, status: t.status, createdAt: t.createdAt, updatedAt: t.updatedAt,
-      contextFiles: normalizeContextFiles(t.contextFiles),
-    })) : [],
-  }));
-
-/**
- * Persistence for Project records. Reads and locked atomic updates of
- * `<appDataDir>/projects/projects.json`; malformed rows are dropped.
- * Holds no business rules.
- */
+import path from 'node:path';
+import { appConfigProvider } from '../../config/app-config-provider.js';
+import { readJsonFile, updateJsonFile } from '../../persistence/file/store-utils.js';
+import { ProjectError } from '../domain/project-errors.js';
+import type { Project } from '../domain/models.js';
+import { type ProjectState } from '../domain/project-task-execution.js';
+import { parseProjectState, serializeProjectState } from './project-state-schema.js';
+/** Sole physical authority. Metadata operations preserve retained lifetime history. */
 export class ProjectStore {
-  constructor(private readonly config: AppConfigLike = appConfigProvider.config) {}
-
-  getFilePath(): string {
-    return path.join(this.config.getAppDataDir(), "projects", "projects.json");
+  constructor(private readonly config: { getAppDataDir(): string } = appConfigProvider.config) {}
+  getFilePath(): string { return path.join(this.config.getAppDataDir(), 'projects', 'projects.json'); }
+  async readState(): Promise<ProjectState> {
+    try { return parseProjectState(await readJsonFile<unknown>(this.getFilePath(), [])); }
+    catch (error) {
+      if (error instanceof ProjectError) throw error;
+      throw new ProjectError('PROJECT_STATE_UNAVAILABLE', `Cannot read current Project authority; preserve and inspect the Project data. ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
-
-  async listRecords(): Promise<Project[]> {
-    return normalizeRecords(await readJsonArrayFile<unknown>(this.getFilePath()));
-  }
-
-  /**
-   * Runs `updater` under the file lock and persists its result atomically.
-   * A throwing updater aborts the write and leaves the previous file intact.
-   */
-  async updateRecords(
-    updater: (records: Project[]) => Project[] | Promise<Project[]>,
-  ): Promise<Project[]> {
-    let committed: Project[] | undefined;
+  async listRecords(): Promise<Project[]> { return (await this.readState()).projects; }
+  async updateState(updater: (state: ProjectState) => ProjectState | Promise<ProjectState>,
+    onCommitted?: (state: ProjectState) => void): Promise<ProjectState> {
+    let committed: ProjectState | undefined;
     try {
-      return await updateJsonArrayFile<Project>(this.getFilePath(), async (rows) =>
-        normalizeRecords(await updater(normalizeRecords(rows))),
-        (rows) => { committed = rows; },
-      );
+      let validated: ProjectState;
+      await updateJsonFile<unknown>(this.getFilePath(), [], async raw => {
+        const physical = serializeProjectState(await updater(parseProjectState(raw)));
+        validated = parseProjectState(physical);
+        return physical;
+      }, () => {
+        // Validated before replacement; no decoding or I/O at observed commit.
+        committed = validated; onCommitted?.(validated);
+      });
+      return committed!;
     } catch (error) {
-      if (!committed) throw error;
-      console.warn("Project metadata committed; lock finalization failed.", error);
+      if (!committed) {
+        if (error instanceof SyntaxError) throw new ProjectError('PROJECT_STATE_UNAVAILABLE', `Invalid Project JSON; preserve and inspect the Project data. ${error.message}`);
+        throw error;
+      }
+      console.warn('Project state committed; lock finalization failed.', error);
       return committed;
     }
   }
+  async updateRecords(updater: (records: Project[]) => Project[] | Promise<Project[]>): Promise<Project[]> {
+    return (await this.updateState(async state => ({ ...state, projects: await updater(state.projects) }))).projects;
+  }
 }
-
 let singleton: ProjectStore | null = null;
-
-export const getProjectStore = (): ProjectStore => {
-  singleton ??= new ProjectStore();
-  return singleton;
-};
-
-export const resetProjectStoreForTests = (): void => {
-  singleton = null;
-};
+export const getProjectStore = (): ProjectStore => singleton ??= new ProjectStore();
+export const resetProjectStoreForTests = (): void => { singleton = null; };

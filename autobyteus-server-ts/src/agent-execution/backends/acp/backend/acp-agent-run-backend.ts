@@ -34,7 +34,7 @@ export class AcpAgentRunBackend implements AgentRunBackend {
   private eventQueue: Promise<void> = Promise.resolve();
   private active = true;
   private failed = false;
-  private cleanupStarted = false;
+
 
   constructor(private readonly input: AcpAgentRunBackendInput) {
     this.pendingSystemInstruction = new PendingSystemInstructionEvent(input.pendingSystemInstruction);
@@ -125,11 +125,6 @@ export class AcpAgentRunBackend implements AgentRunBackend {
     this.active = false;
     const closing = this.input.session.close();
     if (!dropEvents) this.publish(closing);
-    if (this.cleanupStarted) return;
-    this.cleanupStarted = true;
-    try { await this.input.connection.close(); }
-    catch (error) { logger.warn(`ACP_PROCESS_STOP_FAILED: run=${this.runId}: ${String(error)}`); }
-    try { await this.input.cleanup(); }
-    catch (error) { logger.warn(`ACP_RUN_CLEANUP_FAILED: run=${this.runId}: ${String(error)}`); }
+    await this.input.cleanup();
   }
 }

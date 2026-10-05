@@ -14,6 +14,7 @@ const createMockQuery = () => {
     },
     interrupt: vi.fn(async () => undefined),
     close: vi.fn(() => undefined),
+    initializationResult: vi.fn(async () => ({})),
   };
   return query;
 };
@@ -58,17 +59,17 @@ describe("ClaudeSdkClient", () => {
       { value: "default", resolvedModel: "claude-sonnet-5" },
     ]);
     const client = new ClaudeSdkClient();
-    client.setCachedModuleForTesting({ query: vi.fn(async () => ({ ...createMockQuery(), supportedModels })) });
-    const session = await client.openStreamingSession({ ...baseOptions() });
+    client.setCachedModuleForTesting({ query: vi.fn(() => ({ ...createMockQuery(), supportedModels })) });
+    const session = await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
     expect(await session.resolveSelectedModel("opus[1m]")).toEqual({
       resolvedRawModelId: "claude-opus-5-5[1m]", resolution: "resolved",
     });
     expect(await session.resolveSelectedModel("absent")).toEqual({ resolvedRawModelId: null, resolution: "missing" });
     expect(supportedModels).toHaveBeenCalledTimes(2);
-    client.setCachedModuleForTesting({ query: vi.fn(async () => ({ ...createMockQuery(), supportedModels: async () => [
+    client.setCachedModuleForTesting({ query: vi.fn(() => ({ ...createMockQuery(), supportedModels: async () => [
       { value: "opus[1m]", resolvedModel: "a" }, { value: "opus[1m]", resolvedModel: "b" },
     ] })) });
-    const ambiguous = await client.openStreamingSession({ ...baseOptions() });
+    const ambiguous = await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
     expect(await ambiguous.resolveSelectedModel("opus[1m]")).toEqual({ resolvedRawModelId: null, resolution: "ambiguous" });
   });
 
@@ -92,7 +93,7 @@ describe("ClaudeSdkClient", () => {
     "does not resolve a vault key for %s and preserves caller-supplied launch environment",
     async (mode) => {
       const resolveApiKey = vi.fn();
-      const queryFn = vi.fn(async () => createMockQuery());
+      const queryFn = vi.fn(() => createMockQuery());
       const client = new ClaudeSdkClient(resolveApiKey);
       client.setCachedModuleForTesting({ query: queryFn });
       const env = {
@@ -103,13 +104,13 @@ describe("ClaudeSdkClient", () => {
         CALLER_ADDITION: "preserved",
       };
 
-      await client.openStreamingSession({
+      await client.beginStreamingSession({ resolveOptions: () => ({
       systemPrompt: "",
         sessionBinding: createSessionBinding(),
         model: "haiku",
         workingDirectory: "/tmp/claude-original-mode",
         env,
-      });
+      }) }).open();
 
       expect(resolveApiKey).not.toHaveBeenCalled();
       const call = queryFn.mock.calls[0]?.[0] as { options: { env: Record<string, string> } };
@@ -120,13 +121,13 @@ describe("ClaudeSdkClient", () => {
   it("sets neither v1.4.78 policy variable, so Claude CLI background-task and Bash timeout defaults apply (AC-010)", async () => {
     vi.stubEnv("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS", undefined);
     vi.stubEnv("BASH_MAX_TIMEOUT_MS", undefined);
-    const queryFn = vi.fn(async () => createMockQuery());
+    const queryFn = vi.fn(() => createMockQuery());
     const client = new ClaudeSdkClient(vi.fn());
     client.setCachedModuleForTesting({ query: queryFn });
     const env = { CLAUDE_AGENT_SDK_AUTH_MODE: "cli", HOME: "/synthetic/home" };
 
-    await client.openStreamingSession({ ...baseOptions(), env });
-    await client.openStreamingSession({ ...baseOptions() });
+    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), env }) }).open();
+    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
 
     for (const call of queryFn.mock.calls) {
       const spawnEnv = (call[0] as { options: { env: Record<string, string | undefined> } }).options.env;
@@ -140,13 +141,13 @@ describe("ClaudeSdkClient", () => {
   it("warns once per open when the operator's environment disables CLI background tasks, without overriding it (OBS-2)", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     try {
-      const queryFn = vi.fn(async () => createMockQuery());
+      const queryFn = vi.fn(() => createMockQuery());
       const client = new ClaudeSdkClient(vi.fn());
       client.setCachedModuleForTesting({ query: queryFn });
       const env = { CLAUDE_AGENT_SDK_AUTH_MODE: "cli", CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1" };
 
-      await client.openStreamingSession({ ...baseOptions(), env });
-      await client.openStreamingSession({ ...baseOptions(), env: { CLAUDE_AGENT_SDK_AUTH_MODE: "cli" } });
+      await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), env }) }).open();
+      await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), env: { CLAUDE_AGENT_SDK_AUTH_MODE: "cli" } }) }).open();
 
       const warnings = warn.mock.calls.filter((call) => String(call[0]).includes("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS"));
       expect(warnings).toHaveLength(1);
@@ -159,7 +160,7 @@ describe("ClaudeSdkClient", () => {
 
   it("resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY", async () => {
     const resolveApiKey = vi.fn(async () => SecretValue.fromString("synthetic-vault-key"));
-    const queryFn = vi.fn(async () => createMockQuery());
+    const queryFn = vi.fn(() => createMockQuery());
     const client = new ClaudeSdkClient(resolveApiKey);
     client.setCachedModuleForTesting({ query: queryFn });
     const env = {
@@ -171,7 +172,7 @@ describe("ClaudeSdkClient", () => {
       CALLER_ADDITION: "preserved",
     };
 
-    await client.openStreamingSession({
+    await client.beginStreamingSession({ resolveOptions: () => ({
       systemPrompt: "",
       sessionBinding: createSessionBinding(),
       model: "haiku",
@@ -179,7 +180,7 @@ describe("ClaudeSdkClient", () => {
       env,
       mcpServers: { demo: { transport: "mock" } },
       allowedTools: ["Bash"],
-    });
+    }) }).open();
 
     expect(resolveApiKey).toHaveBeenCalledOnce();
     const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
@@ -200,17 +201,17 @@ describe("ClaudeSdkClient", () => {
     const resolveApiKey = vi.fn(async () => {
       throw new Error("synthetic-secret-bearing-cause");
     });
-    const queryFn = vi.fn(async () => createMockQuery());
+    const queryFn = vi.fn(() => createMockQuery());
     const client = new ClaudeSdkClient(resolveApiKey);
     client.setCachedModuleForTesting({ query: queryFn });
 
-    await expect(client.openStreamingSession({
+    await expect(client.beginStreamingSession({ resolveOptions: () => ({
       systemPrompt: "",
       sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-api-key-failure",
       env: { CLAUDE_AGENT_SDK_AUTH_MODE: "api-key" },
-    })).rejects.toThrow("CLAUDE_RUNTIME_API_KEY_UNAVAILABLE");
+    }) }).open()).rejects.toThrow("CLAUDE_RUNTIME_API_KEY_UNAVAILABLE");
     expect(resolveApiKey).toHaveBeenCalledOnce();
     expect(queryFn).not.toHaveBeenCalled();
   });
@@ -234,14 +235,14 @@ describe("ClaudeSdkClient", () => {
   it("passes stable query options for project skills, exact resume, MCP, and send_message_to tooling", async () => {
     const client = new ClaudeSdkClient();
     const queryMock = createMockQuery();
-    const queryFn = vi.fn(async (input: unknown) => queryMock);
+    const queryFn = vi.fn((input: unknown) => queryMock);
 
     client.setCachedModuleForTesting({
       query: queryFn,
     });
 
     const mcpServer = { transport: "mock" };
-    const session = await client.openStreamingSession({
+    const session = await client.beginStreamingSession({ resolveOptions: () => ({
       systemPrompt: "",
       sessionBinding: { kind: "resume", sessionId: RESERVED_SESSION_ID },
       model: "haiku",
@@ -257,7 +258,7 @@ describe("ClaudeSdkClient", () => {
         "mcp__autobyteus_agent_tools__read_page",
       ],
       permissionMode: "default",
-    });
+    }) }).open();
 
     expect(typeof session.send).toBe("function");
     expect(queryFn).toHaveBeenCalledTimes(1);
@@ -293,15 +294,15 @@ describe("ClaudeSdkClient", () => {
 
   it("passes only SDK sessionId for a caller-reserved first conversation", async () => {
     const client = new ClaudeSdkClient();
-    const queryFn = vi.fn(async () => createMockQuery());
+    const queryFn = vi.fn(() => createMockQuery());
     client.setCachedModuleForTesting({ query: queryFn });
 
-    await client.openStreamingSession({
+    await client.beginStreamingSession({ resolveOptions: () => ({
       systemPrompt: "",
       sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-client-create-binding",
-    });
+    }) }).open();
 
     const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
     expect(call.options.sessionId).toBe(RESERVED_SESSION_ID);
@@ -311,18 +312,18 @@ describe("ClaudeSdkClient", () => {
   it("loads user, project, and local Claude Code settings for normal turns", async () => {
     const client = new ClaudeSdkClient();
     const queryMock = createMockQuery();
-    const queryFn = vi.fn(async (_input: unknown) => queryMock);
+    const queryFn = vi.fn((_input: unknown) => queryMock);
 
     client.setCachedModuleForTesting({
       query: queryFn,
     });
 
-    await client.openStreamingSession({
+    await client.beginStreamingSession({ resolveOptions: () => ({
       systemPrompt: "",
       sessionBinding: createSessionBinding(),
       model: "default",
       workingDirectory: "/tmp/claude-client-default-setting-sources",
-    });
+    }) }).open();
 
     expect(queryFn).toHaveBeenCalledWith({
       prompt: expect.any(ClaudeSdkInputChannel),
@@ -334,17 +335,17 @@ describe("ClaudeSdkClient", () => {
 
   it("forwards typed thinking and effort options to the pinned Claude SDK", async () => {
     const client = new ClaudeSdkClient();
-    const queryFn = vi.fn(async () => createMockQuery());
+    const queryFn = vi.fn(() => createMockQuery());
     client.setCachedModuleForTesting({ query: queryFn });
 
-    await client.openStreamingSession({
+    await client.beginStreamingSession({ resolveOptions: () => ({
       systemPrompt: "",
       sessionBinding: createSessionBinding(),
       model: "opus",
       workingDirectory: "/tmp/claude-client-reasoning",
       thinking: { type: "adaptive" },
       effort: "high",
-    });
+    }) }).open();
 
     expect(queryFn).toHaveBeenCalledWith(expect.objectContaining({
       options: expect.objectContaining({
@@ -358,25 +359,25 @@ describe("ClaudeSdkClient", () => {
   it("forwards stderr diagnostics callback to Claude SDK query options when provided", async () => {
     const client = new ClaudeSdkClient();
     const queryMock = createMockQuery();
-    const queryFn = vi.fn(async (_input: unknown) => queryMock);
+    const queryFn = vi.fn((_input: unknown) => queryMock);
     const stderr = vi.fn();
 
     client.setCachedModuleForTesting({
       query: queryFn,
     });
 
-    await client.openStreamingSession({
+    await client.beginStreamingSession({ resolveOptions: () => ({
       systemPrompt: "",
       sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-client-stderr",
       stderr,
-    });
+    }) }).open();
 
     expect(queryFn).toHaveBeenCalledWith({
       prompt: expect.any(ClaudeSdkInputChannel),
       options: expect.objectContaining({
-        stderr,
+        stderr: expect.any(Function),
       }),
     });
   });
@@ -459,13 +460,15 @@ describe("ClaudeSdkClient", () => {
   it("passes the session's canUseTool callback through and injects no approval of its own", async () => {
     const client = new ClaudeSdkClient();
     const explicitCanUseTool: ClaudeSdkCanUseTool = vi.fn(async () => ({ behavior: "allow", updatedInput: {} }));
-    const queryFn = vi.fn(async () => createMockQuery());
+    const queryFn = vi.fn(() => createMockQuery());
     client.setCachedModuleForTesting({ query: queryFn });
 
-    await client.openStreamingSession({ ...baseOptions(), canUseTool: explicitCanUseTool });
-    await client.openStreamingSession({ ...baseOptions() });
+    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), canUseTool: explicitCanUseTool }) }).open();
+    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
 
-    expect((queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> }).options.canUseTool).toBe(explicitCanUseTool);
+    const guarded = (queryFn.mock.calls[0]?.[0] as { options: { canUseTool: ClaudeSdkCanUseTool } }).options.canUseTool;
+    await expect(guarded("test", {}, {})).resolves.toEqual({ behavior: "allow", updatedInput: {} });
+    expect(explicitCanUseTool).toHaveBeenCalledWith("test", {}, {});
     expect((queryFn.mock.calls[1]?.[0] as { options: Record<string, unknown> }).options).not.toHaveProperty("canUseTool");
   });
 

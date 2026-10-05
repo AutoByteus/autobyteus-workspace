@@ -1,10 +1,8 @@
+import { submitCodexStartInput, submitCodexAppendInput } from "./codex-thread-input-submission.js";
+import { CodexThreadReleaseScope } from "./codex-thread-release-scope.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CodexReadyTokenUsageUpdate } from "./codex-thread-token-usage.js";
 import { asString } from "../codex-app-server-json.js";
-import {
-  resolveStartedTurnId,
-  resolveSteeredTurnId,
-} from "./codex-thread-id-resolver.js";
 import type { CodexAppServerClient } from "../../../../runtime-management/codex/client/codex-app-server-client.js";
 import { handleAppServerNotification as applyAppServerNotification } from "./codex-thread-notification-handler.js";
 import {
@@ -20,10 +18,8 @@ import type {
 import { CodexThreadEventName } from "../events/codex-thread-event-name.js";
 import type { CodexThreadStartupGate } from "./codex-thread-startup-gate.js";
 import type { JsonObject } from "../codex-app-server-json.js";
-import { toCodexUserInput } from "./codex-user-input-mapper.js";
 import type { CodexRunContext } from "../backend/codex-agent-run-context.js";
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
-import { CodexInputSubmissionError } from "./codex-input-submission-error.js";
 import {
   isCodexSegmentTurnAdmissionEventName,
   resolveCodexSegmentTurnAdmission,
@@ -83,6 +79,7 @@ export class CodexThread {
   readonly listeners: Set<(message: CodexThreadEventMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
   lastTerminalTurnId: string | null;
+  private readonly releaseScope = new CodexThreadReleaseScope(this);
   private pendingSystemInstructionCapture: SystemInstructionTraceRecord | null = null;
 
   constructor(input: {
@@ -156,6 +153,7 @@ export class CodexThread {
   }
 
   markTurnStarted(turnId: string | null): void {
+    this.releaseScope.observeCanonicalState();
     this.currentStatus = "RUNNING";
     this.runContext.runtimeContext.activeTurnId = turnId;
     this.lastTerminalTurnId = null;
@@ -166,6 +164,7 @@ export class CodexThread {
     if (!completedTurnId || this.activeTurnId !== completedTurnId) {
       return;
     }
+    this.releaseScope.observeCanonicalState();
     this.currentStatus = "IDLE";
     this.lastTerminalTurnId = completedTurnId;
     this.runContext.runtimeContext.activeTurnId = null;
@@ -174,14 +173,9 @@ export class CodexThread {
 
   setCurrentStatus(status: string | null): void {
     this.currentStatus = status;
-    const normalizedStatus = status?.trim().toUpperCase() ?? null;
-    if (normalizedStatus === "IDLE") {
-      if (this.activeTurnId) {
-        this.lastTerminalTurnId = this.activeTurnId;
-      }
-      this.runContext.runtimeContext.activeTurnId = null;
-      this.pendingMcpToolCalls.clear();
-    }
+    // Native idle may precede turn/completed (including an interrupt response).
+    // It is a projection, not the exact submitted turn's terminal certificate.
+    // Keep turn, MCP and release authority until the real terminal/error arrives.
   }
 
   setThreadId(threadId: string): void {
@@ -206,97 +200,16 @@ export class CodexThread {
     this.pendingTokenUsageUpdates.delete(idempotencyKey);
   }
 
-  async startInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
-    if (isRuntimeRawEventDebugEnabled) {
-      console.log("[CodexSendTurnStart]", {
-        runId: this.runId,
-        threadId: this.threadId,
-        activeTurnId: this.activeTurnId,
-        startupStatus: this.startup.status,
-        contentPreview: message.content.slice(0, 160),
-      });
-    }
-
-    await this.awaitStartupReady();
-    if (this.activeTurnId) {
-      throw new CodexInputSubmissionError(
-        "CODEX_TURN_START_IDENTITY_CONFLICT",
-        `Codex turn/start cannot run while exact turn '${this.activeTurnId}' is active.`,
-      );
-    }
-    const payload = await this.client.request<unknown>("turn/start", {
-      threadId: this.threadId,
-      input: toCodexUserInput(message),
-      cwd: this.workingDirectory,
-      model: this.model,
-      effort: this.reasoningEffort,
-      serviceTier: this.serviceTier,
-      summary: "auto",
-      personality: null,
-      outputSchema: null,
-      collaborationMode: null,
-    });
-
-    const turnId = resolveStartedTurnId(payload);
-    if (this.activeTurnId === null && this.lastTerminalTurnId !== turnId) {
-      this.markTurnStarted(turnId);
-    } else if (this.activeTurnId !== null && this.activeTurnId !== turnId) {
-      throw new CodexInputSubmissionError(
-        "CODEX_TURN_START_IDENTITY_CONFLICT",
-        `Codex turn/start returned '${turnId}' while newer active turn '${this.activeTurnId}' is current.`,
-      );
-    }
-    if (isRuntimeRawEventDebugEnabled) {
-      console.log("[CodexSendTurnResponse]", {
-        runId: this.runId,
-        threadId: this.threadId,
-        turnId,
-        payloadType: typeof payload,
-        payloadKeys:
-          payload && typeof payload === "object" && !Array.isArray(payload)
-            ? Object.keys(payload)
-            : [],
-      });
-    }
-    return { kind: "started", turnId };
+  startInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
+    return this.releaseScope.run(() => submitCodexStartInput(this, message));
   }
-
-  async appendInput(
-    message: AgentInputUserMessage,
-    expectedTurnId: string,
-  ): Promise<CodexInputSubmissionResult> {
-    await this.awaitStartupReady();
-    if (this.activeTurnId !== expectedTurnId) {
-      throw new CodexInputSubmissionError(
-        "CODEX_TURN_STEER_TURN_NOT_ACTIVE",
-        `Codex turn/steer expected active turn '${expectedTurnId}' but '${this.activeTurnId ?? "none"}' is current.`,
-      );
-    }
-    let payload: unknown;
-    try {
-      payload = await this.client.request<unknown>("turn/steer", {
-        threadId: this.threadId,
-        expectedTurnId,
-        input: toCodexUserInput(message),
-      });
-    } catch (error) {
-      const detail = error instanceof Error ? error.message : String(error);
-      throw new CodexInputSubmissionError(
-        "CODEX_TURN_STEER_REJECTED",
-        `Codex turn/steer rejected input for turn '${expectedTurnId}': ${detail}`,
-        { cause: error },
-      );
-    }
-
-    const turnId = resolveSteeredTurnId(payload);
-    if (turnId !== expectedTurnId) {
-      throw new CodexInputSubmissionError(
-        "CODEX_TURN_STEER_ID_MISMATCH",
-        `Codex turn/steer returned '${turnId}' for expected turn '${expectedTurnId}'.`,
-      );
-    }
-    return { kind: "steered", turnId: expectedTurnId };
+  appendInput(message: AgentInputUserMessage, expectedTurnId: string): Promise<CodexInputSubmissionResult> {
+    return this.releaseScope.run(() => submitCodexAppendInput(this, message, expectedTurnId));
   }
+  cancelRuntimeInput(): void { this.releaseScope.close(); }
+  releaseRuntimeInput(): Promise<void> { return this.releaseScope.release(); }
+  assertProviderInputAllowed(): void { this.releaseScope.assertOpen(); }
+  noteUnknownInputOutcome(): void { this.releaseScope.noteUnknownInputOutcome(); }
 
   async interrupt(turnId: string): Promise<void> {
     if (!turnId) {
@@ -313,7 +226,10 @@ export class CodexThread {
     });
   }
 
-  async approveTool(invocationId: string, approved: boolean): Promise<void> {
+  approveTool(invocationId: string, approved: boolean): Promise<void> {
+    return this.releaseScope.run(() => this.approveToolAtProvider(invocationId, approved));
+  }
+  private async approveToolAtProvider(invocationId: string, approved: boolean): Promise<void> {
     const approval = this.findApprovalRecord(invocationId);
     if (!approval) {
       throw new Error(`No pending approval found for invocation '${invocationId}'.`);
@@ -366,6 +282,10 @@ export class CodexThread {
     method: string,
     params: JsonObject,
   ): void {
+    if (this.releaseScope.isClosed) {
+      this.client.respondError(requestId, -32000, "Codex run runtime admission is closed.");
+      return;
+    }
     void applyAppServerRequest({
       codexThread: this,
       requestId,
@@ -501,7 +421,7 @@ export class CodexThread {
     this.pendingMcpToolCalls.clear();
   }
 
-  private async awaitStartupReady(): Promise<void> {
+  async awaitStartupReady(): Promise<void> {
     if (this.startup.status === "ready") {
       return;
     }

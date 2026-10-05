@@ -23,6 +23,7 @@ export type AcpAgentProcessExit = Readonly<{
  */
 export class AcpAgentProcess {
   private readonly exitListeners = new Set<(exit: AcpAgentProcessExit) => void>();
+  private stopAttempt: Promise<void> | null = null;
   private exitInfo: AcpAgentProcessExit | null = null;
   readonly output: WritableStream<Uint8Array>;
   readonly input: ReadableStream<Uint8Array>;
@@ -57,13 +58,27 @@ export class AcpAgentProcess {
   }
 
   /** Closes stdin, then SIGTERM, then SIGKILL after a short grace period. */
-  async stop(): Promise<void> {
-    if (this.exitInfo) return;
-    const exited = new Promise<void>((resolve) => this.onExit(() => resolve()));
+  stop(): Promise<void> {
+    if (this.exitInfo) return Promise.resolve();
+    if (this.stopAttempt) return this.stopAttempt;
+    const attempt = this.stopOnce();
+    this.stopAttempt = attempt;
+    void attempt.finally(() => { if (this.stopAttempt === attempt) this.stopAttempt = null; }).catch(() => undefined);
+    return attempt;
+  }
+
+  private async stopOnce(): Promise<void> {
+    let unregister = () => undefined as void;
+    const exited = new Promise<void>((resolve) => { unregister = this.onExit(() => resolve()); });
     this.child.stdin.end();
     this.child.kill("SIGTERM");
-    const timer = setTimeout(() => { if (!this.exitInfo) this.child.kill("SIGKILL"); }, STOP_GRACE_MS);
-    try { await exited; } finally { clearTimeout(timer); }
+    const kill = setTimeout(() => { if (!this.exitInfo) this.child.kill("SIGKILL"); }, STOP_GRACE_MS);
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    try {
+      await Promise.race([exited, new Promise<never>((_, reject) => {
+        timeout = setTimeout(() => reject(new Error("ACP exact process exit could not be confirmed.")), 5_000);
+      })]);
+    } finally { clearTimeout(kill); clearTimeout(timeout); unregister(); }
   }
 
   private recordExit(exit: AcpAgentProcessExit): void {

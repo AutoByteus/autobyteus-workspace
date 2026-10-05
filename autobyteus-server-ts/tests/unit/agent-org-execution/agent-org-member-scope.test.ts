@@ -1,3 +1,4 @@
+import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentOrgExecutionScopeBuilder } from "../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
 import { validateAgentOrgStatePackage } from "../../../src/agent-org-execution/services/agent-org-state-package-validator.js";
@@ -26,7 +27,7 @@ const buildCallbacks = async () => {
     communicationMessages: validateAgentOrgCommunicationMessagesV1({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: ORG, messages: [] }, ORG),
   });
   let callbacks: FlatTeamExecutionCallbacks | undefined;
-  const materialize = vi.fn(async (input: Parameters<FlatTeamExecutionFactory["materialize"]>[0]) => {
+  const materialize = vi.fn(async (input: Parameters<FlatTeamExecutionFactory["beginMaterialization"]>[0]) => {
     callbacks = input.callbacks;
     return { teamRun: { teamRunId: input.teamNode.teamRunId }, commitAfterDurability() { }, abort: async () => { } };
   });
@@ -37,9 +38,9 @@ const buildCallbacks = async () => {
   };
   const lookup = { getDefinitionById: async (id: string) => ({ instructions: instructions[id] ?? null }) };
   await new AgentOrgExecutionScopeBuilder({
-    flatTeamExecutionFactory: { materialize } as never,
+    flatTeamExecutionFactory: { beginMaterialization: (input) => ({ prepare: () => materialize(input), cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })) }) } as never,
     taskExecutionIdentity: {} as never,
-    agentRunManager: { prepareNewAgentRun: vi.fn() } as never,
+    agentRunManager: testActivationManager({ newPreparation: vi.fn() }) as never,
     orgDefinitions: lookup as never,
     teamDefinitions: lookup as never,
   }).build({ state, persistence: {} as never, activationMode: "fresh", persistInitialPackage: false });

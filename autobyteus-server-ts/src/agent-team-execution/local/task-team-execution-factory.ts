@@ -1,3 +1,6 @@
+import { TaskAgentDurabilityEventGate } from "../../agent-collaboration/execution/services/task-agent-durability-event-gate.js";
+import type { FlatTeamExecutionCallbacks } from "./flat-team-execution-callbacks.js";
+import { beginFlatTeamPreparation, type FlatTeamPreparationOperation } from "./flat-team-execution-factory.js";
 import { TeamRun } from "../domain/team-run.js";
 import type { TeamRunAgentTeamNode, TeamRunApplicationBinding } from "../domain/team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
@@ -21,44 +24,32 @@ export type TaskTeamExecutionFactoryOptions = {
     teamNode: TeamRunAgentTeamNode;
     configuredMemberActivationMode: ConfiguredMemberActivationMode;
   }) => TeamRunContext<FlatTeamExecutionContext>;
-  createTeamManager: (context: TeamRunContext<FlatTeamExecutionContext>) => FlatTeamExecutionManager;
+  publishAgentEvent: FlatTeamExecutionCallbacks["publishAgentEvent"];
+  createTeamManager: (context: TeamRunContext<FlatTeamExecutionContext>, publishAgentEvent: FlatTeamExecutionCallbacks["publishAgentEvent"]) => FlatTeamExecutionManager;
 };
 
 export class TaskTeamExecutionFactory {
   constructor(private readonly options: TaskTeamExecutionFactoryOptions) {}
 
-  async prepareFreshTaskTeam(input: {
+  beginTaskTeam(input: {
     handoffs: readonly CollaborationHandoff[];
     parentContext: TeamRunContext<FlatTeamExecutionContext>;
     teamNode: TeamRunAgentTeamNode;
-  }): Promise<TeamRun> {
-    return this.materialize({
-      ...input,
-      applicationBinding: null,
-      configuredMemberActivationMode: "fresh",
-    });
+    activationMode: ConfiguredMemberActivationMode;
+    prepareConfiguredAgents: boolean;
+  }): FlatTeamPreparationOperation {
+    return this.materialize({ ...input, applicationBinding: null,
+      configuredMemberActivationMode: input.activationMode });
   }
 
-  /** Re-creates a shut-down task Team from its persisted identities; members resume their conversations. */
-  async prepareRestoredTaskTeam(input: {
-    handoffs: readonly CollaborationHandoff[];
-    parentContext: TeamRunContext<FlatTeamExecutionContext>;
-    teamNode: TeamRunAgentTeamNode;
-  }): Promise<TeamRun> {
-    return this.materialize({
-      ...input,
-      applicationBinding: null,
-      configuredMemberActivationMode: "restore",
-    });
-  }
-
-  private async materialize(input: {
+  private materialize(input: {
     parentContext: TeamRunContext<FlatTeamExecutionContext>;
     handoffs: readonly CollaborationHandoff[];
     applicationBinding: TeamRunApplicationBinding | null;
     teamNode: TeamRunAgentTeamNode;
     configuredMemberActivationMode: ConfiguredMemberActivationMode;
-  }): Promise<TeamRun> {
+    prepareConfiguredAgents: boolean;
+  }): FlatTeamPreparationOperation {
     const context = this.options.buildContext({
       handoffs: input.handoffs,
       applicationBinding: input.applicationBinding,
@@ -72,9 +63,23 @@ export class TaskTeamExecutionFactory {
       teamNode: input.teamNode,
       configuredMemberActivationMode: input.configuredMemberActivationMode,
     });
-    return new TeamRun(
-      context,
-      new FlatTeamRunBackend(context, this.options.createTeamManager(context)),
-    );
+    const events = new TaskAgentDurabilityEventGate(this.options.publishAgentEvent);
+    const manager = this.options.createTeamManager(context, events.publish);
+    const teamRun = new TeamRun(context, new FlatTeamRunBackend(context, manager));
+    const operation = beginFlatTeamPreparation({ teamRun, manager, prepareConfiguredAgents: input.prepareConfiguredAgents });
+    let committed = false;
+    return Object.freeze({
+      // Cancellation fences acquisition/input; only unpublished events are discarded.
+      cancel: () => { if (!committed) events.abort(); operation.cancel(); },
+      release: () => { if (!committed) events.abort(); return operation.release(); },
+      prepare: async () => {
+        const prepared = await operation.prepare();
+        return Object.freeze({ ...prepared, commitAfterDurability: () => {
+          prepared.commitAfterDurability();
+          committed = true;
+          if (!events.releaseToLive()) throw new Error("Task Team event publication was closed.");
+        } });
+      },
+    });
   }
 }

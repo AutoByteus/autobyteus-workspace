@@ -38,6 +38,7 @@ export class TeamRunMessageDelivery {
 
   constructor(private readonly options: Readonly<{
     rootTeamRunId: string;
+    taskScope(sender: CollaborationMemberExecutionIdentity): NonNullable<Parameters<typeof resolveMessageRecipient>[0]["taskScope"]>;
     getIndex(): TeamExecutionIndex;
     collaborators: TeamRunCollaborators;
     communication: TeamCommunicationService;
@@ -54,6 +55,7 @@ export class TeamRunMessageDelivery {
     const sender = intent.sender.participant.identity;
     this.options.authorizeIdentity(sender);
     const resolution = await resolveMessageRecipient({
+      taskScope: this.options.taskScope(sender),
       port: () => this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address: this.recipients.requireNonRootAddress(intent.recipientAddress),
@@ -62,14 +64,11 @@ export class TeamRunMessageDelivery {
     });
     if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
     const target = resolution.placement.receiver;
-    if (!this.options.isLiveAgent(target.agentRunId)) {
-      throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration recipient '${intent.recipientAddress}' has no live Agent ingress.`);
-    }
-    return this.options.communication.deliver({
+    return this.options.withLiveLease(target.agentRunId, () => this.options.communication.deliver({
       intent,
       receiverIdentity: this.identityFor(target.address, target.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(target.address) ?? target.agentRunId,
-    });
+    }));
   }
 
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */

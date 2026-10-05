@@ -77,7 +77,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
       if (this.active) {
         this.cancelled = true; this.active = false; this.processAlive = false; this.phase = "error";
         this.argumentLookup?.abort();
-        this.process.stop();
+        void this.process.stop().catch((error) => console.warn("AGY_EXACT_STOP_FAILED", error));
         this.enqueue(async () => { await this.deliver(this.converter.interrupt()); this.turnId = null; });
         this.backgroundTasks.stopAll();
       }
@@ -94,20 +94,22 @@ export class AgyAgentRunBackend implements AgentRunBackend {
     if (!turnId || this.turnId !== turnId) return { accepted: false, code: "NO_ACTIVE_TURN", message: "AGY has no matching active turn." };
     this.cancelled = true; this.active = false; this.processAlive = false;
     this.argumentLookup?.abort();
-    this.process.stop();
+    const stopped = this.process.stop();
     this.enqueue(async () => {
       await this.deliver(this.converter.interrupt());
       this.turnId = null; this.phase = "error";
     });
     this.backgroundTasks.stopAll();
-    await this.eventQueue;
+    await Promise.all([stopped, this.eventQueue]);
     return { accepted: true, turnId };
   }
 
   async terminate(): Promise<AgentOperationResult> {
     if (this.turnId) return this.interrupt(this.turnId);
-    this.active = false; this.processAlive = false; this.process.stop();
+    this.active = false;
     this.argumentLookup?.abort();
+    await this.process.stop();
+    this.processAlive = false;
     this.backgroundTasks.stopAll();
     await this.eventQueue;
     return { accepted: true };
@@ -151,7 +153,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
       // Source-listener failures stop this backend; the app still owns public delivery.
       this.active = false; this.processAlive = false; this.phase = "error";
       this.argumentLookup?.abort();
-      this.process.stop();
+      void this.process.stop().catch((error) => console.warn("AGY_EXACT_STOP_FAILED", error));
       this.backgroundTasks.stopAll();
     });
   }

@@ -1,3 +1,4 @@
+import type { ProjectTaskLifetime } from "./project-task-execution.js";
 import type { ProjectTaskContextFile, ProjectTaskContextFileView, ProjectTaskContextDraft, ProjectTaskContextChanges } from "./project-task-context.js";
 
 /** A workspace link as persisted inside a Project record. */
@@ -51,6 +52,7 @@ export interface ProjectView extends Omit<Project, "workspaces" | "tasks"> {
 export interface ProjectTaskView extends Omit<ProjectTask, "contextFiles"> {
   contextFiles: ProjectTaskContextFileView[];
   projectId: string;
+  executionLifetimes: ProjectTaskLifetime[];
 }
 
 export interface ProjectWorkspaceInput { workspaceId: string; description?: string | null }

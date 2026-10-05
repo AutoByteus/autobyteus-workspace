@@ -1,3 +1,4 @@
+import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { describe, expect, it, vi } from "vitest";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
@@ -67,12 +68,12 @@ const harness = (input: {
   const metadataService = {
     readMetadataState: vi.fn(async () => states.length > 1 ? states.shift() : states[0]),
   };
-  const agentRunManager = {
+  const agentRunManager = testActivationManager({
     getActiveRun: vi.fn(() => null),
-    prepareNewAgentRun: vi.fn(async () => input.preparedCandidate),
-    prepareRestoreAgentRunFromPlatformState: vi.fn(async () => input.restoredCandidate),
-    prepareRestoreAgentRun: vi.fn(async () => input.restoredCandidate),
-  };
+    newPreparation: vi.fn(async () => input.preparedCandidate),
+    platformPreparation: vi.fn(async () => input.restoredCandidate),
+    restorePreparation: vi.fn(async () => input.restoredCandidate),
+  });
   const historyCatalogService = {
     recordRunStarted: input.recordRunStarted ?? vi.fn(async (target: AgentRunMetadata) => target),
     recordRunSummary: vi.fn(async () => undefined),
@@ -172,7 +173,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       await expect(current.service.restorePersistedRun(RUN_ID)).rejects.toMatchObject({
         code: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
       });
-      expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+      expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
       expect(current.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
     } finally {
       configureTokenUsageMigrationReadiness({ kind: "READY" });
@@ -211,8 +212,8 @@ describe("StandaloneAgentRunLifecycleService", () => {
 
     await expect(Promise.all([first, second])).resolves.toEqual([run, run]);
     expect(current.metadataService.readMetadataState).toHaveBeenCalledTimes(2);
-    expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledOnce();
-    expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledWith({
+    expect(current.agentRunManager.newPreparation).toHaveBeenCalledOnce();
+    expect(current.agentRunManager.newPreparation).toHaveBeenCalledWith({
       runId: RUN_ID,
       config: expect.objectContaining({ workspaceId: "workspace-1" }),
     });
@@ -240,7 +241,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     expect(() => current.service.bindCollaboration(binding)).toThrow("already set");
 
     await expect(current.service.activatePreparedRun(RUN_ID)).resolves.toBe(run);
-    expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledWith({
+    expect(current.agentRunManager.newPreparation).toHaveBeenCalledWith({
       runId: RUN_ID,
       config: expect.objectContaining({ memberExecutionContext: hostContext }),
     });
@@ -276,12 +277,12 @@ describe("StandaloneAgentRunLifecycleService", () => {
       run: { runId: RUN_ID },
       metadata: { platformAgentRunId: CLAUDE_SESSION_ID },
     });
-    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith({
+    expect(current.agentRunManager.platformPreparation).toHaveBeenCalledWith({
       runId: RUN_ID,
       config: expect.objectContaining({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }),
       platformAgentRunId: CLAUDE_SESSION_ID,
     });
-    expect(current.agentRunManager.prepareNewAgentRun).not.toHaveBeenCalled();
+    expect(current.agentRunManager.newPreparation).not.toHaveBeenCalled();
     expect(restoredCandidate.commitPublication).toHaveBeenCalledOnce();
   });
 
@@ -292,8 +293,8 @@ describe("StandaloneAgentRunLifecycleService", () => {
     await expect(current.service.restorePersistedRun(RUN_ID)).rejects.toMatchObject({
       code: "PLATFORM_AGENT_RUN_BINDING_INVALID",
     });
-    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
-    expect(current.agentRunManager.prepareNewAgentRun).not.toHaveBeenCalled();
+    expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
+    expect(current.agentRunManager.newPreparation).not.toHaveBeenCalled();
   });
 
   it("restores native local state through the generic path and clears a legacy self binding", async () => {
@@ -315,10 +316,10 @@ describe("StandaloneAgentRunLifecycleService", () => {
     await expect(current.service.restorePersistedRun(RUN_ID)).resolves.toMatchObject({
       metadata: { runtimeKind: RuntimeKind.AUTOBYTEUS, platformAgentRunId: null },
     });
-    expect(current.agentRunManager.prepareRestoreAgentRun).toHaveBeenCalledWith(
+    expect(current.agentRunManager.restorePreparation).toHaveBeenCalledWith(
       expect.objectContaining({ runId: RUN_ID }),
     );
-    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+    expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
     expect(current.historyCatalogService.recordRunStarted).toHaveBeenCalledWith(
       expect.objectContaining({ platformAgentRunId: null }),
     );
@@ -339,7 +340,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       preparedCandidate: firstCandidate,
       recordRunStarted,
     });
-    current.agentRunManager.prepareNewAgentRun
+    current.agentRunManager.newPreparation
       .mockResolvedValueOnce(firstCandidate)
       .mockResolvedValueOnce(secondCandidate);
 
@@ -348,7 +349,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     expect(firstCandidate.abort).toHaveBeenCalledOnce();
 
     await expect(current.service.activatePreparedRun(RUN_ID)).resolves.toMatchObject({ runId: RUN_ID });
-    expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledTimes(2);
+    expect(current.agentRunManager.newPreparation).toHaveBeenCalledTimes(2);
     expect(secondCandidate.commitPublication).toHaveBeenCalledOnce();
   });
 
@@ -371,7 +372,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     await expect(current.service.restorePersistedRun(RUN_ID)).rejects.toMatchObject({
       code: "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
     });
-    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledOnce();
+    expect(current.agentRunManager.platformPreparation).toHaveBeenCalledOnce();
   });
 
   it("validates and commits only the model configuration of an inactive run", async () => {
@@ -485,13 +486,13 @@ describe("StandaloneAgentRunLifecycleService", () => {
     await vi.waitFor(() => expect(validateModelConfig).toHaveBeenCalledOnce());
     const restore = current.service.restorePersistedRun(RUN_ID);
     await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+    expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
 
     releaseValidation();
     await expect(save).resolves.toMatchObject({ outcome: "UPDATED", canonical: updated });
     await expect(restore).resolves.toMatchObject({ metadata: updated });
     expect(commitRunModelConfig).toHaveBeenCalledOnce();
-    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith({
+    expect(current.agentRunManager.platformPreparation).toHaveBeenCalledWith({
       runId: RUN_ID,
       config: expect.objectContaining({ llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } }),
       platformAgentRunId: CLAUDE_SESSION_ID,
@@ -550,7 +551,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       message: new AgentInputUserMessage("external message after Save enters"),
     });
     await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+    expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
 
     releaseValidation();
     await expect(save).resolves.toMatchObject({ outcome: "UPDATED", canonical: updated });
@@ -558,7 +559,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       ack: { accepted: true, state: "accepted" },
       turnId: "external-turn-1",
     });
-    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith({
+    expect(current.agentRunManager.platformPreparation).toHaveBeenCalledWith({
       runId: RUN_ID,
       config: expect.objectContaining({ llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } }),
       platformAgentRunId: CLAUDE_SESSION_ID,

@@ -1,0 +1,54 @@
+import { describe, expect, it } from "vitest";
+import { projectAgentCollaborationView } from "../../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+import { emptyAgentRunCollaborationMessages, emptyAgentRunCollaborationTree } from "../../../../src/agent-run-collaboration/domain/agent-run-collaboration-tree.js";
+import { validateAgentRunCollaborationTreePayload } from "../../../../src/run-history/store/agent-run-collaboration-tree-schema.js";
+
+const HOST = "manager-run";
+const CHILD = "saved-task-worker-run";
+const snapshot = (linked: boolean) => ({
+  tree: validateAgentRunCollaborationTreePayload({
+    ...emptyAgentRunCollaborationTree({
+      host: { address: "/manager" as never, agentRunId: HOST, agentDefinitionId: "manager" },
+      createdAt: "2026-10-03T00:00:00.000Z",
+    }),
+    taskExecutions: [{
+      address: "/worker",
+      agentRunId: CHILD,
+      platformAgentRunId: "provider-thread",
+      delegatorAgentRunId: HOST,
+      startedAt: "2026-10-03T00:00:01.000Z",
+      ...(linked ? { taskLifetime: { lifetimeId: "saved-task-lifetime", purpose: "assignment" } } : {}),
+      source: {
+        kind: "agent",
+        agentDefinitionId: "worker",
+        launchConfiguration: {
+          runtimeKind: "codex_app_server",
+          llmModelIdentifier: "gpt-6.1-sol",
+          llmConfig: { reasoning_effort: "low" },
+          autoExecuteTools: true,
+          workspaceRootPath: "/tmp/test-owned-workspace",
+        },
+      },
+    }],
+  }),
+  messages: emptyAgentRunCollaborationMessages(HOST),
+  statuses: [],
+  inputStates: [],
+});
+
+describe("Agent root task-lifetime projection", () => {
+  it.each([false, true])("projects a valid delegated child into the root view (linked=%s)", (linked) => {
+    // The real current persisted reader accepts both shapes. A saved Task stamp
+    // must not make the existing child view/stream unavailable. Whether the
+    // private stamp is exposed on the wire is intentionally not prescribed.
+    const view = projectAgentCollaborationView({
+      hostRunId: HOST, isActive: true, snapshot: snapshot(linked), baseChangeSequence: 1,
+    });
+    expect(view.root_subject_kind).toBe("agent");
+    expect(view.root_run_id).toBe(HOST);
+    if (view.root_subject_kind !== "agent") throw new Error("Expected Agent root view");
+    expect(view.root_agent.execution_tree.taskExecutions).toEqual([
+      expect.objectContaining({ agentRunId: CHILD, address: "/worker" }),
+    ]);
+  });
+});

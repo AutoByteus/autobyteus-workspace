@@ -17,7 +17,7 @@ import {
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
 import type {
-  AgentToolMcpRunSessionActivator,
+  AgentToolMcpRunSessionAuthority,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
   getClaudeWorkspaceSkillMaterializer,
@@ -30,10 +30,12 @@ export { ClaudeSession } from "./claude-session.js";
 
 export class ClaudeSessionManager {
   private workspaceManager: WorkspaceManager;
+  private readonly released = new WeakSet<ClaudeSession>();
+  private readonly releaseAttempts = new WeakMap<ClaudeSession, Promise<void>>();
   private readonly sessions = new Map<string, ClaudeSession>();
   private readonly sessionMessageCache = new ClaudeSessionMessageCache();
   private readonly sdkClient: ClaudeSdkClient;
-  private readonly agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
+  private readonly agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
   private readonly toolingCoordinator = new ClaudeSessionToolUseCoordinator(
     new Map(),
     new Map(),
@@ -42,7 +44,7 @@ export class ClaudeSessionManager {
   private readonly sessionCleanup: ClaudeSessionCleanup;
 
   constructor(
-    agentToolMcpRunSessions: AgentToolMcpRunSessionActivator,
+    agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority,
     workspaceManager: WorkspaceManager = getWorkspaceManager(),
     sdkClient: ClaudeSdkClient = getClaudeSdkClient(),
     workspaceSkillMaterializer: WorkspaceSkillMaterializer =
@@ -59,17 +61,20 @@ export class ClaudeSessionManager {
 
   async createRunSession(
     runContext: ClaudeRunContext,
+    ownSession: (session: ClaudeSession) => void,
   ): Promise<ClaudeSession> {
     await this.closeRunSession(runContext.runId);
     runContext.runtimeContext.hasCompletedTurn = false;
     runContext.runtimeContext.activeTurnId = null;
     const providerSessionLifecycle = ClaudeProviderSessionLifecycle.reserveNew();
-    const session = new ClaudeSession({
+    let session!: ClaudeSession;
+    session = new ClaudeSession({
       runContext,
       providerSessionLifecycle,
-      dependencies: this.buildSessionDependencies(runContext.runId),
+      dependencies: this.buildSessionDependencies(runContext.runId, () => session),
     });
     this.sessions.set(runContext.runId, session);
+    ownSession(session);
     this.sessionMessageCache.ensureSession(session.sessionId);
     return session;
   }
@@ -77,17 +82,20 @@ export class ClaudeSessionManager {
   async restoreRunSession(
     runContext: ClaudeRunContext,
     sessionId: string,
+    ownSession: (session: ClaudeSession) => void,
   ): Promise<ClaudeSession> {
     await this.closeRunSession(runContext.runId);
     const providerSessionLifecycle = ClaudeProviderSessionLifecycle.restore(sessionId, runContext.runId);
     runContext.runtimeContext.hasCompletedTurn = false;
     runContext.runtimeContext.activeTurnId = null;
-    const session = new ClaudeSession({
+    let session!: ClaudeSession;
+    session = new ClaudeSession({
       runContext,
       providerSessionLifecycle,
-      dependencies: this.buildSessionDependencies(runContext.runId),
+      dependencies: this.buildSessionDependencies(runContext.runId, () => session),
     });
     this.sessions.set(runContext.runId, session);
+    ownSession(session);
     this.sessionMessageCache.ensureSession(providerSessionLifecycle.sessionId);
     return session;
   }
@@ -116,8 +124,21 @@ export class ClaudeSessionManager {
     if (!state) {
       return;
     }
-    this.sessions.delete(runId);
-    await this.sessionCleanup.cleanupSessionResources({ session: state });
+    await this.releaseExactSession(state);
+  }
+
+  releaseExactSession(session: ClaudeSession): Promise<void> {
+    if (this.released.has(session)) return Promise.resolve();
+    if (this.sessions.get(session.runId) !== session) return Promise.reject(new Error("Claude exact session authority mismatch."));
+    const existing = this.releaseAttempts.get(session);
+    if (existing) return existing;
+    const attempt = this.sessionCleanup.cleanupSessionResources({ session }).then(() => {
+      if (this.sessions.get(session.runId) === session) this.sessions.delete(session.runId);
+      this.released.add(session);
+    });
+    this.releaseAttempts.set(session, attempt);
+    void attempt.finally(() => { if (this.releaseAttempts.get(session) === attempt) this.releaseAttempts.delete(session); }).catch(() => undefined);
+    return attempt;
   }
 
   async getSessionMessages(
@@ -153,14 +174,14 @@ export class ClaudeSessionManager {
     return session;
   }
 
-  private buildSessionDependencies(runId: string) {
+  private buildSessionDependencies(runId: string, exact: () => ClaudeSession) {
     return {
       sessionMessageCache: this.sessionMessageCache,
       sdkClient: this.sdkClient,
       toolingCoordinator: this.toolingCoordinator,
       agentToolMcpRunSessions: this.agentToolMcpRunSessions,
-      isRunSessionActive: () => this.sessions.has(runId),
-      terminateRunSession: () => this.terminateRun(runId),
+      isRunSessionActive: () => this.sessions.get(runId) === exact(),
+      terminateRunSession: () => this.releaseExactSession(exact()),
     };
   }
 }

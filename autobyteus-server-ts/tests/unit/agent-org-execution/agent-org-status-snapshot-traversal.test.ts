@@ -75,11 +75,12 @@ const status = (memberAddress: string, agentRunId: string): CollaborationAgentSt
     memberAddress: assertAgentTeamAddress(memberAddress),
     agentRunId,
   }),
-  details: { status: "idle", trigger: null, errorMessage: null },
+  details: { status: "idle", trigger: null, errorMessage: null, recoverableBlock: null },
   statusHint: "IDLE",
 });
 
 const teamRun = (statuses: readonly CollaborationAgentStatusSnapshot[]) => ({
+  getInputStateSnapshots: vi.fn(() => []),
   getLeafAgentStatusSnapshots: vi.fn(() => statuses),
 });
 
@@ -90,6 +91,7 @@ const buildRun = () => {
       { getStatusSnapshot: () => status("/director", "direct-agent") },
       { getStatusSnapshot: () => status("/director", "root-task-agent") },
     ]),
+    getInputStateSnapshots: vi.fn(() => []),
     getStatusSnapshots: vi.fn(() => [status("/director", "direct-agent"), status("/director", "root-task-agent")]),
     isTaskLive: vi.fn(() => true),
   };
@@ -148,7 +150,7 @@ const connect = async (run: AgentOrgRun) => {
   const sessionId = await handler.connect({ send: (value: string) => sent.push(value), close: vi.fn() }, orgRunId);
   const snapshot = sent.map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)))
     .find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT");
-  if (!snapshot || snapshot.type !== "ROOT_EXECUTION_VIEW_SNAPSHOT") throw new Error("missing AgentOrg snapshot");
+  if (!snapshot || snapshot.type !== "ROOT_EXECUTION_VIEW_SNAPSHOT") throw new Error(`missing AgentOrg snapshot: ${sent.join("\n")}`);
   return { handler, sessionId, snapshot };
 };
 
@@ -199,7 +201,7 @@ describe("AgentOrg status snapshot traversal", () => {
       "mounted-configured-team", "target-configured-team", "root-task-team",
       "mounted-configured-team", "target-configured-team", "root-task-team",
     ]);
-    expect(test.teams.list).not.toHaveBeenCalled();
+    expect(test.teams.list).toHaveBeenCalledTimes(2); // each package snapshot gathers input state, not status traversal
     expect(test.runs.get("mounted-task-team")!.getLeafAgentStatusSnapshots).not.toHaveBeenCalled();
     expect(test.runs.get("mounted-nested-team")!.getLeafAgentStatusSnapshots).not.toHaveBeenCalled();
     expect(test.runs.get("root-nested-team")!.getLeafAgentStatusSnapshots).not.toHaveBeenCalled();

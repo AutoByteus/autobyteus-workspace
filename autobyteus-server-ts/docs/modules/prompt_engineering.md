@@ -234,6 +234,7 @@ The `recipient_address` identifies what to copy (a mounted Agent or AgentTeam,
 a collaborator, or an available agent or team); it is not an alias for the new
 copy. Every call spawns another copy, so copies can work in parallel.
 
+- Supply task_id alone for saved Task text/files, or description and optional reference_files without task_id.
 - The work description and reference files become the copy's first message,
   together with your address and AgentRun ID.
 - On success, `target_agent_run_id` is the new copy (for an AgentTeam, its
@@ -244,7 +245,8 @@ copy. Every call spawns another copy, so copies can work in parallel.
 Follow up on a copy only through `send_message_to` with its
 `target_agent_run_id`, in both directions. A copy that stays quiet is shut
 down after a while; a message to its run ID restores it with its
-conversation, so follow-ups remain possible at any time.
+conversation, unless its Task lifetime has been permanently closed by DONE.
+Task-owned workers reuse lifetime-local helpers before borrowing existing unowned runs; helpers inherit ownership.
 
 ### Rule-Based Handoffs
 

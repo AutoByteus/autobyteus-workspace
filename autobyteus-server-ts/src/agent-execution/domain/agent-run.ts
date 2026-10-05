@@ -1,3 +1,4 @@
+import { AgentRunExecutionAdmissionFence } from "../input/agent-run-execution-admission-fence.js";
 import { randomUUID } from "node:crypto";
 import type { CompactionRetryRequest } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
 import type { AgentInputStateDto } from "@autobyteus/agent-presentation-contracts";
@@ -31,7 +32,7 @@ import { AgentRunInterruptState } from "./agent-run-interrupt-state.js";
 import { AgentRunRootShutdownFence } from "./agent-run-root-shutdown-fence.js";
 import { createPreparedAgentRunTermination, type PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
 import {
-  buildAgentStatusPayload,
+  buildAgentStatusPayload, agentStatusHint,
   type AgentApiStatus,
   type AgentStatusPayload,
 } from "./agent-status-payload.js";
@@ -77,6 +78,7 @@ export class AgentRun {
   private preparingTermination: Promise<PreparedAgentRunTermination> | null = null;
   private preparedTermination: PreparedAgentRunTermination | null = null;
   private termination: Promise<AgentOperationResult> | null = null;
+  private readonly executionAdmissionFence = new AgentRunExecutionAdmissionFence();
 
   constructor(options: AgentRunOptions) {
     this.context = options.context;
@@ -112,6 +114,15 @@ export class AgentRun {
         }
       },
     );
+  }
+
+  bindExecutionAdmissionFence(assertAllowed: () => void): void { this.executionAdmissionFence.bind(assertAllowed); }
+
+  /** Task-scoped force release: no quiet wait, restoration, or provider-global action. */
+  async forceReleaseRuntime(): Promise<AgentOperationResult> {
+    this.executionAdmissionFence.close();
+    this.inputAdmissionState.fenceForRootShutdown();
+    return this.createTerminationPreparation().commit().finish();
   }
 
   get runId(): string { return this.context.runId; }
@@ -154,6 +165,7 @@ export class AgentRun {
       runtimeKind: this.runtimeKind, config: this.config, platformAgentRunId: () => this.getPlatformAgentRunId(),
       message, lifecycleObserver: options.lifecycleObserver });
     const decision = await this.dispatchQueue.enqueue(this.runId, () => {
+      this.executionAdmissionFence.assertOpen();
       this.reconcileRecovery();
       const admission = this.inputAdmissionState.admit(
         message,
@@ -186,6 +198,7 @@ export class AgentRun {
       runtimeKind: this.runtimeKind, config: this.config, platformAgentRunId: () => this.getPlatformAgentRunId(),
       message, lifecycleObserver: options.lifecycleObserver });
     const admission = await this.dispatchQueue.enqueue(this.runId, () => {
+      this.executionAdmissionFence.assertOpen();
       this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
       return this.inputAdmissionState.reserve(message, observer, this.backend.isActive());
     });
@@ -197,8 +210,8 @@ export class AgentRun {
       reservation: createAgentRunInputReservation({
         agentRunId: this.runId,
         entrySequence,
-        commitEntry: () => this.inputAdmissionState.commitReservation(entrySequence),
-        releaseEntry: () => this.inputAdmissionState.releaseReservation(entrySequence),
+        commitEntry: () => { this.executionAdmissionFence.assertOpen(); return this.inputAdmissionState.commitReservation(entrySequence); },
+        releaseEntry: () => { this.executionAdmissionFence.assertOpen(); return this.inputAdmissionState.releaseReservation(entrySequence); },
         cancelEntry: () => this.inputAdmissionState.cancelReservation(entrySequence),
         eligibilityChanged: () => {
           queueMicrotask(() => { void this.drainInputAfterLifecycleChange(); });
@@ -212,6 +225,7 @@ export class AgentRun {
     approved: boolean,
     reason: string | null = null,
   ) {
+    this.executionAdmissionFence.assertOpen();
     return this.backend.approveToolInvocation(invocationId, approved, reason);
   }
 
@@ -298,6 +312,8 @@ export class AgentRun {
   }
 
   private claimNextInput(): ClaimedInputDispatch | null {
+    // Events arriving after closure must not drain queued work back into a provider.
+    try { this.executionAdmissionFence.assertOpen(); } catch { return null; }
     this.reconcileRecovery();
     if (!this.compactionRecovery.canDispatch()) return null;
     if (this.interruptState.hasActiveReservation) return null;
@@ -337,6 +353,7 @@ export class AgentRun {
     let failure: unknown = null;
     let normalized = false;
     try {
+      this.executionAdmissionFence.assertOpen();
       const dispatch = this.providerInputNormalizer.normalizeForProvider(input.claim.dispatch);
       normalized = true;
       result = await this.backend.dispatchUserInput(dispatch);
@@ -514,7 +531,7 @@ export class AgentRun {
         eventType: AgentRunEventType.AGENT_STATUS,
         runId: this.runId,
         payload: buildAgentStatusPayload({ status, agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock }),
-        statusHint: this.statusHintFor(status),
+        statusHint: agentStatusHint(status),
       },
       onListenerError: (error) => {
         logger.warn(`[AgentRun] listener failed for run '${this.runId}': ${String(error)}`);
@@ -522,10 +539,5 @@ export class AgentRun {
     });
   }
 
-  private statusHintFor(status: AgentApiStatus) {
-    if (status === "running") return "ACTIVE" as const;
-    if (status === "idle" || status === "offline") return "IDLE" as const;
-    if (status === "error") return "ERROR" as const;
-    return null;
-  }
+
 }

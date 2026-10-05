@@ -49,12 +49,12 @@ const buildRegistry = () => {
 describe("TaskAgentExecutionRegistry single liveness predicate (AR-005)", () => {
   it("keeps the handle registered on shutdown, reports it offline, gates commands, and re-activates it on wake", async () => {
     const { registry, handles, worker } = buildRegistry();
-    const prepared = await registry.prepare({
+    const prepared = await registry.beginPreparation({
       address: "/worker", agentRunId: "task-run", sourceNode: worker,
       message: new AgentInputUserMessage("start", SenderType.USER),
-    });
+    }).prepare();
     prepared.sealForCommit();
-    prepared.commitAfterDurability().releaseWork();
+    prepared.commitAfterDurability().releaseWork(() => undefined);
     await flush();
     const execution = handles.get("task-run")!;
     expect(registry.isLive("task-run")).toBe(true);

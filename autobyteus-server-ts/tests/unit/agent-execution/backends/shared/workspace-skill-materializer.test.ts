@@ -29,8 +29,8 @@ const expose = (skill: Skill) => ({ kind: "expose-resolved" as const, skill });
 const discoverable = (skill: Skill) => ({ kind: "reconcile-discoverable" as const, skill });
 type TestRequest = ReturnType<typeof expose> | ReturnType<typeof discoverable> | { kind: "reconcile-unresolved"; name: string };
 const run = (materializer: WorkspaceSkillMaterializer, workspace: string, requests: TestRequest[],
-  workspaceCollisionPolicy: WorkspaceCollisionPolicy = "fail", runId = "run-1") =>
-  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, workspaceCollisionPolicy });
+  workspaceCollisionPolicy: WorkspaceCollisionPolicy = "fail", runId = "run-1", onAcquired?: (value: any) => void) =>
+  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, workspaceCollisionPolicy, onAcquired });
 
 const isAbsent = async (target: string): Promise<boolean> => {
   try { await fs.lstat(target); return false; } catch (error) {
@@ -285,16 +285,17 @@ describe("WorkspaceSkillMaterializer", () => {
       .toBe(path.resolve(liveOwner.rootPath));
   });
 
-  it("rolls back every occurrence from a failed batch and rethrows the exact original error", async () => {
+  it("rolls back each occurrence and retains both acquisition and cleanup faults for exact retry", async () => {
     const source = await tempDir("workspace-skill-source-");
     const workspace = await tempDir("workspace-skill-workspace-");
     const shared = await skillFixture(source, "shared-holder");
     const failing = await skillFixture(source, "failing");
     const exactError = Object.assign(new Error("injected lstat failure"), { code: "EIO" });
+    let fail = true; const owned: any[] = [];
     const failingPath = materializedPath(workspace, failing.name);
     const materializer = new WorkspaceSkillMaterializer(profile, { fileSystem: {
       lstat: (async (target: Parameters<typeof fs.lstat>[0]) => {
-        if (path.resolve(String(target)) === path.resolve(failingPath)) throw exactError;
+        if (fail && path.resolve(String(target)) === path.resolve(failingPath)) throw exactError;
         return fs.lstat(target);
       }) as typeof fs.lstat,
     } });
@@ -302,11 +303,14 @@ describe("WorkspaceSkillMaterializer", () => {
 
     let received: unknown;
     try {
-      await run(materializer, workspace, [expose(shared), expose(shared), expose(failing)]);
+      await run(materializer, workspace, [expose(shared), expose(shared), expose(failing)], "fail", "run-1", value => owned.push(value));
     } catch (error) {
       received = error;
     }
-    expect(received).toBe(exactError);
+    expect(received).toBeInstanceOf(AggregateError);
+    expect((received as AggregateError).errors).toContain(exactError);
+    fail = false;
+    await materializer.cleanupMaterializedWorkspaceSkills(owned);
     expect((await fs.lstat(preexisting.materializedRootPath)).isSymbolicLink()).toBe(true);
     await materializer.cleanupMaterializedWorkspaceSkills([preexisting]);
     expect(await isAbsent(preexisting.materializedRootPath)).toBe(true);
@@ -319,28 +323,29 @@ describe("WorkspaceSkillMaterializer", () => {
     const cleanupFailure = await skillFixture(source, "rollback-cleanup-failure");
     const acquisitionFailure = await skillFixture(source, "rollback-acquisition-failure");
     const exactError = Object.assign(new Error("acquisition failed"), { code: "EIO" });
+    let fail = true; const owned: any[] = [];
     const warn = vi.fn();
     const firstPath = materializedPath(workspace, first.name);
     const cleanupFailurePath = materializedPath(workspace, cleanupFailure.name);
     const acquisitionFailurePath = materializedPath(workspace, acquisitionFailure.name);
     const materializer = new WorkspaceSkillMaterializer(profile, { logger: { warn }, fileSystem: {
       lstat: (async (target: Parameters<typeof fs.lstat>[0]) => {
-        if (path.resolve(String(target)) === path.resolve(acquisitionFailurePath)) throw exactError;
+        if (fail && path.resolve(String(target)) === path.resolve(acquisitionFailurePath)) throw exactError;
         return fs.lstat(target);
       }) as typeof fs.lstat,
       unlink: async (target) => {
-        if (path.resolve(String(target)) === path.resolve(cleanupFailurePath)) throw Object.assign(new Error("cleanup failed"), { code: "EIO" });
+        if (fail && path.resolve(String(target)) === path.resolve(cleanupFailurePath)) throw Object.assign(new Error("cleanup failed"), { code: "EIO" });
         return fs.unlink(target);
       },
     } });
 
-    await expect(run(materializer, workspace, [expose(first), expose(cleanupFailure), expose(acquisitionFailure)])).rejects.toBe(exactError);
+    await expect(run(materializer, workspace, [expose(first), expose(cleanupFailure), expose(acquisitionFailure)], "fail", "run-1", value => owned.push(value))).rejects.toThrow("Workspace skill acquisition and rollback failed");
     expect(await isAbsent(firstPath)).toBe(true);
     expect((await fs.lstat(cleanupFailurePath)).isSymbolicLink()).toBe(true);
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining("Failed to roll back Test workspace skill acquisition for run 'run-1'"),
-      expect.any(Error),
-    );
+    fail = false;
+    await materializer.cleanupMaterializedWorkspaceSkills(owned);
+    expect(await isAbsent(cleanupFailurePath)).toBe(true);
+    await materializer.cleanupMaterializedWorkspaceSkills(owned);
   });
 
   it("leaves a replacement directory untouched during guarded cleanup", async () => {

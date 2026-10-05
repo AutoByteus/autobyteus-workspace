@@ -27,11 +27,15 @@ const [
   skillImproverDistAgentConfigPath,
   dailyAssistantDistAgentMdPath,
   dailyAssistantDistAgentConfigPath,
+  projectTaskManagerDistAgentMdPath,
+  projectTaskManagerDistAgentConfigPath,
 ] = await Promise.all([
   assertDistAssetPresent("retrospective-skill-improver", "agent.md"),
   assertDistAssetPresent("retrospective-skill-improver", "agent-config.json"),
   assertDistAssetPresent("daily-assistant", "agent.md"),
   assertDistAssetPresent("daily-assistant", "agent-config.json"),
+  assertDistAssetPresent("project-task-manager", "agent.md"),
+  assertDistAssetPresent("project-task-manager", "agent-config.json"),
 ]);
 await assertDistTemplateAbsent("memory-compactor");
 
@@ -40,6 +44,7 @@ const { bootstrapBuiltInAgents } = await import(
 );
 const {
   DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+  PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
   RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } = await import(
   "../dist/built-in-agents/built-in-agent-registry.js"
@@ -101,7 +106,11 @@ try {
     },
   });
 
-  assert.equal(result.builtInAgents.length, 2);
+  assert.deepEqual(result.builtInAgents.map(item => item.agentDefinitionId).sort(), [
+    DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+    PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
+    RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+  ].sort());
   assert.equal(result.refreshedCache, true);
 
   const resultById = new Map(result.builtInAgents.map((item) => [item.agentDefinitionId, item]));
@@ -123,6 +132,21 @@ try {
   assert.equal(skillImproverAgentConfig, skillImproverDistAgentConfig);
   assert.match(skillImproverAgentMd, /Retrospective Skill Improver/);
   assert.equal(settingsByKey.get(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID), RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
+  const managerDir = path.join(agentsDir, PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID);
+  const assertManagerTemplate = async () => {
+    assert.equal(await fs.readFile(path.join(managerDir, "agent.md"), "utf8"),
+      await fs.readFile(projectTaskManagerDistAgentMdPath, "utf8"));
+    const managerConfig = await fs.readFile(path.join(managerDir, "agent-config.json"), "utf8");
+    assert.equal(managerConfig, await fs.readFile(projectTaskManagerDistAgentConfigPath, "utf8"));
+    assert.deepEqual(JSON.parse(managerConfig).toolNames, [
+      "list_projects", "list_project_tasks", "create_or_update_task", "list_available_agents",
+      "delegate_task", "send_message_to", "read_file",
+    ]);
+    assert.equal(JSON.parse(managerConfig).defaultLaunchConfig, null);
+  };
+  assert.equal(resultById.get(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID).syncedAgentMd, true);
+  assert.equal(resultById.get(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID).syncedAgentConfig, true);
+  await assertManagerTemplate();
   const dailyAssistantAgentDir = path.join(agentsDir, DAILY_ASSISTANT_AGENT_DEFINITION_ID);
   assert.equal(
     await fs.readFile(path.join(dailyAssistantAgentDir, "agent.md"), "utf8"),
@@ -133,6 +157,7 @@ try {
     await fs.readFile(dailyAssistantDistAgentConfigPath, "utf8"),
   );
   await fs.writeFile(path.join(dailyAssistantAgentDir, "agent.md"), "user edited daily assistant", "utf8");
+  await fs.writeFile(path.join(managerDir, "agent.md"), "stale manager", "utf8");
   const resyncResult = await bootstrapBuiltInAgents({
     agentsDir,
     agentDefinitionService: fakeAgentDefinitionService,
@@ -141,6 +166,8 @@ try {
   });
   const resyncById = new Map(resyncResult.builtInAgents.map((item) => [item.agentDefinitionId, item]));
   assert.equal(resyncById.get(DAILY_ASSISTANT_AGENT_DEFINITION_ID).syncedAgentMd, true);
+  assert.equal(resyncById.get(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID).syncedAgentMd, true);
+  await assertManagerTemplate();
   assert.equal(
     await fs.readFile(path.join(dailyAssistantAgentDir, "agent.md"), "utf8"),
     await fs.readFile(dailyAssistantDistAgentMdPath, "utf8"),

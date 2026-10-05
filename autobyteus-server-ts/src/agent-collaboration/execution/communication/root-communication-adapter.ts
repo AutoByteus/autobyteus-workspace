@@ -25,6 +25,7 @@ export interface RootCommunicationAdapter {
   readonly root: RootExecutionIdentity;
   readonly initialMessages: readonly CollaborationCommunicationMessageV1[];
   isOpen(): boolean;
+  assertDeliveryAllowed(sender: CollaborationMemberExecutionIdentity, receiver: CollaborationMemberExecutionIdentity): void;
   isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean;
   buildRecipientInput(input: Readonly<{
     delivery: RootCommunicationDeliveryInput;

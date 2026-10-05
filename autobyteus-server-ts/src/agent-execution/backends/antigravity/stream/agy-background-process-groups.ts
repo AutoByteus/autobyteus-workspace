@@ -62,9 +62,23 @@ export const listAgyBackgroundProcessGroups = (agyPid: number, serverPid = proce
   return selectAgyBackgroundProcessGroups(parseProcessTable(output), agyPid, serverPid);
 };
 
-/** Signals each group independently; a group that is gone (ESRCH) or not signallable (EPERM) is skipped. */
+/** Signals each exact captured group independently; only ESRCH proves absence. */
 export const signalProcessGroups = (pgids: readonly number[], signal: NodeJS.Signals): void => {
+  const errors: unknown[] = [];
   for (const pgid of pgids) {
-    try { process.kill(-pgid, signal); } catch { /* skip only this group */ }
+    try { process.kill(-pgid, signal); } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ESRCH") errors.push(error);
+    }
   }
+  if (errors.length) throw new AggregateError(errors, "Exact AGY process-group signal failed.");
+};
+
+/** Exact captured groups only. ESRCH is proof of absence; permission failure is not. */
+export const processGroupsInactive = (pgids: readonly number[]): boolean => {
+  let inactive = true;
+  for (const pgid of pgids) {
+    try { process.kill(-pgid, 0); inactive = false; }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error; }
+  }
+  return inactive;
 };

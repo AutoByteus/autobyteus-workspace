@@ -5,11 +5,13 @@ import { CollaborationContractError } from "../../agent-collaboration/domain/col
 const nonEmptyString = (fieldName: string) =>
   z.string().trim().min(1, `${fieldName} is required`);
 
-const DelegateTaskInputSchema = z.object({
+const DescribedTaskInputSchema = z.object({
   recipient_address: z.string(),
   description: nonEmptyString("description"),
   reference_files: z.array(nonEmptyString("reference_files item")).default([]),
 }).strict();
+
+const LinkedTaskInputSchema = z.object({ recipient_address: z.string(), task_id: nonEmptyString("task_id") }).strict();
 
 const parseZodIssues = (error: z.ZodError): string =>
   error.issues.map((issue) => issue.message).join("; ");
@@ -17,7 +19,7 @@ const parseZodIssues = (error: z.ZodError): string =>
 export const parseDelegateTaskInput = (
   rawArguments: Record<string, unknown>,
 ): DelegateTaskInput => {
-  const result = DelegateTaskInputSchema.safeParse(rawArguments);
+  const result = (Object.hasOwn(rawArguments, "task_id") ? LinkedTaskInputSchema : DescribedTaskInputSchema).safeParse(rawArguments);
   if (!result.success) {
     if (typeof rawArguments.recipient_address !== "string") {
       throw new CollaborationContractError(

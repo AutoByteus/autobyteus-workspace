@@ -101,7 +101,7 @@ implements ApplicationProviderCredentialReadinessPort {
     llmProviderService: Pick<LlmProviderService, "getProviderCredentialSetting">;
     codexClientManager: Pick<
       CodexAppServerClientManager,
-      "acquireClient" | "releaseClient"
+      "beginAcquire"
     >;
     commandRunner?: typeof runCommand;
   }) {}
@@ -192,9 +192,9 @@ implements ApplicationProviderCredentialReadinessPort {
     workspaceRootPath: string,
   ): Promise<ApplicationProviderCredentialReadiness> {
     try {
-      const client = await this.dependencies.codexClientManager
-        .acquireClient(workspaceRootPath);
+      const lease = this.dependencies.codexClientManager.beginAcquire(workspaceRootPath);
       try {
+        const client = await lease.acquire();
         const response = await client.request<{
           account?: unknown;
           requiresOpenaiAuth?: unknown;
@@ -207,7 +207,7 @@ implements ApplicationProviderCredentialReadinessPort {
               reason: "Codex authentication is unavailable: no logged-in account.",
             };
       } finally {
-        await this.dependencies.codexClientManager.releaseClient(workspaceRootPath);
+        await lease.release();
       }
     } catch (error) {
       return {

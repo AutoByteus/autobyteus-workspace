@@ -1,3 +1,5 @@
+import type { TaskExecutionReference } from "../task/task-execution-reference.js";
+import type { TaskExecutionReleaseOutcome } from "../task/task-execution-lifetime.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import {
   cloneCollaborationMemberExecutionIdentity,
@@ -25,6 +27,7 @@ export type ExactAgentMessageInput = Readonly<{
 export interface ActiveRootMessageBoundary {
   /** Same-root membership, including shut-down delegated children that delivery can wake. */
   hasAgentExecution(agentRunId: string): boolean;
+  releaseTaskLifetime?(lifetimeId: string, executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionReleaseOutcome[]>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
 }
 

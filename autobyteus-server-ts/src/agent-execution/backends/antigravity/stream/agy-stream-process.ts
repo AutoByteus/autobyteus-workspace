@@ -1,7 +1,7 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { antigravityCommand } from "../../../../runtime-management/antigravity-cli-capability.js";
 import { parseAgyStreamMessage, type AgyStreamMessage } from "./agy-stream-message.js";
-import { listAgyBackgroundProcessGroups, signalProcessGroups } from "./agy-background-process-groups.js";
+import { listAgyBackgroundProcessGroups, signalProcessGroups, processGroupsInactive } from "./agy-background-process-groups.js";
 
 const MAX_LINE = 2 * 1024 * 1024;
 const MAX_STDERR = 4096;
@@ -9,6 +9,11 @@ const BACKGROUND_GROUP_KILL_DELAY_MS = 1_500;
 
 export class AgyStreamProcess {
   private child: ChildProcessWithoutNullStreams | null = null;
+  private readonly capturedGroups = new Set<number>();
+  private readonly closedChildren = new WeakSet<ChildProcessWithoutNullStreams>();
+  private groupDiscoveryFailure: unknown = null;
+  private accepting = true;
+  private stopping: Promise<void> | null = null;
   private stdoutBuffer = "";
   private stderrTail = "";
   private listeners = new Set<(message: AgyStreamMessage) => void>();
@@ -40,7 +45,7 @@ export class AgyStreamProcess {
     child.stdout.on("data", (chunk: string) => this.acceptStdout(chunk));
     child.stderr.on("data", (chunk: string) => { this.stderrTail = (this.stderrTail + chunk).slice(-MAX_STDERR); });
     child.on("error", (error) => this.fail(error));
-    child.on("close", (code, signal) => this.fail(new Error(`AGY process exited (${code ?? signal ?? "unknown"}): ${this.stderrTail}`)));
+    child.on("close", (code, signal) => { this.closedChildren.add(child); this.fail(new Error(`AGY process exited (${code ?? signal ?? "unknown"}): ${this.stderrTail}`)); });
     const timer = setTimeout(() => this.fail(new Error("AGY_STARTUP_TIMEOUT: no init message.")), 60_000);
     try { return await promise; }
     finally { clearTimeout(timer); }
@@ -58,7 +63,7 @@ export class AgyStreamProcess {
 
   async sendUserMessage(content: string): Promise<void> {
     const child = this.child;
-    if (!child || !this.initSeen || !child.stdin.writable) throw new Error("AGY_PROCESS_NOT_READY");
+    if (!this.accepting || !child || !this.initSeen || !child.stdin.writable) throw new Error("AGY_PROCESS_NOT_READY");
     const line = `${JSON.stringify({ event: "user", message: { content } })}\n`;
     await new Promise<void>((resolve, reject) => child.stdin.write(line, (error) => error ? reject(error) : resolve()));
   }
@@ -67,21 +72,51 @@ export class AgyStreamProcess {
    * Stops AGY and, while AGY is still alive, the background process groups it started (daemons survive
    * a SIGTERM of AGY alone). If AGY already exited on its own its groups can no longer be found.
    */
-  stop(): void {
+  stop(): Promise<void> {
+    this.accepting = false;
+    if (this.stopping) return this.stopping;
+    const attempt = this.stopExact();
+    this.stopping = attempt;
+    void attempt.finally(() => { if (this.stopping === attempt) this.stopping = null; }).catch(() => undefined);
+    return attempt;
+  }
+
+  private async stopExact(): Promise<void> {
     const child = this.child;
-    this.child = null;
-    if (!child) return;
-    let groups: number[] = [];
-    if (child.exitCode === null && child.signalCode === null && child.pid) {
+    if (!child && !this.capturedGroups.size) return;
+    const errors: unknown[] = [];
+    const attempt = (work: () => void) => { try { work(); } catch (error) { if (errors.length < 10) errors.push(error); } };
+    if (child && !this.closedChildren.has(child) && child.pid) {
       try {
-        groups = listAgyBackgroundProcessGroups(child.pid);
-        signalProcessGroups(groups, "SIGTERM");
-      } catch (error) {
-        console.warn("AGY_BACKGROUND_GROUP_STOP_FAILED", error instanceof Error ? error.message : String(error));
-      }
+        for (const group of listAgyBackgroundProcessGroups(child.pid)) this.capturedGroups.add(group);
+        this.groupDiscoveryFailure = null;
+      } catch (error) { this.groupDiscoveryFailure = error; }
     }
-    child.kill("SIGTERM");
-    if (groups.length) setTimeout(() => signalProcessGroups(groups, "SIGKILL"), BACKGROUND_GROUP_KILL_DELAY_MS).unref();
+    const groups = [...this.capturedGroups];
+    if (groups.length) attempt(() => signalProcessGroups(groups, "SIGTERM"));
+    if (child && !this.closedChildren.has(child)) attempt(() => { child.kill("SIGTERM"); });
+    const deadline = Date.now() + 5_000;
+    const killAt = Date.now() + BACKGROUND_GROUP_KILL_DELAY_MS;
+    let escalated = false;
+    while (true) {
+      const childInactive = !child || this.closedChildren.has(child);
+      let groupsInactive = false;
+      try { groupsInactive = processGroupsInactive(groups); } catch (error) { if (errors.length < 10) errors.push(error); }
+      if (childInactive && groupsInactive) {
+        if (this.groupDiscoveryFailure) throw new AggregateError([this.groupDiscoveryFailure, ...errors], "AGY exact background ownership discovery remains unconfirmed.");
+        if (this.child === child) this.child = null;
+        this.capturedGroups.clear(); this.listeners.clear(); this.closeListeners.clear();
+        this.stdoutBuffer = ""; this.stderrTail = "";
+        return;
+      }
+      if (Date.now() >= deadline) throw new AggregateError(errors, "AGY_EXACT_STOP_UNCONFIRMED: child IO or captured groups remain active.");
+      if (!escalated && Date.now() >= killAt) {
+        if (groups.length) attempt(() => signalProcessGroups(groups, "SIGKILL"));
+        if (!childInactive) attempt(() => { child?.kill("SIGKILL"); });
+        escalated = true;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
   }
 
   private acceptStdout(chunk: string): void {
@@ -114,6 +149,6 @@ export class AgyStreamProcess {
     this.startupReject?.(error);
     this.startupResolve = null; this.startupReject = null;
     for (const listener of this.closeListeners) listener(error);
-    this.stop();
+    void this.stop().catch((error) => console.warn("AGY_EXACT_STOP_FAILED", error));
   }
 }

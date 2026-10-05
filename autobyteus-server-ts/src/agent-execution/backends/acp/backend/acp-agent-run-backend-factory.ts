@@ -1,5 +1,7 @@
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
+import { createBackendPreparation, type AgentRunBackendPreparation } from "../../agent-run-backend-preparation.js";
+import type { AgentRunBackendPreparationRequest } from "../../agent-run-backend-factory.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
@@ -73,8 +75,33 @@ const reasoningEffortOf = (config: AgentRunConfig): string | null => {
 export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
   constructor(private readonly deps: AcpAgentRunBackendFactoryDependencies) {}
 
-  async createBackend(config: AgentRunConfig, runId: string): Promise<AcpAgentRunBackend> {
-    const prepared = await this.prepare(config, runId);
+  beginPreparation(request: AgentRunBackendPreparationRequest): AgentRunBackendPreparation {
+    const owner: AcpPreparationOwner = { process: null, connection: null, session: null, skills: [] };
+    const operation = createBackendPreparation({
+      prepare: (assertAccepting) => request.kind === "new"
+        ? this.createBackend(request.config, request.runId, owner, assertAccepting, release)
+        : this.restoreBackend(request.context, owner, assertAccepting, release),
+      releaseResources: async () => {
+        const errors: unknown[] = [];
+        try { owner.session?.close(); } catch (error) { errors.push(error); }
+        try {
+          if (owner.connection) await owner.connection.close();
+          else await owner.process?.stop();
+        } catch (error) { errors.push(error); }
+        try { await this.deps.skillMaterializer.cleanupMaterializedWorkspaceSkills(owner.skills); }
+        catch (error) { errors.push(error); }
+        if (errors.length) throw new AggregateError(errors, "ACP exact preparation release failed.");
+      },
+    });
+    const release = async () => {
+      const result = await operation.release();
+      if (result.kind !== "released") throw result.kind === "failed" ? result.error : new Error("ACP release still has pending acquisition.");
+    };
+    return operation;
+  }
+
+  private async createBackend(config: AgentRunConfig, runId: string, owner: AcpPreparationOwner, assertAccepting: () => void, release: () => Promise<void>): Promise<AcpAgentRunBackend> {
+    const prepared = await this.prepare(config, runId, owner, assertAccepting);
     const composedPrompt = composeSharedCarpenterPrompt({
       agentDefinition: prepared.definition, memberExecutionContext: config.memberExecutionContext,
     });
@@ -87,15 +114,15 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
       });
       await this.awaitMcpReady(session, prepared.descriptor);
       return { sessionId: opened.sessionId, trace: this.captureInstructions(config, composedPrompt, suppliedAt) };
-    });
+    }, owner, assertAccepting, release);
   }
 
-  async restoreBackend(context: AgentRunContext<RuntimeAgentRunContext>): Promise<AcpAgentRunBackend> {
+  private async restoreBackend(context: AgentRunContext<RuntimeAgentRunContext>, owner: AcpPreparationOwner, assertAccepting: () => void, release: () => Promise<void>): Promise<AcpAgentRunBackend> {
     const sessionId = context.runtimeContext instanceof AcpAgentRunContext ? context.runtimeContext.sessionId : null;
     if (!sessionId || sessionId === context.runId) {
       throw new AgentCreationError(`PLATFORM_AGENT_RUN_BINDING_INVALID: ${this.deps.launchProfile.agentLabel} restore requires the exact session id.`);
     }
-    const prepared = await this.prepare(context.config, context.runId);
+    const prepared = await this.prepare(context.config, context.runId, owner, assertAccepting);
     return this.launch(context.config, context.runId, prepared, async (session) => {
       // The agent keeps the run-start instructions; they are not re-sent on load.
       await session.openLoad({
@@ -104,28 +131,25 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
       });
       await this.awaitMcpReady(session, prepared.descriptor);
       return { sessionId, trace: null };
-    }, true);
+    }, owner, assertAccepting, release, true);
   }
 
-  private async prepare(config: AgentRunConfig, runId: string): Promise<PreparedRun> {
+  private async prepare(config: AgentRunConfig, runId: string, owner: AcpPreparationOwner, assertAccepting: () => void): Promise<PreparedRun> {
     const workingDirectory = await this.deps.workspaces.resolveWorkingDirectory(config.workspaceId);
     const definition = await this.deps.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`ACP_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     const bindings = this.deps.skills.resolveConfiguredSkillBindingsForAgent(definition);
     const materializedSkills = await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
       runId, workingDirectory,
+      onAcquired: (skill) => { owner.skills.push(skill); }, assertAccepting,
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.deps.skills.resolveSkillScope(definition)),
       requests: bindings.map((binding) => binding.kind === "resolved"
         ? { kind: "expose-resolved" as const, skill: binding.skill }
         : { kind: "reconcile-unresolved" as const, name: binding.name }),
     });
-    try {
-      const descriptor = this.activateMcp(runId, config, workingDirectory, definition);
-      return { workingDirectory, definition, descriptor, materializedSkills };
-    } catch (error) {
-      await this.deps.skillMaterializer.cleanupMaterializedWorkspaceSkills(materializedSkills);
-      throw error;
-    }
+    assertAccepting();
+    const descriptor = this.activateMcp(runId, config, workingDirectory, definition);
+    return { workingDirectory, definition, descriptor, materializedSkills };
   }
 
   private async launch(
@@ -133,40 +157,45 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     runId: string,
     prepared: PreparedRun,
     open: (session: AcpAgentSession) => Promise<{ sessionId: string; trace: SystemInstructionTraceRecord | null }>,
+    owner: AcpPreparationOwner,
+    assertAccepting: () => void,
+    release: () => Promise<void>,
     restore = false,
   ): Promise<AcpAgentRunBackend> {
     const { launchProfile, sessionProfile } = this.deps;
+    assertAccepting();
     const process = AcpAgentProcess.spawn({
       command: launchProfile.command(),
       args: launchProfile.args({ model: config.llmModelIdentifier, reasoningEffort: reasoningEffortOf(config) }),
       env: launchProfile.env(globalThis.process.env),
       cwd: prepared.workingDirectory,
     });
+    owner.process = process;
     const connection = new AcpClientConnection(process, launchProfile.agentLabel);
+    owner.connection = connection;
     const sink = new DeferredEventSink();
     const session = new AcpAgentSession({
       runId, connection, profile: sessionProfile, model: config.llmModelIdentifier,
       autoExecuteTools: config.autoExecuteTools, emit: sink.emit, onFailed: sink.failed,
     });
-    const releaseSkills = () => this.deps.skillMaterializer.cleanupMaterializedWorkspaceSkills(prepared.materializedSkills);
+    owner.session = session;
     try {
       const capabilities = AcpAgentCapabilities.fromInitialize(await connection.initialize());
       capabilities.require(launchProfile.agentLabel,
         AcpAgentCapabilities.requiredFor({ restore, mcp: prepared.descriptor !== null }));
+      assertAccepting();
       const opened = await open(session);
+      assertAccepting();
       const backend = new AcpAgentRunBackend({
         context: new AgentRunContext({
           runId, config, runtimeContext: new AcpAgentRunContext(opened.sessionId, prepared.workingDirectory),
         }),
-        connection, session, pendingSystemInstruction: opened.trace, cleanup: releaseSkills,
+        connection, session, pendingSystemInstruction: opened.trace, cleanup: release,
       });
       sink.target = backend;
       if (session.state === "failed") throw new Error(`ACP_SESSION_FAILED: ${launchProfile.agentLabel} stopped during activation.`);
       return backend;
     } catch (error) {
-      session.close();
-      await connection.close();
-      await releaseSkills();
       const message = describeAcpActivationError(launchProfile.agentLabel, error);
       throw message ? new AgentCreationError(message) : error;
     }
@@ -203,3 +232,10 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     return result.kind === "active" ? result.descriptor : null;
   }
 }
+
+type AcpPreparationOwner = {
+  process: AcpAgentProcess | null;
+  connection: AcpClientConnection | null;
+  session: AcpAgentSession | null;
+  skills: MaterializedWorkspaceSkill[];
+};

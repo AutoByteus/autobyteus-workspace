@@ -91,15 +91,34 @@ export const resolveMessageRecipient = async (input: Readonly<{
   senderAgentRunId: string;
   address: AgentTeamAddress;
   catalog: CatalogBringInPort;
+  taskScope?: Readonly<{
+    lifetimeForAgent(agentRunId: string): { lifetimeId: string } | undefined;
+    helper(lifetimeId: string, address: AgentTeamAddress): CollaborationMessagePlacement | null;
+    bringIn(address: AgentTeamAddress): Promise<CollaborationMessagePlacement | null>;
+  }>;
   notFoundMessage(address: AgentTeamAddress): string;
 }>): Promise<MessageRecipientResult> => {
-  const inRun = resolveInRunRecipient(input.port(), input.senderAgentRunId, input.address);
-  if (inRun.kind === "placement") return Object.freeze({ resolved: true, placement: inRun.placement });
-  if (inRun.kind === "instance_miss") {
-    throw new CollaborationContractError(
-      "COLLABORATION_TARGET_NOT_FOUND",
-      `Collaboration target '${input.address}' is not a member of your team instance '${inRun.instance.address}'.`,
-    );
+  const port = input.port();
+  const owner = input.taskScope?.lifetimeForAgent(input.senderAgentRunId);
+  // Own-instance misses cannot fall through to an identically addressed parallel copy.
+  for (const instance of port.teamInstancesOf(input.senderAgentRunId)) {
+    if (!isWithin(input.address, instance)) continue;
+    const placement = port.memberOfInstance(instance.teamRunId, input.address);
+    if (placement) return { resolved: true, placement };
+    throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration target '${input.address}' is not a member of your team instance '${instance.address}'.`);
+  }
+  if (owner) {
+    const helper = input.taskScope!.helper(owner.lifetimeId, input.address);
+    if (helper) return { resolved: true, placement: helper };
+  }
+  const outside = port.getMessagePlacement(input.address);
+  if (outside && (!owner || !input.taskScope?.lifetimeForAgent(outside.receiver.agentRunId))) {
+    return { resolved: true, placement: outside };
+  }
+  if (owner) {
+    const helper = await input.taskScope!.bringIn(input.address);
+    if (helper) return { resolved: true, placement: helper };
+    throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", input.notFoundMessage(input.address));
   }
   const admission = await input.catalog.bringIn(input.address);
   if (admission && !admission.admitted) {

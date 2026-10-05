@@ -17,6 +17,7 @@ import type { ResolvedAgentOrgRecipient } from "./agent-org-task-execution-adapt
  */
 export class AgentOrgRecipientResolver {
   constructor(private readonly options: Readonly<{
+    taskScope(sender: CollaborationMemberExecutionIdentity): NonNullable<Parameters<typeof resolveMessageRecipient>[0]["taskScope"]>;
     getIndex(): AgentOrgExecutionIndex;
     collaborators: AgentOrgRunCollaborators;
   }>) {}
@@ -28,6 +29,7 @@ export class AgentOrgRecipientResolver {
    */
   resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<MessageRecipientResult> {
     return resolveMessageRecipient({
+      taskScope: this.options.taskScope(sender),
       port: () => this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address: this.requireAddress(addressInput),

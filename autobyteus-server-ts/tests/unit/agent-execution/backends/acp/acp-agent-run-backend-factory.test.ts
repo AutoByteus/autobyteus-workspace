@@ -88,7 +88,7 @@ describe("AcpAgentRunBackendFactory", () => {
   it("creates a run bound to the agent session id with the composed prompt in the session rules (DS-001)", async () => {
     const { factory, recorded, workingDirectory } = createFactory(fixturePath("prompt"));
     const runConfig = config();
-    const backend = await factory.createBackend(runConfig, "run-1");
+    const backend = await factory.beginPreparation({ kind: "new", config: runConfig, runId: "run-1" }).prepare();
     backends.push(backend);
     expect(backend.getPlatformAgentRunId()).toBe(fixtureSessionId("prompt"));
     expect(backend.getContext().runtimeContext).toEqual(new AcpAgentRunContext(fixtureSessionId("prompt"), workingDirectory));
@@ -116,13 +116,13 @@ describe("AcpAgentRunBackendFactory", () => {
       const { factory } = createFactory("unused.json", { skillScope,
         skillMaterializer: { materializeConfiguredWorkspaceSkills: materialize, cleanupMaterializedWorkspaceSkills: vi.fn() } });
 
-      await expect(factory.createBackend(config(), "run-strength")).rejects.toThrow("stop after materialization");
+      await expect(factory.beginPreparation({ kind: "new", config: config(), runId: "run-strength" }).prepare()).rejects.toThrow("stop after materialization");
       expect(materialize).toHaveBeenCalledWith(expect.objectContaining({ runId: "run-strength", workspaceCollisionPolicy }));
     });
 
   it("attaches Agent Tools MCP over HTTP and waits until the agent reports it ready", async () => {
     const { factory, recorded } = createFactory(writeCustomFixture([...readFixture("handshake"), mcpStatus("ready")]), { mcpActive: true });
-    const backend = await factory.createBackend(config(), "run-1");
+    const backend = await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare();
     backends.push(backend);
     expect(recorded().find((message) => message.method === "session/new").params.mcpServers)
       .toEqual([{ type: "http", name: "autobyteus_agent_tools", url: DESCRIPTOR.serverUrl, headers: [] }]);
@@ -130,7 +130,7 @@ describe("AcpAgentRunBackendFactory", () => {
 
   it("fails activation with an error naming the MCP server when it is unavailable (REQ-007)", async () => {
     const { factory } = createFactory(writeCustomFixture([...readFixture("handshake"), mcpStatus("unavailable")]), { mcpActive: true });
-    const error = await factory.createBackend(config(), "run-1").catch((caught: unknown) => caught);
+    const error = await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare().catch((caught: unknown) => caught);
     expect(error).toBeInstanceOf(AgentCreationError);
     expect((error as Error).message).toContain("MCP server 'autobyteus_agent_tools' unavailable");
   });
@@ -141,7 +141,7 @@ describe("AcpAgentRunBackendFactory", () => {
     const unauthenticated: FixtureRow[] = [...rows.slice(0, newIndex + 1), { dir: "in", msg: { jsonrpc: "2.0", id: rows[newIndex]!.msg.id,
       error: { code: -32000, message: "Authentication required", data: "no auth method id provided" } } }];
     const { factory } = createFactory(writeCustomFixture(unauthenticated));
-    const error = await factory.createBackend(config(), "run-1").catch((caught: unknown) => caught);
+    const error = await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare().catch((caught: unknown) => caught);
     expect(error).toBeInstanceOf(AgentCreationError);
     expect((error as Error).message).toBe("Fake Agent: Authentication required: no auth method id provided");
   });
@@ -149,7 +149,7 @@ describe("AcpAgentRunBackendFactory", () => {
   it("reports a missing HTTP MCP capability explicitly instead of failing obscurely (AC-016)", async () => {
     const rows = withInitialize(readFixture("handshake"), (result) => { result.agentCapabilities.mcpCapabilities = {}; });
     const { factory, recorded } = createFactory(writeCustomFixture(rows), { mcpActive: true });
-    await expect(factory.createBackend(config(), "run-1")).rejects.toThrow(new AgentCreationError(
+    await expect(factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare()).rejects.toThrow(new AgentCreationError(
       "ACP_AGENT_CAPABILITY_MISSING: Fake Agent does not support HTTP MCP servers."));
     expect(recorded().some((message) => message.method === "session/new")).toBe(false);
   });
@@ -157,9 +157,9 @@ describe("AcpAgentRunBackendFactory", () => {
   it("restores exactly the stored session without re-sending instructions (DS-006)", async () => {
     const { factory, recorded } = createFactory(fixturePath("load"));
     const sessionId = fixtureSessionId("load");
-    const backend = await factory.restoreBackend(new AgentRunContext({
+    const backend = await factory.beginPreparation({ kind: "restore", context: new AgentRunContext({
       runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext(sessionId),
-    }));
+    }) }).prepare();
     backends.push(backend);
     expect(backend.getPlatformAgentRunId()).toBe(sessionId);
     const load = recorded().find((message) => message.method === "session/load");
@@ -174,15 +174,15 @@ describe("AcpAgentRunBackendFactory", () => {
 
   it("rejects restore without an exact session binding or without session/load support", async () => {
     const { factory } = createFactory(fixturePath("load"));
-    await expect(factory.restoreBackend(new AgentRunContext({ runId: "run-1", config: config(), runtimeContext: null })))
+    await expect(factory.beginPreparation({ kind: "restore", context: new AgentRunContext({ runId: "run-1", config: config(), runtimeContext: null }) }).prepare())
       .rejects.toBeInstanceOf(AgentCreationError);
-    await expect(factory.restoreBackend(new AgentRunContext({ runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext("run-1") })))
+    await expect(factory.beginPreparation({ kind: "restore", context: new AgentRunContext({ runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext("run-1") }) }).prepare())
       .rejects.toThrow("PLATFORM_AGENT_RUN_BINDING_INVALID");
     const noLoad = withInitialize(readFixture("load"), (result) => { result.agentCapabilities.loadSession = false; });
     const { factory: dshLike } = createFactory(writeCustomFixture(noLoad));
-    await expect(dshLike.restoreBackend(new AgentRunContext({
+    await expect(dshLike.beginPreparation({ kind: "restore", context: new AgentRunContext({
       runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext(fixtureSessionId("load")),
-    }))).rejects.toThrow("Fake Agent does not support session/load");
+    }) }).prepare()).rejects.toThrow("Fake Agent does not support session/load");
   });
 
   it("surfaces a load failure as an AgentCreationError carrying the agent text (restore wraps it as cause, AR-006)", async () => {
@@ -191,15 +191,15 @@ describe("AcpAgentRunBackendFactory", () => {
     const failing: FixtureRow[] = [...rows.slice(0, loadIndex + 1),
       { dir: "in", msg: { jsonrpc: "2.0", id: rows[loadIndex]!.msg.id, error: { code: -32603, message: "Path not found." } } }];
     const { factory } = createFactory(writeCustomFixture(failing));
-    await expect(factory.restoreBackend(new AgentRunContext({
+    await expect(factory.beginPreparation({ kind: "restore", context: new AgentRunContext({
       runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext(fixtureSessionId("load")),
-    }))).rejects.toThrow(new AgentCreationError("Fake Agent: Path not found."));
+    }) }).prepare()).rejects.toThrow(new AgentCreationError("Fake Agent: Path not found."));
   });
 
   it("reports an interrupted turn on terminate and becomes inactive", async () => {
     const promptRows: FixtureRow[] = [...readFixture("handshake"), { dir: "out", msg: { jsonrpc: "2.0", id: 9, method: "session/prompt" } }];
     const { factory } = createFactory(writeCustomFixture(promptRows));
-    const backend = await factory.createBackend(config(), "run-1");
+    const backend = await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare();
     const events: AgentRunEvent[] = [];
     backend.subscribeToSourceEventBatches((batch) => { events.push(...batch); });
     const { turnId } = await backend.dispatchUserInput({ kind: "start_turn", message: { content: "hi", contextFiles: [] } as never });

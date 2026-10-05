@@ -1,3 +1,4 @@
+import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -38,7 +39,7 @@ export class FlatTeamExecutionFactory {
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
   }> = {}) {}
 
-  async materialize(input: Readonly<{
+  beginMaterialization(input: Readonly<{
     physicalScope: RootExecutionPhysicalScope;
     teamNode: TeamRunAgentTeamNode;
     handoffs: readonly CollaborationHandoff[];
@@ -46,7 +47,7 @@ export class FlatTeamExecutionFactory {
     activationMode: ConfiguredMemberActivationMode;
     callbacks: FlatTeamExecutionCallbacks;
     prepareConfiguredAgents?: boolean;
-  }>): Promise<PreparedFlatTeamExecution> {
+  }>): FlatTeamPreparationOperation {
     const physicalScope = createRootExecutionPhysicalScope(input.physicalScope);
     if (!sameRootExecutionIdentity(physicalScope.root, input.physicalScope.root)) {
       throw new Error("Flat Team physical scope root is invalid.");
@@ -75,9 +76,9 @@ export class FlatTeamExecutionFactory {
         configuredMemberActivationMode: mode,
       }),
     });
-    const createManager = (context: TeamRunContext<FlatTeamExecutionContext>) => new FlatTeamExecutionManager(context, {
+    const createManager = (context: TeamRunContext<FlatTeamExecutionContext>, publishAgentEvent = input.callbacks.publishAgentEvent) => new FlatTeamExecutionManager(context, {
       subTeamRunFactory: subTeamFactory,
-      callbacks: input.callbacks,
+      callbacks: { ...input.callbacks, publishAgentEvent },
       ...this.dependencies,
     });
     subTeamFactory = new TaskTeamExecutionFactory({
@@ -88,6 +89,7 @@ export class FlatTeamExecutionFactory {
         child.handoffs,
         child.applicationBinding ?? null,
       ),
+      publishAgentEvent: input.callbacks.publishAgentEvent,
       createTeamManager: createManager,
     });
     const context = buildContext(
@@ -99,27 +101,74 @@ export class FlatTeamExecutionFactory {
     );
     const manager = createManager(context);
     const teamRun = new TeamRun(context, new FlatTeamRunBackend(context, manager));
-    const activation = input.prepareConfiguredAgents === false
-      ? null
-      : await manager.prepareConfiguredActivation();
-    let state: "prepared" | "committed" | "aborted" = "prepared";
-    return Object.freeze({
-      teamRun,
-      collaboratorHost: manager,
-      stagedPlatformBindings: activation?.stagedPlatformBindings ?? Object.freeze([]),
-      stagedNoConversationBindingReplacements:
-        activation?.stagedNoConversationBindingReplacements ?? Object.freeze([]),
-      commitAfterDurability: () => {
-        if (state !== "prepared") throw new Error(`Flat Team '${teamRun.teamRunId}' is not publishable.`);
-        activation?.commitAfterDurability();
-        state = "committed";
+    return beginFlatTeamPreparation({ teamRun, manager, prepareConfiguredAgents: input.prepareConfiguredAgents !== false });
+  }
+}
+
+export type FlatTeamPreparationOperation = Readonly<{
+  prepare(): Promise<PreparedFlatTeamExecution>;
+  cancel(): void;
+  release(): Promise<AgentOperationResult>;
+}>;
+
+/** Exact Team aggregate is constructed and retained before any member preparation. */
+export function beginFlatTeamPreparation(input: {
+  teamRun: TeamRun; manager: FlatTeamExecutionManager; prepareConfiguredAgents: boolean;
+}): FlatTeamPreparationOperation {
+  const teamRunId = input.teamRun.teamRunId;
+  let teamRun: TeamRun | null = input.teamRun, manager: FlatTeamExecutionManager | null = input.manager;
+    let cancelled = false;
+    let settled = false;
+    let published = false;
+    let released = false;
+    let attempt: Promise<PreparedFlatTeamExecution> | null = null;
+    let releasing: Promise<AgentOperationResult> | null = null;
+    const control: FlatTeamPreparationOperation = Object.freeze({
+      cancel: () => { cancelled = true; if (!released) published ? teamRun!.cancelRuntimeActivation() : manager!.cancelPrivateActivation(); },
+      release: () => {
+        control.cancel();
+        if (released) return Promise.resolve({ accepted: true as const });
+        if (releasing) return releasing;
+        const release = (async () => {
+          const result = published ? await teamRun!.releaseOwnedRuntime() : await manager!.releasePrivateActivation();
+          if (!result.accepted || (attempt && !settled)) return { accepted: false, code: "RUNTIME_RELEASE_PENDING" };
+          released = true;
+          teamRun = null; manager = null; attempt = null; input = null as never;
+          return { accepted: true };
+        })();
+        releasing = release;
+        void release.finally(() => { if (releasing === release) releasing = null; }).catch(() => undefined);
+        return release;
       },
-      abort: async () => {
-        if (state !== "prepared") return;
-        state = "aborted";
-        await activation?.abort();
-        await teamRun.terminate();
+      prepare: () => {
+        if (attempt) return attempt;
+        if (cancelled) return Promise.reject(new Error("Flat Team preparation cancelled."));
+        attempt = (async () => {
+          const activation = !input.prepareConfiguredAgents ? null : await manager!.prepareConfiguredActivation();
+          if (cancelled) throw new Error("Flat Team preparation cancelled.");
+          let committed = false;
+          return Object.freeze({
+            teamRun: teamRun!, collaboratorHost: manager!,
+            stagedPlatformBindings: activation?.stagedPlatformBindings ?? Object.freeze([]),
+            stagedNoConversationBindingReplacements: activation?.stagedNoConversationBindingReplacements ?? Object.freeze([]),
+            commitAfterDurability: () => {
+              if (cancelled || committed) throw new Error(`Flat Team '${teamRunId}' is not publishable.`);
+              // Transition before a fallible member publication; release retains each exact published/private member.
+              published = true;
+              activation?.commitAfterDurability();
+              committed = true;
+            },
+            abort: async () => {
+              const result = await control.release();
+              if (!result.accepted) throw new Error(result.message ?? "Flat Team release remains pending.");
+            },
+          });
+        })().finally(() => {
+          settled = true;
+          if (cancelled) void control.release().catch((error) => console.warn("FLAT_TEAM_RELEASE_FAILED", error));
+        });
+        return attempt;
       },
     });
-  }
+    return control;
 }

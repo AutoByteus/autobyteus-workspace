@@ -46,3 +46,10 @@ export const buildAgentStatusPayload = (input: {
   ...(normalized(input.agentId) ? { agent_id: normalized(input.agentId)! } : {}),
   ...(normalized(input.agentName) ? { agent_name: normalized(input.agentName)! } : {}),
 });
+
+export const agentStatusHint = (status: AgentApiStatus) => {
+  if (status === "running") return "ACTIVE" as const;
+  if (status === "idle" || status === "offline") return "IDLE" as const;
+  if (status === "error") return "ERROR" as const;
+  return null;
+};

@@ -18,6 +18,7 @@ import type { AgentRunCollaborationPlacement } from "./agent-run-collaboration-t
  */
 export class AgentRunCollaborationRecipientResolver {
   constructor(private readonly options: Readonly<{
+    taskScope(sender: CollaborationMemberExecutionIdentity): NonNullable<Parameters<typeof resolveMessageRecipient>[0]["taskScope"]>;
     getIndex(): AgentRunCollaborationExecutionIndex;
     collaborators: AgentRunCollaborationCollaborators;
   }>) {}
@@ -29,6 +30,7 @@ export class AgentRunCollaborationRecipientResolver {
    */
   resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<MessageRecipientResult> {
     return resolveMessageRecipient({
+      taskScope: this.options.taskScope(sender),
       port: () => this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address: this.requireAddress(addressInput),

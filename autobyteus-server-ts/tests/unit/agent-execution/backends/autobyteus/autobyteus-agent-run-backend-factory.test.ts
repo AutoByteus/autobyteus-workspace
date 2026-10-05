@@ -160,7 +160,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         llmConfig: rawLlmConfig,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
-      "run-professor",
+      "run-professor", () => undefined
     );
 
     expect(createLLM).toHaveBeenCalledWith("dummy-model", rawLlmConfig);
@@ -247,7 +247,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         applicationExecutionContext,
       }),
-      "run-professor",
+      "run-professor", () => undefined
     );
 
     expect(resolveSelectedRoutes).toHaveBeenCalledWith(expect.objectContaining({
@@ -343,7 +343,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(TeamBackendKind.MIXED),
       }),
-      "run-professor",
+      "run-professor", () => undefined
     );
 
     expect(built.agentConfig).toBeInstanceOf(AgentConfig);
@@ -422,7 +422,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           true,
         ),
       }),
-      "run-professor",
+      "run-professor", () => undefined
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
@@ -494,7 +494,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
-      "run-professor",
+      "run-professor", () => undefined
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
@@ -560,7 +560,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           deliverInterAgentMessage,
         ),
       }),
-      "run-professor",
+      "run-professor", () => undefined
     );
 
     const sendMessageTool = built.agentConfig.tools.find(
@@ -633,7 +633,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           true,
         ),
       }),
-      "run-professor",
+      "run-professor", () => undefined
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
@@ -717,7 +717,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext,
       }),
-      "run-professor",
+      "run-professor", () => undefined
     );
 
     const managedTeamContext = built.agentConfig.initialCustomData?.teamContext as Record<string, unknown>;
@@ -804,7 +804,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
-      "run-professor",
+      "run-professor", () => undefined
     );
 
     expect(compactionLlmFactory).not.toHaveBeenCalled();

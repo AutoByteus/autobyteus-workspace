@@ -74,13 +74,20 @@ export class FlatTeamAgentExecutionHandle {
   async prepareConfiguredActivation(): Promise<PreparedConfiguredAgentActivation> {
     return (await this.getHandle()).prepareConfiguredActivation();
   }
+  cancelActivation(): void {
+    this.rootShutdownFenced = true;
+    this.handle?.cancelActivation();
+  }
+  async releaseRuntime(): Promise<AgentOperationResult> {
+    this.cancelActivation();
+    if (this.handle) return this.handle.releaseRuntime();
+    return this.construction
+      ? { accepted: false, code: "RUNTIME_RELEASE_PENDING", message: "Member context construction is pending." }
+      : { accepted: true };
+  }
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
     if (this.construction) await this.construction.catch(() => null);
-    if (this.handle) return this.handle.prepareTermination();
-    return Object.freeze({
-      cancel: () => undefined,
-      commit: () => Object.freeze({ finish: async () => ({ accepted: true as const }) }),
-    });
+    return this.handle ? this.handle.prepareTermination() : completedTermination();
   }
   async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
     if (this.construction) return null;
@@ -115,12 +122,14 @@ export class FlatTeamAgentExecutionHandle {
         handoffs: this.options.teamContext.handoffs,
       }),
     });
+    if (this.rootShutdownFenced) throw new Error(`AgentRun '${this.context.agentRunId}' construction cancelled.`);
     const handle = (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({
       identity,
       physicalScope: this.options.teamContext.physicalScope,
       execution,
       activationMode: this.options.activationMode,
       memberExecutionContext,
+      assertInputAllowed: () => this.options.callbacks.assertExecutionInputAllowed(identity),
       applicationExecutionContext: this.options.callbacks.applicationExecutionContext?.(identity) ?? null,
       callbacks: {
         publishAgentEvent: (member, event) => this.options.callbacks.publishAgentEvent(member, event),

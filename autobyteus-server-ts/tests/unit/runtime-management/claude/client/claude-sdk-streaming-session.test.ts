@@ -37,7 +37,7 @@ describe("ClaudeSdkInputChannel", () => {
     channel.end();
     await reader;
 
-    expect(received).toEqual(["a", "b"]);
+    expect(received).toEqual(["a"]);
     expect(() => channel.push(message("c", "late"))).toThrow("CLAUDE_SESSION_INPUT_CLOSED");
   });
 });
@@ -49,7 +49,7 @@ describe("ClaudeSdkStreamingSession", () => {
       { type: "result", subtype: "success" },
       { type: "system", subtype: "init", capabilities: [] },
     ];
-    const session = createClaudeSdkStreamingSession(createQuery(frames), new ClaudeSdkInputChannel());
+    const session = createClaudeSdkStreamingSession(createQuery(frames), new ClaudeSdkInputChannel(), () => undefined);
     expect(session.capabilities).toBeNull();
 
     const seen: unknown[] = [];
@@ -61,29 +61,29 @@ describe("ClaudeSdkStreamingSession", () => {
 
   it("interrupts with cancelQueued through the single adapter and normalizes the response (RSK-006)", async () => {
     const query = createQuery([], { still_queued: [], cancelled: ["b-uuid"] });
-    const session = createClaudeSdkStreamingSession(query, new ClaudeSdkInputChannel());
+    const session = createClaudeSdkStreamingSession(query, new ClaudeSdkInputChannel(), () => undefined);
 
     await expect(session.interruptAndCancelQueued()).resolves.toEqual({ stillQueued: [], cancelled: ["b-uuid"] });
     expect(query.interrupt).toHaveBeenCalledWith({ cancelQueued: true });
 
-    const olderCli = createClaudeSdkStreamingSession(createQuery([], undefined), new ClaudeSdkInputChannel());
+    const olderCli = createClaudeSdkStreamingSession(createQuery([], undefined), new ClaudeSdkInputChannel(), () => undefined);
     await expect(olderCli.interruptAndCancelQueued()).resolves.toEqual({ stillQueued: [], cancelled: [] });
   });
 
   it("writes sends into the input channel and close ends the channel and closes the query", async () => {
     const query = createQuery([]);
     const channel = new ClaudeSdkInputChannel();
-    const session = createClaudeSdkStreamingSession(query, channel);
+    const session = createClaudeSdkStreamingSession(query, channel, () => undefined);
     const received: string[] = [];
     const reader = (async () => {
       for await (const next of channel) received.push(next.uuid);
     })();
 
     session.send(message("m1", "hello"));
-    session.close();
+    session.requestClose();
     await reader;
 
-    expect(received).toEqual(["m1"]);
+    expect(received).toEqual([]);
     expect(query.close).toHaveBeenCalledTimes(1);
     expect(() => session.send(message("m2", "late"))).toThrow("CLAUDE_SESSION_INPUT_CLOSED");
   });

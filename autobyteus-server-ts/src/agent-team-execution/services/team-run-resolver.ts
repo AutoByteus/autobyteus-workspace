@@ -10,6 +10,7 @@ export type TeamRunRegistrationReservation = Readonly<{
 /** Private nonterminal TeamRun directory owned by one RootTeamRun. */
 export class TeamRunResolver {
   private readonly managed = new Map<string, TeamRun>();
+  private readonly releasedTeams = new Map<string, TeamRun>();
   private readonly reserved = new Map<string, TeamRun>();
   private registrationOpen = true;
 
@@ -25,7 +26,7 @@ export class TeamRunResolver {
     return run?.isActive() ? run : null;
   }
 
-  getManaged(teamRunId: string): TeamRun | null { return this.managed.get(teamRunId) ?? null; }
+  getManaged(teamRunId: string): TeamRun | null { return this.managed.get(teamRunId) ?? this.releasedTeams.get(teamRunId) ?? null; }
   closeRegistration(): void { this.registrationOpen = false; }
 
   async requireConfigured(teamRunId: string): Promise<TeamRun> {
@@ -53,6 +54,9 @@ export class TeamRunResolver {
         if (state !== "reserved") return;
         unique.forEach((run, teamRunId) => {
           this.reserved.delete(teamRunId);
+          const previous = this.releasedTeams.get(teamRunId);
+          if (previous) run.inheritReleasedTaskExecutionProof(previous);
+          this.releasedTeams.delete(teamRunId);
           this.managed.set(teamRunId, run);
         });
         state = "committed";
@@ -76,6 +80,9 @@ export class TeamRunResolver {
     if (this.reserved.has(teamRun.teamRunId)) {
       throw new Error(`TeamRun '${teamRun.teamRunId}' has an uncommitted registration reservation.`);
     }
+    const previous = this.releasedTeams.get(teamRun.teamRunId);
+    if (previous) teamRun.inheritReleasedTaskExecutionProof(previous);
+    this.releasedTeams.delete(teamRun.teamRunId);
     this.managed.set(teamRun.teamRunId, teamRun);
   }
 
@@ -85,7 +92,7 @@ export class TeamRunResolver {
 
   unregisterTerminated(): void {
     for (const [teamRunId, run] of this.managed) {
-      if (run.isTerminated()) this.managed.delete(teamRunId);
+      if (run.isTerminated()) { this.releasedTeams.set(teamRunId, run); this.managed.delete(teamRunId); }
     }
   }
 
@@ -95,6 +102,7 @@ export class TeamRunResolver {
 
   clear(): void {
     this.managed.clear();
+    this.releasedTeams.clear();
     this.reserved.clear();
   }
 }

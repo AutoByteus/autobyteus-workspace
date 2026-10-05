@@ -38,6 +38,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   private readonly codexThread: CodexThread;
   private readonly threadManager: CodexThreadManager;
   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
+  private readonly sourceEventWork = new Set<Promise<void>>();
   private readonly eventConverter: CodexThreadEventConverter;
   private unsubscribeFromThread: (() => void) | null = null;
   private readonly pendingSystemInstructionEvent: PendingSystemInstructionEvent;
@@ -59,17 +60,14 @@ export class CodexAgentRunBackend implements AgentRunBackend {
       () => this.getLifecycleSnapshot(),
     );
     this.unsubscribeFromThread = this.codexThread.subscribeAppServerMessages((event) => {
-      try {
-        void this.handleAppServerMessage(event).catch((error: unknown) => {
-          logger.error(
-            `Failed to process Codex app-server event for run '${this.runId}': ${String(error)}`,
-          );
-        });
-      } catch (error) {
+      const work = this.handleAppServerMessage(event);
+      this.sourceEventWork.add(work);
+      void work.then(() => this.sourceEventWork.delete(work), (error: unknown) => {
+        // Retain failed delivery as part of this exact backend's release proof.
         logger.error(
           `Failed to process Codex app-server event for run '${this.runId}': ${String(error)}`,
         );
-      }
+      });
     });
   }
 
@@ -86,7 +84,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   }
 
   isActive(): boolean {
-    return this.threadManager.hasThread(this.runId);
+    return this.threadManager.getThread(this.runId) === this.codexThread;
   }
 
   hasListeners(): boolean {
@@ -188,7 +186,18 @@ export class CodexAgentRunBackend implements AgentRunBackend {
 
   async terminateRun(): Promise<string | null> {
     const platformAgentRunId = this.getPlatformAgentRunId();
-    await this.threadManager.terminateThread(this.runId);
+    await this.threadManager.terminateThread(this.runId, this.codexThread);
+    // The thread fence closed its finite native source. A synchronous native
+    // terminal update does not mean its async canonical batch reached AgentRun.
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      await Promise.race([
+        Promise.all([...this.sourceEventWork]),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(new Error("Codex canonical event delivery proof pending.")), 10_000);
+        }),
+      ]);
+    } finally { clearTimeout(timer); }
     this.unsubscribeFromThread?.();
     this.unsubscribeFromThread = null;
     return platformAgentRunId;

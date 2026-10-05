@@ -1,3 +1,4 @@
+import type { CodexAppServerClientLease } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import {
   getCodexAppServerClientManager,
   type CodexAppServerClientManager,
@@ -23,6 +24,9 @@ import {
 
 export class CodexThreadManager {
   private readonly runContexts = new Map<string, CodexRunContext>();
+  private readonly preparations = new Map<string, ThreadPreparation>();
+  private readonly releasedThreads = new WeakSet<CodexThread>();
+  private readonly released = new WeakSet<CodexRunContext>();
   private readonly threads = new Map<string, CodexThread>();
   private readonly clientManager: CodexAppServerClientManager;
   private readonly threadCleanup: CodexThreadCleanup;
@@ -41,24 +45,12 @@ export class CodexThreadManager {
     this.systemInstructionCaptureService = systemInstructionCaptureService;
   }
 
-  async createThread(
-    runContext: CodexRunContext,
-  ): Promise<CodexThread> {
-    await this.closeThread(runContext.runId);
-    const thread = await this.startThread(runContext, null);
-    this.runContexts.set(runContext.runId, runContext);
-    this.threads.set(runContext.runId, thread);
-    return thread;
+  createThread(runContext: CodexRunContext, assertAccepting: () => void): Promise<CodexThread> {
+    return this.startThread(runContext, null, assertAccepting);
   }
 
-  async restoreThread(
-    runContext: CodexRunContext,
-  ): Promise<CodexThread> {
-    await this.closeThread(runContext.runId);
-    const thread = await this.startThread(runContext, runContext.runtimeContext.threadId);
-    this.runContexts.set(runContext.runId, runContext);
-    this.threads.set(runContext.runId, thread);
-    return thread;
+  restoreThread(runContext: CodexRunContext, assertAccepting: () => void): Promise<CodexThread> {
+    return this.startThread(runContext, runContext.runtimeContext.threadId, assertAccepting);
   }
 
   hasThread(runId: string): boolean {
@@ -73,44 +65,76 @@ export class CodexThreadManager {
     return this.runContexts.get(runId) ?? null;
   }
 
-  async terminateThread(runId: string): Promise<void> {
-    await this.closeThread(runId);
+  async terminateThread(runId: string, expectedThread: CodexThread): Promise<void> {
+    const owner = this.preparations.get(runId);
+    if (!owner) {
+      if (this.releasedThreads.has(expectedThread)) return;
+      throw new Error("Codex exact thread release authority unavailable.");
+    }
+    if (owner.thread !== expectedThread) throw new Error("Codex thread release generation mismatch.");
+    await this.releasePreparation(owner.context);
   }
 
-  private async closeThread(runId: string): Promise<void> {
-    const runContext = this.runContexts.get(runId);
-    if (!runContext) {
-      return;
-    }
-    this.runContexts.delete(runId);
-    const thread = this.threads.get(runId) ?? null;
-    this.threads.delete(runId);
-    if (thread) {
-      thread.rejectStartupReady(
-        new Error(`Codex thread '${runId}' was closed before startup completed.`),
-      );
-      thread.clearListeners();
-      thread.clearApprovalRecords();
-      thread.clearPendingMcpToolCalls();
-      thread.unbindAll();
-    }
-    runContext.runtimeContext.activeTurnId = null;
-    await this.threadCleanup.cleanupThreadResources(
-      runContext.runtimeContext.toCleanupTarget(),
-    );
+  releasePreparation(context: CodexRunContext): Promise<void> {
+    if (this.released.has(context)) return Promise.resolve();
+    const owner = this.preparations.get(context.runId);
+    if (!owner) return Promise.resolve(); // identity plan/bootstrap has not started a thread
+    if (owner.context !== context) return Promise.reject(new Error("Codex preparation generation mismatch."));
+    owner.cancelled = true;
+    owner.thread?.cancelRuntimeInput();
+    if (owner.releaseAttempt) return owner.releaseAttempt;
+    const attempt = (async () => {
+      const errors: unknown[] = [];
+      const thread = owner.thread;
+      if (thread) {
+        try {
+          await thread.releaseRuntimeInput();
+          thread.rejectStartupReady(new Error("Codex preparation was closed."));
+          thread.clearListeners(); thread.clearApprovalRecords(); thread.clearPendingMcpToolCalls(); thread.unbindAll();
+        } catch (error) { errors.push(error); }
+      }
+      try { await this.threadCleanup.cleanupPreparedWorkspaceSkills(context.runtimeContext.materializedConfiguredSkills); }
+      catch (error) { errors.push(error); }
+      if (!errors.length) {
+        try { await owner.lease.release(); } catch (error) { errors.push(error); }
+      }
+      if (errors.length) throw new AggregateError(errors, "Codex exact thread cleanup failed.");
+      if (!owner.settled) throw new Error("Codex thread startup continuation still pending.");
+      this.preparations.delete(context.runId);
+      this.runContexts.delete(context.runId);
+      this.threads.delete(context.runId);
+      this.released.add(context);
+      if (thread) this.releasedThreads.add(thread);
+    })();
+    owner.releaseAttempt = attempt;
+    void attempt.finally(() => { if (owner.releaseAttempt === attempt) owner.releaseAttempt = null; }).catch(() => undefined);
+    return attempt;
   }
 
   private async startThread(
     runContext: CodexRunContext,
     resumeThreadId: string | null,
+    assertAccepting: () => void,
   ): Promise<CodexThread> {
+    assertAccepting();
+    if (this.preparations.has(runContext.runId)) throw new Error("Codex thread still owns preparation/cleanup.");
     const config = runContext.runtimeContext.codexThreadConfig;
-    const client = await this.clientManager.acquireClient(config.workingDirectory);
-    const thread = new CodexThread({
-      runContext,
-      client,
-      startup: createCodexThreadStartupGate(),
-    });
+    const owner: ThreadPreparation = {
+      context: runContext, lease: this.clientManager.beginAcquire(config.workingDirectory),
+      thread: null, cancelled: false, settled: false, releaseAttempt: null,
+    };
+    this.preparations.set(runContext.runId, owner);
+    this.runContexts.set(runContext.runId, runContext);
+    const assertCurrent = () => {
+      assertAccepting();
+      if (owner.cancelled) throw new Error("Codex thread preparation cancelled.");
+    };
+    try {
+    const client = await owner.lease.acquire();
+    assertCurrent();
+    const thread = new CodexThread({ runContext, client, startup: createCodexThreadStartupGate() });
+    owner.thread = thread;
+    this.threads.set(runContext.runId, thread);
     const unbind = this.clientThreadRouter.registerThread({
       client: thread.client,
       thread,
@@ -119,7 +143,6 @@ export class CodexThreadManager {
       },
     });
     thread.addUnbindHandler(unbind);
-    try {
       const suppliedAt = Date.now() / 1000;
       const threadId = resumeThreadId
         ? await this.resumeRemoteThread(
@@ -131,6 +154,7 @@ export class CodexThreadManager {
             client,
             config,
           );
+      assertCurrent();
       if (!threadId) {
         throw new Error("Codex thread id was not returned by app server.");
       }
@@ -148,18 +172,9 @@ export class CodexThreadManager {
       }
       thread.markStartupReady();
       return thread;
-    } catch (error) {
-      thread.rejectStartupReady(
-        error instanceof Error ? error : new Error(String(error)),
-      );
-      thread.clearListeners();
-      thread.clearApprovalRecords();
-      thread.clearPendingMcpToolCalls();
-      thread.unbindAll();
-      await this.clientManager
-        .releaseClient(config.workingDirectory)
-        .catch(() => {});
-      throw error;
+    } finally {
+      owner.settled = true;
+      if (owner.cancelled) void this.releasePreparation(runContext).catch((error) => console.warn("CODEX_PREPARATION_RELEASE_FAILED", error));
     }
   }
 
@@ -213,27 +228,11 @@ export class CodexThreadManager {
   }
 
   private handleUnexpectedThreadClosure(thread: CodexThread): void {
-    const runContext = this.runContexts.get(thread.runId);
-    if (this.threads.get(thread.runId) !== thread) {
-      return;
-    }
-    this.runContexts.delete(thread.runId);
-    this.threads.delete(thread.runId);
-    if (runContext) {
-      runContext.runtimeContext.activeTurnId = null;
-    }
-    thread.clearListeners();
-    thread.clearApprovalRecords();
-    thread.clearPendingMcpToolCalls();
-    void this.threadCleanup
-      .cleanupThreadResources(
-        runContext?.runtimeContext.toCleanupTarget() ?? {
-          workingDirectory: thread.workingDirectory,
-          materializedConfiguredSkills: [],
-        },
-      )
-      .catch(() => {});
+    const owner = this.preparations.get(thread.runId);
+    if (owner?.thread !== thread) return;
+    void this.releasePreparation(owner.context).catch((error) => console.warn("CODEX_THREAD_RELEASE_FAILED", error));
   }
+
 }
 
 let cachedCodexThreadManager: CodexThreadManager | null = null;
@@ -243,4 +242,9 @@ export const getCodexThreadManager = (): CodexThreadManager => {
     cachedCodexThreadManager = new CodexThreadManager();
   }
   return cachedCodexThreadManager;
+};
+
+type ThreadPreparation = {
+  context: CodexRunContext; lease: CodexAppServerClientLease; thread: CodexThread | null;
+  cancelled: boolean; settled: boolean; releaseAttempt: Promise<void> | null;
 };

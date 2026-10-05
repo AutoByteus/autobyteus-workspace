@@ -26,7 +26,7 @@ const createHarness = async () => {
     createId: () => `project_${++projectCounter}`,
   });
   const tasks = new ProjectTaskService({ store, contextStore, now, createId: () => `project_task_${++taskCounter}` });
-  const readFile = async () => JSON.parse(await fs.readFile(store.getFilePath(), "utf-8"));
+  const readFile = async () => JSON.parse(await fs.readFile(store.getFilePath(), "utf-8")).filter((row: object) => Object.hasOwn(row, "projectId"));
   return { appDataDir, store, projects, tasks, readFile };
 };
 
@@ -61,6 +61,7 @@ describe("ProjectTaskService", () => {
       description: "Write release notes for 1.4.87\nInclude Projects and Tasks",
       status: "TODO",
       contextFiles: [],
+      executionLifetimes: [],
       createdAt: expect.any(String),
       updatedAt: task.createdAt,
     });

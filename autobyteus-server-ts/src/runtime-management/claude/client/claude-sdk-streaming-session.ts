@@ -38,7 +38,7 @@ export interface ClaudeSdkStreamingSession {
   interruptAndCancelQueued(): Promise<ClaudeSdkInterruptOutcome>;
   resolveSelectedModel(selectedValue: string): Promise<ClaudeSdkSelectedModelResolution>;
   /** Ends the input channel and closes the query (kills the CLI process). */
-  close(): void;
+  requestClose(): void;
 }
 
 export const CLAUDE_CANCEL_QUEUED_CAPABILITY = "interrupt_cancel_queued_v1";
@@ -59,6 +59,7 @@ export class ClaudeSdkInputChannel implements AsyncIterable<ClaudeSdkUserMessage
 
   end(): void {
     this.ended = true;
+    this.buffered.length = 0;
     this.signal();
   }
 
@@ -107,6 +108,7 @@ class ClaudeSdkStreamingSessionHandle implements ClaudeSdkStreamingSession {
   constructor(
     private readonly query: ClaudeSdkQueryLike,
     private readonly input: ClaudeSdkInputChannel,
+    private readonly assertAccepting: () => void,
   ) {
     this.messages = { [Symbol.asyncIterator]: () => this.readMessages() };
   }
@@ -116,6 +118,7 @@ class ClaudeSdkStreamingSessionHandle implements ClaudeSdkStreamingSession {
   }
 
   send(message: ClaudeSdkUserMessage): void {
+    this.assertAccepting();
     this.input.push(message);
   }
 
@@ -123,6 +126,7 @@ class ClaudeSdkStreamingSessionHandle implements ClaudeSdkStreamingSession {
     // RSK-006: SDK 0.3.280 passes `cancelQueued` through (`cancel_queued` control field,
     // capability `interrupt_cancel_queued_v1`) but its d.ts omits the parameter. Keep that
     // undeclared call confined to this adapter.
+    this.assertAccepting();
     const interrupt = this.query.interrupt as unknown as InterruptWithOptions;
     const response = asObject(await interrupt.call(this.query, { cancelQueued: true }));
     return {
@@ -132,16 +136,13 @@ class ClaudeSdkStreamingSessionHandle implements ClaudeSdkStreamingSession {
   }
 
   resolveSelectedModel(selectedValue: string): Promise<ClaudeSdkSelectedModelResolution> {
+    this.assertAccepting();
     return resolveClaudeSdkSelectedModelForQuery(this.query, selectedValue);
   }
 
-  close(): void {
+  requestClose(): void {
     this.input.end();
-    try {
-      this.query.close();
-    } catch {
-      // best-effort cleanup
-    }
+    this.query.close();
   }
 
   private async *readMessages(): AsyncGenerator<unknown> {
@@ -149,6 +150,7 @@ class ClaudeSdkStreamingSessionHandle implements ClaudeSdkStreamingSession {
       if (!this.capabilitySnapshot) {
         this.capabilitySnapshot = readInitCapabilities(frame);
       }
+      this.assertAccepting();
       yield frame;
     }
   }
@@ -157,4 +159,5 @@ class ClaudeSdkStreamingSessionHandle implements ClaudeSdkStreamingSession {
 export const createClaudeSdkStreamingSession = (
   query: ClaudeSdkQueryLike,
   input: ClaudeSdkInputChannel,
-): ClaudeSdkStreamingSession => new ClaudeSdkStreamingSessionHandle(query, input);
+  assertAccepting: () => void,
+): ClaudeSdkStreamingSession => new ClaudeSdkStreamingSessionHandle(query, input, assertAccepting);

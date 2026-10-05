@@ -107,8 +107,10 @@ class ScopedSessionLedger {
   }
 
   private deactivateOwnedSession(sessionId: string): boolean {
-    if (!this.ownedSessions.delete(sessionId)) return false;
-    return this.registry.deactivateSession(sessionId);
+    if (!this.ownedSessions.has(sessionId)) return false;
+    const deactivated = this.registry.deactivateSession(sessionId);
+    this.ownedSessions.delete(sessionId);
+    return deactivated;
   }
 }
 

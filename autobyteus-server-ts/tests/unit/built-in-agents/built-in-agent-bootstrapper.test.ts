@@ -8,7 +8,7 @@ import { AgentDefinitionService } from "../../../src/agent-definition/services/a
 import { parseAgentMd, serializeAgentMd } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
 import {
-  DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+  DAILY_ASSISTANT_AGENT_DEFINITION_ID, PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
   RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } from "../../../src/built-in-agents/built-in-agent-registry.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -81,6 +81,18 @@ describe("BuiltInAgentBootstrapper", () => {
     agentDefinitionId,
   );
 
+  it("ships the business-only Manager prompt and unchanged ordinary tools through real bootstrap", async () => {
+    const services = createServices();
+    await bootstrapBuiltInAgents(services);
+    const prompt = await fs.readFile(path.join(agentDir(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID), "agent.md"), "utf8");
+    expect(prompt).toBe(await readTemplate("project-task-manager", "agent.md"));
+    for (const businessDuty of ["list_projects", "list_project_tasks", "TODO", "recipient_address and task_id", "IN_PROGRESS", "target_agent_run_id", "send_message_to", "results, artifacts and user instructions", "DONE", "completion information is missing"]) expect(prompt).toContain(businessDuty);
+    expect(prompt).not.toMatch(/runtime|resource|cleanup|lifetime|cascade|restore|global Stop|scheduler|polling|notifier|self-DONE|completion[- ]report/i);
+    const config = await readJson(path.join(agentDir(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID), "agent-config.json"));
+    expect(config.toolNames).toEqual(["list_projects", "list_project_tasks", "create_or_update_task", "list_available_agents", "delegate_task", "send_message_to", "read_file"]);
+    for (const key of ["inputProcessorNames", "llmResponseProcessorNames", "toolExecutionResultProcessorNames", "toolInvocationPreprocessorNames", "lifecycleProcessorNames"]) expect(config[key]).toEqual([]);
+  });
+
   const compactorAgentDir = (): string => agentDir(MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
   const skillImproverAgentDir = (): string => agentDir(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   const skillImproverPrivateSkillDir = (): string => path.join(
@@ -110,7 +122,8 @@ describe("BuiltInAgentBootstrapper", () => {
       agentsDir: path.join(tempDataDir, "agents"),
       refreshedCache: true,
     });
-    expect(result.builtInAgents).toHaveLength(2);
+    expect(result.builtInAgents).toHaveLength(3);
+    expect(result.builtInAgents.some(item => item.agentDefinitionId === PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID)).toBe(true);
     expect(result.builtInAgents.some(item => item.agentDefinitionId === MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toBe(false);
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       agentDefinitionId: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
@@ -392,6 +405,7 @@ describe("BuiltInAgentBootstrapper", () => {
       expect(definition?.toolNames).toContain("list_available_agents");
       expect((await fs.readdir(path.join(tempDataDir, "agents"))).sort()).toEqual([
         DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+        PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
         RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
       ].sort());
     });

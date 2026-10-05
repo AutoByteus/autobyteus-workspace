@@ -99,6 +99,7 @@ export class ProjectTaskContextStore {
     const filePath = this.layout.file(this.layout.taskDir(projectId, taskId), file.storedFilename);
     await this.layout.regular(filePath);
     if ((await fs.stat(filePath)).size !== file.sizeBytes) missing();
+    await fs.access(filePath, 4);
     return filePath;
   }
   async cleanupRemoved(projectId: string, taskId: string, files: ProjectTaskContextFile[]): Promise<void> {

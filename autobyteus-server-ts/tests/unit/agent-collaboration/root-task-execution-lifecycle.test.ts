@@ -77,11 +77,15 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     isOpen: () => true,
     authorize: () => undefined,
     assertCurrentSchemaReady: () => undefined,
-    prepareActivation: vi.fn(async (): Promise<PreparedTaskExecutionActivation> => ({
-      targetAgentRunId: "child-run",
-      commit: async () => ({ committed: true }),
-      abort: vi.fn(async () => undefined),
-    })),
+    root: caller.root,
+    planActivation: vi.fn(async input => ({ ...input, ownedAgentRunIds: ["child-run"],
+      link: { root: caller.root, execution: { agentRunId: "child-run" }, ingressAgentRunId: "child-run", purpose: "delegation" } })),
+    beginActivation: vi.fn(() => ({ prepare: async () => ({ targetAgentRunId: "child-run",
+      commit: async () => ({ committed: true }), acceptSeed: async guard => { guard(); return { accepted: true }; } }),
+      cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })), })),
+    registeredActivations: () => [], ownedExecutions: () => [], findLifetimeHelper: () => null,
+    lifetimeForAgent: () => undefined, linkForExecution: () => null,
+    cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: false, code: "UNAVAILABLE" })),
     taskExecutionChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
     isLive: (reference) => state.live.has(taskExecutionReferenceKey(reference)),
     assertRestorableChain: (agentRunId) => {
@@ -130,27 +134,22 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
   it("returns a null run ID with a message when nothing started, aborting the preparation", async () => {
     const abort = vi.fn(async () => undefined);
     const { lifecycle } = setup({
-      prepareActivation: async () => ({
-        targetAgentRunId: "child-run",
-        commit: async () => ({ committed: false, message: "tree write failed" }),
-        abort,
-      }),
+      beginActivation: () => ({ prepare: async () => ({ targetAgentRunId: "child-run",
+        commit: async () => ({ committed: false, message: "tree write failed" }), acceptSeed: async () => ({ accepted: true }) }),
+        cancel: () => undefined, release: async () => { await abort(); return { accepted: true }; } }),
     });
     await expect(lifecycle.delegate({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
       .resolves.toEqual({ target_agent_run_id: null, message: "tree write failed" });
 
-    const failing = setup({ prepareActivation: async () => { throw new Error("Agent '/missing' was not found."); } });
+    const failing = setup({ planActivation: async () => { throw new Error("Agent '/missing' was not found."); } });
     await expect(failing.lifecycle.delegate({ identity: caller }, { recipient_address: "/missing", description: "Do it" }, "placement"))
       .resolves.toEqual({ target_agent_run_id: null, message: "Agent '/missing' was not found." });
   });
 
   it("builds the first message with the delegator address and run ID", async () => {
-    const prepareActivation = vi.fn(async (): Promise<PreparedTaskExecutionActivation> => ({
-      targetAgentRunId: "child-run", commit: async () => ({ committed: true }), abort: async () => undefined,
-    }));
-    const { lifecycle } = setup({ prepareActivation });
+    const { lifecycle, adapter } = setup();
     await lifecycle.delegate({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
-    const packet = prepareActivation.mock.calls[0]![0].workPacket as AgentInputUserMessage;
+    const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
     expect(packet.content).toContain("Task delegator address: /coordinator");
     expect(packet.content).toContain("Task delegator AgentRun ID: coordinator-run");
     expect(packet.content).toContain("Review the plan");

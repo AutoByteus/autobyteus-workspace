@@ -9,6 +9,7 @@ import {
 } from "./task-delegation-tool-contract.js";
 import {
   DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
+  DELEGATE_TASK_ID_DESCRIPTION,
   DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
   DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION,
 } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
@@ -20,11 +21,12 @@ export const buildDelegateTaskParameterSchema = (): ParameterSchema => new Param
     description: DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
     required: true,
   }),
+  new ParameterDefinition({ name: "task_id", type: ParameterType.STRING, description: DELEGATE_TASK_ID_DESCRIPTION, required: false }),
   new ParameterDefinition({
     name: "description",
     type: ParameterType.STRING,
     description: DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
-    required: true,
+    required: false,
   }),
   new ParameterDefinition({
     name: "reference_files",

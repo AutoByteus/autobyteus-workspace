@@ -23,7 +23,7 @@ export class FakeClaudeStreamingSession implements ClaudeSdkStreamingSession {
   readonly interruptAndCancelQueued = vi.fn(
     async (): Promise<ClaudeSdkInterruptOutcome> => this.nextInterruptOutcome(),
   );
-  readonly close = vi.fn(() => this.end());
+  readonly requestClose = vi.fn(() => this.end());
   readonly resolveSelectedModel = vi.fn(async (_selectedValue: string) => ({
     resolvedRawModelId: this.resolvedRawModelId,
     resolution: (this.resolvedRawModelId ? "resolved" : "missing") as "resolved" | "missing",
@@ -135,7 +135,8 @@ export class FakeClaudeStreamingSession implements ClaudeSdkStreamingSession {
 }
 
 export type FakeClaudeSdkClient = {
-  openStreamingSession: ReturnType<typeof vi.fn>;
+  beginStreamingSession(input: { resolveOptions(): ClaudeSdkStreamingSessionOptions | Promise<ClaudeSdkStreamingSessionOptions> }): import("../../src/runtime-management/claude/client/claude-sdk-session-opening.js").ClaudeSdkSessionOpening;
+  acquireStreamingSession: ReturnType<typeof vi.fn>;
   getSessionMessages: ReturnType<typeof vi.fn>;
   listModels: ReturnType<typeof vi.fn>;
   sessions: Array<{ options: ClaudeSdkStreamingSessionOptions; session: FakeClaudeStreamingSession }>;
@@ -152,7 +153,32 @@ export const createFakeClaudeSdkClient = (input: {
   const sessions: FakeClaudeSdkClient["sessions"] = [];
   const client = {
     sessions,
-    openStreamingSession: vi.fn(async (options: ClaudeSdkStreamingSessionOptions) => {
+    beginStreamingSession: (openingInput: { resolveOptions(): ClaudeSdkStreamingSessionOptions | Promise<ClaudeSdkStreamingSessionOptions> }) => {
+      let cancelled = false, settled = false;
+      let attempt: Promise<FakeClaudeStreamingSession> | null = null;
+      let owned: FakeClaudeStreamingSession | null = null;
+      return {
+        open: () => {
+          if (attempt) return attempt;
+          if (cancelled) return Promise.reject(new Error("CLAUDE_OPENING_CLOSED"));
+          attempt = (async () => {
+            const options = await openingInput.resolveOptions();
+            if (cancelled) throw new Error("CLAUDE_OPENING_CLOSED");
+            const session = await client.acquireStreamingSession(options);
+            owned = session;
+            if (cancelled) { session.requestClose(); throw new Error("CLAUDE_OPENING_CLOSED"); }
+            return session;
+          })().finally(() => { settled = true; });
+          return attempt;
+        },
+        release: async () => {
+          cancelled = true;
+          owned?.requestClose();
+          return attempt && !settled ? { kind: "pending" as const, code: "FAKE_OPENING_PENDING", message: "Test acquisition still pending." } : { kind: "released" as const };
+        },
+      };
+    },
+    acquireStreamingSession: vi.fn(async (options: ClaudeSdkStreamingSessionOptions) => {
       const session = new FakeClaudeStreamingSession(
         input.providerSessionId ?? options.sessionBinding.sessionId,
         input.capabilities,

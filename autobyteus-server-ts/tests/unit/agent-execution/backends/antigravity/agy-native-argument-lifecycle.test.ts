@@ -5,6 +5,7 @@ vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-step
 vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-task-exit-message-reader.js", () => ({
   scanAgyTaskExitMessages: () => ({ settledFiles: [], exits: [], problem: null }),
 }));
+import { AgentRun } from "../../../../../src/agent-execution/domain/agent-run.js";
 import { AgyAgentRunBackend } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
@@ -19,7 +20,7 @@ const result = (): AgyStreamMessage => ({ event: "result", result: { conversatio
 class FakeProcess {
   private listener: (message: AgyStreamMessage) => void = () => undefined;
   private closed: () => void = () => undefined;
-  readonly stop = vi.fn();
+  readonly stop = vi.fn(async () => {});
   subscribe(listener: typeof this.listener) { this.listener = listener; }
   onClose(listener: typeof this.closed) { this.closed = listener; }
   async sendUserMessage() {}
@@ -151,5 +152,54 @@ describe("ordered native first-input capture in AGY backend", () => {
     conflict.process.emit(message);
     await waitFor(() => !conflict.backend.isActive());
     expect(readAgyNativeToolArguments).not.toHaveBeenCalled();
+  });
+
+  it.each([false, true])("force release (activeTurn=%s) waits for exact stop, not early offline/terminal delivery", async activeTurn => {
+    const current = setup();
+    const run = new AgentRun({ context: current.backend.getContext(), backend: current.backend,
+      providerInputNormalizer: { normalizeForProvider: input => input } });
+    if (activeTurn) await start(current.backend);
+    let resolve!: () => void;
+    current.process.stop.mockImplementationOnce(() => new Promise<void>(done => { resolve = done; }));
+    let settled = false;
+    const release = run.forceReleaseRuntime().then(value => { settled = true; return value; });
+    await waitFor(() => current.process.stop.mock.calls.length === 1);
+    expect(run.isActive()).toBe(false);
+    if (activeTurn) await waitFor(() => current.events.some(event => event.eventType === AgentRunEventType.TURN_INTERRUPTED));
+    expect(settled).toBe(false);
+    expect((await current.backend.dispatchUserInput({ kind: "start_turn", message: { content: "late" } } as never)).forwarded).toBe(false);
+    resolve();
+    expect((await release).accepted).toBe(true);
+  });
+
+  it.each([false, true])("force release (activeTurn=%s) retains failed exact stop for explicit same-owner retry", async activeTurn => {
+    const current = setup();
+    const run = new AgentRun({ context: current.backend.getContext(), backend: current.backend,
+      providerInputNormalizer: { normalizeForProvider: input => input } });
+    if (activeTurn) await start(current.backend);
+    const failure = new Error("owned stop unconfirmed");
+    current.process.stop.mockRejectedValueOnce(failure);
+    await expect(run.forceReleaseRuntime()).rejects.toBe(failure);
+    expect(current.process.stop).toHaveBeenCalledTimes(1);
+    expect(run.isActive()).toBe(false); // still not release proof
+    expect((await run.forceReleaseRuntime()).accepted).toBe(true);
+    expect(current.process.stop).toHaveBeenCalledTimes(2);
+    expect((await run.forceReleaseRuntime()).accepted).toBe(true);
+    expect(current.process.stop).toHaveBeenCalledTimes(2); // AgentRun caches proven release only
+    if (activeTurn) expect(current.events.filter(event => event.eventType === AgentRunEventType.TURN_INTERRUPTED)).toHaveLength(1);
+  });
+
+  it("records automatic send-error stop failure without an unhandled rejection or invented release", async () => {
+    const current = setup();
+    const failure = new Error("owned stop unconfirmed");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      vi.spyOn(current.process, "sendUserMessage").mockRejectedValueOnce(new Error("send rejected"));
+      current.process.stop.mockRejectedValueOnce(failure);
+      expect((await start(current.backend)).forwarded).toBe(false);
+      expect(warn).toHaveBeenCalledWith("AGY_EXACT_STOP_FAILED", failure);
+      expect((await current.backend.terminate()).accepted).toBe(true);
+      expect(current.process.stop).toHaveBeenCalledTimes(2);
+    } finally { warn.mockRestore(); }
   });
 });

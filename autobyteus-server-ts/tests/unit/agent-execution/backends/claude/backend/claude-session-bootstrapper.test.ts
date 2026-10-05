@@ -68,7 +68,7 @@ describe("ClaudeSessionBootstrapper", () => {
       createRunContext({
         autoExecuteTools: true,
         memberExecutionContext,
-      }),
+      }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
     );
 
     expect(runContext.runtimeContext.sessionConfig).toMatchObject({
@@ -103,9 +103,9 @@ describe("ClaudeSessionBootstrapper", () => {
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
       autoExecuteTools: false,
-    }));
+    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
-    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith({
+    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(expect.objectContaining({
       runId: "run-claude-standalone",
       workingDirectory: WORKING_DIRECTORY,
       requests: [
@@ -113,7 +113,7 @@ describe("ClaudeSessionBootstrapper", () => {
         { kind: "reconcile-unresolved", name: "missing-skill" },
       ],
       workspaceCollisionPolicy: "fail",
-    });
+    }));
     expect(runContext.runtimeContext.configuredSkills).toEqual([skill]);
   });
 
@@ -123,7 +123,7 @@ describe("ClaudeSessionBootstrapper", () => {
       { kind: "resolved", skill },
     ], "ALL_INSTALLED");
 
-    await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }));
+    await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
       expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace" }));

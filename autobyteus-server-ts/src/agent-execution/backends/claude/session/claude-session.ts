@@ -93,6 +93,7 @@ export class ClaudeSession {
   private openProcess: ClaudeOpenProcessState | null = null;
   private selectedBinding: ClaudeSdkSelectedBinding;
   private closing: Promise<void> | null = null;
+  private closingTurn: Promise<void> | null = null;
 
   constructor(input: ClaudeSessionStateInput) {
     this.runContext = input.runContext;
@@ -111,7 +112,7 @@ export class ClaudeSession {
     });
     this.process = new ClaudeSessionProcess({
       lifecycle: this.providerSessionLifecycle,
-      openSession: (binding, diagnostics) => this.openStreamingSession(binding, diagnostics),
+      beginOpenSession: (binding, diagnostics) => this.beginOpenStreamingSession(binding, diagnostics),
       onOpened: (opened) => this.handleProcessOpened(opened),
       onFrame: (frame) => this.handleFrame(frame),
       onExit: (error) => this.handleProcessExit(error),
@@ -173,6 +174,8 @@ export class ClaudeSession {
     };
   }
 
+  releaseAgentToolsMcp(): void { this.agentToolsMcpSessionState.release(this.runId); }
+
   clearRuntimeListeners(): void {
     this.listeners.clear();
   }
@@ -196,7 +199,7 @@ export class ClaudeSession {
     message: AgentInputUserMessage,
     dispatch: ClaudeInputDispatch,
   ): Promise<ClaudeSessionInputResult> {
-    if (this.closing) {
+    if (this.closing || this.closingTurn) {
       return { accepted: false, code: "CLAUDE_SESSION_CLOSED", message: `Claude run '${this.runId}' is closed.` };
     }
     if (!hasClaudeUserMessageContent(message)) {
@@ -267,20 +270,29 @@ export class ClaudeSession {
     return task;
   }
 
-  /**
-   * Terminate/cleanup path: settles an active turn as interrupted, then closes the CLI
-   * process (stopping its background tasks). Idempotent; never emits errors.
-   */
-  closeProcess(pendingToolApprovalReason: string): Promise<void> {
-    this.closing ??= (async () => {
+  /** Bounded canonical handoff; listeners must survive this, not the physical exit. */
+  closeTurnForTermination(pendingToolApprovalReason: string): Promise<void> {
+    this.closingTurn ??= (async () => {
       this.dependencies.toolingCoordinator.clearPendingToolApprovals(this.runId, pendingToolApprovalReason);
       // Let resumed canUseTool callbacks flush their deny response before the transport closes.
       await Promise.resolve();
       this.turnTracker.close();
+    })();
+    const attempt = this.closingTurn;
+    void attempt.catch(() => { if (this.closingTurn === attempt) this.closingTurn = null; });
+    return attempt;
+  }
+
+  /** Canonical interrupted handoff followed by retained exact CLI/background cleanup. */
+  closeProcess(pendingToolApprovalReason: string): Promise<void> {
+    this.closing ??= (async () => {
+      await this.closeTurnForTermination(pendingToolApprovalReason);
       this.openProcess = null;
       await this.process.close();
     })();
-    return this.closing;
+    const attempt = this.closing;
+    void attempt.catch(() => { if (this.closing === attempt) this.closing = null; });
+    return attempt;
   }
 
   async terminate(): Promise<void> {
@@ -317,10 +329,11 @@ export class ClaudeSession {
     await settled;
   }
 
-  private async openStreamingSession(
+  private beginOpenStreamingSession(
     binding: ClaudeSdkSessionBinding,
     diagnostics: ClaudeProcessDiagnostics,
-  ): Promise<ClaudeSdkStreamingSession> {
+  ) {
+    return this.dependencies.sdkClient.beginStreamingSession({ resolveOptions: async () => {
     const toolingInput = {
       runtimeToolExposure: this.runContext.runtimeContext.runtimeToolExposure,
       hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
@@ -338,8 +351,7 @@ export class ClaudeSession {
       agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
     });
     const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
-    const suppliedAt = Date.now() / 1000;
-    const session = await this.dependencies.sdkClient.openStreamingSession({
+    return {
       systemPrompt: this.runContext.runtimeContext.carpenterSystemPrompt,
       sessionBinding: binding,
       model: this.model,
@@ -356,23 +368,14 @@ export class ClaudeSession {
           input,
           toolOptions,
         ),
-    });
-    try {
-      captureClaudeSystemInstructions({
-        service: this.dependencies.systemInstructionCaptureService,
-        memoryDir: this.runContext.config.memoryDir,
-        content: this.runContext.runtimeContext.carpenterSystemPrompt,
-        suppliedAt,
-        emitEvent: (event) => this.emitRuntimeEvent(event),
-      });
-    } catch (error) {
-      session.close();
-      throw error;
-    }
-    return session;
+    };
+    } });
   }
 
   private handleProcessOpened(opened: ClaudeSessionProcessOpened): void {
+    captureClaudeSystemInstructions({ service: this.dependencies.systemInstructionCaptureService,
+      memoryDir: this.runContext.config.memoryDir, content: this.runContext.runtimeContext.carpenterSystemPrompt,
+      suppliedAt: Date.now() / 1000, emitEvent: event => this.emitRuntimeEvent(event) });
     this.selectedBinding = bindClaudeSelectedModel.initial(this.model);
     this.openProcess = {
       queryKind: opened.binding.kind,

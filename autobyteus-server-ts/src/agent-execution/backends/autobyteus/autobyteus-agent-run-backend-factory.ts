@@ -35,6 +35,8 @@ import {
   AutoByteusAgentRunBackend,
   type AutoByteusAgentLike,
 } from "./autobyteus-agent-run-backend.js";
+import { createBackendPreparation } from "../agent-run-backend-preparation.js";
+import type { AgentRunBackendPreparationRequest } from "../agent-run-backend-factory.js";
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { buildAutoByteusManagedCollaborationContext } from "./autobyteus-managed-collaboration-context-builder.js";
 import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
@@ -138,9 +140,36 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     this.applicationAgentTools = options.applicationAgentTools ?? null;
   }
 
-  async createBackend(
+  beginPreparation(request: AgentRunBackendPreparationRequest) {
+    let agent: AutoByteusRuntimeAgentLike | null = null;
+    let llm: BaseLLM | null = null;
+    let backend: AutoByteusAgentRunBackend | null = null;
+    const ownAgent = (acquired: AutoByteusRuntimeAgentLike) => { agent = acquired; };
+    const ownLlm = (acquired: BaseLLM) => { llm = acquired; };
+    return createBackendPreparation({
+      prepare: async (assertAccepting) => {
+        backend = request.kind === "new"
+          ? await this.createBackend(request.config, request.runId, assertAccepting, ownAgent, ownLlm)
+          : await this.restoreBackend(request.context, assertAccepting, ownAgent, ownLlm);
+        return backend;
+      },
+      releaseResources: async () => {
+        if (backend) {
+          const result = await backend.terminate();
+          if (!result.accepted) throw new Error(result.message ?? "Native Agent release failed.");
+        } else if (agent) {
+          await this.agentFactory.removeAgent(agent.agentId, 10);
+        } else if (llm) { await llm.cleanup(); }
+      },
+    });
+  }
+
+  private async createBackend(
     config: AgentRunConfig,
     agentRunId: string,
+    assertAccepting: () => void,
+    ownAgent: (agent: AutoByteusRuntimeAgentLike) => void,
+    ownLlm: (llm: BaseLLM) => void,
   ): Promise<AutoByteusAgentRunBackend> {
     const runId = agentRunId.trim();
     if (!runId) {
@@ -148,7 +177,8 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         "AutoByteus standalone backend creation requires agentRunId.",
       );
     }
-    const built = await this.buildAgentConfig(config, runId);
+    const built = await this.buildAgentConfig(config, runId, ownLlm);
+    assertAccepting();
     const memoryDir = built.resolvedRunConfig.memoryDir;
     if (!memoryDir) {
       throw new AgentCreationError(
@@ -178,7 +208,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         "AutoByteus AgentFactory must support createAgentWithId(...) for explicit standalone run provisioning.",
       );
     }
+    assertAccepting();
     const agent = createAgentWithId.call(this.agentFactory, runId, built.agentConfig) as AgentLike;
+    ownAgent(agent as AutoByteusRuntimeAgentLike);
     if (agent.agentId !== runId) {
       throw new AgentCreationError(
         `AutoByteus AgentFactory returned agent id '${agent.agentId}' but '${runId}' was requested.`,
@@ -186,6 +218,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     }
     agent.start?.();
     await this.waitForIdle(agent as Agent);
+    assertAccepting();
     return this.createBackendFromAgent(
       new AgentRunContext({
         runId: agent.agentId,
@@ -196,10 +229,14 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     );
   }
 
-  async restoreBackend(
+  private async restoreBackend(
     context: AgentRunContext<RuntimeAgentRunContext>,
+    assertAccepting: () => void,
+    ownAgent: (agent: AutoByteusRuntimeAgentLike) => void,
+    ownLlm: (llm: BaseLLM) => void,
   ): Promise<AutoByteusAgentRunBackend> {
-    const built = await this.buildAgentConfig(context.config, context.runId);
+    const built = await this.buildAgentConfig(context.config, context.runId, ownLlm);
+    assertAccepting();
     const memoryDir = context.config.memoryDir;
     if (!memoryDir) {
       throw new AgentCreationError(
@@ -208,13 +245,16 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     }
     await fs.mkdir(memoryDir, { recursive: true });
     built.agentConfig.memoryDir = memoryDir;
+    assertAccepting();
     const agent = this.agentFactory.restoreAgent(
       context.runId,
       built.agentConfig,
       memoryDir,
     ) as AgentLike;
+    ownAgent(agent as AutoByteusRuntimeAgentLike);
     agent.start?.();
     await this.waitForIdle(agent as Agent);
+    assertAccepting();
     return this.createBackendFromAgent(
       new AgentRunContext({
         runId: agent.agentId,
@@ -238,6 +278,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
   private async buildAgentConfig(
     options: AgentRunConfig,
     runId: string,
+    ownLlm: (llm: BaseLLM) => void,
   ): Promise<{ agentConfig: AgentConfig; resolvedRunConfig: AgentRunConfig }> {
     const {
       agentDefinitionId,
@@ -393,6 +434,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       llmConfig ?? undefined,
     );
 
+    ownLlm(llmInstance);
     const effectiveRuntimeKind =
       runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEUS) ??
       RuntimeKind.AUTOBYTEUS;

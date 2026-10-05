@@ -24,6 +24,8 @@ const schemaMigrations = [
   "20260730090000_add_token_usage_provider_name",
   "20260801090000_token_usage_member_display_name",
   "20260819090000_add_token_usage_run_records",
+  // Normal startup expands the current target before app-data conversion.
+  "20260923130000_add_claude_sdk_usage_state",
 ] as const;
 
 const readMigration = (migrationId: string): Promise<string> => fs.readFile(
@@ -107,6 +109,9 @@ const createReleasedUpgradeDatabase = async (databasePath: string): Promise<void
     for (const migrationId of schemaMigrations.slice(1)) {
       database.exec(await readMigration(migrationId));
     }
+    expect(database.prepare('PRAGMA table_info("token_usage_run_records")').all()).toEqual(
+      expect.arrayContaining([expect.objectContaining({ name: "claude_sdk_usage_state_json" })]),
+    );
     seedLaterRows(database);
   } finally {
     database.close();

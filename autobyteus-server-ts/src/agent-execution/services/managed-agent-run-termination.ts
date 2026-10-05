@@ -16,6 +16,7 @@ export const createManagedAgentRunTermination = (input: Readonly<{
     runTermination: CommittedAgentRunTermination,
   ): Promise<AgentOperationResult>;
 }>): PreparedAgentRunTermination => {
+  const runId = input.expectedRun.runId;
   let state: "prepared" | "cancelled" | "committed" = "prepared";
   let committed: CommittedAgentRunTermination | null = null;
   return Object.freeze({
@@ -28,24 +29,24 @@ export const createManagedAgentRunTermination = (input: Readonly<{
     commit: () => {
       if (state === "cancelled") {
         throw new AgentTerminationError(
-          `Agent run '${input.expectedRun.runId}' termination preparation was cancelled.`,
+          `Agent run '${runId}' termination preparation was cancelled.`,
         );
       }
       if (committed) return committed;
       state = "committed";
-      const runTermination = input.runPreparation.commit();
+      let runTermination: CommittedAgentRunTermination | null = input.runPreparation.commit();
       let currentAttempt: Promise<AgentOperationResult> | null = null;
       let terminalAttempt: Promise<AgentOperationResult> | null = null;
       committed = Object.freeze({
         finish: () => {
           if (terminalAttempt) return terminalAttempt;
           if (currentAttempt) return currentAttempt;
-          const attempt = input.finishPublished(input.expectedRun, runTermination);
+          const attempt = input.finishPublished(input.expectedRun, runTermination!);
           currentAttempt = attempt;
           void attempt.then((result) => {
-            if (result.accepted) terminalAttempt = attempt;
+            if (result.accepted) { terminalAttempt = attempt; runTermination = null; input = null as never; }
             else if (currentAttempt === attempt) currentAttempt = null;
-          }, () => { terminalAttempt = attempt; });
+          }, () => { if (currentAttempt === attempt) currentAttempt = null; });
           return attempt;
         },
       });

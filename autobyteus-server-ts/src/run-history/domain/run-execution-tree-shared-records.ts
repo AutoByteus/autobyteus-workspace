@@ -1,3 +1,4 @@
+import type { TaskExecutionLifetimeStamp } from "../../agent-collaboration/execution/task/task-execution-lifetime.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
@@ -63,6 +64,7 @@ export type TaskAgentExecution = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
   source?: TaskAgentExecutionSource;
+  taskLifetime?: TaskExecutionLifetimeStamp;
 }>;
 
 export type TaskTeamAgentExecution = Readonly<{
@@ -89,6 +91,7 @@ export type TaskTeamExecution = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
   source?: TaskTeamExecutionSource;
+  taskLifetime?: TaskExecutionLifetimeStamp;
 }>;
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;

@@ -1578,3 +1578,50 @@ describe("CodexThread token usage readiness", () => {
     expect(messages.at(-1)?.params).not.toHaveProperty("turn_id");
   });
 });
+
+describe("Task-owned exact Codex input release", () => {
+  it("waits a late turn/start, interrupts that exact turn and requires terminal notification, protecting another thread", async () => {
+    const { thread, client } = createThread(false);
+    thread.runContext.runtimeContext.threadId = "owned-thread-A"; thread.markStartupReady();
+    const other = createThread(true); other.thread.runContext.runtimeContext.threadId = "borrowed-thread-B"; other.thread.markStartupReady();
+    let resolveStart!: (value: unknown) => void;
+    client.request.mockImplementationOnce(() => new Promise(resolve => { resolveStart = resolve; }) as never);
+    const start = thread.startInput(new AgentInputUserMessage("test-owned saved task"));
+    for (let n = 0; n < 8; n++) await Promise.resolve();
+    thread.cancelRuntimeInput();
+    let released = false;
+    const closing = thread.releaseRuntimeInput().then(() => { released = true; });
+    resolveStart({ turn: { id: "late-owned-turn-A" } });
+    await start;
+    for (let n = 0; n < 16; n++) await Promise.resolve();
+    expect(client.request).toHaveBeenCalledWith("turn/interrupt", { threadId: "owned-thread-A", turnId: "late-owned-turn-A" });
+    expect(released).toBe(false); // RPC response is not terminal turn proof.
+    thread.markTurnCompleted("late-owned-turn-A");
+    await closing;
+    expect(released).toBe(true);
+    const calls = client.request.mock.calls.length;
+    await thread.releaseRuntimeInput();
+    expect(client.request).toHaveBeenCalledTimes(calls);
+    await expect(thread.startInput(new AgentInputUserMessage("closed"))).rejects.toThrow("CODEX_THREAD_CLOSED");
+    thread.handleAppServerRequest(99, "mcpServer/elicitation/request", createSpeakApprovalParams());
+    expect(client.respondError).toHaveBeenCalledWith(99, -32000, expect.stringContaining("closed"));
+    expect(other.client.request).not.toHaveBeenCalled();
+    expect(other.thread.activeTurnId).toBeNull();
+  });
+
+  it("retains failed interrupt authority and retries only the same exact turn", async () => {
+    const { thread, client } = createThread(false);
+    thread.runContext.runtimeContext.threadId = "owned-thread-A"; thread.markStartupReady();
+    thread.markTurnStarted("owned-turn-A");
+    client.request.mockRejectedValueOnce(new Error("test-owned interrupt transport failure"));
+    await expect(thread.releaseRuntimeInput()).rejects.toThrow("transport failure");
+    expect(thread.activeTurnId).toBe("owned-turn-A");
+    const retry = thread.releaseRuntimeInput();
+    for (let n = 0; n < 8; n++) await Promise.resolve();
+    thread.markTurnCompleted("owned-turn-A");
+    await retry;
+    expect(client.request.mock.calls.map(([method]) => method)).toEqual(["turn/interrupt", "turn/interrupt"]);
+    await thread.releaseRuntimeInput();
+    expect(client.request).toHaveBeenCalledTimes(2);
+  });
+});

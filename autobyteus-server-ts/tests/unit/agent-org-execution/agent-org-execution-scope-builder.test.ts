@@ -1,3 +1,4 @@
+import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -50,6 +51,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
     expect((await executionTreeStore.write(orgMemoryDir, executionTree)).outcome).toBe("committed");
     const agentRun = {
       runId: agentRunId,
+      bindExecutionAdmissionFence: vi.fn(),
       isActive: () => true,
       getStatusSnapshot: () => ({ status: "idle" }),
       subscribeToEvents: vi.fn(() => () => undefined),
@@ -91,7 +93,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       } as never,
       orgDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       teamDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
-      agentRunManager: { prepareNewAgentRun } as never,
+      agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
       memoryLocator: {
         getLocation: () => ({ memoryDir: `/memory/agent_org/${orgRunId}/${agentRunId}` }),
       } as never,

@@ -1,6 +1,6 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
-import type { JsonObject } from "../codex-app-server-json.js";
+import { asObject, asString, type JsonObject } from "../codex-app-server-json.js";
 import { resolveTurnIdFromAppServerMessage } from "../thread/codex-thread-id-resolver.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
 
@@ -44,9 +44,22 @@ export const convertCodexTurnEvent = (
         payload,
       );
       context.clearOrderedToolsForBoundary(payload);
+      const turn = asObject(payload.turn);
+      const status = asString(turn?.status);
+      if (status === "failed" && turnId) {
+        const error = asObject(turn?.error);
+        return [...completionReasoningEnds, context.createEvent(codexEventName, AgentRunEventType.ERROR, {
+          code: "CODEX_TURN_FAILED",
+          message: asString(error?.message) ?? "Codex turn failed.",
+          error_scope: "turn",
+          error_effect: "terminal",
+          turn_id: turnId,
+        })];
+      }
       return [
         ...completionReasoningEnds,
-        context.createEvent(codexEventName, AgentRunEventType.TURN_COMPLETED, {
+        context.createEvent(codexEventName, status === "interrupted"
+          ? AgentRunEventType.TURN_INTERRUPTED : AgentRunEventType.TURN_COMPLETED, {
           ...(turnId ? { turnId } : {}),
         }),
       ];

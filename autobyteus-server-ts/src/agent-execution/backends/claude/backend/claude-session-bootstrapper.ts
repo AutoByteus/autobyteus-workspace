@@ -1,3 +1,4 @@
+import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
 import { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
@@ -9,7 +10,7 @@ import {
 import {
   getClaudeWorkspaceSkillMaterializer,
 } from "../claude-workspace-skill-materializer.js";
-import type { WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
+import type { MaterializedWorkspaceSkill, WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
 import {
   collectResolvedConfiguredSkills,
 } from "../../../../skills/domain/configured-agent-skill-binding.js";
@@ -39,21 +40,28 @@ export class ClaudeSessionBootstrapper {
     this.skillService = skillService;
   }
 
+  releaseSkills(skills: MaterializedWorkspaceSkill[]): Promise<void> {
+    return this.workspaceSkillMaterializer.cleanupMaterializedWorkspaceSkills(skills);
+  }
+
   async bootstrapForCreate(
     runContext: AgentRunContext<null>,
+    guard: ProviderPreparationGuard,
   ): Promise<ClaudeRunContext> {
-    return this.bootstrapInternal(runContext, null);
+    return this.bootstrapInternal(runContext, null, guard);
   }
 
   async bootstrapForRestore(
     runContext: AgentRunContext<ClaudeAgentRunContext>,
+    guard: ProviderPreparationGuard,
   ): Promise<ClaudeRunContext> {
-    return this.bootstrapInternal(runContext, runContext.runtimeContext);
+    return this.bootstrapInternal(runContext, runContext.runtimeContext, guard);
   }
 
   private async bootstrapInternal(
     runContext: AgentRunContext<ClaudeAgentRunContext | null>,
     existingRuntimeContext: ClaudeAgentRunContext | null,
+    guard: ProviderPreparationGuard,
   ): Promise<ClaudeRunContext> {
     const workingDirectory = await this.workspaceResolver.resolveWorkingDirectory(
       runContext.config.workspaceId,
@@ -74,6 +82,7 @@ export class ClaudeSessionBootstrapper {
     const materializedConfiguredSkills =
       await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
         runId: runContext.runId,
+        onAcquired: guard.ownSkill, assertAccepting: guard.assertAccepting,
         workingDirectory,
         requests: configuredSkillBindings.map((binding) =>
           binding.kind === "resolved"
@@ -82,6 +91,7 @@ export class ClaudeSessionBootstrapper {
         ),
         workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
       });
+    guard.assertAccepting();
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,

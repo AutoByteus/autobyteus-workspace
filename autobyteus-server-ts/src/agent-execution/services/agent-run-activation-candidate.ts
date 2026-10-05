@@ -32,27 +32,22 @@ export class AgentRunActivationCandidate {
     this.abortCandidate = input.abort;
   }
 
-  private readonly publishCandidate: () => AgentRun;
-  private readonly abortCandidate: () => Promise<AgentRunCandidateAbortResult>;
+  private publishCandidate: (() => AgentRun) | null;
+  private abortCandidate: (() => Promise<AgentRunCandidateAbortResult>) | null;
 
   commitPublication(): AgentRun {
     if (this.state !== "PREPARED") {
       throw new Error(`AgentRun candidate '${this.runId}' is not publishable from '${this.state}'.`);
     }
-    const run = this.publishCandidate();
+    const run = this.publishCandidate!();
     this.state = "PUBLISHED";
+    this.publishCandidate = null; this.abortCandidate = null;
     return run;
   }
 
   abort(): Promise<AgentRunCandidateAbortResult> {
     if (this.abortTask) return this.abortTask;
     if (this.state === "ABORTED") return Promise.resolve({ kind: "aborted" });
-    if (this.state === "QUARANTINED") {
-      return Promise.resolve({
-        kind: "quarantined",
-        error: new Error(`AgentRun candidate '${this.runId}' is quarantined.`),
-      });
-    }
     if (this.state === "PUBLISHED") {
       return Promise.resolve({
         kind: "quarantined",
@@ -60,12 +55,15 @@ export class AgentRunActivationCandidate {
       });
     }
     this.state = "ABORTING";
-    this.abortTask = this.abortCandidate().then((result) => {
+    this.abortTask = this.abortCandidate!().then((result) => {
       this.state = result.kind === "aborted" ? "ABORTED" : "QUARANTINED";
+      if (result.kind !== "aborted") this.abortTask = null;
+      else { this.publishCandidate = null; this.abortCandidate = null; }
       return result;
     }, (error: unknown) => {
       const normalized = error instanceof Error ? error : new Error(String(error));
       this.state = "QUARANTINED";
+      this.abortTask = null;
       return { kind: "quarantined", error: normalized } as const;
     });
     return this.abortTask;

@@ -26,6 +26,7 @@ const sender = buildDeliveryEndpointForParticipant(Object.freeze({
 }));
 
 const buildHarness = (input: {
+  assertDeliveryAllowed?: (sender: CollaborationMemberExecutionIdentity, receiver: CollaborationMemberExecutionIdentity) => void;
   currentAgent?: (identity: CollaborationMemberExecutionIdentity) => boolean;
   commit?: (plan: PreparedTeamMessageAppend) => Promise<
     | { outcome: "committed" }
@@ -49,16 +50,18 @@ const buildHarness = (input: {
     prepared.commit.commitAfterDurability();
     return { outcome: "committed" as const };
   }));
+  const assertDeliveryAllowed = vi.fn(input.assertDeliveryAllowed ?? (() => undefined));
   const service = new TeamCommunicationService({
     rootTeamRunId,
     initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) }),
+    assertDeliveryAllowed,
     isCurrentAgent: input.currentAgent ?? (() => true),
     requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
     commit,
     publish,
     replaceSnapshot,
   });
-  return { service, cancel, release, reservationCommit, reserveDirectAgentInput, publish, replaceSnapshot, commit };
+  return { service, assertDeliveryAllowed, cancel, release, reservationCommit, reserveDirectAgentInput, publish, replaceSnapshot, commit };
 };
 
 const intent = (overrides: Record<string, unknown> = {}) => ({
@@ -72,6 +75,16 @@ const intent = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe("TeamCommunicationService", () => {
+  it("does not reserve or persist input when the current lifetime fence rejects delivery", async () => {
+    const harness = buildHarness({ assertDeliveryAllowed: () => { throw new Error("TASK_LIFETIME_CLOSED"); } });
+    await expect(harness.service.deliver({ intent: intent(), receiverIdentity, receiverDisplayName: "receiver" }))
+      .rejects.toThrow("TASK_LIFETIME_CLOSED");
+    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity, receiverIdentity);
+    expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
+    expect(harness.commit).not.toHaveBeenCalled();
+    expect(harness.release).not.toHaveBeenCalled();
+    expect(harness.service.getSnapshot().messages).toEqual([]);
+  });
   it("commits one root-owned message and only then releases exact receiver input", async () => {
     const harness = buildHarness();
 
@@ -93,6 +106,7 @@ describe("TeamCommunicationService", () => {
         }),
       }),
     );
+    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity, receiverIdentity);
     expect(harness.commit).toHaveBeenCalledOnce();
     expect(harness.reservationCommit).toHaveBeenCalledOnce();
     expect(harness.release).toHaveBeenCalledOnce();

@@ -1,5 +1,4 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
-import { once } from "node:events";
 import { readdirSync } from "node:fs";
 import type {
   CodexAppServerClientOptions,
@@ -31,6 +30,7 @@ export class CodexAppServerClient {
   private stdoutBuffer = "";
   private nextRequestId = 1;
   private closed = false;
+  private closeAttempt: Promise<void> | null = null;
   private launchContext: CodexAppServerClientOptions | null = null;
 
   constructor(options: CodexAppServerClientOptions) {
@@ -73,38 +73,50 @@ export class CodexAppServerClient {
       console.error(diagnostic);
       this.failAllPending(processError);
       this.emitClose(processError);
-      this.process = null;
       this.closed = true;
     });
-    this.process.on("close", (code, signal) => {
-      if (this.closed) {
-        return;
-      }
-      const error = new Error(
-        `Codex app server process closed unexpectedly (code=${String(code)}, signal=${String(signal)}).`,
-      );
-      this.failAllPending(error);
-      this.emitClose(error);
+    const exactProcess = this.process;
+    exactProcess.on("close", (code, signal) => {
+      if (this.process !== exactProcess) return;
       this.process = null;
+      const error = this.closed ? null : new Error(`Codex app server process closed unexpectedly (${code ?? signal}).`);
       this.closed = true;
+      if (error) this.failAllPending(error);
+      this.emitClose(error);
     });
   }
 
-  async close(): Promise<void> {
+  close(): Promise<void> {
+    if (this.closeAttempt) return this.closeAttempt;
+    const attempt = this.closeProcess();
+    this.closeAttempt = attempt;
+    void attempt.finally(() => { if (this.closeAttempt === attempt) this.closeAttempt = null; }).catch(() => undefined);
+    return attempt;
+  }
+
+  private async closeProcess(): Promise<void> {
     const proc = this.process;
-    if (!proc) {
-      return;
-    }
+    if (!proc) return;
     this.closed = true;
-    this.process = null;
     this.failAllPending(new Error("Codex app server client closed."));
-    proc.kill("SIGTERM");
+    let onClose!: () => void;
+    const exited = new Promise<void>((resolve) => { onClose = resolve; proc.once("close", onClose); });
+    let killTimer: ReturnType<typeof setTimeout> | undefined;
+    let deadline: ReturnType<typeof setTimeout> | undefined;
     try {
-      await once(proc, "close");
-    } catch {
-      // ignore
-    }
-    this.emitClose(null);
+      proc.kill("SIGTERM");
+      const escalationFailure = new Promise<never>((_, reject) => {
+        killTimer = setTimeout(() => {
+          if (this.process !== proc) return;
+          try { proc.kill("SIGKILL"); }
+          catch (error) { reject(new Error(`Codex exact process escalation failed: ${String(error)}`)); }
+        }, 2_000);
+      });
+      await Promise.race([exited, escalationFailure, new Promise<never>((_, reject) => {
+        deadline = setTimeout(() => reject(new Error("Codex exact process exit could not be confirmed.")), 5_000);
+      })]);
+      if (this.process === proc) this.process = null;
+    } finally { clearTimeout(killTimer); clearTimeout(deadline); proc.off("close", onClose); }
   }
 
   onNotification(listener: (message: CodexNotificationMessage) => void): () => void {
@@ -301,7 +313,7 @@ export class CodexAppServerClient {
       if (error) {
         const rpcError = error as JsonRpcResponseError;
         pending.reject(
-          new Error(
+          new CodexAppServerRpcError(
             `Codex app server RPC error${typeof rpcError.code === "number" ? ` ${rpcError.code}` : ""}: ${
               typeof rpcError.message === "string" ? rpcError.message : "Unknown error"
             }`,
@@ -381,3 +393,6 @@ function getOpenFileDescriptorCount(): number | null {
   }
   return null;
 }
+
+/** Explicit provider RPC rejection, distinct from transport/acceptance uncertainty. */
+export class CodexAppServerRpcError extends Error {}

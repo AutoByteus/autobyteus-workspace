@@ -16,6 +16,7 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
     persistence: AgentOrgRunPersistenceCoordinator;
     isOpen(): boolean;
     isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+  assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
     reserveRecipientInput(agentRunId: string, message: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>): Promise<AgentRunInputReservationResult>;
     replaceMessages(messages: AgentOrgCommunicationMessagesFileV1): void;
     publish(message: AgentOrgCommunicationMessagesFileV1["messages"][number]): void;
@@ -28,6 +29,9 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
     this.initialMessages = options.initial.messages;
   }
   isOpen(): boolean { return this.options.isOpen(); }
+  assertDeliveryAllowed(...identities: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
+    this.options.assertDeliveryAllowed(...identities);
+  }
   isCurrentAgent(identity: Parameters<RootCommunicationAdapter["isCurrentAgent"]>[0]): boolean {
     return this.options.isCurrentAgent(identity);
   }

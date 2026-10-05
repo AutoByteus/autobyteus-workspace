@@ -58,7 +58,7 @@ describe("AgentRunResourceManager", () => {
       .toBe("already_released");
   });
 
-  it("attempts every cleanup category and reports all failures once", () => {
+  it("retains failed independent cleanup stages until exact successful retry", () => {
     const deactivateForRun = vi.fn(() => { throw new Error("deactivate failed"); });
     const fileDispose = vi.fn(() => { throw new Error("file failed"); });
     const relayDispose = vi.fn(() => { throw new Error("relay failed"); });
@@ -79,10 +79,12 @@ describe("AgentRunResourceManager", () => {
       "relay failed",
       "memory failed",
     ]);
+    expect(manager.release(run.runId, run as never).state).toBe("failed");
+    for (const close of [deactivateForRun, fileDispose, relayDispose, memoryDispose]) {
+      expect(close).toHaveBeenCalledTimes(2); close.mockImplementation(() => undefined);
+    }
+    expect(manager.release(run.runId, run as never).state).toBe("released");
     expect(manager.release(run.runId, run as never).state).toBe("already_released");
-    expect(deactivateForRun).toHaveBeenCalledOnce();
-    expect(fileDispose).toHaveBeenCalledOnce();
-    expect(relayDispose).toHaveBeenCalledOnce();
-    expect(memoryDispose).toHaveBeenCalledOnce();
+    for (const close of [deactivateForRun, fileDispose, relayDispose, memoryDispose]) expect(close).toHaveBeenCalledTimes(3);
   });
 });

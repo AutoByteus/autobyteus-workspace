@@ -1,3 +1,4 @@
+import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe,it,expect,vi } from 'vitest';
@@ -24,7 +25,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
  const handle=new ConfiguredAgentExecutionHandle({identity,physicalScope:createRootExecutionPhysicalScope({root,ancestorTeamRunIds:[]}),
   execution:{agentDefinitionId:'test',llmModelIdentifier:'parent',llmConfig:null,autoExecuteTools:false,runtimeKind:'autobyteus',workspaceRootPath:null,platformAgentRunId:null},
   activationMode:'fresh',memberExecutionContext,callbacks:{publishAgentEvent:vi.fn(),commitPlatformBindingChange:vi.fn()},
-  agentRunManager:{prepareNewAgentRun,getActiveRun:()=>f.run} as any,
+  agentRunManager:testActivationManager({newPreparation: prepareNewAgentRun,getActiveRun:()=>f.run}) as any,
   memoryLocator:{getLocation:()=>({memoryDir:'/unused/test-owned'})} as any});
  const activation=await handle.prepareConfiguredActivation();activation.commitAfterDurability();
  const send=vi.fn(); const connection={send,close:vi.fn()};
