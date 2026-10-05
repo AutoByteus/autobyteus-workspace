@@ -1,0 +1,10 @@
+{
+  "coordinatorMemberName": "lead",
+  "members": [
+    { "memberName": "lead", "ref": "sar-squad-lead", "refType": "agent", "refScope": "team_local" },
+    { "memberName": "mate", "ref": "sar-squad-mate", "refType": "agent", "refScope": "team_local" }
+  ],
+  "handoffs": [
+    { "from": "/lead", "to": "/mate", "rules": ["Always ask the mate to confirm with the word CONFIRMED before reporting back."] }
+  ]
+}

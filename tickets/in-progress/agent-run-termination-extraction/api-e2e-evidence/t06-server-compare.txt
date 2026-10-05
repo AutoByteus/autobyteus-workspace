@@ -1,0 +1,48 @@
+branch total/pass/fail (4935, 4715, 147) base (4934, 4691, 170)
+NEW failures: 0
+No longer failing: 23
+  - autobyteus-server-ts/tests/integration/application-backend/application-agent-tool-worker.integration.test.ts :: application Agent Tool real child worker integration fails safely when the real child worker crashes and doe
+  - autobyteus-server-ts/tests/integration/application-backend/application-agent-tool-worker.integration.test.ts :: application Agent Tool real child worker integration lazy-starts the real worker, invokes the exact v7 handl
+  - autobyteus-server-ts/tests/integration/application-backend/application-agent-tool-worker.integration.test.ts :: application Agent Tool real child worker integration rejects an invalid handler result across the real worke
+  - autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts :: Application backend custom WebSocket integration maps a real worker stop to one safe frontend error a
+  - autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts :: Application backend custom WebSocket integration round-trips readiness-hidden text and binary frames 
+  - autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts :: Application backend mount route transport integration round-trips structured JSON route bodies t
+  - autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts :: Application backend REST/WS integration keeps the REST boundary app-scoped by taking application identity from
+  - autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts :: Application backend REST/WS integration starts the app worker through the REST boundary and streams backend no
+  - autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts :: Application context capability integration executes all named capabilities and both explicit starts throu
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration captures rapid changes without dropping events
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration does not emit events for pre-existing nested .gitignore excluded directories
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration does not emit events for pre-existing root .gitignore excluded directories
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration emits add + modify + delete events
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration emits delete events even if the in-memory node is missing
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration emits file creation event with node metadata
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration emits folder creation and deletion events
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration emits move/rename event
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration ignores default strategy paths like __pycache__
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration ignores specific folders like .git and their contents
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration respects nested .gitignore files
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration respects root .gitignore files
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration returns one idle event stream without stopping other subscribers
+  - autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts :: FileSystemWatcher integration treats moves into ignored directories as deletes from the visible tree
+Changed message: 7
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm rejects a conflicting post-bind logging policy 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-tnZHpC/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-WdjNHn/synthetic-prisma-loader.m
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm import acquires no Prisma client or datasource 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-tnZHpC/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-WdjNHn/synthetic-prisma-loader.m
+  ~ autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts :: AgentRunService fresh definition runtime integration uses fresh definition instructions for the  
+     branch: AgentCreationError: Failed to prepare agent run 'fresh-agent-fresh-1791174252606-690399-run'. 
+     base:   AgentCreationError: Failed to prepare agent run 'fresh-agent-fresh-1791171025709-f4c86b-run'.
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm honors typed policy and typed-false precedence 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-tnZHpC/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-WdjNHn/synthetic-prisma-loader.m
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm defaults to non-query log kinds 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-tnZHpC/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-WdjNHn/synthetic-prisma-loader.m
+  ~ autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts :: AgentRunService fresh definition runtime integration falls back to description when fresh defini 
+     branch: AgentCreationError: Failed to prepare agent run 'blank-instructions-agent-blank-1791174252696-289881-run'. 
+     base:   AgentCreationError: Failed to prepare agent run 'blank-instructions-agent-blank-1791171026119-6419c1-run'.
+  ~ autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts :: repository_prisma installed package policy esm honors explicit environment query-log policy only 
+     branch: Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-tnZHpC/synthetic-prisma-loader.m 
+     base:   Error: Command failed: /Users/normy/.hermes/node/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-WdjNHn/synthetic-prisma-loader.m
