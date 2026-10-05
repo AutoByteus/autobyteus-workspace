@@ -1,0 +1,1019 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:36896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-graphql-suite-scrOXm
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T12:40:36.534Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mAgent definition cache populated with 3 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:40:36.727Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:40:36.730Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:40:36.747Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:40:36.748Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:40:36.758Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:40:36.758Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:40:36.803Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:40:36.803Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:40:36.836Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:40:36.836Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:40:36.840Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:40:36.840Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:40:36.887Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:40:36.888Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:40:36.903Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:40:36.903Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:40:36.906Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:40:36.906Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-10-05T12:40:36.961Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-10-05T12:40:36.961Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-10-05T12:40:37.316Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-10-05T12:40:37.316Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39m[2026-10-05T12:40:37.513Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39m[2026-10-05T12:40:37.513Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-10-05T12:40:37.560Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-10-05T12:40:37.560Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-10-05T12:40:37.815Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-10-05T12:40:37.815Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39m[2026-10-05T12:40:37.817Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39m[2026-10-05T12:40:37.817Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-10-05T12:40:37.822Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-10-05T12:40:37.822Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-10-05T12:40:37.823Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-10-05T12:40:37.823Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+ [31m❯[39m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 1292[2mms[22m[39m
+     [32m✓[39m imports and removes a linked local package while preserving runtime discovery behavior[32m 175[2mms[22m[39m
+     [32m✓[39m reloads a linked local package through GraphQL and refreshes package-derived reads[32m 81[2mms[22m[39m
+     [32m✓[39m imports and removes a managed GitHub package through the package-oriented GraphQL contract[32m 66[2mms[22m[39m
+[31m     [31m×[31m checks and updates a managed GitHub package through GraphQL with staged directory replacement[39m[33m 411[2mms[22m[39m
+[31m     [31m×[31m allows legacy managed GitHub records with unknown revision to update to latest through GraphQL[39m[32m 196[2mms[22m[39m
+[31m     [31m×[31m rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure[39m[33m 302[2mms[22m[39m
+     [32m✓[39m returns local-clone guidance when direct private GitHub import metadata is unavailable[32m 2[2mms[22m[39m
+     [32m✓[39m rejects invalid import input and invalid managed package shape[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:37497) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-skills-data-kqZ639
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-skills-data-kqZ639/.env
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39m[2026-10-05T12:40:39.352Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T12:40:39.352Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39m[2026-10-05T12:40:39.352Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39m[2026-10-05T12:40:39.366Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[22m[39m[2026-10-05T12:40:39.366Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39m[2026-10-05T12:40:39.381Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39m[2026-10-05T12:40:39.381Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mTool 'run_bash' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mResolved skill 'autobyteus_single_1791204039367_f118fb3f69d06' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039367_f118fb3f69d06-6ugkUa/agents/autobyteus-single-agent-1791204039367_f118fb3f69d06/skills/autobyteus_single_1791204039367_f118fb3f69d06
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mTool 'run_bash' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mResolved skill 'autobyteus_tone_1791204039367_f118fb3f69d06' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039367_f118fb3f69d06-6ugkUa/agents/autobyteus-multi-agent-1791204039367_f118fb3f69d06/skills/autobyteus_tone_1791204039367_f118fb3f69d06
+Resolved skill 'autobyteus_outline_1791204039367_f118fb3f69d06' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039367_f118fb3f69d06-6ugkUa/agents/autobyteus-multi-agent-1791204039367_f118fb3f69d06/skills/autobyteus_outline_1791204039367_f118fb3f69d06
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39m[2026-10-05T12:40:39.390Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39m[2026-10-05T12:40:39.390Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mAgent definition cache populated with 3 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39m[2026-10-05T12:40:39.404Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39m[2026-10-05T12:40:39.404Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mAgent definition cache populated with 3 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039390_a2746b48937ae-qWxHrJ/agents/shared-single-1791204039390_a2746b48937ae/skills/single_private_1791204039390_a2746b48937ae' with max_depth=null
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mCreating on-demand SkillWorkspace for: single_private_1791204039390_a2746b48937ae
+Creating on-demand SkillWorkspace for: single_private_1791204039390_a2746b48937ae
+Creating on-demand SkillWorkspace for: tone_1791204039390_a2746b48937ae
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039390_a2746b48937ae-qWxHrJ/agents/shared-single-1791204039390_a2746b48937ae/skills/single_private_1791204039390_a2746b48937ae.
+Initialized SkillWorkspace for skill 'single_private_1791204039390_a2746b48937ae' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039390_a2746b48937ae-qWxHrJ/agents/shared-single-1791204039390_a2746b48937ae/skills/single_private_1791204039390_a2746b48937ae
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039390_a2746b48937ae-qWxHrJ/agents/shared-single-1791204039390_a2746b48937ae/skills/single_private_1791204039390_a2746b48937ae.
+Initialized SkillWorkspace for skill 'single_private_1791204039390_a2746b48937ae' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039390_a2746b48937ae-qWxHrJ/agents/shared-single-1791204039390_a2746b48937ae/skills/single_private_1791204039390_a2746b48937ae
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039390_a2746b48937ae-qWxHrJ/agents/shared-multi-1791204039390_a2746b48937ae/skills/tone_1791204039390_a2746b48937ae.
+Initialized SkillWorkspace for skill 'tone_1791204039390_a2746b48937ae' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039390_a2746b48937ae-qWxHrJ/agents/shared-multi-1791204039390_a2746b48937ae/skills/tone_1791204039390_a2746b48937ae
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mCreated WorkspaceFileExplorer for skill_ws_single_private_1791204039390_a2746b48937ae (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_single_private_1791204039390_a2746b48937ae (graphql-file-content).
+Created WorkspaceFileExplorer for skill_ws_tone_1791204039390_a2746b48937ae (graphql-file-content).
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039390_a2746b48937ae-qWxHrJ/agents/shared-single-1791204039390_a2746b48937ae/skills/single_private_1791204039390_a2746b48937ae' completed in 0.0100 seconds.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39m[2026-10-05T12:40:39.427Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39m[2026-10-05T12:40:39.428Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39m[2026-10-05T12:40:39.445Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mDEFINITION_CONTRACT_INVALID: skipped Team 'team-1791204039428_f70d3ea985bed' at '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039428_f70d3ea985bed-FrTERu/agent-teams/team-1791204039428_f70d3ea985bed/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39m[2026-10-05T12:40:39.446Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039428_f70d3ea985bed-FrTERu/agent-teams/team-1791204039428_f70d3ea985bed/skills/team_shared_1791204039428_f70d3ea985bed' with max_depth=null
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mCreating on-demand SkillWorkspace for: team_shared_1791204039428_f70d3ea985bed
+Creating on-demand SkillWorkspace for: team_shared_1791204039428_f70d3ea985bed
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039428_f70d3ea985bed-FrTERu/agent-teams/team-1791204039428_f70d3ea985bed/skills/team_shared_1791204039428_f70d3ea985bed.
+Initialized SkillWorkspace for skill 'team_shared_1791204039428_f70d3ea985bed' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039428_f70d3ea985bed-FrTERu/agent-teams/team-1791204039428_f70d3ea985bed/skills/team_shared_1791204039428_f70d3ea985bed
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039428_f70d3ea985bed-FrTERu/agent-teams/team-1791204039428_f70d3ea985bed/skills/team_shared_1791204039428_f70d3ea985bed.
+Initialized SkillWorkspace for skill 'team_shared_1791204039428_f70d3ea985bed' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039428_f70d3ea985bed-FrTERu/agent-teams/team-1791204039428_f70d3ea985bed/skills/team_shared_1791204039428_f70d3ea985bed
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mCreated WorkspaceFileExplorer for skill_ws_team_shared_1791204039428_f70d3ea985bed (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_team_shared_1791204039428_f70d3ea985bed (graphql-file-content).
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791204039428_f70d3ea985bed-FrTERu/agent-teams/team-1791204039428_f70d3ea985bed/skills/team_shared_1791204039428_f70d3ea985bed' completed in 0.0070 seconds.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39m[2026-10-05T12:40:39.476Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39m[2026-10-05T12:40:39.477Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 202[2mms[22m[39m
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-1JDTj2
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mpreserves existing built-in settings and leaves featured settings untouched
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-C9BREU
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mpreserves existing built-in settings and leaves featured settings untouched
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mpreserves existing built-in settings and leaves featured settings untouched
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mpreserves existing built-in settings and leaves featured settings untouched
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-4ePsBV
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mAgent definition cache populated with 4 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-cwdTjf
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-cwdTjf
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mAgent definition cache populated with 3 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-q9EY0F
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstderr[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mSkipping agent 'autobyteus-memory-compactor' due to parse error: agent.md must start with '---' frontmatter delimiter (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-q9EY0F/agents/autobyteus-memory-compactor/agent.md)
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-MTWVLo
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-hRMPAM
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-B3xKXC
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mIn-memory cache: Updated agent definition with ID autobyteus-daily-assistant.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mAgent Definition with ID autobyteus-daily-assistant updated successfully.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-5C96QH
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mAgent definition cache populated with 2 items.
+
+ [32m✓[39m tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 163[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:37587) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T12:40:41.630Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mAgent Definition created successfully with ID: agent-agent-def-1791204041680-053ed970c7f0b
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mIn-memory cache: Updated agent definition with ID agent-agent-def-1791204041680-053ed970c7f0b.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mAgent Definition with ID agent-agent-def-1791204041680-053ed970c7f0b updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mIn-memory cache: Removed agent definition with ID agent-agent-def-1791204041680-053ed970c7f0b.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mAgent Definition with ID agent-agent-def-1791204041680-053ed970c7f0b deleted successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mround-trips skillScope through GraphQL and agent-config.json, defaulting to CONFIGURED
+[22m[39mIn-memory cache: Added new agent definition with ID agent-agent-skill-scope-1791204041812-37034e37d2ed9.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mround-trips skillScope through GraphQL and agent-config.json, defaulting to CONFIGURED
+[22m[39mAgent Definition created successfully with ID: agent-agent-skill-scope-1791204041812-37034e37d2ed9
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mround-trips skillScope through GraphQL and agent-config.json, defaulting to CONFIGURED
+[22m[39mIn-memory cache: Updated agent definition with ID agent-agent-skill-scope-1791204041812-37034e37d2ed9.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mround-trips skillScope through GraphQL and agent-config.json, defaulting to CONFIGURED
+[22m[39mAgent Definition with ID agent-agent-skill-scope-1791204041812-37034e37d2ed9 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mround-trips skillScope through GraphQL and agent-config.json, defaulting to CONFIGURED
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mround-trips skillScope through GraphQL and agent-config.json, defaulting to CONFIGURED
+[22m[39mAgent definition cache populated with 45 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mlists and updates team-local agent definitions with ownership metadata
+[22m[39mAgent Definition with ID team-local-agent:team_team_local_agent_1791204041858_189b8d60f9ded:agent_team_local_agent_1791204041858_189b8d60f9ded updated successfully.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mlists and updates team-local agent definitions with ownership metadata
+[22m[39mError deleting agent definition with ID team-local-agent:team_team_local_agent_1791204041858_189b8d60f9ded:agent_team_local_agent_1791204041858_189b8d60f9ded: Error: Deleting non-shared agent definitions is not supported.
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 284[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:37619) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/json-file-persistence-suite-9UNpTR
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T12:40:45.127Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition created successfully with ID: professor-agent-ac-1791204045174-48f300
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mIn-memory cache: Updated agent definition with ID professor-agent-ac-1791204045174-48f300.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition with ID professor-agent-ac-1791204045174-48f300 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mIn-memory cache: Updated agent definition with ID professor-agent-ac-1791204045174-48f300.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition with ID professor-agent-ac-1791204045174-48f300 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Team Definition created successfully with ID: professor-team-ac-1791204045174-48f300
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39m[2026-10-05T12:40:45.254Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39m[2026-10-05T12:40:45.255Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39m[2026-10-05T12:40:45.265Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID professor-team-ac-1791204045174-48f300.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Team Definition with ID professor-team-ac-1791204045174-48f300 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: stdio_ac_1791204045174_48f300
+Populating MCP server config cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mMCP server config cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mIn-memory cache: Added new MCP config stdio_ac_1791204045174_48f300.
+
+ [32m✓[39m tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 151[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/configured-root-first-work.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-collaboration/configured-root-first-work.test.ts[2m > [22m[2mstandalone_team configured first work[2m > [22m[2mscope stays Offline; 'autobyteus' / 'none' / null readies only receivers
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/agent-collaboration/configured-root-first-work.test.ts [2m([22m[2m48 tests[22m[2m)[22m[33m 1559[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:37655) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/general-agent-api-C4z7y1
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T12:40:49.107Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/general-agent-api-0r4wsk
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mAgent definition cache populated with 2 items.
+
+ [32m✓[39m tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 102[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-tools/agent-discovery/list-available-agents-tool.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-tools/agent-discovery/list-available-agents-tool.test.ts[2m > [22m[2mlist_available_agents (REQ-001/002)[2m > [22m[2mexposes actual Daily Assistant discovery through native and MCP bindings in a standalone host context
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-tools/agent-discovery/list-available-agents-tool.test.ts[2m > [22m[2mlist_available_agents (REQ-001/002)[2m > [22m[2mbinds the AutoByteus tool to the sender's member context, and skips it where nothing can be listed
+[22m[39mSuccessfully registered tool definition: 'get_handoff_rules'
+
+ [32m✓[39m tests/unit/agent-tools/agent-discovery/list-available-agents-tool.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaborators/catalog-address-map.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaboration-launch-configuration-resolver.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/execution/member-instance-scope.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/root-task-execution-command-queue.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/execution/root-communication-runtime-builder.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaborators/catalog-copy-execution-source.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/frozen-root-termination-scope.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/execution/task-copy-host.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-collaboration/collaboration-logical-address.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-templates.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/built-in-agents/built-in-agent-templates.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22mAgent packages GraphQL e2e[2m > [22mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[31m[1mAssertionError[22m: expected { status: 'CHECK_FAILED', …(3) } to match object { status: 'UPDATE_AVAILABLE', …(3) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "canUpdate": true,[39m
+[31m+   "canUpdate": false,[39m
+[2m    "installedRevision": "old-sha",[22m
+[32m-   "latestRevision": "new-sha",[39m
+[32m-   "status": "UPDATE_AVAILABLE",[39m
+[31m+   "latestRevision": "old-sha",[39m
+[31m+   "status": "CHECK_FAILED",[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts:[2m929:40[22m[39m
+    [90m927| [39m      (entry) [33m=>[39m entry[33m.[39mpackageId [33m===[39m importedPackage[33m?.[39mpackageId[33m,[39m
+    [90m928| [39m    )[33m;[39m
+    [90m929| [39m    [34mexpect[39m(checkedPackage[33m?.[39mupdateInfo)[33m.[39m[34mtoMatchObject[39m({
+    [90m   | [39m                                       [31m^[39m
+    [90m930| [39m      status[33m:[39m [32m"UPDATE_AVAILABLE"[39m[33m,[39m
+    [90m931| [39m      canUpdate[33m:[39m [35mtrue[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22mAgent packages GraphQL e2e[2m > [22mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[31m[1mGraphQLError[22m: GitHub repository not found or not public: https://github.com/AutoByteus/legacy-agent-package-1791204037317_58238c8ec2116. For private repositories, clone locally and import the local path.[39m
+[36m [2m❯[22m GitHubRepositoryClient.fetchRepositoryMetadata src/integrations/github/github-repository-client.ts:[2m45:13[22m[39m
+    [90m 43| [39m
+    [90m 44| [39m    [35mif[39m (response[33m.[39mstatus [33m===[39m [34m404[39m) {
+    [90m 45| [39m      [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m            [31m^[39m
+    [90m 46| [39m        `GitHub repository not found or not public: ${source.canonical…
+    [90m 47| [39m      )[33m;[39m
+[90m [2m❯[22m GitHubRepositoryClient.fetchRepositoryRevisionMetadata src/integrations/github/github-repository-client.ts:[2m12:22[22m[39m
+[90m [2m❯[22m AgentPackageService.updateAgentPackage src/agent-packages/services/agent-package-service.ts:[2m233:18[22m[39m
+[90m [2m❯[22m withSkillNameConflictMapping src/api/graphql/errors/skill-name-conflict-graphql-error.ts:[2m18:12[22m[39m
+[90m [2m❯[22m AgentPackageResolver.updateAgentPackage src/api/graphql/types/agent-packages.ts:[2m220:22[22m[39m
+[90m [2m❯[22m execGraphql tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts:[2m291:20[22m[39m
+[90m [2m❯[22m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts:[2m1111:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22mAgent packages GraphQL e2e[2m > [22mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[31m[1mAssertionError[22m: expected 'GitHub repository not found or not pu…' to contain 'cache refresh failed'[39m
+
+Expected: [32m"cache refresh failed"[39m
+Received: [31m"GitHub repository not found or not public: https://github.com/AutoByteus/rollback-agent-package-1791204037513_27ef624539548. For private repositories, clone locally and import the local path."[39m
+
+[36m [2m❯[22m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts:[2m1263:48[22m[39m
+    [90m1261| [39m      { packageId[33m:[39m managedPackage[33m?.[39mpackageId }[33m,[39m
+    [90m1262| [39m    )[33m;[39m
+    [90m1263| [39m    expect(updateFailure.errors?.[0]?.message).toContain("cache refres…
+    [90m   | [39m                                               [31m^[39m
+    [90m1264| [39m
+    [90m1265| [39m    [35mconst[39m postFailureList [33m=[39m [35mawait[39m execGraphql[33m<[39m{
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m22 passed[39m[22m[90m (23)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m173 passed[39m[22m[90m (176)[39m
+[2m   Start at [22m 14:40:30
+[2m   Duration [22m 21.80s[2m (transform 4.12s, setup 101ms, import 15.42s, tests 3.85s, environment 2ms)[22m
+

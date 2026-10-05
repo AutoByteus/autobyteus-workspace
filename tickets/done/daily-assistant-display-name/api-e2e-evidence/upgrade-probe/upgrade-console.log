@@ -1,0 +1,5 @@
+U-01 Pass OLD build: definition is General Agent; a real Chat captures agentName General Agent
+U-02 Pass Upgrade restart on the same root: Daily Assistant, new hash, one definition, old history row untouched
+U-03 Pass Agents page and catalog Run show Daily Assistant (New - Daily Assistant)
+U-04 Pass Old run after upgrade: keeps captured label, reopens with its conversation, accepts a follow-up
+U-05 Pass New Chat after upgrade: run captures Daily Assistant; the agent introduces itself as Daily Assistant

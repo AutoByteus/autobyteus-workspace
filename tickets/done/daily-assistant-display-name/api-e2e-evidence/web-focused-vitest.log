@@ -1,0 +1,126 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-web
+
+stderr | components/chat/__tests__/ChatComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatMessageInput.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatThinkingControl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatApprovalToggle.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agents/__tests__/AgentDefinitionForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatModelMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agents/__tests__/AgentList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/chat/__tests__/ChatThinkingControl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatMessageInput.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatApprovalToggle.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agents/__tests__/AgentDefinitionForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agents/__tests__/AgentList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatModelMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/ChatApprovalToggle.spec.ts (2 tests) 12ms
+ ✓ components/chat/__tests__/ChatMessageInput.spec.ts (3 tests) 31ms
+ ✓ components/chat/__tests__/ChatThinkingControl.spec.ts (9 tests) 72ms
+ ✓ components/agents/__tests__/AgentDefinitionForm.spec.ts (6 tests) 49ms
+ ✓ components/chat/__tests__/ChatModelMenu.spec.ts (5 tests) 62ms
+ ✓ components/chat/__tests__/ChatComposer.spec.ts (5 tests) 48ms
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.spec.ts (8 tests) 120ms
+ ✓ components/agents/__tests__/AgentList.spec.ts (8 tests) 66ms
+ ✓ components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts (5 tests) 45ms
+stderr | stores/__tests__/chatDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/chat/__tests__/chatLaunchService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/chatComposerMenus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/chatThinkingMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/chatDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/chatDraftStore.spec.ts (10 tests) 19ms
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/chat/__tests__/chatLaunchService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/chatThinkingMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/chatComposerMenus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/chatComposerMenus.spec.ts (4 tests) 3ms
+ ✓ components/chat/__tests__/chatThinkingMenu.spec.ts (9 tests) 6ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts (2 tests) 11ms
+ ✓ services/chat/__tests__/chatLaunchService.spec.ts (7 tests) 7ms
+
+ Test Files  14 passed (14)
+      Tests  83 passed (83)
+   Start at  14:41:31
+   Duration  9.00s (transform 4.42s, setup 59.63s, collect 4.23s, tests 553ms, environment 3.94s, prepare 2.42s)
+

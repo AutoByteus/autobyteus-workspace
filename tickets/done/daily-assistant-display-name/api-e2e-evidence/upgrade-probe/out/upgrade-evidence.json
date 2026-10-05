@@ -1,0 +1,153 @@
+{
+  "startedAt": "2026-10-05T12:48:58.584Z",
+  "cases": {
+    "U-01": {
+      "title": "OLD build: definition is General Agent; a real Chat captures agentName General Agent",
+      "result": "Pass",
+      "ms": 9328,
+      "details": {
+        "definition": {
+          "id": "autobyteus-daily-assistant",
+          "name": "General Agent",
+          "role": "General Agent"
+        },
+        "oldAgentMdSha": "d410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a",
+        "oldRunId": "general_agent_9be85ea70f964830affad0ca2594bfca",
+        "model": "opus",
+        "runConfig": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "opus"
+        },
+        "row": {
+          "runId": "general_agent_9be85ea70f964830affad0ca2594bfca",
+          "agentDefinitionId": "autobyteus-daily-assistant",
+          "agentName": "General Agent",
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/da-upgrade-probe-7GoJGz/server-data/temp_workspace",
+          "summary": "Reply with exactly UPGRADE-OLD-OK and nothing else.",
+          "createdAt": "2026-10-05T12:49:18.819Z",
+          "archivedAt": null,
+          "terminatedAt": null
+        },
+        "tree": [
+          "GA General Agent (1)"
+        ]
+      }
+    },
+    "U-02": {
+      "title": "Upgrade restart on the same root: Daily Assistant, new hash, one definition, old history row untouched",
+      "result": "Pass",
+      "ms": 2778,
+      "details": {
+        "definition": {
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "role": "General Agent",
+          "skillScope": "ALL_INSTALLED"
+        },
+        "agentMdSha": "49ed6e909ef92a470fb8b3fce84f471334cd125ff50adf2f5e6aff60389d07b7",
+        "historyByteIdentical": true,
+        "oldRunGroupLabel": "General Agent"
+      }
+    },
+    "U-03": {
+      "title": "Agents page and catalog Run show Daily Assistant (New - Daily Assistant)",
+      "result": "Pass",
+      "ms": 1002,
+      "details": {
+        "cardTitles": [
+          "Daily Assistant"
+        ],
+        "draftTitle": "New - Daily Assistant"
+      }
+    },
+    "U-04": {
+      "title": "Old run after upgrade: keeps captured label, reopens with its conversation, accepts a follow-up",
+      "result": "Pass",
+      "ms": 3638,
+      "details": {
+        "oldRunId": "general_agent_9be85ea70f964830affad0ca2594bfca",
+        "capturedAgentName": "General Agent",
+        "treeAfterUpgrade": [
+          "GA General Agent (1)"
+        ],
+        "userTurns": 2
+      }
+    },
+    "U-05": {
+      "title": "New Chat after upgrade: run captures Daily Assistant; the agent introduces itself as Daily Assistant",
+      "result": "Pass",
+      "ms": 4650,
+      "details": {
+        "runId": "daily_assistant_a4a307142f7143ddbacbd3e8d90ee04a",
+        "answer": "NAME=Daily Assistant",
+        "runConfig": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "opus"
+        },
+        "capturedAgentName": "Daily Assistant",
+        "tree": [
+          "DA Daily Assistant (2)"
+        ],
+        "historyGroups": [
+          {
+            "ws": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/da-upgrade-probe-7GoJGz/server-data/temp_workspace",
+            "agents": [
+              {
+                "agentName": "Daily Assistant",
+                "runIds": [
+                  "daily_assistant_a4a307142f7143ddbacbd3e8d90ee04a",
+                  "general_agent_9be85ea70f964830affad0ca2594bfca"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "observations": {},
+  "processes": [
+    {
+      "label": "backend-old",
+      "pid": 57608
+    },
+    {
+      "label": "frontend",
+      "pid": 57643
+    },
+    {
+      "label": "backend-new",
+      "pid": 58552
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 58552,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 57643,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 57608,
+      "stop": "already-exited"
+    },
+    {
+      "distRestored": true
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/da-upgrade-probe-7GoJGz"
+    }
+  ],
+  "distSwap": {
+    "headTemplateSha": "49ed6e909ef92a470fb8b3fce84f471334cd125ff50adf2f5e6aff60389d07b7",
+    "headRegistrySha": "de1fd129864ef9025b6899dc53d0836ca7b2cd2bbbc5ecf09ac60c5e5df66788",
+    "oldTemplateSha": "d410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a"
+  },
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/da-upgrade-probe-7GoJGz",
+  "backendUrl": "http://127.0.0.1:63142",
+  "frontUrl": "http://127.0.0.1:63143",
+  "browserErrors": [],
+  "completedAt": "2026-10-05T12:49:57.880Z"
+}

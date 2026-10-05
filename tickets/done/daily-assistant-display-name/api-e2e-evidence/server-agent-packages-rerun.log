@@ -1,0 +1,388 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:39306) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-display-name/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-graphql-suite-xlpJZl
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T12:41:07.524Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mAgent definition cache populated with 3 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:41:07.632Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:41:07.634Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 3 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:41:07.652Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:41:07.652Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:41:07.660Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-10-05T12:41:07.660Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:41:07.700Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:41:07.700Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:41:07.728Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:41:07.728Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:41:07.731Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-10-05T12:41:07.731Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:41:07.770Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:41:07.770Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:41:07.784Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:41:07.784Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:41:07.786Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-10-05T12:41:07.786Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-10-05T12:41:07.830Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-10-05T12:41:07.830Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-10-05T12:41:08.096Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-10-05T12:41:08.097Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39m[2026-10-05T12:41:08.275Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39m[2026-10-05T12:41:08.275Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-10-05T12:41:08.326Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-10-05T12:41:08.327Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-10-05T12:41:08.598Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-10-05T12:41:08.598Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39m[2026-10-05T12:41:08.602Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39m[2026-10-05T12:41:08.603Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-10-05T12:41:08.608Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-10-05T12:41:08.608Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-10-05T12:41:08.610Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-10-05T12:41:08.610Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+ [31m❯[39m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 1089[2mms[22m[39m
+     [32m✓[39m imports and removes a linked local package while preserving runtime discovery behavior[32m 91[2mms[22m[39m
+     [32m✓[39m reloads a linked local package through GraphQL and refreshes package-derived reads[32m 71[2mms[22m[39m
+     [32m✓[39m imports and removes a managed GitHub package through the package-oriented GraphQL contract[32m 55[2mms[22m[39m
+[31m     [31m×[31m checks and updates a managed GitHub package through GraphQL with staged directory replacement[39m[33m 310[2mms[22m[39m
+[31m     [31m×[31m allows legacy managed GitHub records with unknown revision to update to latest through GraphQL[39m[32m 179[2mms[22m[39m
+[31m     [31m×[31m rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure[39m[33m 323[2mms[22m[39m
+     [32m✓[39m returns local-clone guidance when direct private GitHub import metadata is unavailable[32m 4[2mms[22m[39m
+     [32m✓[39m rejects invalid import input and invalid managed package shape[32m 7[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22mAgent packages GraphQL e2e[2m > [22mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[31m[1mAssertionError[22m: expected { status: 'CHECK_FAILED', …(3) } to match object { status: 'UPDATE_AVAILABLE', …(3) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "canUpdate": true,[39m
+[31m+   "canUpdate": false,[39m
+[2m    "installedRevision": "old-sha",[22m
+[32m-   "latestRevision": "new-sha",[39m
+[32m-   "status": "UPDATE_AVAILABLE",[39m
+[31m+   "latestRevision": "old-sha",[39m
+[31m+   "status": "CHECK_FAILED",[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts:[2m929:40[22m[39m
+    [90m927| [39m      (entry) [33m=>[39m entry[33m.[39mpackageId [33m===[39m importedPackage[33m?.[39mpackageId[33m,[39m
+    [90m928| [39m    )[33m;[39m
+    [90m929| [39m    [34mexpect[39m(checkedPackage[33m?.[39mupdateInfo)[33m.[39m[34mtoMatchObject[39m({
+    [90m   | [39m                                       [31m^[39m
+    [90m930| [39m      status[33m:[39m [32m"UPDATE_AVAILABLE"[39m[33m,[39m
+    [90m931| [39m      canUpdate[33m:[39m [35mtrue[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22mAgent packages GraphQL e2e[2m > [22mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[31m[1mGraphQLError[22m: GitHub repository not found or not public: https://github.com/AutoByteus/legacy-agent-package-1791204068097_eb0071d840263. For private repositories, clone locally and import the local path.[39m
+[36m [2m❯[22m GitHubRepositoryClient.fetchRepositoryMetadata src/integrations/github/github-repository-client.ts:[2m45:13[22m[39m
+    [90m 43| [39m
+    [90m 44| [39m    [35mif[39m (response[33m.[39mstatus [33m===[39m [34m404[39m) {
+    [90m 45| [39m      [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m            [31m^[39m
+    [90m 46| [39m        `GitHub repository not found or not public: ${source.canonical…
+    [90m 47| [39m      )[33m;[39m
+[90m [2m❯[22m GitHubRepositoryClient.fetchRepositoryRevisionMetadata src/integrations/github/github-repository-client.ts:[2m12:22[22m[39m
+[90m [2m❯[22m AgentPackageService.updateAgentPackage src/agent-packages/services/agent-package-service.ts:[2m233:18[22m[39m
+[90m [2m❯[22m withSkillNameConflictMapping src/api/graphql/errors/skill-name-conflict-graphql-error.ts:[2m18:12[22m[39m
+[90m [2m❯[22m AgentPackageResolver.updateAgentPackage src/api/graphql/types/agent-packages.ts:[2m220:22[22m[39m
+[90m [2m❯[22m execGraphql tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts:[2m291:20[22m[39m
+[90m [2m❯[22m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts:[2m1111:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22mAgent packages GraphQL e2e[2m > [22mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[31m[1mAssertionError[22m: expected 'GitHub repository not found or not pu…' to contain 'cache refresh failed'[39m
+
+Expected: [32m"cache refresh failed"[39m
+Received: [31m"GitHub repository not found or not public: https://github.com/AutoByteus/rollback-agent-package-1791204068276_f5a15b7b0e3c2. For private repositories, clone locally and import the local path."[39m
+
+[36m [2m❯[22m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts:[2m1263:48[22m[39m
+    [90m1261| [39m      { packageId[33m:[39m managedPackage[33m?.[39mpackageId }[33m,[39m
+    [90m1262| [39m    )[33m;[39m
+    [90m1263| [39m    expect(updateFailure.errors?.[0]?.message).toContain("cache refres…
+    [90m   | [39m                                               [31m^[39m
+    [90m1264| [39m
+    [90m1265| [39m    [35mconst[39m postFailureList [33m=[39m [35mawait[39m execGraphql[33m<[39m{
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (8)[39m
+[2m   Start at [22m 14:41:02
+[2m   Duration [22m 5.65s[2m (transform 2.98s, setup 14ms, import 4.10s, tests 1.09s, environment 0ms)[22m
+
