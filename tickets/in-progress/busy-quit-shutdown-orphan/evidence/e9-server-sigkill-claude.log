@@ -1,0 +1,43 @@
+worker(server)=86428
+before:
+87466 86428 86379 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --mode
+89434 87466 89434 /bin/bash -c source /Users/normy/.claude/shell-snapshots/snapshot-bash-1791185671728-m7fev4.sh 2>/dev/
+89436 89434 89436 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources
+SIGKILL server at 09:34:34
+--- +3s after server SIGKILL
+13434 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+16859 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+18866 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+23249 22963 22050 codex app-server
+25410 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+27434 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+28079 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+31029 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+38634 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+55796 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+70894 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+73652 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+84148 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+87466     1 86379 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --mode
+89434 87466 89434 /bin/bash -c source /Users/normy/.claude/shell-snapshots/snapshot-bash-1791185671728-m7fev4.sh 2>/dev/
+89436 89434 89436 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources
+92292 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+--- +15s after server SIGKILL
+13434 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+16859 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+18866 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+23249 22963 22050 codex app-server
+25410 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+27434 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+28079 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+31029 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+38634 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+55796 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+70894 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+73652 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+84148 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+87466     1 86379 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --mode
+89434 87466 89434 /bin/bash -c source /Users/normy/.claude/shell-snapshots/snapshot-bash-1791185671728-m7fev4.sh 2>/dev/
+89436 89434 89436 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources
+90932 70894 90932 /bin/bash -c source /Users/normy/.claude/shell-snapshots/snapshot-bash-1791180830171-3hgvdu.sh 2>/dev/
+92292 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
