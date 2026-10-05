@@ -432,6 +432,53 @@ describe('agentStatusHandler', () => {
       expect(mockContext.state.compactionStatus).toMatchObject({ phase: 'completed', providerEventId: 'checkpoint:18' });
     });
 
+    it('ends an abandoned Codex compaction as failed on its started row', () => {
+      // Payload shapes from the server's Codex projector: item/started, then the abandoned close
+      // emitted when the turn ended before item/completed (interrupt).
+      const base = {
+        kind: 'provider_compaction_boundary',
+        runtime_kind: 'CODEX',
+        provider: 'codex',
+        provider_thread_id: 'thread-1',
+        provider_event_id: 'item-1',
+        provider_timestamp: null,
+        turn_id: 'turn-2',
+        semantic_compaction: false,
+        rotation_eligible: false,
+      } as const;
+      handleCompactionStatus({
+        ...base,
+        status: 'compacting',
+        source_surface: 'codex.context_compaction_started',
+        boundary_key: 'codex:thread-1:item-1:started',
+      } as CompactionStatusPayload, mockContext);
+      handleCompactionStatus({
+        ...base,
+        status: 'failed',
+        source_surface: 'codex.context_compaction_abandoned',
+        boundary_key: 'codex:thread-1:item-1:failed',
+        error_message: 'Compaction interrupted before it completed (turn interrupted).',
+      } as CompactionStatusPayload, mockContext);
+
+      const expectedActivityId = 'compaction:provider:codex:thread-1:item-1:turn-2';
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenCalledTimes(2);
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        1,
+        mockContext.state.runId,
+        expect.objectContaining({ activityId: expectedActivityId, phase: 'started' }),
+      );
+      expect(mockActivityStore.upsertCompactionActivity).toHaveBeenNthCalledWith(
+        2,
+        mockContext.state.runId,
+        expect.objectContaining({
+          activityId: expectedActivityId,
+          phase: 'failed',
+          errorMessage: 'Compaction interrupted before it completed (turn interrupted).',
+        }),
+      );
+      expect(mockContext.state.compactionStatus).toMatchObject({ activityId: expectedActivityId, phase: 'failed' });
+    });
+
     it('reuses a previous active provider row before falling back to a new boundary key', () => {
       handleCompactionStatus({
         kind: 'provider_compaction_boundary',

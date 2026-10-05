@@ -1,0 +1,9 @@
+{
+  "instance": {"instanceId": "iso-64531-f7fc", "app": "autobyteus-web/electron-dist/mac-arm64/AutoByteus.app (packaged from worktree HEAD 346765623 + uncommitted test-only changes)", "runtime": "Claude Agent SDK", "model": "claude-haiku-4-5-20251001"},
+  "prompt": "Bash run_in_background=true, description \"Wait for release workflows to complete\", command: for i in 1 2 3 4 5 6; do sleep 5; echo \"checking release workflow run $i of 6 for autobyteus-workspace-superrepo personal branch\"; done && echo RELEASE_WORKFLOWS_DONE",
+  "running": {"rowText": "Wait for release workflows to complete | Running | Shell · <command>", "command_title": "for i in 1 2 3 4 5 6; do sleep 5; echo \"checking release workflow run $i of 6 for autobyteus-workspace-superrepo personal branch\"; done && echo RELEASE_WORKFLOWS_DONE", "aria_expanded": "false", "fontFamily": "ui-monospace, SFMono-Regular, …", "whiteSpace": "nowrap", "textOverflow": "ellipsis", "note": "section collapsed at that moment, so no layout metrics"},
+  "completed_collapsed": {"status": "Completed", "summary": "Background command \"Wait for release workflows to complete\" completed (exit code 0)", "command_text_equals_title": true, "tag": "BUTTON", "tabIndex": 0, "aria_expanded": "false", "whiteSpace": "nowrap", "textOverflow": "ellipsis", "clientWidth": 313, "scrollWidth": 1199, "height": 16},
+  "completed_expanded_by_click": {"aria_expanded": "true", "whiteSpace": "pre-wrap", "wordBreak": "break-all", "clientWidth": 313, "scrollWidth": 313, "height": 64, "listClientWidth": 400, "listScrollWidth": 400},
+  "recollapsed_by_click": {"aria_expanded": "false", "whiteSpace": "nowrap", "height": 16},
+  "keyboard_note": "__abDemo.press('Enter') dispatches untrusted script events, which never activate a native <button>; trusted keyboard Enter is proven by the Playwright browser probe BT-UI-007."
+}

@@ -42,7 +42,8 @@ import {
 } from "./codex-segment-source-payload-normalizer.js";
 import {
   CodexProviderCompactionStatusProjector,
-  type CodexCompactionSourceSurface,
+  type CodexCompactionAbandonReason,
+  type CodexObservedCompactionSourceSurface,
 } from "./codex-provider-compaction-status-projector.js";
 
 type RuntimeRunReference = {
@@ -101,6 +102,8 @@ export class CodexThreadEventConverter {
     closeAllReasoningBlocks: (codexEventName) => this.closeAllReasoningBlocks(codexEventName),
     clearOrderedToolsForBoundary: (payload) => this.clearOrderedToolsForBoundary(payload),
     clearAllOrderedTools: () => this.orderedToolBoundaryTracker.clearAll(),
+    closeOpenCompactionsForTurn: (codexEventName, turnId, reason) =>
+      this.closeOpenCompactionsForTurn(codexEventName, turnId, reason),
   };
 
   private readonly itemEventConverterContext: CodexItemEventConverterContext = {
@@ -177,6 +180,10 @@ export class CodexThreadEventConverter {
     closeAllReasoningBlocks: (codexEventName) => this.closeAllReasoningBlocks(codexEventName),
     clearOrderedToolsForBoundary: (payload) => this.clearOrderedToolsForBoundary(payload),
     clearAllOrderedTools: () => this.orderedToolBoundaryTracker.clearAll(),
+    closeOpenCompactionsForTurn: (codexEventName, turnId, reason) =>
+      this.closeOpenCompactionsForTurn(codexEventName, turnId, reason),
+    closeAllOpenCompactions: (codexEventName, reason) =>
+      this.toAbandonedCompactionEvents(codexEventName, this.compactionStatusProjector.closeAllOpen(reason)),
   };
 
   private readonly rawResponseEventConverterContext: CodexRawResponseEventConverterContext = {
@@ -227,6 +234,36 @@ export class CodexThreadEventConverter {
       if (error instanceof CodexSegmentSourcePayloadRejected) return [];
       throw error;
     }
+  }
+
+  /**
+   * Run terminate: closes compactions still open, as failed, so the caller can publish them
+   * before the run's listeners detach.
+   */
+  public closeOpenCompactions(reason: Extract<CodexCompactionAbandonReason, "run_terminated">): AgentRunEvent[] {
+    return this.toAbandonedCompactionEvents(
+      CodexThreadEventName.ITEM_COMPLETED,
+      this.compactionStatusProjector.closeAllOpen(reason),
+    );
+  }
+
+  private closeOpenCompactionsForTurn(
+    codexEventName: string,
+    turnId: string | null,
+    reason: CodexCompactionAbandonReason,
+  ): AgentRunEvent[] {
+    return this.toAbandonedCompactionEvents(codexEventName, turnId
+      ? this.compactionStatusProjector.closeOpenForTurn(turnId, reason)
+      : this.compactionStatusProjector.closeAllOpen(reason));
+  }
+
+  /** The close is a compaction status, never a lifecycle hint, whichever ending produced it. */
+  private toAbandonedCompactionEvents(
+    codexEventName: string,
+    payloads: Record<string, unknown>[],
+  ): AgentRunEvent[] {
+    return payloads.map((payload) =>
+      this.createEvent(codexEventName, AgentRunEventType.COMPACTION_STATUS, payload, null));
   }
 
   private convertAdmittedEvent(codexEventName: string, payload: Readonly<JsonObject>): AgentRunEvent[] {
@@ -404,7 +441,7 @@ export class CodexThreadEventConverter {
   }
 
   private createCodexProviderCompactionStatusEvent(
-    sourceSurface: CodexCompactionSourceSurface,
+    sourceSurface: CodexObservedCompactionSourceSurface,
     payload: JsonObject,
     status: "compacting" | "compacted",
     rotationEligible: boolean,

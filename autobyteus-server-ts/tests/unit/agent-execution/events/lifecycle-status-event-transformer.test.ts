@@ -143,7 +143,7 @@ describe("LifecycleStatusEventTransformer", () => {
       event(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-a" }),
     ]);
     const backgroundTask = event(AgentRunEventType.BACKGROUND_TASK_UPDATED, {
-      task_id: "task-1", kind: "shell", description: "sleep 20", status: "completed",
+      task_id: "task-1", kind: "shell", description: "sleep 20", command: "sleep 20", status: "completed",
       summary: "done", started_at: "2026-09-29T16:48:20.000Z",
     });
 

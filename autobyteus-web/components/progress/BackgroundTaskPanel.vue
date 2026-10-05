@@ -54,8 +54,20 @@
               {{ $t(`workspace.components.progress.BackgroundTaskPanel.status.${task.status}`) }}
             </span>
           </div>
-          <div class="mt-1 pl-6 text-xs text-gray-500">
-            {{ $t(`workspace.components.progress.BackgroundTaskPanel.kind.${task.kind}`) }}
+          <div class="mt-1 pl-6 flex min-w-0 items-start gap-1 text-xs text-gray-500" data-test="background-task-kind-line">
+            <span class="flex-shrink-0">{{ $t(`workspace.components.progress.BackgroundTaskPanel.kind.${task.kind}`) }}</span>
+            <template v-if="commandOf(task)">
+              <span class="flex-shrink-0">·</span>
+              <button
+                type="button"
+                class="flex-1 min-w-0 text-left font-mono text-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                :class="expandedCommands.has(task.taskId) ? 'whitespace-pre-wrap break-all' : 'truncate'"
+                :title="commandOf(task) ?? undefined"
+                :aria-expanded="expandedCommands.has(task.taskId)"
+                data-test="background-task-command"
+                @click="toggle(expandedCommands, task.taskId)"
+              >{{ commandOf(task) }}</button>
+            </template>
           </div>
           <button
             v-if="task.status !== 'running' && task.summary"
@@ -65,7 +77,7 @@
             :title="task.summary"
             :aria-expanded="expandedSummaries.has(task.taskId)"
             data-test="background-task-summary"
-            @click="toggleSummary(task.taskId)"
+            @click="toggle(expandedSummaries, task.taskId)"
           >
             {{ task.summary }}
           </button>
@@ -113,6 +125,12 @@ const countsLabel = computed(() => t('workspace.components.progress.BackgroundTa
 const descriptionOf = (task: BackgroundTask): string =>
   task.description.trim() || t('workspace.components.progress.BackgroundTaskPanel.untitled');
 
+/** The command, unless unknown, blank, or already shown as the title (AGY titles are the command). */
+const commandOf = (task: BackgroundTask): string | null => {
+  const command = task.command?.trim();
+  return command && command !== descriptionOf(task) ? task.command : null;
+};
+
 const statusVisuals: Record<BackgroundTaskStatus, { icon: string; iconClass: string; chipClass: string }> = {
   running: {
     icon: 'heroicons:arrow-path',
@@ -137,8 +155,9 @@ const statusVisuals: Record<BackgroundTaskStatus, { icon: string; iconClass: str
 };
 
 const expandedSummaries = reactive(new Set<string>());
-const toggleSummary = (taskId: string) => {
-  if (expandedSummaries.has(taskId)) expandedSummaries.delete(taskId);
-  else expandedSummaries.add(taskId);
+const expandedCommands = reactive(new Set<string>());
+const toggle = (expanded: Set<string>, taskId: string) => {
+  if (expanded.has(taskId)) expanded.delete(taskId);
+  else expanded.add(taskId);
 };
 </script>

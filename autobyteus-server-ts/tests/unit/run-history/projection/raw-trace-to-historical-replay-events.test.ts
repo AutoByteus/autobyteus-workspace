@@ -196,6 +196,32 @@ describe("raw trace to historical replay events", () => {
     })]);
   });
 
+  it("ends an abandoned Codex compaction as one failed activity (AC-C01c)", () => {
+    const marker = (seq: number, toolResult: Record<string, unknown>) => ({
+      traceType: "provider_compaction_boundary", turnId: "turn-1", seq, ts: 10 + seq,
+      toolResult: { provider: "codex", provider_thread_id: "thread-1", provider_event_id: "item-1",
+        rotation_eligible: false, ...toolResult },
+    });
+    const events = buildHistoricalReplayEvents([
+      marker(1, { source_surface: "codex.context_compaction_started",
+        boundary_key: "codex:thread-1:item-1:compacting", status: "compacting" }),
+      marker(2, { source_surface: "codex.context_compaction_abandoned",
+        boundary_key: "codex:thread-1:item-1:failed", status: "failed",
+        error_message: "Compaction interrupted before it completed (turn interrupted)." }),
+    ]);
+    expect(events.map((event) => event.kind === "compaction" ? event.phase : event.kind)).toEqual(["started", "failed"]);
+
+    const activities = dedupeRunProjectionActivityEntries(buildRunProjectionActivities(events));
+    expect(activities).toEqual([
+      expect.objectContaining({
+        kind: "compaction",
+        activityId: "compaction:provider:codex:thread-1:item-1:turn-1",
+        phase: "failed",
+        providerEventId: "item-1",
+      }),
+    ]);
+  });
+
   it("coalesces provider compacting and compacted boundaries by provider operation identity", () => {
     const events = buildHistoricalReplayEvents([
       {

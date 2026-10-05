@@ -292,6 +292,64 @@ describe("CodexAgentRunBackend", () => {
     expect(result).not.toHaveProperty("undeliveredRetryAsStart");
   });
 
+  describe("compaction open at terminate (SCN-C5)", () => {
+    const startCompaction = async (emitThreadEvent: (event: Record<string, unknown>) => void,
+      events: Array<Record<string, unknown>>) => {
+      emitThreadEvent({ method: CodexThreadEventName.TURN_STARTED,
+        params: { threadId: "thread-1", turn: { id: "turn-compact", status: "inProgress" } } });
+      emitThreadEvent({ method: CodexThreadEventName.ITEM_STARTED,
+        params: { threadId: "thread-1", turnId: "turn-compact", item: { type: "contextCompaction", id: "compaction-1" } } });
+      await waitForCondition(() => events.some((event) => event.eventType === AgentRunEventType.COMPACTION_STATUS));
+    };
+
+    it("publishes the failed close to listeners before the thread is terminated", async () => {
+      const { backend, emitThreadEvent, threadManager } = createBackend();
+      const events: Array<Record<string, unknown>> = [];
+      let terminatedWhenClosed: boolean | null = null;
+      backend.subscribeToSourceEventBatches((batch) => {
+        for (const event of batch as unknown as Array<Record<string, unknown>>) {
+          if ((event.payload as Record<string, unknown>).status === "failed") {
+            terminatedWhenClosed = threadManager.terminateThread.mock.calls.length > 0;
+          }
+          events.push(event);
+        }
+      });
+      await startCompaction(emitThreadEvent, events);
+
+      await backend.terminateRun();
+
+      const failed = events.filter((event) => (event.payload as Record<string, unknown>).status === "failed");
+      expect(failed).toHaveLength(1);
+      expect(failed[0]).toMatchObject({ eventType: AgentRunEventType.COMPACTION_STATUS, statusHint: null,
+        payload: { source_surface: "codex.context_compaction_abandoned", provider_event_id: "compaction-1",
+          turn_id: "turn-compact", rotation_eligible: false,
+          error_message: "Compaction did not complete (run terminated)." } });
+      expect(terminatedWhenClosed).toBe(false);
+      expect(threadManager.terminateThread).toHaveBeenCalledTimes(1);
+    });
+
+    it("publishes nothing when no compaction is open, and still terminates when a listener fails", async () => {
+      const quiet = createBackend();
+      const quietEvents: unknown[] = [];
+      quiet.backend.subscribeToSourceEventBatches((batch) => { quietEvents.push(...batch); });
+      await quiet.backend.terminateRun();
+      expect(quietEvents).toEqual([]);
+
+      const { backend, emitThreadEvent, threadManager } = createBackend();
+      const events: Array<Record<string, unknown>> = [];
+      backend.subscribeToSourceEventBatches((batch) => {
+        events.push(...batch as unknown as Array<Record<string, unknown>>);
+        if (batch.some((event) => event.payload.status === "failed")) throw new Error("listener failed");
+      });
+      await startCompaction(emitThreadEvent, events);
+      const errorLog = vi.spyOn(console, "error").mockImplementation(() => undefined);
+      await expect(backend.terminate()).resolves.toEqual({ accepted: true });
+      expect(threadManager.terminateThread).toHaveBeenCalledTimes(1);
+      expect(String(errorLog.mock.calls[0]?.[0])).toContain("Failed to publish abandoned Codex compactions");
+      errorLog.mockRestore();
+    });
+  });
+
   it("dispatches idle lifecycle events even when token usage updates were observed earlier", async () => {
     const { backend, codexThread, emitThreadEvent } = createBackend();
     codexThread.runContext.runtimeContext.activeTurnId = "turn-usage-1";

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ClaudeBackgroundTaskRegistry } from "../../../../../../src/agent-execution/backends/claude/session/claude-background-task-registry.js";
+import type { AgentBackgroundTask } from "../../../../../../src/agent-execution/domain/agent-background-task.js";
 import {
   ClaudeTurnTracker,
   classifyClaudeFrame,
@@ -30,7 +31,7 @@ type Recorded =
   | ["settled", string, ClaudeTurnSettlement["kind"]]
   | ["anomaly", string];
 
-const createTracker = () => {
+const createTracker = (onBackgroundTaskChanged: (task: AgentBackgroundTask) => void = () => undefined) => {
   const log: Recorded[] = [];
   let uuidSequence = 0;
   let turnSequence = 0;
@@ -42,7 +43,7 @@ const createTracker = () => {
     turnSettled: (turnId, settlement) => log.push(["settled", turnId, settlement.kind]),
     anomaly: (frameKind) => log.push(["anomaly", frameKind]),
   };
-  const registry = new ClaudeBackgroundTaskRegistry(() => undefined);
+  const registry = new ClaudeBackgroundTaskRegistry(onBackgroundTaskChanged);
   const tracker = new ClaudeTurnTracker({
     runId: "run-1",
     listener,
@@ -403,5 +404,35 @@ describe("ClaudeBackgroundTaskRegistry consumption and carry-over (SPINE-3, ARCH
     expect(registry.pendingCount).toBe(1);
     tracker.processExited({ code: "CLAUDE_PROCESS_EXITED", message: "gone" });
     expect(registry.pendingCount).toBe(0);
+  });
+});
+
+describe("ClaudeTurnTracker conversation-frame routing for background-task commands (DS-001)", () => {
+  const bashToolUse = (command: string) => ({
+    type: "assistant", session_id: SID,
+    message: { id: "t", role: "assistant", content: [{ type: "tool_use", id: "toolu_bg", name: "Bash", input: { command, run_in_background: true } }] },
+  });
+  const startedWithToolUse = (taskId: string) => ({ ...taskStarted(taskId, false, "Wait for workflows"), tool_use_id: "toolu_bg" });
+
+  it("passes assistant frames to the registry so a background task gets its command", () => {
+    const emitted: AgentBackgroundTask[] = [];
+    const { feed, sendAndStart } = createTracker((task) => emitted.push(task));
+    sendAndStart();
+
+    feed(init(), bashToolUse("gh run watch 123"), bgChanged([["bg", "Wait for workflows"]]), startedWithToolUse("bg"));
+
+    expect(emitted.map((task) => task.command)).toEqual([null, "gh run watch 123"]);
+  });
+
+  it("still records the command when a Stop was requested before the tool_use arrived", () => {
+    const emitted: AgentBackgroundTask[] = [];
+    const { tracker, feed, sendAndStart } = createTracker((task) => emitted.push(task));
+    const a = sendAndStart();
+    feed(init());
+    tracker.requestInterrupt(a.turnId);
+
+    feed(bashToolUse("sleep 30"), { ...startedWithToolUse("bg"), is_backgrounded: true });
+
+    expect(emitted.map((task) => task.command)).toEqual(["sleep 30"]);
   });
 });

@@ -188,7 +188,7 @@ describe('AgentStreamingService', () => {
         ['TOOL_EXECUTION_FAILED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', error: 'failed' }],
         ['TOOL_EXECUTION_INTERRUPTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', reason: 'stopped' }],
         ['TOOL_LOG', { log_entry: 'late log', tool_invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a' }],
-        ['BACKGROUND_TASK_UPDATED', { task_id: 'task-1', kind: 'shell', description: 'sleep 20', status: 'running', summary: null, started_at: '2026-09-29T16:48:20.000Z' }],
+        ['BACKGROUND_TASK_UPDATED', { task_id: 'task-1', kind: 'shell', description: 'sleep 20', command: 'sleep 20', status: 'running', summary: null, started_at: '2026-09-29T16:48:20.000Z' }],
         ['INTER_AGENT_MESSAGE', { content: 'late message' }],
         ['SYSTEM_TASK_NOTIFICATION', { sender_id: 'system', content: 'late task' }],
     ])('keeps canonical error for ordinary %s activity', (type, payload) => {

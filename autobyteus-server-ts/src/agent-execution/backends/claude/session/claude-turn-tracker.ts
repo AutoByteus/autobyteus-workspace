@@ -328,7 +328,7 @@ export class ClaudeTurnTracker {
       return;
     }
     if (frameKind === "user" || frameKind === "assistant") {
-      this.input.registry.observeConversationFrame(frameKind, turn.interruptRequested);
+      this.input.registry.observeConversationFrame(frameKind, frame, turn.interruptRequested);
     }
     this.input.listener.turnContent(turn.turnId, frame);
   }

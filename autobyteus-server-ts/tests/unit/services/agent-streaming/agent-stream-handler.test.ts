@@ -332,7 +332,7 @@ describe("AgentStreamHandler", () => {
     expect(
       broadcaster.publishToRun(
         "agent-123",
-        new ServerMessage(ServerMessageType.BACKGROUND_TASK_UPDATED, { task_id: "task-1", kind: "shell", description: "sleep 20", status: "running", summary: null, started_at: "2026-09-29T16:48:20.000Z" }),
+        new ServerMessage(ServerMessageType.BACKGROUND_TASK_UPDATED, { task_id: "task-1", kind: "shell", description: "sleep 20", command: "sleep 20", status: "running", summary: null, started_at: "2026-09-29T16:48:20.000Z" }),
       ),
     ).toBe(1);
 

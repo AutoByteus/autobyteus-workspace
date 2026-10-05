@@ -101,7 +101,7 @@ const record = async (id, description, fn) => {
 const snapshot = (overrides) => ({
   type: 'BACKGROUND_TASK_UPDATED',
   payload: {
-    task_id: 'bg-1', kind: 'shell', description: 'sleep 20; echo done > marker', status: 'running',
+    task_id: 'bg-1', kind: 'shell', description: 'sleep 20; echo done > marker', command: null, status: 'running',
     summary: null, started_at: '2026-09-29T16:48:20.000Z', ...overrides,
   },
 });
@@ -273,6 +273,64 @@ try {
     assert.equal(narrow.chipsInside, true, 'status chips stay inside the panel');
     await shot('06-narrow-panel.png');
     return narrow;
+  });
+
+  await record('BT-UI-007', 'Shell command line: filled in by a follow-up snapshot, one truncated monospace line with tooltip, click/keyboard expand, no repeat of an AGY title (ticket background-task-shell-command AC-001, AC-003, AC-004, AC-005)', async () => {
+    const title = 'Wait for release workflows to complete';
+    const command = `cd /Users/normy/autobyteus_org/autobyteus-worktrees/release && for i in $(seq 1 110); do gh run list --workflow release-desktop.yml --limit 1 --json status,conclusion; sleep 30; done`;
+    const started = { task_id: 'bg-4', description: title, started_at: '2026-09-29T16:51:00.000Z' };
+    await deliver(RUN, snapshot(started));
+    const row = rows.first();
+    await row.getByText(title).waitFor({ state: 'visible', timeout: 5000 });
+    assert.equal(await row.locator('[data-test="background-task-command"]').count(), 0, 'unknown command: row as before');
+    assert.equal((await row.locator('[data-test="background-task-kind-line"]').innerText()).trim(), 'Shell');
+
+    await deliver(RUN, snapshot({ ...started, command }));
+    const commandButton = row.locator('[data-test="background-task-command"]');
+    await commandButton.waitFor({ state: 'visible', timeout: 5000 });
+    assert.equal(await rows.count(), 4, 'follow-up snapshot updates the same row');
+    assert.equal((await counts.innerText()).trim(), '2 running · 4 total');
+    assert.equal((await row.locator('p').innerText()).trim(), title, 'title stays the description');
+    assert.match((await row.locator('[data-test="background-task-kind-line"]').innerText()).replace(/\s+/g, ' '), /^Shell · cd \/Users/);
+    assert.equal(await commandButton.getAttribute('title'), command);
+    const style = await commandButton.evaluate((el) => {
+      const computed = getComputedStyle(el);
+      return { fontFamily: computed.fontFamily, whiteSpace: computed.whiteSpace, textOverflow: computed.textOverflow,
+        clientWidth: el.clientWidth, scrollWidth: el.scrollWidth, height: el.getBoundingClientRect().height,
+        lineHeight: parseFloat(computed.lineHeight) };
+    });
+    assert.match(style.fontFamily, /mono|Menlo|Monaco|Consolas|Courier/i, `monospace font: ${style.fontFamily}`);
+    assert.equal(style.textOverflow, 'ellipsis');
+    assert.ok(style.scrollWidth > style.clientWidth, 'long command is truncated');
+    assert.ok(style.height <= style.lineHeight + 1, `collapsed command is one line: ${style.height}px`);
+    await shot('07-command-collapsed.png');
+
+    assert.equal(await commandButton.getAttribute('aria-expanded'), 'false');
+    await commandButton.click();
+    assert.equal(await commandButton.getAttribute('aria-expanded'), 'true');
+    const expanded = await commandButton.evaluate((el) => ({ height: el.getBoundingClientRect().height, clientWidth: el.clientWidth, scrollWidth: el.scrollWidth }));
+    assert.ok(expanded.height > style.height * 2, `expanded command wraps onto several lines: ${expanded.height}px`);
+    assert.ok(expanded.scrollWidth <= expanded.clientWidth, 'expanded command wraps inside the row');
+    const overflow = await panel.evaluate((el) => {
+      const list = el.querySelector('[data-test="background-tasks-list"]').parentElement;
+      return { listClient: list.clientWidth, listScroll: list.scrollWidth };
+    });
+    assert.ok(overflow.listScroll <= overflow.listClient, `horizontal overflow: ${JSON.stringify(overflow)}`);
+    await shot('08-command-expanded.png');
+    await commandButton.focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await commandButton.getAttribute('aria-expanded'), 'false');
+
+    // AGY: the title already is the command line, so it is not repeated (REQ-006).
+    await deliver(RUN, snapshot({ task_id: 'bg-5', description: 'npm run dev', command: 'npm run dev', started_at: '2026-09-29T16:52:00.000Z' }));
+    const agyRow = rows.first();
+    await agyRow.getByText('npm run dev').waitFor({ state: 'visible', timeout: 5000 });
+    assert.equal(await agyRow.locator('[data-test="background-task-command"]').count(), 0);
+    assert.equal((await agyRow.locator('[data-test="background-task-kind-line"]').innerText()).trim(), 'Shell');
+    // Subagent rows have no command line (REQ-004).
+    assert.equal(await rows.filter({ hasText: 'Research lighthouse history' }).locator('[data-test="background-task-command"]').count(), 0);
+    await shot('09-command-and-agy-rows.png');
+    return { style, expanded, overflow };
   });
 
   // The probe has no backend: app-shell GraphQL bootstrap queries get an empty mock response and Apollo

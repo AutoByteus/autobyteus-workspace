@@ -1,0 +1,459 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-task-9c27f387-e264-46f4-a56c-e01ac453ce51
+Created agent session 5f500c83-3239-4aaf-bdec-8c87af7e94f4 for run claude-live-background-task-9c27f387-e264-46f4-a56c-e01ac453ce51
+Agent WebSocket connected: session=5f500c83-3239-4aaf-bdec-8c87af7e94f4, run=claude-live-background-task-9c27f387-e264-46f4-a56c-e01ac453ce51
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+[22m[39mClosed agent session 5f500c83-3239-4aaf-bdec-8c87af7e94f4
+Agent WebSocket disconnected: 5f500c83-3239-4aaf-bdec-8c87af7e94f4
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-task-a5428d11-01ed-4d21-8ab8-8ebad4ae2288
+Created agent session 8b77d9a4-3359-4b44-8121-046b86246c13 for run claude-live-background-task-a5428d11-01ed-4d21-8ab8-8ebad4ae2288
+Agent WebSocket connected: session=8b77d9a4-3359-4b44-8121-046b86246c13, run=claude-live-background-task-a5428d11-01ed-4d21-8ab8-8ebad4ae2288
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)
+[22m[39mClosed agent session 8b77d9a4-3359-4b44-8121-046b86246c13
+Agent WebSocket disconnected: 8b77d9a4-3359-4b44-8121-046b86246c13
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a failing background command as failed with the CLI's exit-code summary (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-fail-bdce940e-c082-4dc4-a622-40be48d87c1f
+Created agent session 0030d10d-21b9-4d5e-bf60-7efe6e220176 for run claude-live-background-fail-bdce940e-c082-4dc4-a622-40be48d87c1f
+Agent WebSocket connected: session=0030d10d-21b9-4d5e-bf60-7efe6e220176, run=claude-live-background-fail-bdce940e-c082-4dc4-a622-40be48d87c1f
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a failing background command as failed with the CLI's exit-code summary (path-claude)
+[22m[39mClosed agent session 0030d10d-21b9-4d5e-bf60-7efe6e220176
+Agent WebSocket disconnected: 0030d10d-21b9-4d5e-bf60-7efe6e220176
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a failing background command as failed with the CLI's exit-code summary (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-fail-39f08e60-9632-4ece-9a40-4e1a9f62db8a
+Created agent session 209ce1f0-82db-41cf-9414-8f032cfc7cad for run claude-live-background-fail-39f08e60-9632-4ece-9a40-4e1a9f62db8a
+Agent WebSocket connected: session=209ce1f0-82db-41cf-9414-8f032cfc7cad, run=claude-live-background-fail-39f08e60-9632-4ece-9a40-4e1a9f62db8a
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mshows a failing background command as failed with the CLI's exit-code summary (sdk-bundled-claude)
+[22m[39mClosed agent session 209ce1f0-82db-41cf-9414-8f032cfc7cad
+Agent WebSocket disconnected: 209ce1f0-82db-41cf-9414-8f032cfc7cad
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (path-claude)
+[22m[39mAgent websocket attached for run claude-live-foreground-bash-bfe43b88-0659-4354-979a-3d43f82bd01e
+Created agent session 3c36dcc1-8cae-4ec0-acd9-bffe93f3ba05 for run claude-live-foreground-bash-bfe43b88-0659-4354-979a-3d43f82bd01e
+Agent WebSocket connected: session=3c36dcc1-8cae-4ec0-acd9-bffe93f3ba05, run=claude-live-foreground-bash-bfe43b88-0659-4354-979a-3d43f82bd01e
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (path-claude)
+[22m[39mClosed agent session 3c36dcc1-8cae-4ec0-acd9-bffe93f3ba05
+Agent WebSocket disconnected: 3c36dcc1-8cae-4ec0-acd9-bffe93f3ba05
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-foreground-bash-332016da-40f1-4789-8aeb-eb0dfc7e9b83
+Created agent session 0875b99d-5e07-4029-bfc3-e2433b6ea00e for run claude-live-foreground-bash-332016da-40f1-4789-8aeb-eb0dfc7e9b83
+Agent WebSocket connected: session=0875b99d-5e07-4029-bfc3-e2433b6ea00e, run=claude-live-foreground-bash-332016da-40f1-4789-8aeb-eb0dfc7e9b83
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mlists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (sdk-bundled-claude)
+[22m[39mClosed agent session 0875b99d-5e07-4029-bfc3-e2433b6ea00e
+Agent WebSocket disconnected: 0875b99d-5e07-4029-bfc3-e2433b6ea00e
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-stop-terminate-f6923ec2-e6e2-472d-866b-d3cae3780685
+Created agent session a119a1c1-77f6-467d-a081-7e36b105587b for run claude-live-background-stop-terminate-f6923ec2-e6e2-472d-866b-d3cae3780685
+Agent WebSocket connected: session=a119a1c1-77f6-467d-a081-7e36b105587b, run=claude-live-background-stop-terminate-f6923ec2-e6e2-472d-866b-d3cae3780685
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (path-claude)
+[22m[39mClosed agent session a119a1c1-77f6-467d-a081-7e36b105587b
+Agent WebSocket disconnected: a119a1c1-77f6-467d-a081-7e36b105587b
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-stop-terminate-a3815008-aeb0-496c-862d-fce41a9de495
+Created agent session 2cff043c-c924-4a41-8088-8c1849ac9e04 for run claude-live-background-stop-terminate-a3815008-aeb0-496c-862d-fce41a9de495
+Agent WebSocket connected: session=2cff043c-c924-4a41-8088-8c1849ac9e04, run=claude-live-background-stop-terminate-a3815008-aeb0-496c-862d-fce41a9de495
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mkeeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (sdk-bundled-claude)
+[22m[39mClosed agent session 2cff043c-c924-4a41-8088-8c1849ac9e04
+Agent WebSocket disconnected: 2cff043c-c924-4a41-8088-8c1849ac9e04
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-crash-de8a2a83-b913-4b91-8ba4-f1c71b4c7a56
+Created agent session bc38144e-e41f-4e00-b0f9-ef56bc044875 for run claude-live-background-crash-de8a2a83-b913-4b91-8ba4-f1c71b4c7a56
+Agent WebSocket connected: session=bc38144e-e41f-4e00-b0f9-ef56bc044875, run=claude-live-background-crash-de8a2a83-b913-4b91-8ba4-f1c71b4c7a56
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (path-claude)
+[22m[39mClaude process for run 'claude-live-background-crash-de8a2a83-b913-4b91-8ba4-f1c71b4c7a56' exited: Error: Claude Code process terminated by signal SIGKILL
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11802)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at Socket.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5073)
+    at Object.onceWrapper (node:events:634:26)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (path-claude)
+[22m[39mClosed agent session bc38144e-e41f-4e00-b0f9-ef56bc044875
+Agent WebSocket disconnected: bc38144e-e41f-4e00-b0f9-ef56bc044875
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-crash-2dd7c373-39a7-49a9-a56f-33c14f6f3135
+Created agent session c9153082-9c24-470d-89e4-c3980590ad2f for run claude-live-background-crash-2dd7c373-39a7-49a9-a56f-33c14f6f3135
+Agent WebSocket connected: session=c9153082-9c24-470d-89e4-c3980590ad2f, run=claude-live-background-crash-2dd7c373-39a7-49a9-a56f-33c14f6f3135
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (sdk-bundled-claude)
+[22m[39mClaude process for run 'claude-live-background-crash-2dd7c373-39a7-49a9-a56f-33c14f6f3135' exited: Error: Claude Code process terminated by signal SIGKILL
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11802)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E)[2m > [22m[2mmarks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (sdk-bundled-claude)
+[22m[39mClosed agent session c9153082-9c24-470d-89e4-c3980590ad2f
+Agent WebSocket disconnected: c9153082-9c24-470d-89e4-c3980590ad2f
+
+ [32m✓[39m tests/e2e/runtime/claude-agent-background-task.e2e.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 137204[2mms[22m[39m
+     [33m[2m✓[22m[39m shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude) [33m 28272[2mms[22m[39m
+     [33m[2m✓[22m[39m shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude) [33m 28523[2mms[22m[39m
+     [33m[2m✓[22m[39m shows a failing background command as failed with the CLI's exit-code summary (path-claude) [33m 10235[2mms[22m[39m
+     [33m[2m✓[22m[39m shows a failing background command as failed with the CLI's exit-code summary (sdk-bundled-claude) [33m 10048[2mms[22m[39m
+     [33m[2m✓[22m[39m lists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (path-claude) [33m 12586[2mms[22m[39m
+     [33m[2m✓[22m[39m lists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (sdk-bundled-claude) [33m 12167[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (path-claude) [33m 11443[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (sdk-bundled-claude) [33m 12747[2mms[22m[39m
+     [33m[2m✓[22m[39m marks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (path-claude) [33m 5896[2mms[22m[39m
+     [33m[2m✓[22m[39m marks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (sdk-bundled-claude) [33m 5285[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:84152) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/background-task-shell-command/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T03:46:03.356Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-05T03:46:03.848Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39m[2026-10-05T03:46:03.854Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mIn-memory cache: Added new agent definition with ID worker-3281c867-8ec1-4d64-ab23-d93b9c15c3c5.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mAgent Definition created successfully with ID: worker-3281c867-8ec1-4d64-ab23-d93b9c15c3c5
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mIn-memory cache: Added new agent definition with ID peer-3281c867-8ec1-4d64-ab23-d93b9c15c3c5.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mAgent Definition created successfully with ID: peer-3281c867-8ec1-4d64-ab23-d93b9c15c3c5
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39m[2026-10-05T03:46:03.966Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID claude-background-team-3281c867-8ec1-4d64-ab23-d93b9c15c3c5.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mAgent Team Definition created successfully with ID: claude-background-team-3281c867-8ec1-4d64-ab23-d93b9c15c3c5
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/workspace-XsTJni
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/workspace-XsTJni.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mCreated and registered workspace ID: agent_ws_f734a6676ad2629424ed25e34f504f97770e18fe9d54fd83bd7ebd71d62c51bb
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mAgent team websocket attached for team run claude_background_team_3281c867_8ec1_4d64_ab23_d_45cadc41825b4eb0aaa1e3762026f92c
+Created agent session bcb47f6b-b681-4737-8ee2-3b576ccfd2c6 for run claude_background_team_3281c867_8ec1_4d64_ab23_d_45cadc41825b4eb0aaa1e3762026f92c
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mAgent Team WebSocket connected: session=bcb47f6b-b681-4737-8ee2-3b576ccfd2c6, run=claude_background_team_3281c867_8ec1_4d64_ab23_d_45cadc41825b4eb0aaa1e3762026f92c
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/workspace-XsTJni
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-nUoXRQ/workspace-XsTJni.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mReusing registered workspace ID: agent_ws_f734a6676ad2629424ed25e34f504f97770e18fe9d54fd83bd7ebd71d62c51bb
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mPublished claude_agent_sdk agent run 'worker_3281c867_8ec1_4d64_ab23_d93b9c15c3c5_a2365be14b1145aba49958839ac7a7bd'.
+
+(node:84152) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)[2m > [22m[2mdelivers a member's background task only to that member and marks it stopped on team terminate
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mClosed agent session bcb47f6b-b681-4737-8ee2-3b576ccfd2c6
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39m[2026-10-05T03:46:38.252Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-background-team-3281c867-8ec1-4d64-ab23-d93b9c15c3c5.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mAgent Team Definition with ID claude-background-team-3281c867-8ec1-4d64-ab23-d93b9c15c3c5 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mIn-memory cache: Removed agent definition with ID worker-3281c867-8ec1-4d64-ab23-d93b9c15c3c5.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mAgent Definition with ID worker-3281c867-8ec1-4d64-ab23-d93b9c15c3c5 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mIn-memory cache: Removed agent definition with ID peer-3281c867-8ec1-4d64-ab23-d93b9c15c3c5.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mAgent Definition with ID peer-3281c867-8ec1-4d64-ab23-d93b9c15c3c5 deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 34943[2mms[22m[39m
+     [33m[2m✓[22m[39m delivers a member's background task only to that member and marks it stopped on team terminate [33m 34342[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m11 passed[39m[22m[90m (11)[39m
+[2m   Start at [22m 05:43:33
+[2m   Duration [22m 185.22s[2m (transform 5.85s, setup 24ms, import 12.41s, tests 172.15s, environment 0ms)[22m
+
+exit=0

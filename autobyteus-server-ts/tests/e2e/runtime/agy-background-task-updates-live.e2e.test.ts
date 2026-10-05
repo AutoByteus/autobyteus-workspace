@@ -24,7 +24,7 @@ const MODEL = "gemini-3.8-flash-high";
 const BACKGROUND_RESULT = { provider_state: "RUNNING",
   output: "Started as a background task; still running when the turn ended." };
 type Wire = { at: number; type: string; payload: Record<string, unknown> };
-type TaskSnapshot = { task_id: string; kind: string; description: string; status: string; summary: string | null; started_at: string };
+type TaskSnapshot = { task_id: string; kind: string; description: string; command: string | null; status: string; summary: string | null; started_at: string };
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const freePort = () => new Promise<number>((resolve, reject) => {
   const server = net.createServer();
@@ -153,6 +153,8 @@ suite("real AGY daemons are shown as background tasks (AC-013)", () => {
     expect(running, "running BACKGROUND_TASK_UPDATED").toBeDefined();
     expect(running!).toMatchObject({ kind: "shell", status: "running", summary: null });
     expect(running!.description).toContain(commandLine.slice(0, 12));
+    // REQ-003: the command is the step's command line, identical to the unchanged title.
+    expect(running!.command).toBe(running!.description);
     expect(running!.task_id).toMatch(/^[0-9a-f-]{36}\/task-\d+$/u);
     evidence.turnEndAtMs = end!.at;
     evidence.running = running;

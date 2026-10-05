@@ -188,6 +188,12 @@ export class CodexAgentRunBackend implements AgentRunBackend {
 
   async terminateRun(): Promise<string | null> {
     const platformAgentRunId = this.getPlatformAgentRunId();
+    // A compaction still open now can never complete: publish its failed close while listeners are attached.
+    const abandonedCompactions = this.eventConverter.closeOpenCompactions("run_terminated");
+    for (const listener of abandonedCompactions.length > 0 ? this.sourceListeners : []) {
+      await Promise.resolve().then(() => listener(abandonedCompactions)).catch((error: unknown) => logger.error(
+        `Failed to publish abandoned Codex compactions for run '${this.runId}': ${String(error)}`));
+    }
     await this.threadManager.terminateThread(this.runId);
     this.unsubscribeFromThread?.();
     this.unsubscribeFromThread = null;

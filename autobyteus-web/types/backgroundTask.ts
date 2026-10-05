@@ -10,6 +10,8 @@ export interface BackgroundTask {
   taskId: string;
   kind: BackgroundTaskKind;
   description: string;
+  /** Exact shell command the task runs; null when unknown or not applicable. */
+  command: string | null;
   status: BackgroundTaskStatus;
   /** Final summary the runtime reported; null while running. */
   summary: string | null;
