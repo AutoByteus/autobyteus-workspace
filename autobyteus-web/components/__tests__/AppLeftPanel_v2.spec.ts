@@ -7,6 +7,8 @@ const {
   applicationsCapabilityStoreMock,
   routeMock,
   routerMock,
+  runStartMock,
+  beginSelectionIntent,
 } = vi.hoisted(() => ({
   applicationsCapabilityStoreMock: {
     isEnabled: false,
@@ -19,12 +21,28 @@ const {
   routerMock: {
     push: vi.fn().mockResolvedValue(undefined),
   },
+  runStartMock: {
+    newChat: vi.fn().mockResolvedValue(undefined),
+  },
+  beginSelectionIntent: vi.fn(),
 }))
 
 vi.mock('vue-router', () => ({
   useRoute: () => routeMock,
   useRouter: () => routerMock,
 }))
+
+vi.mock('~/composables/runSettings/useRunStart', () => ({
+  useRunStart: () => runStartMock,
+}))
+
+vi.mock('~/stores/agentSelectionStore', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('~/stores/agentSelectionStore')>()
+  return {
+    ...actual,
+    useAgentSelectionStore: () => Object.assign(actual.useAgentSelectionStore(), { beginSelectionIntent }),
+  }
+})
 
 vi.mock('~/stores/applicationsCapabilityStore', () => ({
   useApplicationsCapabilityStore: () => applicationsCapabilityStoreMock,
@@ -46,6 +64,28 @@ describe('AppLeftPanel Component', () => {
     routeMock.query = {}
     vi.clearAllMocks()
     window.localStorage.clear()
+  })
+
+  it('DI-001: the Chat nav and the new-chat pencil start New chat only through useRunStart.newChat', async () => {
+    const wrapper = mount(AppLeftPanel, {
+      global: {
+        stubs: { Icon: true, WorkspaceAgentRunsTreePanel: true },
+        mocks: { $route: routeMock, $router: routerMock },
+      },
+    })
+    const chatNav = wrapper.get('[data-test="app-left-panel-primary-nav"]').findAll('button')
+      .find((button) => button.text().includes('Chat'))!
+    await chatNav.trigger('click')
+    await nextTick()
+    expect(beginSelectionIntent).toHaveBeenCalledTimes(1)
+    expect(runStartMock.newChat).toHaveBeenCalledTimes(1)
+
+    await wrapper.get('[data-test="app-left-panel-new-chat"]').trigger('click')
+    await nextTick()
+    expect(beginSelectionIntent).toHaveBeenCalledTimes(2)
+    expect(runStartMock.newChat).toHaveBeenCalledTimes(2)
+    // Neither path pushes /chat itself; the intent owns the navigation.
+    expect(routerMock.push).not.toHaveBeenCalledWith('/chat')
   })
 
   it('hides Applications link when the capability is disabled', () => {

@@ -123,6 +123,13 @@ describe('useRunStart (the single start intent)', () => {
     expect(mocks.push).toHaveBeenLastCalledWith('/chat')
   })
 
+  it('DI-001: the Chat nav and its pencil open a fresh plain New chat through the start intent', async () => {
+    await useRunStart().newChat()
+    expect(mocks.chat.startNewChat).toHaveBeenCalledWith()
+    expect(mocks.chat.startForDefinition).not.toHaveBeenCalled()
+    expect(mocks.push).toHaveBeenCalledWith('/chat')
+  })
+
   it('the workspace tree "+" opens New chat for the agent in that workspace with today’s New chat rule', async () => {
     await useRunStart().newChatInWorkspace({ agentDefinitionId: 'agent-1', workspaceRootPath: '/work/a' })
     expect(mocks.chat.startNewChat).toHaveBeenCalledWith({ agentDefinitionId: 'agent-1', workspaceRootPath: '/work/a' })

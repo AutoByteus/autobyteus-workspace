@@ -18,7 +18,7 @@ import { DEFAULT_CHAT_AGENT_DEFINITION_ID, TEMP_WORKSPACE_ID } from '~/utils/cha
 import { explicitChatModelConfig } from '~/utils/runSettings/explicitModelConfig'
 import { runWorkspaceChoiceFromRootPath } from '~/services/workspace/runWorkspaceChoice'
 import { startModelCatalog } from '~/services/runSettings/startModelCatalog'
-import { resolveStartModel } from '~/utils/runSettings/startModelDefaults'
+import { chatNavStartOrder, definitionStartOrder, resolveStartModel } from '~/utils/runSettings/startModelDefaults'
 import { editMemberOverride, resetMemberOverride, type MemberOverrideDeps } from '~/utils/runSettings/memberOverrides'
 import { draftMentionCandidates } from '~/utils/collaborators/draftMentionEligibility'
 import { normalizeModelConfig } from '~/utils/teamRunConfigUtils'
@@ -193,7 +193,8 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
       const definitionDefaults = await definitionDefaultLaunchConfig(target.target)
       if (!isCurrent(target, generation)) return
       refreshAgentIdentity(target)
-      const choice = await resolveStartModel([definitionDefaults, readChatLastModel()], startModelCatalog(), DEFAULT_AGENT_RUNTIME_KIND)
+      const choice = await resolveStartModel(definitionStartOrder({ definitionDefaults, lastChatModel: readChatLastModel() }),
+        startModelCatalog(), DEFAULT_AGENT_RUNTIME_KIND)
       if (isCurrent(target, generation) && choice) applyModel(target, choice, choice.llmConfig)
     } catch (error) {
       console.warn('Failed to resolve the New chat default model:', error)
@@ -226,7 +227,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
       const assistantDefaults = normalizeDefaultLaunchConfig(
         agentDefinitions().getAgentDefinitionById(DEFAULT_CHAT_AGENT_DEFINITION_ID)?.defaultLaunchConfig,
       )
-      const choice = await resolveStartModel([lastModel ? { ...lastModel, llmConfig: null } : null, assistantDefaults],
+      const choice = await resolveStartModel(chatNavStartOrder({ lastChatModel: lastModel, assistantDefaults }),
         startModelCatalog(), DEFAULT_AGENT_RUNTIME_KIND)
       if (isCurrent(target, generation)) {
         applyModel(target, choice ?? { runtimeKind: DEFAULT_AGENT_RUNTIME_KIND, llmModelIdentifier: '' }, choice?.llmConfig ?? null)

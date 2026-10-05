@@ -106,7 +106,7 @@
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import { initialsFor } from '~/components/chat/chatComposerMenus'
-import { setModelOptionLabels } from '~/components/chat/chatModelOptions'
+import { setModelOptionLabels } from '~/utils/runSettings/modelOptions'
 import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import type { RunMemberSettingChange, RunMemberSettingReset, RunSettingFlags } from '~/types/runSettings/RunSettings'
 import { countCustomizedMembers, isRunMemberCustomized, type RunMemberNode } from '~/utils/runSettings/runMemberTree'

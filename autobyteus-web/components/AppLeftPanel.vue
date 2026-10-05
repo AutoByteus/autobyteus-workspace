@@ -131,7 +131,7 @@ import {
   type ShellPrimaryNavKey,
 } from '~/composables/useShellPrimaryNavigation';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
-import { useChatDraftStore } from '~/stores/chatDraftStore';
+import { useRunStart } from '~/composables/runSettings/useRunStart';
 import { resolveSelectionRoute, type RunSelectionRouteInput } from '~/services/workspace/workspaceNavigationService';
 
 const { t } = useLocalization();
@@ -152,6 +152,8 @@ const {
   initPrimarySectionResize,
 } = useAppLeftPanelSectionResize();
 
+const runStart = useRunStart();
+
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
 
@@ -163,18 +165,29 @@ const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
   }
 };
 
+// New chat starts only through the start intent (DI-001): a fresh draft, then /chat.
+const openNewChat = async (): Promise<void> => {
+  try {
+    await runStart.newChat();
+  } catch (error) {
+    console.error('AppLeftPanel navigation error:', error);
+  }
+};
+
 const navigateToPrimary = async (key: ShellPrimaryNavKey): Promise<void> => {
   useAgentSelectionStore().beginSelectionIntent();
   // Chat always opens a fresh New chat.
-  if (key === 'chat') useChatDraftStore().startNewChat();
+  if (key === 'chat') {
+    await openNewChat();
+    return;
+  }
   await pushRoute(resolvePrimaryRoute(key));
 };
 
 // The pencil on the Chat item always opens a fresh New chat.
 const startNewChat = async (): Promise<void> => {
   useAgentSelectionStore().beginSelectionIntent();
-  useChatDraftStore().startNewChat();
-  await pushRoute('/chat');
+  await openNewChat();
 };
 
 const navigateToSettings = async (): Promise<void> => {

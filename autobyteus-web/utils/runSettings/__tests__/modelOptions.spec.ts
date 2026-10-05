@@ -6,7 +6,7 @@ import {
   otherModelSettingKeys,
   setModelOptionLabels,
   withoutModelOptions,
-} from '../chatModelOptions'
+} from '../modelOptions'
 import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
 
 const labels = { default: 'Default', on: 'On', off: 'Off' }
@@ -20,7 +20,7 @@ const multi = {
   temperature: { type: 'number', minimum: 0, maximum: 2 },
 } as unknown as UiModelConfigSchema
 
-describe('chatModelOptions (REQ-022)', () => {
+describe('modelOptions (REQ-022)', () => {
   it('finds the non-thinking enum/boolean settings; numeric ones are not presented', () => {
     expect(otherModelSettingKeys(codex)).toEqual(['service_tier'])
     expect(otherModelSettingKeys(multi)).toEqual(['verbosity'])

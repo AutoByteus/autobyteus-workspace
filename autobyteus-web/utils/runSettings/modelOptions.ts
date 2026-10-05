@@ -1,6 +1,5 @@
-import { getThinkingParamKeys } from '~/utils/llmThinkingConfigAdapter'
+import { getThinkingParamKeys, humanizeThinkingValue } from '~/utils/llmThinkingConfigAdapter'
 import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
-import { humanizeThinkingValue } from '~/components/chat/chatThinkingMenu'
 
 /**
  * REQ-022: the selected model's **other model settings**, the config-schema parameters that are not

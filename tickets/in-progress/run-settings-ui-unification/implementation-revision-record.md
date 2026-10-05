@@ -9,6 +9,7 @@ authoritative. This record holds only the initial baseline and later implementat
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-002 Pass | N/A | `Initial Baseline` | SR-006, SR-008, ARCH-REV-002 | Implementation complete; local checks pass with no new failures; sent to code review |
 | IR-002 | Code Reviewer CRR-001/CRR-002 + Architecture Reviewer ARCH-REV-003 (SR-009) | CR-001, CR-002, CR-003 | `Design Impact` (CR-001, resolved by SR-009) / `Local Fix` (CR-002, CR-003) | SR-009, ARCH-REV-003, CRR-002 | Fixed; local checks pass with no new failures; back to code review for a delta review |
+| IR-003 | Code Reviewer CRR-004 + Architecture Reviewer ARCH-REV-004 (SR-010) | DI-001, DI-002, DI-004, DI-006(b), DI-006(e) | `Design Impact` (decided upstream by SR-010) | SR-010, ARCH-REV-004, CRR-004 | Implemented; local checks by slice S1–S6 pass with no new failures; back to code review, then API/E2E |
 
 ## Revision Entries
 
@@ -103,3 +104,61 @@ authoritative. This record holds only the initial baseline and later implementat
 - Remaining limitations or risks:
   - Unchanged from IR-001. The first-message mention API/E2E proof (AF-009) is still mandatory.
   - The built-in id constant mirrors the server registry by hand.
+
+### IR-003 — SR-010: one New chat intent, built-in id contract pin, one readiness rule, start orders and model options in utils
+
+- Triggering role, report path, and round:
+  - Code Reviewer, `code-review-report.md` / `code-review-revision-record.md`, CRR-004 (DI-001..DI-006).
+  - Architecture Reviewer, `design-review-report.md`, ARCH-REV-004 (SR-010 decisions; design-spec §"SR-010 Addendum").
+- Triggering finding IDs: DI-001, DI-002, DI-004, DI-006(b), DI-006(e).
+  - Not implemented by decision: DI-003 resolved; DI-006(a) and (d) accepted; FU-001..FU-004 deferred.
+- Classification: `Design Impact`, decided upstream by SR-010. Requirements SR-006 unchanged; Large/High unchanged.
+- Prior authoritative result: IR-002, head `c37b81de5`.
+- Current authoritative result: IR-002 plus this delta (the IR-003 commit on top of `c37b81de5`).
+- Related solution revision IDs: SR-010.
+- Related architecture-review revision IDs: ARCH-REV-004.
+- Related code-review revision IDs: CRR-004.
+- Related API/E2E revision IDs: the API/E2E round in progress resumes on the new head. Delivery: N/A.
+- Why recorded: rework decided by SR-010 after code review CRR-004.
+- Approved behavior or requirement IDs affected: BEH-001/002 (REQ-005, 021; AC-001, 002), BEH-003 (AC-002), BEH-006 (AC-007, contract pin), BEH-009 (structure only).
+- Implementation delta:
+  - **DI-001:**
+    - `useRunStart.newChat()` starts a fresh plain New chat (`chatDraftStore.startNewChat()`), then routes to `/chat`.
+    - `AppLeftPanel` uses it for both the Chat nav click and the pencil, and keeps `beginSelectionIntent()`. It no longer reaches `chatDraftStore` or pushes `/chat` itself.
+  - **DI-002:** `utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts` reads `autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts`. It asserts that the exported `*_AGENT_DEFINITION_ID` values, the ids listed in `BUILT_IN_AGENT_DEFINITIONS`, and the web mirror all match.
+  - **DI-004:** a pure rule, `utils/runSettings/launchReadiness.ts` → `resolveScopesReadiness(input, copy)`.
+    - It checks the effective scopes: root plus every member, nested included.
+    - Blocking order: target unavailable or Org topology blocked → a scope's runtime disabled → a scope without a model.
+    - The caller supplies runtime availability and localized copy, so the rule stays pure.
+    - `resolveChatLaunchReadiness`: a Team builds `buildTeamMemberTree(team, root, draft.teamAgentOverrides)`; an Agent uses one scope.
+    - `agentOrgLaunchDraftStore.readiness` uses the same rule. `OrgLaunchReadiness` is an alias of `LaunchReadiness`.
+    - The copy and AC-002 order are unchanged.
+  - **DI-006(b):**
+    - `definitionStartOrder` and `chatNavStartOrder` (candidate lists) are in `utils/runSettings/startModelDefaults.ts`.
+    - `chatDraftStore` keeps only the staleness/generation handling and applies the result.
+    - The Org page uses `definitionStartOrder` too: the same REQ-021 order as before.
+  - **DI-006(e):**
+    - `components/chat/chatModelOptions.ts` moved to `utils/runSettings/modelOptions.ts` (`git mv`, spec moved with it); components import it from utils.
+    - Its one component dependency, the pure `humanizeThinkingValue`, moved to `utils/llmThinkingConfigAdapter.ts`, and `chatThinkingMenu.ts` imports it from there.
+    - Nothing in `utils/runSettings/` imports `components/`.
+- Changed files or areas (`autobyteus-web/`):
+  - Production:
+    - `composables/runSettings/useRunStart.ts`, `components/AppLeftPanel.vue`
+    - `services/chat/chatLaunchService.ts`, `stores/agentOrgLaunchDraftStore.ts`, `stores/chatDraftStore.ts`
+    - `utils/runSettings/{launchReadiness (new),startModelDefaults,modelOptions (moved),memberOverrides,runMemberTree}.ts`
+    - `utils/llmThinkingConfigAdapter.ts`, `components/chat/chatThinkingMenu.ts`
+    - import-path updates in `ChatModelOptionControl.vue`, `ChatNewSurface.vue`, `RunSettingsCard.vue`, `RunMemberRow.vue`, `useRunSettingsPresentation.ts`
+  - Specs:
+    - new: `launchReadiness.spec.ts`, `builtInAgentDefinitionIds.contract.spec.ts`, `OrgLaunchPage.spec.ts`
+    - updated: `useRunStart.spec.ts`, `AppLeftPanel_v2.spec.ts`, `chatLaunchService.spec.ts`, `startModelDefaults.spec.ts`, `modelOptions.spec.ts` (moved)
+- Local validation and result (by slice; see the handoff's Local Implementation Checks):
+  - Full web suite: 11 failing files, all baseline (AF-020); no new failures; 3,619 tests pass.
+  - vue-tsc: no errors in touched files; output unchanged at 552 lines.
+  - Localization audit and both guards exit 0.
+  - Mobile specs: only the baseline `MobileUxRefinement` fails.
+  - Probes: `fresh-run-auto-approval` 8/8 and `existing-run-model-config` 6/6.
+- Next recipient or routing: Code Reviewer (targeted review of IR-003), then API/E2E resumes on the new head.
+- Remaining limitations or risks:
+  - FU-001..FU-004 are deferred.
+  - The built-in id mirror is still by hand, but drift now fails a unit test, and live N03 is required in S4.
+  - The `tests/e2e/cross-scope-agent-mentions-live-probe.mjs` working-tree change (N02/N03) belongs to API/E2E and is not part of this commit.

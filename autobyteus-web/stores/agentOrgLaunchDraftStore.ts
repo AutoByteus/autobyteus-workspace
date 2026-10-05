@@ -8,6 +8,7 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { explicitChatModelConfig } from '~/utils/runSettings/explicitModelConfig'
+import { resolveScopesReadiness, type LaunchReadiness } from '~/utils/runSettings/launchReadiness'
 import { DEFAULT_AGENT_RUNTIME_KIND, runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
@@ -33,7 +34,7 @@ import { readChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { TEMP_WORKSPACE_ID } from '~/utils/chat/chatDefaults'
 import { editMemberOverride, normalizeMemberOverride, resetMemberOverride, type MemberOverrideDeps } from '~/utils/runSettings/memberOverrides'
 import { buildOrgMemberTree, findRunMember, type OrgMemberTree, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
-import { resolveStartModel } from '~/utils/runSettings/startModelDefaults'
+import { definitionStartOrder, resolveStartModel } from '~/utils/runSettings/startModelDefaults'
 import { normalizeModelConfig } from '~/utils/teamRunConfigUtils'
 
 const t = (key: string, params?: Record<string, string | number>): string => localizationRuntime.translate(key, params)
@@ -67,7 +68,7 @@ export interface OrgLaunchDraft {
   agentOverrides: Record<AgentTeamAddress, AgentConfigOverride>
 }
 
-export type OrgLaunchReadiness = Readonly<{ ready: true }> | Readonly<{ ready: false; reason: string }>
+export type OrgLaunchReadiness = LaunchReadiness
 
 export type OrgLaunchStart = Readonly<{
   orgDefinitionId: string
@@ -211,7 +212,8 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
   /** REQ-021: the Org's default launch config → last chat model → the default runtime's first model. */
   const applyDefaultModel = async (target: OrgLaunchDraft, org: AgentOrgDefinition) => {
     const defaults = normalizeDefaultLaunchConfig(org.defaultLaunchConfig)
-    const choice = await resolveStartModel([defaults, readChatLastModel()], startModelCatalog(), DEFAULT_AGENT_RUNTIME_KIND)
+    const choice = await resolveStartModel(definitionStartOrder({ definitionDefaults: defaults, lastChatModel: readChatLastModel() }),
+      startModelCatalog(), DEFAULT_AGENT_RUNTIME_KIND)
     if (!isCurrent(target) || !choice) return
     target.root = {
       ...target.root,
@@ -333,24 +335,24 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
     if (message) console.warn('AgentOrg launch blocked:', message)
   })
 
-  /** Why Run is disabled (REQ-006/AC-002): no model anywhere, an unavailable runtime, an unavailable Org. */
+  /** Why Run is disabled (REQ-006/AC-002), by the shared readiness rule (DI-004). */
   const readiness = computed<OrgLaunchReadiness>(() => {
     const current = draft.value
     if (!current || current.phase === 'preparing') return { ready: false, reason: '' }
-    const unavailable = t('runSettings.orgLaunch.unavailable')
-    if (current.unavailable || !org.value) return { ready: false, reason: unavailable }
     const tree = memberTree.value
-    if (!tree) return { ready: false, reason: '' }
-    // A broken topology is not something the user can fix here (its details are logged above).
-    if (tree.status === 'blocked') return { ready: false, reason: unavailable }
+    const available = !current.unavailable && Boolean(org.value)
+    if (available && !tree) return { ready: false, reason: '' }
     const availability = useRuntimeAvailabilityStore()
-    const scopes: RunSettingsValues[] = [current.root]
-    const visit = (nodes: readonly RunMemberNode[]) => nodes.forEach((node) => { scopes.push(node.values); visit(node.children) })
-    visit(tree.nodes)
-    const offRuntime = availability.hasFetched ? scopes.find((scope) => !availability.isRuntimeEnabled(scope.runtimeKind)) : undefined
-    if (offRuntime) return { ready: false, reason: t('chat.launch.runtimeUnavailable', { runtime: runtimeKindToLabel(offRuntime.runtimeKind) }) }
-    if (scopes.some((scope) => !scope.llmModelIdentifier.trim())) return { ready: false, reason: t('chat.launch.chooseModel') }
-    return { ready: true }
+    return resolveScopesReadiness({
+      targetAvailable: available,
+      // A broken topology is not something the user can fix here (its details are logged above).
+      scopes: !tree || tree.status === 'blocked' ? { status: 'blocked' } : { status: 'ready', root: current.root, members: tree.nodes },
+      isRuntimeEnabled: availability.hasFetched ? (runtimeKind) => availability.isRuntimeEnabled(runtimeKind) : null,
+    }, {
+      targetUnavailable: t('runSettings.orgLaunch.unavailable'),
+      runtimeUnavailable: (runtimeKind) => t('chat.launch.runtimeUnavailable', { runtime: runtimeKindToLabel(runtimeKind) }),
+      chooseModel: t('chat.launch.chooseModel'),
+    })
   })
 
   /** Run: starts the Org with no focused recipient and opens the launched Org run view. */

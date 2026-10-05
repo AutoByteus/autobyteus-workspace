@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
   selection: { selectedType: null as string | null, selectedRunId: null as string | null },
   sendBehavior: 'promote' as 'promote' | 'fail',
   runtimeEnabled: true,
+  disabledRuntimes: new Set<string>(),
   teams: [] as any[],
   createDraft: vi.fn(),
   setRuntimeModelCatalog: vi.fn(),
@@ -76,13 +77,14 @@ vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: () => ({
     fetchProvidersWithModels: vi.fn(async () => undefined),
     models: () => ['gpt-5.5-codex'],
+    modelConfigSchemaByIdentifier: () => null,
   }),
 }))
 vi.mock('~/stores/agentTeamRunStore', () => ({
   useAgentTeamRunStore: () => ({ sendMessageToFocusedMember: mocks.sendToFocusedMember }),
 }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({
-  useRuntimeAvailabilityStore: () => ({ hasFetched: true, isRuntimeEnabled: () => mocks.runtimeEnabled }),
+  useRuntimeAvailabilityStore: () => ({ hasFetched: true, isRuntimeEnabled: (kind: string) => mocks.runtimeEnabled && !mocks.disabledRuntimes.has(kind) }),
 }))
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => ({ workspaces: {}, workspaceMetadataById: {} }),
@@ -132,6 +134,7 @@ describe('chatLaunchService', () => {
     mocks.selection = { selectedType: null, selectedRunId: null }
     mocks.sendBehavior = 'promote'
     mocks.runtimeEnabled = true
+    mocks.disabledRuntimes = new Set()
     mocks.teams = []
     mocks.createDraft.mockReset().mockReturnValue('team-draft-1')
     mocks.setRuntimeModelCatalog.mockReset()
@@ -209,6 +212,29 @@ describe('chatLaunchService', () => {
     noModel.context.config.llmModelIdentifier = ''
     expect(resolveChatLaunchReadiness(noModel)).toMatchObject({ ready: false })
     expect(resolveChatLaunchReadiness(buildDraft())).toEqual({ ready: true })
+  })
+
+  it('DI-004: a Team is checked over every member, in AC-002 order (team → runtime → model)', () => {
+    const team = { id: 'team-1', name: 'Writers', coordinatorMemberName: 'lead', nodes: [{ memberName: 'lead', ref: 'a' }, { memberName: 'writer', ref: 'b' }], defaultLaunchConfig: null }
+    const teamDraft = (overrides: Partial<ChatDraft> = {}) => buildDraft({ target: { kind: 'team', teamDefinitionId: 'team-1' }, ...overrides })
+
+    expect(resolveChatLaunchReadiness(teamDraft())).toEqual({ ready: false, reason: expect.stringMatching(/team/i) })
+    mocks.teams = [team]
+    expect(resolveChatLaunchReadiness(teamDraft())).toEqual({ ready: true })
+
+    // A member customized to a runtime that is now disabled blocks the launch (e.g. a Team "+" copy).
+    mocks.disabledRuntimes = new Set(['claude_agent_sdk'])
+    const memberOff = teamDraft({ teamAgentOverrides: { '/writer': { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus' } } as any })
+    const runtimeReason = resolveChatLaunchReadiness(memberOff)
+    expect(runtimeReason).toMatchObject({ ready: false })
+    expect((runtimeReason as { reason: string }).reason).toContain('Claude')
+
+    // The runtime reason comes before the model reason.
+    memberOff.context.config.llmModelIdentifier = ''
+    expect(resolveChatLaunchReadiness(memberOff)).toEqual(runtimeReason)
+    mocks.disabledRuntimes = new Set()
+    expect(resolveChatLaunchReadiness(memberOff)).toMatchObject({ ready: false })
+    expect(resolveChatLaunchReadiness(memberOff)).not.toEqual(runtimeReason)
   })
 
   it('launches a team with one root config for all members, focused on the coordinator, and opens the Team view', async () => {

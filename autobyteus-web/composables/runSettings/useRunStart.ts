@@ -119,11 +119,17 @@ export function useRunStart() {
     await openChat(target, { carried })
   }
 
+  /** The Chat nav and its "new chat" pencil: a fresh plain New chat (the Chat-nav settings rule). */
+  const newChat = async () => {
+    chatDraftStore.startNewChat()
+    await router.push('/chat')
+  }
+
   /** The workspace tree "+": New chat for that agent in that workspace (today's New chat settings rule). */
   const newChatInWorkspace = async (input: Readonly<{ agentDefinitionId: string; workspaceRootPath: string }>) => {
     chatDraftStore.startNewChat(input)
     await router.push('/chat')
   }
 
-  return { runAgent, runTeam, runOrg, copyAgentFromConfig, copyTeamRun, copyOrgRun, switchTarget, newChatInWorkspace }
+  return { runAgent, runTeam, runOrg, copyAgentFromConfig, copyTeamRun, copyOrgRun, switchTarget, newChat, newChatInWorkspace }
 }

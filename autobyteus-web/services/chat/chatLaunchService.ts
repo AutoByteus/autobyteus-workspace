@@ -20,7 +20,10 @@ import { buildAgentDraftContextFileOwner } from '~/utils/contextFiles/contextFil
 import { normalizeMemberAddress } from '~/utils/teamDefinitionMembers'
 import { buildChatTeamLaunchConfig } from '~/services/chat/chatTeamLaunchConfig'
 import type { TeamLaunchDraftId } from '~/types/agent/TeamLaunchDraft'
-import { resolveRunWorkspaceChoice } from '~/services/workspace/runWorkspaceChoice'
+import { resolveRunWorkspaceChoice, sameRunWorkspaceChoice } from '~/services/workspace/runWorkspaceChoice'
+import type { RunSettingsValues } from '~/types/runSettings/RunSettings'
+import { buildTeamMemberTree, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
+import { resolveScopesReadiness, type LaunchReadiness } from '~/utils/runSettings/launchReadiness'
 import { mentionsPresentInText } from '~/utils/collaborators/collaboratorMentionText'
 import { resolveMemberSettings } from '~/utils/runSettings/memberOverrides'
 
@@ -30,33 +33,53 @@ const t = (key: string, params?: Record<string, string | number>): string =>
 export type ChatLaunchNavigate = (route: RouteLocationRaw) => Promise<unknown>
 
 /** A launch is blocked when the draft cannot start a run; the reason labels the disabled send button. */
-export type ChatLaunchReadiness = Readonly<{ ready: true }> | Readonly<{ ready: false; reason: string }>
+export type ChatLaunchReadiness = LaunchReadiness
 
+/**
+ * The shared readiness rule (DI-004) over the draft's effective scopes: the chat settings, and for a
+ * Team every member with its own settings (`runMemberTree`), so a member on a disabled runtime
+ * blocks the launch too.
+ */
 export const resolveChatLaunchReadiness = (draft: ChatDraft): ChatLaunchReadiness => {
   const config = draft.context.config
   const availability = useRuntimeAvailabilityStore()
+  const root: RunSettingsValues = {
+    workspace: draft.workspace,
+    runtimeKind: config.runtimeKind,
+    llmModelIdentifier: config.llmModelIdentifier,
+    llmConfig: config.llmConfig ?? null,
+    autoExecuteTools: draft.autoExecuteTools,
+  }
+  let targetAvailable: boolean
+  let members: readonly RunMemberNode[] = []
+  let targetUnavailable: string
   if (draft.target.kind === 'agent') {
     const definitions = useAgentDefinitionStore()
-    if (definitions.agentDefinitions.length > 0
-      && !definitions.getAgentDefinitionById(draft.target.agentDefinitionId)) {
-      return { ready: false, reason: t('chat.launch.agentUnavailable') }
-    }
+    targetAvailable = definitions.agentDefinitions.length === 0
+      || Boolean(definitions.getAgentDefinitionById(draft.target.agentDefinitionId))
+    targetUnavailable = t('chat.launch.agentUnavailable')
   } else {
     const teamId = draft.target.teamDefinitionId
-    if (!useAgentTeamDefinitionStore().agentTeamDefinitions.some((team) => team.id === teamId)) {
-      return { ready: false, reason: t('chat.launch.teamUnavailable') }
+    const team = useAgentTeamDefinitionStore().agentTeamDefinitions.find((candidate) => candidate.id === teamId)
+    targetAvailable = Boolean(team)
+    targetUnavailable = t('chat.launch.teamUnavailable')
+    if (team) {
+      const catalogs = useLLMProviderConfigStore()
+      members = buildTeamMemberTree({ team, root, agentOverrides: draft.teamAgentOverrides }, {
+        schemaFor: (runtimeKind, llmModelIdentifier) => catalogs.modelConfigSchemaByIdentifier(runtimeKind, llmModelIdentifier),
+        sameWorkspace: sameRunWorkspaceChoice,
+      })
     }
   }
-  if (availability.hasFetched && !availability.isRuntimeEnabled(config.runtimeKind)) {
-    return {
-      ready: false,
-      reason: t('chat.launch.runtimeUnavailable', { runtime: runtimeKindToLabel(config.runtimeKind) }),
-    }
-  }
-  if (!config.llmModelIdentifier) {
-    return { ready: false, reason: t('chat.launch.chooseModel') }
-  }
-  return { ready: true }
+  return resolveScopesReadiness({
+    targetAvailable,
+    scopes: { status: 'ready', root, members },
+    isRuntimeEnabled: availability.hasFetched ? (runtimeKind) => availability.isRuntimeEnabled(runtimeKind) : null,
+  }, {
+    targetUnavailable,
+    runtimeUnavailable: (runtimeKind) => t('chat.launch.runtimeUnavailable', { runtime: runtimeKindToLabel(runtimeKind) }),
+    chooseModel: t('chat.launch.chooseModel'),
+  })
 }
 
 /**

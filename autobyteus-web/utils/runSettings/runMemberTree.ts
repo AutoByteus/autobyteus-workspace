@@ -15,7 +15,7 @@ import {
 import type { ExistingHierarchicalModelConfigDraft } from '~/services/runConfigEditing/existingHierarchicalModelConfigDraft'
 import type { ExistingAgentOrgWorkspaceDraft } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
-import { onlyModelOptions, otherModelSettingKeys, withoutModelOptions } from '~/components/chat/chatModelOptions'
+import { onlyModelOptions, otherModelSettingKeys, withoutModelOptions } from '~/utils/runSettings/modelOptions'
 import { isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
 import { modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 import { resolveMemberSettings } from '~/utils/runSettings/memberOverrides'

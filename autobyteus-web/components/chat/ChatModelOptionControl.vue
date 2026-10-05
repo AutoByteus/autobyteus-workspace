@@ -73,7 +73,7 @@ import { Icon } from '@iconify/vue'
 import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
 import { useMenuInBoundary } from '~/composables/popover/useMenuInBoundary'
 import { useLocalization } from '~/composables/useLocalization'
-import type { ModelOption } from '~/components/chat/chatModelOptions'
+import type { ModelOption } from '~/utils/runSettings/modelOptions'
 
 const props = withDefaults(defineProps<{
   option: ModelOption

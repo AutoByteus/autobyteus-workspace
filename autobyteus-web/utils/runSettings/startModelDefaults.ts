@@ -24,6 +24,28 @@ export interface StartModelCatalog {
   models(runtimeKind: string): readonly string[]
 }
 
+/**
+ * REQ-021 for Run, and for "+"/switcher starts without a usable copied model (New chat and the Org
+ * launch page): the definition's default launch config (with its own model config), then the last
+ * model used in chat.
+ */
+export const definitionStartOrder = (input: Readonly<{
+  definitionDefaults: StartModelCandidate | null
+  lastChatModel: StartModelCandidate | null
+}>): readonly (StartModelCandidate | null)[] => [input.definitionDefaults, input.lastChatModel]
+
+/**
+ * The Chat nav's plain New chat: the last model used in chat (its model config is not kept), then
+ * the default chat agent's default launch config.
+ */
+export const chatNavStartOrder = (input: Readonly<{
+  lastChatModel: StartModelCandidate | null
+  assistantDefaults: StartModelCandidate | null
+}>): readonly (StartModelCandidate | null)[] => [
+  input.lastChatModel ? { ...input.lastChatModel, llmConfig: null } : null,
+  input.assistantDefaults,
+]
+
 const usable = (candidate: StartModelCandidate | null | undefined): candidate is StartModelCandidate & {
   runtimeKind: string
   llmModelIdentifier: string

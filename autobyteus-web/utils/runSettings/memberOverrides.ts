@@ -6,7 +6,7 @@ import type {
   RunSettingsValues,
 } from '~/types/runSettings/RunSettings'
 import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
-import { applyModelOption, onlyModelOptions, withoutModelOptions } from '~/components/chat/chatModelOptions'
+import { applyModelOption, onlyModelOptions, withoutModelOptions } from '~/utils/runSettings/modelOptions'
 import { withNewRuntimeOverridePolicy } from '~/utils/agentRunRuntimeDraftPolicy'
 import {
   modelConfigsEqual,
