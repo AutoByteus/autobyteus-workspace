@@ -44,44 +44,56 @@ Repository finalization of `codex/ios-release-ui-test-flakiness` into origin/per
 - Archived ticket path: tickets/done/ios-release-ui-test-flakiness (repository path)
 
 ## Version / Tag / Release Commit
-Not authorized. No version bump or tag unless the user requests a release. Validation created no git tags; the dummy `release_tag` workflow inputs were text only.
+Completed by the documented stable release helper: `autobyteus-web/package.json` 1.4.94-beta.5 → 1.4.94, with the curated notes synced to `.github/release-notes/release-notes.md`. Release commit 7e32f2664e3787f3b17d087e6e794307f7981f04 ("chore(release): bump workspace release version to 1.4.94"); annotated tag `v1.4.94` peels to that commit. The validation dispatches had created no git tags (their dummy `release_tag` inputs were text only).
 
 ## Repository Finalization
 - Bootstrap context source: solution-handoff.md (finalization target origin/personal)
 - Ticket branch: codex/ios-release-ui-test-flakiness (already on origin at 8d3cb19ea from validation)
-- Ticket branch commit result: pending verification
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`. 357ed7757611a6742ce8dc6d3f4709659c67bbe2 (docs sync, 1.4.94 release notes, archive), on top of 77d34f55d (merge of origin/personal 02d6ddf05), 21c48b51f (checkpoint), 8d3cb19ea and c314aa98c (fix).
+- Ticket branch push result: `Completed`. `git push origin codex/ios-release-ui-test-flakiness:codex/ios-release-ui-test-flakiness`: 8d3cb19ea..357ed7757. The refspec was explicit because the local branch's upstream pointed at origin/personal.
 - Finalization target remote: origin (github.com-ryan:AutoByteus/autobyteus-workspace)
 - Finalization target branch: personal
-- Target advanced after verification / acceptance: to be checked
-- Delivery-owned edits protected before re-integration: to be checked
-- Re-integration before final merge result: to be checked
-- Target branch update result: pending
-- Merge into target result: pending
-- Push target branch result: pending
-- Repository finalization status: `Blocked`, waiting for user verification
-- Blocker: explicit user verification is still missing
+- Target advanced after verification / acceptance: `No` (02d6ddf05 at acceptance and before the merge)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. Created a detached worktree /tmp/finalize-ios-release-ui-test-flakiness from the refreshed origin/personal; the shared checkout was not touched.
+- Merge into target result: `Completed`. Fast-forward to 357ed7757.
+- Push target branch result: `Completed`. 02d6ddf05..357ed7757, no force push.
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
-- Applicable: `No` (not requested)
-- Method: N/A
-- Release/publication/deployment result: `Not required` unless the user requests one
-- Release notes handoff result: `Not required`
+- Applicable: `Yes`. The user asked to "release a new version". Following prior delivery precedent (for example v1.4.25 and v1.3.16 used the same wording), this is a stable release; betas are requested as "a new beta".
+- Method: `Release Script`
+- Method reference / command: `bash scripts/desktop-release.sh release 1.4.94 --release-notes tickets/done/ios-release-ui-test-flakiness/release-notes.md`, run after target finalization in a task-owned clean clone of personal (/tmp/release-ios-release-ui-test-flakiness at 357ed7757). Pushed `personal` 357ed7757..7e32f2664 and the new tag v1.4.94. No manual tag and no duplicate dispatch. The commit identity matches prior release commits.
+- Version choice: 1.4.94 completes the 1.4.94-beta.1..5 series after stable v1.4.93; the v1.4.94 tag was confirmed absent before release.
+- Release/publication/deployment result: `Completed`
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.94. prerelease=false, draft=false, and the repository "latest" release is v1.4.94. The body is the curated notes. 17 non-empty assets: macOS arm64/x64 DMG/ZIP/blockmaps, Linux x64/arm64 AppImages, Windows EXE, Android APK plus sha256 (91170a9b72e2aaf3fb110202c2564975d7a39ca2843fb22efa3a9b8a19c90491), and latest.yml, latest-mac.yml, latest-linux.yml, latest-linux-arm64.yml. Every updater metadata file reports version 1.4.94, and every asset it references exists.
+- Workflows on 7e32f2664, all Success on attempt 1:
+  - Desktop Release 37302033713 (5 platform builds and publish)
+  - Android APK Release 37302033639
+  - Server Docker Release 37302033647 (autobyteus/autobyteus-server:1.4.94 and :latest)
+  - iOS App Store Connect Release 37302033659 (Build And Test, Validate Publish Secrets, Archive And Upload To App Store Connect)
+- iOS result: this is the first real tag-triggered release run with this ticket's fix, and it passed on attempt 1 with no rerun.
+- Release notes handoff result: `Used`. The archived tickets/done/ios-release-ui-test-flakiness/release-notes.md was passed through `--release-notes` and became the release body. It covers all user-facing changes since v1.4.93.
 
 ## Post-Finalization Cleanup
 - Dedicated ticket worktree path: /Users/normy/autobyteus_org/autobyteus-worktrees/ios-release-ui-test-flakiness
-- Worktree cleanup result: pending finalization
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: `Not required`
-- Blocker: none (sequenced after finalization)
+- Worktree cleanup result: `Completed`. `git worktree remove --force`; only gitignored .xcresult bundles and build output remained after the push and merge, and no process was running from it.
+- Worktree prune result: `Not required` (the registration was removed by `worktree remove`)
+- Local ticket branch cleanup result: `Completed`. `git branch -D codex/ios-release-ui-test-flakiness` (was 357ed7757). `-D` was used because the branch's upstream was origin/personal; containment of 357ed7757 in origin/personal was verified.
+- Remote branch cleanup result: `Not required`. The remote ticket branch is kept as provenance.
+- Release clone /tmp/release-ios-release-ui-test-flakiness and temporary finalization worktree /tmp/finalize-ios-release-ui-test-flakiness: removed after this record was pushed.
+- Shared checkout: untouched.
+- Blocker: none
 
 ## Release Notes Summary
-- Release notes artifact: none (no release requested)
-- Release notes status: `Not required`
+- Release notes artifact created at finalization: tickets/done/ios-release-ui-test-flakiness/release-notes.md (written after the user's release request, before the release)
+- Archived release notes artifact used for release/publication: yes, via `--release-notes`; synced to .github/release-notes/release-notes.md in the release commit
+- Release notes status: `Updated`
 
 ## Deployment Steps
-None.
+GitHub workflows triggered by the tag push (Desktop, Android, iOS App Store Connect, Server Docker) all completed successfully on attempt 1. Stable desktop installs are offered 1.4.94 through the updater metadata.
 
 ## Environment Or Persisted-Data Transition Notes
 - Approved persisted-data decision: not applicable (test and CI robustness only; no data).
@@ -95,11 +107,11 @@ See "Initial Delivery Integration Refresh"; upstream evidence is in api-e2e-exec
 If the release-ios.yml UI tests regress (new first-attempt failures with a different signature), or a Release build is found to honor the timeout override, revert the final merge on personal. There is no product or data impact.
 
 ## Final Status
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `Yes` (not required, pending user confirmation)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: user verification pending
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: —
+- Explicit user testing/verification complete: `Yes` (user acceptance plus finalization and release authorization; no manual verification result claimed)
+- Repository finalization complete: `Yes` (merged at 357ed7757; personal at 7e32f2664 after the release commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` (stable v1.4.94 published; all 4 workflows Success on attempt 1)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this record was pushed; the tool result is reported in the delivery handoff.
+- Terminal message/reference: Delivery Completed, package ios-release-ui-test-flakiness, DR-002
