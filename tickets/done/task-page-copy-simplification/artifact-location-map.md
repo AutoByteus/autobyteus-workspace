@@ -8,3 +8,9 @@ Durable completion snapshot will be under
 `/Users/normy/autobyteus_org/autobyteus-delivery-artifacts/task-page-copy-simplification/tickets/done/task-page-copy-simplification`.
 Task worktree is removed only after pushed target contains the ticket candidate.
 Shared dirty personal checkout deliberately not refreshed or overwritten.
+
+Final files in this durable snapshot are authoritative and committed in final
+origin/personal (except external final-repository/transmission metadata). Task and
+helper worktrees were removed after safe merge/push; shared local personal remains
+stale/dirty and intentionally was not changed. Use final remote commit or this
+snapshot, not the dirty shared checkout, for final artifact verification.

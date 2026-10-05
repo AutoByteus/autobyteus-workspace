@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-05T20:08:39.654366+00:00",
+  "previewStopReceipt": "electron-preview-stop.json",
+  "ownedDataRootAbsent": true,
+  "portsClosed": {
+    "49396": true,
+    "49397": true
+  },
+  "taskWorktreeRemoved": true,
+  "temporaryIntegrationWorktreeRemoved": true,
+  "worktreePrune": "Completed",
+  "localTicketBranchRemoved": true,
+  "remoteTicketBranchCleanup": "Not required \u2014 pushed branch retained as finalization evidence",
+  "generatedSdkOutput": "Removed after preview stopped, before scoped archive commit",
+  "sharedCheckoutAndIndex": "Unchanged; status hash exact match before/after cleanup",
+  "sharedCheckoutHead": "6243689566534b80df297d483b0707fbf164bcd0",
+  "snapshotRoot": "/Users/normy/autobyteus_org/autobyteus-delivery-artifacts/task-page-copy-simplification"
+}
